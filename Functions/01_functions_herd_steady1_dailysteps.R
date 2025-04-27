@@ -12,8 +12,8 @@
 S1_01_Fecundity <- function(part_rate, prolif_rate, fem_birth_ratio) {
   
   ## calculate fecF and fecM
-  fecF <- prolif_rate * fem_birth_ratio * (part_rate/365)
-  fecM <- prolif_rate * (1-fem_birth_ratio) * (part_rate/365)
+  fecF <- prolif_rate * fem_birth_ratio * (part_rate / 365)
+  fecM <- prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
   
   ## prepare output
   output <- list(fecF, fecM)
@@ -43,7 +43,7 @@ S1_02_Probabilities <- function(duration, offtake_rate, death_rate) {
   ## In this first part, all calculations are done for 6 sex-age classes
   
   ## calculate hdea (= instantaneous mortality hazard rate):
-  hdea <- ifelse(duration < 365, -log(1-death_rate)/duration, -log(1-death_rate)/365)
+  hdea <- ifelse(duration < 365, -log(1 - death_rate) / duration, -log(1 - death_rate) / 365)
   
   ## adjust duration: actual sex-age class duration if below 365 days, otherwise set to 365 days: 
   duration_max365 <- ifelse(duration < 365, duration, 365)
@@ -53,7 +53,7 @@ S1_02_Probabilities <- function(duration, offtake_rate, death_rate) {
   for (class in 1:6)  ## iterate over each sex-age-class
   { hdea_adj <- hdea[class] * duration_max365[class] ## adjusted hdea for entire adjusted age-class duration 
   for (t in 1:15)   ## perform Newton-Raphson algorithm 15 times
-  { class_hoff <- ifelse(t==1, offtake_rate[class], class_hoff - (class_f/class_deriv))
+  { class_hoff <- ifelse(t == 1, offtake_rate[class], class_hoff - (class_f / class_deriv))
   class_f     <- (class_hoff / (hdea_adj + class_hoff)) * (1 - exp(-hdea_adj - class_hoff)) - offtake_rate[class]
   class_deriv <- (hdea_adj * (1 - exp(-hdea_adj - class_hoff)) + class_hoff * (hdea_adj + class_hoff) * exp(-hdea_adj - class_hoff)) / (hdea_adj + class_hoff)^2
   }
@@ -69,7 +69,7 @@ S1_02_Probabilities <- function(duration, offtake_rate, death_rate) {
   hoff_all <- hoff[c(1, 1:3, 3, 4, 4:6, 6)]  
   
   ## adjust duration: birth cohorts "obtain" 1 day from juveniles, culling cohorts are set to 1 day
-  duration_all <- c(1, duration[1]-1, duration[c(2:3)], 1, 1, duration[4]-1, duration[c(5:6)], 1)
+  duration_all <- c(1, duration[1] - 1, duration[c(2:3)], 1, 1, duration[4] - 1, duration[c(5:6)], 1)
   
   ## calculate pdea
   pdea <- (hdea_all / (hdea_all + hoff_all)) * (1 - exp(-(hdea_all + hoff_all)))
@@ -125,8 +125,8 @@ S1_03_PopStructure <- function(x_start, max_years, min_lambda_change, fecF, fecM
   
   lambda_change <- rep(1, 6)
   
-  for (t in 1:(max_years*365+1)) ## iterate over max_years years
-  { if (t==1) {
+  for (t in 1:(max_years * 365 + 1)) ## iterate over max_years years
+  { if (t == 1) {
     
     ## calculate initial number of individuals taking into account 
     ## the daily number of born females and males (fecF/fecM)
@@ -145,26 +145,26 @@ S1_03_PopStructure <- function(x_start, max_years, min_lambda_change, fecF, fecM
     
     ## calculate number of individuals taking into account both fecF/fecM and 
     ## the number of individuals that survived the previous month and how they moved in the age classes
-    Fem_J__x_fec[t] <- Fem_J__x_g[t-1]
-    Fem_S__x_fec[t] <- Fem_S__x_g[t-1]
-    Fem_A__x_fec[t] <- Fem_A__x_g[t-1]
+    Fem_J__x_fec[t] <- Fem_J__x_g[t - 1]
+    Fem_S__x_fec[t] <- Fem_S__x_g[t - 1]
+    Fem_A__x_fec[t] <- Fem_A__x_g[t - 1]
     Fem_C__x_fec[t] <- 0
     Fem_B__x_fec[t] <- Fem_A__x_fec[t] * fecF
-    Mal_J__x_fec[t] <- Mal_J__x_g[t-1]
-    Mal_S__x_fec[t] <- Mal_S__x_g[t-1]
-    Mal_A__x_fec[t] <- Mal_A__x_g[t-1]
+    Mal_J__x_fec[t] <- Mal_J__x_g[t - 1]
+    Mal_S__x_fec[t] <- Mal_S__x_g[t - 1]
+    Mal_A__x_fec[t] <- Mal_A__x_g[t - 1]
     Mal_C__x_fec[t] <- 0
     Mal_B__x_fec[t] <- Fem_A__x_fec[t] * fecM
   }
     
     ## update change in lambda for all 6 cohorts from step 3 on
-    if (t > 2) { lambda_change <- c(Fem_J__x_fec[t]/Fem_J__x_fec[t-1] - Fem_J__x_fec[t-1]/Fem_J__x_fec[t-2],
-                                    Fem_S__x_fec[t]/Fem_S__x_fec[t-1] - Fem_S__x_fec[t-1]/Fem_S__x_fec[t-2],
-                                    Fem_A__x_fec[t]/Fem_A__x_fec[t-1] - Fem_A__x_fec[t-1]/Fem_A__x_fec[t-2],
-                                    Mal_J__x_fec[t]/Mal_J__x_fec[t-1] - Mal_J__x_fec[t-1]/Mal_J__x_fec[t-2],
-                                    Mal_S__x_fec[t]/Mal_S__x_fec[t-1] - Mal_S__x_fec[t-1]/Mal_S__x_fec[t-2],
-                                    Mal_A__x_fec[t]/Mal_A__x_fec[t-1] - Mal_A__x_fec[t-1]/Mal_A__x_fec[t-2]) 
-    }
+    if (t > 2) { lambda_change <- c(Fem_J__x_fec[t] / Fem_J__x_fec[t - 1] - Fem_J__x_fec[t - 1] / Fem_J__x_fec[t - 2],
+                                    Fem_S__x_fec[t] / Fem_S__x_fec[t - 1] - Fem_S__x_fec[t - 1] / Fem_S__x_fec[t - 2],
+                                    Fem_A__x_fec[t] / Fem_A__x_fec[t - 1] - Fem_A__x_fec[t - 1] / Fem_A__x_fec[t - 2],
+                                    Mal_J__x_fec[t] / Mal_J__x_fec[t - 1] - Mal_J__x_fec[t - 1] / Mal_J__x_fec[t - 2],
+                                    Mal_S__x_fec[t] / Mal_S__x_fec[t - 1] - Mal_S__x_fec[t - 1] / Mal_S__x_fec[t - 2],
+                                    Mal_A__x_fec[t] / Mal_A__x_fec[t - 1] - Mal_A__x_fec[t - 1] / Mal_A__x_fec[t - 2]) 
+    } 
     
     ## break loop if lambda_change is below a set threshold FOR ALL 6 COHORTS AT A TIME! 
     if (all(lambda_change < min_lambda_change )) {
@@ -184,13 +184,13 @@ S1_03_PopStructure <- function(x_start, max_years, min_lambda_change, fecF, fecM
     Mal_C__x_dy[t] <- Mal_C__x_fec[t] - pdea[10] * Mal_C__x_fec[t] - poff[10] * Mal_C__x_fec[t]
     
     ## calculate number of individuals after moving to new age classes
-    Fem_J__x_g[t] <- Fem_B__x_dy[t] + (1-g[2]) * Fem_J__x_dy[t]
-    Fem_S__x_g[t] <- g[2] * Fem_J__x_dy[t] + (1-g[3]) * Fem_S__x_dy[t]
-    Fem_A__x_g[t] <- g[3] * Fem_S__x_dy[t] + (1-g[4]) * Fem_A__x_dy[t]
+    Fem_J__x_g[t] <- Fem_B__x_dy[t] + (1 - g[2]) * Fem_J__x_dy[t]
+    Fem_S__x_g[t] <- g[2] * Fem_J__x_dy[t] + (1 - g[3]) * Fem_S__x_dy[t]
+    Fem_A__x_g[t] <- g[3] * Fem_S__x_dy[t] + (1 - g[4]) * Fem_A__x_dy[t]
     Fem_C__x_g[t] <- g[4] * Fem_A__x_dy[t]
-    Mal_J__x_g[t] <- Mal_B__x_dy[t] + (1-g[7]) * Mal_J__x_dy[t]
-    Mal_S__x_g[t] <- g[7] * Mal_J__x_dy[t] + (1-g[8]) * Mal_S__x_dy[t]
-    Mal_A__x_g[t] <- g[8] * Mal_S__x_dy[t] + (1-g[9]) * Mal_A__x_dy[t]
+    Mal_J__x_g[t] <- Mal_B__x_dy[t] + (1 - g[7]) * Mal_J__x_dy[t]
+    Mal_S__x_g[t] <- g[7] * Mal_J__x_dy[t] + (1 - g[8]) * Mal_S__x_dy[t]
+    Mal_A__x_g[t] <- g[8] * Mal_S__x_dy[t] + (1 - g[9]) * Mal_A__x_dy[t]
     Mal_C__x_g[t] <- g[9] * Mal_A__x_dy[t]
   }
   
@@ -210,7 +210,7 @@ S1_03_PopStructure <- function(x_start, max_years, min_lambda_change, fecF, fecM
   names(share) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
   
   ## calculate the growth rate
-  growth_rate_pop <- (Fem_J__x_fec[days_steady] / Fem_J__x_fec[days_steady-1])^365-1
+  growth_rate_pop <- (Fem_J__x_fec[days_steady] / Fem_J__x_fec[days_steady - 1])^365 - 1
   
   ## prepare output
   output <- list(days_steady, structure, share, growth_rate_pop)
@@ -248,11 +248,11 @@ S1_04_PopSize <- function(size_total, fecF, fecM, pdea, poff, g, growth_rate_pop
   
   ### calculate head numbers for each sex-age class at beginning and end of the year, and the average:
   size <- size_total * share
-  size_end   <- (1+growth_rate_pop)*size
-  size_avg   <- (size + ((1+growth_rate_pop)*size))/2
+  size_end   <- (1 + growth_rate_pop) * size
+  size_avg   <- (size + ((1 + growth_rate_pop) * size)) / 2
   
   ### calculate share of each sex-age class of the total same-sex population 
-  structure_intrasex <- c(size[1:3]/sum(size[1:3]), size[4:6]/sum(size[4:6]))
+  structure_intrasex <- c(size[1:3] / sum(size[1:3]), size[4:6] / sum(size[4:6]))
   
   # Simulate steady-state population over one year
   
@@ -270,7 +270,7 @@ S1_04_PopSize <- function(size_total, fecF, fecM, pdea, poff, g, growth_rate_pop
   Mal_J__x_g <- Mal_S__x_g <- Mal_A__x_g <- Mal_C__x_g <- NULL
   
   for (t in 1:366)
-  { if (t==1) {
+  { if (t == 1) {
     
     ## calculate initial number of individuals taking into account 
     ## the daily number of born females and males (fecF/fecM)
@@ -289,14 +289,14 @@ S1_04_PopSize <- function(size_total, fecF, fecM, pdea, poff, g, growth_rate_pop
     
     ## calculate number of individuals taking into account both fecF/fecM and 
     ## the number of individuals that survived the previous day and how they moved in the age classes
-    Fem_J__x_fec[t] <- Fem_J__x_g[t-1]
-    Fem_S__x_fec[t] <- Fem_S__x_g[t-1]
-    Fem_A__x_fec[t] <- Fem_A__x_g[t-1]
+    Fem_J__x_fec[t] <- Fem_J__x_g[t - 1]
+    Fem_S__x_fec[t] <- Fem_S__x_g[t - 1]
+    Fem_A__x_fec[t] <- Fem_A__x_g[t - 1]
     Fem_C__x_fec[t] <- 0
     Fem_B__x_fec[t] <- Fem_A__x_fec[t] * fecF
-    Mal_J__x_fec[t] <- Mal_J__x_g[t-1]
-    Mal_S__x_fec[t] <- Mal_S__x_g[t-1]
-    Mal_A__x_fec[t] <- Mal_A__x_g[t-1]
+    Mal_J__x_fec[t] <- Mal_J__x_g[t - 1]
+    Mal_S__x_fec[t] <- Mal_S__x_g[t - 1]
+    Mal_A__x_fec[t] <- Mal_A__x_g[t - 1]
     Mal_C__x_fec[t] <- 0
     Mal_B__x_fec[t] <- Fem_A__x_fec[t] * fecM
   }
@@ -339,13 +339,13 @@ S1_04_PopSize <- function(size_total, fecF, fecM, pdea, poff, g, growth_rate_pop
       Mal_C__x_dy[t] <- Mal_C__x_fec[t] - Mal_C__d[t] - Mal_C__y[t]
       
       ## calculate number of individuals after moving to new age classes
-      Fem_J__x_g[t] <- Fem_B__x_dy[t] + (1-g[2]) * Fem_J__x_dy[t]
-      Fem_S__x_g[t] <- g[2] * Fem_J__x_dy[t] + (1-g[3]) * Fem_S__x_dy[t]
-      Fem_A__x_g[t] <- g[3] * Fem_S__x_dy[t] + (1-g[4]) * Fem_A__x_dy[t]
+      Fem_J__x_g[t] <- Fem_B__x_dy[t] + (1 - g[2]) * Fem_J__x_dy[t]
+      Fem_S__x_g[t] <- g[2] * Fem_J__x_dy[t] + (1 - g[3]) * Fem_S__x_dy[t]
+      Fem_A__x_g[t] <- g[3] * Fem_S__x_dy[t] + (1 - g[4]) * Fem_A__x_dy[t]
       Fem_C__x_g[t] <- g[4] * Fem_A__x_dy[t]
-      Mal_J__x_g[t] <- Mal_B__x_dy[t] + (1-g[7]) * Mal_J__x_dy[t]
-      Mal_S__x_g[t] <- g[7] * Mal_J__x_dy[t] + (1-g[8]) * Mal_S__x_dy[t]
-      Mal_A__x_g[t] <- g[8] * Mal_S__x_dy[t] + (1-g[9]) * Mal_A__x_dy[t]
+      Mal_J__x_g[t] <- Mal_B__x_dy[t] + (1 - g[7]) * Mal_J__x_dy[t]
+      Mal_S__x_g[t] <- g[7] * Mal_J__x_dy[t] + (1 - g[8]) * Mal_S__x_dy[t]
+      Mal_A__x_g[t] <- g[8] * Mal_S__x_dy[t] + (1 - g[9]) * Mal_A__x_dy[t]
       Mal_C__x_g[t] <- g[9] * Mal_A__x_dy[t]
     }
   }
@@ -353,7 +353,7 @@ S1_04_PopSize <- function(size_total, fecF, fecM, pdea, poff, g, growth_rate_pop
   deaths_number     <- c(sum(Fem_B__d) + sum(Fem_J__d), sum(Fem_S__d), sum(Fem_A__d),
                          sum(Mal_B__d) + sum(Mal_J__d), sum(Mal_S__d), sum(Mal_A__d))
   deaths_share      <- deaths_number / size
-  deaths_share_avg  <- deaths_number / ((size + ((1+growth_rate_pop)*size))/2) 
+  deaths_share_avg  <- deaths_number / ((size + ((1 + growth_rate_pop) * size)) / 2) 
   
   offtake           <- c(sum(Fem_B__y), sum(Fem_J__y), sum(Fem_S__y), sum(Fem_A__y), sum(Fem_C__x_g),
                          sum(Mal_B__y),  sum(Mal_J__y), sum(Mal_S__y), sum(Mal_A__y), sum(Mal_C__x_g))
@@ -410,7 +410,7 @@ S1_05_ProdOfftake <- function(size, size_end, size_avg, offtake) {
   offtake_sv_share     <- offtake_sv_number / size
   offtake_sv_share_avg <- offtake_sv_number / size_avg
   
-  names(stock_variation) <- names(offtake_number) <- names(offtake_share) <- names(offtake_share_avg) <- names(offtake_sv_number) <-names(offtake_sv_share) <- names(offtake_sv_share_avg) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  names(stock_variation) <- names(offtake_number) <- names(offtake_share) <- names(offtake_share_avg) <- names(offtake_sv_number) <- names(offtake_sv_share) <- names(offtake_sv_share_avg) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
   
   ## prepare output
   output <- list(stock_variation, offtake_number, offtake_share, offtake_share_avg, offtake_sv_number, offtake_sv_share, offtake_sv_share_avg)
@@ -472,7 +472,7 @@ S1_06_ProdCommodities <- function(dry_matter_req, liveweight, carcass, financial
   size_end_adj <- c(sum(size_end_exact[c(1:2)]), size_end_exact[3], sum(size_end_exact[c(4:5)]), 
                     sum(size_end_exact[c(6:7)]), size_end_exact[8], sum(size_end_exact[c(9:10)]))
   
-  liveweight_stock   <- sum((size_end_adj + size)/2 * liveweight)
+  liveweight_stock   <- sum((size_end_adj + size) / 2 * liveweight)
   liveweight_offtake <- sum(offtake * c(liveweight[1], liveweight[c(1:3)], liveweight[3], liveweight[4], liveweight[c(4:6)], liveweight[6]))
   liveweight_sv      <- sum((size_end_adj * liveweight) - (size * liveweight))
   
@@ -487,7 +487,7 @@ S1_06_ProdCommodities <- function(dry_matter_req, liveweight, carcass, financial
   financial_sv      <- sum((size_end_adj - size) * financial_value)
   
   ## calculate total milk production and milk produced per adult female
-  milk_total  <- ((size[3]+size_end_adj[3])/2) * part_rate/12 * milking_length * milk * 12
+  milk_total  <- ((size[3] + size_end_adj[3]) / 2) * part_rate / 12 * milking_length * milk * 12
   milk_female <- milk_total / size[3]  
   
   #### this may be an error in the original DYNMOD? should be average number of adult females instead of initial number 
@@ -506,7 +506,7 @@ S1_06_ProdCommodities <- function(dry_matter_req, liveweight, carcass, financial
   ad_adF    <- exp(-duration[2] * hdea[2]) * exp(-duration[1] * hdea[1]) * part_rate * prolif_rate * fem_birth_ratio + exp(-duration[5] * hdea[5]) * exp(-duration[4] * hdea[4]) * (1 - fem_birth_ratio) * part_rate * prolif_rate
   
   ## calculate total feeding requirement
-  feed_req <- sum((size_end_adj * liveweight + size * liveweight)/2 * dry_matter_req *365)
+  feed_req <- sum((size_end_adj * liveweight + size * liveweight) / 2 * dry_matter_req * 365)
   
   ## plot live weight, meat and financial equivalents
   plotdata <- data.frame(equivalent = c(rep("live weight (kg)", 3), rep("meat (kg)", 3), rep("financial value (currency)", 3)),
@@ -517,17 +517,17 @@ S1_06_ProdCommodities <- function(dry_matter_req, liveweight, carcass, financial
   
   plotdata$equivalent <- factor(plotdata$equivalent, levels = c("live weight (kg)", "meat (kg)", "financial value (currency)"))
   
-  plot_equivalents <- ggplot(plotdata, aes(x=indicator, y=value, fill=indicator)) + 
-    geom_bar(stat="identity") +
-    facet_wrap(~equivalent, scales="free") +
-    geom_text(aes(label=round(value, digits=0), color=indicator), vjust=-0.25) +
-    scale_fill_manual("", values=viridis(6)[c(3:5)]) + 
-    scale_color_manual("", values=viridis(6)[c(3:5)]) + 
+  plot_equivalents <- ggplot(plotdata, aes(x = indicator, y = value, fill = indicator)) + 
+    geom_bar(stat = "identity") +
+    facet_wrap(~equivalent, scales = "free") +
+    geom_text(aes(label = round(value, digits = 0), color = indicator), vjust = -0.25) +
+    scale_fill_manual("", values = viridis(6)[c(3:5)]) +
+    scale_color_manual("", values = viridis(6)[c(3:5)]) +
     ylab("") + 
     xlab("") +
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank()) +
-    guides(color="none")
+    guides(color = "none")
   
   ## prepare output
   names(milk_total) <- names(milk_female) <- names(subad_adF) <- names(ad_adF) <- NULL
