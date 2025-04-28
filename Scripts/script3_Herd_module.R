@@ -9,15 +9,18 @@ herd.dt <- fread("Inputs//GLEAM_input_herd.csv")
 # STEADY 1
 # # Function 1: Fecundity -------------------------------------------------------
 herd.dt[, c("fecF", "fecM") := S1_01_Fecundity(
-  parturition_rate, litsize, female_birth_fraction), by = seq_len(nrow(herd.dt))]
+  part_rate = parturition_rate,
+  prolif_rate = litsize,
+  fem_birth_ratio = female_birth_fraction
+), by = seq_len(nrow(herd.dt))]
 
 # # Function 2: Probabilities ---------------------------------------------------
 # # #  Defining the vector names to be used for outputs, through a run of the function for the first record
 vecNames.f2 <- names(unlist(
   S1_02_Probabilities(
-    as.numeric(herd.dt[1, .(duration.FJ, duration.FS, duration.FA, duration.MJ, duration.MS, duration.MA)]),
-    as.numeric(herd.dt[1, .(offtake_rate.FJ, offtake_rate.FS, offtake_rate.FA, offtake_rate.MJ, offtake_rate.MS, offtake_rate.MA)]),
-    as.numeric(herd.dt[1, .(mort_rate.FJ, mort_rate.FS, mort_rate.FA, mort_rate.MJ, mort_rate.MS, mort_rate.MA)])
+    duration = as.numeric(herd.dt[1, .(duration.FJ, duration.FS, duration.FA, duration.MJ, duration.MS, duration.MA)]),
+    offtake_rate = as.numeric(herd.dt[1, .(offtake_rate.FJ, offtake_rate.FS, offtake_rate.FA, offtake_rate.MJ, offtake_rate.MS, offtake_rate.MA)]),
+    death_rate = as.numeric(herd.dt[1, .(mort_rate.FJ, mort_rate.FS, mort_rate.FA, mort_rate.MJ, mort_rate.MS, mort_rate.MA)])
   )
 ))
 # # #  Running the function for the data table
@@ -39,17 +42,25 @@ min_lambda_change <- 0.000000001 # these can make a big difference depending on 
 # # #  Defining the vector names to be used for outputs, through a run of the function for the first record
 vecNames.f3 <- names(unlist(
   S1_03_PopStructure(
-    x_start, max_years, min_lambda_change, herd.dt[1, fecF], herd.dt[1, fecM],
-    as.numeric(herd.dt[1, c("pdea.FB", "pdea.FJ", "pdea.FS", "pdea.FA", "pdea.FC", "pdea.MB", "pdea.MJ", "pdea.MS", "pdea.MA", "pdea.MC")]),
-    as.numeric(herd.dt[1, c("poff.FB", "poff.FJ", "poff.FS", "poff.FA", "poff.FC", "poff.MB", "poff.MJ", "poff.MS", "poff.MA", "poff.MC")]),
-    as.numeric(herd.dt[1, c("g.FB", "g.FJ", "g.FS", "g.FA", "g.FC", "g.MB", "g.MJ", "g.MS", "g.MA", "g.MC")])
+    x_start = x_start,
+    max_years = max_years,
+    min_lambda_change = min_lambda_change,
+    fecF = herd.dt[1, fecF],
+    fecM = herd.dt[1, fecM],
+    pdea = as.numeric(herd.dt[1, c("pdea.FB", "pdea.FJ", "pdea.FS", "pdea.FA", "pdea.FC", "pdea.MB", "pdea.MJ", "pdea.MS", "pdea.MA", "pdea.MC")]),
+    poff = as.numeric(herd.dt[1, c("poff.FB", "poff.FJ", "poff.FS", "poff.FA", "poff.FC", "poff.MB", "poff.MJ", "poff.MS", "poff.MA", "poff.MC")]),
+    g = as.numeric(herd.dt[1, c("g.FB", "g.FJ", "g.FS", "g.FA", "g.FC", "g.MB", "g.MJ", "g.MS", "g.MA", "g.MC")])
   )
 ))
 
 # # #  Running the function for the data table
 herd.dt[, (vecNames.f3) := as.list(as.vector(unlist(
   S1_03_PopStructure(
-    x_start, max_years, min_lambda_change, fecF, fecM,
+    x_start = x_start,
+    max_years = max_years,
+    min_lambda_change = min_lambda_change,
+    fecF = fecF,
+    fecM = fecM,
     pdea = as.numeric(.(pdea.FB, pdea.FJ, pdea.FS, pdea.FA, pdea.FC, pdea.MB, pdea.MJ, pdea.MS, pdea.MA, pdea.MC)),
     poff = as.numeric(.(poff.FB, poff.FJ, poff.FS, poff.FA, poff.FC, poff.MB, poff.MJ, poff.MS, poff.MA, poff.MC)),
     g = as.numeric(.(g.FB, g.FJ, g.FS, g.FA, g.FC, g.MB, g.MJ, g.MS, g.MA, g.MC))
@@ -61,24 +72,28 @@ herd.dt[, (vecNames.f3) := as.list(as.vector(unlist(
 # # #  Defining the vector names to be used for outputs, through a run of the function for the first record
 vecNames.f4 <- names(unlist(
   S1_04_PopSize(
-    herd.dt[1, size_total], herd.dt[1, fecF], herd.dt[1, fecM],
-    as.numeric(herd.dt[1, c("pdea.FB", "pdea.FJ", "pdea.FS", "pdea.FA", "pdea.FC", "pdea.MB", "pdea.MJ", "pdea.MS", "pdea.MA", "pdea.MC")]),
-    as.numeric(herd.dt[1, c("poff.FB", "poff.FJ", "poff.FS", "poff.FA", "poff.FC", "poff.MB", "poff.MJ", "poff.MS", "poff.MA", "poff.MC")]),
-    as.numeric(herd.dt[1, c("g.FB", "g.FJ", "g.FS", "g.FA", "g.FC", "g.MB", "g.MJ", "g.MS", "g.MA", "g.MC")]),
-    herd.dt[1, growth_rate_pop],
-    as.numeric(herd.dt[1, c("structure.FB", "structure.FJ", "structure.FS", "structure.FA", "structure.MB", "structure.MJ", "structure.MS", "structure.MA")]),
-    as.numeric(herd.dt[1, c("share.FJ", "share.FS", "share.FA", "share.MJ", "share.MS", "share.MA")])
+    size_total = herd.dt[1, size_total],
+    fecF = herd.dt[1, fecF],
+    fecM = herd.dt[1, fecM],
+    pdea = as.numeric(herd.dt[1, c("pdea.FB", "pdea.FJ", "pdea.FS", "pdea.FA", "pdea.FC", "pdea.MB", "pdea.MJ", "pdea.MS", "pdea.MA", "pdea.MC")]),
+    poff = as.numeric(herd.dt[1, c("poff.FB", "poff.FJ", "poff.FS", "poff.FA", "poff.FC", "poff.MB", "poff.MJ", "poff.MS", "poff.MA", "poff.MC")]),
+    g = as.numeric(herd.dt[1, c("g.FB", "g.FJ", "g.FS", "g.FA", "g.FC", "g.MB", "g.MJ", "g.MS", "g.MA", "g.MC")]),
+    growth_rate_pop = herd.dt[1, growth_rate_pop],
+    structure = as.numeric(herd.dt[1, c("structure.FB", "structure.FJ", "structure.FS", "structure.FA", "structure.MB", "structure.MJ", "structure.MS", "structure.MA")]),
+    share = as.numeric(herd.dt[1, c("share.FJ", "share.FS", "share.FA", "share.MJ", "share.MS", "share.MA")])
   )
 ))
 
 # # #  Running the function for the data table
 herd.dt[, (vecNames.f4) := as.list(as.vector(unlist(
   S1_04_PopSize(
-    size_total, fecF, fecM,
+    size_total = size_total,
+    fecF = fecF,
+    fecM = fecM,
     pdea = as.numeric(.(pdea.FB, pdea.FJ, pdea.FS, pdea.FA, pdea.FC, pdea.MB, pdea.MJ, pdea.MS, pdea.MA, pdea.MC)),
     poff = as.numeric(.(poff.FB, poff.FJ, poff.FS, poff.FA, poff.FC, poff.MB, poff.MJ, poff.MS, poff.MA, poff.MC)),
     g = as.numeric(.(g.FB, g.FJ, g.FS, g.FA, g.FC, g.MB, g.MJ, g.MS, g.MA, g.MC)),
-    growth_rate_pop,
+    growth_rate_pop = growth_rate_pop,
     structure = as.numeric(.(structure.FB, structure.FJ, structure.FS, structure.FA, structure.MB, structure.MJ, structure.MS, structure.MA)),
     share = as.numeric(.(share.FJ, share.FS, share.FA, share.MJ, share.MS, share.MA))
   )
@@ -90,10 +105,10 @@ herd.dt[, (vecNames.f4) := as.list(as.vector(unlist(
 # # #  Defining the vector names to be used for outputs, through a run of the function for the first record
 vecNames.f5 <- names(unlist(
   S1_05_ProdOfftake(
-    as.numeric(herd.dt[1, c("size.FJ", "size.FS", "size.FA", "size.MJ", "size.MS", "size.MA")]),
-    as.numeric(herd.dt[1, c("size_end.FJ", "size_end.FS", "size_end.FA", "size_end.MJ", "size_end.MS", "size_end.MA")]),
-    as.numeric(herd.dt[1, c("size_avg.FJ", "size_avg.FS", "size_avg.FA", "size_avg.MJ", "size_avg.MS", "size_avg.MA")]),
-    as.numeric(herd.dt[1, c("offtake.FB", "offtake.FJ", "offtake.FS", "offtake.FA", "offtake.FC", "offtake.MB", "offtake.MJ", "offtake.MS", "offtake.MA", "offtake.MC")])
+    size = as.numeric(herd.dt[1, c("size.FJ", "size.FS", "size.FA", "size.MJ", "size.MS", "size.MA")]),
+    size_end = as.numeric(herd.dt[1, c("size_end.FJ", "size_end.FS", "size_end.FA", "size_end.MJ", "size_end.MS", "size_end.MA")]),
+    size_avg = as.numeric(herd.dt[1, c("size_avg.FJ", "size_avg.FS", "size_avg.FA", "size_avg.MJ", "size_avg.MS", "size_avg.MA")]),
+    offtake = as.numeric(herd.dt[1, c("offtake.FB", "offtake.FJ", "offtake.FS", "offtake.FA", "offtake.FC", "offtake.MB", "offtake.MJ", "offtake.MS", "offtake.MA", "offtake.MC")])
   )
 ))
 
