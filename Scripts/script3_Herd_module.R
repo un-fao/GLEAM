@@ -24,13 +24,13 @@ vecNames.f2 <- names(unlist(
   )
 ))
 # # #  Running the function for the data table
-herd.dt[, (vecNames.f2) := as.list(as.vector(unlist(
+herd.dt[, (vecNames.f2) := as.list(unlist(
   S1_02_Probabilities(
     duration = as.numeric(.(duration.FJ, duration.FS, duration.FA, duration.MJ, duration.MS, duration.MA)),
     offtake_rate = as.numeric(.(offtake_rate.FJ, offtake_rate.FS, offtake_rate.FA, offtake_rate.MJ, offtake_rate.MS, offtake_rate.MA)),
     death_rate = as.numeric(.(mort_rate.FJ, mort_rate.FS, mort_rate.FA, mort_rate.MJ, mort_rate.MS, mort_rate.MA))
   )
-))), by = seq_len(nrow(herd.dt))]
+)), by = seq_len(nrow(herd.dt))]
 
 # # Function 3: Population Structure ---------------------------------------------------
 
@@ -54,7 +54,7 @@ vecNames.f3 <- names(unlist(
 ))
 
 # # #  Running the function for the data table
-herd.dt[, (vecNames.f3) := as.list(as.vector(unlist(
+herd.dt[, (vecNames.f3) := as.list(unlist(
   S1_03_PopStructure(
     x_start = x_start,
     max_years = max_years,
@@ -65,7 +65,7 @@ herd.dt[, (vecNames.f3) := as.list(as.vector(unlist(
     poff = as.numeric(.(poff.FB, poff.FJ, poff.FS, poff.FA, poff.FC, poff.MB, poff.MJ, poff.MS, poff.MA, poff.MC)),
     g = as.numeric(.(g.FB, g.FJ, g.FS, g.FA, g.FC, g.MB, g.MJ, g.MS, g.MA, g.MC))
   )
-))), by = seq_len(nrow(herd.dt))]
+)), by = seq_len(nrow(herd.dt))]
 
 # # Function 4: Population Size ---------------------------------------------------
 
@@ -85,7 +85,7 @@ vecNames.f4 <- names(unlist(
 ))
 
 # # #  Running the function for the data table
-herd.dt[, (vecNames.f4) := as.list(as.vector(unlist(
+herd.dt[, (vecNames.f4) := as.list(unlist(
   S1_04_PopSize(
     size_total = size_total,
     fecF = fecF,
@@ -97,7 +97,7 @@ herd.dt[, (vecNames.f4) := as.list(as.vector(unlist(
     structure = as.numeric(.(structure.FB, structure.FJ, structure.FS, structure.FA, structure.MB, structure.MJ, structure.MS, structure.MA)),
     share = as.numeric(.(share.FJ, share.FS, share.FA, share.MJ, share.MS, share.MA))
   )
-))), by = seq_len(nrow(herd.dt))]
+)), by = seq_len(nrow(herd.dt))]
 
 
 # # Function 5: Production Offtake ---------------------------------------------------
@@ -113,14 +113,14 @@ vecNames.f5 <- names(unlist(
 ))
 
 # # #  Running the function for the data table
-herd.dt[, (vecNames.f5) := as.list(as.vector(unlist(
+herd.dt[, (vecNames.f5) := as.list(unlist(
   S1_05_ProdOfftake(
     size = as.numeric(.(size.FJ, size.FS, size.FA, size.MJ, size.MS, size.MA)),
     size_end = as.numeric(.(size_end.FJ, size_end.FS, size_end.FA, size_end.MJ, size_end.MS, size_end.MA)),
     size_avg = as.numeric(.(size_avg.FJ, size_avg.FS, size_avg.FA, size_avg.MJ, size_avg.MS, size_avg.MA)),
     offtake = as.numeric(.(offtake.FB, offtake.FJ, offtake.FS, offtake.FA, offtake.FC, offtake.MB, offtake.MJ, offtake.MS, offtake.MA, offtake.MC))
   )
-))), by = seq_len(nrow(herd.dt))]
+)), by = seq_len(nrow(herd.dt))]
 
 # Output selection
 # * Only some of the outputs produced are currently required by GLEAM
