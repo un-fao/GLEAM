@@ -1,5 +1,6 @@
 # Function to calculate cohort-specific weights at different lifestage
-get.stepLW <- function(Animal_short, cohort, AFKG, AMKG, CKG, MFSKG, MMSKG, WKG, AFC, WA) {
+get.stepLW <- function(
+    Animal_short, cohort, AFKG, AMKG, CKG, MFSKG, MMSKG, WKG, AFC, WA) {
   if (cohort %in% c("FJ")) {
     initialLW <- CKG
     if (Animal_short %in% c("PGS", "CML")) {
