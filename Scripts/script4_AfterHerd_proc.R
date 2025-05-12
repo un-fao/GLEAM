@@ -5,13 +5,13 @@ source("Functions/02_functions_afterHerd_preprocessing.R")
 
 
 # upload inputs
-out_herd.dt <- fread("Inputs//GLEAM_input_herdproc.csv")
+out_herd <- fread("Inputs//GLEAM_input_herdproc.csv")
 
-id.vars <- c(
+id_columns <- c(
   "LPS", "HerdType", "Animal", "ADM0_CODE", "ISO3",
   "ISO3_num", "M49_code", "RegionClass", "COUNTRY"
 ) # columns as id
-cohort.vars <- c(
+cohort_columns <- c(
   "offtake_rate.FJ", "offtake_rate.FS", "offtake_rate.FA",
   "offtake_rate.MJ", "offtake_rate.MS", "offtake_rate.MA",
   "mort_rate.FJ", "mort_rate.FS", "mort_rate.FA",
@@ -24,14 +24,14 @@ cohort.vars <- c(
   "offtake_number.MJ", "offtake_number.MS", "offtake_number.MA"
 )
 
-herd_pop <- out_herd.dt[, .SD, .SDcols = setdiff(names(out_herd.dt), cohort.vars)]
+herd_pop <- out_herd[, .SD, .SDcols = setdiff(names(out_herd), cohort_columns)]
 
-herd_tolong <- out_herd.dt[, .SD, .SDcols = c(id.vars, cohort.vars)]
+herd_tolong <- out_herd[, .SD, .SDcols = c(id_columns, cohort_columns)]
 
 # Reshape from wide to long format
 long_format <- melt(
   herd_tolong,
-  id.vars = id.vars,
+  id.vars = id_columns,
   variable.name = "variable",
   value.name = "value"
 )
@@ -54,7 +54,7 @@ long_format <- dcast(
   value.var = "value"
 )
 
-GLEAM_input_feed_preproc <- merge(herd_pop, long_format, by = id.vars, all.x = TRUE)
+GLEAM_input_feed_preproc <- merge(herd_pop, long_format, by = id_columns, all.x = TRUE)
 
 setcolorder(
   GLEAM_input_feed_preproc,
@@ -69,30 +69,30 @@ setcolorder(
 
 # add weights----
 GLEAM_input_feed_preproc[, c("initialLW", "potfinalLW", "slaughterLW") :=
-                           get.stepLW(
+                           get_stepLW(
                              Animal_short, cohort, AFKG, AMKG, CKG = ckg, MFSKG,
                              MMSKG, WKG = wkg, AFC = afc, WA
                            ),
                          by = .I]
 
 GLEAM_input_feed_preproc[, c("averageLW", "finalLW") :=
-                           get.otherLW(initialLW, potfinalLW, slaughterLW, offtake_rate),
+                           get_otherLW(initialLW, potfinalLW, slaughterLW, offtake_rate),
                          by = .I]
 
 # add new daily weight gain----
 GLEAM_input_feed_preproc[, "dwg" :=
-                           get.dwg(potfinalLW, initialLW, duration),
+                           get_dwg(potfinalLW, initialLW, duration),
                          by = .I]
 
 # new column need to be generated with WKG also for other species than PIGS (it is used in energy requirements)
 # FS and MS have the same weaning weight - filtering only for one
-weaning.dt <- GLEAM_input_feed_preproc[cohort %in% c("FS") & Animal_short != "PGS", .(
+weaning_dt <- GLEAM_input_feed_preproc[cohort %in% c("FS") & Animal_short != "PGS", .(
   COUNTRY, ADM0_CODE, Animal_short, LPS_short, HerdType_short, cohort,
   initialLW
 )]
 GLEAM_input_feed_preproc[
   Animal_short != "PGS",
-  wkg := weaning.dt[
+  wkg := weaning_dt[
     .SD, on = .(COUNTRY, ADM0_CODE, Animal_short, LPS_short, HerdType_short), initialLW
   ]
 ]

@@ -1,5 +1,5 @@
 # Function to calculate cohort-specific weights at different lifestage
-get.stepLW <- function(
+get_stepLW <- function(
     Animal_short, cohort, AFKG, AMKG, CKG, MFSKG, MMSKG, WKG, AFC, WA) {
   if (cohort %in% c("FJ")) {
     initialLW <- CKG
@@ -36,14 +36,14 @@ get.stepLW <- function(
   } else if (cohort == "MA") {
     initialLW <- potfinalLW <- slaughterLW <- AMKG
   }
-
+  
   ret <- list(initialLW, potfinalLW, slaughterLW)
   names(ret) <- c("initialLW", "potfinalLW", "slaughterLW")
   return(ret)
 }
 
 # Function to calculate cohort-specific average and final weights
-get.otherLW <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
+get_otherLW <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
   averageLW <- (initialLW + (potfinalLW * (1 - offtake_rate) + slaughterLW * (offtake_rate))) / 2
   finalLW <- potfinalLW * (1 - offtake_rate) + slaughterLW * (offtake_rate)
   ret <- list(averageLW, finalLW)
@@ -51,7 +51,7 @@ get.otherLW <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
   return(ret)
 }
 
-get.dwg <- function(potfinalLW, initialLW, duration) {
+get_dwg <- function(potfinalLW, initialLW, duration) {
   dwg <- (potfinalLW - initialLW) / duration
   return(dwg)
 }
