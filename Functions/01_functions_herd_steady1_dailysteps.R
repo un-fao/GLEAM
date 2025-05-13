@@ -261,43 +261,47 @@ simulate_steady_state_structure <- function(
 
 
 
-# ## Function 4: Population Size
-#
-# This function takes the following input parameters to simulate one year of a steady-state population:
-# * "size_total": the total population size at the beginning of the year
-# * "female_fecundity": results from the function "compute_fecundity_rates": daily number of born females generated per adult female
-# * "male_fecundity":   results from the function "compute_fecundity_rates": daily number of born males generated per adult female
-# * "pdea":             results from the function "compute_transition_probabilities": daily death probability for 10 sex-age classes (vector)
-# * "poff":             results from the function "compute_transition_probabilities": daily offtake probability for 10 sex-age classes (vector)
-# * "g":                results from the function "compute_transition_probabilities": probability to grow into the next age class for 10 sex-age classes (vector)
-# * "growth_rate_pop":  results from the function "simulate_steady_state_structure": the increase in number of individuals in each sex-age class over one year in a steady-state population
-# * "structure":        results from the function "simulate_steady_state_structure": shares of 8 sex-age classes in a steady-state population (vector)
-# * "share": results from the function "simulate_steady_state_structure": shares of 6 sex-age classes in a steady-state population (vector)
-#
-# This function returns the following objects:
-# * "size":     number of individuals in 6 sex-age classes at the beginning of the steady-state year
-# * "size_end":       number of individuals in 6 sex-age classes at the end of the steady-state year (derived by growth rate)
-# * "size_end_exact": number of individuals in 10 sex-age classes at the end of the steady-state year (derived by simulation)
-# * "size_avg":       average number of individuals in 6 sex-age classes during a the steady-state year (derived by growth rate)
-# * "offtake":        number of individuals taken off from 10 sex-age classes during one year of a steady-state population
-
+#' Project One Year of Steady-State Population Dynamics
+#'
+#' Simulates one year of population dynamics under steady-state assumptions using demographic parameters
+#' and returns population size statistics and offtake results.
+#'
+#' @param size_total Numeric. Total population size at the start of the year.
+#' @param female_fecundity Numeric. Daily female births per adult female (from `compute_fecundity_rates()`).
+#' @param male_fecundity Numeric. Daily male births per adult female (from `compute_fecundity_rates()`).
+#' @param pdea Numeric vector of length 10. Daily death probabilities (from `compute_transition_probabilities()`).
+#' @param poff Numeric vector of length 10. Daily offtake probabilities (from `compute_transition_probabilities()`).
+#' @param g Numeric vector of length 10. Transition probabilities to next age class (from `compute_transition_probabilities()`).
+#' @param growth_rate_pop Numeric. Annual population growth rate (from `simulate_steady_state_structure()`).
+#' @param structure Numeric vector of length 8. Final population share in 8 classes (from `simulate_steady_state_structure()`).
+#' @param share Numeric vector of length 6. Final population share in 6 grouped classes (from `simulate_steady_state_structure()`).
+#'
+#' @return A named list with:
+#' \describe{
+#'   \item{size}{Size in 6 sex-age classes at the start of the year.}
+#'   \item{size_end}{Size at year end (projected using growth rate).}
+#'   \item{size_end_exact}{Size at year end (based on full simulation over 366 days).}
+#'   \item{size_avg}{Average population size over the year.}
+#'   \item{offtake}{Total offtake over the year per sex-age class.}
+#' }
+#'
+#' @export
 project_population_size <- function(
     size_total, female_fecundity, male_fecundity, pdea, poff, g,
     growth_rate_pop, structure, share) {
-  ## calculate intitial size of all 8 sex-age classes
+  
+  # Calculate initial number of individuals in each of the 8 sex-age classes
   xini <- size_total * structure
   
-  ### calculate head numbers for each sex-age class at beginning and end of the year, and the average:
+  # Compute beginning, end (via growth rate), and average size for 6 sex-age classes
   size <- size_total * share
   size_end <- (1 + growth_rate_pop) * size
-  size_avg <- (size + ((1 + growth_rate_pop) * size)) / 2
+  size_avg <- (size + size_end) / 2
   
-  ### calculate share of each sex-age class of the total same-sex population
+  # Compute relative structure within sex for later simulation
   structure_intrasex <- c(size[1:3] / sum(size[1:3]), size[4:6] / sum(size[4:6]))
   
-  # Simulate steady-state population over one year
-  
-  ## initialize empty vectors to be populated in the loop
+  # Initialize all tracking vectors
   Fem_B__d <- Fem_J__d <- Fem_S__d <- Fem_A__d <- Fem_C__d <- NULL
   Mal_B__d <- Mal_J__d <- Mal_S__d <- Mal_A__d <- Mal_C__d <- NULL
   
@@ -310,28 +314,29 @@ project_population_size <- function(
   Fem_J__x_g <- Fem_S__x_g <- Fem_A__x_g <- Fem_C__x_g <- NULL
   Mal_J__x_g <- Mal_S__x_g <- Mal_A__x_g <- Mal_C__x_g <- NULL
   
+  # Simulate daily dynamics over 366 days (leap year assumption)
   for (t in 1:366) {
     if (t == 1) {
-      ## calculate initial number of individuals taking into account
-      ## the daily number of born females and males (female_fecundity/male_fecundity)
+      # Initialize class sizes using xini and fecundity
       Fem_J__x_fec <- xini[2]
       Fem_S__x_fec <- xini[3]
       Fem_A__x_fec <- xini[4]
       Fem_C__x_fec <- 0
       Fem_B__x_fec <- Fem_A__x_fec * female_fecundity
+      
       Mal_J__x_fec <- xini[6]
       Mal_S__x_fec <- xini[7]
       Mal_A__x_fec <- xini[8]
       Mal_C__x_fec <- 0
       Mal_B__x_fec <- Fem_A__x_fec * male_fecundity
-    } else if (t > 1) {
-      ## calculate number of individuals taking into account both female_fecundity/male_fecundity and
-      ## the number of individuals that survived the previous day and how they moved in the age classes
+    } else {
+      # Update fecundity stage from previous day's transitions
       Fem_J__x_fec[t] <- Fem_J__x_g[t - 1]
       Fem_S__x_fec[t] <- Fem_S__x_g[t - 1]
       Fem_A__x_fec[t] <- Fem_A__x_g[t - 1]
       Fem_C__x_fec[t] <- 0
       Fem_B__x_fec[t] <- Fem_A__x_fec[t] * female_fecundity
+      
       Mal_J__x_fec[t] <- Mal_J__x_g[t - 1]
       Mal_S__x_fec[t] <- Mal_S__x_g[t - 1]
       Mal_A__x_fec[t] <- Mal_A__x_g[t - 1]
@@ -339,8 +344,8 @@ project_population_size <- function(
       Mal_B__x_fec[t] <- Fem_A__x_fec[t] * male_fecundity
     }
     
-    if (t %in% c(1:365)) {
-      ## calculate number of individuals that die
+    if (t <= 365) {
+      # Apply death rates
       Fem_B__d[t] <- pdea[1] * Fem_B__x_fec[t]
       Fem_J__d[t] <- pdea[2] * Fem_J__x_fec[t]
       Fem_S__d[t] <- pdea[3] * Fem_S__x_fec[t]
@@ -352,7 +357,7 @@ project_population_size <- function(
       Mal_A__d[t] <- pdea[9] * Mal_A__x_fec[t]
       Mal_C__d[t] <- pdea[10] * Mal_C__x_fec[t]
       
-      ## calculate number of individuals that are taken off
+      # Apply offtake rates
       Fem_B__y[t] <- poff[1] * Fem_B__x_fec[t]
       Fem_J__y[t] <- poff[2] * Fem_J__x_fec[t]
       Fem_S__y[t] <- poff[3] * Fem_S__x_fec[t]
@@ -364,7 +369,7 @@ project_population_size <- function(
       Mal_A__y[t] <- poff[9] * Mal_A__x_fec[t]
       Mal_C__y[t] <- poff[10] * Mal_C__x_fec[t]
       
-      ## calculate number of individuals after deaths and offtakes
+      # Compute survivors after deaths and offtakes
       Fem_B__x_dy[t] <- Fem_B__x_fec[t] - Fem_B__d[t] - Fem_B__y[t]
       Fem_J__x_dy[t] <- Fem_J__x_fec[t] - Fem_J__d[t] - Fem_J__y[t]
       Fem_S__x_dy[t] <- Fem_S__x_fec[t] - Fem_S__d[t] - Fem_S__y[t]
@@ -376,11 +381,12 @@ project_population_size <- function(
       Mal_A__x_dy[t] <- Mal_A__x_fec[t] - Mal_A__d[t] - Mal_A__y[t]
       Mal_C__x_dy[t] <- Mal_C__x_fec[t] - Mal_C__d[t] - Mal_C__y[t]
       
-      ## calculate number of individuals after moving to new age classes
+      # Transition to next age classes
       Fem_J__x_g[t] <- Fem_B__x_dy[t] + (1 - g[2]) * Fem_J__x_dy[t]
       Fem_S__x_g[t] <- g[2] * Fem_J__x_dy[t] + (1 - g[3]) * Fem_S__x_dy[t]
       Fem_A__x_g[t] <- g[3] * Fem_S__x_dy[t] + (1 - g[4]) * Fem_A__x_dy[t]
       Fem_C__x_g[t] <- g[4] * Fem_A__x_dy[t]
+      
       Mal_J__x_g[t] <- Mal_B__x_dy[t] + (1 - g[7]) * Mal_J__x_dy[t]
       Mal_S__x_g[t] <- g[7] * Mal_J__x_dy[t] + (1 - g[8]) * Mal_S__x_dy[t]
       Mal_A__x_g[t] <- g[8] * Mal_S__x_dy[t] + (1 - g[9]) * Mal_A__x_dy[t]
@@ -388,31 +394,27 @@ project_population_size <- function(
     }
   }
   
-  deaths_number <- c(
-    sum(Fem_B__d) + sum(Fem_J__d), sum(Fem_S__d), sum(Fem_A__d),
-    sum(Mal_B__d) + sum(Mal_J__d), sum(Mal_S__d), sum(Mal_A__d)
-  )
-  deaths_share <- deaths_number / size
-  deaths_share_avg <- deaths_number / ((size + ((1 + growth_rate_pop) * size)) / 2)
-  
+  # Compute offtake and final sizes
   offtake <- c(
     sum(Fem_B__y), sum(Fem_J__y), sum(Fem_S__y), sum(Fem_A__y), sum(Fem_C__x_g),
     sum(Mal_B__y), sum(Mal_J__y), sum(Mal_S__y), sum(Mal_A__y), sum(Mal_C__x_g)
   )
   
   size_end_exact <- c(
-    Fem_B__x_fec[366], Fem_J__x_fec[366], Fem_S__x_fec[366],
-    Fem_A__x_fec[366], Fem_C__x_fec[366], Mal_B__x_fec[366],
-    Mal_J__x_fec[366], Mal_S__x_fec[366], Mal_A__x_fec[366], Mal_C__x_fec[366]
+    Fem_B__x_fec[366], Fem_J__x_fec[366], Fem_S__x_fec[366], Fem_A__x_fec[366],
+    Fem_C__x_fec[366],
+    Mal_B__x_fec[366], Mal_J__x_fec[366], Mal_S__x_fec[366], Mal_A__x_fec[366],
+    Mal_C__x_fec[366]
   )
   
-  names(size_end_exact) <- names(offtake) <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
-  names(size) <- names(size_end) <- names(size_avg) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  names(size_end_exact) <- names(offtake) <- c(
+    "FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC"
+  )
+  names(size) <- names(size_end) <- names(size_avg) <- c(
+    "FJ", "FS", "FA", "MJ", "MS", "MA"
+  )
   
-  ##### may it be an error that they once calculate the end sizes with
-  ##### the growth rate and one use the 366th step of the daily simulation in the original DYNMOD ?
-  
-  ## prepare output
+  # Prepare output
   output <- list(size, size_end, size_end_exact, size_avg, offtake)
   names(output) <- c("size", "size_end", "size_end_exact", "size_avg", "offtake")
   
