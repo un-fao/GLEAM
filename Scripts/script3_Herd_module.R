@@ -8,7 +8,7 @@ herd.dt <- fread("Inputs//GLEAM_input_herd.csv")
 
 # STEADY 1
 # # Function 1: Fecundity -------------------------------------------------------
-herd.dt[, c("fecF", "fecM") := compute_fecundity_rates(
+herd.dt[, c("female_fecundity", "male_fecundity") := compute_fecundity_rates(
   part_rate = parturition_rate,
   prolif_rate = litsize,
   fem_birth_ratio = female_birth_fraction
@@ -45,8 +45,8 @@ vecNames.f3 <- names(unlist(
     x_start = x_start,
     max_years = max_years,
     min_lambda_change = min_lambda_change,
-    fecF = herd.dt[1, fecF],
-    fecM = herd.dt[1, fecM],
+    female_fecundity = herd.dt[1, female_fecundity],
+    male_fecundity = herd.dt[1, male_fecundity],
     pdea = as.numeric(herd.dt[1, c("pdea.FB", "pdea.FJ", "pdea.FS", "pdea.FA", "pdea.FC", "pdea.MB", "pdea.MJ", "pdea.MS", "pdea.MA", "pdea.MC")]),
     poff = as.numeric(herd.dt[1, c("poff.FB", "poff.FJ", "poff.FS", "poff.FA", "poff.FC", "poff.MB", "poff.MJ", "poff.MS", "poff.MA", "poff.MC")]),
     g = as.numeric(herd.dt[1, c("g.FB", "g.FJ", "g.FS", "g.FA", "g.FC", "g.MB", "g.MJ", "g.MS", "g.MA", "g.MC")])
@@ -59,8 +59,8 @@ herd.dt[, (vecNames.f3) := as.list(unlist(
     x_start = x_start,
     max_years = max_years,
     min_lambda_change = min_lambda_change,
-    fecF = fecF,
-    fecM = fecM,
+    female_fecundity = female_fecundity,
+    male_fecundity = male_fecundity,
     pdea = as.numeric(.(pdea.FB, pdea.FJ, pdea.FS, pdea.FA, pdea.FC, pdea.MB, pdea.MJ, pdea.MS, pdea.MA, pdea.MC)),
     poff = as.numeric(.(poff.FB, poff.FJ, poff.FS, poff.FA, poff.FC, poff.MB, poff.MJ, poff.MS, poff.MA, poff.MC)),
     g = as.numeric(.(g.FB, g.FJ, g.FS, g.FA, g.FC, g.MB, g.MJ, g.MS, g.MA, g.MC))
@@ -73,8 +73,8 @@ herd.dt[, (vecNames.f3) := as.list(unlist(
 vecNames.f4 <- names(unlist(
   project_population_size(
     size_total = herd.dt[1, size_total],
-    fecF = herd.dt[1, fecF],
-    fecM = herd.dt[1, fecM],
+    female_fecundity = herd.dt[1, female_fecundity],
+    male_fecundity = herd.dt[1, male_fecundity],
     pdea = as.numeric(herd.dt[1, c("pdea.FB", "pdea.FJ", "pdea.FS", "pdea.FA", "pdea.FC", "pdea.MB", "pdea.MJ", "pdea.MS", "pdea.MA", "pdea.MC")]),
     poff = as.numeric(herd.dt[1, c("poff.FB", "poff.FJ", "poff.FS", "poff.FA", "poff.FC", "poff.MB", "poff.MJ", "poff.MS", "poff.MA", "poff.MC")]),
     g = as.numeric(herd.dt[1, c("g.FB", "g.FJ", "g.FS", "g.FA", "g.FC", "g.MB", "g.MJ", "g.MS", "g.MA", "g.MC")]),
@@ -88,8 +88,8 @@ vecNames.f4 <- names(unlist(
 herd.dt[, (vecNames.f4) := as.list(unlist(
   project_population_size(
     size_total = size_total,
-    fecF = fecF,
-    fecM = fecM,
+    female_fecundity = female_fecundity,
+    male_fecundity = male_fecundity,
     pdea = as.numeric(.(pdea.FB, pdea.FJ, pdea.FS, pdea.FA, pdea.FC, pdea.MB, pdea.MJ, pdea.MS, pdea.MA, pdea.MC)),
     poff = as.numeric(.(poff.FB, poff.FJ, poff.FS, poff.FA, poff.FC, poff.MB, poff.MJ, poff.MS, poff.MA, poff.MC)),
     g = as.numeric(.(g.FB, g.FJ, g.FS, g.FA, g.FC, g.MB, g.MJ, g.MS, g.MA, g.MC)),

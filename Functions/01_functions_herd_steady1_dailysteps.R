@@ -1,27 +1,31 @@
-# ## Function 1: Fecundity
-#
-# This function takes the following input parameters:
-# * "part_rate":       parturition rate (= probability of an adult female to give birth)
-# * "prolif_rate":     prolificacy rate (= mean number of offspring per parturition)
-# * "fem_birth_ratio": female birth ratio (= probability that an offspring is female)
-#
-# This function returns the following objects:
-# * "fecF": monthly number of born females generated per adult female
-# * "fecM": monthly number of born males generated per adult female
-
+#' Compute Daily Fecundity Rates
+#'
+#' Calculates the daily number of male and female offspring produced per adult female.
+#'
+#' @param part_rate Numeric. Parturition rate (probability of an adult female to give birth).
+#' @param prolif_rate Numeric. Prolificacy rate (mean number of offspring per parturition).
+#' @param fem_birth_ratio Numeric. Female birth ratio (probability that an offspring is female).
+#'
+#' @return A named list with two elements:
+#' \describe{
+#'   \item{female_fecundity}{Daily number of female offspring per adult female.}
+#'   \item{male_fecundity}{Daily number of male offspring per adult female.}
+#' }
+#' @examples
+#' compute_fecundity_rates(part_rate = 0.8, prolif_rate = 2, fem_birth_ratio = 0.5)
+#'
+#' @export
 compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
-  ## calculate fecF and fecM
-  fecF <- prolif_rate * fem_birth_ratio * (part_rate / 365)
-  fecM <- prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
+  # Calculate fecundity rates
+  female_fecundity <- prolif_rate * fem_birth_ratio * (part_rate / 365)
+  male_fecundity <- prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
   
-  ## prepare output
-  output <- list(fecF, fecM)
-  names(output) <- c("fecF", "fecM")
+  # Prepare output
+  output <- list(female_fecundity, male_fecundity)
+  names(output) <- c("female_fecundity", "male_fecundity")
   
   return(output)
 }
-
-
 
 # ## Function 2: Probabilities
 #
@@ -104,8 +108,8 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
 # * "x_start":            random initial number of individuals for 6 sex-age classes
 # * "max_years":          maximum number of years simulated
 # * "min_lambda_change":  minimum change in lambda that must be reached in all 6 sex-age classes at the same time to assume a steady state
-# * "fecF":               results from the function "compute_fecundity_rates": daily number of born females generated per adult female
-# * "fecM":               results from the function "compute_fecundity_rates": daily number of born males generated per adult female
+# * "female_fecundity":   results from the function "compute_fecundity_rates": daily number of born females generated per adult female
+# * "male_fecundity":     results from the function "compute_fecundity_rates": daily number of born males generated per adult female
 # * "pdea":               results from the function "compute_transition_probabilities": daily death probability for 10 sex-age classes (vector)
 # * "poff":               results from the function "compute_transition_probabilities": daily offtake probability for 10 sex-age classes (vector)
 # * "g":                  results from the function "compute_transition_probabilities": probability to grow into the next age class for 10 sex-age classes (vector)
@@ -117,7 +121,8 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
 # * "growth_rate_pop":        the increase in number of individuals in each sex-age class over one year in a steady-state population
 
 simulate_steady_state_structure <- function(
-    x_start, max_years, min_lambda_change, fecF, fecM, pdea, poff, g) {
+    x_start, max_years, min_lambda_change,
+    female_fecundity, male_fecundity, pdea, poff, g) {
   ## initialize empty vectors to be populated in the loop
   Fem_B__x_dy <- Fem_J__x_dy <- Fem_S__x_dy <- Fem_A__x_dy <- Fem_C__x_dy <- NULL
   Mal_B__x_dy <- Mal_J__x_dy <- Mal_S__x_dy <- Mal_A__x_dy <- Mal_C__x_dy <- NULL
@@ -131,30 +136,30 @@ simulate_steady_state_structure <- function(
   for (t in 1:(max_years * 365 + 1)) {
     if (t == 1) {
       ## calculate initial number of individuals taking into account
-      ## the daily number of born females and males (fecF/fecM)
-      Fem_B__x_fec <- x_start[3] * fecF
+      ## the daily number of born females and males (female_fecundity/male_fecundity)
+      Fem_B__x_fec <- x_start[3] * female_fecundity
       Fem_J__x_fec <- x_start[1]
       Fem_S__x_fec <- x_start[2]
       Fem_A__x_fec <- x_start[3]
       Fem_C__x_fec <- 0
-      Mal_B__x_fec <- x_start[3] * fecM
+      Mal_B__x_fec <- x_start[3] * male_fecundity
       Mal_J__x_fec <- x_start[4]
       Mal_S__x_fec <- x_start[5]
       Mal_A__x_fec <- x_start[6]
       Mal_C__x_fec <- 0
     } else if (t > 1) {
-      ## calculate number of individuals taking into account both fecF/fecM and
+      ## calculate number of individuals taking into account both female_fecundity/male_fecundity and
       ## the number of individuals that survived the previous month and how they moved in the age classes
       Fem_J__x_fec[t] <- Fem_J__x_g[t - 1]
       Fem_S__x_fec[t] <- Fem_S__x_g[t - 1]
       Fem_A__x_fec[t] <- Fem_A__x_g[t - 1]
       Fem_C__x_fec[t] <- 0
-      Fem_B__x_fec[t] <- Fem_A__x_fec[t] * fecF
+      Fem_B__x_fec[t] <- Fem_A__x_fec[t] * female_fecundity
       Mal_J__x_fec[t] <- Mal_J__x_g[t - 1]
       Mal_S__x_fec[t] <- Mal_S__x_g[t - 1]
       Mal_A__x_fec[t] <- Mal_A__x_g[t - 1]
       Mal_C__x_fec[t] <- 0
-      Mal_B__x_fec[t] <- Fem_A__x_fec[t] * fecM
+      Mal_B__x_fec[t] <- Fem_A__x_fec[t] * male_fecundity
     }
     
     ## update change in lambda for all 6 cohorts from step 3 on
@@ -235,12 +240,12 @@ simulate_steady_state_structure <- function(
 #
 # This function takes the following input parameters to simulate one year of a steady-state population:
 # * "size_total": the total population size at the beginning of the year
-# * "fecF":             results from the function "compute_fecundity_rates": daily number of born females generated per adult female
-# * "fecM":             results from the function "compute_fecundity_rates": daily number of born males generated per adult female
+# * "female_fecundity": results from the function "compute_fecundity_rates": daily number of born females generated per adult female
+# * "male_fecundity":   results from the function "compute_fecundity_rates": daily number of born males generated per adult female
 # * "pdea":             results from the function "compute_transition_probabilities": daily death probability for 10 sex-age classes (vector)
 # * "poff":             results from the function "compute_transition_probabilities": daily offtake probability for 10 sex-age classes (vector)
 # * "g":                results from the function "compute_transition_probabilities": probability to grow into the next age class for 10 sex-age classes (vector)
-# * "growth_rate_pop":      results from the function "simulate_steady_state_structure": the increase in number of individuals in each sex-age class over one year in a steady-state population
+# * "growth_rate_pop":  results from the function "simulate_steady_state_structure": the increase in number of individuals in each sex-age class over one year in a steady-state population
 # * "structure":        results from the function "simulate_steady_state_structure": shares of 8 sex-age classes in a steady-state population (vector)
 # * "share": results from the function "simulate_steady_state_structure": shares of 6 sex-age classes in a steady-state population (vector)
 #
@@ -252,7 +257,8 @@ simulate_steady_state_structure <- function(
 # * "offtake":        number of individuals taken off from 10 sex-age classes during one year of a steady-state population
 
 project_population_size <- function(
-    size_total, fecF, fecM, pdea, poff, g, growth_rate_pop, structure, share) {
+    size_total, female_fecundity, male_fecundity, pdea, poff, g,
+    growth_rate_pop, structure, share) {
   ## calculate intitial size of all 8 sex-age classes
   xini <- size_total * structure
   
@@ -282,30 +288,30 @@ project_population_size <- function(
   for (t in 1:366) {
     if (t == 1) {
       ## calculate initial number of individuals taking into account
-      ## the daily number of born females and males (fecF/fecM)
+      ## the daily number of born females and males (female_fecundity/male_fecundity)
       Fem_J__x_fec <- xini[2]
       Fem_S__x_fec <- xini[3]
       Fem_A__x_fec <- xini[4]
       Fem_C__x_fec <- 0
-      Fem_B__x_fec <- Fem_A__x_fec * fecF
+      Fem_B__x_fec <- Fem_A__x_fec * female_fecundity
       Mal_J__x_fec <- xini[6]
       Mal_S__x_fec <- xini[7]
       Mal_A__x_fec <- xini[8]
       Mal_C__x_fec <- 0
-      Mal_B__x_fec <- Fem_A__x_fec * fecM
+      Mal_B__x_fec <- Fem_A__x_fec * male_fecundity
     } else if (t > 1) {
-      ## calculate number of individuals taking into account both fecF/fecM and
+      ## calculate number of individuals taking into account both female_fecundity/male_fecundity and
       ## the number of individuals that survived the previous day and how they moved in the age classes
       Fem_J__x_fec[t] <- Fem_J__x_g[t - 1]
       Fem_S__x_fec[t] <- Fem_S__x_g[t - 1]
       Fem_A__x_fec[t] <- Fem_A__x_g[t - 1]
       Fem_C__x_fec[t] <- 0
-      Fem_B__x_fec[t] <- Fem_A__x_fec[t] * fecF
+      Fem_B__x_fec[t] <- Fem_A__x_fec[t] * female_fecundity
       Mal_J__x_fec[t] <- Mal_J__x_g[t - 1]
       Mal_S__x_fec[t] <- Mal_S__x_g[t - 1]
       Mal_A__x_fec[t] <- Mal_A__x_g[t - 1]
       Mal_C__x_fec[t] <- 0
-      Mal_B__x_fec[t] <- Fem_A__x_fec[t] * fecM
+      Mal_B__x_fec[t] <- Fem_A__x_fec[t] * male_fecundity
     }
     
     if (t %in% c(1:365)) {
