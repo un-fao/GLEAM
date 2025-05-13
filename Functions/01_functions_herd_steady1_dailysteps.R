@@ -9,7 +9,7 @@
 # * "fecF": monthly number of born females generated per adult female
 # * "fecM": monthly number of born males generated per adult female
 
-S1_01_Fecundity <- function(part_rate, prolif_rate, fem_birth_ratio) {
+compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
   ## calculate fecF and fecM
   fecF <- prolif_rate * fem_birth_ratio * (part_rate / 365)
   fecM <- prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
@@ -37,7 +37,7 @@ S1_01_Fecundity <- function(part_rate, prolif_rate, fem_birth_ratio) {
 # * "psur": daily survival probability for 10 sex-age classes
 # * "g":    probability to grow into the next age class for 10 sex-age classes
 
-S1_02_Probabilities <- function(duration, offtake_rate, death_rate) {
+compute_transition_probabilities <- function(duration, offtake_rate, death_rate) {
   ## In this first part, all calculations are done for 6 sex-age classes
   
   ## calculate hdea (= instantaneous mortality hazard rate):
@@ -104,11 +104,11 @@ S1_02_Probabilities <- function(duration, offtake_rate, death_rate) {
 # * "x_start":            random initial number of individuals for 6 sex-age classes
 # * "max_years":          maximum number of years simulated
 # * "min_lambda_change":  minimum change in lambda that must be reached in all 6 sex-age classes at the same time to assume a steady state
-# * "fecF":               results from the function "S1_01_Fecundity": daily number of born females generated per adult female
-# * "fecM":               results from the function "S1_01_Fecundity": daily number of born males generated per adult female
-# * "pdea":               results from the function "S1_02_Probabilities": daily death probability for 10 sex-age classes (vector)
-# * "poff":               results from the function "S1_02_Probabilities": daily offtake probability for 10 sex-age classes (vector)
-# * "g":                  results from the function "S1_02_Probabilities": probability to grow into the next age class for 10 sex-age classes (vector)
+# * "fecF":               results from the function "compute_fecundity_rates": daily number of born females generated per adult female
+# * "fecM":               results from the function "compute_fecundity_rates": daily number of born males generated per adult female
+# * "pdea":               results from the function "compute_transition_probabilities": daily death probability for 10 sex-age classes (vector)
+# * "poff":               results from the function "compute_transition_probabilities": daily offtake probability for 10 sex-age classes (vector)
+# * "g":                  results from the function "compute_transition_probabilities": probability to grow into the next age class for 10 sex-age classes (vector)
 #
 # This function returns the following objects:
 # * "days_steady":        days at which a steady state was reached
@@ -116,7 +116,7 @@ S1_02_Probabilities <- function(duration, offtake_rate, death_rate) {
 # * "share":   shares of 6 sex-age classes in a steady-state population
 # * "growth_rate_pop":        the increase in number of individuals in each sex-age class over one year in a steady-state population
 
-S1_03_PopStructure <- function(
+simulate_steady_state_structure <- function(
     x_start, max_years, min_lambda_change, fecF, fecM, pdea, poff, g) {
   ## initialize empty vectors to be populated in the loop
   Fem_B__x_dy <- Fem_J__x_dy <- Fem_S__x_dy <- Fem_A__x_dy <- Fem_C__x_dy <- NULL
@@ -235,14 +235,14 @@ S1_03_PopStructure <- function(
 #
 # This function takes the following input parameters to simulate one year of a steady-state population:
 # * "size_total": the total population size at the beginning of the year
-# * "fecF":             results from the function "S1_01_Fecundity": daily number of born females generated per adult female
-# * "fecM":             results from the function "S1_01_Fecundity": daily number of born males generated per adult female
-# * "pdea":             results from the function "S1_02_Probabilities": daily death probability for 10 sex-age classes (vector)
-# * "poff":             results from the function "S1_02_Probabilities": daily offtake probability for 10 sex-age classes (vector)
-# * "g":                results from the function "S1_02_Probabilities": probability to grow into the next age class for 10 sex-age classes (vector)
-# * "growth_rate_pop":      results from the function "S1_03_PopStructure": the increase in number of individuals in each sex-age class over one year in a steady-state population
-# * "structure":        results from the function "S1_03_PopStructure": shares of 8 sex-age classes in a steady-state population (vector)
-# * "share": results from the function "S1_03_PopStructure": shares of 6 sex-age classes in a steady-state population (vector)
+# * "fecF":             results from the function "compute_fecundity_rates": daily number of born females generated per adult female
+# * "fecM":             results from the function "compute_fecundity_rates": daily number of born males generated per adult female
+# * "pdea":             results from the function "compute_transition_probabilities": daily death probability for 10 sex-age classes (vector)
+# * "poff":             results from the function "compute_transition_probabilities": daily offtake probability for 10 sex-age classes (vector)
+# * "g":                results from the function "compute_transition_probabilities": probability to grow into the next age class for 10 sex-age classes (vector)
+# * "growth_rate_pop":      results from the function "simulate_steady_state_structure": the increase in number of individuals in each sex-age class over one year in a steady-state population
+# * "structure":        results from the function "simulate_steady_state_structure": shares of 8 sex-age classes in a steady-state population (vector)
+# * "share": results from the function "simulate_steady_state_structure": shares of 6 sex-age classes in a steady-state population (vector)
 #
 # This function returns the following objects:
 # * "size":     number of individuals in 6 sex-age classes at the beginning of the steady-state year
@@ -251,7 +251,7 @@ S1_03_PopStructure <- function(
 # * "size_avg":       average number of individuals in 6 sex-age classes during a the steady-state year (derived by growth rate)
 # * "offtake":        number of individuals taken off from 10 sex-age classes during one year of a steady-state population
 
-S1_04_PopSize <- function(
+project_population_size <- function(
     size_total, fecF, fecM, pdea, poff, g, growth_rate_pop, structure, share) {
   ## calculate intitial size of all 8 sex-age classes
   xini <- size_total * structure
@@ -393,10 +393,10 @@ S1_04_PopSize <- function(
 # ## Function 5: Production Offtake
 #
 # This function takes the following input parameters to summarize the offtakes in one year of a steady-state population:
-# * "size":   results from the function "S1_04_PopSize": number of individuals in 6 sex-age classes at the beginning of the steady-state year
-# * "size_end":     results from the function "S1_04_PopSize": number of individuals in 6 sex-age classes at the end of the steady-state year (derived by growth rate)
-# * "size_avg":     results from the function "S1_04_PopSize": average number of individuals in 6 sex-age classes during a the steady-state year (derived by growth rate)
-# * "offtake":      results from the function "S1_04_PopSize": number of individuals taken off from 10 sex-age classes during one year of a steady-state population
+# * "size":   results from the function "project_population_size": number of individuals in 6 sex-age classes at the beginning of the steady-state year
+# * "size_end":     results from the function "project_population_size": number of individuals in 6 sex-age classes at the end of the steady-state year (derived by growth rate)
+# * "size_avg":     results from the function "project_population_size": average number of individuals in 6 sex-age classes during a the steady-state year (derived by growth rate)
+# * "offtake":      results from the function "project_population_size": number of individuals taken off from 10 sex-age classes during one year of a steady-state population
 #
 # This function returns the following objects:
 # * "stock_variation":      difference in amount of individuals between start and end of a steady-state year for 6 sex-age classes
@@ -407,7 +407,7 @@ S1_04_PopSize <- function(
 # * "offtake_sv_share":     rate of offtake and stock variation (sv) of 6 sex-age classes for start cohort sizes
 # * "offtake_sv_share_avg": rate of offtake and stock variation (sv) of 6 sex-age classes for average cohort sizes
 
-S1_05_ProdOfftake <- function(size, size_end, size_avg, offtake) {
+summarise_offtake <- function(size, size_end, size_avg, offtake) {
   ## summarize offtakes of 10 sex-age classes for 6 sex-age classes, then calculate offtake rate for start and average cohort sizes
   offtake_number <- c(
     sum(offtake[1:2]), offtake[3], sum(offtake[4:5]),
@@ -459,9 +459,9 @@ S1_05_ProdOfftake <- function(size, size_end, size_avg, offtake) {
 # * "prolif_rate":     prolificacy rate (= mean number of offspring per parturition)
 # * "fem_birth_ratio": female birth ratio (= probability that an offspring is female)
 # * "duration":        length of 6 sex-age classes in months
-# * "S1_02_results":    results from the function "S1_02_Probabilities"
-# * "S1_04_results":    results from the function "S1_04_PopSize"
-# * "S1_05_results":    results from the function "S1_05_ProdOfftake"
+# * "S1_02_results":    results from the function "compute_transition_probabilities"
+# * "S1_04_results":    results from the function "project_population_size"
+# * "S1_05_results":    results from the function "summarise_offtake"
 #
 # This function returns the following objects:
 # * "liveweight_stock":   live weight of the living stock, in kg

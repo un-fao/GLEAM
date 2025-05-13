@@ -8,7 +8,7 @@ herd.dt <- fread("Inputs//GLEAM_input_herd.csv")
 
 # STEADY 1
 # # Function 1: Fecundity -------------------------------------------------------
-herd.dt[, c("fecF", "fecM") := S1_01_Fecundity(
+herd.dt[, c("fecF", "fecM") := compute_fecundity_rates(
   part_rate = parturition_rate,
   prolif_rate = litsize,
   fem_birth_ratio = female_birth_fraction
@@ -17,7 +17,7 @@ herd.dt[, c("fecF", "fecM") := S1_01_Fecundity(
 # # Function 2: Probabilities ---------------------------------------------------
 # # #  Defining the vector names to be used for outputs, through a run of the function for the first record
 vecNames.f2 <- names(unlist(
-  S1_02_Probabilities(
+  compute_transition_probabilities(
     duration = as.numeric(herd.dt[1, .(duration.FJ, duration.FS, duration.FA, duration.MJ, duration.MS, duration.MA)]),
     offtake_rate = as.numeric(herd.dt[1, .(offtake_rate.FJ, offtake_rate.FS, offtake_rate.FA, offtake_rate.MJ, offtake_rate.MS, offtake_rate.MA)]),
     death_rate = as.numeric(herd.dt[1, .(mort_rate.FJ, mort_rate.FS, mort_rate.FA, mort_rate.MJ, mort_rate.MS, mort_rate.MA)])
@@ -25,7 +25,7 @@ vecNames.f2 <- names(unlist(
 ))
 # # #  Running the function for the data table
 herd.dt[, (vecNames.f2) := as.list(unlist(
-  S1_02_Probabilities(
+  compute_transition_probabilities(
     duration = as.numeric(.(duration.FJ, duration.FS, duration.FA, duration.MJ, duration.MS, duration.MA)),
     offtake_rate = as.numeric(.(offtake_rate.FJ, offtake_rate.FS, offtake_rate.FA, offtake_rate.MJ, offtake_rate.MS, offtake_rate.MA)),
     death_rate = as.numeric(.(mort_rate.FJ, mort_rate.FS, mort_rate.FA, mort_rate.MJ, mort_rate.MS, mort_rate.MA))
@@ -41,7 +41,7 @@ min_lambda_change <- 0.000000001 # these can make a big difference depending on 
 
 # # #  Defining the vector names to be used for outputs, through a run of the function for the first record
 vecNames.f3 <- names(unlist(
-  S1_03_PopStructure(
+  simulate_steady_state_structure(
     x_start = x_start,
     max_years = max_years,
     min_lambda_change = min_lambda_change,
@@ -55,7 +55,7 @@ vecNames.f3 <- names(unlist(
 
 # # #  Running the function for the data table
 herd.dt[, (vecNames.f3) := as.list(unlist(
-  S1_03_PopStructure(
+  simulate_steady_state_structure(
     x_start = x_start,
     max_years = max_years,
     min_lambda_change = min_lambda_change,
@@ -71,7 +71,7 @@ herd.dt[, (vecNames.f3) := as.list(unlist(
 
 # # #  Defining the vector names to be used for outputs, through a run of the function for the first record
 vecNames.f4 <- names(unlist(
-  S1_04_PopSize(
+  project_population_size(
     size_total = herd.dt[1, size_total],
     fecF = herd.dt[1, fecF],
     fecM = herd.dt[1, fecM],
@@ -86,7 +86,7 @@ vecNames.f4 <- names(unlist(
 
 # # #  Running the function for the data table
 herd.dt[, (vecNames.f4) := as.list(unlist(
-  S1_04_PopSize(
+  project_population_size(
     size_total = size_total,
     fecF = fecF,
     fecM = fecM,
@@ -104,7 +104,7 @@ herd.dt[, (vecNames.f4) := as.list(unlist(
 
 # # #  Defining the vector names to be used for outputs, through a run of the function for the first record
 vecNames.f5 <- names(unlist(
-  S1_05_ProdOfftake(
+  summarise_offtake(
     size = as.numeric(herd.dt[1, c("size.FJ", "size.FS", "size.FA", "size.MJ", "size.MS", "size.MA")]),
     size_end = as.numeric(herd.dt[1, c("size_end.FJ", "size_end.FS", "size_end.FA", "size_end.MJ", "size_end.MS", "size_end.MA")]),
     size_avg = as.numeric(herd.dt[1, c("size_avg.FJ", "size_avg.FS", "size_avg.FA", "size_avg.MJ", "size_avg.MS", "size_avg.MA")]),
@@ -114,7 +114,7 @@ vecNames.f5 <- names(unlist(
 
 # # #  Running the function for the data table
 herd.dt[, (vecNames.f5) := as.list(unlist(
-  S1_05_ProdOfftake(
+  summarise_offtake(
     size = as.numeric(.(size.FJ, size.FS, size.FA, size.MJ, size.MS, size.MA)),
     size_end = as.numeric(.(size_end.FJ, size_end.FS, size_end.FA, size_end.MJ, size_end.MS, size_end.MA)),
     size_avg = as.numeric(.(size_avg.FJ, size_avg.FS, size_avg.FA, size_avg.MJ, size_avg.MS, size_avg.MA)),
