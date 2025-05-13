@@ -1,5 +1,5 @@
 # Function to calculate cohort-specific weights at different lifestage
-get_stepLW <- function(
+calc_cohort_weights <- function(
     Animal_short, cohort, AFKG, AMKG, CKG, MFSKG, MMSKG, WKG, AFC, WA) {
   if (cohort %in% c("FJ")) {
     initialLW <- CKG
@@ -43,7 +43,7 @@ get_stepLW <- function(
 }
 
 # Function to calculate cohort-specific average and final weights
-get_otherLW <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
+calc_avg_weights <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
   averageLW <- (initialLW + (potfinalLW * (1 - offtake_rate) + slaughterLW * (offtake_rate))) / 2
   finalLW <- potfinalLW * (1 - offtake_rate) + slaughterLW * (offtake_rate)
   ret <- list(averageLW, finalLW)
@@ -51,7 +51,8 @@ get_otherLW <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
   return(ret)
 }
 
-get_dwg <- function(potfinalLW, initialLW, duration) {
+# Function to calculate daily weight gain
+calc_daily_gain <- function(potfinalLW, initialLW, duration) {
   dwg <- (potfinalLW - initialLW) / duration
   return(dwg)
 }

@@ -69,19 +69,19 @@ setcolorder(
 
 # add weights----
 GLEAM_input_feed_preproc[, c("initialLW", "potfinalLW", "slaughterLW") :=
-                           get_stepLW(
+                           calc_cohort_weights(
                              Animal_short, cohort, AFKG, AMKG, CKG = ckg, MFSKG,
                              MMSKG, WKG = wkg, AFC = afc, WA
                            ),
                          by = .I]
 
 GLEAM_input_feed_preproc[, c("averageLW", "finalLW") :=
-                           get_otherLW(initialLW, potfinalLW, slaughterLW, offtake_rate),
+                           calc_avg_weights(initialLW, potfinalLW, slaughterLW, offtake_rate),
                          by = .I]
 
 # add new daily weight gain----
 GLEAM_input_feed_preproc[, "dwg" :=
-                           get_dwg(potfinalLW, initialLW, duration),
+                           calc_daily_gain(potfinalLW, initialLW, duration),
                          by = .I]
 
 # new column need to be generated with WKG also for other species than PIGS (it is used in energy requirements)
