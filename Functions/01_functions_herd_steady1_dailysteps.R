@@ -118,28 +118,34 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
   return(output)
 }
 
-# ## Function 3: Population Structure
-#
-# This function takes the following input parameters:
-# * "x_start":            random initial number of individuals for 6 sex-age classes
-# * "max_years":          maximum number of years simulated
-# * "min_lambda_change":  minimum change in lambda that must be reached in all 6 sex-age classes at the same time to assume a steady state
-# * "female_fecundity":   results from the function "compute_fecundity_rates": daily number of born females generated per adult female
-# * "male_fecundity":     results from the function "compute_fecundity_rates": daily number of born males generated per adult female
-# * "pdea":               results from the function "compute_transition_probabilities": daily death probability for 10 sex-age classes (vector)
-# * "poff":               results from the function "compute_transition_probabilities": daily offtake probability for 10 sex-age classes (vector)
-# * "g":                  results from the function "compute_transition_probabilities": probability to grow into the next age class for 10 sex-age classes (vector)
-#
-# This function returns the following objects:
-# * "days_steady":        days at which a steady state was reached
-# * "structure":          shares of 8 sex-age classes in a steady-state population
-# * "share":   shares of 6 sex-age classes in a steady-state population
-# * "growth_rate_pop":        the increase in number of individuals in each sex-age class over one year in a steady-state population
-
+#' Simulate Steady-State Population Structure
+#'
+#' Simulates population dynamics over time until a steady-state is reached. Tracks age-class structure and
+#' population growth based on survival, offtake, and fecundity parameters.
+#'
+#' @param x_start Numeric vector of length 6. Initial number of individuals in each of the 6 sex-age classes.
+#' @param max_years Integer. Maximum number of years to simulate.
+#' @param min_lambda_change Numeric. Threshold for minimal change in class-specific growth rates (lambda) to reach steady state.
+#' @param female_fecundity Numeric. Daily number of female births per adult female.
+#' @param male_fecundity Numeric. Daily number of male births per adult female.
+#' @param pdea Numeric vector of length 10. Daily death probabilities for 10 cohorts.
+#' @param poff Numeric vector of length 10. Daily offtake probabilities for 10 cohorts.
+#' @param g Numeric vector of length 10. Daily probability of transition to the next class for 10 cohorts.
+#'
+#' @return A named list with:
+#' \describe{
+#'   \item{days_steady}{Number of days until steady state is reached.}
+#'   \item{structure}{Final share of each of the 8 sex-age cohorts.}
+#'   \item{share}{Final share of 6 grouped sex-age classes.}
+#'   \item{growth_rate_pop}{Annualized growth rate at steady state.}
+#' }
+#'
+#' @export
 simulate_steady_state_structure <- function(
     x_start, max_years, min_lambda_change,
     female_fecundity, male_fecundity, pdea, poff, g) {
-  ## initialize empty vectors to be populated in the loop
+  
+  # Initialize output vectors
   Fem_B__x_dy <- Fem_J__x_dy <- Fem_S__x_dy <- Fem_A__x_dy <- Fem_C__x_dy <- NULL
   Mal_B__x_dy <- Mal_J__x_dy <- Mal_S__x_dy <- Mal_A__x_dy <- Mal_C__x_dy <- NULL
   
@@ -148,9 +154,10 @@ simulate_steady_state_structure <- function(
   
   lambda_change <- rep(1, 6)
   
-  ## iterate over max_years years
+  # Run simulation for up to max_years
   for (t in 1:(max_years * 365 + 1)) {
     if (t == 1) {
+      # Time step 1: initialize from starting vector
       ## calculate initial number of individuals taking into account
       ## the daily number of born females and males (female_fecundity/male_fecundity)
       Fem_B__x_fec <- x_start[3] * female_fecundity
@@ -163,7 +170,8 @@ simulate_steady_state_structure <- function(
       Mal_S__x_fec <- x_start[5]
       Mal_A__x_fec <- x_start[6]
       Mal_C__x_fec <- 0
-    } else if (t > 1) {
+    } else {
+      # Time step >1: propagate individuals from previous day
       ## calculate number of individuals taking into account both female_fecundity/male_fecundity and
       ## the number of individuals that survived the previous month and how they moved in the age classes
       Fem_J__x_fec[t] <- Fem_J__x_g[t - 1]
@@ -178,7 +186,7 @@ simulate_steady_state_structure <- function(
       Mal_B__x_fec[t] <- Fem_A__x_fec[t] * male_fecundity
     }
     
-    ## update change in lambda for all 6 cohorts from step 3 on
+    # Compute class-specific growth rate change (lambda)
     if (t > 2) {
       lambda_change <- c(
         Fem_J__x_fec[t] / Fem_J__x_fec[t - 1] - Fem_J__x_fec[t - 1] / Fem_J__x_fec[t - 2],
@@ -190,12 +198,10 @@ simulate_steady_state_structure <- function(
       )
     }
     
-    ## break loop if lambda_change is below a set threshold FOR ALL 6 COHORTS AT A TIME!
-    if (all(lambda_change < min_lambda_change)) {
-      break
-    }
+    # Exit early if all 6 lambda changes are below threshold
+    if (all(lambda_change < min_lambda_change)) break
     
-    ## calculate number of individuals after deaths and offtakes
+    # Apply death and offtake rates to each class
     Fem_B__x_dy[t] <- Fem_B__x_fec[t] - pdea[1] * Fem_B__x_fec[t] - poff[1] * Fem_B__x_fec[t]
     Fem_J__x_dy[t] <- Fem_J__x_fec[t] - pdea[2] * Fem_J__x_fec[t] - poff[2] * Fem_J__x_fec[t]
     Fem_S__x_dy[t] <- Fem_S__x_fec[t] - pdea[3] * Fem_S__x_fec[t] - poff[3] * Fem_S__x_fec[t]
@@ -207,21 +213,22 @@ simulate_steady_state_structure <- function(
     Mal_A__x_dy[t] <- Mal_A__x_fec[t] - pdea[9] * Mal_A__x_fec[t] - poff[9] * Mal_A__x_fec[t]
     Mal_C__x_dy[t] <- Mal_C__x_fec[t] - pdea[10] * Mal_C__x_fec[t] - poff[10] * Mal_C__x_fec[t]
     
-    ## calculate number of individuals after moving to new age classes
+    # Apply transition probabilities (growth to next class)
     Fem_J__x_g[t] <- Fem_B__x_dy[t] + (1 - g[2]) * Fem_J__x_dy[t]
     Fem_S__x_g[t] <- g[2] * Fem_J__x_dy[t] + (1 - g[3]) * Fem_S__x_dy[t]
     Fem_A__x_g[t] <- g[3] * Fem_S__x_dy[t] + (1 - g[4]) * Fem_A__x_dy[t]
     Fem_C__x_g[t] <- g[4] * Fem_A__x_dy[t]
+    
     Mal_J__x_g[t] <- Mal_B__x_dy[t] + (1 - g[7]) * Mal_J__x_dy[t]
     Mal_S__x_g[t] <- g[7] * Mal_J__x_dy[t] + (1 - g[8]) * Mal_S__x_dy[t]
     Mal_A__x_g[t] <- g[8] * Mal_S__x_dy[t] + (1 - g[9]) * Mal_A__x_dy[t]
     Mal_C__x_g[t] <- g[9] * Mal_A__x_dy[t]
   }
   
-  ## determine how many times the simulation was iterated
+  # Final iteration count
   days_steady <- t
   
-  ## summarize the number of individuals in each cohort at the end of the simulated time period
+  # Extract population state at steady-state
   xend <- c(
     Fem_B__x_fec[days_steady], Fem_J__x_fec[days_steady],
     Fem_S__x_fec[days_steady], Fem_A__x_fec[days_steady],
@@ -229,21 +236,23 @@ simulate_steady_state_structure <- function(
     Mal_S__x_fec[days_steady], Mal_A__x_fec[days_steady]
   )
   
-  ## calculate the ratio of each cohort
+  # Compute final structure (8 classes)
   structure <- xend / sum(xend)
   names(structure) <- c("FB", "FJ", "FS", "FA", "MB", "MJ", "MS", "MA")
   
-  ## calculate the global structure, i.e. join the birth and juvenile cohorts:
+  # Compute condensed share (6 classes: juveniles = birth + juvenile)
   share <- c(
-    structure[1] + structure[2], structure[3:4],
-    structure[5] + structure[6], structure[7:8]
+    structure["FB"] + structure["FJ"],
+    structure[c("FS", "FA")],
+    structure["MB"] + structure["MJ"],
+    structure[c("MS", "MA")]
   )
   names(share) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
   
-  ## calculate the growth rate
+  # Compute steady-state annual growth rate
   growth_rate_pop <- (Fem_J__x_fec[days_steady] / Fem_J__x_fec[days_steady - 1])^365 - 1
   
-  ## prepare output
+  # Return output
   output <- list(days_steady, structure, share, growth_rate_pop)
   names(output) <- c("days_steady", "structure", "share", "growth_rate_pop")
   
