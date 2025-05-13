@@ -27,80 +27,96 @@ compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
   return(output)
 }
 
-# ## Function 2: Probabilities
-#
-# This function takes the following input parameters, which should all be vectors of 6 numbers each, representing the 6 sex-age classes:
-# * "duration":      length of 6 sex-age classes in days
-# * "offtake_rate":  annual offtake rate of 6 sex-age classes
-# * "death_rate":    annual death rate of 6 sex-age classes
-#
-# This function returns the following objects:
-# * "hdea": instantaneous mortality hazard rate for 6 sex-age classes
-# * "pdea": daily death probability for 10 sex-age classes
-# * "poff": daily offtake probability for 10 sex-age classes
-# * "psur": daily survival probability for 10 sex-age classes
-# * "g":    probability to grow into the next age class for 10 sex-age classes
-
+#' Compute Transition Probabilities for Sex-Age Classes
+#'
+#' Calculates hazard rates and daily transition probabilities (death, offtake, survival, and growth)
+#' across 10 cohorts derived from 6 sex-age classes.
+#'
+#' @param duration Numeric vector of length 6. Duration (in days) of each sex-age class.
+#' @param offtake_rate Numeric vector of length 6. Annual offtake rate for each sex-age class.
+#' @param death_rate Numeric vector of length 6. Annual death rate for each sex-age class.
+#'
+#' @return A named list with:
+#' \describe{
+#'   \item{hdea}{Instantaneous mortality hazard rate for 6 sex-age classes.}
+#'   \item{hoff}{Instantaneous offtake hazard rate for 6 sex-age classes.}
+#'   \item{pdea}{Daily death probability for 10 cohorts.}
+#'   \item{poff}{Daily offtake probability for 10 cohorts.}
+#'   \item{psur}{Daily survival probability for 10 cohorts.}
+#'   \item{g}{Probability of growing into the next age class for 10 cohorts.}
+#' }
+#'
+#' @export
 compute_transition_probabilities <- function(duration, offtake_rate, death_rate) {
-  ## In this first part, all calculations are done for 6 sex-age classes
+  # --- Part 1: Compute values for 6 core sex-age classes ---
   
-  ## calculate hdea (= instantaneous mortality hazard rate):
-  hdea <- ifelse(duration < 365, -log(1 - death_rate) / duration, -log(1 - death_rate) / 365)
+  # Instantaneous mortality hazard rate (hdea), adjusted by duration
+  hdea <- ifelse(
+    duration < 365, -log(1 - death_rate) / duration, -log(1 - death_rate) / 365
+  )
   
-  ## adjust duration: actual sex-age class duration if below 365 days, otherwise set to 365 days:
+  # Adjusted duration: keep original if <365, otherwise cap at 365
   duration_max365 <- ifelse(duration < 365, duration, 365)
   
-  ## calculate hoff (instantaneous offtake hazard rate) using Newton-Raphson algorithm:
+  # Initialize offtake hazard rate (hoff)
   hoff <- NA
-  ## iterate over each sex-age-class
+  
+  # Estimate hoff using Newton-Raphson method for each class
   for (class in 1:6) {
-    hdea_adj <- hdea[class] * duration_max365[class] ## adjusted hdea for entire adjusted age-class duration
-    ## perform Newton-Raphson algorithm 15 times
+    hdea_adj <- hdea[class] * duration_max365[class]
+    
     for (t in 1:15) {
       class_hoff <- ifelse(
         t == 1, offtake_rate[class], class_hoff - (class_f / class_deriv)
       )
-      class_f <- (class_hoff / (hdea_adj + class_hoff)) * (1 - exp(-hdea_adj - class_hoff)) - offtake_rate[class]
-      class_deriv <- (hdea_adj * (1 - exp(-hdea_adj - class_hoff)) + class_hoff * (hdea_adj + class_hoff) * exp(-hdea_adj - class_hoff)) / (hdea_adj + class_hoff)^2
+      
+      class_f <- (class_hoff / (hdea_adj + class_hoff)) *
+        (1 - exp(-hdea_adj - class_hoff)) - offtake_rate[class]
+      
+      class_deriv <- (
+        hdea_adj * (1 - exp(-hdea_adj - class_hoff)) +
+          class_hoff * (hdea_adj + class_hoff) * exp(-hdea_adj - class_hoff)
+      ) / (hdea_adj + class_hoff)^2
     }
+    
     hoff[class] <- class_hoff / duration_max365[class]
   }
   
-  ## In this second part, all calculations are done for the 10 cohorts, i.e. the previous 6 sex-age classes + 2 birth and 2 culling cohorts
+  # --- Part 2: Extend to 10 cohorts (6 sex-age classes + 2 birth + 2 culling) ---
   
-  ## adjust hdea: birth cohorts have same hoff as juveniles; culling cohorts have same as adults
+  # Extend hdea and hoff for 10 cohorts: copy juvenile/adult rates to birth/culling cohorts
   hdea_all <- hdea[c(1, 1:3, 3, 4, 4:6, 6)]
-  
-  ## adjust hoff: birth cohorts have same hoff as juveniles; culling cohorts have same as adults
   hoff_all <- hoff[c(1, 1:3, 3, 4, 4:6, 6)]
   
-  ## adjust duration: birth cohorts "obtain" 1 day from juveniles, culling cohorts are set to 1 day
-  duration_all <- c(1, duration[1] - 1, duration[c(2:3)], 1, 1, duration[4] - 1, duration[c(5:6)], 1)
+  # Extend duration: assign 1 day to birth/culling cohorts; subtract 1 day where split
+  duration_all <- c(1, duration[1] - 1, duration[c(2:3)], 1, 1,
+                    duration[4] - 1, duration[c(5:6)], 1)
   
-  ## calculate pdea
+  # Daily probability of death (pdea)
   pdea <- (hdea_all / (hdea_all + hoff_all)) * (1 - exp(-(hdea_all + hoff_all)))
-  pdea[c(5, 10)] <- 0 ## pdea of C cohorts must be zero
+  pdea[c(5, 10)] <- 0  # Culling cohorts cannot die again
   
-  ## calculate poff
+  # Daily probability of offtake (poff)
   poff <- (hoff_all / (hdea_all + hoff_all)) * (1 - exp(-(hdea_all + hoff_all)))
-  poff[c(5, 10)] <- 1 ## poff of C cohorts must be 1
+  poff[c(5, 10)] <- 1  # Culling cohorts are entirely offtaken
   
-  ## calculate psur
+  # Daily survival probability (psur)
   psur <- 1 - pdea - poff
   
-  ## calculate g
+  # Probability of growing into the next class (g)
   g <- (psur^(duration_all - 1) - psur^duration_all) / (1 - psur^duration_all)
   
-  ## prepare output
-  names(pdea) <- names(poff) <- names(psur) <- names(g) <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
+  # --- Prepare and return results ---
+  
+  names(pdea) <- names(poff) <- names(psur) <- names(g) <-
+    c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
   names(hdea) <- names(hoff) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  
   output <- list(hdea, hoff, pdea, poff, psur, g)
   names(output) <- c("hdea", "hoff", "pdea", "poff", "psur", "g")
   
   return(output)
 }
-
-
 
 # ## Function 3: Population Structure
 #
