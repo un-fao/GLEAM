@@ -423,45 +423,61 @@ project_population_size <- function(
 
 
 
-# ## Function 5: Production Offtake
-#
-# This function takes the following input parameters to summarize the offtakes in one year of a steady-state population:
-# * "size":   results from the function "project_population_size": number of individuals in 6 sex-age classes at the beginning of the steady-state year
-# * "size_end":     results from the function "project_population_size": number of individuals in 6 sex-age classes at the end of the steady-state year (derived by growth rate)
-# * "size_avg":     results from the function "project_population_size": average number of individuals in 6 sex-age classes during a the steady-state year (derived by growth rate)
-# * "offtake":      results from the function "project_population_size": number of individuals taken off from 10 sex-age classes during one year of a steady-state population
-#
-# This function returns the following objects:
-# * "stock_variation":      difference in amount of individuals between start and end of a steady-state year for 6 sex-age classes
-# * "offtake_number":       number of individuals taken off from 6 sex-age classes during one year of a steady-state population
-# * "offtake_share":        offtake rate of 6 sex-age classes for start cohort sizes
-# * "offtake_share_avg":    offtake rate of 6 sex-age classes for average cohort sizes
-# * "offtake_sv_number":    sum of offtake and stock variation (sv) for 6 sex-age classes during one year of a steady-state population
-# * "offtake_sv_share":     rate of offtake and stock variation (sv) of 6 sex-age classes for start cohort sizes
-# * "offtake_sv_share_avg": rate of offtake and stock variation (sv) of 6 sex-age classes for average cohort sizes
-
+#' Summarise Offtake and Stock Variation for a Steady-State Year
+#'
+#' Computes annual offtake quantities and rates, as well as stock variation and their combined values
+#' across 6 sex-age classes based on steady-state population projections.
+#'
+#' @param size Numeric vector of length 6. Population at start of year (from `project_population_size()`).
+#' @param size_end Numeric vector of length 6. Population at end of year (from `project_population_size()`).
+#' @param size_avg Numeric vector of length 6. Average population over the year (from `project_population_size()`).
+#' @param offtake Numeric vector of length 10. Offtake counts from 10 sex-age classes (from `project_population_size()`).
+#'
+#' @return A named list with:
+#' \describe{
+#'   \item{stock_variation}{Difference between end and start population sizes.}
+#'   \item{offtake_number}{Total number of individuals removed via offtake across 6 sex-age classes.}
+#'   \item{offtake_share}{Offtake rate relative to starting population size.}
+#'   \item{offtake_share_avg}{Offtake rate relative to average population size.}
+#'   \item{offtake_sv_number}{Sum of offtake and stock variation (SV).}
+#'   \item{offtake_sv_share}{SV rate relative to starting population size.}
+#'   \item{offtake_sv_share_avg}{SV rate relative to average population size.}
+#' }
+#'
+#' @export
 summarise_offtake <- function(size, size_end, size_avg, offtake) {
-  ## summarize offtakes of 10 sex-age classes for 6 sex-age classes, then calculate offtake rate for start and average cohort sizes
+  # Aggregate offtake: collapse 10 sex-age classes to 6 by grouping
   offtake_number <- c(
-    sum(offtake[1:2]), offtake[3], sum(offtake[4:5]),
-    sum(offtake[6:7]), offtake[8], sum(offtake[9:10])
+    sum(offtake[1:2]),   # FJ = FB + FJ
+    offtake[3],          # FS
+    sum(offtake[4:5]),   # FA = FA + FC
+    sum(offtake[6:7]),   # MJ = MB + MJ
+    offtake[8],          # MS
+    sum(offtake[9:10])   # MA = MA + MC
   )
+  
+  # Offtake rates
   offtake_share <- offtake_number / size
   offtake_share_avg <- offtake_number / size_avg
   
-  ## calculate stock variation for each sex-age class from numbers at beginning and end of a steady-state year
+  # Calculate stock variation for each sex-age class from numbers at
+  # beginning and end of a steady-state year
   stock_variation <- size_end - size
   
-  ## calculate sum of offtake and stock variation (sv), then calculate the rate for start and average cohort sizes
+  # Calculate sum of offtake and stock variation (sv), 
+  # then calculate the rate for start and average cohort sizes:
+  # Offtake + stock variation (SV), and corresponding rates
   offtake_sv_number <- stock_variation + offtake_number
-  #### error? this does not make sense
-  
   offtake_sv_share <- offtake_sv_number / size
   offtake_sv_share_avg <- offtake_sv_number / size_avg
   
-  names(stock_variation) <- names(offtake_number) <- names(offtake_share) <- names(offtake_share_avg) <- names(offtake_sv_number) <- names(offtake_sv_share) <- names(offtake_sv_share_avg) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  # Assign names
+  names(stock_variation) <- names(offtake_number) <-
+    names(offtake_share) <- names(offtake_share_avg) <-
+    names(offtake_sv_number) <- names(offtake_sv_share) <-
+    names(offtake_sv_share_avg) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
   
-  ## prepare output
+  # Prepare output
   output <- list(
     stock_variation, offtake_number, offtake_share, offtake_share_avg,
     offtake_sv_number, offtake_sv_share, offtake_sv_share_avg
