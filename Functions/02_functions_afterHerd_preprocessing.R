@@ -99,8 +99,20 @@ calc_avg_weights <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
   return(output)
 }
 
-# Function to calculate daily weight gain
+#' Calculate Daily Weight Gain
+#'
+#' Computes average daily weight gain over a given duration based on the difference
+#' between potential final and initial live weights.
+#'
+#' @param potfinalLW Numeric. Potential final live weight.
+#' @param initialLW Numeric. Initial live weight.
+#' @param duration Numeric. Duration of the stage (in days).
+#'
+#' @return Numeric. Daily weight gain (kg/day).
+#'
+#' @export
 calc_daily_gain <- function(potfinalLW, initialLW, duration) {
-  dwg <- (potfinalLW - initialLW) / duration
-  return(dwg)
+  # Average daily gain over the period
+  output <- (potfinalLW - initialLW) / duration
+  return(output)
 }
