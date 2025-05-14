@@ -1,45 +1,72 @@
-# Function to calculate cohort-specific weights at different lifestage
+#' Calculate Live Weights by Cohort and at different lifestage
+#'
+#' Computes initial, potential final, and slaughter live weight (LW) for
+#'  a given cohort and animal type.
+#'
+#' @param Animal_short Character. Species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").
+#' @param cohort Character. Cohort code (e.g., "FJ", "MJ", "FS", "MS", "FA", "MA").
+#' @param AFKG Numeric. Adult female weight in kg.
+#' @param AMKG Numeric. Adult male weight in kg.
+#' @param CKG Numeric. Birth weight in kg.
+#' @param MFSKG Numeric. Slaughter weight of adult female in kg.
+#' @param MMSKG Numeric. Slaughter weight of adult male in kg.
+#' @param WKG Numeric. Weaning weight in kg.
+#' @param AFC Numeric. Age at first calving (in days).
+#' @param WA Numeric. Age of the animal at the current stage (in days).
+#'
+#' @return A named list with:
+#' \describe{
+#'   \item{initialLW}{Initial live weight.}
+#'   \item{potfinalLW}{Potential final live weight.}
+#'   \item{slaughterLW}{Slaughter live weight.}
+#' }
+#'
+#' @export
 calc_cohort_weights <- function(
-    Animal_short, cohort, AFKG, AMKG, CKG, MFSKG, MMSKG, WKG, AFC, WA) {
-  if (cohort %in% c("FJ")) {
+    Animal_short, cohort,
+    AFKG = NA_real_, AMKG = NA_real_, CKG = NA_real_, MFSKG = NA_real_,
+    MMSKG = NA_real_, WKG = NA_real_, AFC = NA_real_, WA = NA_real_) {
+  
+  # Helper function for growing weight
+  grow_weight <- function(adult_weight) {
+    ((adult_weight - CKG) / AFC) * WA + CKG
+  }
+  
+  # Defaults
+  initialLW <- potfinalLW <- slaughterLW <- NA_real_
+  
+  # Juvenile cohorts
+  if (cohort %in% c("FJ", "MJ")) {
     initialLW <- CKG
     if (Animal_short %in% c("PGS", "CML")) {
       potfinalLW <- slaughterLW <- WKG
-    } else if (Animal_short %in% c("CTL", "BFL", "SHP", "GTS")) {
-      potfinalLW <- slaughterLW <- ((AFKG - CKG) / AFC) * WA + CKG
+    } else {
+      adult_weight <- if (cohort == "FJ") AFKG else AMKG
+      potfinalLW <- slaughterLW <- grow_weight(adult_weight)
     }
-  } else if (cohort %in% c("MJ")) {
-    initialLW <- CKG
-    if (Animal_short %in% c("PGS", "CML")) {
-      potfinalLW <- slaughterLW <- WKG
-    } else if (Animal_short %in% c("CTL", "BFL", "SHP", "GTS")) {
-      potfinalLW <- slaughterLW <- ((AMKG - CKG) / AFC) * WA + CKG
-    }
-  } else if (cohort == "FS") {
+    
+    # Subadult cohorts
+  } else if (cohort %in% c("FS", "MS")) {
     if (Animal_short %in% c("PGS", "CML")) {
       initialLW <- WKG
-    } else if (Animal_short %in% c("CTL", "BFL", "SHP", "GTS")) {
-      initialLW <- ((AFKG - CKG) / AFC) * WA + CKG
+    } else {
+      adult_weight <- if (cohort == "FS") AFKG else AMKG
+      initialLW <- grow_weight(adult_weight)
     }
-    potfinalLW <- AFKG
-    slaughterLW <- MFSKG
-  } else if (cohort == "MS") {
-    if (Animal_short %in% c("PGS", "CML")) {
-      initialLW <- WKG
-    } else if (Animal_short %in% c("CTL", "BFL", "SHP", "GTS")) {
-      initialLW <- ((AMKG - CKG) / AFC) * WA + CKG
-    }
-    potfinalLW <- AMKG
-    slaughterLW <- MMSKG
+    potfinalLW <- if (cohort == "FS") AFKG else AMKG
+    slaughterLW <- if (cohort == "FS") MFSKG else MMSKG
+    
+    # Adult cohorts
   } else if (cohort == "FA") {
     initialLW <- potfinalLW <- slaughterLW <- AFKG
   } else if (cohort == "MA") {
     initialLW <- potfinalLW <- slaughterLW <- AMKG
   }
   
-  ret <- list(initialLW, potfinalLW, slaughterLW)
-  names(ret) <- c("initialLW", "potfinalLW", "slaughterLW")
-  return(ret)
+  output <- list(
+    initialLW = initialLW, potfinalLW = potfinalLW, slaughterLW = slaughterLW
+  )
+  return(output)
 }
 
 # Function to calculate cohort-specific average and final weights
