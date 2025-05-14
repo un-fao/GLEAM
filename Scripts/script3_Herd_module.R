@@ -4,7 +4,7 @@ library(data.table)
 source("Functions/01_functions_herd_steady1_dailysteps.R")
 
 # Read input
-herd_dt <- fread("Inputs/GLEAM_input_herd.csv")[1:100, ]
+herd_dt <- fread("Inputs/GLEAM_input_herd.csv")
 
 # --- Function 1: Fecundity ------------------------------------------------------
 herd_dt[, c("female_fecundity", "male_fecundity") := compute_fecundity_rates(
