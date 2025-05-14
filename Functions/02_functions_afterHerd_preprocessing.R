@@ -69,13 +69,34 @@ calc_cohort_weights <- function(
   return(output)
 }
 
-# Function to calculate cohort-specific average and final weights
+#' Calculate Average and Final Live Weights by Cohort
+#'
+#' Computes the average and final live weight (LW) of a cohort based on initial weight,
+#' potential final weight, slaughter weight, and the offtake rate.
+#'
+#' @param initialLW Numeric. Initial live weight at the start of the cohort stage.
+#' @param potfinalLW Numeric. Potential final live weight if no offtake occurs.
+#' @param slaughterLW Numeric. Live weight at slaughter.
+#' @param offtake_rate Numeric. Proportion of individuals removed via offtake during the stage.
+#'
+#' @return A named list with:
+#' \describe{
+#'   \item{averageLW}{Average live weight over the stage (accounts for offtake and survivors).}
+#'   \item{finalLW}{Final live weight after accounting for both survivors and offtaken animals.}
+#' }
+#'
+#' @export
 calc_avg_weights <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
-  averageLW <- (initialLW + (potfinalLW * (1 - offtake_rate) + slaughterLW * (offtake_rate))) / 2
-  finalLW <- potfinalLW * (1 - offtake_rate) + slaughterLW * (offtake_rate)
-  ret <- list(averageLW, finalLW)
-  names(ret) <- c("averageLW", "finalLW")
-  return(ret)
+  # Weighted final weight: survivors reach potfinalLW, offtaken animals go to slaughter
+  finalLW <- potfinalLW * (1 - offtake_rate) + slaughterLW * offtake_rate
+  
+  # Average weight across the stage
+  averageLW <- (initialLW + finalLW) / 2
+  
+  output <- list(
+    averageLW = averageLW, finalLW = finalLW
+  )
+  return(output)
 }
 
 # Function to calculate daily weight gain
