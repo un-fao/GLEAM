@@ -144,7 +144,8 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
 #' @export
 simulate_steady_state_structure <- function(
     initial_structure, max_years, min_lambda_change,
-    female_fecundity, male_fecundity, pdea, poff, g) {
+    female_fecundity, male_fecundity, pdea, poff, g
+    ) {
 
   # Initialize output vectors
   Fem_B__x_dy <- Fem_J__x_dy <- Fem_S__x_dy <- Fem_A__x_dy <- Fem_C__x_dy <- NULL
@@ -287,7 +288,8 @@ simulate_steady_state_structure <- function(
 #' @export
 project_population_size <- function(
     size_total, female_fecundity, male_fecundity, pdea, poff, g,
-    growth_rate_pop, structure, share) {
+    growth_rate_pop, structure, share
+    ) {
 
   # Calculate initial number of individuals in each of the 8 sex-age classes
   xini <- size_total * structure
@@ -514,7 +516,8 @@ summarise_offtake <- function(size, size_end, size_avg, offtake) {
 calc_cohort_weights <- function(
     Animal_short, cohort,
     AFKG = NA_real_, AMKG = NA_real_, CKG = NA_real_, MFSKG = NA_real_,
-    MMSKG = NA_real_, WKG = NA_real_, AFC = NA_real_, WA = NA_real_) {
+    MMSKG = NA_real_, WKG = NA_real_, AFC = NA_real_, WA = NA_real_
+    ) {
 
   # Helper function for growing weight
   grow_weight <- function(adult_weight) {

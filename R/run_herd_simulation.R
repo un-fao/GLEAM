@@ -35,7 +35,8 @@ run_herd_simulation <- function(
     herd_data,
     initial_structure = c(100, 50, 30, 100, 50, 30),
     max_years = 100,
-    lambda_threshold = 1e-9) {
+    lambda_threshold = 1e-9
+    ) {
 
   # --- Step 1: Compute Core Demographic Parameters -----------------------------
 
