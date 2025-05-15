@@ -5,7 +5,7 @@
 \title{Simulate Steady-State Population Structure}
 \usage{
 simulate_steady_state_structure(
-  x_start,
+  initial_structure,
   max_years,
   min_lambda_change,
   female_fecundity,
@@ -16,7 +16,7 @@ simulate_steady_state_structure(
 )
 }
 \arguments{
-\item{x_start}{Numeric vector of length 6. Initial number of individuals in each of the 6 sex-age classes.}
+\item{initial_structure}{Numeric vector of length 6. Initial number of individuals in each of the 6 sex-age classes.}
 
 \item{max_years}{Integer. Maximum number of years to simulate.}
 

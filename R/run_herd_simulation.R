@@ -9,7 +9,7 @@
 #' as well as daily weight gain (DWG). It also fills in weaning weights for non-pig animals
 #' based on FS cohorts.
 #'
-#' This function is intended for internal use within the herd simulation pipeline.
+#' This function is intended for internal use.
 #'
 #' @param herd_data A `data.table` containing herd-level input parameters per country/animal/LPS.
 #'   It must include cohort durations, offtake and mortality rates, fecundity inputs,

@@ -4,12 +4,26 @@
 \alias{run_herd_simulation}
 \title{Run Herd Simulation (Internal)}
 \usage{
-run_herd_simulation(herd_data)
+run_herd_simulation(
+  herd_data,
+  initial_structure = c(100, 50, 30, 100, 50, 30),
+  max_years = 100,
+  lambda_threshold = 1e-09
+)
 }
 \arguments{
 \item{herd_data}{A \code{data.table} containing herd-level input parameters per country/animal/LPS.
 It must include cohort durations, offtake and mortality rates, fecundity inputs,
 liveweights, and classification columns (e.g., \code{Animal}, \code{LPS}, \code{HerdType}, etc.).}
+
+\item{initial_structure}{A numeric vector of initial values used to simulate population dynamics for the
+6 sex-age classes (FJ, FS, FA, MJ, MS, MA). Defaults to \code{c(100, 50, 30, 100, 50, 30)}.}
+
+\item{max_years}{Integer. Maximum number of simulation years to run when seeking a steady-state
+population structure. Defaults to \code{100}.}
+
+\item{lambda_threshold}{Numeric. Tolerance threshold for detecting convergence in growth rate (\code{lambda})
+changes across cohorts. Defaults to \code{1e-9}.}
 }
 \value{
 A \code{data.table} in long format (per cohort) with appended simulation results,
