@@ -29,6 +29,8 @@
 #'   - cohort-level liveweights and weight gain
 #'
 #' @keywords internal
+#'
+#' @importFrom data.table := .SD .I melt dcast setcolorder
 run_herd_simulation <- function(
     herd_data,
     initial_structure = c(100, 50, 30, 100, 50, 30),
