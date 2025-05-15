@@ -147,12 +147,12 @@ simulate_steady_state_structure <- function(
     female_fecundity, male_fecundity, pdea, poff, g
     ) {
 
-  # Initialize output vectors
-  Fem_B__x_dy <- Fem_J__x_dy <- Fem_S__x_dy <- Fem_A__x_dy <- Fem_C__x_dy <- NULL
-  Mal_B__x_dy <- Mal_J__x_dy <- Mal_S__x_dy <- Mal_A__x_dy <- Mal_C__x_dy <- NULL
+  # Initialize population vectors
+  fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- NULL
+  mal_birth <- mal_juv <- mal_sub <- mal_adult <- mal_cull <- NULL
 
-  Fem_J__x_g <- Fem_S__x_g <- Fem_A__x_g <- Fem_C__x_g <- NULL
-  Mal_J__x_g <- Mal_S__x_g <- Mal_A__x_g <- Mal_C__x_g <- NULL
+  fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- NULL
+  mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- NULL
 
   lambda_change <- rep(1, 6)
 
@@ -162,41 +162,41 @@ simulate_steady_state_structure <- function(
       # Time step 1: initialize from starting vector
       ## calculate initial number of individuals taking into account
       ## the daily number of born females and males (female_fecundity/male_fecundity)
-      Fem_B__x_fec <- initial_structure[3] * female_fecundity
-      Fem_J__x_fec <- initial_structure[1]
-      Fem_S__x_fec <- initial_structure[2]
-      Fem_A__x_fec <- initial_structure[3]
-      Fem_C__x_fec <- 0
-      Mal_B__x_fec <- initial_structure[3] * male_fecundity
-      Mal_J__x_fec <- initial_structure[4]
-      Mal_S__x_fec <- initial_structure[5]
-      Mal_A__x_fec <- initial_structure[6]
-      Mal_C__x_fec <- 0
+      fem_birth_fec <- initial_structure[3] * female_fecundity
+      fem_juv_fec <- initial_structure[1]
+      fem_sub_fec <- initial_structure[2]
+      fem_adult_fec <- initial_structure[3]
+      fem_cull_fec <- 0
+      mal_birth_fec <- initial_structure[3] * male_fecundity
+      mal_juv_fec <- initial_structure[4]
+      mal_sub_fec <- initial_structure[5]
+      mal_adult_fec <- initial_structure[6]
+      mal_cull_fec <- 0
     } else {
       # Time step >1: propagate individuals from previous day
       ## calculate number of individuals taking into account both female_fecundity/male_fecundity and
       ## the number of individuals that survived the previous month and how they moved in the age classes
-      Fem_J__x_fec[t] <- Fem_J__x_g[t - 1]
-      Fem_S__x_fec[t] <- Fem_S__x_g[t - 1]
-      Fem_A__x_fec[t] <- Fem_A__x_g[t - 1]
-      Fem_C__x_fec[t] <- 0
-      Fem_B__x_fec[t] <- Fem_A__x_fec[t] * female_fecundity
-      Mal_J__x_fec[t] <- Mal_J__x_g[t - 1]
-      Mal_S__x_fec[t] <- Mal_S__x_g[t - 1]
-      Mal_A__x_fec[t] <- Mal_A__x_g[t - 1]
-      Mal_C__x_fec[t] <- 0
-      Mal_B__x_fec[t] <- Fem_A__x_fec[t] * male_fecundity
+      fem_juv_fec[t] <- fem_juv_grow[t - 1]
+      fem_sub_fec[t] <- fem_sub_grow[t - 1]
+      fem_adult_fec[t] <- fem_adult_grow[t - 1]
+      fem_cull_fec[t] <- 0
+      fem_birth_fec[t] <- fem_adult_fec[t] * female_fecundity
+      mal_juv_fec[t] <- mal_juv_grow[t - 1]
+      mal_sub_fec[t] <- mal_sub_grow[t - 1]
+      mal_adult_fec[t] <- mal_adult_grow[t - 1]
+      mal_cull_fec[t] <- 0
+      mal_birth_fec[t] <- fem_adult_fec[t] * male_fecundity
     }
 
     # Compute class-specific growth rate change (lambda)
     if (t > 2) {
       lambda_change <- c(
-        Fem_J__x_fec[t] / Fem_J__x_fec[t - 1] - Fem_J__x_fec[t - 1] / Fem_J__x_fec[t - 2],
-        Fem_S__x_fec[t] / Fem_S__x_fec[t - 1] - Fem_S__x_fec[t - 1] / Fem_S__x_fec[t - 2],
-        Fem_A__x_fec[t] / Fem_A__x_fec[t - 1] - Fem_A__x_fec[t - 1] / Fem_A__x_fec[t - 2],
-        Mal_J__x_fec[t] / Mal_J__x_fec[t - 1] - Mal_J__x_fec[t - 1] / Mal_J__x_fec[t - 2],
-        Mal_S__x_fec[t] / Mal_S__x_fec[t - 1] - Mal_S__x_fec[t - 1] / Mal_S__x_fec[t - 2],
-        Mal_A__x_fec[t] / Mal_A__x_fec[t - 1] - Mal_A__x_fec[t - 1] / Mal_A__x_fec[t - 2]
+        fem_juv_fec[t] / fem_juv_fec[t - 1] - fem_juv_fec[t - 1] / fem_juv_fec[t - 2],
+        fem_sub_fec[t] / fem_sub_fec[t - 1] - fem_sub_fec[t - 1] / fem_sub_fec[t - 2],
+        fem_adult_fec[t] / fem_adult_fec[t - 1] - fem_adult_fec[t - 1] / fem_adult_fec[t - 2],
+        mal_juv_fec[t] / mal_juv_fec[t - 1] - mal_juv_fec[t - 1] / mal_juv_fec[t - 2],
+        mal_sub_fec[t] / mal_sub_fec[t - 1] - mal_sub_fec[t - 1] / mal_sub_fec[t - 2],
+        mal_adult_fec[t] / mal_adult_fec[t - 1] - mal_adult_fec[t - 1] / mal_adult_fec[t - 2]
       )
     }
 
@@ -204,27 +204,27 @@ simulate_steady_state_structure <- function(
     if (all(lambda_change < min_lambda_change)) break
 
     # Apply death and offtake rates to each class
-    Fem_B__x_dy[t] <- Fem_B__x_fec[t] - pdea[1] * Fem_B__x_fec[t] - poff[1] * Fem_B__x_fec[t]
-    Fem_J__x_dy[t] <- Fem_J__x_fec[t] - pdea[2] * Fem_J__x_fec[t] - poff[2] * Fem_J__x_fec[t]
-    Fem_S__x_dy[t] <- Fem_S__x_fec[t] - pdea[3] * Fem_S__x_fec[t] - poff[3] * Fem_S__x_fec[t]
-    Fem_A__x_dy[t] <- Fem_A__x_fec[t] - pdea[4] * Fem_A__x_fec[t] - poff[4] * Fem_A__x_fec[t]
-    Fem_C__x_dy[t] <- Fem_C__x_fec[t] - pdea[5] * Fem_C__x_fec[t] - poff[5] * Fem_C__x_fec[t]
-    Mal_B__x_dy[t] <- Mal_B__x_fec[t] - pdea[6] * Mal_B__x_fec[t] - poff[6] * Mal_B__x_fec[t]
-    Mal_J__x_dy[t] <- Mal_J__x_fec[t] - pdea[7] * Mal_J__x_fec[t] - poff[7] * Mal_J__x_fec[t]
-    Mal_S__x_dy[t] <- Mal_S__x_fec[t] - pdea[8] * Mal_S__x_fec[t] - poff[8] * Mal_S__x_fec[t]
-    Mal_A__x_dy[t] <- Mal_A__x_fec[t] - pdea[9] * Mal_A__x_fec[t] - poff[9] * Mal_A__x_fec[t]
-    Mal_C__x_dy[t] <- Mal_C__x_fec[t] - pdea[10] * Mal_C__x_fec[t] - poff[10] * Mal_C__x_fec[t]
+    fem_birth[t] <- fem_birth_fec[t] - pdea[1] * fem_birth_fec[t] - poff[1] * fem_birth_fec[t]
+    fem_juv[t] <- fem_juv_fec[t] - pdea[2] * fem_juv_fec[t] - poff[2] * fem_juv_fec[t]
+    fem_sub[t] <- fem_sub_fec[t] - pdea[3] * fem_sub_fec[t] - poff[3] * fem_sub_fec[t]
+    fem_adult[t] <- fem_adult_fec[t] - pdea[4] * fem_adult_fec[t] - poff[4] * fem_adult_fec[t]
+    fem_cull[t] <- fem_cull_fec[t] - pdea[5] * fem_cull_fec[t] - poff[5] * fem_cull_fec[t]
+    mal_birth[t] <- mal_birth_fec[t] - pdea[6] * mal_birth_fec[t] - poff[6] * mal_birth_fec[t]
+    mal_juv[t] <- mal_juv_fec[t] - pdea[7] * mal_juv_fec[t] - poff[7] * mal_juv_fec[t]
+    mal_sub[t] <- mal_sub_fec[t] - pdea[8] * mal_sub_fec[t] - poff[8] * mal_sub_fec[t]
+    mal_adult[t] <- mal_adult_fec[t] - pdea[9] * mal_adult_fec[t] - poff[9] * mal_adult_fec[t]
+    mal_cull[t] <- mal_cull_fec[t] - pdea[10] * mal_cull_fec[t] - poff[10] * mal_cull_fec[t]
 
     # Apply transition probabilities (growth to next class)
-    Fem_J__x_g[t] <- Fem_B__x_dy[t] + (1 - g[2]) * Fem_J__x_dy[t]
-    Fem_S__x_g[t] <- g[2] * Fem_J__x_dy[t] + (1 - g[3]) * Fem_S__x_dy[t]
-    Fem_A__x_g[t] <- g[3] * Fem_S__x_dy[t] + (1 - g[4]) * Fem_A__x_dy[t]
-    Fem_C__x_g[t] <- g[4] * Fem_A__x_dy[t]
+    fem_juv_grow[t] <- fem_birth[t] + (1 - g[2]) * fem_juv[t]
+    fem_sub_grow[t] <- g[2] * fem_juv[t] + (1 - g[3]) * fem_sub[t]
+    fem_adult_grow[t] <- g[3] * fem_sub[t] + (1 - g[4]) * fem_adult[t]
+    fem_cull_grow[t] <- g[4] * fem_adult[t]
 
-    Mal_J__x_g[t] <- Mal_B__x_dy[t] + (1 - g[7]) * Mal_J__x_dy[t]
-    Mal_S__x_g[t] <- g[7] * Mal_J__x_dy[t] + (1 - g[8]) * Mal_S__x_dy[t]
-    Mal_A__x_g[t] <- g[8] * Mal_S__x_dy[t] + (1 - g[9]) * Mal_A__x_dy[t]
-    Mal_C__x_g[t] <- g[9] * Mal_A__x_dy[t]
+    mal_juv_grow[t] <- mal_birth[t] + (1 - g[7]) * mal_juv[t]
+    mal_sub_grow[t] <- g[7] * mal_juv[t] + (1 - g[8]) * mal_sub[t]
+    mal_adult_grow[t] <- g[8] * mal_sub[t] + (1 - g[9]) * mal_adult[t]
+    mal_cull_grow[t] <- g[9] * mal_adult[t]
   }
 
   # Final iteration count
@@ -232,10 +232,10 @@ simulate_steady_state_structure <- function(
 
   # Extract population state at steady-state
   xend <- c(
-    Fem_B__x_fec[days_steady], Fem_J__x_fec[days_steady],
-    Fem_S__x_fec[days_steady], Fem_A__x_fec[days_steady],
-    Mal_B__x_fec[days_steady], Mal_J__x_fec[days_steady],
-    Mal_S__x_fec[days_steady], Mal_A__x_fec[days_steady]
+    fem_birth_fec[days_steady], fem_juv_fec[days_steady],
+    fem_sub_fec[days_steady], fem_adult_fec[days_steady],
+    mal_birth_fec[days_steady], mal_juv_fec[days_steady],
+    mal_sub_fec[days_steady], mal_adult_fec[days_steady]
   )
 
   # Compute final structure (8 classes)
@@ -252,7 +252,7 @@ simulate_steady_state_structure <- function(
   names(share) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
   # Compute steady-state annual growth rate
-  growth_rate_pop <- (Fem_J__x_fec[days_steady] / Fem_J__x_fec[days_steady - 1])^365 - 1
+  growth_rate_pop <- (fem_juv_fec[days_steady] / fem_juv_fec[days_steady - 1])^365 - 1
 
   # Return output
   list(
@@ -305,109 +305,109 @@ project_population_size <- function(
   structure_intrasex <- c(size[1:3] / sum(size[1:3]), size[4:6] / sum(size[4:6]))
 
   # Initialize all tracking vectors
-  Fem_B__d <- Fem_J__d <- Fem_S__d <- Fem_A__d <- Fem_C__d <- NULL
-  Mal_B__d <- Mal_J__d <- Mal_S__d <- Mal_A__d <- Mal_C__d <- NULL
+  fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- NULL
+  mal_birth <- mal_juv <- mal_sub <- mal_adult <- mal_cull <- NULL
 
-  Fem_B__y <- Fem_J__y <- Fem_S__y <- Fem_A__y <- Fem_C__y <- NULL
-  Mal_B__y <- Mal_J__y <- Mal_S__y <- Mal_A__y <- Mal_C__y <- NULL
+  fem_birth_death <- fem_juv_death <- fem_sub_death <- fem_adult_death <- fem_cull_death <- NULL
+  mal_birth_death <- mal_juv_death <- mal_sub_death <- mal_adult_death <- mal_cull_death <- NULL
 
-  Fem_B__x_dy <- Fem_J__x_dy <- Fem_S__x_dy <- Fem_A__x_dy <- Fem_C__x_dy <- NULL
-  Mal_B__x_dy <- Mal_J__x_dy <- Mal_S__x_dy <- Mal_A__x_dy <- Mal_C__x_dy <- NULL
+  fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- NULL
+  mal_birth <- mal_juv <- mal_sub <- mal_adult <- mal_cull <- NULL
 
-  Fem_J__x_g <- Fem_S__x_g <- Fem_A__x_g <- Fem_C__x_g <- NULL
-  Mal_J__x_g <- Mal_S__x_g <- Mal_A__x_g <- Mal_C__x_g <- NULL
+  fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- NULL
+  mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- NULL
 
   # Simulate daily dynamics over 366 days (leap year assumption)
   for (t in 1:366) {
     if (t == 1) {
       # Initialize class sizes using xini and fecundity
-      Fem_J__x_fec <- xini[2]
-      Fem_S__x_fec <- xini[3]
-      Fem_A__x_fec <- xini[4]
-      Fem_C__x_fec <- 0
-      Fem_B__x_fec <- Fem_A__x_fec * female_fecundity
+      fem_juv_fec <- xini[2]
+      fem_sub_fec <- xini[3]
+      fem_adult_fec <- xini[4]
+      fem_cull_fec <- 0
+      fem_birth_fec <- fem_adult_fec * female_fecundity
 
-      Mal_J__x_fec <- xini[6]
-      Mal_S__x_fec <- xini[7]
-      Mal_A__x_fec <- xini[8]
-      Mal_C__x_fec <- 0
-      Mal_B__x_fec <- Fem_A__x_fec * male_fecundity
+      mal_juv_fec <- xini[6]
+      mal_sub_fec <- xini[7]
+      mal_adult_fec <- xini[8]
+      mal_cull_fec <- 0
+      mal_birth_fec <- fem_adult_fec * male_fecundity
     } else {
       # Update fecundity stage from previous day's transitions
-      Fem_J__x_fec[t] <- Fem_J__x_g[t - 1]
-      Fem_S__x_fec[t] <- Fem_S__x_g[t - 1]
-      Fem_A__x_fec[t] <- Fem_A__x_g[t - 1]
-      Fem_C__x_fec[t] <- 0
-      Fem_B__x_fec[t] <- Fem_A__x_fec[t] * female_fecundity
+      fem_juv_fec[t] <- fem_juv_grow[t - 1]
+      fem_sub_fec[t] <- fem_sub_grow[t - 1]
+      fem_adult_fec[t] <- fem_adult_grow[t - 1]
+      fem_cull_fec[t] <- 0
+      fem_birth_fec[t] <- fem_adult_fec[t] * female_fecundity
 
-      Mal_J__x_fec[t] <- Mal_J__x_g[t - 1]
-      Mal_S__x_fec[t] <- Mal_S__x_g[t - 1]
-      Mal_A__x_fec[t] <- Mal_A__x_g[t - 1]
-      Mal_C__x_fec[t] <- 0
-      Mal_B__x_fec[t] <- Fem_A__x_fec[t] * male_fecundity
+      mal_juv_fec[t] <- mal_juv_grow[t - 1]
+      mal_sub_fec[t] <- mal_sub_grow[t - 1]
+      mal_adult_fec[t] <- mal_adult_grow[t - 1]
+      mal_cull_fec[t] <- 0
+      mal_birth_fec[t] <- fem_adult_fec[t] * male_fecundity
     }
 
     if (t <= 365) {
       # Apply death rates
-      Fem_B__d[t] <- pdea[1] * Fem_B__x_fec[t]
-      Fem_J__d[t] <- pdea[2] * Fem_J__x_fec[t]
-      Fem_S__d[t] <- pdea[3] * Fem_S__x_fec[t]
-      Fem_A__d[t] <- pdea[4] * Fem_A__x_fec[t]
-      Fem_C__d[t] <- pdea[5] * Fem_C__x_fec[t]
-      Mal_B__d[t] <- pdea[6] * Mal_B__x_fec[t]
-      Mal_J__d[t] <- pdea[7] * Mal_J__x_fec[t]
-      Mal_S__d[t] <- pdea[8] * Mal_S__x_fec[t]
-      Mal_A__d[t] <- pdea[9] * Mal_A__x_fec[t]
-      Mal_C__d[t] <- pdea[10] * Mal_C__x_fec[t]
+      fem_birth[t] <- pdea[1] * fem_birth_fec[t]
+      fem_juv[t] <- pdea[2] * fem_juv_fec[t]
+      fem_sub[t] <- pdea[3] * fem_sub_fec[t]
+      fem_adult[t] <- pdea[4] * fem_adult_fec[t]
+      fem_cull[t] <- pdea[5] * fem_cull_fec[t]
+      mal_birth[t] <- pdea[6] * mal_birth_fec[t]
+      mal_juv[t] <- pdea[7] * mal_juv_fec[t]
+      mal_sub[t] <- pdea[8] * mal_sub_fec[t]
+      mal_adult[t] <- pdea[9] * mal_adult_fec[t]
+      mal_cull[t] <- pdea[10] * mal_cull_fec[t]
 
       # Apply offtake rates
-      Fem_B__y[t] <- poff[1] * Fem_B__x_fec[t]
-      Fem_J__y[t] <- poff[2] * Fem_J__x_fec[t]
-      Fem_S__y[t] <- poff[3] * Fem_S__x_fec[t]
-      Fem_A__y[t] <- poff[4] * Fem_A__x_fec[t]
-      Fem_C__y[t] <- poff[5] * Fem_C__x_fec[t]
-      Mal_B__y[t] <- poff[6] * Mal_B__x_fec[t]
-      Mal_J__y[t] <- poff[7] * Mal_J__x_fec[t]
-      Mal_S__y[t] <- poff[8] * Mal_S__x_fec[t]
-      Mal_A__y[t] <- poff[9] * Mal_A__x_fec[t]
-      Mal_C__y[t] <- poff[10] * Mal_C__x_fec[t]
+      fem_birth_death[t] <- poff[1] * fem_birth_fec[t]
+      fem_juv_death[t] <- poff[2] * fem_juv_fec[t]
+      fem_sub_death[t] <- poff[3] * fem_sub_fec[t]
+      fem_adult_death[t] <- poff[4] * fem_adult_fec[t]
+      fem_cull_death[t] <- poff[5] * fem_cull_fec[t]
+      mal_birth_death[t] <- poff[6] * mal_birth_fec[t]
+      mal_juv_death[t] <- poff[7] * mal_juv_fec[t]
+      mal_sub_death[t] <- poff[8] * mal_sub_fec[t]
+      mal_adult_death[t] <- poff[9] * mal_adult_fec[t]
+      mal_cull_death[t] <- poff[10] * mal_cull_fec[t]
 
       # Compute survivors after deaths and offtakes
-      Fem_B__x_dy[t] <- Fem_B__x_fec[t] - Fem_B__d[t] - Fem_B__y[t]
-      Fem_J__x_dy[t] <- Fem_J__x_fec[t] - Fem_J__d[t] - Fem_J__y[t]
-      Fem_S__x_dy[t] <- Fem_S__x_fec[t] - Fem_S__d[t] - Fem_S__y[t]
-      Fem_A__x_dy[t] <- Fem_A__x_fec[t] - Fem_A__d[t] - Fem_A__y[t]
-      Fem_C__x_dy[t] <- Fem_C__x_fec[t] - Fem_C__d[t] - Fem_C__y[t]
-      Mal_B__x_dy[t] <- Mal_B__x_fec[t] - Mal_B__d[t] - Mal_B__y[t]
-      Mal_J__x_dy[t] <- Mal_J__x_fec[t] - Mal_J__d[t] - Mal_J__y[t]
-      Mal_S__x_dy[t] <- Mal_S__x_fec[t] - Mal_S__d[t] - Mal_S__y[t]
-      Mal_A__x_dy[t] <- Mal_A__x_fec[t] - Mal_A__d[t] - Mal_A__y[t]
-      Mal_C__x_dy[t] <- Mal_C__x_fec[t] - Mal_C__d[t] - Mal_C__y[t]
+      fem_birth[t] <- fem_birth_fec[t] - fem_birth[t] - fem_birth_death[t]
+      fem_juv[t] <- fem_juv_fec[t] - fem_juv[t] - fem_juv_death[t]
+      fem_sub[t] <- fem_sub_fec[t] - fem_sub[t] - fem_sub_death[t]
+      fem_adult[t] <- fem_adult_fec[t] - fem_adult[t] - fem_adult_death[t]
+      fem_cull[t] <- fem_cull_fec[t] - fem_cull[t] - fem_cull_death[t]
+      mal_birth[t] <- mal_birth_fec[t] - mal_birth[t] - mal_birth_death[t]
+      mal_juv[t] <- mal_juv_fec[t] - mal_juv[t] - mal_juv_death[t]
+      mal_sub[t] <- mal_sub_fec[t] - mal_sub[t] - mal_sub_death[t]
+      mal_adult[t] <- mal_adult_fec[t] - mal_adult[t] - mal_adult_death[t]
+      mal_cull[t] <- mal_cull_fec[t] - mal_cull[t] - mal_cull_death[t]
 
       # Transition to next age classes
-      Fem_J__x_g[t] <- Fem_B__x_dy[t] + (1 - g[2]) * Fem_J__x_dy[t]
-      Fem_S__x_g[t] <- g[2] * Fem_J__x_dy[t] + (1 - g[3]) * Fem_S__x_dy[t]
-      Fem_A__x_g[t] <- g[3] * Fem_S__x_dy[t] + (1 - g[4]) * Fem_A__x_dy[t]
-      Fem_C__x_g[t] <- g[4] * Fem_A__x_dy[t]
+      fem_juv_grow[t] <- fem_birth[t] + (1 - g[2]) * fem_juv[t]
+      fem_sub_grow[t] <- g[2] * fem_juv[t] + (1 - g[3]) * fem_sub[t]
+      fem_adult_grow[t] <- g[3] * fem_sub[t] + (1 - g[4]) * fem_adult[t]
+      fem_cull_grow[t] <- g[4] * fem_adult[t]
 
-      Mal_J__x_g[t] <- Mal_B__x_dy[t] + (1 - g[7]) * Mal_J__x_dy[t]
-      Mal_S__x_g[t] <- g[7] * Mal_J__x_dy[t] + (1 - g[8]) * Mal_S__x_dy[t]
-      Mal_A__x_g[t] <- g[8] * Mal_S__x_dy[t] + (1 - g[9]) * Mal_A__x_dy[t]
-      Mal_C__x_g[t] <- g[9] * Mal_A__x_dy[t]
+      mal_juv_grow[t] <- mal_birth[t] + (1 - g[7]) * mal_juv[t]
+      mal_sub_grow[t] <- g[7] * mal_juv[t] + (1 - g[8]) * mal_sub[t]
+      mal_adult_grow[t] <- g[8] * mal_sub[t] + (1 - g[9]) * mal_adult[t]
+      mal_cull_grow[t] <- g[9] * mal_adult[t]
     }
   }
 
   # Compute offtake and final sizes
   offtake <- c(
-    sum(Fem_B__y), sum(Fem_J__y), sum(Fem_S__y), sum(Fem_A__y), sum(Fem_C__x_g),
-    sum(Mal_B__y), sum(Mal_J__y), sum(Mal_S__y), sum(Mal_A__y), sum(Mal_C__x_g)
+    sum(fem_birth_death), sum(fem_juv_death), sum(fem_sub_death), sum(fem_adult_death), sum(fem_cull_grow),
+    sum(mal_birth_death), sum(mal_juv_death), sum(mal_sub_death), sum(mal_adult_death), sum(mal_cull_grow)
   )
 
   size_end_exact <- c(
-    Fem_B__x_fec[366], Fem_J__x_fec[366], Fem_S__x_fec[366], Fem_A__x_fec[366],
-    Fem_C__x_fec[366],
-    Mal_B__x_fec[366], Mal_J__x_fec[366], Mal_S__x_fec[366], Mal_A__x_fec[366],
-    Mal_C__x_fec[366]
+    fem_birth_fec[366], fem_juv_fec[366], fem_sub_fec[366], fem_adult_fec[366],
+    fem_cull_fec[366],
+    mal_birth_fec[366], mal_juv_fec[366], mal_sub_fec[366], mal_adult_fec[366],
+    mal_cull_fec[366]
   )
 
   names(size_end_exact) <- names(offtake) <- c(
