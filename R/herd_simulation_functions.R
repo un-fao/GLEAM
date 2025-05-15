@@ -511,9 +511,9 @@ summarise_offtake <- function(size, size_end, size_avg, offtake) {
 #'
 #' @return A named list with:
 #' \describe{
-#'   \item{initialLW}{Initial live weight.}
-#'   \item{potfinalLW}{Potential final live weight.}
-#'   \item{slaughterLW}{Slaughter live weight.}
+#'   \item{initial_weight}{Initial live weight.}
+#'   \item{potential_final_weight}{Potential final live weight.}
+#'   \item{slaughter_weight}{Slaughter live weight.}
 #' }
 #'
 #' @export
@@ -529,40 +529,40 @@ calc_cohort_weights <- function(
   }
 
   # Defaults
-  initialLW <- potfinalLW <- slaughterLW <- NA_real_
+  initial_weight <- potential_final_weight <- slaughter_weight <- NA_real_
 
   # Juvenile cohorts
   if (cohort %in% c("FJ", "MJ")) {
-    initialLW <- CKG
+    initial_weight <- CKG
     if (Animal_short %in% c("PGS", "CML")) {
-      potfinalLW <- slaughterLW <- WKG
+      potential_final_weight <- slaughter_weight <- WKG
     } else {
       adult_weight <- if (cohort == "FJ") AFKG else AMKG
-      potfinalLW <- slaughterLW <- grow_weight(adult_weight)
+      potential_final_weight <- slaughter_weight <- grow_weight(adult_weight)
     }
 
     # Subadult cohorts
   } else if (cohort %in% c("FS", "MS")) {
     if (Animal_short %in% c("PGS", "CML")) {
-      initialLW <- WKG
+      initial_weight <- WKG
     } else {
       adult_weight <- if (cohort == "FS") AFKG else AMKG
-      initialLW <- grow_weight(adult_weight)
+      initial_weight <- grow_weight(adult_weight)
     }
-    potfinalLW <- if (cohort == "FS") AFKG else AMKG
-    slaughterLW <- if (cohort == "FS") MFSKG else MMSKG
+    potential_final_weight <- if (cohort == "FS") AFKG else AMKG
+    slaughter_weight <- if (cohort == "FS") MFSKG else MMSKG
 
     # Adult cohorts
   } else if (cohort == "FA") {
-    initialLW <- potfinalLW <- slaughterLW <- AFKG
+    initial_weight <- potential_final_weight <- slaughter_weight <- AFKG
   } else if (cohort == "MA") {
-    initialLW <- potfinalLW <- slaughterLW <- AMKG
+    initial_weight <- potential_final_weight <- slaughter_weight <- AMKG
   }
 
   list(
-    initialLW = initialLW,
-    potfinalLW = potfinalLW,
-    slaughterLW = slaughterLW
+    initial_weight = initial_weight,
+    potential_final_weight = potential_final_weight,
+    slaughter_weight = slaughter_weight
   )
 }
 
@@ -571,9 +571,9 @@ calc_cohort_weights <- function(
 #' Computes the average and final live weight (LW) of a cohort based on initial weight,
 #' potential final weight, slaughter weight, and the offtake rate.
 #'
-#' @param initialLW Numeric. Initial live weight at the start of the cohort stage.
-#' @param potfinalLW Numeric. Potential final live weight if no offtake occurs.
-#' @param slaughterLW Numeric. Live weight at slaughter.
+#' @param initial_weight Numeric. Initial live weight at the start of the cohort stage.
+#' @param potential_final_weight Numeric. Potential final live weight if no offtake occurs.
+#' @param slaughter_weight Numeric. Live weight at slaughter.
 #' @param offtake_rate Numeric. Proportion of individuals removed via offtake during the stage.
 #'
 #' @return A named list with:
@@ -583,12 +583,12 @@ calc_cohort_weights <- function(
 #' }
 #'
 #' @export
-calc_avg_weights <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
-  # Weighted final weight: survivors reach potfinalLW, offtaken animals go to slaughter
-  finalLW <- potfinalLW * (1 - offtake_rate) + slaughterLW * offtake_rate
+calc_avg_weights <- function(initial_weight, potential_final_weight, slaughter_weight, offtake_rate) {
+  # Weighted final weight: survivors reach potential_final_weight, offtaken animals go to slaughter
+  finalLW <- potential_final_weight * (1 - offtake_rate) + slaughter_weight * offtake_rate
 
   # Average weight across the stage
-  averageLW <- (initialLW + finalLW) / 2
+  averageLW <- (initial_weight + finalLW) / 2
 
   list(
     averageLW = averageLW,
@@ -601,14 +601,14 @@ calc_avg_weights <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
 #' Computes average daily weight gain over a given duration based on the difference
 #' between potential final and initial live weights.
 #'
-#' @param potfinalLW Numeric. Potential final live weight.
-#' @param initialLW Numeric. Initial live weight.
+#' @param potential_final_weight Numeric. Potential final live weight.
+#' @param initial_weight Numeric. Initial live weight.
 #' @param duration Numeric. Duration of the stage (in days).
 #'
 #' @return Numeric. Daily weight gain (kg/day).
 #'
 #' @export
-calc_daily_gain <- function(potfinalLW, initialLW, duration) {
+calc_daily_weight_gain <- function(potential_final_weight, initial_weight, duration) {
   # Average daily gain over the period
-  (potfinalLW - initialLW) / duration
+  (potential_final_weight - initial_weight) / duration
 }

@@ -2,7 +2,7 @@
 
 export(calc_avg_weights)
 export(calc_cohort_weights)
-export(calc_daily_gain)
+export(calc_daily_weight_gain)
 export(compute_fecundity_rates)
 export(compute_transition_probabilities)
 export(project_population_size)

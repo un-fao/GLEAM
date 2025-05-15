@@ -20,7 +20,7 @@ simulate_steady_state_structure(
 
 \item{max_years}{Integer. Maximum number of years to simulate.}
 
-\item{min_lambda_change}{Numeric. Threshold for minimal change in class-specific growth rates (lambda) to reach steady state.}
+\item{min_lambda_change}{Numeric. Threshold for minimal change in class-specific growth rates to reach steady state.}
 
 \item{female_fecundity}{Numeric. Daily number of female births per adult female.}
 

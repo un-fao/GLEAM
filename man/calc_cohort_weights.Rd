@@ -41,9 +41,9 @@ calc_cohort_weights(
 \value{
 A named list with:
 \describe{
-\item{initialLW}{Initial live weight.}
-\item{potfinalLW}{Potential final live weight.}
-\item{slaughterLW}{Slaughter live weight.}
+\item{initial_weight}{Initial live weight.}
+\item{potential_final_weight}{Potential final live weight.}
+\item{slaughter_weight}{Slaughter live weight.}
 }
 }
 \description{

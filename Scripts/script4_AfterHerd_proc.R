@@ -69,7 +69,7 @@ setcolorder(herd_merged, c(
 ))
 
 # Add cohort-specific weights
-herd_merged[, c("initialLW", "potfinalLW", "slaughterLW") :=
+herd_merged[, c("initial_weight", "potential_final_weight", "slaughter_weight") :=
               calc_cohort_weights(
                 Animal_short, cohort, AFKG, AMKG, CKG = ckg, MFSKG, MMSKG, WKG = wkg, AFC = afc, WA
               ),
@@ -78,17 +78,17 @@ herd_merged[, c("initialLW", "potfinalLW", "slaughterLW") :=
 
 # Add average and final weights
 herd_merged[, c("averageLW", "finalLW") :=
-              calc_avg_weights(initialLW, potfinalLW, slaughterLW, offtake_rate),
+              calc_avg_weights(initial_weight, potential_final_weight, slaughter_weight, offtake_rate),
             by = .I
 ]
 
 # Add daily weight gain
-herd_merged[, dwg := calc_daily_gain(potfinalLW, initialLW, duration), by = .I]
+herd_merged[, dwg := calc_daily_weight_gain(potential_final_weight, initial_weight, duration), by = .I]
 
 # Assign weaning weights (WKG) for non-pig cohorts using FS values
 weaning_dt <- herd_merged[
   cohort == "FS" & Animal_short != "PGS",
-  .(COUNTRY, ADM0_CODE, Animal_short, LPS_short, HerdType_short, cohort, initialLW)
+  .(COUNTRY, ADM0_CODE, Animal_short, LPS_short, HerdType_short, cohort, initial_weight)
 ]
 
 herd_merged[
@@ -96,7 +96,7 @@ herd_merged[
   wkg := weaning_dt[
     .SD,
     on = .(COUNTRY, ADM0_CODE, Animal_short, LPS_short, HerdType_short),
-    initialLW
+    initial_weight
   ]
 ]
 

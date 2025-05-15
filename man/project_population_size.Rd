@@ -19,21 +19,21 @@ project_population_size(
 \arguments{
 \item{size_total}{Numeric. Total population size at the start of the year.}
 
-\item{female_fecundity}{Numeric. Daily female births per adult female (from \code{compute_fecundity_rates()}).}
+\item{female_fecundity}{Numeric. Daily female births per adult female.}
 
-\item{male_fecundity}{Numeric. Daily male births per adult female (from \code{compute_fecundity_rates()}).}
+\item{male_fecundity}{Numeric. Daily male births per adult female.}
 
-\item{pdea}{Numeric vector of length 10. Daily death probabilities (from \code{compute_transition_probabilities()}).}
+\item{pdea}{Numeric vector of length 10. Daily death probabilities.}
 
-\item{poff}{Numeric vector of length 10. Daily offtake probabilities (from \code{compute_transition_probabilities()}).}
+\item{poff}{Numeric vector of length 10. Daily offtake probabilities.}
 
-\item{g}{Numeric vector of length 10. Transition probabilities to next age class (from \code{compute_transition_probabilities()}).}
+\item{g}{Numeric vector of length 10. Transition probabilities to next age class.}
 
-\item{growth_rate_pop}{Numeric. Annual population growth rate (from \code{simulate_steady_state_structure()}).}
+\item{growth_rate_pop}{Numeric. Annual population growth rate.}
 
-\item{structure}{Numeric vector of length 8. Final population share in 8 classes (from \code{simulate_steady_state_structure()}).}
+\item{structure}{Numeric vector of length 8. Final population share in 8 classes.}
 
-\item{share}{Numeric vector of length 6. Final population share in 6 grouped classes (from \code{simulate_steady_state_structure()}).}
+\item{share}{Numeric vector of length 6. Final population share in 6 grouped classes.}
 }
 \value{
 A named list with:

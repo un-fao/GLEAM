@@ -7,13 +7,13 @@
 summarise_offtake(size, size_end, size_avg, offtake)
 }
 \arguments{
-\item{size}{Numeric vector of length 6. Population at start of year (from \code{project_population_size()}).}
+\item{size}{Numeric vector of length 6. Population at start of year.}
 
-\item{size_end}{Numeric vector of length 6. Population at end of year (from \code{project_population_size()}).}
+\item{size_end}{Numeric vector of length 6. Population at end of year.}
 
-\item{size_avg}{Numeric vector of length 6. Average population over the year (from \code{project_population_size()}).}
+\item{size_avg}{Numeric vector of length 6. Average population over the year.}
 
-\item{offtake}{Numeric vector of length 10. Offtake counts from 10 sex-age classes (from \code{project_population_size()}).}
+\item{offtake}{Numeric vector of length 10. Offtake counts from 10 sex-age classes.}
 }
 \value{
 A named list with:

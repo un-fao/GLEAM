@@ -26,15 +26,15 @@ calc_cohort_weights <- function(
     Animal_short, cohort,
     AFKG = NA_real_, AMKG = NA_real_, CKG = NA_real_, MFSKG = NA_real_,
     MMSKG = NA_real_, WKG = NA_real_, AFC = NA_real_, WA = NA_real_) {
-  
+
   # Helper function for growing weight
   grow_weight <- function(adult_weight) {
     ((adult_weight - CKG) / AFC) * WA + CKG
   }
-  
+
   # Defaults
   initialLW <- potfinalLW <- slaughterLW <- NA_real_
-  
+
   # Juvenile cohorts
   if (cohort %in% c("FJ", "MJ")) {
     initialLW <- CKG
@@ -44,7 +44,7 @@ calc_cohort_weights <- function(
       adult_weight <- if (cohort == "FJ") AFKG else AMKG
       potfinalLW <- slaughterLW <- grow_weight(adult_weight)
     }
-    
+
     # Subadult cohorts
   } else if (cohort %in% c("FS", "MS")) {
     if (Animal_short %in% c("PGS", "CML")) {
@@ -55,14 +55,14 @@ calc_cohort_weights <- function(
     }
     potfinalLW <- if (cohort == "FS") AFKG else AMKG
     slaughterLW <- if (cohort == "FS") MFSKG else MMSKG
-    
+
     # Adult cohorts
   } else if (cohort == "FA") {
     initialLW <- potfinalLW <- slaughterLW <- AFKG
   } else if (cohort == "MA") {
     initialLW <- potfinalLW <- slaughterLW <- AMKG
   }
-  
+
   output <- list(
     initialLW = initialLW, potfinalLW = potfinalLW, slaughterLW = slaughterLW
   )
@@ -89,10 +89,10 @@ calc_cohort_weights <- function(
 calc_avg_weights <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
   # Weighted final weight: survivors reach potfinalLW, offtaken animals go to slaughter
   finalLW <- potfinalLW * (1 - offtake_rate) + slaughterLW * offtake_rate
-  
+
   # Average weight across the stage
   averageLW <- (initialLW + finalLW) / 2
-  
+
   output <- list(
     averageLW = averageLW, finalLW = finalLW
   )
@@ -111,7 +111,7 @@ calc_avg_weights <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
 #' @return Numeric. Daily weight gain (kg/day).
 #'
 #' @export
-calc_daily_gain <- function(potfinalLW, initialLW, duration) {
+calc_daily_weight_gain <- function(potfinalLW, initialLW, duration) {
   # Average daily gain over the period
   output <- (potfinalLW - initialLW) / duration
   return(output)

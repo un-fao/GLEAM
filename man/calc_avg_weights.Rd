@@ -4,14 +4,19 @@
 \alias{calc_avg_weights}
 \title{Calculate Average and Final Live Weights by Cohort}
 \usage{
-calc_avg_weights(initialLW, potfinalLW, slaughterLW, offtake_rate)
+calc_avg_weights(
+  initial_weight,
+  potential_final_weight,
+  slaughter_weight,
+  offtake_rate
+)
 }
 \arguments{
-\item{initialLW}{Numeric. Initial live weight at the start of the cohort stage.}
+\item{initial_weight}{Numeric. Initial live weight at the start of the cohort stage.}
 
-\item{potfinalLW}{Numeric. Potential final live weight if no offtake occurs.}
+\item{potential_final_weight}{Numeric. Potential final live weight if no offtake occurs.}
 
-\item{slaughterLW}{Numeric. Live weight at slaughter.}
+\item{slaughter_weight}{Numeric. Live weight at slaughter.}
 
 \item{offtake_rate}{Numeric. Proportion of individuals removed via offtake during the stage.}
 }
