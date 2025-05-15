@@ -34,14 +34,17 @@ run_herd_simulation <- function(
     initial_structure = c(100, 50, 30, 100, 50, 30),
     max_years = 100,
     lambda_threshold = 1e-9) {
-  # --- Function 1: Fecundity ------------------------------------------------------
+
+  # --- Step 1: Compute Core Demographic Parameters -----------------------------
+
+  # Compute fecundity rates
   herd_data[, c("female_fecundity", "male_fecundity") := compute_fecundity_rates(
     part_rate = parturition_rate,
     prolif_rate = litsize,
     fem_birth_ratio = female_birth_fraction
   ), by = seq_len(nrow(herd_data))]
 
-  # --- Function 2: Transition Probabilities ---------------------------------------
+  # Compute transition probabilities
   transition_cols <- names(
     unlist(
       compute_transition_probabilities(
@@ -83,7 +86,9 @@ run_herd_simulation <- function(
     )
   ), by = seq_len(nrow(herd_data))]
 
-  # --- Function 3: Steady-State Structure -----------------------------------------
+  # --- Step 2: Simulate Population Dynamics -----------------------------------
+
+  # Simulate steady-state structure
   structure_cols <- names(
     unlist(
       simulate_steady_state_structure(
@@ -134,7 +139,7 @@ run_herd_simulation <- function(
     )
   ), by = seq_len(nrow(herd_data))]
 
-  # --- Function 4: Population Size -----------------------------------------------
+  # Project population size
   popsize_cols <- names(
     unlist(
       project_population_size(
@@ -143,11 +148,11 @@ run_herd_simulation <- function(
         male_fecundity = herd_data[1, male_fecundity],
         pdea = as.numeric(
           herd_data[1, c("pdea.FB", "pdea.FJ", "pdea.FS", "pdea.FA", "pdea.FC", "pdea.MB", "pdea.MJ",
-                       "pdea.MS", "pdea.MA", "pdea.MC")]
+                         "pdea.MS", "pdea.MA", "pdea.MC")]
         ),
         poff = as.numeric(
           herd_data[1, c("poff.FB", "poff.FJ", "poff.FS", "poff.FA", "poff.FC", "poff.MB", "poff.MJ",
-                       "poff.MS", "poff.MA", "poff.MC")]
+                         "poff.MS", "poff.MA", "poff.MC")]
         ),
         g = as.numeric(
           herd_data[1, c("g.FB", "g.FJ", "g.FS", "g.FA", "g.FC", "g.MB", "g.MJ", "g.MS", "g.MA", "g.MC")]
@@ -155,7 +160,7 @@ run_herd_simulation <- function(
         growth_rate_pop = herd_data[1, growth_rate_pop],
         structure = as.numeric(
           herd_data[1, c("structure.FB", "structure.FJ", "structure.FS", "structure.FA",
-                       "structure.MB", "structure.MJ", "structure.MS", "structure.MA")]
+                         "structure.MB", "structure.MJ", "structure.MS", "structure.MA")]
         ),
         share = as.numeric(
           herd_data[1, c("share.FJ", "share.FS", "share.FA", "share.MJ", "share.MS", "share.MA")]
@@ -191,7 +196,9 @@ run_herd_simulation <- function(
     )
   ), by = seq_len(nrow(herd_data))]
 
-  # --- Function 5: Offtake Summary -----------------------------------------------
+  # --- Step 3: Calculate Offtake and Weights ---------------------------------
+
+  # Calculate offtake summary
   offtake_cols <- names(
     unlist(
       summarise_offtake(
@@ -200,15 +207,15 @@ run_herd_simulation <- function(
         ),
         size_end = as.numeric(
           herd_data[1, c("size_end.FJ", "size_end.FS", "size_end.FA", "size_end.MJ", "size_end.MS",
-                       "size_end.MA")]
+                         "size_end.MA")]
         ),
         size_avg = as.numeric(
           herd_data[1, c("size_avg.FJ", "size_avg.FS", "size_avg.FA", "size_avg.MJ", "size_avg.MS",
-                       "size_avg.MA")]
+                         "size_avg.MA")]
         ),
         offtake = as.numeric(
           herd_data[1, c("offtake.FB", "offtake.FJ", "offtake.FS", "offtake.FA", "offtake.FC",
-                       "offtake.MB", "offtake.MJ", "offtake.MS", "offtake.MA", "offtake.MC")]
+                         "offtake.MB", "offtake.MJ", "offtake.MS", "offtake.MA", "offtake.MC")]
         )
       )
     )
@@ -234,7 +241,9 @@ run_herd_simulation <- function(
     )
   ), by = seq_len(nrow(herd_data))]
 
-  # --- Output Export ------------------------------------------------------------
+  # --- Step 4: Filter and Prepare Data for Reshaping -------------------------
+
+  # Define columns to keep
   cols_all <- names(herd_data)
   col_start <- which(cols_all == "LPS")
   col_end <- which(cols_all == "fibre_prod")
@@ -247,7 +256,6 @@ run_herd_simulation <- function(
   )
 
   final_cols <- c(cols_all[col_start:col_end], extra_cols)
-
   herd_data <- herd_data[, ..final_cols]
 
   # Define ID and cohort-specific columns
@@ -271,20 +279,18 @@ run_herd_simulation <- function(
     "offtake_number.MJ", "offtake_number.MS", "offtake_number.MA"
   )
 
-  # Separate out non-cohort data and prepare long-format data
-  herd_meta <- herd_data[, .SD, .SDcols = setdiff(names(herd_data), cohort_cols)]
-  herd_long <- herd_data[, .SD, .SDcols = c(id_cols, cohort_cols)]
+  # --- Step 5: Reshape Data and Calculate Final Metrics ----------------------
 
   # Reshape to long format
-  long_dt <- melt(
-    herd_long,
+  herd_long <- melt(
+    herd_data[, .SD, .SDcols = c(id_cols, cohort_cols)],
     id.vars = id_cols,
     variable.name = "variable",
     value.name = "value"
   )
 
   # Split variable column into 'item' and 'cohort'
-  long_dt[, `:=`(
+  herd_long[, `:=`(
     item = sub("\\..*$", "", variable),
     cohort = ifelse(
       grepl("\\.", variable),
@@ -295,14 +301,19 @@ run_herd_simulation <- function(
 
   # Reshape to wide by item
   herd_wide <- dcast(
-    long_dt,
+    herd_long,
     LPS + HerdType + Animal + ADM0_CODE + ISO3 + ISO3_num +
       RegionClass + COUNTRY + M49_code + cohort + RegionClass ~ item,
     value.var = "value"
   )
 
   # Merge with static herd data
-  herd_merged <- merge(herd_meta, herd_wide, by = id_cols, all.x = TRUE)
+  herd_merged <- merge(
+    herd_data[, .SD, .SDcols = setdiff(names(herd_data), cohort_cols)],
+    herd_wide,
+    by = id_cols,
+    all.x = TRUE
+  )
 
   # Set preferred column order
   setcolorder(herd_merged, c(
@@ -312,7 +323,7 @@ run_herd_simulation <- function(
     "RegionClass", "COUNTRY"
   ))
 
-  # Add cohort-specific weights
+  # Calculate weights
   herd_merged[, c("initialLW", "potfinalLW", "slaughterLW") :=
                 calc_cohort_weights(
                   Animal_short, cohort, AFKG, AMKG, CKG = ckg, MFSKG, MMSKG, WKG = wkg, AFC = afc, WA
@@ -320,16 +331,14 @@ run_herd_simulation <- function(
               by = .I
   ]
 
-  # Add average and final weights
   herd_merged[, c("averageLW", "finalLW") :=
                 calc_avg_weights(initialLW, potfinalLW, slaughterLW, offtake_rate),
               by = .I
   ]
 
-  # Add daily weight gain
   herd_merged[, dwg := calc_daily_gain(potfinalLW, initialLW, duration), by = .I]
 
-  # Assign weaning weights (WKG) for non-pig cohorts using FS values
+  # Assign weaning weights for non-pig cohorts using FS values
   weaning_dt <- herd_merged[
     cohort == "FS" & Animal_short != "PGS",
     .(COUNTRY, ADM0_CODE, Animal_short, LPS_short, HerdType_short, cohort, initialLW)
@@ -344,7 +353,7 @@ run_herd_simulation <- function(
     ]
   ]
 
-  # Drop unused columns
+  # Remove unused columns
   cols_to_drop <- c(
     "AFCM", "AFKG", "AMKG", "BCR", "DR1M", "DR2", "DRF", "DRR2A", "DRR2B",
     "DWG2", "FRRF", "LW", "M2SKG", "MFSKG", "RRF", "RRM", "WA", "MMSKG"
