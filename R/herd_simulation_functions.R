@@ -18,14 +18,10 @@
 #' @export
 compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
   # Calculate fecundity rates
-  female_fecundity <- prolif_rate * fem_birth_ratio * (part_rate / 365)
-  male_fecundity <- prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
-
-  # Prepare output
-  output <- list(female_fecundity, male_fecundity)
-  names(output) <- c("female_fecundity", "male_fecundity")
-
-  return(output)
+  list(
+    female_fecundity = prolif_rate * fem_birth_ratio * (part_rate / 365),
+    male_fecundity = prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
+  )
 }
 
 #' Compute Transition Probabilities for Sex-Age Classes
@@ -113,10 +109,14 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
     c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
   names(hdea) <- names(hoff) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
-  output <- list(hdea, hoff, pdea, poff, psur, g)
-  names(output) <- c("hdea", "hoff", "pdea", "poff", "psur", "g")
-
-  return(output)
+  list(
+    hdea = hdea,
+    hoff = hoff,
+    pdea = pdea,
+    poff = poff,
+    psur = psur,
+    g = g
+  )
 }
 
 #' Simulate Steady-State Population Structure
@@ -255,10 +255,12 @@ simulate_steady_state_structure <- function(
   growth_rate_pop <- (Fem_J__x_fec[days_steady] / Fem_J__x_fec[days_steady - 1])^365 - 1
 
   # Return output
-  output <- list(days_steady, structure, share, growth_rate_pop)
-  names(output) <- c("days_steady", "structure", "share", "growth_rate_pop")
-
-  return(output)
+  list(
+    days_steady = days_steady,
+    structure = structure,
+    share = share,
+    growth_rate_pop = growth_rate_pop
+  )
 }
 
 #' Project One Year of Steady-State Population Dynamics
@@ -416,10 +418,13 @@ project_population_size <- function(
   )
 
   # Prepare output
-  output <- list(size, size_end, size_end_exact, size_avg, offtake)
-  names(output) <- c("size", "size_end", "size_end_exact", "size_avg", "offtake")
-
-  return(output)
+  list(
+    siz = size,
+    size_end = size_end,
+    size_end_exact = size_end_exact,
+    size_avg = size_avg,
+    offtake = offtake
+  )
 }
 
 #' Summarise Offtake and Stock Variation for a Steady-State Year
@@ -477,16 +482,15 @@ summarise_offtake <- function(size, size_end, size_avg, offtake) {
     names(offtake_sv_share_avg) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
   # Prepare output
-  output <- list(
-    stock_variation, offtake_number, offtake_share, offtake_share_avg,
-    offtake_sv_number, offtake_sv_share, offtake_sv_share_avg
+  list(
+    stock_variation = stock_variation,
+    offtake_number = offtake_number,
+    offtake_share = offtake_share,
+    offtake_share_avg = offtake_share_avg,
+    offtake_sv_number = offtake_sv_number,
+    offtake_sv_share = offtake_sv_share,
+    offtake_sv_share_avg = offtake_sv_share_avg
   )
-  names(output) <- c(
-    "stock_variation", "offtake_number", "offtake_share", "offtake_share_avg",
-    "offtake_sv_number", "offtake_sv_share", "offtake_sv_share_avg"
-  )
-
-  return(output)
 }
 
 #' Calculate Live Weights by Cohort and at different lifestage
@@ -555,10 +559,11 @@ calc_cohort_weights <- function(
     initialLW <- potfinalLW <- slaughterLW <- AMKG
   }
 
-  output <- list(
-    initialLW = initialLW, potfinalLW = potfinalLW, slaughterLW = slaughterLW
+  list(
+    initialLW = initialLW,
+    potfinalLW = potfinalLW,
+    slaughterLW = slaughterLW
   )
-  return(output)
 }
 
 #' Calculate Average and Final Live Weights by Cohort
@@ -585,10 +590,10 @@ calc_avg_weights <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
   # Average weight across the stage
   averageLW <- (initialLW + finalLW) / 2
 
-  output <- list(
-    averageLW = averageLW, finalLW = finalLW
+  list(
+    averageLW = averageLW,
+    finalLW = finalLW
   )
-  return(output)
 }
 
 #' Calculate Daily Weight Gain
@@ -605,6 +610,5 @@ calc_avg_weights <- function(initialLW, potfinalLW, slaughterLW, offtake_rate) {
 #' @export
 calc_daily_gain <- function(potfinalLW, initialLW, duration) {
   # Average daily gain over the period
-  output <- (potfinalLW - initialLW) / duration
-  return(output)
+  (potfinalLW - initialLW) / duration
 }
