@@ -126,7 +126,7 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
 #'
 #' @param initial_structure Numeric vector of length 6. Initial number of individuals in each of the 6 sex-age classes.
 #' @param max_years Integer. Maximum number of years to simulate.
-#' @param min_lambda_change Numeric. Threshold for minimal change in class-specific growth rates (lambda) to reach steady state.
+#' @param min_lambda_change Numeric. Threshold for minimal change in class-specific growth rates to reach steady state.
 #' @param female_fecundity Numeric. Daily number of female births per adult female.
 #' @param male_fecundity Numeric. Daily number of male births per adult female.
 #' @param pdea Numeric vector of length 10. Daily death probabilities for 10 cohorts.
@@ -269,14 +269,14 @@ simulate_steady_state_structure <- function(
 #' and returns population size statistics and offtake results.
 #'
 #' @param size_total Numeric. Total population size at the start of the year.
-#' @param female_fecundity Numeric. Daily female births per adult female (from `compute_fecundity_rates()`).
-#' @param male_fecundity Numeric. Daily male births per adult female (from `compute_fecundity_rates()`).
-#' @param pdea Numeric vector of length 10. Daily death probabilities (from `compute_transition_probabilities()`).
-#' @param poff Numeric vector of length 10. Daily offtake probabilities (from `compute_transition_probabilities()`).
-#' @param g Numeric vector of length 10. Transition probabilities to next age class (from `compute_transition_probabilities()`).
-#' @param growth_rate_pop Numeric. Annual population growth rate (from `simulate_steady_state_structure()`).
-#' @param structure Numeric vector of length 8. Final population share in 8 classes (from `simulate_steady_state_structure()`).
-#' @param share Numeric vector of length 6. Final population share in 6 grouped classes (from `simulate_steady_state_structure()`).
+#' @param female_fecundity Numeric. Daily female births per adult female.
+#' @param male_fecundity Numeric. Daily male births per adult female.
+#' @param pdea Numeric vector of length 10. Daily death probabilities.
+#' @param poff Numeric vector of length 10. Daily offtake probabilities.
+#' @param g Numeric vector of length 10. Transition probabilities to next age class.
+#' @param growth_rate_pop Numeric. Annual population growth rate.
+#' @param structure Numeric vector of length 8. Final population share in 8 classes.
+#' @param share Numeric vector of length 6. Final population share in 6 grouped classes.
 #'
 #' @return A named list with:
 #' \describe{
@@ -432,10 +432,10 @@ project_population_size <- function(
 #' Computes annual offtake quantities and rates, as well as stock variation and their combined values
 #' across 6 sex-age classes based on steady-state population projections.
 #'
-#' @param size Numeric vector of length 6. Population at start of year (from `project_population_size()`).
-#' @param size_end Numeric vector of length 6. Population at end of year (from `project_population_size()`).
-#' @param size_avg Numeric vector of length 6. Average population over the year (from `project_population_size()`).
-#' @param offtake Numeric vector of length 10. Offtake counts from 10 sex-age classes (from `project_population_size()`).
+#' @param size Numeric vector of length 6. Population at start of year.
+#' @param size_end Numeric vector of length 6. Population at end of year.
+#' @param size_avg Numeric vector of length 6. Average population over the year.
+#' @param offtake Numeric vector of length 10. Offtake counts from 10 sex-age classes.
 #'
 #' @return A named list with:
 #' \describe{
@@ -450,14 +450,14 @@ project_population_size <- function(
 #'
 #' @export
 summarise_offtake <- function(size, size_end, size_avg, offtake) {
-  # Aggregate offtake: collapse 10 sex-age classes to 6 by grouping
+  # Aggregate offtake: collapse 10 sex-age classes into 6
   offtake_number <- c(
-    sum(offtake[1:2]),   # FJ = FB + FJ
-    offtake[3],          # FS
-    sum(offtake[4:5]),   # FA = FA + FC
-    sum(offtake[6:7]),   # MJ = MB + MJ
-    offtake[8],          # MS
-    sum(offtake[9:10])   # MA = MA + MC
+    FJ = sum(offtake[c("FB", "FJ")]),
+    FS = offtake["FS"],
+    FA = sum(offtake[c("FA", "FC")]),
+    MJ = sum(offtake[c("MB", "MJ")]),
+    MS = offtake["MS"],
+    MA = sum(offtake[c("MA", "MC")])
   )
 
   # Offtake rates
