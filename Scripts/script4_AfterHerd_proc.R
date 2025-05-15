@@ -77,7 +77,7 @@ herd_merged[, c("initial_weight", "potential_final_weight", "slaughter_weight") 
 ]
 
 # Add average and final weights
-herd_merged[, c("averageLW", "finalLW") :=
+herd_merged[, c("average_weight", "final_weight") :=
               calc_avg_weights(initial_weight, potential_final_weight, slaughter_weight, offtake_rate),
             by = .I
 ]

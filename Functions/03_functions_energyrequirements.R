@@ -4,7 +4,7 @@
 Dfunction_nemain = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
                             cohort, # CTL, BFL, SHP, PGS, CHK
                             afc,
-                            averageLW, # CTL, BFL, SHP, GTS, PGS, CHK
+                            average_weight, # CTL, BFL, SHP, GTS, PGS, CHK
                             milking_fraction, # CTL / proportion of lactating adult females
                             offtake_rate, # CTL, BFL, SHP, GTS, PGS, CHK, CML / offtake rate by cohort
                             idle, # PGS
@@ -53,9 +53,9 @@ Dfunction_nemain = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
 
     if (cohort == "FA") {
 
-      lw_AF <- ((averageLW^0.75 * idle) +
-                  ((averageLW + (litsize * ckg + 0.15 * averageLW) / 2)^0.75 * gest) +
-                  ((averageLW + (0.15 * averageLW) / 2)^0.75 * lact)) /
+      lw_AF <- ((average_weight^0.75 * idle) +
+                  ((average_weight + (litsize * ckg + 0.15 * average_weight) / 2)^0.75 * gest) +
+                  ((average_weight + (0.15 * average_weight) / 2)^0.75 * lact)) /
         (idle + gest + lact)
 
       return(lw_AF * cmain)
@@ -91,7 +91,7 @@ Dfunction_nemain = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
   }
 
   # Default return value
-  return((averageLW ^ 0.75) * cmain)
+  return((average_weight ^ 0.75) * cmain)
 }
 
 
@@ -107,7 +107,7 @@ Dfunction_neact = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
                            past_man_frac, # CTL, BFL, SHP, GTS, CML
                            mmspasture, # CTL, BFL, SHP, GTS, CML
                            nemain, # CTL, BFL, PGS, CHK
-                           averageLW, # SHP, GTS, CML
+                           average_weight, # SHP, GTS, CML
                            offtake_rate # CTL, BFL, SHP, GTS, PGS, CHK, CML / offtake rate by cohort
                            # activity_fraction,
                            # high_activity_fraction
@@ -130,12 +130,12 @@ Dfunction_neact = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
     if (cohort == "FA"){
       cact = 0.0096
     }
-    ret = cact * averageLW
+    ret = cact * average_weight
 
   } else if (Animal_short %in% c("GTS")){
     # cact = (0.019 * activity_fraction) + (0.024 * high_activity_fraction)
     cact = (0.019 * mmspasture * past_man_frac) + (0.024 * mmspasture * (1 - past_man_frac))
-    ret = cact * averageLW
+    ret = cact * average_weight
 
   } else if (Animal_short == "PGS"){ #ASSUMING MMSPASTURE AS A PROXY ALSO FOR PIGS. NEED TO BE REVISED!
     # cact = 0.125 * activity_fraction
@@ -156,8 +156,8 @@ Dfunction_neact = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
 # output: MJ/head/day
 Dfunction_negrow = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
                             cohort, # CTL, BFL, SHP, GTS, PGS, CHK, CML
-                            averageLW, # CTL, BFL, CML
-                            finalLW,
+                            average_weight, # CTL, BFL, CML
+                            final_weight,
                             initial_weight, # SHP, GTS
                             dwg, # CTL, BFL, SHP, GTS, PGS, CHK, CML
                             offtake_rate, # Added missing parameter
@@ -172,7 +172,7 @@ Dfunction_negrow = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
       cgro = 1.2 * (1-offtake_rate) + 1 * offtake_rate
     }
     if (cohort %in% c("FS", "FJ", "MS", "MJ")){
-      ret = 22.02 * ((averageLW / (cgro * finalLW)) ^ 0.75) * (dwg ^ 1.097)
+      ret = 22.02 * ((average_weight / (cgro * final_weight)) ^ 0.75) * (dwg ^ 1.097)
     } else {
       return(0)  # Explicitly return 0 if cohort does not match
     }
@@ -200,7 +200,7 @@ Dfunction_negrow = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
       b <- 0
     }
 
-    ret = ((finalLW - initial_weight) * (a + 0.5 * b * (initial_weight + finalLW))) / duration
+    ret = ((final_weight - initial_weight) * (a + 0.5 * b * (initial_weight + final_weight))) / duration
 
   } else if (Animal_short %in% c("GTS")) {
 
@@ -213,7 +213,7 @@ Dfunction_negrow = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
       b <- 0
     }
 
-    ret = ((finalLW - initial_weight) * (a + 0.5 * b * (initial_weight + finalLW))) / duration
+    ret = ((final_weight - initial_weight) * (a + 0.5 * b * (initial_weight + final_weight))) / duration
 
   } else if (Animal_short == "PGS") {
     prot_tissue_frac = 0.65 #Change from GLEAM3: using the average value for all Animal_shorts (in GLEAM3: used for MED LPS)

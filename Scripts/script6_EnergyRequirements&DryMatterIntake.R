@@ -6,17 +6,17 @@ source("Functions/03_functions_energyrequirements.R")
 source("Functions/04_functions_drymatterintake.R")
 
 
-GLEAM_input_energyrequirement[, nemain := Dfunction_nemain(Animal_short, cohort, averageLW, idle,
+GLEAM_input_energyrequirement[, nemain := Dfunction_nemain(Animal_short, cohort, average_weight, idle,
                                                gest, lact, litsize, ckg, milking_fraction, offtake_rate, afc), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 ## energy for activity
 GLEAM_input_energyrequirement[, neact := Dfunction_neact(Animal_short, cohort, past_man_frac, mmspasture,
-                                                          nemain, averageLW, offtake_rate),  by = seq_len(nrow(GLEAM_input_energyrequirement))]
+                                                          nemain, average_weight, offtake_rate),  by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 
 ## energy for growing
 GLEAM_input_energyrequirement[, negrow := Dfunction_negrow(Animal_short, cohort,
-                                               averageLW, finalLW, initial_weight, dwg, offtake_rate,
+                                               average_weight, final_weight, initial_weight, dwg, offtake_rate,
                                                duration), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 
@@ -72,4 +72,4 @@ GLEAM_input_energyrequirement[, dmi := Dfunction_dmi(Animal_short, getot, diet_g
 fwrite(GLEAM_input_energyrequirement, "Inputs/GLEAM_input_directemissions.csv")
 
 
-# View(GLEAM_input_energyrequirement[,.(Animal_short, COUNTRY, LPS, HerdType, cohort, MLK_YIELD, FR, WKG, initial_weight,nelact, averageLW, nemain,   nepreg, negrow, diet_dig, rem, reg, getot, dmi)])
+# View(GLEAM_input_energyrequirement[,.(Animal_short, COUNTRY, LPS, HerdType, cohort, MLK_YIELD, FR, WKG, initial_weight,nelact, average_weight, nemain,   nepreg, negrow, diet_dig, rem, reg, getot, dmi)])

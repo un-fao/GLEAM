@@ -578,21 +578,21 @@ calc_cohort_weights <- function(
 #'
 #' @return A named list with:
 #' \describe{
-#'   \item{averageLW}{Average live weight over the stage (accounts for offtake and survivors).}
-#'   \item{finalLW}{Final live weight after accounting for both survivors and offtaken animals.}
+#'   \item{average_weight}{Average live weight over the stage (accounts for offtake and survivors).}
+#'   \item{final_weight}{Final live weight after accounting for both survivors and offtaken animals.}
 #' }
 #'
 #' @export
 calc_avg_weights <- function(initial_weight, potential_final_weight, slaughter_weight, offtake_rate) {
   # Weighted final weight: survivors reach potential_final_weight, offtaken animals go to slaughter
-  finalLW <- potential_final_weight * (1 - offtake_rate) + slaughter_weight * offtake_rate
+  final_weight <- potential_final_weight * (1 - offtake_rate) + slaughter_weight * offtake_rate
 
   # Average weight across the stage
-  averageLW <- (initial_weight + finalLW) / 2
+  average_weight <- (initial_weight + final_weight) / 2
 
   list(
-    averageLW = averageLW,
-    finalLW = finalLW
+    average_weight = average_weight,
+    final_weight = final_weight
   )
 }
 
