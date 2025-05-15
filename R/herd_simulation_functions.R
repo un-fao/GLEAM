@@ -419,7 +419,7 @@ project_population_size <- function(
 
   # Prepare output
   list(
-    siz = size,
+    size = size,
     size_end = size_end,
     size_end_exact = size_end_exact,
     size_avg = size_avg,
