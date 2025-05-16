@@ -585,7 +585,9 @@ calc_cohort_weights <- function(
 #' }
 #'
 #' @export
-calc_avg_weights <- function(initial_weight, potential_final_weight, slaughter_weight, offtake_rate) {
+calc_avg_weights <- function(
+    initial_weight, potential_final_weight, slaughter_weight, offtake_rate
+    ) {
   # Weighted final weight: survivors reach potential_final_weight, offtaken animals go to slaughter
   final_weight <- potential_final_weight * (1 - offtake_rate) + slaughter_weight * offtake_rate
 

@@ -87,12 +87,21 @@ herd_merged[, c("initial_weight", "potential_final_weight", "slaughter_weight") 
 
 # Add average and final weights
 herd_merged[, c("average_weight", "final_weight") :=
-              calc_avg_weights(initial_weight, potential_final_weight, slaughter_weight, offtake_rate),
+              calc_avg_weights(
+                initial_weight = initial_weight,
+                potential_final_weight = potential_final_weight,
+                slaughter_weight = slaughter_weight,
+                offtake_rate = offtake_rate
+              ),
             by = .I
 ]
 
 # Add daily weight gain
-herd_merged[, dwg := calc_daily_weight_gain(potential_final_weight, initial_weight, duration), by = .I]
+herd_merged[, dwg := calc_daily_weight_gain(
+  potential_final_weight = potential_final_weight,
+  initial_weight = initial_weight,
+  duration = duration
+), by = .I]
 
 # Assign weaning weights (WKG) for non-pig cohorts using FS values
 weaning_dt <- herd_merged[
