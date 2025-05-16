@@ -498,16 +498,16 @@ summarise_offtake <- function(size, size_end, size_avg, offtake) {
 #' Computes initial, potential final, and slaughter live weight (LW) for
 #'  a given cohort and animal type.
 #'
-#' @param Animal_short Character. Species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").
+#' @param animal Character. Species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").
 #' @param cohort Character. Cohort code (e.g., "FJ", "MJ", "FS", "MS", "FA", "MA").
-#' @param AFKG Numeric. Adult female weight in kg.
-#' @param AMKG Numeric. Adult male weight in kg.
-#' @param CKG Numeric. Birth weight in kg.
-#' @param MFSKG Numeric. Slaughter weight of adult female in kg.
-#' @param MMSKG Numeric. Slaughter weight of adult male in kg.
-#' @param WKG Numeric. Weaning weight in kg.
-#' @param AFC Numeric. Age at first calving (in days).
-#' @param WA Numeric. Age of the animal at the current stage (in days).
+#' @param adult_female_weight Numeric. Adult female weight in kg.
+#' @param adult_male_weight Numeric. Adult male weight in kg.
+#' @param birth_weight Numeric. Birth weight in kg.
+#' @param slaughter_weight_female Numeric. Slaughter weight of adult female in kg.
+#' @param slaughter_weight_male Numeric. Slaughter weight of adult male in kg.
+#' @param weaning_weight Numeric. Weaning weight in kg.
+#' @param age_first_calving Numeric. Age at first calving (in days).
+#' @param animal_age Numeric. Age of the animal at the current stage (in days).
 #'
 #' @return A named list with:
 #' \describe{
@@ -518,14 +518,16 @@ summarise_offtake <- function(size, size_end, size_avg, offtake) {
 #'
 #' @export
 calc_cohort_weights <- function(
-    Animal_short, cohort,
-    AFKG = NA_real_, AMKG = NA_real_, CKG = NA_real_, MFSKG = NA_real_,
-    MMSKG = NA_real_, WKG = NA_real_, AFC = NA_real_, WA = NA_real_
+    animal, cohort,
+    adult_female_weight = NA_real_, adult_male_weight = NA_real_,
+    birth_weight = NA_real_, slaughter_weight_female = NA_real_,
+    slaughter_weight_male = NA_real_, weaning_weight = NA_real_,
+    age_first_calving = NA_real_, animal_age = NA_real_
     ) {
 
   # Helper function for growing weight
   grow_weight <- function(adult_weight) {
-    ((adult_weight - CKG) / AFC) * WA + CKG
+    ((adult_weight - birth_weight) / age_first_calving) * animal_age + birth_weight
   }
 
   # Defaults
@@ -533,30 +535,30 @@ calc_cohort_weights <- function(
 
   # Juvenile cohorts
   if (cohort %in% c("FJ", "MJ")) {
-    initial_weight <- CKG
-    if (Animal_short %in% c("PGS", "CML")) {
-      potential_final_weight <- slaughter_weight <- WKG
+    initial_weight <- birth_weight
+    if (animal %in% c("PGS", "CML")) {
+      potential_final_weight <- slaughter_weight <- weaning_weight
     } else {
-      adult_weight <- if (cohort == "FJ") AFKG else AMKG
+      adult_weight <- if (cohort == "FJ") adult_female_weight else adult_male_weight
       potential_final_weight <- slaughter_weight <- grow_weight(adult_weight)
     }
 
     # Subadult cohorts
   } else if (cohort %in% c("FS", "MS")) {
-    if (Animal_short %in% c("PGS", "CML")) {
-      initial_weight <- WKG
+    if (animal %in% c("PGS", "CML")) {
+      initial_weight <- weaning_weight
     } else {
-      adult_weight <- if (cohort == "FS") AFKG else AMKG
+      adult_weight <- if (cohort == "FS") adult_female_weight else adult_male_weight
       initial_weight <- grow_weight(adult_weight)
     }
-    potential_final_weight <- if (cohort == "FS") AFKG else AMKG
-    slaughter_weight <- if (cohort == "FS") MFSKG else MMSKG
+    potential_final_weight <- if (cohort == "FS") adult_female_weight else adult_male_weight
+    slaughter_weight <- if (cohort == "FS") slaughter_weight_female else slaughter_weight_male
 
     # Adult cohorts
   } else if (cohort == "FA") {
-    initial_weight <- potential_final_weight <- slaughter_weight <- AFKG
+    initial_weight <- potential_final_weight <- slaughter_weight <- adult_female_weight
   } else if (cohort == "MA") {
-    initial_weight <- potential_final_weight <- slaughter_weight <- AMKG
+    initial_weight <- potential_final_weight <- slaughter_weight <- adult_male_weight
   }
 
   list(

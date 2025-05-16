@@ -5,38 +5,38 @@
 \title{Calculate Live Weights by Cohort and at different lifestage}
 \usage{
 calc_cohort_weights(
-  Animal_short,
+  animal,
   cohort,
-  AFKG = NA_real_,
-  AMKG = NA_real_,
-  CKG = NA_real_,
-  MFSKG = NA_real_,
-  MMSKG = NA_real_,
-  WKG = NA_real_,
-  AFC = NA_real_,
-  WA = NA_real_
+  adult_female_weight = NA_real_,
+  adult_male_weight = NA_real_,
+  birth_weight = NA_real_,
+  slaughter_weight_female = NA_real_,
+  slaughter_weight_male = NA_real_,
+  weaning_weight = NA_real_,
+  age_first_calving = NA_real_,
+  animal_age = NA_real_
 )
 }
 \arguments{
-\item{Animal_short}{Character. Species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").}
+\item{animal}{Character. Species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").}
 
 \item{cohort}{Character. Cohort code (e.g., "FJ", "MJ", "FS", "MS", "FA", "MA").}
 
-\item{AFKG}{Numeric. Adult female weight in kg.}
+\item{adult_female_weight}{Numeric. Adult female weight in kg.}
 
-\item{AMKG}{Numeric. Adult male weight in kg.}
+\item{adult_male_weight}{Numeric. Adult male weight in kg.}
 
-\item{CKG}{Numeric. Birth weight in kg.}
+\item{birth_weight}{Numeric. Birth weight in kg.}
 
-\item{MFSKG}{Numeric. Slaughter weight of adult female in kg.}
+\item{slaughter_weight_female}{Numeric. Slaughter weight of adult female in kg.}
 
-\item{MMSKG}{Numeric. Slaughter weight of adult male in kg.}
+\item{slaughter_weight_male}{Numeric. Slaughter weight of adult male in kg.}
 
-\item{WKG}{Numeric. Weaning weight in kg.}
+\item{weaning_weight}{Numeric. Weaning weight in kg.}
 
-\item{AFC}{Numeric. Age at first calving (in days).}
+\item{age_first_calving}{Numeric. Age at first calving (in days).}
 
-\item{WA}{Numeric. Age of the animal at the current stage (in days).}
+\item{animal_age}{Numeric. Age of the animal at the current stage (in days).}
 }
 \value{
 A named list with:

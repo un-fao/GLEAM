@@ -329,7 +329,16 @@ run_herd_simulation <- function(
   # Calculate weights
   herd_merged[, c("initial_weight", "potential_final_weight", "slaughter_weight") :=
                 calc_cohort_weights(
-                  Animal_short, cohort, AFKG, AMKG, CKG = ckg, MFSKG, MMSKG, WKG = wkg, AFC = afc, WA
+                  animal = Animal_short,
+                  cohort = cohort,
+                  adult_female_weight = AFKG,
+                  adult_male_weight = AMKG,
+                  birth_weight = ckg,
+                  slaughter_weight_female = MFSKG,
+                  slaughter_weight_male = MMSKG,
+                  weaning_weight = wkg,
+                  age_first_calving = afc,
+                  animal_age = WA
                 ),
               by = .I
   ]

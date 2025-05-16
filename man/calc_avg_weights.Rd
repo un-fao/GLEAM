@@ -23,8 +23,8 @@ calc_avg_weights(
 \value{
 A named list with:
 \describe{
-\item{averageLW}{Average live weight over the stage (accounts for offtake and survivors).}
-\item{finalLW}{Final live weight after accounting for both survivors and offtaken animals.}
+\item{average_weight}{Average live weight over the stage (accounts for offtake and survivors).}
+\item{final_weight}{Final live weight after accounting for both survivors and offtaken animals.}
 }
 }
 \description{
