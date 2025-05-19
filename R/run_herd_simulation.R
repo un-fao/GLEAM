@@ -205,44 +205,67 @@ run_herd_simulation <- function(
   offtake_cols <- names(
     unlist(
       summarise_offtake(
-        size = as.numeric(
-          herd_data[1, c("size.FJ", "size.FS", "size.FA", "size.MJ", "size.MS", "size.MA")]
+        size = c(
+          FJ = herd_data[1, size.FJ],
+          FS = herd_data[1, size.FS],
+          FA = herd_data[1, size.FA],
+          MJ = herd_data[1, size.MJ],
+          MS = herd_data[1, size.MS],
+          MA = herd_data[1, size.MA]
         ),
-        size_end = as.numeric(
-          herd_data[1, c("size_end.FJ", "size_end.FS", "size_end.FA", "size_end.MJ", "size_end.MS",
-                         "size_end.MA")]
+        size_end = c(
+          FJ = herd_data[1, size_end.FJ],
+          FS = herd_data[1, size_end.FS],
+          FA = herd_data[1, size_end.FA],
+          MJ = herd_data[1, size_end.MJ],
+          MS = herd_data[1, size_end.MS],
+          MA = herd_data[1, size_end.MA]
         ),
-        size_avg = as.numeric(
-          herd_data[1, c("size_avg.FJ", "size_avg.FS", "size_avg.FA", "size_avg.MJ", "size_avg.MS",
-                         "size_avg.MA")]
+        size_avg = c(
+          FJ = herd_data[1, size_avg.FJ],
+          FS = herd_data[1, size_avg.FS],
+          FA = herd_data[1, size_avg.FA],
+          MJ = herd_data[1, size_avg.MJ],
+          MS = herd_data[1, size_avg.MS],
+          MA = herd_data[1, size_avg.MA]
         ),
-        offtake = as.numeric(
-          herd_data[1, c("offtake.FB", "offtake.FJ", "offtake.FS", "offtake.FA", "offtake.FC",
-                         "offtake.MB", "offtake.MJ", "offtake.MS", "offtake.MA", "offtake.MC")]
+        offtake = c(
+          FB = herd_data[1, offtake.FB],
+          FJ = herd_data[1, offtake.FJ],
+          FS = herd_data[1, offtake.FS],
+          FA = herd_data[1, offtake.FA],
+          FC = herd_data[1, offtake.FC],
+          MB = herd_data[1, offtake.MB],
+          MJ = herd_data[1, offtake.MJ],
+          MS = herd_data[1, offtake.MS],
+          MA = herd_data[1, offtake.MA],
+          MC = herd_data[1, offtake.MC]
         )
       )
     )
   )
 
-  herd_data[, (offtake_cols) := as.list(
-    unlist(
-      summarise_offtake(
-        size = as.numeric(
-          .(size.FJ, size.FS, size.FA, size.MJ, size.MS, size.MA)
-        ),
-        size_end = as.numeric(
-          .(size_end.FJ, size_end.FS, size_end.FA, size_end.MJ, size_end.MS, size_end.MA)
-        ),
-        size_avg = as.numeric(
-          .(size_avg.FJ, size_avg.FS, size_avg.FA, size_avg.MJ, size_avg.MS, size_avg.MA)
-        ),
-        offtake = as.numeric(
-          .(offtake.FB, offtake.FJ, offtake.FS, offtake.FA, offtake.FC, offtake.MB, offtake.MJ,
-            offtake.MS, offtake.MA, offtake.MC)
-        )
-      )
+  herd_data[, (offtake_cols) := {
+    size <- c(FJ = size.FJ, FS = size.FS, FA = size.FA,
+              MJ = size.MJ, MS = size.MS, MA = size.MA)
+    size_end <- c(FJ = size_end.FJ, FS = size_end.FS, FA = size_end.FA,
+                  MJ = size_end.MJ, MS = size_end.MS, MA = size_end.MA)
+    size_avg <- c(FJ = size_avg.FJ, FS = size_avg.FS, FA = size_avg.FA,
+                  MJ = size_avg.MJ, MS = size_avg.MS, MA = size_avg.MA)
+    offtake <- c(
+      FB = offtake.FB, FJ = offtake.FJ, FS = offtake.FS,
+      FA = offtake.FA, FC = offtake.FC,
+      MB = offtake.MB, MJ = offtake.MJ, MS = offtake.MS,
+      MA = offtake.MA, MC = offtake.MC
     )
-  ), by = seq_len(nrow(herd_data))]
+
+    as.list(unlist(summarise_offtake(
+      size = size,
+      size_end = size_end,
+      size_avg = size_avg,
+      offtake = offtake
+    )))
+  }, by = .I]
 
   # --- Step 4: Filter and Prepare Data for Reshaping -------------------------
 

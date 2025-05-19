@@ -452,12 +452,12 @@ project_population_size <- function(
 summarise_offtake <- function(size, size_end, size_avg, offtake) {
   # Aggregate offtake: collapse 10 sex-age classes into 6
   offtake_number <- c(
-    sum(offtake[1:2]), # FB & FJ
-    offtake[3],        #
-    sum(offtake[4:5]), # FA & FC
-    sum(offtake[6:7]), # MB & MJ
-    offtake[8],        #
-    sum(offtake[9:10]) # MA & MC
+    FJ = sum(offtake[c("FB", "FJ")]),
+    FS = offtake["FS"],
+    FA = sum(offtake[c("FA", "FC")]),
+    MJ = sum(offtake[c("MB", "MJ")]),
+    MS = offtake["MS"],
+    MA = sum(offtake[c("MA", "MC")])
   )
 
   # Offtake rates
