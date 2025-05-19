@@ -162,15 +162,16 @@ simulate_steady_state_structure <- function(
       # Time step 1: initialize from starting vector
       ## calculate initial number of individuals taking into account
       ## the daily number of born females and males (female_fecundity/male_fecundity)
-      fem_birth_fec <- initial_structure[3] * female_fecundity
-      fem_juv_fec <- initial_structure[1]
-      fem_sub_fec <- initial_structure[2]
-      fem_adult_fec <- initial_structure[3]
+      fem_birth_fec <- initial_structure["FA"] * female_fecundity
+      fem_juv_fec <- initial_structure["FJ"]
+      fem_sub_fec <- initial_structure["FS"]
+      fem_adult_fec <- initial_structure["FA"]
       fem_cull_fec <- 0
-      mal_birth_fec <- initial_structure[3] * male_fecundity
-      mal_juv_fec <- initial_structure[4]
-      mal_sub_fec <- initial_structure[5]
-      mal_adult_fec <- initial_structure[6]
+
+      mal_birth_fec <- initial_structure["FA"] * male_fecundity
+      mal_juv_fec <- initial_structure["MJ"]
+      mal_sub_fec <- initial_structure["MS"]
+      mal_adult_fec <- initial_structure["MA"]
       mal_cull_fec <- 0
     } else {
       # Time step >1: propagate individuals from previous day
@@ -181,6 +182,7 @@ simulate_steady_state_structure <- function(
       fem_adult_fec[t] <- fem_adult_grow[t - 1]
       fem_cull_fec[t] <- 0
       fem_birth_fec[t] <- fem_adult_fec[t] * female_fecundity
+
       mal_juv_fec[t] <- mal_juv_grow[t - 1]
       mal_sub_fec[t] <- mal_sub_grow[t - 1]
       mal_adult_fec[t] <- mal_adult_grow[t - 1]

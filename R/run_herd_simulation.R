@@ -33,10 +33,10 @@
 #' @importFrom data.table := .SD .I melt dcast setcolorder
 run_herd_simulation <- function(
     herd_data,
-    initial_structure = c(100, 50, 30, 100, 50, 30),
+    initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
     max_years = 100,
     lambda_threshold = 1e-9
-    ) {
+) {
 
   # --- Step 1: Compute Core Demographic Parameters -----------------------------
 
@@ -51,43 +51,68 @@ run_herd_simulation <- function(
   transition_cols <- names(
     unlist(
       compute_transition_probabilities(
-        duration = as.numeric(
-          herd_data[1, .(
-            duration.FJ, duration.FS, duration.FA, duration.MJ, duration.MS, duration.MA
-          )]
+        duration = c(
+          FJ = herd_data[1, duration.FJ],
+          FS = herd_data[1, duration.FS],
+          FA = herd_data[1, duration.FA],
+          MJ = herd_data[1, duration.MJ],
+          MS = herd_data[1, duration.MS],
+          MA = herd_data[1, duration.MA]
         ),
-        offtake_rate = as.numeric(
-          herd_data[1, .(
-            offtake_rate.FJ, offtake_rate.FS, offtake_rate.FA, offtake_rate.MJ,
-            offtake_rate.MS, offtake_rate.MA
-          )]
+        offtake_rate = c(
+          FJ = herd_data[1, offtake_rate.FJ],
+          FS = herd_data[1, offtake_rate.FS],
+          FA = herd_data[1, offtake_rate.FA],
+          MJ = herd_data[1, offtake_rate.MJ],
+          MS = herd_data[1, offtake_rate.MS],
+          MA = herd_data[1, offtake_rate.MA]
         ),
-        death_rate = as.numeric(
-          herd_data[1, .(
-            mort_rate.FJ, mort_rate.FS, mort_rate.FA, mort_rate.MJ, mort_rate.MS,
-            mort_rate.MA
-          )]
+        death_rate = c(
+          FJ = herd_data[1, mort_rate.FJ],
+          FS = herd_data[1, mort_rate.FS],
+          FA = herd_data[1, mort_rate.FA],
+          MJ = herd_data[1, mort_rate.MJ],
+          MS = herd_data[1, mort_rate.MS],
+          MA = herd_data[1, mort_rate.MA]
         )
       )
     )
   )
 
-  herd_data[, (transition_cols) := as.list(
-    unlist(
-      compute_transition_probabilities(
-        duration = as.numeric(
-          .(duration.FJ, duration.FS, duration.FA, duration.MJ, duration.MS, duration.MA)
-        ),
-        offtake_rate = as.numeric(
-          .(offtake_rate.FJ, offtake_rate.FS, offtake_rate.FA, offtake_rate.MJ,
-            offtake_rate.MS, offtake_rate.MA)
-        ),
-        death_rate = as.numeric(
-          .(mort_rate.FJ, mort_rate.FS, mort_rate.FA, mort_rate.MJ, mort_rate.MS, mort_rate.MA)
-        )
-      )
+  herd_data[, (transition_cols) := {
+    duration <- c(
+      FJ = duration.FJ,
+      FS = duration.FS,
+      FA = duration.FA,
+      MJ = duration.MJ,
+      MS = duration.MS,
+      MA = duration.MA
     )
-  ), by = seq_len(nrow(herd_data))]
+
+    offtake_rate <- c(
+      FJ = offtake_rate.FJ,
+      FS = offtake_rate.FS,
+      FA = offtake_rate.FA,
+      MJ = offtake_rate.MJ,
+      MS = offtake_rate.MS,
+      MA = offtake_rate.MA
+    )
+
+    death_rate <- c(
+      FJ = mort_rate.FJ,
+      FS = mort_rate.FS,
+      FA = mort_rate.FA,
+      MJ = mort_rate.MJ,
+      MS = mort_rate.MS,
+      MA = mort_rate.MA
+    )
+
+    as.list(unlist(compute_transition_probabilities(
+      duration = duration,
+      offtake_rate = offtake_rate,
+      death_rate = death_rate
+    )))
+  }, by = .I]
 
   # --- Step 2: Simulate Population Dynamics -----------------------------------
 
