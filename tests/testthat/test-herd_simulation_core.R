@@ -40,7 +40,10 @@ test_that("simulate_steady_state_structure converges and returns valid structure
   )
 
   result <- simulate_steady_state_structure(
-    initial_structure = c(100, 50, 30, 100, 50, 30),
+    initial_structure = c(
+      FJ = 100, FS = 50, FA = 30,
+      MJ = 100, MS = 50, MA = 30
+    ),
     max_years = 5,
     min_lambda_change = 1e-6,
     female_fecundity = fec$female_fecundity,
@@ -64,7 +67,10 @@ test_that("project_population_size runs and returns list with expected elements"
     rep(365, 6), rep(0.1, 6), rep(0.05, 6)
   )
   steady <- simulate_steady_state_structure(
-    initial_structure = c(100, 50, 30, 100, 50, 30),
+    initial_structure = c(
+      FJ = 100, FS = 50, FA = 30,
+      MJ = 100, MS = 50, MA = 30
+    ),
     max_years = 5, min_lambda_change = 1e-6,
     female_fecundity = fec$female_fecundity,
     male_fecundity = fec$male_fecundity,
