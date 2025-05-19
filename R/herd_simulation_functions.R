@@ -124,14 +124,20 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
 #' Simulates population dynamics over time until a steady-state is reached. Tracks age-class structure and
 #' population growth based on survival, offtake, and fecundity parameters.
 #'
-#' @param initial_structure Numeric vector of length 6. Initial number of individuals in each of the 6 sex-age classes.
+#' @param initial_structure Named numeric vector of length 6. Initial number of individuals in each of the 6
+#'   sex-age classes. Must be named with: \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.
 #' @param max_years Integer. Maximum number of years to simulate.
-#' @param min_lambda_change Numeric. Threshold for minimal change in class-specific growth rates to reach steady state.
+#' @param min_lambda_change Numeric. Threshold for minimal change in class-specific growth rates to reach
+#'   steady state.
 #' @param female_fecundity Numeric. Daily number of female births per adult female.
 #' @param male_fecundity Numeric. Daily number of male births per adult female.
-#' @param pdea Numeric vector of length 10. Daily death probabilities for 10 cohorts.
-#' @param poff Numeric vector of length 10. Daily offtake probabilities for 10 cohorts.
-#' @param g Numeric vector of length 10. Daily probability of transition to the next class for 10 cohorts.
+#' @param pdea Named numeric vector of length 10. Daily death probabilities for 10 cohorts. Must be named
+#'   using: \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS},
+#'   \code{MA}, \code{MC}.
+#' @param poff Named numeric vector of length 10. Daily offtake probabilities for 10 cohorts. Names must match
+#'   those in \code{pdea}.
+#' @param g Named numeric vector of length 10. Daily probability of transition to the next class for 10 cohorts.
+#'   Names must match those in \code{pdea}.
 #'
 #' @return A named list with:
 #' \describe{
@@ -145,7 +151,7 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
 simulate_steady_state_structure <- function(
     initial_structure, max_years, min_lambda_change,
     female_fecundity, male_fecundity, pdea, poff, g
-    ) {
+) {
 
   # Initialize population vectors
   fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- NULL
@@ -206,27 +212,28 @@ simulate_steady_state_structure <- function(
     if (all(lambda_change < min_lambda_change)) break
 
     # Apply death and offtake rates to each class
-    fem_birth[t] <- fem_birth_fec[t] - pdea[1] * fem_birth_fec[t] - poff[1] * fem_birth_fec[t]
-    fem_juv[t] <- fem_juv_fec[t] - pdea[2] * fem_juv_fec[t] - poff[2] * fem_juv_fec[t]
-    fem_sub[t] <- fem_sub_fec[t] - pdea[3] * fem_sub_fec[t] - poff[3] * fem_sub_fec[t]
-    fem_adult[t] <- fem_adult_fec[t] - pdea[4] * fem_adult_fec[t] - poff[4] * fem_adult_fec[t]
-    fem_cull[t] <- fem_cull_fec[t] - pdea[5] * fem_cull_fec[t] - poff[5] * fem_cull_fec[t]
-    mal_birth[t] <- mal_birth_fec[t] - pdea[6] * mal_birth_fec[t] - poff[6] * mal_birth_fec[t]
-    mal_juv[t] <- mal_juv_fec[t] - pdea[7] * mal_juv_fec[t] - poff[7] * mal_juv_fec[t]
-    mal_sub[t] <- mal_sub_fec[t] - pdea[8] * mal_sub_fec[t] - poff[8] * mal_sub_fec[t]
-    mal_adult[t] <- mal_adult_fec[t] - pdea[9] * mal_adult_fec[t] - poff[9] * mal_adult_fec[t]
-    mal_cull[t] <- mal_cull_fec[t] - pdea[10] * mal_cull_fec[t] - poff[10] * mal_cull_fec[t]
+    fem_birth[t] <- fem_birth_fec[t] * (1 - pdea["FB"] - poff["FB"])
+    fem_juv[t]   <- fem_juv_fec[t]   * (1 - pdea["FJ"] - poff["FJ"])
+    fem_sub[t]   <- fem_sub_fec[t]   * (1 - pdea["FS"] - poff["FS"])
+    fem_adult[t] <- fem_adult_fec[t] * (1 - pdea["FA"] - poff["FA"])
+    fem_cull[t]  <- fem_cull_fec[t]  * (1 - pdea["FC"] - poff["FC"])
+
+    mal_birth[t] <- mal_birth_fec[t] * (1 - pdea["MB"] - poff["MB"])
+    mal_juv[t]   <- mal_juv_fec[t]   * (1 - pdea["MJ"] - poff["MJ"])
+    mal_sub[t]   <- mal_sub_fec[t]   * (1 - pdea["MS"] - poff["MS"])
+    mal_adult[t] <- mal_adult_fec[t] * (1 - pdea["MA"] - poff["MA"])
+    mal_cull[t]  <- mal_cull_fec[t]  * (1 - pdea["MC"] - poff["MC"])
 
     # Apply transition probabilities (growth to next class)
-    fem_juv_grow[t] <- fem_birth[t] + (1 - g[2]) * fem_juv[t]
-    fem_sub_grow[t] <- g[2] * fem_juv[t] + (1 - g[3]) * fem_sub[t]
-    fem_adult_grow[t] <- g[3] * fem_sub[t] + (1 - g[4]) * fem_adult[t]
-    fem_cull_grow[t] <- g[4] * fem_adult[t]
+    fem_juv_grow[t]   <- fem_birth[t] + (1 - g["FJ"]) * fem_juv[t]
+    fem_sub_grow[t]   <- g["FJ"] * fem_juv[t] + (1 - g["FS"]) * fem_sub[t]
+    fem_adult_grow[t] <- g["FS"] * fem_sub[t] + (1 - g["FA"]) * fem_adult[t]
+    fem_cull_grow[t]  <- g["FA"] * fem_adult[t]
 
-    mal_juv_grow[t] <- mal_birth[t] + (1 - g[7]) * mal_juv[t]
-    mal_sub_grow[t] <- g[7] * mal_juv[t] + (1 - g[8]) * mal_sub[t]
-    mal_adult_grow[t] <- g[8] * mal_sub[t] + (1 - g[9]) * mal_adult[t]
-    mal_cull_grow[t] <- g[9] * mal_adult[t]
+    mal_juv_grow[t]   <- mal_birth[t] + (1 - g["MJ"]) * mal_juv[t]
+    mal_sub_grow[t]   <- g["MJ"] * mal_juv[t] + (1 - g["MS"]) * mal_sub[t]
+    mal_adult_grow[t] <- g["MS"] * mal_sub[t] + (1 - g["MA"]) * mal_adult[t]
+    mal_cull_grow[t]  <- g["MA"] * mal_adult[t]
   }
 
   # Final iteration count
@@ -293,7 +300,7 @@ simulate_steady_state_structure <- function(
 project_population_size <- function(
     size_total, female_fecundity, male_fecundity, pdea, poff, g,
     growth_rate_pop, structure, share
-    ) {
+) {
 
   # Calculate initial number of individuals in each of the 8 sex-age classes
   xini <- size_total * structure
@@ -525,7 +532,7 @@ calc_cohort_weights <- function(
     birth_weight = NA_real_, slaughter_weight_female = NA_real_,
     slaughter_weight_male = NA_real_, weaning_weight = NA_real_,
     age_first_calving = NA_real_, animal_age = NA_real_
-    ) {
+) {
 
   # Helper function for growing weight
   grow_weight <- function(adult_weight) {
@@ -589,7 +596,7 @@ calc_cohort_weights <- function(
 #' @export
 calc_avg_weights <- function(
     initial_weight, potential_final_weight, slaughter_weight, offtake_rate
-    ) {
+) {
   # Weighted final weight: survivors reach potential_final_weight, offtaken animals go to slaughter
   final_weight <- potential_final_weight * (1 - offtake_rate) + slaughter_weight * offtake_rate
 

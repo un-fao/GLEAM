@@ -39,6 +39,8 @@ test_that("simulate_steady_state_structure converges and returns valid structure
     death_rate = rep(0.05, 6)
   )
 
+  cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
+
   result <- simulate_steady_state_structure(
     initial_structure = c(
       FJ = 100, FS = 50, FA = 30,
@@ -48,9 +50,9 @@ test_that("simulate_steady_state_structure converges and returns valid structure
     min_lambda_change = 1e-6,
     female_fecundity = fec$female_fecundity,
     male_fecundity = fec$male_fecundity,
-    pdea = trans$pdea,
-    poff = trans$poff,
-    g = trans$g
+    pdea = setNames(trans$pdea, cohort_names),
+    poff = setNames(trans$poff, cohort_names),
+    g = setNames(trans$g, cohort_names)
   )
 
   expect_named(result, c("days_steady", "structure", "share", "growth_rate_pop"))
@@ -66,6 +68,9 @@ test_that("project_population_size runs and returns list with expected elements"
   trans <- compute_transition_probabilities(
     rep(365, 6), rep(0.1, 6), rep(0.05, 6)
   )
+
+  cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
+
   steady <- simulate_steady_state_structure(
     initial_structure = c(
       FJ = 100, FS = 50, FA = 30,
@@ -74,9 +79,9 @@ test_that("project_population_size runs and returns list with expected elements"
     max_years = 5, min_lambda_change = 1e-6,
     female_fecundity = fec$female_fecundity,
     male_fecundity = fec$male_fecundity,
-    pdea = trans$pdea,
-    poff = trans$poff,
-    g = trans$g
+    pdea = setNames(trans$pdea, cohort_names),
+    poff = setNames(trans$poff, cohort_names),
+    g = setNames(trans$g, cohort_names)
   )
 
   res <- project_population_size(

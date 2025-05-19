@@ -117,55 +117,35 @@ run_herd_simulation <- function(
   # --- Step 2: Simulate Population Dynamics -----------------------------------
 
   # Simulate steady-state structure
-  structure_cols <- names(
-    unlist(
-      simulate_steady_state_structure(
-        initial_structure = initial_structure,
-        max_years = max_years,
-        min_lambda_change = lambda_threshold,
-        female_fecundity = herd_data[1, female_fecundity],
-        male_fecundity = herd_data[1, male_fecundity],
-        pdea = as.numeric(
-          herd_data[1, c(
-            "pdea.FB", "pdea.FJ", "pdea.FS", "pdea.FA", "pdea.FC", "pdea.MB", "pdea.MJ",
-            "pdea.MS", "pdea.MA", "pdea.MC"
-          )]
-        ),
-        poff = as.numeric(
-          herd_data[1, c(
-            "poff.FB", "poff.FJ", "poff.FS", "poff.FA", "poff.FC", "poff.MB", "poff.MJ",
-            "poff.MS", "poff.MA", "poff.MC"
-          )]
-        ),
-        g = as.numeric(
-          herd_data[1, c(
-            "g.FB", "g.FJ", "g.FS", "g.FA", "g.FC", "g.MB", "g.MJ", "g.MS", "g.MA", "g.MC"
-          )]
-        )
-      )
-    )
-  )
+  cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
 
-  herd_data[, (structure_cols) := as.list(
-    unlist(
-      simulate_steady_state_structure(
-        initial_structure = initial_structure,
-        max_years = max_years,
-        min_lambda_change = lambda_threshold,
-        female_fecundity = female_fecundity,
-        male_fecundity = male_fecundity,
-        pdea = as.numeric(
-          .(pdea.FB, pdea.FJ, pdea.FS, pdea.FA, pdea.FC, pdea.MB, pdea.MJ, pdea.MS, pdea.MA, pdea.MC)
-        ),
-        poff = as.numeric(
-          .(poff.FB, poff.FJ, poff.FS, poff.FA, poff.FC, poff.MB, poff.MJ, poff.MS, poff.MA, poff.MC)
-        ),
-        g = as.numeric(
-          .(g.FB, g.FJ, g.FS, g.FA, g.FC, g.MB, g.MJ, g.MS, g.MA, g.MC)
-        )
-      )
+  # Get structure column names from a sample run
+  structure_cols <- names(unlist(
+    simulate_steady_state_structure(
+      initial_structure = initial_structure,
+      max_years = max_years,
+      min_lambda_change = lambda_threshold,
+      female_fecundity = herd_data[1, female_fecundity],
+      male_fecundity = herd_data[1, male_fecundity],
+      pdea = setNames(unlist(herd_data[1, paste0("pdea.", cohort_names), with = FALSE]), cohort_names),
+      poff = setNames(unlist(herd_data[1, paste0("poff.", cohort_names), with = FALSE]), cohort_names),
+      g    = setNames(unlist(herd_data[1, paste0("g.", cohort_names), with = FALSE]), cohort_names)
     )
-  ), by = seq_len(nrow(herd_data))]
+  ))
+
+  # Apply simulation to full data.table, row-wise
+  herd_data[, (structure_cols) := as.list(unlist(
+    simulate_steady_state_structure(
+      initial_structure = initial_structure,
+      max_years = max_years,
+      min_lambda_change = lambda_threshold,
+      female_fecundity = female_fecundity,
+      male_fecundity = male_fecundity,
+      pdea = setNames(unlist(.SD[, paste0("pdea.", cohort_names), with = FALSE]), cohort_names),
+      poff = setNames(unlist(.SD[, paste0("poff.", cohort_names), with = FALSE]), cohort_names),
+      g    = setNames(unlist(.SD[, paste0("g.", cohort_names), with = FALSE]), cohort_names)
+    )
+  )), by = seq_len(nrow(herd_data))]
 
   # Project population size
   popsize_cols <- names(
