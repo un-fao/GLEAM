@@ -23,17 +23,20 @@ project_population_size(
 
 \item{male_fecundity}{Numeric. Daily male births per adult female.}
 
-\item{pdea}{Numeric vector of length 10. Daily death probabilities.}
+\item{pdea}{Named numeric vector of length 10. Daily death probabilities. Must be named using:
+\code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}, \code{MC}.}
 
-\item{poff}{Numeric vector of length 10. Daily offtake probabilities.}
+\item{poff}{Named numeric vector of length 10. Daily offtake probabilities. Names must match those in \code{pdea}.}
 
-\item{g}{Numeric vector of length 10. Transition probabilities to next age class.}
+\item{g}{Named numeric vector of length 10. Transition probabilities to next age class. Names must match those in \code{pdea}.}
 
 \item{growth_rate_pop}{Numeric. Annual population growth rate.}
 
-\item{structure}{Numeric vector of length 8. Final population share in 8 classes.}
+\item{structure}{Named numeric vector of length 8. Final population share in 8 classes. Must be named:
+\code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}.}
 
-\item{share}{Numeric vector of length 6. Final population share in 6 grouped classes.}
+\item{share}{Named numeric vector of length 6. Final population share in 6 grouped classes. Must be named:
+\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.}
 }
 \value{
 A named list with:

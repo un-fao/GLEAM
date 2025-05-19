@@ -16,21 +16,27 @@ simulate_steady_state_structure(
 )
 }
 \arguments{
-\item{initial_structure}{Numeric vector of length 6. Initial number of individuals in each of the 6 sex-age classes.}
+\item{initial_structure}{Named numeric vector of length 6. Initial number of individuals in each of the 6
+sex-age classes. Must be named with: \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.}
 
 \item{max_years}{Integer. Maximum number of years to simulate.}
 
-\item{min_lambda_change}{Numeric. Threshold for minimal change in class-specific growth rates to reach steady state.}
+\item{min_lambda_change}{Numeric. Threshold for minimal change in class-specific growth rates to reach
+steady state.}
 
 \item{female_fecundity}{Numeric. Daily number of female births per adult female.}
 
 \item{male_fecundity}{Numeric. Daily number of male births per adult female.}
 
-\item{pdea}{Numeric vector of length 10. Daily death probabilities for 10 cohorts.}
+\item{pdea}{Named numeric vector of length 10. Daily death probabilities for 10 cohorts. Must be named
+using: \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS},
+\code{MA}, \code{MC}.}
 
-\item{poff}{Numeric vector of length 10. Daily offtake probabilities for 10 cohorts.}
+\item{poff}{Named numeric vector of length 10. Daily offtake probabilities for 10 cohorts. Names must match
+those in \code{pdea}.}
 
-\item{g}{Numeric vector of length 10. Daily probability of transition to the next class for 10 cohorts.}
+\item{g}{Named numeric vector of length 10. Daily probability of transition to the next class for 10 cohorts.
+Names must match those in \code{pdea}.}
 }
 \value{
 A named list with:
