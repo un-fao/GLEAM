@@ -38,6 +38,11 @@ run_herd_simulation <- function(
     lambda_threshold = 1e-9
 ) {
 
+  # Define cohort name sets used for mortality, structure, and share inputs
+  cohorts <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
+  structure_cohorts <- c("FB", "FJ", "FS", "FA", "MB", "MJ", "MS", "MA")
+  share_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+
   # --- Step 1: Compute Core Demographic Parameters -----------------------------
 
   # Compute fecundity rates
@@ -117,7 +122,6 @@ run_herd_simulation <- function(
   # --- Step 2: Simulate Population Dynamics -----------------------------------
 
   # Simulate steady-state structure
-  cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
 
   # Get structure column names from a sample run
   structure_cols <- names(unlist(
@@ -127,9 +131,9 @@ run_herd_simulation <- function(
       min_lambda_change = lambda_threshold,
       female_fecundity = herd_data[1, female_fecundity],
       male_fecundity = herd_data[1, male_fecundity],
-      pdea = setNames(unlist(herd_data[1, paste0("pdea.", cohort_names), with = FALSE]), cohort_names),
-      poff = setNames(unlist(herd_data[1, paste0("poff.", cohort_names), with = FALSE]), cohort_names),
-      g    = setNames(unlist(herd_data[1, paste0("g.", cohort_names), with = FALSE]), cohort_names)
+      pdea = setNames(unlist(herd_data[1, paste0("pdea.", cohorts), with = FALSE]), cohorts),
+      poff = setNames(unlist(herd_data[1, paste0("poff.", cohorts), with = FALSE]), cohorts),
+      g    = setNames(unlist(herd_data[1, paste0("g.", cohorts), with = FALSE]), cohorts)
     )
   ))
 
@@ -141,68 +145,43 @@ run_herd_simulation <- function(
       min_lambda_change = lambda_threshold,
       female_fecundity = female_fecundity,
       male_fecundity = male_fecundity,
-      pdea = setNames(unlist(.SD[, paste0("pdea.", cohort_names), with = FALSE]), cohort_names),
-      poff = setNames(unlist(.SD[, paste0("poff.", cohort_names), with = FALSE]), cohort_names),
-      g    = setNames(unlist(.SD[, paste0("g.", cohort_names), with = FALSE]), cohort_names)
+      pdea = setNames(unlist(.SD[, paste0("pdea.", cohorts), with = FALSE]), cohorts),
+      poff = setNames(unlist(.SD[, paste0("poff.", cohorts), with = FALSE]), cohorts),
+      g    = setNames(unlist(.SD[, paste0("g.", cohorts), with = FALSE]), cohorts)
     )
   )), by = seq_len(nrow(herd_data))]
 
   # Project population size
-  popsize_cols <- names(
-    unlist(
-      project_population_size(
-        size_total = herd_data[1, size_total],
-        female_fecundity = herd_data[1, female_fecundity],
-        male_fecundity = herd_data[1, male_fecundity],
-        pdea = as.numeric(
-          herd_data[1, c("pdea.FB", "pdea.FJ", "pdea.FS", "pdea.FA", "pdea.FC", "pdea.MB", "pdea.MJ",
-                         "pdea.MS", "pdea.MA", "pdea.MC")]
-        ),
-        poff = as.numeric(
-          herd_data[1, c("poff.FB", "poff.FJ", "poff.FS", "poff.FA", "poff.FC", "poff.MB", "poff.MJ",
-                         "poff.MS", "poff.MA", "poff.MC")]
-        ),
-        g = as.numeric(
-          herd_data[1, c("g.FB", "g.FJ", "g.FS", "g.FA", "g.FC", "g.MB", "g.MJ", "g.MS", "g.MA", "g.MC")]
-        ),
-        growth_rate_pop = herd_data[1, growth_rate_pop],
-        structure = as.numeric(
-          herd_data[1, c("structure.FB", "structure.FJ", "structure.FS", "structure.FA",
-                         "structure.MB", "structure.MJ", "structure.MS", "structure.MA")]
-        ),
-        share = as.numeric(
-          herd_data[1, c("share.FJ", "share.FS", "share.FA", "share.MJ", "share.MS", "share.MA")]
-        )
-      )
-    )
-  )
 
-  herd_data[, (popsize_cols) := as.list(
-    unlist(
-      project_population_size(
-        size_total = size_total,
-        female_fecundity = female_fecundity,
-        male_fecundity = male_fecundity,
-        pdea = as.numeric(
-          .(pdea.FB, pdea.FJ, pdea.FS, pdea.FA, pdea.FC, pdea.MB, pdea.MJ, pdea.MS, pdea.MA, pdea.MC)
-        ),
-        poff = as.numeric(
-          .(poff.FB, poff.FJ, poff.FS, poff.FA, poff.FC, poff.MB, poff.MJ, poff.MS, poff.MA, poff.MC)
-        ),
-        g = as.numeric(
-          .(g.FB, g.FJ, g.FS, g.FA, g.FC, g.MB, g.MJ, g.MS, g.MA, g.MC)
-        ),
-        growth_rate_pop = growth_rate_pop,
-        structure = as.numeric(
-          .(structure.FB, structure.FJ, structure.FS, structure.FA, structure.MB, structure.MJ,
-            structure.MS, structure.MA)
-        ),
-        share = as.numeric(
-          .(share.FJ, share.FS, share.FA, share.MJ, share.MS, share.MA)
-        )
-      )
+  # Single-row version to extract output column names
+  popsize_cols <- names(unlist(
+    project_population_size(
+      size_total = herd_data[1, size_total],
+      female_fecundity = herd_data[1, female_fecundity],
+      male_fecundity = herd_data[1, male_fecundity],
+      pdea = setNames(unlist(herd_data[1, paste0("pdea.", cohorts), with = FALSE]), cohorts),
+      poff = setNames(unlist(herd_data[1, paste0("poff.", cohorts), with = FALSE]), cohorts),
+      g = setNames(unlist(herd_data[1, paste0("g." , cohorts), with = FALSE]), cohorts),
+      growth_rate_pop = herd_data[1, growth_rate_pop],
+      structure = setNames(unlist(herd_data[1, paste0("structure.", structure_cohorts), with = FALSE]), structure_cohorts),
+      share = setNames(unlist(herd_data[1, paste0("share.", share_cohorts), with = FALSE]), share_cohorts)
     )
-  ), by = seq_len(nrow(herd_data))]
+  ))
+
+  # Full-row application inside herd_data
+  herd_data[, (popsize_cols) := as.list(unlist(
+    project_population_size(
+      size_total = size_total,
+      female_fecundity = female_fecundity,
+      male_fecundity = male_fecundity,
+      pdea = setNames(unlist(.SD[, paste0("pdea.", cohorts), with = FALSE]), cohorts),
+      poff = setNames(unlist(.SD[, paste0("poff.", cohorts), with = FALSE]), cohorts),
+      g = setNames(unlist(.SD[, paste0("g." , cohorts), with = FALSE]), cohorts),
+      growth_rate_pop = growth_rate_pop,
+      structure = setNames(unlist(.SD[, paste0("structure.", structure_cohorts), with = FALSE]), structure_cohorts),
+      share = setNames(unlist(.SD[, paste0("share.", share_cohorts), with = FALSE]), share_cohorts)
+    )
+  )), by = seq_len(nrow(herd_data))]
 
   # --- Step 3: Calculate Offtake and Weights ---------------------------------
 

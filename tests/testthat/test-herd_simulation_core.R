@@ -88,9 +88,9 @@ test_that("project_population_size runs and returns list with expected elements"
     size_total = 1000,
     female_fecundity = fec$female_fecundity,
     male_fecundity = fec$male_fecundity,
-    pdea = trans$pdea,
-    poff = trans$poff,
-    g = trans$g,
+    pdea = setNames(trans$pdea, cohort_names),
+    poff = setNames(trans$poff, cohort_names),
+    g = setNames(trans$g, cohort_names),
     growth_rate_pop = steady$growth_rate_pop,
     structure = steady$structure,
     share = steady$share
