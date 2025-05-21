@@ -320,9 +320,6 @@ project_population_size <- function(
   fem_birth_death <- fem_juv_death <- fem_sub_death <- fem_adult_death <- fem_cull_death <- NULL
   mal_birth_death <- mal_juv_death <- mal_sub_death <- mal_adult_death <- mal_cull_death <- NULL
 
-  fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- NULL
-  mal_birth <- mal_juv <- mal_sub <- mal_adult <- mal_cull <- NULL
-
   fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- NULL
   mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- NULL
 
