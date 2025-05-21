@@ -1,4 +1,4 @@
-GLEAM_input_directemissions <- fread("legacy/Inputs/GLEAM_input_directemissions.csv")
+GLEAM_input_directemissions <- fread("your_data_directory/Inputs/GLEAM_input_directemissions.csv")
 source("legacy/Functions/05_functions_directemissions.R")
 
 # CH4-----

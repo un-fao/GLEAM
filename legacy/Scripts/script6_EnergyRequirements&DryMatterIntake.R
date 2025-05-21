@@ -1,5 +1,5 @@
 library(data.table)
-GLEAM_input_energyrequirement<-fread("legacy/Inputs/GLEAM_input_energyrequirements.csv")
+GLEAM_input_energyrequirement<-fread("your_data_directory/Inputs/GLEAM_input_energyrequirements.csv")
 
 # upload functions
 source("legacy/Functions/03_functions_energyrequirements.R")
@@ -69,7 +69,7 @@ GLEAM_input_energyrequirement[, nemeat := Dfunction_nemeat(Animal_short, cohort 
 GLEAM_input_energyrequirement[, dmi := Dfunction_dmi(Animal_short, getot, diet_ge, diet_me), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 
-fwrite(GLEAM_input_energyrequirement, "legacy/Inputs/GLEAM_input_directemissions.csv")
+fwrite(GLEAM_input_energyrequirement, "your_data_directory/Inputs/GLEAM_input_directemissions.csv")
 
 
 # View(GLEAM_input_energyrequirement[,.(Animal_short, COUNTRY, LPS, HerdType, cohort, MLK_YIELD, FR, WKG, initial_weight,nelact, average_weight, nemain,   nepreg, negrow, diet_dig, rem, reg, getot, dmi)])

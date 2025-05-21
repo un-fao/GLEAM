@@ -2,12 +2,12 @@ library(data.table)
 library(readxl)
 
 #inputs---
-feed_params <- as.data.table(read_excel("legacy/Inputs/Feed_list_complete.xlsx",
+feed_params <- as.data.table(read_excel("your_data_directory/Inputs/Feed_list_complete.xlsx",
                                  sheet = "Complete_list"))
 
-rations_share <- fread("legacy/Inputs/GLEAM_input_FeedRations.csv")
+rations_share <- fread("your_data_directory/Inputs/GLEAM_input_FeedRations.csv")
 
-GLEAM_input_feed_preproc <- fread("legacy/Inputs/GLEAM_input_feed.csv")
+GLEAM_input_feed_preproc <- fread("your_data_directory/Inputs/GLEAM_input_feed.csv")
 
 
 # combining with feed parameters-----
@@ -138,6 +138,6 @@ GLEAM_input_feed_preproc <- merge(
   allow.cartesian = TRUE
 )
 
-fwrite(GLEAM_input_feed_preproc, "legacy/Inputs/GLEAM_input_energyrequirements.csv")
+fwrite(GLEAM_input_feed_preproc, "your_data_directory/Inputs/GLEAM_input_energyrequirements.csv")
 
 
