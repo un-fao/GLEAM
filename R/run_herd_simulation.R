@@ -101,9 +101,18 @@ run_herd_simulation <- function(
       min_lambda_change = lambda_threshold,
       female_fecundity = herd_data[1, female_fecundity],
       male_fecundity = herd_data[1, male_fecundity],
-      pdea = setNames(unlist(herd_data[1, paste0("pdea.", cohorts), with = FALSE]), cohorts),
-      poff = setNames(unlist(herd_data[1, paste0("poff.", cohorts), with = FALSE]), cohorts),
-      g    = setNames(unlist(herd_data[1, paste0("g.", cohorts), with = FALSE]), cohorts)
+      pdea = with(herd_data[1],
+                  c(FB = pdea.FB, FJ = pdea.FJ, FS = pdea.FS, FA = pdea.FA, FC = pdea.FC,
+                    MB = pdea.MB, MJ = pdea.MJ, MS = pdea.MS, MA = pdea.MA, MC = pdea.MC)
+      ),
+      poff = with(herd_data[1],
+                  c(FB = poff.FB, FJ = poff.FJ, FS = poff.FS, FA = poff.FA, FC = poff.FC,
+                    MB = poff.MB, MJ = poff.MJ, MS = poff.MS, MA = poff.MA, MC = poff.MC)
+      ),
+      g = with(herd_data[1],
+               c(FB = g.FB, FJ = g.FJ, FS = g.FS, FA = g.FA, FC = g.FC,
+                 MB = g.MB, MJ = g.MJ, MS = g.MS, MA = g.MA, MC = g.MC)
+      )
     )
   ))
 
@@ -115,9 +124,18 @@ run_herd_simulation <- function(
       min_lambda_change = lambda_threshold,
       female_fecundity = female_fecundity,
       male_fecundity = male_fecundity,
-      pdea = setNames(unlist(.SD[, paste0("pdea.", cohorts), with = FALSE]), cohorts),
-      poff = setNames(unlist(.SD[, paste0("poff.", cohorts), with = FALSE]), cohorts),
-      g    = setNames(unlist(.SD[, paste0("g.", cohorts), with = FALSE]), cohorts)
+      pdea = c(
+        FB = pdea.FB, FJ = pdea.FJ, FS = pdea.FS, FA = pdea.FA, FC = pdea.FC,
+        MB = pdea.MB, MJ = pdea.MJ, MS = pdea.MS, MA = pdea.MA, MC = pdea.MC
+      ),
+      poff = c(
+        FB = poff.FB, FJ = poff.FJ, FS = poff.FS, FA = poff.FA, FC = poff.FC,
+        MB = poff.MB, MJ = poff.MJ, MS = poff.MS, MA = poff.MA, MC = poff.MC
+      ),
+      g = c(
+        FB = g.FB, FJ = g.FJ, FS = g.FS, FA = g.FA, FC = g.FC,
+        MB = g.MB, MJ = g.MJ, MS = g.MS, MA = g.MA, MC = g.MC
+      )
     )
   )), by = seq_len(nrow(herd_data))]
 

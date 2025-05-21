@@ -168,16 +168,16 @@ simulate_steady_state_structure <- function(
       # Time step 1: initialize from starting vector
       ## calculate initial number of individuals taking into account
       ## the daily number of born females and males (female_fecundity/male_fecundity)
-      fem_birth_fec <- initial_structure["FA"] * female_fecundity
-      fem_juv_fec <- initial_structure["FJ"]
-      fem_sub_fec <- initial_structure["FS"]
-      fem_adult_fec <- initial_structure["FA"]
+      fem_birth_fec <- initial_structure[["FA"]] * female_fecundity
+      fem_juv_fec <- initial_structure[["FJ"]]
+      fem_sub_fec <- initial_structure[["FS"]]
+      fem_adult_fec <- initial_structure[["FA"]]
       fem_cull_fec <- 0
 
-      mal_birth_fec <- initial_structure["FA"] * male_fecundity
-      mal_juv_fec <- initial_structure["MJ"]
-      mal_sub_fec <- initial_structure["MS"]
-      mal_adult_fec <- initial_structure["MA"]
+      mal_birth_fec <- initial_structure[["FA"]] * male_fecundity
+      mal_juv_fec <- initial_structure[["MJ"]]
+      mal_sub_fec <- initial_structure[["MS"]]
+      mal_adult_fec <- initial_structure[["MA"]]
       mal_cull_fec <- 0
     } else {
       # Time step >1: propagate individuals from previous day
@@ -212,28 +212,28 @@ simulate_steady_state_structure <- function(
     if (all(lambda_change < min_lambda_change)) break
 
     # Apply death and offtake rates to each class
-    fem_birth[t] <- fem_birth_fec[t] * (1 - pdea["FB"] - poff["FB"])
-    fem_juv[t]   <- fem_juv_fec[t]   * (1 - pdea["FJ"] - poff["FJ"])
-    fem_sub[t]   <- fem_sub_fec[t]   * (1 - pdea["FS"] - poff["FS"])
-    fem_adult[t] <- fem_adult_fec[t] * (1 - pdea["FA"] - poff["FA"])
-    fem_cull[t]  <- fem_cull_fec[t]  * (1 - pdea["FC"] - poff["FC"])
+    fem_birth[t] <- fem_birth_fec[t] * (1 - pdea[["FB"]] - poff[["FB"]])
+    fem_juv[t]   <- fem_juv_fec[t]   * (1 - pdea[["FJ"]] - poff[["FJ"]])
+    fem_sub[t]   <- fem_sub_fec[t]   * (1 - pdea[["FS"]] - poff[["FS"]])
+    fem_adult[t] <- fem_adult_fec[t] * (1 - pdea[["FA"]] - poff[["FA"]])
+    fem_cull[t]  <- fem_cull_fec[t]  * (1 - pdea[["FC"]] - poff[["FC"]])
 
-    mal_birth[t] <- mal_birth_fec[t] * (1 - pdea["MB"] - poff["MB"])
-    mal_juv[t]   <- mal_juv_fec[t]   * (1 - pdea["MJ"] - poff["MJ"])
-    mal_sub[t]   <- mal_sub_fec[t]   * (1 - pdea["MS"] - poff["MS"])
-    mal_adult[t] <- mal_adult_fec[t] * (1 - pdea["MA"] - poff["MA"])
-    mal_cull[t]  <- mal_cull_fec[t]  * (1 - pdea["MC"] - poff["MC"])
+    mal_birth[t] <- mal_birth_fec[t] * (1 - pdea[["MB"]] - poff[["MB"]])
+    mal_juv[t]   <- mal_juv_fec[t]   * (1 - pdea[["MJ"]] - poff[["MJ"]])
+    mal_sub[t]   <- mal_sub_fec[t]   * (1 - pdea[["MS"]] - poff[["MS"]])
+    mal_adult[t] <- mal_adult_fec[t] * (1 - pdea[["MA"]] - poff[["MA"]])
+    mal_cull[t]  <- mal_cull_fec[t]  * (1 - pdea[["MC"]] - poff[["MC"]])
 
     # Apply transition probabilities (growth to next class)
     fem_juv_grow[t]   <- fem_birth[t] + (1 - g["FJ"]) * fem_juv[t]
-    fem_sub_grow[t]   <- g["FJ"] * fem_juv[t] + (1 - g["FS"]) * fem_sub[t]
-    fem_adult_grow[t] <- g["FS"] * fem_sub[t] + (1 - g["FA"]) * fem_adult[t]
-    fem_cull_grow[t]  <- g["FA"] * fem_adult[t]
+    fem_sub_grow[t]   <- g[["FJ"]] * fem_juv[t] + (1 - g[["FS"]]) * fem_sub[t]
+    fem_adult_grow[t] <- g[["FS"]] * fem_sub[t] + (1 - g[["FA"]]) * fem_adult[t]
+    fem_cull_grow[t]  <- g[["FA"]] * fem_adult[t]
 
-    mal_juv_grow[t]   <- mal_birth[t] + (1 - g["MJ"]) * mal_juv[t]
-    mal_sub_grow[t]   <- g["MJ"] * mal_juv[t] + (1 - g["MS"]) * mal_sub[t]
-    mal_adult_grow[t] <- g["MS"] * mal_sub[t] + (1 - g["MA"]) * mal_adult[t]
-    mal_cull_grow[t]  <- g["MA"] * mal_adult[t]
+    mal_juv_grow[t]   <- mal_birth[t] + (1 - g[["MJ"]]) * mal_juv[t]
+    mal_sub_grow[t]   <- g[["MJ"]] * mal_juv[t] + (1 - g[["MS"]]) * mal_sub[t]
+    mal_adult_grow[t] <- g[["MS"]] * mal_sub[t] + (1 - g[["MA"]]) * mal_adult[t]
+    mal_cull_grow[t]  <- g[["MA"]] * mal_adult[t]
   }
 
   # Final iteration count
