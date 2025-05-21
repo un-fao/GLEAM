@@ -39,11 +39,6 @@ run_herd_simulation <- function(
     lambda_threshold = 1e-9
 ) {
 
-  # Define cohort name sets used for mortality, structure, and share inputs
-  cohorts <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
-  structure_cohorts <- c("FB", "FJ", "FS", "FA", "MB", "MJ", "MS", "MA")
-  share_cohorts <- sex_age_classes <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-
   # --- Step 1: Compute Core Demographic Parameters -----------------------------
 
   # Compute fecundity rates
