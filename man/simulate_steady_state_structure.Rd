@@ -8,8 +8,8 @@ simulate_steady_state_structure(
   initial_structure,
   max_years,
   min_lambda_change,
-  female_fecundity,
-  male_fecundity,
+  fem_fec,
+  mal_fec,
   pdea,
   poff,
   g
@@ -24,9 +24,9 @@ sex-age classes. Must be named with: \code{FJ}, \code{FS}, \code{FA}, \code{MJ},
 \item{min_lambda_change}{Numeric. Threshold for minimal change in class-specific growth rates to reach
 steady state.}
 
-\item{female_fecundity}{Numeric. Daily number of female births per adult female.}
+\item{fem_fec}{Numeric. Daily number of female births per adult female.}
 
-\item{male_fecundity}{Numeric. Daily number of male births per adult female.}
+\item{mal_fec}{Numeric. Daily number of male births per adult female.}
 
 \item{pdea}{Named numeric vector of length 10. Daily death probabilities for 10 cohorts. Must be named
 using: \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS},

@@ -47,7 +47,7 @@ run_herd_simulation <- function(
   # --- Step 1: Compute Core Demographic Parameters -----------------------------
 
   # Compute fecundity rates
-  herd_data[, c("female_fecundity", "male_fecundity") := compute_fecundity_rates(
+  herd_data[, c("fem_fec", "mal_fec") := compute_fecundity_rates(
     part_rate = parturition_rate,
     prolif_rate = litsize,
     fem_birth_ratio = female_birth_fraction
@@ -87,8 +87,8 @@ run_herd_simulation <- function(
       initial_structure = initial_structure,
       max_years = max_years,
       min_lambda_change = lambda_threshold,
-      female_fecundity = female_fecundity,
-      male_fecundity = male_fecundity,
+      fem_fec = fem_fec,
+      mal_fec = mal_fec,
       pdea = c(FB = pdea.FB, FJ = pdea.FJ, FS = pdea.FS, FA = pdea.FA, FC = pdea.FC,
                MB = pdea.MB, MJ = pdea.MJ, MS = pdea.MS, MA = pdea.MA, MC = pdea.MC),
       poff = c(FB = poff.FB, FJ = poff.FJ, FS = poff.FS, FA = poff.FA, FC = poff.FC,
@@ -104,8 +104,8 @@ run_herd_simulation <- function(
       initial_structure = initial_structure,
       max_years = max_years,
       min_lambda_change = lambda_threshold,
-      female_fecundity = female_fecundity,
-      male_fecundity = male_fecundity,
+      fem_fec = fem_fec,
+      mal_fec = mal_fec,
       pdea = c(
         FB = pdea.FB, FJ = pdea.FJ, FS = pdea.FS, FA = pdea.FA, FC = pdea.FC,
         MB = pdea.MB, MJ = pdea.MJ, MS = pdea.MS, MA = pdea.MA, MC = pdea.MC
@@ -127,8 +127,8 @@ run_herd_simulation <- function(
   popsize_cols <- names(unlist(
     with(herd_data[1], project_population_size(
       size_total = size_total,
-      female_fecundity = female_fecundity,
-      male_fecundity = male_fecundity,
+      fem_fec = fem_fec,
+      mal_fec = mal_fec,
       pdea = c(FB = pdea.FB, FJ = pdea.FJ, FS = pdea.FS, FA = pdea.FA, FC = pdea.FC,
                MB = pdea.MB, MJ = pdea.MJ, MS = pdea.MS, MA = pdea.MA, MC = pdea.MC),
       poff = c(FB = poff.FB, FJ = poff.FJ, FS = poff.FS, FA = poff.FA, FC = poff.FC,
@@ -147,8 +147,8 @@ run_herd_simulation <- function(
   herd_data[, (popsize_cols) := as.list(unlist(
     project_population_size(
       size_total = size_total,
-      female_fecundity = female_fecundity,
-      male_fecundity = male_fecundity,
+      fem_fec = fem_fec,
+      mal_fec = mal_fec,
       pdea = c(FB = pdea.FB, FJ = pdea.FJ, FS = pdea.FS, FA = pdea.FA, FC = pdea.FC,
                MB = pdea.MB, MJ = pdea.MJ, MS = pdea.MS, MA = pdea.MA, MC = pdea.MC),
       poff = c(FB = poff.FB, FJ = poff.FJ, FS = poff.FS, FA = poff.FA, FC = poff.FC,
@@ -280,11 +280,11 @@ run_herd_simulation <- function(
                 calc_cohort_weights(
                   animal = Animal_short,
                   cohort = cohort,
-                  adult_female_weight = AFKG,
-                  adult_male_weight = AMKG,
+                  adult_fem_weight = AFKG,
+                  adult_mal_weight = AMKG,
                   birth_weight = ckg,
-                  slaughter_weight_female = MFSKG,
-                  slaughter_weight_male = MMSKG,
+                  slaughter_weight_fem = MFSKG,
+                  slaughter_weight_mal = MMSKG,
                   weaning_weight = wkg,
                   age_first_calving = afc,
                   animal_age = WA

@@ -8,8 +8,8 @@
 #'
 #' @return A named list with two elements:
 #' \describe{
-#'   \item{female_fecundity}{Daily number of female offspring per adult female.}
-#'   \item{male_fecundity}{Daily number of male offspring per adult female.}
+#'   \item{fem_fec}{Daily number of female offspring per adult female.}
+#'   \item{male_fec}{Daily number of male offspring per adult female.}
 #' }
 #' @examples
 #' compute_fecundity_rates(part_rate = 0.8, prolif_rate = 2, fem_birth_ratio = 0.5)
@@ -18,8 +18,8 @@
 compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
   # Calculate fecundity rates
   list(
-    female_fecundity = prolif_rate * fem_birth_ratio * (part_rate / 365),
-    male_fecundity = prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
+    fem_fec = prolif_rate * fem_birth_ratio * (part_rate / 365),
+    mal_fec = prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
   )
 }
 
@@ -128,8 +128,8 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
 #' @param max_years Integer. Maximum number of years to simulate.
 #' @param min_lambda_change Numeric. Threshold for minimal change in class-specific growth rates to reach
 #'   steady state.
-#' @param female_fecundity Numeric. Daily number of female births per adult female.
-#' @param male_fecundity Numeric. Daily number of male births per adult female.
+#' @param fem_fec Numeric. Daily number of female births per adult female.
+#' @param mal_fec Numeric. Daily number of male births per adult female.
 #' @param pdea Named numeric vector of length 10. Daily death probabilities for 10 cohorts. Must be named
 #'   using: \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS},
 #'   \code{MA}, \code{MC}.
@@ -149,7 +149,7 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
 #' @export
 simulate_steady_state_structure <- function(
     initial_structure, max_years, min_lambda_change,
-    female_fecundity, male_fecundity, pdea, poff, g
+    fem_fec, mal_fec, pdea, poff, g
 ) {
 
   # Initialize population vectors
@@ -166,33 +166,33 @@ simulate_steady_state_structure <- function(
     if (t == 1) {
       # Time step 1: initialize from starting vector
       ## calculate initial number of individuals taking into account
-      ## the daily number of born females and males (female_fecundity/male_fecundity)
-      fem_birth_fec <- initial_structure[["FA"]] * female_fecundity
+      ## the daily number of born females and males (fem_fec/mal_fec)
+      fem_birth_fec <- initial_structure[["FA"]] * fem_fec
       fem_juv_fec <- initial_structure[["FJ"]]
       fem_sub_fec <- initial_structure[["FS"]]
       fem_adult_fec <- initial_structure[["FA"]]
       fem_cull_fec <- 0
 
-      mal_birth_fec <- initial_structure[["FA"]] * male_fecundity
+      mal_birth_fec <- initial_structure[["FA"]] * mal_fec
       mal_juv_fec <- initial_structure[["MJ"]]
       mal_sub_fec <- initial_structure[["MS"]]
       mal_adult_fec <- initial_structure[["MA"]]
       mal_cull_fec <- 0
     } else {
       # Time step >1: propagate individuals from previous day
-      ## calculate number of individuals taking into account both female_fecundity/male_fecundity and
+      ## calculate number of individuals taking into account both fem_fec/mal_fec and
       ## the number of individuals that survived the previous month and how they moved in the age classes
       fem_juv_fec[t] <- fem_juv_grow[t - 1]
       fem_sub_fec[t] <- fem_sub_grow[t - 1]
       fem_adult_fec[t] <- fem_adult_grow[t - 1]
       fem_cull_fec[t] <- 0
-      fem_birth_fec[t] <- fem_adult_fec[t] * female_fecundity
+      fem_birth_fec[t] <- fem_adult_fec[t] * fem_fec
 
       mal_juv_fec[t] <- mal_juv_grow[t - 1]
       mal_sub_fec[t] <- mal_sub_grow[t - 1]
       mal_adult_fec[t] <- mal_adult_grow[t - 1]
       mal_cull_fec[t] <- 0
-      mal_birth_fec[t] <- fem_adult_fec[t] * male_fecundity
+      mal_birth_fec[t] <- fem_adult_fec[t] * mal_fec
     }
 
     # Compute class-specific growth rate change (lambda)
@@ -277,8 +277,8 @@ simulate_steady_state_structure <- function(
 #' and returns population size statistics and offtake results.
 #'
 #' @param size_total Numeric. Total population size at the start of the year.
-#' @param female_fecundity Numeric. Daily female births per adult female.
-#' @param male_fecundity Numeric. Daily male births per adult female.
+#' @param fem_fec Numeric. Daily female births per adult female.
+#' @param mal_fec Numeric. Daily male births per adult female.
 #' @param pdea Named numeric vector of length 10. Daily death probabilities. Must be named using:
 #'   \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}, \code{MC}.
 #' @param poff Named numeric vector of length 10. Daily offtake probabilities. Names must match those in \code{pdea}.
@@ -300,7 +300,7 @@ simulate_steady_state_structure <- function(
 #'
 #' @export
 project_population_size <- function(
-    size_total, female_fecundity, male_fecundity, pdea, poff, g,
+    size_total, fem_fec, mal_fec, pdea, poff, g,
     growth_rate_pop, structure, share
 ) {
 
@@ -330,26 +330,26 @@ project_population_size <- function(
       fem_sub_fec <- xini[["FS"]]
       fem_adult_fec <- xini[["FA"]]
       fem_cull_fec <- 0
-      fem_birth_fec <- fem_adult_fec * female_fecundity
+      fem_birth_fec <- fem_adult_fec * fem_fec
 
       mal_juv_fec <- xini[["MJ"]]
       mal_sub_fec <- xini[["MS"]]
       mal_adult_fec <- xini[["MA"]]
       mal_cull_fec <- 0
-      mal_birth_fec <- fem_adult_fec * male_fecundity
+      mal_birth_fec <- fem_adult_fec * mal_fec
     } else {
       # Update fecundity stage from previous day's transitions
       fem_juv_fec[t] <- fem_juv_grow[t - 1]
       fem_sub_fec[t] <- fem_sub_grow[t - 1]
       fem_adult_fec[t] <- fem_adult_grow[t - 1]
       fem_cull_fec[t] <- 0
-      fem_birth_fec[t] <- fem_adult_fec[t] * female_fecundity
+      fem_birth_fec[t] <- fem_adult_fec[t] * fem_fec
 
       mal_juv_fec[t] <- mal_juv_grow[t - 1]
       mal_sub_fec[t] <- mal_sub_grow[t - 1]
       mal_adult_fec[t] <- mal_adult_grow[t - 1]
       mal_cull_fec[t] <- 0
-      mal_birth_fec[t] <- fem_adult_fec[t] * male_fecundity
+      mal_birth_fec[t] <- fem_adult_fec[t] * mal_fec
     }
 
     if (t <= 365) {
@@ -495,11 +495,11 @@ summarise_offtake <- function(size, size_end, size_avg, offtake) {
 #'
 #' @param animal Character. Species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").
 #' @param cohort Character. Cohort code (e.g., "FJ", "MJ", "FS", "MS", "FA", "MA").
-#' @param adult_female_weight Numeric. Adult female weight in kg.
-#' @param adult_male_weight Numeric. Adult male weight in kg.
+#' @param adult_fem_weight Numeric. Adult female weight in kg.
+#' @param adult_mal_weight Numeric. Adult male weight in kg.
 #' @param birth_weight Numeric. Birth weight in kg.
-#' @param slaughter_weight_female Numeric. Slaughter weight of adult female in kg.
-#' @param slaughter_weight_male Numeric. Slaughter weight of adult male in kg.
+#' @param slaughter_weight_fem Numeric. Slaughter weight of adult female in kg.
+#' @param slaughter_weight_mal Numeric. Slaughter weight of adult male in kg.
 #' @param weaning_weight Numeric. Weaning weight in kg.
 #' @param age_first_calving Numeric. Age at first calving (in days).
 #' @param animal_age Numeric. Age of the animal at the current stage (in days).
@@ -514,9 +514,9 @@ summarise_offtake <- function(size, size_end, size_avg, offtake) {
 #' @export
 calc_cohort_weights <- function(
     animal, cohort,
-    adult_female_weight = NA_real_, adult_male_weight = NA_real_,
-    birth_weight = NA_real_, slaughter_weight_female = NA_real_,
-    slaughter_weight_male = NA_real_, weaning_weight = NA_real_,
+    adult_fem_weight = NA_real_, adult_mal_weight = NA_real_,
+    birth_weight = NA_real_, slaughter_weight_fem = NA_real_,
+    slaughter_weight_mal = NA_real_, weaning_weight = NA_real_,
     age_first_calving = NA_real_, animal_age = NA_real_
 ) {
 
@@ -534,7 +534,7 @@ calc_cohort_weights <- function(
     if (animal %in% c("PGS", "CML")) {
       potential_final_weight <- slaughter_weight <- weaning_weight
     } else {
-      adult_weight <- if (cohort == "FJ") adult_female_weight else adult_male_weight
+      adult_weight <- if (cohort == "FJ") adult_fem_weight else adult_mal_weight
       potential_final_weight <- slaughter_weight <- grow_weight(adult_weight)
     }
 
@@ -543,17 +543,17 @@ calc_cohort_weights <- function(
     if (animal %in% c("PGS", "CML")) {
       initial_weight <- weaning_weight
     } else {
-      adult_weight <- if (cohort == "FS") adult_female_weight else adult_male_weight
+      adult_weight <- if (cohort == "FS") adult_fem_weight else adult_mal_weight
       initial_weight <- grow_weight(adult_weight)
     }
-    potential_final_weight <- if (cohort == "FS") adult_female_weight else adult_male_weight
-    slaughter_weight <- if (cohort == "FS") slaughter_weight_female else slaughter_weight_male
+    potential_final_weight <- if (cohort == "FS") adult_fem_weight else adult_mal_weight
+    slaughter_weight <- if (cohort == "FS") slaughter_weight_fem else slaughter_weight_mal
 
     # Adult cohorts
   } else if (cohort == "FA") {
-    initial_weight <- potential_final_weight <- slaughter_weight <- adult_female_weight
+    initial_weight <- potential_final_weight <- slaughter_weight <- adult_fem_weight
   } else if (cohort == "MA") {
-    initial_weight <- potential_final_weight <- slaughter_weight <- adult_male_weight
+    initial_weight <- potential_final_weight <- slaughter_weight <- adult_mal_weight
   }
 
   list(

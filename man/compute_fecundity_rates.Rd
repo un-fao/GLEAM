@@ -16,8 +16,8 @@ compute_fecundity_rates(part_rate, prolif_rate, fem_birth_ratio)
 \value{
 A named list with two elements:
 \describe{
-\item{female_fecundity}{Daily number of female offspring per adult female.}
-\item{male_fecundity}{Daily number of male offspring per adult female.}
+\item{fem_fec}{Daily number of female offspring per adult female.}
+\item{male_fec}{Daily number of male offspring per adult female.}
 }
 }
 \description{

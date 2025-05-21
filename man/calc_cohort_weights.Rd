@@ -7,11 +7,11 @@
 calc_cohort_weights(
   animal,
   cohort,
-  adult_female_weight = NA_real_,
-  adult_male_weight = NA_real_,
+  adult_fem_weight = NA_real_,
+  adult_mal_weight = NA_real_,
   birth_weight = NA_real_,
-  slaughter_weight_female = NA_real_,
-  slaughter_weight_male = NA_real_,
+  slaughter_weight_fem = NA_real_,
+  slaughter_weight_mal = NA_real_,
   weaning_weight = NA_real_,
   age_first_calving = NA_real_,
   animal_age = NA_real_
@@ -22,15 +22,15 @@ calc_cohort_weights(
 
 \item{cohort}{Character. Cohort code (e.g., "FJ", "MJ", "FS", "MS", "FA", "MA").}
 
-\item{adult_female_weight}{Numeric. Adult female weight in kg.}
+\item{adult_fem_weight}{Numeric. Adult female weight in kg.}
 
-\item{adult_male_weight}{Numeric. Adult male weight in kg.}
+\item{adult_mal_weight}{Numeric. Adult male weight in kg.}
 
 \item{birth_weight}{Numeric. Birth weight in kg.}
 
-\item{slaughter_weight_female}{Numeric. Slaughter weight of adult female in kg.}
+\item{slaughter_weight_fem}{Numeric. Slaughter weight of adult female in kg.}
 
-\item{slaughter_weight_male}{Numeric. Slaughter weight of adult male in kg.}
+\item{slaughter_weight_mal}{Numeric. Slaughter weight of adult male in kg.}
 
 \item{weaning_weight}{Numeric. Weaning weight in kg.}
 

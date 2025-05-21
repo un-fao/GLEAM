@@ -6,8 +6,8 @@
 \usage{
 project_population_size(
   size_total,
-  female_fecundity,
-  male_fecundity,
+  fem_fec,
+  mal_fec,
   pdea,
   poff,
   g,
@@ -19,9 +19,9 @@ project_population_size(
 \arguments{
 \item{size_total}{Numeric. Total population size at the start of the year.}
 
-\item{female_fecundity}{Numeric. Daily female births per adult female.}
+\item{fem_fec}{Numeric. Daily female births per adult female.}
 
-\item{male_fecundity}{Numeric. Daily male births per adult female.}
+\item{mal_fec}{Numeric. Daily male births per adult female.}
 
 \item{pdea}{Named numeric vector of length 10. Daily death probabilities. Must be named using:
 \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}, \code{MC}.}
