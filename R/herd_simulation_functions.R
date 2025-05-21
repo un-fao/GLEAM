@@ -330,15 +330,15 @@ project_population_size <- function(
   for (t in 1:366) {
     if (t == 1) {
       # Initialize class sizes using xini and fecundity
-      fem_juv_fec   <- xini["FJ"]
-      fem_sub_fec   <- xini["FS"]
-      fem_adult_fec <- xini["FA"]
+      fem_juv_fec   <- xini[["FJ"]]
+      fem_sub_fec   <- xini[["FS"]]
+      fem_adult_fec <- xini[["FA"]]
       fem_cull_fec  <- 0
       fem_birth_fec <- fem_adult_fec * female_fecundity
 
-      mal_juv_fec   <- xini["MJ"]
-      mal_sub_fec   <- xini["MS"]
-      mal_adult_fec <- xini["MA"]
+      mal_juv_fec   <- xini[["MJ"]]
+      mal_sub_fec   <- xini[["MS"]]
+      mal_adult_fec <- xini[["MA"]]
       mal_cull_fec  <- 0
       mal_birth_fec <- fem_adult_fec * male_fecundity
     } else {
@@ -358,39 +358,41 @@ project_population_size <- function(
 
     if (t <= 365) {
       # Apply death rates
-      fem_birth[t]     <- fem_birth_fec[t] * (1 - pdea["FB"] - poff["FB"])
-      fem_juv[t]       <- fem_juv_fec[t]   * (1 - pdea["FJ"] - poff["FJ"])
-      fem_sub[t]       <- fem_sub_fec[t]   * (1 - pdea["FS"] - poff["FS"])
-      fem_adult[t]     <- fem_adult_fec[t] * (1 - pdea["FA"] - poff["FA"])
-      fem_cull[t]      <- fem_cull_fec[t]  * (1 - pdea["FC"] - poff["FC"])
-      mal_birth[t]     <- mal_birth_fec[t] * (1 - pdea["MB"] - poff["MB"])
-      mal_juv[t]       <- mal_juv_fec[t]   * (1 - pdea["MJ"] - poff["MJ"])
-      mal_sub[t]       <- mal_sub_fec[t]   * (1 - pdea["MS"] - poff["MS"])
-      mal_adult[t]     <- mal_adult_fec[t] * (1 - pdea["MA"] - poff["MA"])
-      mal_cull[t]      <- mal_cull_fec[t]  * (1 - pdea["MC"] - poff["MC"])
+      fem_birth[t]     <- fem_birth_fec[t] * (1 - pdea[["FB"]] - poff[["FB"]])
+      fem_juv[t]       <- fem_juv_fec[t]   * (1 - pdea[["FJ"]] - poff[["FJ"]])
+      fem_sub[t]       <- fem_sub_fec[t]   * (1 - pdea[["FS"]] - poff[["FS"]])
+      fem_adult[t]     <- fem_adult_fec[t] * (1 - pdea[["FA"]] - poff[["FA"]])
+      fem_cull[t]      <- fem_cull_fec[t]  * (1 - pdea[["FC"]] - poff[["FC"]])
+
+      mal_birth[t]     <- mal_birth_fec[t] * (1 - pdea[["MB"]] - poff[["MB"]])
+      mal_juv[t]       <- mal_juv_fec[t]   * (1 - pdea[["MJ"]] - poff[["MJ"]])
+      mal_sub[t]       <- mal_sub_fec[t]   * (1 - pdea[["MS"]] - poff[["MS"]])
+      mal_adult[t]     <- mal_adult_fec[t] * (1 - pdea[["MA"]] - poff[["MA"]])
+      mal_cull[t]      <- mal_cull_fec[t]  * (1 - pdea[["MC"]] - poff[["MC"]])
 
       # Apply offtake rates
-      fem_birth_death[t]  <- poff["FB"] * fem_birth_fec[t]
-      fem_juv_death[t]    <- poff["FJ"] * fem_juv_fec[t]
-      fem_sub_death[t]    <- poff["FS"] * fem_sub_fec[t]
-      fem_adult_death[t]  <- poff["FA"] * fem_adult_fec[t]
-      fem_cull_death[t]   <- poff["FC"] * fem_cull_fec[t]
-      mal_birth_death[t]  <- poff["MB"] * mal_birth_fec[t]
-      mal_juv_death[t]    <- poff["MJ"] * mal_juv_fec[t]
-      mal_sub_death[t]    <- poff["MS"] * mal_sub_fec[t]
-      mal_adult_death[t]  <- poff["MA"] * mal_adult_fec[t]
-      mal_cull_death[t]   <- poff["MC"] * mal_cull_fec[t]
+      fem_birth_death[t]  <- poff[["FB"]] * fem_birth_fec[t]
+      fem_juv_death[t]    <- poff[["FJ"]] * fem_juv_fec[t]
+      fem_sub_death[t]    <- poff[["FS"]] * fem_sub_fec[t]
+      fem_adult_death[t]  <- poff[["FA"]] * fem_adult_fec[t]
+      fem_cull_death[t]   <- poff[["FC"]] * fem_cull_fec[t]
+
+      mal_birth_death[t]  <- poff[["MB"]] * mal_birth_fec[t]
+      mal_juv_death[t]    <- poff[["MJ"]] * mal_juv_fec[t]
+      mal_sub_death[t]    <- poff[["MS"]] * mal_sub_fec[t]
+      mal_adult_death[t]  <- poff[["MA"]] * mal_adult_fec[t]
+      mal_cull_death[t]   <- poff[["MC"]] * mal_cull_fec[t]
 
       # Transition
-      fem_juv_grow[t]   <- fem_birth[t]     + (1 - g["FJ"]) * fem_juv[t]
-      fem_sub_grow[t]   <- g["FJ"] * fem_juv[t]     + (1 - g["FS"]) * fem_sub[t]
-      fem_adult_grow[t] <- g["FS"] * fem_sub[t]     + (1 - g["FA"]) * fem_adult[t]
-      fem_cull_grow[t]  <- g["FA"] * fem_adult[t]
+      fem_juv_grow[t]   <- fem_birth[t]     + (1 - g[["FJ"]]) * fem_juv[t]
+      fem_sub_grow[t]   <- g[["FJ"]] * fem_juv[t]     + (1 - g[["FS"]]) * fem_sub[t]
+      fem_adult_grow[t] <- g[["FS"]] * fem_sub[t]     + (1 - g[["FA"]]) * fem_adult[t]
+      fem_cull_grow[t]  <- g[["FA"]] * fem_adult[t]
 
-      mal_juv_grow[t]   <- mal_birth[t]     + (1 - g["MJ"]) * mal_juv[t]
-      mal_sub_grow[t]   <- g["MJ"] * mal_juv[t]     + (1 - g["MS"]) * mal_sub[t]
-      mal_adult_grow[t] <- g["MS"] * mal_sub[t]     + (1 - g["MA"]) * mal_adult[t]
-      mal_cull_grow[t]  <- g["MA"] * mal_adult[t]
+      mal_juv_grow[t]   <- mal_birth[t]     + (1 - g[["MJ"]]) * mal_juv[t]
+      mal_sub_grow[t]   <- g[["MJ"]] * mal_juv[t]     + (1 - g[["MS"]]) * mal_sub[t]
+      mal_adult_grow[t] <- g[["MS"]] * mal_sub[t]     + (1 - g[["MA"]]) * mal_adult[t]
+      mal_cull_grow[t]  <- g[["MA"]] * mal_adult[t]
     }
   }
 
