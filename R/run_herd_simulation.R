@@ -55,37 +55,25 @@ run_herd_simulation <- function(
 
   # Compute transition probabilities
   transition_cols <- names(unlist(
-    compute_transition_probabilities(
-      duration = setNames(
-        unlist(herd_data[1, paste0("duration.", share_cohorts), with = FALSE]),
-        share_cohorts
-      ),
-      offtake_rate = setNames(
-        unlist(herd_data[1, paste0("offtake_rate.", share_cohorts), with = FALSE]),
-        share_cohorts
-      ),
-      death_rate = setNames(
-        unlist(herd_data[1, paste0("mort_rate.", share_cohorts), with = FALSE]),
-        share_cohorts
-      )
-    )
+    with(herd_data[1], compute_transition_probabilities(
+      duration = c(FJ = duration.FJ, FS = duration.FS, FA = duration.FA,
+                   MJ = duration.MJ, MS = duration.MS, MA = duration.MA),
+      offtake_rate = c(FJ = offtake_rate.FJ, FS = offtake_rate.FS, FA = offtake_rate.FA,
+                       MJ = offtake_rate.MJ, MS = offtake_rate.MS, MA = offtake_rate.MA),
+      death_rate = c(FJ = mort_rate.FJ, FS = mort_rate.FS, FA = mort_rate.FA,
+                     MJ = mort_rate.MJ, MS = mort_rate.MS, MA = mort_rate.MA)
+    ))
   ))
 
   # Apply transition probability computation row-wise
   herd_data[, (transition_cols) := as.list(unlist(
     compute_transition_probabilities(
-      duration = setNames(
-        unlist(.SD[, paste0("duration.", share_cohorts), with = FALSE]),
-        share_cohorts
-      ),
-      offtake_rate = setNames(
-        unlist(.SD[, paste0("offtake_rate.", share_cohorts), with = FALSE]),
-        share_cohorts
-      ),
-      death_rate = setNames(
-        unlist(.SD[, paste0("mort_rate.", share_cohorts), with = FALSE]),
-        share_cohorts
-      )
+      duration = c(FJ = duration.FJ, FS = duration.FS, FA = duration.FA,
+                   MJ = duration.MJ, MS = duration.MS, MA = duration.MA),
+      offtake_rate = c(FJ = offtake_rate.FJ, FS = offtake_rate.FS, FA = offtake_rate.FA,
+                       MJ = offtake_rate.MJ, MS = offtake_rate.MS, MA = offtake_rate.MA),
+      death_rate = c(FJ = mort_rate.FJ, FS = mort_rate.FS, FA = mort_rate.FA,
+                     MJ = mort_rate.MJ, MS = mort_rate.MS, MA = mort_rate.MA)
     )
   )), by = seq_len(nrow(herd_data))]
 
@@ -179,21 +167,29 @@ run_herd_simulation <- function(
 
   # Calculate offtake summary
   offtake_cols <- names(unlist(
-    summarise_offtake(
-      size = setNames(unlist(herd_data[1, paste0("size.", share_cohorts), with = FALSE]), share_cohorts),
-      size_end = setNames(unlist(herd_data[1, paste0("size_end.", share_cohorts), with = FALSE]), share_cohorts),
-      size_avg = setNames(unlist(herd_data[1, paste0("size_avg.", share_cohorts), with = FALSE]), share_cohorts),
-      offtake = setNames(unlist(herd_data[1, paste0("offtake.", cohorts), with = FALSE]), cohorts)
-    )
+    with(herd_data[1], summarise_offtake(
+      size = c(FJ = size.FJ, FS = size.FS, FA = size.FA,
+               MJ = size.MJ, MS = size.MS, MA = size.MA),
+      size_end = c(FJ = size_end.FJ, FS = size_end.FS, FA = size_end.FA,
+                   MJ = size_end.MJ, MS = size_end.MS, MA = size_end.MA),
+      size_avg = c(FJ = size_avg.FJ, FS = size_avg.FS, FA = size_avg.FA,
+                   MJ = size_avg.MJ, MS = size_avg.MS, MA = size_avg.MA),
+      offtake = c(FB = offtake.FB, FJ = offtake.FJ, FS = offtake.FS, FA = offtake.FA, FC = offtake.FC,
+                  MB = offtake.MB, MJ = offtake.MJ, MS = offtake.MS, MA = offtake.MA, MC = offtake.MC)
+    ))
   ))
 
   # Apply to full data.table
   herd_data[, (offtake_cols) := as.list(unlist(
     summarise_offtake(
-      size = setNames(unlist(.SD[, paste0("size.", share_cohorts), with = FALSE]), share_cohorts),
-      size_end = setNames(unlist(.SD[, paste0("size_end.", share_cohorts), with = FALSE]), share_cohorts),
-      size_avg = setNames(unlist(.SD[, paste0("size_avg.", share_cohorts), with = FALSE]), share_cohorts),
-      offtake = setNames(unlist(.SD[, paste0("offtake.", cohorts), with = FALSE]), cohorts)
+      size = c(FJ = size.FJ, FS = size.FS, FA = size.FA,
+               MJ = size.MJ, MS = size.MS, MA = size.MA),
+      size_end = c(FJ = size_end.FJ, FS = size_end.FS, FA = size_end.FA,
+                   MJ = size_end.MJ, MS = size_end.MS, MA = size_end.MA),
+      size_avg = c(FJ = size_avg.FJ, FS = size_avg.FS, FA = size_avg.FA,
+                   MJ = size_avg.MJ, MS = size_avg.MS, MA = size_avg.MA),
+      offtake = c(FB = offtake.FB, FJ = offtake.FJ, FS = offtake.FS, FA = offtake.FA, FC = offtake.FC,
+                  MB = offtake.MB, MJ = offtake.MJ, MS = offtake.MS, MA = offtake.MA, MC = offtake.MC)
     )
   )), by = seq_len(nrow(herd_data))]
 
