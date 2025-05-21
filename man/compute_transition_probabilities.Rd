@@ -16,12 +16,12 @@ compute_transition_probabilities(duration, offtake_rate, death_rate)
 \value{
 A named list with:
 \describe{
-\item{hdea}{Instantaneous mortality hazard rate for 6 sex-age classes.}
-\item{hoff}{Instantaneous offtake hazard rate for 6 sex-age classes.}
-\item{pdea}{Daily death probability for 10 cohorts.}
-\item{poff}{Daily offtake probability for 10 cohorts.}
-\item{psur}{Daily survival probability for 10 cohorts.}
-\item{g}{Probability of growing into the next age class for 10 cohorts.}
+\item{hazard_death}{Instantaneous mortality hazard rate for 6 sex-age classes.}
+\item{hazard_offtake}{Instantaneous offtake hazard rate for 6 sex-age classes.}
+\item{prob_death}{Daily death probability for 10 cohorts.}
+\item{prob_offtake}{Daily offtake probability for 10 cohorts.}
+\item{prob_survival}{Daily survival probability for 10 cohorts.}
+\item{prob_growth}{Probability of growing into the next age class for 10 cohorts.}
 }
 }
 \description{

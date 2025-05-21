@@ -8,9 +8,9 @@ project_population_size(
   size_total,
   fem_fec,
   mal_fec,
-  pdea,
-  poff,
-  g,
+  prob_death,
+  prob_offtake,
+  prob_growth,
   growth_rate_pop,
   structure,
   share
@@ -23,12 +23,14 @@ project_population_size(
 
 \item{mal_fec}{Numeric. Daily male births per adult female.}
 
-\item{pdea}{Named numeric vector of length 10. Daily death probabilities. Must be named using:
+\item{prob_death}{Named numeric vector of length 10. Daily death probabilities. Must be named using:
 \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}, \code{MC}.}
 
-\item{poff}{Named numeric vector of length 10. Daily offtake probabilities. Names must match those in \code{pdea}.}
+\item{prob_offtake}{Named numeric vector of length 10. Daily offtake probabilities.
+Names must match those in \code{prob_death}.}
 
-\item{g}{Named numeric vector of length 10. Transition probabilities to next age class. Names must match those in \code{pdea}.}
+\item{prob_growth}{Named numeric vector of length 10. Transition probabilities to next age class.
+Names must match those in \code{prob_death}.}
 
 \item{growth_rate_pop}{Numeric. Annual population growth rate.}
 

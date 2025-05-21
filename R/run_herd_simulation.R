@@ -89,12 +89,18 @@ run_herd_simulation <- function(
       min_lambda_change = lambda_threshold,
       fem_fec = fem_fec,
       mal_fec = mal_fec,
-      pdea = c(FB = pdea.FB, FJ = pdea.FJ, FS = pdea.FS, FA = pdea.FA, FC = pdea.FC,
-               MB = pdea.MB, MJ = pdea.MJ, MS = pdea.MS, MA = pdea.MA, MC = pdea.MC),
-      poff = c(FB = poff.FB, FJ = poff.FJ, FS = poff.FS, FA = poff.FA, FC = poff.FC,
-               MB = poff.MB, MJ = poff.MJ, MS = poff.MS, MA = poff.MA, MC = poff.MC),
-      g    = c(FB = g.FB, FJ = g.FJ, FS = g.FS, FA = g.FA, FC = g.FC,
-               MB = g.MB, MJ = g.MJ, MS = g.MS, MA = g.MA, MC = g.MC)
+      prob_death = c(
+        FB = prob_death.FB, FJ = prob_death.FJ, FS = prob_death.FS, FA = prob_death.FA, FC = prob_death.FC,
+        MB = prob_death.MB, MJ = prob_death.MJ, MS = prob_death.MS, MA = prob_death.MA, MC = prob_death.MC
+      ),
+      prob_offtake = c(
+        FB = prob_offtake.FB, FJ = prob_offtake.FJ, FS = prob_offtake.FS, FA = prob_offtake.FA, FC = prob_offtake.FC,
+        MB = prob_offtake.MB, MJ = prob_offtake.MJ, MS = prob_offtake.MS, MA = prob_offtake.MA, MC = prob_offtake.MC
+      ),
+      prob_growth = c(
+        FB = prob_growth.FB, FJ = prob_growth.FJ, FS = prob_growth.FS, FA = prob_growth.FA, FC = prob_growth.FC,
+        MB = prob_growth.MB, MJ = prob_growth.MJ, MS = prob_growth.MS, MA = prob_growth.MA, MC = prob_growth.MC
+      )
     ))
   ))
 
@@ -106,17 +112,17 @@ run_herd_simulation <- function(
       min_lambda_change = lambda_threshold,
       fem_fec = fem_fec,
       mal_fec = mal_fec,
-      pdea = c(
-        FB = pdea.FB, FJ = pdea.FJ, FS = pdea.FS, FA = pdea.FA, FC = pdea.FC,
-        MB = pdea.MB, MJ = pdea.MJ, MS = pdea.MS, MA = pdea.MA, MC = pdea.MC
+      prob_death = c(
+        FB = prob_death.FB, FJ = prob_death.FJ, FS = prob_death.FS, FA = prob_death.FA, FC = prob_death.FC,
+        MB = prob_death.MB, MJ = prob_death.MJ, MS = prob_death.MS, MA = prob_death.MA, MC = prob_death.MC
       ),
-      poff = c(
-        FB = poff.FB, FJ = poff.FJ, FS = poff.FS, FA = poff.FA, FC = poff.FC,
-        MB = poff.MB, MJ = poff.MJ, MS = poff.MS, MA = poff.MA, MC = poff.MC
+      prob_offtake = c(
+        FB = prob_offtake.FB, FJ = prob_offtake.FJ, FS = prob_offtake.FS, FA = prob_offtake.FA, FC = prob_offtake.FC,
+        MB = prob_offtake.MB, MJ = prob_offtake.MJ, MS = prob_offtake.MS, MA = prob_offtake.MA, MC = prob_offtake.MC
       ),
-      g = c(
-        FB = g.FB, FJ = g.FJ, FS = g.FS, FA = g.FA, FC = g.FC,
-        MB = g.MB, MJ = g.MJ, MS = g.MS, MA = g.MA, MC = g.MC
+      prob_growth = c(
+        FB = prob_growth.FB, FJ = prob_growth.FJ, FS = prob_growth.FS, FA = prob_growth.FA, FC = prob_growth.FC,
+        MB = prob_growth.MB, MJ = prob_growth.MJ, MS = prob_growth.MS, MA = prob_growth.MA, MC = prob_growth.MC
       )
     )
   )), by = seq_len(nrow(herd_data))]
@@ -129,12 +135,18 @@ run_herd_simulation <- function(
       size_total = size_total,
       fem_fec = fem_fec,
       mal_fec = mal_fec,
-      pdea = c(FB = pdea.FB, FJ = pdea.FJ, FS = pdea.FS, FA = pdea.FA, FC = pdea.FC,
-               MB = pdea.MB, MJ = pdea.MJ, MS = pdea.MS, MA = pdea.MA, MC = pdea.MC),
-      poff = c(FB = poff.FB, FJ = poff.FJ, FS = poff.FS, FA = poff.FA, FC = poff.FC,
-               MB = poff.MB, MJ = poff.MJ, MS = poff.MS, MA = poff.MA, MC = poff.MC),
-      g    = c(FB = g.FB, FJ = g.FJ, FS = g.FS, FA = g.FA, FC = g.FC,
-               MB = g.MB, MJ = g.MJ, MS = g.MS, MA = g.MA, MC = g.MC),
+      prob_death = c(
+        FB = prob_death.FB, FJ = prob_death.FJ, FS = prob_death.FS, FA = prob_death.FA, FC = prob_death.FC,
+        MB = prob_death.MB, MJ = prob_death.MJ, MS = prob_death.MS, MA = prob_death.MA, MC = prob_death.MC
+      ),
+      prob_offtake = c(
+        FB = prob_offtake.FB, FJ = prob_offtake.FJ, FS = prob_offtake.FS, FA = prob_offtake.FA, FC = prob_offtake.FC,
+        MB = prob_offtake.MB, MJ = prob_offtake.MJ, MS = prob_offtake.MS, MA = prob_offtake.MA, MC = prob_offtake.MC
+      ),
+      prob_growth = c(
+        FB = prob_growth.FB, FJ = prob_growth.FJ, FS = prob_growth.FS, FA = prob_growth.FA, FC = prob_growth.FC,
+        MB = prob_growth.MB, MJ = prob_growth.MJ, MS = prob_growth.MS, MA = prob_growth.MA, MC = prob_growth.MC
+      ),
       growth_rate_pop = growth_rate_pop,
       structure = c(FJ = structure.FJ, FS = structure.FS, FA = structure.FA,
                     MJ = structure.MJ, MS = structure.MS, MA = structure.MA),
@@ -149,12 +161,18 @@ run_herd_simulation <- function(
       size_total = size_total,
       fem_fec = fem_fec,
       mal_fec = mal_fec,
-      pdea = c(FB = pdea.FB, FJ = pdea.FJ, FS = pdea.FS, FA = pdea.FA, FC = pdea.FC,
-               MB = pdea.MB, MJ = pdea.MJ, MS = pdea.MS, MA = pdea.MA, MC = pdea.MC),
-      poff = c(FB = poff.FB, FJ = poff.FJ, FS = poff.FS, FA = poff.FA, FC = poff.FC,
-               MB = poff.MB, MJ = poff.MJ, MS = poff.MS, MA = poff.MA, MC = poff.MC),
-      g    = c(FB = g.FB, FJ = g.FJ, FS = g.FS, FA = g.FA, FC = g.FC,
-               MB = g.MB, MJ = g.MJ, MS = g.MS, MA = g.MA, MC = g.MC),
+      prob_death = c(
+        FB = prob_death.FB, FJ = prob_death.FJ, FS = prob_death.FS, FA = prob_death.FA, FC = prob_death.FC,
+        MB = prob_death.MB, MJ = prob_death.MJ, MS = prob_death.MS, MA = prob_death.MA, MC = prob_death.MC
+      ),
+      prob_offtake = c(
+        FB = prob_offtake.FB, FJ = prob_offtake.FJ, FS = prob_offtake.FS, FA = prob_offtake.FA, FC = prob_offtake.FC,
+        MB = prob_offtake.MB, MJ = prob_offtake.MJ, MS = prob_offtake.MS, MA = prob_offtake.MA, MC = prob_offtake.MC
+      ),
+      prob_growth = c(
+        FB = prob_growth.FB, FJ = prob_growth.FJ, FS = prob_growth.FS, FA = prob_growth.FA, FC = prob_growth.FC,
+        MB = prob_growth.MB, MJ = prob_growth.MJ, MS = prob_growth.MS, MA = prob_growth.MA, MC = prob_growth.MC
+      ),
       growth_rate_pop = growth_rate_pop,
       structure = c(FJ = structure.FJ, FS = structure.FS, FA = structure.FA,
                     MJ = structure.MJ, MS = structure.MS, MA = structure.MA),

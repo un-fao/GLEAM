@@ -10,9 +10,9 @@ simulate_steady_state_structure(
   min_lambda_change,
   fem_fec,
   mal_fec,
-  pdea,
-  poff,
-  g
+  prob_death,
+  prob_offtake,
+  prob_growth
 )
 }
 \arguments{
@@ -28,15 +28,15 @@ steady state.}
 
 \item{mal_fec}{Numeric. Daily number of male births per adult female.}
 
-\item{pdea}{Named numeric vector of length 10. Daily death probabilities for 10 cohorts. Must be named
+\item{prob_death}{Named numeric vector of length 10. Daily death probabilities for 10 cohorts. Must be named
 using: \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS},
 \code{MA}, \code{MC}.}
 
-\item{poff}{Named numeric vector of length 10. Daily offtake probabilities for 10 cohorts. Names must match
-those in \code{pdea}.}
+\item{prob_offtake}{Named numeric vector of length 10. Daily offtake probabilities for 10 cohorts.
+Names must match those in \code{prob_death}.}
 
-\item{g}{Named numeric vector of length 10. Daily probability of transition to the next class for 10 cohorts.
-Names must match those in \code{pdea}.}
+\item{prob_growth}{Named numeric vector of length 10. Daily probability of transition
+to the next class for 10 cohorts. Names must match those in \code{prob_death}.}
 }
 \value{
 A named list with:

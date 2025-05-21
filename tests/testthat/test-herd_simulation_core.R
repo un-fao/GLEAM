@@ -11,9 +11,9 @@ test_that("compute_fecundity_rates returns expected output", {
   )
 
   expect_type(res, "list")
-  expect_named(res, c("female_fecundity", "male_fecundity"))
-  expect_equal(res$female_fecundity, 0.8 * 2 * 0.5 / 365)
-  expect_equal(res$male_fecundity, 0.8 * 2 * 0.5 / 365)  # symmetrical case
+  expect_named(res, c("fem_fec", "mal_fec"))
+  expect_equal(res$fem_fec, 0.8 * 2 * 0.5 / 365)
+  expect_equal(res$mal_fec, 0.8 * 2 * 0.5 / 365)  # symmetrical case
 })
 
 # ---- test compute_transition_probabilities ----
@@ -29,9 +29,9 @@ test_that("compute_transition_probabilities returns named list with correct leng
   )
 
   expect_type(res, "list")
-  expect_named(res, c("hdea", "hoff", "pdea", "poff", "psur", "g"))
-  expect_length(res$hdea, 6)
-  expect_length(res$pdea, 10)
+  expect_named(res, c("hazard_death", "hazard_offtake", "prob_death", "prob_offtake", "prob_survival", "prob_growth"))
+  expect_length(res$hazard_death, 6)
+  expect_length(res$prob_death, 10)
 })
 
 # ---- test simulate_steady_state_structure ----
@@ -50,11 +50,11 @@ test_that("simulate_steady_state_structure converges and returns valid structure
     ),
     max_years = 5,
     min_lambda_change = 1e-6,
-    female_fecundity = fec$female_fecundity,
-    male_fecundity = fec$male_fecundity,
-    pdea = setNames(trans$pdea, cohorts),
-    poff = setNames(trans$poff, cohorts),
-    g = setNames(trans$g, cohorts)
+    fem_fec = fec$fem_fec,
+    mal_fec = fec$mal_fec,
+    prob_death = setNames(trans$prob_death, cohorts),
+    prob_offtake = setNames(trans$prob_offtake, cohorts),
+    prob_growth = setNames(trans$prob_growth, cohorts)
   )
 
   expect_named(result, c("days_steady", "structure", "share", "growth_rate_pop"))
@@ -79,20 +79,20 @@ test_that("project_population_size runs and returns list with expected elements"
       MJ = 100, MS = 50, MA = 30
     ),
     max_years = 5, min_lambda_change = 1e-6,
-    female_fecundity = fec$female_fecundity,
-    male_fecundity = fec$male_fecundity,
-    pdea = setNames(trans$pdea, cohorts),
-    poff = setNames(trans$poff, cohorts),
-    g = setNames(trans$g, cohorts)
+    fem_fec = fec$fem_fec,
+    mal_fec = fec$mal_fec,
+    prob_death = setNames(trans$prob_death, cohorts),
+    prob_offtake = setNames(trans$prob_offtake, cohorts),
+    prob_growth = setNames(trans$prob_growth, cohorts)
   )
 
   res <- project_population_size(
     size_total = 1000,
-    female_fecundity = fec$female_fecundity,
-    male_fecundity = fec$male_fecundity,
-    pdea = setNames(trans$pdea, cohorts),
-    poff = setNames(trans$poff, cohorts),
-    g = setNames(trans$g, cohorts),
+    fem_fec = fec$fem_fec,
+    mal_fec = fec$mal_fec,
+    prob_death = setNames(trans$prob_death, cohorts),
+    prob_offtake = setNames(trans$prob_offtake, cohorts),
+    prob_growth = setNames(trans$prob_growth, cohorts),
     growth_rate_pop = steady$growth_rate_pop,
     structure = steady$structure,
     share = steady$share
@@ -123,9 +123,9 @@ test_that("summarise_offtake returns all expected components", {
 test_that("calc_cohort_weights returns valid weights for juvenile non-pig", {
   result <- calc_cohort_weights(
     animal = "CTL", cohort = "FJ",
-    adult_female_weight = 500, adult_male_weight = 600,
-    birth_weight = 35, slaughter_weight_female = 480,
-    slaughter_weight_male = 550, weaning_weight = 90,
+    adult_fem_weight = 500, adult_mal_weight = 600,
+    birth_weight = 35, slaughter_weight_fem = 480,
+    slaughter_weight_mal = 550, weaning_weight = 90,
     age_first_calving = 730, animal_age = 200
   )
 
@@ -139,9 +139,9 @@ test_that("calc_cohort_weights returns valid weights for juvenile non-pig", {
 test_that("calc_cohort_weights returns correct weights for adult female", {
   result <- calc_cohort_weights(
     animal = "SHP", cohort = "FA",
-    adult_female_weight = 70, adult_male_weight = 90,
-    birth_weight = 4, slaughter_weight_female = 65,
-    slaughter_weight_male = 85, weaning_weight = 18,
+    adult_fem_weight = 70, adult_mal_weight = 90,
+    birth_weight = 4, slaughter_weight_fem = 65,
+    slaughter_weight_mal = 85, weaning_weight = 18,
     age_first_calving = 400, animal_age = 300
   )
 
@@ -153,9 +153,9 @@ test_that("calc_cohort_weights returns correct weights for adult female", {
 test_that("calc_cohort_weights handles pig juvenile with weaning weight", {
   result <- calc_cohort_weights(
     animal = "PGS", cohort = "FJ",
-    adult_female_weight = 180, adult_male_weight = 220,
-    birth_weight = 1.5, slaughter_weight_female = 160,
-    slaughter_weight_male = 200, weaning_weight = 10,
+    adult_fem_weight = 180, adult_mal_weight = 220,
+    birth_weight = 1.5, slaughter_weight_fem = 160,
+    slaughter_weight_mal = 200, weaning_weight = 10,
     age_first_calving = 365, animal_age = 60
   )
 
