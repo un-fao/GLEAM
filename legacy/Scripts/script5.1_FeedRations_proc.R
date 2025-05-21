@@ -48,8 +48,8 @@ feed_params[Item_Name %in% milk_items, GLEAM3_name := Item_Name]
 
 # calculate digestibility
 feed_params$dig_ruminants <- feed_params$DE_ruminants / feed_params$GE
-feed_params$dig_pigs      <- feed_params$DE_pigs / feed_params$GE
-feed_params$dig_chickens  <- feed_params$ME_chickens / feed_params$GE
+feed_params$dig_pigs <- feed_params$DE_pigs / feed_params$GE
+feed_params$dig_chickens <- feed_params$ME_chickens / feed_params$GE
 feed_params[N_content %in% c("", "-"), N_content := NA]
 feed_params[, N_content := as.numeric(N_content)]
 
