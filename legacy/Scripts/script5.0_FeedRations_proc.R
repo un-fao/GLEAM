@@ -1,7 +1,7 @@
 
 #inputs---
-camels_rations<- fread("Inputs/Pre_processing/Camelids/camels_rations.csv")
-rations <- fread(file.path("Inputs/Pre_processing/GLEAM_input_feed_GLEAM3_rations.csv"))
+camels_rations<- fread("legacy/Inputs/Pre_processing/Camelids/camels_rations.csv")
+rations <- fread(file.path("legacy/Inputs/Pre_processing/GLEAM_input_feed_GLEAM3_rations.csv"))
 rations<-rbind(camels_rations, rations, fill = TRUE)
 
 
@@ -36,4 +36,4 @@ rations_share <- rbind(rations_share, milk_entries, fill = TRUE)
 
 
 
-fwrite(rations_share, "Inputs/GLEAM_input_FeedRations.csv")
+fwrite(rations_share, "legacy/Inputs/GLEAM_input_FeedRations.csv")
