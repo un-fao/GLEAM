@@ -9,7 +9,7 @@
 #' @return A named list with two elements:
 #' \describe{
 #'   \item{fem_fec}{Daily number of female offspring per adult female.}
-#'   \item{male_fec}{Daily number of male offspring per adult female.}
+#'   \item{mal_fec}{Daily number of male offspring per adult female.}
 #' }
 #' @examples
 #' compute_fecundity_rates(part_rate = 0.8, prolif_rate = 2, fem_birth_ratio = 0.5)
@@ -165,11 +165,11 @@ simulate_steady_state_structure <- function(
   )
 
   # Initialize population vectors
-  fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- NULL
-  mal_birth <- mal_juv <- mal_sub <- mal_adult <- mal_cull <- NULL
+  fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- numeric()
+  mal_birth <- mal_juv <- mal_sub <- mal_adult <- mal_cull <- numeric()
 
-  fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- NULL
-  mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- NULL
+  fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- numeric()
+  mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- numeric()
 
   lambda_change <- rep(1, 6)
 
@@ -333,17 +333,17 @@ project_population_size <- function(
   size_avg <- (size + size_end) / 2
 
   # Initialize all tracking vectors
-  fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- NULL
-  mal_birth <- mal_juv <- mal_sub <- mal_adult <- mal_cull <- NULL
+  fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- numeric()
+  mal_birth <- mal_juv <- mal_sub <- mal_adult <- mal_cull <- numeric()
 
-  fem_birth_death <- fem_juv_death <- fem_sub_death <- fem_adult_death <- fem_cull_death <- NULL
-  mal_birth_death <- mal_juv_death <- mal_sub_death <- mal_adult_death <- mal_cull_death <- NULL
+  fem_birth_death <- fem_juv_death <- fem_sub_death <- fem_adult_death <- fem_cull_death <- numeric()
+  mal_birth_death <- mal_juv_death <- mal_sub_death <- mal_adult_death <- mal_cull_death <- numeric()
 
-  fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- NULL
-  mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- NULL
+  fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- numeric()
+  mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- numeric()
 
   # Simulate daily dynamics over 366 days (leap year assumption)
-  for (t in 1:366) {
+  for (t in seq_len(366)) {
     if (t == 1) {
       # Initialize class sizes using xini and fecundity
       fem_juv_fec <- xini[["FJ"]]
