@@ -143,8 +143,8 @@ run_herd_simulation <- function(
         MB = prob_growth.MB, MJ = prob_growth.MJ, MS = prob_growth.MS, MA = prob_growth.MA, MC = prob_growth.MC
       ),
       growth_rate_pop = growth_rate_pop,
-      structure = c(FJ = structure.FJ, FS = structure.FS, FA = structure.FA,
-                    MJ = structure.MJ, MS = structure.MS, MA = structure.MA),
+      structure = c(FB = structure.FB, FJ = structure.FJ, FS = structure.FS, FA = structure.FA,
+                    MB = structure.MB, MJ = structure.MJ, MS = structure.MS, MA = structure.MA),
       share = c(FJ = share.FJ, FS = share.FS, FA = share.FA,
                 MJ = share.MJ, MS = share.MS, MA = share.MA)
     ))
@@ -169,8 +169,8 @@ run_herd_simulation <- function(
         MB = prob_growth.MB, MJ = prob_growth.MJ, MS = prob_growth.MS, MA = prob_growth.MA, MC = prob_growth.MC
       ),
       growth_rate_pop = growth_rate_pop,
-      structure = c(FJ = structure.FJ, FS = structure.FS, FA = structure.FA,
-                    MJ = structure.MJ, MS = structure.MS, MA = structure.MA),
+      structure = c(FB = structure.FB, FJ = structure.FJ, FS = structure.FS, FA = structure.FA,
+                    MB = structure.MB, MJ = structure.MJ, MS = structure.MS, MA = structure.MA),
       share = c(FJ = share.FJ, FS = share.FS, FA = share.FA,
                 MJ = share.MJ, MS = share.MS, MA = share.MA)
     )

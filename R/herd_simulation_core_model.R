@@ -16,6 +16,8 @@
 #'
 #' @export
 compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
+  validate_fecundity_inputs(part_rate, prolif_rate, fem_birth_ratio)
+
   # Calculate fecundity rates
   list(
     fem_fec = prolif_rate * fem_birth_ratio * (part_rate / 365),
@@ -44,6 +46,8 @@ compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
 #'
 #' @export
 compute_transition_probabilities <- function(duration, offtake_rate, death_rate) {
+  validate_transition_inputs(duration, offtake_rate, death_rate)
+
   # --- Part 1: Compute values for 6 core sex-age classes ---
 
   # Instantaneous mortality hazard rate (hazard_death), adjusted by duration
@@ -154,6 +158,11 @@ simulate_steady_state_structure <- function(
     initial_structure, max_years, min_lambda_change,
     fem_fec, mal_fec, prob_death, prob_offtake, prob_growth
 ) {
+  validate_steady_state_inputs(
+    initial_structure, max_years, min_lambda_change,
+    fem_fec, mal_fec,
+    prob_death, prob_offtake, prob_growth
+  )
 
   # Initialize population vectors
   fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- NULL
@@ -308,6 +317,12 @@ project_population_size <- function(
     size_total, fem_fec, mal_fec, prob_death, prob_offtake, prob_growth,
     growth_rate_pop, structure, share
 ) {
+  validate_population_size_inputs(
+    size_total, fem_fec, mal_fec,
+    prob_death, prob_offtake, prob_growth,
+    growth_rate_pop,
+    structure, share
+  )
 
   # Calculate initial number of individuals in each of the 8 sex-age classes
   xini <- size_total * structure
@@ -450,6 +465,8 @@ project_population_size <- function(
 #'
 #' @export
 summarise_offtake <- function(size, size_end, size_avg, offtake) {
+  validate_offtake_summary_inputs(size, size_end, size_avg, offtake)
+
   # Aggregate offtake: collapse 10 sex-age classes into 6
   offtake_number <- c(
     FJ = sum(offtake[c("FB", "FJ")]),
@@ -524,6 +541,15 @@ calc_cohort_weights <- function(
     slaughter_weight_mal = NA_real_, weaning_weight = NA_real_,
     age_first_calving = NA_real_, animal_age = NA_real_
 ) {
+  validate_cohort_weight_inputs(
+    animal, cohort,
+    adult_fem_weight, adult_mal_weight,
+    birth_weight,
+    slaughter_weight_fem, slaughter_weight_mal,
+    weaning_weight,
+    age_first_calving,
+    animal_age
+  )
 
   # Helper function for growing weight
   grow_weight <- function(adult_weight) {
@@ -588,6 +614,13 @@ calc_cohort_weights <- function(
 calc_avg_weights <- function(
     initial_weight, potential_final_weight, slaughter_weight, offtake_rate
 ) {
+  validate_avg_weight_inputs(
+    initial_weight,
+    potential_final_weight,
+    slaughter_weight,
+    offtake_rate
+  )
+
   # Weighted final weight: survivors reach potential_final_weight, offtaken animals go to slaughter
   final_weight <- potential_final_weight * (1 - offtake_rate) + slaughter_weight * offtake_rate
 
@@ -613,6 +646,8 @@ calc_avg_weights <- function(
 #'
 #' @export
 calc_daily_weight_gain <- function(potential_final_weight, initial_weight, duration) {
+  validate_daily_gain_inputs(potential_final_weight, initial_weight, duration)
+
   # Average daily gain over the period
   (potential_final_weight - initial_weight) / duration
 }

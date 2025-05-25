@@ -38,9 +38,9 @@ test_that("compute_transition_probabilities returns named list with correct leng
 test_that("simulate_steady_state_structure converges and returns valid structure", {
   fec <- compute_fecundity_rates(0.8, 2, 0.5)
   trans <- compute_transition_probabilities(
-    duration = rep(365, 6),
-    offtake_rate = rep(0.1, 6),
-    death_rate = rep(0.05, 6)
+    duration = setNames(rep(365, 6), share_cohorts),
+    offtake_rate = setNames(rep(0.1, 6), share_cohorts),
+    death_rate = setNames(rep(0.05, 6), share_cohorts)
   )
 
   result <- simulate_steady_state_structure(
@@ -68,7 +68,9 @@ test_that("project_population_size runs and returns list with expected elements"
     0.8, 2, 0.5
   )
   trans <- compute_transition_probabilities(
-    rep(365, 6), rep(0.1, 6), rep(0.05, 6)
+    duration = setNames(rep(365, 6), share_cohorts),
+    offtake_rate = setNames(rep(0.1, 6), share_cohorts),
+    death_rate = setNames(rep(0.05, 6), share_cohorts)
   )
 
   cohorts <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
@@ -104,12 +106,11 @@ test_that("project_population_size runs and returns list with expected elements"
 
 # ---- test summarise_offtake ----
 test_that("summarise_offtake returns all expected components", {
-  offtake <- setNames(rep(10, 10), c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC"))
   res <- summarise_offtake(
-    size = rep(100, 6),
-    size_end = rep(110, 6),
-    size_avg = rep(105, 6),
-    offtake = offtake
+    size = setNames(rep(100, 6), share_cohorts),
+    size_end = setNames(rep(105, 6), share_cohorts),
+    size_avg = setNames(rep(102, 6), share_cohorts),
+    offtake = setNames(rep(0.01, 10), cohorts)
   )
 
   expect_named(res, c(
