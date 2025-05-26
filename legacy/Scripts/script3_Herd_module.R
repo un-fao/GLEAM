@@ -1,7 +1,7 @@
 library(data.table)
 
 # Load herd simulation functions
-source("leprob_growthacy/Functions/01_functions_herd_steady1_dailysteps.R")
+source("legacy/Functions/01_functions_herd_steady1_dailysteps.R")
 
 # Read input
 herd_data <- fread("your_data_directory/Inputs/prob_growthLEAM_input_herd.csv")
@@ -65,7 +65,7 @@ structure_cols <- names(
     simulate_steady_state_structure(
       x_start = x_start,
       max_years = max_years,
-      min_lambda_chanprob_growthe = lambda_tol,
+      min_lambda_change = lambda_tol,
       female_fecundity = herd_data[1, female_fecundity],
       male_fecundity = herd_data[1, male_fecundity],
       prob_death = as.numeric(
@@ -94,7 +94,7 @@ herd_data[, (structure_cols) := as.list(
     simulate_steady_state_structure(
       x_start = x_start,
       max_years = max_years,
-      min_lambda_chanprob_growthe = lambda_tol,
+      min_lambda_change = lambda_tol,
       female_fecundity = female_fecundity,
       male_fecundity = male_fecundity,
       prob_death = as.numeric(
@@ -128,7 +128,7 @@ popsize_cols <- names(
       prob_growth = as.numeric(
         herd_data[1, c("prob_growth.FB", "prob_growth.FJ", "prob_growth.FS", "prob_growth.FA", "prob_growth.FC", "prob_growth.MB", "prob_growth.MJ", "prob_growth.MS", "prob_growth.MA", "prob_growth.MC")]
       ),
-      prob_growthrowth_rate_pop = herd_data[1, prob_growthrowth_rate_pop],
+      growth_rate_pop = herd_data[1, growth_rate_pop],
       structure = as.numeric(
         herd_data[1, c("structure.FB", "structure.FJ", "structure.FS", "structure.FA",
                      "structure.MB", "structure.MJ", "structure.MS", "structure.MA")]
@@ -155,7 +155,7 @@ herd_data[, (popsize_cols) := as.list(
       prob_growth = as.numeric(
         .(prob_growth.FB, prob_growth.FJ, prob_growth.FS, prob_growth.FA, prob_growth.FC, prob_growth.MB, prob_growth.MJ, prob_growth.MS, prob_growth.MA, prob_growth.MC)
       ),
-      prob_growthrowth_rate_pop = prob_growthrowth_rate_pop,
+      growth_rate_pop = growth_rate_pop,
       structure = as.numeric(
         .(structure.FB, structure.FJ, structure.FS, structure.FA, structure.MB, structure.MJ,
           structure.MS, structure.MA)
@@ -178,9 +178,9 @@ offtake_cols <- names(
         herd_data[1, c("size_end.FJ", "size_end.FS", "size_end.FA", "size_end.MJ", "size_end.MS",
                      "size_end.MA")]
       ),
-      size_avprob_growth = as.numeric(
-        herd_data[1, c("size_avprob_growth.FJ", "size_avprob_growth.FS", "size_avprob_growth.FA", "size_avprob_growth.MJ", "size_avprob_growth.MS",
-                     "size_avprob_growth.MA")]
+      size_avg = as.numeric(
+        herd_data[1, c("size_avg.FJ", "size_avg.FS", "size_avg.FA", "size_avg.MJ", "size_avg.MS",
+                     "size_avg.MA")]
       ),
       offtake = as.numeric(
         herd_data[1, c("offtake.FB", "offtake.FJ", "offtake.FS", "offtake.FA", "offtake.FC",
@@ -199,8 +199,8 @@ herd_data[, (offtake_cols) := as.list(
       size_end = as.numeric(
         .(size_end.FJ, size_end.FS, size_end.FA, size_end.MJ, size_end.MS, size_end.MA)
       ),
-      size_avprob_growth = as.numeric(
-        .(size_avprob_growth.FJ, size_avprob_growth.FS, size_avprob_growth.FA, size_avprob_growth.MJ, size_avprob_growth.MS, size_avprob_growth.MA)
+      size_avg = as.numeric(
+        .(size_avg.FJ, size_avg.FS, size_avg.FA, size_avg.MJ, size_avg.MS, size_avg.MA)
       ),
       offtake = as.numeric(
         .(offtake.FB, offtake.FJ, offtake.FS, offtake.FA, offtake.FC, offtake.MB, offtake.MJ,
@@ -217,7 +217,7 @@ col_end <- which(cols_all == "fibre_prod")
 
 extra_cols <- c(
   "share.FJ", "share.FS", "share.FA", "share.MJ", "share.MS", "share.MA",
-  "prob_growthrowth_rate_pop", "size.FJ", "size.FS", "size.FA", "size.MJ", "size.MS", "size.MA",
+  "growth_rate_pop", "size.FJ", "size.FS", "size.FA", "size.MJ", "size.MS", "size.MA",
   "offtake_number.FJ", "offtake_number.FS", "offtake_number.FA",
   "offtake_number.MJ", "offtake_number.MS", "offtake_number.MA"
 )
