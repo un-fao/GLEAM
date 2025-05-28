@@ -1,9 +1,11 @@
 library(data.table)
 library(readxl)
 
-#inputs---
-feed_params <- as.data.table(read_excel("your_data_directory/Inputs/Feed_list_complete.xlsx",
-                                 sheet = "Complete_list"))
+# inputs---
+feed_params <- as.data.table(read_excel(
+  "your_data_directory/Inputs/Feed_list_complete.xlsx",
+  sheet = "Complete_list"
+))
 
 rations_share <- fread("your_data_directory/Inputs/GLEAM_input_FeedRations.csv")
 
@@ -34,12 +36,14 @@ setnames(feed_params, old = c(
 ))
 
 
-milk_items <- c("Raw milk of cattle",
-                "Raw milk of buffalo",
-                "Raw milk of camel",
-                "Raw milk of sheep",
-                "Raw milk of goats",
-                "Raw milk of pig")
+milk_items <- c(
+  "Raw milk of cattle",
+  "Raw milk of buffalo",
+  "Raw milk of camel",
+  "Raw milk of sheep",
+  "Raw milk of goats",
+  "Raw milk of pig"
+)
 
 # Update GLEAM3_NAME where Item_Name matches one of the milk items
 feed_params[Item_Name %in% milk_items, GLEAM3_name := Item_Name]
@@ -53,8 +57,10 @@ feed_params$dig_chickens <- feed_params$ME_chickens / feed_params$GE
 feed_params[N_content %in% c("", "-"), N_content := NA]
 feed_params[, N_content := as.numeric(N_content)]
 
-feed_params_sel <- feed_params[, .(GLEAM3_name, GE, ME_ruminants, ME_pigs, ME_chickens,
-                                   N_content, dig_ruminants, dig_pigs, dig_chickens)]
+feed_params_sel <- feed_params[, .(
+  GLEAM3_name, GE, ME_ruminants, ME_pigs, ME_chickens,
+  N_content, dig_ruminants, dig_pigs, dig_chickens
+)]
 
 
 
@@ -72,11 +78,11 @@ feed_params_sel_summary <- feed_params_sel[, .(
 
 
 # checking the unmatched records
- #rations_share[, in_feed := GLEAM3_name %in% feed_params_sel_summary$GLEAM3_name]
+# rations_share[, in_feed := GLEAM3_name %in% feed_params_sel_summary$GLEAM3_name]
 #
 # # View unmatched rows
- #unmatched <- rations_share[in_feed == FALSE]
- #unique(unmatched$GLEAM3_name)
+# unmatched <- rations_share[in_feed == FALSE]
+# unique(unmatched$GLEAM3_name)
 
 
 # fixing the unmatched records
@@ -92,30 +98,38 @@ rations_share[GLEAM3_name %in% c("CGRNBYDRY"), GLEAM3_name := "GRNBYDRY"]
 rations_share[GLEAM3_name %in% c("CPULSES"), GLEAM3_name := "PULSES"]
 rations_share[GLEAM3_name %in% c("CMLCTTN"), GLEAM3_name := "MLCTTN"]
 rations_share[GLEAM3_name %in% c("CMILLET"), GLEAM3_name := "MILLET"]
-rations_share[GLEAM3_name %in% c("CRICE"), GLEAM3_name := "RICE"]#ADDED
-rations_share[GLEAM3_name %in% c("LIME"), GLEAM3_name := "LIMESTONE"]#ADDED
+rations_share[GLEAM3_name %in% c("CRICE"), GLEAM3_name := "RICE"] # ADDED
+rations_share[GLEAM3_name %in% c("LIME"), GLEAM3_name := "LIMESTONE"] # ADDED
 
 
 # merge with the feed rations
 rations_temp <- merge(rations_share, feed_params_sel_summary, by = "GLEAM3_name", all.x = TRUE, allow.cartesian = TRUE)
-abbr_animals <- data.frame(Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
-                           Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML"))
+abbr_animals <- data.frame(
+  Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
+  Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
+)
 
 rations_temp <- merge(rations_temp, abbr_animals, by = "Animal")
 
 
 # calculating the feed value
-rations_temp[, `:=` (
+rations_temp[, `:=`(
   diet_ge = value * GE,
-  diet_nitrogen  = value * N_content,
-
-  diet_dig = fifelse(Animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), value * dig_ruminants,
-                      fifelse(Animal_short == "CHK", value * dig_chickens,
-                              fifelse(Animal_short == "PGS", value * dig_pigs, NA_real_))),
-
-  diet_me = fifelse(Animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), value * ME_ruminants,
-                      fifelse(Animal_short == "CHK", value * ME_chickens,
-                              fifelse(Animal_short == "PGS", value * ME_pigs, NA_real_)))
+  diet_nitrogen = value * N_content,
+  diet_dig = fifelse(
+    Animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), value * dig_ruminants,
+    fifelse(
+      Animal_short == "CHK", value * dig_chickens,
+      fifelse(Animal_short == "PGS", value * dig_pigs, NA_real_)
+    )
+  ),
+  diet_me = fifelse(
+    Animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), value * ME_ruminants,
+    fifelse(
+      Animal_short == "CHK", value * ME_chickens,
+      fifelse(Animal_short == "PGS", value * ME_pigs, NA_real_)
+    )
+  )
 )]
 
 
@@ -139,5 +153,3 @@ GLEAM_input_feed_preproc <- merge(
 )
 
 fwrite(GLEAM_input_feed_preproc, "your_data_directory/Inputs/GLEAM_input_energyrequirements.csv")
-
-
