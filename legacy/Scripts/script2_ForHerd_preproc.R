@@ -1,9 +1,9 @@
 library(data.table)
 
-source("Functions//00_Preprocessing_functions.R")
+source("legacy/Functions/00_Preprocessing_functions.R")
 
-wide_dt <- fread("Inputs/GLEAM_input_preproc.csv")
-wide_camels_dt <- fread("Inputs/Pre_processing/Camelids/camels_inputs.csv")
+wide_dt <- fread("your_data_directory/Inputs/GLEAM_input_preproc.csv")
+wide_camels_dt <- fread("your_data_directory/Inputs/Pre_processing/Camelids/camels_inputs.csv")
 
 wide_dt[Animal_short == "PGS", c("AFC", "AFCM") := get.afc_pigs(AFKG=AFKG,AMKG=AMKG,DWG2=DWG2,WKG=WKG,WA=WA),by=.I]
 
@@ -44,7 +44,7 @@ wide_dt <- wide_dt[,!c("CSH", "MHR", "WOOL")]
 # Summing-up fiber production and create a new column called "prod_fiber"
 # CSH / total amount of cashmere produced by system
 # MHR / total amount of mohair produced by the system
-# WOOL /total amount of wool produced by the system 
+# WOOL /total amount of wool produced by the system
 
 
 # Removing variables----
@@ -57,10 +57,10 @@ wide_dt <- wide_dt[,!c("ACT", "DCR", "POPULATION", "AF_FRAC", "DISCARGE", "DISCH
 # DISCHARGE & DISCARGE - Used by NUE / Not used at the moment
 # DWG - daily weight gain / Not used at the moment
 # FISHPOND, INCINERATION, PUBLSEWAGE - used in NUE / Not used at the moment
-# CLIM ??????? 
+# CLIM ???????
 
-chicken_only_variables <- c("A2S", "AF1KG", "AF2KG", "AFS", "AM1KG", "AM2KG", "BIDLE", "CLTSIZE", "CYCLE", 
-                            "DRL2", "DRM", "EGGSYEAR", "EGGWGHT", "EGG_PROTEIN", "FRMF", "HATCH", 
+chicken_only_variables <- c("A2S", "AF1KG", "AF2KG", "AFS", "AM1KG", "AM2KG", "BIDLE", "CLTSIZE", "CYCLE",
+                            "DRL2", "DRM", "EGGSYEAR", "EGGWGHT", "EGG_PROTEIN", "FRMF", "HATCH",
                             "LAYTIME1", "LAYTIME2", "MALE", "MOLT", "MOLTTIME")
 
 wide_dt <- wide_dt[, !chicken_only_variables, with = FALSE]
@@ -124,4 +124,4 @@ setcolorder(wide_dt, c(
 
 # END VARIABLES RENAMING-----
 
-fwrite(wide_dt[Animal_short!="CHK",], "Inputs/GLEAM_input_herd.csv")
+fwrite(wide_dt[Animal_short!="CHK",], "your_data_directory/Inputs/GLEAM_input_herd.csv")

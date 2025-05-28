@@ -1,5 +1,5 @@
-GLEAM_input_directemissions <- fread("Inputs/GLEAM_input_directemissions.csv")
-source("Functions/05_functions_directemissions.R")
+GLEAM_input_directemissions <- fread("your_data_directory/Inputs/GLEAM_input_directemissions.csv")
+source("legacy/Functions/05_functions_directemissions.R")
 
 # CH4-----
 
@@ -9,7 +9,7 @@ source("Functions/05_functions_directemissions.R")
 GLEAM_input_directemissions[, ym := Dfunction_ym(Animal_short, cohort, diet_dig), by = seq_len(nrow(GLEAM_input_directemissions))]
 
 ### methane amount
-GLEAM_input_directemissions[, ch4_enteric := Dfunction_ch4_enteric(Animal_short, cohort, ym , 
+GLEAM_input_directemissions[, ch4_enteric := Dfunction_ch4_enteric(Animal_short, cohort, ym ,
                                            diet_ge, dmi, afc), by = seq_len(nrow(GLEAM_input_directemissions))]
 
 
@@ -18,7 +18,7 @@ GLEAM_input_directemissions[, ch4_enteric := Dfunction_ch4_enteric(Animal_short,
 ### Volatile Solids (VS)------
 
 ##### VS IPCC 2019------
-GLEAM_input_directemissions[, vs_2019 := Dfunction_vs2019(Animal_short, cohort, dmi, diet_dig, 
+GLEAM_input_directemissions[, vs_2019 := Dfunction_vs2019(Animal_short, cohort, dmi, diet_dig,
                                   diet_me, diet_ge, afc), by = seq_len(nrow(GLEAM_input_directemissions))]
 
 

@@ -1,13 +1,13 @@
 library(data.table)
 
 
-ParameterALLNoCohorts <- fread("../GLEAM_ENGINE/data_input/ParameterALLNoCohorts.csv")[RegionClass=="Countries",]
-GLEAM_bulk <- fread("../GLEAM_ENGINE/data_input/GLEAMDataALL.csv")
-country_list <- fread("Inputs/Pre_processing/GAULListUsedByGLEAM_GIUSY_20230316.csv")
-past_man_frac_df <- fread("Inputs/Pre_processing/variables_calc/past_man_frac/faostat_pastmanfrac.csv")
+ParameterALLNoCohorts <- fread("your_data_directory/GLEAM_ENGINE/data_input/ParameterALLNoCohorts.csv")[RegionClass=="Countries",]
+GLEAM_bulk <- fread("your_data_directory/GLEAM_ENGINE/data_input/GLEAMDataALL.csv")
+country_list <- fread("your_data_directory/Inputs/Pre_processing/GAULListUsedByGLEAM_GIUSY_20230316.csv")
+past_man_frac_df <- fread("your_data_directory/Inputs/Pre_processing/variables_calc/past_man_frac/faostat_pastmanfrac.csv")
 
 
-## from width to long 
+## from width to long
 wide_dt <- dcast(ParameterALLNoCohorts, ISO3 + ISO3_num + RegionClass + ADM0_CODE + Animal + HerdType + LPS + COUNTRY ~ varName, value.var = "V1")
 
 ## total stock
@@ -61,6 +61,6 @@ wide_dt <- merge(wide_dt, abbr_LPS, by = "LPS")
 
 
 
-fwrite(wide_dt, "Inputs/GLEAM_input_preproc.csv")
+fwrite(wide_dt, "your_data_directory/Inputs/GLEAM_input_preproc.csv")
 
 

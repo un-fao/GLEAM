@@ -1,0 +1,10 @@
+linters: linters_with_defaults(
+    line_length_linter(120),
+    object_usage_linter = NULL,
+    brace_linter = NULL,
+    object_length_linter(40),
+    trailing_whitespace_linter = NULL,
+    indentation_linter = NULL
+    )
+encoding: "UTF-8"
+exclusions: list("legacy")

@@ -2,30 +2,30 @@ library(data.table)
 library(readxl)
 
 #inputs---
-feed_params <- as.data.table(read_excel("Inputs/Feed_list_complete.xlsx", 
+feed_params <- as.data.table(read_excel("your_data_directory/Inputs/Feed_list_complete.xlsx",
                                  sheet = "Complete_list"))
 
-rations_share <- fread("Inputs//GLEAM_input_FeedRations.csv")
+rations_share <- fread("your_data_directory/Inputs/GLEAM_input_FeedRations.csv")
 
-GLEAM_input_feed_preproc <- fread("Inputs//GLEAM_input_feed.csv")
+GLEAM_input_feed_preproc <- fread("your_data_directory/Inputs/GLEAM_input_feed.csv")
 
 
 # combining with feed parameters-----
 setnames(feed_params, old = c(
-  "GLEAM_code", "Item_Name", "GLEAM3_name", "Category", "Data", 
+  "GLEAM_code", "Item_Name", "GLEAM3_name", "Category", "Data",
   "Item_code_CPC", "Source_Item_code_CPC", "Item_code_FAO", "Source_Item_code_FAO", "Description",
   "Cattle", "Sheep", "Goat", "Pigs", "Chicken", "Species", "FAOSTAT domain",
-  "cr_slope", "cr_intercept", "Dry matter content (%)", 
+  "cr_slope", "cr_intercept", "Dry matter content (%)",
   "GE (Mj/kgDM)", "DE_ruminats (Mj/kgDM)", "DE_pigs (Mj/kgDM)",
   "ME_ruminants (Mj/kgDM)", "ME_pigs (Mj/kgDM)", "ME_chickens (Mj/kgDM)",
   "CP (% DM)", "N_content (kg N / kg DM)",
   "Nitrogen digestibility (%)ruminans", "Nitrogen digestibility (%)pigs",
   "Reference1", "Reference2", "Note"
 ), new = c(
-  "GLEAM_code", "Item_Name", "GLEAM3_name", "Category", "data", 
+  "GLEAM_code", "Item_Name", "GLEAM3_name", "Category", "data",
   "item_code_cpc", "source_item_code_cpc", "item_code_fao", "source_item_code_fao", "description",
   "cattle", "sheep", "goat", "pigs", "chicken", "species", "faostat_domain",
-  "cr_slope", "cr_intercept", "DM", 
+  "cr_slope", "cr_intercept", "DM",
   "GE", "DE_ruminants", "DE_pigs",
   "ME_ruminants", "ME_pigs", "ME_chickens",
   "CP", "N_content",
@@ -36,9 +36,9 @@ setnames(feed_params, old = c(
 
 milk_items <- c("Raw milk of cattle",
                 "Raw milk of buffalo",
-                "Raw milk of camel", 
-                "Raw milk of sheep", 
-                "Raw milk of goats", 
+                "Raw milk of camel",
+                "Raw milk of sheep",
+                "Raw milk of goats",
                 "Raw milk of pig")
 
 # Update GLEAM3_NAME where Item_Name matches one of the milk items
@@ -48,8 +48,8 @@ feed_params[Item_Name %in% milk_items, GLEAM3_name := Item_Name]
 
 # calculate digestibility
 feed_params$dig_ruminants <- feed_params$DE_ruminants / feed_params$GE
-feed_params$dig_pigs      <- feed_params$DE_pigs / feed_params$GE
-feed_params$dig_chickens  <- feed_params$ME_chickens / feed_params$GE
+feed_params$dig_pigs <- feed_params$DE_pigs / feed_params$GE
+feed_params$dig_chickens <- feed_params$ME_chickens / feed_params$GE
 feed_params[N_content %in% c("", "-"), N_content := NA]
 feed_params[, N_content := as.numeric(N_content)]
 
@@ -73,7 +73,7 @@ feed_params_sel_summary <- feed_params_sel[, .(
 
 # checking the unmatched records
  #rations_share[, in_feed := GLEAM3_name %in% feed_params_sel_summary$GLEAM3_name]
-# 
+#
 # # View unmatched rows
  #unmatched <- rations_share[in_feed == FALSE]
  #unique(unmatched$GLEAM3_name)
@@ -108,11 +108,11 @@ rations_temp <- merge(rations_temp, abbr_animals, by = "Animal")
 rations_temp[, `:=` (
   diet_ge = value * GE,
   diet_nitrogen  = value * N_content,
-  
+
   diet_dig = fifelse(Animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), value * dig_ruminants,
                       fifelse(Animal_short == "CHK", value * dig_chickens,
                               fifelse(Animal_short == "PGS", value * dig_pigs, NA_real_))),
-  
+
   diet_me = fifelse(Animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), value * ME_ruminants,
                       fifelse(Animal_short == "CHK", value * ME_chickens,
                               fifelse(Animal_short == "PGS", value * ME_pigs, NA_real_)))
@@ -131,13 +131,13 @@ rations_summary <- rations_temp[, .(
 
 # add feed nutritional parameters
 GLEAM_input_feed_preproc <- merge(
-  GLEAM_input_feed_preproc, 
-  rations_summary, 
-  by = c("Animal_short", "ADM0_CODE", "COUNTRY", "HerdType", "LPS", "cohort"), 
-  all.x = TRUE, 
+  GLEAM_input_feed_preproc,
+  rations_summary,
+  by = c("Animal_short", "ADM0_CODE", "COUNTRY", "HerdType", "LPS", "cohort"),
+  all.x = TRUE,
   allow.cartesian = TRUE
 )
 
-fwrite(GLEAM_input_feed_preproc, "Inputs/GLEAM_input_energyrequirements.csv")
+fwrite(GLEAM_input_feed_preproc, "your_data_directory/Inputs/GLEAM_input_energyrequirements.csv")
 
 
