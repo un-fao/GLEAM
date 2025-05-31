@@ -1,6 +1,3 @@
----
-output: github_document
----
 
 # GLEAM R Package
 
