@@ -1,8 +1,12 @@
 
 #inputs---
-camels_rations<- fread("your_data_directory/Inputs/Pre_processing/Camelids/camels_rations.csv")
-rations <- fread(file.path("your_data_directory/Inputs/Pre_processing/GLEAM_input_feed_GLEAM3_rations.csv"))
-rations<-rbind(camels_rations, rations, fill = TRUE)
+camels_rations <- fread(
+  system.file("extdata/Pre_processing/Camelids/camels_rations.csv", package = "gleam")
+)
+rations <- fread(file.path(
+  system.file("extdata/Pre_processing/GLEAM_input_feed_GLEAM3_rations.csv", package = "gleam")
+))
+rations <- rbind(camels_rations, rations, fill = TRUE)
 
 
 # preparing the feed basket composition dataframe-----
@@ -36,4 +40,6 @@ rations_share <- rbind(rations_share, milk_entries, fill = TRUE)
 
 
 
-fwrite(rations_share, "your_data_directory/Inputs/GLEAM_input_FeedRations.csv")
+fwrite(
+  rations_share, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
+)
