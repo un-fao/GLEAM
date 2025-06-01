@@ -29,12 +29,13 @@ process_feed_rations <- function(rations_share, feed_params, input_feed) {
   )
   feed_params[Item_Name %in% milk_items, GLEAM3_name := Item_Name]
 
-  # Compute digestibility
-  feed_params[, dig_ruminants := DE_ruminants / GE]
-  feed_params[, dig_pigs := DE_pigs / GE]
-  feed_params[, dig_chickens := ME_chickens / GE]
-  feed_params[N_content %in% c("", "-"), N_content := NA]
-  feed_params[, N_content := as.numeric(N_content)]
+  # Compute digestibility and clean nitrogen content
+  feed_params[, `:=`(
+    dig_ruminants  = DE_ruminants / GE,
+    dig_pigs       = DE_pigs / GE,
+    dig_chickens   = ME_chickens / GE,
+    N_content      = as.numeric(fifelse(N_content %in% c("", "-"), NA, N_content))
+  )]
 
   # Keep relevant columns only
   feed_params_sel <- feed_params[, .(
@@ -43,16 +44,16 @@ process_feed_rations <- function(rations_share, feed_params, input_feed) {
   )]
 
   # Aggregate nutrient content per GLEAM3_name
-  feed_params_sel_summary <- feed_params_sel[, .(
-    GE = mean(na.omit(GE)),
-    ME_ruminants = mean(na.omit(ME_ruminants)),
-    ME_pigs = mean(na.omit(ME_pigs)),
-    ME_chickens = mean(na.omit(ME_chickens)),
-    N_content = mean(na.omit(N_content)),
-    dig_ruminants = mean(na.omit(dig_ruminants)),
-    dig_pigs = mean(na.omit(dig_pigs)),
-    dig_chickens = mean(na.omit(dig_chickens))
-  ), by = .(GLEAM3_name)]
+  cols_to_average <- c(
+    "GE", "ME_ruminants", "ME_pigs", "ME_chickens",
+    "N_content", "dig_ruminants", "dig_pigs", "dig_chickens"
+  )
+
+  feed_params_sel_summary <- feed_params_sel[
+    , lapply(.SD, function(x) mean(x, na.rm = TRUE)),
+    by = GLEAM3_name,
+    .SDcols = cols_to_average
+  ]
 
   # Harmonize GLEAM3_name
   rations_share[GLEAM3_name %in% c("CORN", "MAIZEN", "MAIZES", "CMAIZE"), GLEAM3_name := "MAIZE"]
@@ -71,7 +72,7 @@ process_feed_rations <- function(rations_share, feed_params, input_feed) {
   rations_share[GLEAM3_name %in% c("LIME"), GLEAM3_name := "LIMESTONE"]
 
   # Merge with feed parameters
-  rations_temp <- merge(
+  rations_detailed <- merge(
     rations_share, feed_params_sel_summary,
     by = "GLEAM3_name", all.x = TRUE, allow.cartesian = TRUE
   )
@@ -81,10 +82,10 @@ process_feed_rations <- function(rations_share, feed_params, input_feed) {
     Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
     Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
   )
-  rations_temp <- merge(rations_temp, abbr_animals, by = "Animal", all.x = TRUE)
+  rations_detailed <- merge(rations_detailed, abbr_animals, by = "Animal", all.x = TRUE)
 
-  # Calculate feed contributions
-  rations_temp[, `:=`(
+  # Compute dietary GE, ME, nitrogen, and digestibility per feed row
+  rations_detailed[, `:=`(
     diet_ge = value * GE,
     diet_nitrogen = value * N_content,
     diet_dig = fifelse(
@@ -100,7 +101,7 @@ process_feed_rations <- function(rations_share, feed_params, input_feed) {
   )]
 
   # Summarize feed contributions by species, country, and cohort
-  rations_summary <- rations_temp[, .(
+  rations_summary <- rations_detailed[, .(
     diet_ge = sum(diet_ge, na.rm = TRUE),
     diet_me = sum(diet_me, na.rm = TRUE),
     diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
