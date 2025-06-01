@@ -9,6 +9,9 @@
 #' as well as daily weight gain (DWG). It also fills in weaning weights for non-pig animals
 #' based on FS cohorts.
 #'
+#' Input data must be preloaded. If using example data from the package (located in `inst/extdata`),
+#' load it using [system.file()] and [fread()] as shown in the examples.
+#'
 #' This function is intended for internal use.
 #'
 #' @param herd_data A `data.table` containing herd-level input parameters per country/animal/LPS.
@@ -27,6 +30,12 @@
 #'   - offtake numbers
 #'   - transition probabilities
 #'   - cohort-level liveweights and weight gain
+#'
+#' @examples
+#' # Load example input from the package and run the simulation
+#' input_path <- system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
+#' herd_data <- data.table::fread(input_path)[1:20, ]
+#' sim_results <- run_herd_simulation(herd_data)
 #'
 #' @keywords internal
 #'

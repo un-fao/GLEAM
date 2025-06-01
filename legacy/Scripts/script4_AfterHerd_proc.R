@@ -4,7 +4,9 @@ library(data.table)
 source("legacy/Functions/02_functions_afterHerd_preprocessing.R")
 
 # Read processed herd data
-herd_data <- fread("your_data_directory/Inputs/GLEAM_input_herdproc.csv")
+herd_data <- fread(
+  system.file("extdata/GLEAM_input_herdproc.csv", package = "gleam")
+)
 
 # Define ID and cohort-specific columns
 id_cols <- c(

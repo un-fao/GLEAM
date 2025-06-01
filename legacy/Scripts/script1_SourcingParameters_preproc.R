@@ -1,10 +1,16 @@
 library(data.table)
 
 
-ParameterALLNoCohorts <- fread("your_data_directory/GLEAM_ENGINE/data_input/ParameterALLNoCohorts.csv")[RegionClass=="Countries",]
+ParameterALLNoCohorts <- fread(
+  "your_data_directory/GLEAM_ENGINE/data_input/ParameterALLNoCohorts.csv"
+)[RegionClass=="Countries",]
 GLEAM_bulk <- fread("your_data_directory/GLEAM_ENGINE/data_input/GLEAMDataALL.csv")
-country_list <- fread("your_data_directory/Inputs/Pre_processing/GAULListUsedByGLEAM_GIUSY_20230316.csv")
-past_man_frac_df <- fread("your_data_directory/Inputs/Pre_processing/variables_calc/past_man_frac/faostat_pastmanfrac.csv")
+country_list <- fread(
+  system.file("extdata/Pre_processing/GAULListUsedByGLEAM_GIUSY_20230316.csv", package = "gleam")
+)
+past_man_frac_df <- fread(
+  system.file("extdata/Pre_processing/variables_calc/past_man_frac/faostat_pastmanfrac.csv", package = "gleam")
+)
 
 
 ## from width to long
@@ -61,6 +67,6 @@ wide_dt <- merge(wide_dt, abbr_LPS, by = "LPS")
 
 
 
-fwrite(wide_dt, "your_data_directory/Inputs/GLEAM_input_preproc.csv")
+fwrite(wide_dt, system.file("extdata/GLEAM_input_preproc.csv", package = "gleam"))
 
 
