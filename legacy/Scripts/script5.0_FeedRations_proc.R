@@ -1,7 +1,12 @@
 
-#inputs---
-camels_rations <- fread("your_data_directory/Inputs/Pre_processing/Camelids/camels_rations.csv")
-rations <- fread(file.path("your_data_directory/Inputs/Pre_processing/GLEAM_input_feed_GLEAM3_rations.csv"))
+# Inputs---
+camels_rations <- fread(
+  system.file("extdata/Pre_processing/Camelids/camels_rations.csv", package = "gleam")
+)
+rations <- fread(file.path(
+  system.file("extdata/Pre_processing/GLEAM_input_feed_GLEAM3_rations.csv", package = "gleam")
+))
+
 rations <- rbind(camels_rations, rations, fill = TRUE)
 
 
@@ -49,4 +54,6 @@ rations_share[GLEAM3_name %in% c("CRICE"), GLEAM3_name := "RICE"]
 rations_share[GLEAM3_name %in% c("LIME"), GLEAM3_name := "LIMESTONE"]
 
 
-fwrite(rations_share, "your_data_directory/Inputs/GLEAM_input_FeedRations.csv")
+fwrite(
+  rations_share, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
+)

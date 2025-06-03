@@ -2,8 +2,12 @@ library(data.table)
 
 source("legacy/Functions/00_Preprocessing_functions.R")
 
-wide_dt <- fread("your_data_directory/Inputs/GLEAM_input_preproc.csv")
-wide_camels_dt <- fread("your_data_directory/Inputs/Pre_processing/Camelids/camels_inputs.csv")
+wide_dt <- fread(
+  system.file("extdata/GLEAM_input_preproc.csv", package = "gleam")
+)
+wide_camels_dt <- fread(
+  system.file("extdata/Pre_processing/Camelids/camels_inputs.csv", package = "gleam")
+)
 
 wide_dt[Animal_short == "PGS", c("AFC", "AFCM") := get.afc_pigs(AFKG=AFKG,AMKG=AMKG,DWG2=DWG2,WKG=WKG,WA=WA),by=.I]
 
@@ -124,4 +128,6 @@ setcolorder(wide_dt, c(
 
 # END VARIABLES RENAMING-----
 
-fwrite(wide_dt[Animal_short!="CHK",], "your_data_directory/Inputs/GLEAM_input_herd.csv")
+fwrite(
+  wide_dt[Animal_short!="CHK",], system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
+)

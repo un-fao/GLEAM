@@ -4,7 +4,9 @@ library(data.table)
 source("legacy/Functions/01_functions_herd_steady1_dailysteps.R")
 
 # Read input
-herd_data <- fread("your_data_directory/Inputs/prob_growthLEAM_input_herd.csv")
+herd_data <- fread(
+  system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
+)
 
 # --- Function 1: Fecundity ------------------------------------------------------
 herd_data[, c("female_fecundity", "male_fecundity") := compute_fecundity_rates(
@@ -224,5 +226,5 @@ extra_cols <- c(
 
 final_cols <- c(cols_all[col_start:col_end], extra_cols)
 
-#fwrite(herd_data[, ..final_cols], "your_data_directory/Inputs/prob_growthLEAM_input_herdproc.csv")
+#fwrite(herd_data[, ..final_cols], system.file("extdata/GLEAM_input_herdproc.csv", package = "gleam"))
 #rm(col_start, col_end, extra_cols)
