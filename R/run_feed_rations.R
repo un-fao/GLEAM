@@ -55,22 +55,6 @@ process_feed_rations <- function(rations_share, feed_params, input_feed) {
     .SDcols = cols_to_average
   ]
 
-  # Harmonize GLEAM3_name
-  rations_share[GLEAM3_name %in% c("CORN", "MAIZEN", "MAIZES", "CMAIZE"), GLEAM3_name := "MAIZE"]
-  rations_share[GLEAM3_name %in% c("WHEATN", "WHEATS", "CWHEAT"), GLEAM3_name := "WHEAT"]
-  rations_share[GLEAM3_name %in% c("CBARLEY"), GLEAM3_name := "BARLEY"]
-  rations_share[GLEAM3_name %in% c("CMLOILSDS"), GLEAM3_name := "MLOILSDS"]
-  rations_share[GLEAM3_name %in% c("CMLSOY"), GLEAM3_name := "MLSOY"]
-  rations_share[GLEAM3_name %in% c("CSORGHUM"), GLEAM3_name := "SORGHUM"]
-  rations_share[GLEAM3_name %in% c("CSOY"), GLEAM3_name := "SOY"]
-  rations_share[GLEAM3_name %in% c("CCASSAVA"), GLEAM3_name := "CASSAVA"]
-  rations_share[GLEAM3_name %in% c("CGRNBYDRY"), GLEAM3_name := "GRNBYDRY"]
-  rations_share[GLEAM3_name %in% c("CPULSES"), GLEAM3_name := "PULSES"]
-  rations_share[GLEAM3_name %in% c("CMLCTTN"), GLEAM3_name := "MLCTTN"]
-  rations_share[GLEAM3_name %in% c("CMILLET"), GLEAM3_name := "MILLET"]
-  rations_share[GLEAM3_name %in% c("CRICE"), GLEAM3_name := "RICE"]
-  rations_share[GLEAM3_name %in% c("LIME"), GLEAM3_name := "LIMESTONE"]
-
   # Merge with feed parameters
   rations_detailed <- merge(
     rations_share, feed_params_sel_summary,
