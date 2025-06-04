@@ -22,7 +22,7 @@ calculate_feed_intake_metrics <- function(rations_share, feed_params, input_feed
   )]
 
   # Select relevant nutrient columns
-  feed_params_sel <- feed_params[, .(
+  feed_params_nutrients <- feed_params[, .(
     GLEAM3_name, GE, ME_ruminants, ME_pigs, ME_chickens,
     N_content, dig_ruminants, dig_pigs, dig_chickens
   )]
@@ -33,7 +33,7 @@ calculate_feed_intake_metrics <- function(rations_share, feed_params, input_feed
     "N_content", "dig_ruminants", "dig_pigs", "dig_chickens"
   )
 
-  feed_params_summary <- feed_params_sel[
+  feed_params_summary <- feed_params_nutrients[
     , lapply(.SD, function(x) mean(x, na.rm = TRUE)),
     by = GLEAM3_name,
     .SDcols = cols_to_average
