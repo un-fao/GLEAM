@@ -1,74 +1,58 @@
-process_feed_rations <- function(rations_share, feed_params, input_feed) {
-  # Rename columns
-  setnames(feed_params, old = c(
-    "GLEAM_code", "Item_Name", "GLEAM3_name", "Category", "Data",
-    "Item_code_CPC", "Source_Item_code_CPC", "Item_code_FAO", "Source_Item_code_FAO", "Description",
-    "Cattle", "Sheep", "Goat", "Pigs", "Chicken", "Species", "FAOSTAT domain",
-    "cr_slope", "cr_intercept", "Dry matter content (%)",
-    "GE (Mj/kgDM)", "DE_ruminats (Mj/kgDM)", "DE_pigs (Mj/kgDM)",
-    "ME_ruminants (Mj/kgDM)", "ME_pigs (Mj/kgDM)", "ME_chickens (Mj/kgDM)",
-    "CP (% DM)", "N_content (kg N / kg DM)",
-    "Nitrogen digestibility (%)ruminans", "Nitrogen digestibility (%)pigs",
-    "Reference1", "Reference2", "Note"
-  ), new = c(
-    "GLEAM_code", "Item_Name", "GLEAM3_name", "Category", "data",
-    "item_code_cpc", "source_item_code_cpc", "item_code_fao", "source_item_code_fao", "description",
-    "cattle", "sheep", "goat", "pigs", "chicken", "species", "faostat_domain",
-    "cr_slope", "cr_intercept", "DM",
-    "GE", "DE_ruminants", "DE_pigs",
-    "ME_ruminants", "ME_pigs", "ME_chickens",
-    "CP", "N_content",
-    "N_dig_ruminants", "N_dig_pigs",
-    "reference1", "reference2", "note"
-  ), skip_absent = TRUE)
-
-  # Update milk GLEAM3_name
-  milk_items <- c(
-    "Raw milk of cattle", "Raw milk of buffalo", "Raw milk of camel",
-    "Raw milk of sheep", "Raw milk of goats", "Raw milk of pig"
-  )
-  feed_params[Item_Name %in% milk_items, GLEAM3_name := Item_Name]
-
-  # Compute digestibility and clean nitrogen content
+#' Calculate Feed Intake Metrics
+#'
+#' Computes cohort-level dietary energy, digestibility, and nitrogen intake
+#' from feed rations and nutritional parameters. Assumes inputs are pre-cleaned.
+#'
+#' @param rations_share A data.table containing feed shares per cohort. Must include:
+#'   - `Animal`, `GLEAM3_name`, `COUNTRY`, `ADM0_CODE`, `HerdType`, `LPS`, `cohort`, and `value`.
+#' @param feed_params A data.table of nutrient parameters. Must include:
+#'   - `GLEAM3_name`, `GE`, `DE_ruminants`, `DE_pigs`, `ME_ruminants`, `ME_pigs`, `ME_chickens`, `N_content`.
+#' @param input_feed A data.table of cohort-level baseline GLEAM data. Must include:
+#'   - `Animal_short`, `ADM0_CODE`, `COUNTRY`, `HerdType`, `LPS`, `cohort`.
+#'
+#' @return A data.table matching `input_feed` enriched with dietary metrics:
+#'   - `diet_ge`, `diet_me`, `diet_nitrogen`, `diet_dig`
+#' @export
+calculate_feed_intake_metrics <- function(rations_share, feed_params, input_feed) {
+  # Compute digestibility ratios
   feed_params[, `:=`(
     dig_ruminants  = DE_ruminants / GE,
     dig_pigs       = DE_pigs / GE,
-    dig_chickens   = ME_chickens / GE,
-    N_content      = as.numeric(fifelse(N_content %in% c("", "-"), NA, N_content))
+    dig_chickens   = ME_chickens / GE
   )]
 
-  # Keep relevant columns only
+  # Select relevant nutrient columns
   feed_params_sel <- feed_params[, .(
     GLEAM3_name, GE, ME_ruminants, ME_pigs, ME_chickens,
     N_content, dig_ruminants, dig_pigs, dig_chickens
   )]
 
-  # Aggregate nutrient content per GLEAM3_name
+  # Average nutritional values across feed types
   cols_to_average <- c(
     "GE", "ME_ruminants", "ME_pigs", "ME_chickens",
     "N_content", "dig_ruminants", "dig_pigs", "dig_chickens"
   )
 
-  feed_params_sel_summary <- feed_params_sel[
+  feed_params_summary <- feed_params_sel[
     , lapply(.SD, function(x) mean(x, na.rm = TRUE)),
     by = GLEAM3_name,
     .SDcols = cols_to_average
   ]
 
-  # Merge with feed parameters
+  # Merge ration shares with feed parameters
   rations_detailed <- merge(
-    rations_share, feed_params_sel_summary,
+    rations_share, feed_params_summary,
     by = "GLEAM3_name", all.x = TRUE, allow.cartesian = TRUE
   )
 
-  # Add Animal_short
+  # Add species abbreviations
   abbr_animals <- data.table(
     Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
     Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
   )
   rations_detailed <- merge(rations_detailed, abbr_animals, by = "Animal", all.x = TRUE)
 
-  # Compute dietary GE, ME, nitrogen, and digestibility per feed row
+  # Calculate cohort feed contributions: GE, ME, digestibility, nitrogen
   rations_detailed[, `:=`(
     diet_ge = value * GE,
     diet_nitrogen = value * N_content,
@@ -84,7 +68,7 @@ process_feed_rations <- function(rations_share, feed_params, input_feed) {
     )
   )]
 
-  # Summarize feed contributions by species, country, and cohort
+  # Summarize dietary metrics at the cohort level
   rations_summary <- rations_detailed[, .(
     diet_ge = sum(diet_ge, na.rm = TRUE),
     diet_me = sum(diet_me, na.rm = TRUE),
@@ -92,14 +76,12 @@ process_feed_rations <- function(rations_share, feed_params, input_feed) {
     diet_dig = sum(diet_dig, na.rm = TRUE)
   ), by = .(Animal_short, COUNTRY, ADM0_CODE, HerdType, LPS, cohort)]
 
-  # Merge into input_feed
-  result <- merge(
+  # Merge back with input data and return output
+  merge(
     input_feed,
     rations_summary,
     by = c("Animal_short", "ADM0_CODE", "COUNTRY", "HerdType", "LPS", "cohort"),
     all.x = TRUE,
     allow.cartesian = TRUE
   )
-
-  return(result)
 }
