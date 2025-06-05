@@ -12,7 +12,27 @@
 #'
 #' @return A data.table matching `input_feed` enriched with dietary metrics:
 #'   - `diet_ge`, `diet_me`, `diet_nitrogen`, `diet_dig`
+#'
+#' @examples
+#' \dontrun{
+#' # Load cleaned example input from the package and compute feed intake metrics
+#' feed_params <- data.table::fread(
+#'   system.file("extdata/Feed_parameters.csv", package = "gleam")
+#' )
+#'
+#' rations_share <- data.table::fread(
+#'   system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
+#' )
+#'
+#' input_feed <- data.table::fread(
+#'   system.file("extdata/GLEAM_input_feed.csv", package = "gleam")
+#' )
+#'
+#' result <- calculate_feed_intake_metrics(rations_share, feed_params, input_feed)
+#' }
 #' @export
+#'
+#' @importFrom data.table fifelse data.table
 calculate_feed_intake_metrics <- function(rations_share, feed_params, input_feed) {
   # Compute digestibility ratios
   feed_params[, `:=`(

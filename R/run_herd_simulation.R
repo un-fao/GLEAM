@@ -32,11 +32,12 @@
 #'   - cohort-level liveweights and weight gain
 #'
 #' @examples
+#' \dontrun{
 #' # Load example input from the package and run the simulation
 #' input_path <- system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
 #' herd_data <- data.table::fread(input_path)[1:20, ]
 #' sim_results <- run_herd_simulation(herd_data)
-#'
+#' }
 #' @keywords internal
 #'
 #' @importFrom data.table := .SD .I melt dcast setcolorder
