@@ -121,7 +121,7 @@ setcolorder(wide_dt, c(
   "ADM0_CODE", "ISO3", "ISO3_num", "M49_code", "COUNTRY",
   "RegionClass",  "CLIM", "CLIMATE_ZONE", "TEMPERATURE",  "AFCM",
   "AFKG", "AMKG", "BCR", "DR1M", "DR2", "DRF", "DRR2A", "DRR2B",
-  "DWG2", "FRRF", "LW", "M2SKG", "MFSKG","MMSKG", "RRF", "RRM", "WA"
+  "DWG2", "FRRF", "LW", "M2SKG", "MFSKG","MMSKG", "RRF", "WA", "RRM", 
 ))
 
 
