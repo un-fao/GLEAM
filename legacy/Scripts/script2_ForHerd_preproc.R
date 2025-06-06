@@ -125,6 +125,8 @@ setcolorder(wide_dt, c(
 ))
 
 
+# Assigning 1 to all litsize
+wide_dt[!(Animal_short %in% c("PGS", "CHK")), litsize := 1]
 
 # END VARIABLES RENAMING-----
 
