@@ -1,4 +1,5 @@
 linters: linters_with_defaults(
+    return_linter = NULL,
     line_length_linter(120),
     object_usage_linter = NULL,
     brace_linter = NULL,
