@@ -40,7 +40,7 @@ utils::globalVariables(c(
 ))
 
 utils::globalVariables(c(
-  # Columns used in calculate_feed_intake_metrics
+  # Columns used in run_feed_rations
   "DE_pigs", "DE_ruminants", "GE", "GLEAM3_name", "HerdType", "LPS",
   "ME_chickens", "ME_pigs", "ME_ruminants", "N_content",
   "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",

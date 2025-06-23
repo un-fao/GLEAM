@@ -50,6 +50,12 @@ milk_items <- c(
 # Update GLEAM3_NAME where Item_Name matches one of the milk items
 feed_params[Item_Name %in% milk_items, GLEAM3_name := Item_Name]
 
+# Write out the new CSV to use directly in the feed_rations function
+fwrite(
+  feed_params,
+  file = system.file("extdata/Feed_parameters.csv", package = "gleam")
+)
+
 # Calculate digestibility
 feed_params$dig_ruminants <- feed_params$DE_ruminants / feed_params$GE
 feed_params$dig_pigs <- feed_params$DE_pigs / feed_params$GE

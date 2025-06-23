@@ -28,12 +28,12 @@
 #'   system.file("extdata/GLEAM_input_feed.csv", package = "gleam")
 #' )
 #'
-#' result <- calculate_feed_intake_metrics(rations_share, feed_params, input_feed)
+#' result <- run_feed_rations(rations_share, feed_params, input_feed)
 #' }
-#' @export
+#' @keywords internal
 #'
 #' @importFrom data.table fifelse data.table
-calculate_feed_intake_metrics <- function(rations_share, feed_params, input_feed) {
+run_feed_rations <- function(rations_share, feed_params, input_feed) {
   # Compute digestibility ratios
   feed_params[, `:=`(
     dig_ruminants  = DE_ruminants / GE,

@@ -1,346 +1,346 @@
-GLEAM3_name,GE,DE_ruminants,DE_pigs,ME_ruminants,ME_pigs,ME_chickens,N_content
-GRASSF,18.7,12.7908,7.9,10.7,7.25,5.65,0.02592
-WSTRAW,18.5,8.3,2.29999999999999,6.8,2,,0.00672
-WHEAT,18.2,15.6,15.9,13.1,15.5,14.1,0.02016
-ZSTOVER,18.2,9.4,,7.65,,,0.00855999999999999
-MAIZE,18.7166666666666,16.0999999999999,16.4166666666666,13.5833333333333,16.0333333333333,15.1374999999999,0.01456
-RSTRAW,15.5,7.2,5.4,5.8,,,0.00672
-RICE,18,15.9,17.1,13.4,16.6,15.75,0.01664
-SSTOVER,18.1,8.9,,7.3,,,0.00592
-SORGHUM,18.8,16,16.1,13.5,15.7,15.85,0.01728
-BSTRAW,18.2,8,0.025,6.5,2.2,,0.00607999999999999
-BARLEY,18.3999999999999,14.8,14.8,12.4,14.3,12.25,0.01888
-,18.3,8.19999999999999,2.2,6.6,1.9,,0.00655999999999999
-GRAINS,18,15.5,15.1,13,14.6,13.25,0.01648
-,18,8.1,2.7,6.6,2.4,,0.00576
-GRAINS,19.5,14.7,12.7,12.2,12.2,11.5,0.0176
-MSTOVER,17.725,8.925,,7.22499999999999,,,0.00699999999999999
-MILLET,18.7249999999999,15.1489333333333,14.45,12.6333333333333,14.0333333333333,14.3333333333333,0.019
-,18.7,8.8,3,7.2,2.7,,0.00512
-,18.1,15.5,15.6,12.9,15.1,13.85,0.01872
-,18.7,6.2,,4.9,,,0.00736
-GRAINS,18.7,11.6875,12.3,9.6,11.9,,0.02112
-,18.2,,,7.2,,,0.00896
-,18.2,,13.5,13.6,13.2,13.2,0.01376
-,19.1,,16.2,13.7,15.7,15.25,0.02176
-,15.4,12.1,,9.5,,,0.03008
-,,,,,,,
-GRAINS,18.5368055555555,15.0936433333333,15.0138888888889,12.8013888888889,14.5722222222222,14.042803030303,0.0179966666666667
-,18.5368055555555,15.0936433333333,15.0138888888889,12.8013888888889,14.5722222222222,14.042803030303,0.0179966666666667
-,17.4,13.2,,10.6,,,0.03088
-,,,,,,,
-,,,,,,,
-,19.5,,9.4,,,,0.016
-,17.5,,9,8.3,,,0.02832
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,21.8,12,7.6,9.3,6.8,,0.0336
-,22.8,,,11.9,,,0.0496
-,19.4,,10.7,,,,0.03136
-,,,,,,,
-PULSES,18.3,16.5,16.1,13.4,15.4,12.5,0.03824
-,,,,,,,
-,17.1,14.2,14.1,11.9,,,0.01456
-,17.7,14.8,13.3,12.3,12.8,,0.01776
-,16.1,,,10.2,,,0.01872
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-MAIZE,18.7166666666666,16.0999999999999,16.4166666666666,13.5833333333333,16.0333333333333,15.1374999999999,0.01456
-,19.32,13.2,9.7,10.2666666666667,0,0,0.031232
-,,,,,,,
-BNSTEM,17.4,12.4,5,9.9,,,0.01568
-BNFRUIT,17.1,13.3,14.2,11.3,13.8,13.7,0.00832
-,16.9,,5.75,,,,0.00976
-,17.6,14,14.2,11.9,,,0.00592
-,17,,,9.7,,,0.02224
-,18.3,16.4,14,11.9,,10.8,0.00912
-,17.5,,11.4,,,,0.028
-,17.9,,13.7,,,,0.0112
-,18.5,12.3,7.8,10.2,,,0.01552
-,18.3,,14.1,,13.6,6.7,0.0104
-,18.2,16.2,13.9,13.6,,,0.01168
-,18.3,7,,5.7,,,0.012
-,19,12.8,10,10.7,,,0.01088
-,19.4,10.4,5.3,8.5,4.7,,0.0128
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,18.7,13.6,12.5,10.9,10.8,,0.032
-SOY,23.6,19.8,19.3,15.3,14,16.55,0.06336
-,25.9,22.9,12.5,18.2,,,
-,23.8,15.2,15.2,12,13.4,10.55,0.03488
-,27.1,22.6,20.9,18.2,20.2,16.1,0.03792
-,28.4,,21.7,,,,0.03744
-RAPESEED,28.8,25,23.5,20.3,22.8,16.8,0.03344
-,29.1,,,,,,0.03744
-,28.7,,20.2,17.8,19.7,19.1,0.0256
-,26.1,,10.8,,,,
-,20.3,13.3,11.95,10.1,11.15,9.27,0.0552
-,26.8,,19.4,,18.6,,0.0384
-,,,,,,,
-,26.2,21.6,16.8,17.2,,,
-,26.3766666666667,20.3033333333333,18.1214285714286,16.36,17.91875,14.7283333333333,0.03838
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,19.45,13.53,10.15,11.5,,,0.03592
-,32.1,,27,,,,0.01376
-,16.8,14.952,15.4,11.9,15.1,14.85,0.01728
-CASSAVA,17.1,14.5,15.7,12.4,15.4,15.2,0.00416
-CASSAVA,16.8,14.2,15.3,12.2,15,15.1,0.00464
-,17.4,14.1,14.6,12,14.3,,0.0088
-,17.22,,14.8,,,,
-,17.23,14.1,14.8,11.8,14.5,11.25,0.01088
-,16.19,,14.8,,,,0.011136
-,,,,,,,
-,,,,,,,
-,19.5,,6.5,,,,
-LEAVES,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-PSTRAW,17.8999999999999,9.19999999999999,,7.4,,,0.0113599999999999
-PULSES,18.6,16.8,16.3,13.6,15.3,12.15,0.03968
-PSTRAW,18.1,7.9,,6.4,,,0.01184
-PULSES,18.7,16.8,15.5,13.3,14.7,12.2,0.0463999999999999
-PSTRAW,18.1,7.5,,6.1,,,0.00864
-PULSES,19.6,17.0499999999999,15.5,13.85,14.85,12.7,0.03552
-PSTRAW,17.8999999999999,9.19999999999999,,7.5,,,0.0112
-PULSES,18.5,16.8,14.4,13.5,9.8,12.75,0.0430399999999999
-PSTRAW,18.1,9.8,,7.9,,,0.0131199999999999
-PULSES,18.3,16.5,16.1,13.4,15.4,12.5,0.0382399999999999
-PSTRAW,17.8999999999999,11.2,,9,,,0.0219199999999999
-PULSES,18.7,16.8999999999999,15.2,13.6,14.5,13.4,0.04032
-PSTRAW,19.45,11.45,,9.14999999999999,,,0.0268
-PULSES,18.7,16.7,14.3,13.5,13.6,14.1,0.0358399999999999
-PSTRAW,17.2,8,,6.5,,,0.0179199999999999
-PULSES,19.3999999999999,17.6,14.4,15.9,11.5,10.5,0.03168
-PSTRAW,17.8,9.5,,7.7,,,0.0112
-PULSES,18.8999999999999,17.2,15.5,13.8,14.7,10.8,0.0454399999999999
-PSTRAW,18.2,11.1,,8.8,,,0.0247999999999999
-PULSES,20.6666666666666,18.5063999999999,16.1333333333333,14.2666666666666,14.9666666666666,11.25,0.0606933333333333
-PSTRAW,18.065,9.48499999999999,,7.645,,,0.01588
-PULSES,18.9222222222222,16.7463666666666,15.1611111111111,13.5847222222222,13.7930555555555,12.2590909090909,0.0405911111111111
-,17.1,11.97,12.2,11.4,11.5,,0.01424
-TOPS,18,9.8,,8,,,0.00783999999999999
-,18.2,11,,9,,,0.00688
-,,,,,,,
-FDDRSIL,,,,,,,
-FDDRSIL,18.95,13.0249999999999,,10.775,,,0.01156
-FDDRSIL,18.2,11.3,8,8.9,,,0.03056
-,18.3,8.5,2.54,6.93,2.24,3.1,0.006128
-FDDRSIL,,,,,,,
-,17.8,11.9,,9.5,,,
-,18.05,13.01,,10.34,,,0.03152
-,,,,,,,
-,16.5,12.4,,9.9,,,0.02624
-FDDRBEET,16.2,13.6889999999999,13,11.5,12.7,10.1,0.0267199999999999
-,17.7,14.8,13.3,12.3,12.8,,0.01776
-,,,,,,,
-GRASSH,18.09,10.18,,8.22,,,0.01496
-GRASSH2,18.09,10.18,,8.22,,,0.01496
-GRASSLEGH,18.36,10.3,,8.16,,,0.02592
-FDDRSIL,18.338,10.997,8,8.855,,,0.019592
-GRASSF,17.98,11.11,,8.91,,,0.0176
-GRASSLEGF,18.55,12.68,,10.05,,,0.032352
-GRASSLEGF,18.625,12.7354,7.9,10.375,7.25,5.65,0.029136
-,17.3,11,,8.9,,,0.0208
-,16.8,13.6296666666666,13.15,11.2333333333333,12.75,10.1,0.0235733333333333
-,17.794,12.0784,11.4333333333333,9.7815,12.75,10.1,0.0222444444444444
-,,,,,,,
-,,,,,,,
-,,,,,,,
-Raw milk of cattle,21.9488524590164,21.2903868852459,,20.4387714098361,,,0.0411120818130428
-Raw milk of buffalo,24.3195,23.589915,,22.6463184,,,0.0445283556568823
-Raw milk of sheep,20.4197391304348,19.8071469565217,,19.0148610782609,,,0.0485552678206351
-Raw milk of goats,21.9488524590164,21.2903868852459,,20.4387714098361,,,0.0411120818130428
-Raw milk of camel,22.2229757785467,21.5562865051903,,20.6940350449827,,,0.039998481413587
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,24.4,,,,,15.2,
-,,,,,,,
-,,,,,,,
-,17.2,,11.85,,10.55,11.85,0.09352
-FISHMEAL,20.43,20.45,18.03,14.2,16.25,14.13,0.10368
-,16.8,13.608,15.1,11.4,14.5,10.45,0.02048
-,,,,,,,
-,,,,,,,
-,29.3,28.8,24.3,23,23.5,,0.0472
-,,,,,,,
-,17.8,,14.1,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-SOY OIL,39.2999999999999,39.1427999999999,34.5,36.7,34.3499999999999,37.9,0
-,39.3,,34.5,36.7,34.3,,0
-,,,,,,,
-,,,,,,,
-,39.2,34.496,34.5,36.6,34.3,31.35,
-,19.7,6.2,7.6,5,,,0.0164
-,,,,,,,
-,,,,,,,
-,17.33,10.66,10.63,8.66,10.03,7.51,0.021216
-,19.65,15.9,13.76,12.92,12.53,10.3,0.033472
-MLSOY,19.7,17.95655,17.05,13.35,15.55,11.05,0.08624
-MLOILSDS,20.6333333333333,17.3666666666666,16.1240666666666,12.9666666666666,15.2999999999999,11.6499999999999,0.08368
-MLOILSDS,19.3999999999999,15.2,10.55,12.15,9.8,8.69999999999999,0.0367199999999999
-PKEXP,19.45,13.8,8.1,11.1499999999999,7.55,10.6,0.0283199999999999
-MLOILSDS,20,12.8,11.025,9.625,10.0749999999999,8.6,0.0517199999999999
-MLRAPE,20.35,15.637,14.25,12.1,13.2,9.05,0.05744
-,18.66,7.65,,6.6,,,0.015888
-MLOILSDS,21.4,10.2291999999999,8.1,8.3,,,0.03968
-MLOILSDS,20.6,16.6,15.7,12.5,14.4,11.3,0.07184
-MLOILSDS,20,12.64,12,10.9,11.35,7.1,0.02912
-,20.4,,12.7,9.1,,8.8,
-MLCTTN,20.65,15.545,13.1,11.7666666666666,11.9333333333333,9.7,0.0678799999999999
-MLOILSDS,19.7,17.95655,17.05,13.35,15.55,11.05,0.08624
-MLOILSDS,20.5,11.1315,9.9091,9,9.75,10.25,0.05688
-,19,14.4,11.8,11,11.7,,0.04736
-MLOILSDS,19.9878431372549,13.8132791666667,12.4261354166667,10.6928431372549,12.2067948717949,9.8576923076923,0.050555
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,15.75,14.35,14.95,12.05,14.5,12.1,0.01744
-,15.6,14.352,15.2,11.7,14.8,8.1,0.00928
-,23.2,24.9462365591398,21.5,18.8,20.7,16,0.04064
-,18.3,19.6774193548387,17.6,13.7,16.6,,0.05456
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,20.6,17.6,17.2,14,16.4,,0.0472
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,25.7,18.25,19.6,18.25,19,15.6,0.02248
-,19.5,13.65,13.7,11.5,13,11,0.01504
-,,,,,,,
-,,,,,,,
-,17.6,12.1,13.1,10.1,12.7,9.19999999999999,0.01328
-,18.1,15.9,16.9,13.4,16.5,15.95,0.0144
-,,,,,,,
-,15.6,7.956,12.4,,12,10.1,0.00368
-,,,,,,,
-,,,,,,,
-,18.5,,15.6,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,0.8,,17,,16.8,,0.02784
-,17.6,11.44,12.8,9.2,12.4,8.8,0.00864
-,17.5,9.8,11.5,7.7,11.2,10.1,0.00384
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-SYNTHETIC,,,,,,,
-,,,,,,,
-SYNTHETIC,,,,,,,
-SYNTHETIC,,,,,,,
-GRASSH,21.7,19.5,18.8,14.4,17.4,12.4,0.09104
-,,,,,,,
-,,,,,,,
-,,,,,,,
-MOLASSES,14.7,11.3,13.3,9.6,13,13,0.0088
-MOLASSES,15.5,13.3144999999999,13.1,11,12.8,12.3,0.0227199999999999
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-GRNBYDRY,18.9,13.5,10.8,11,10.2,7.6,0.02768
-GRNBYDRY,20.3,13.87,13.8,11.42,13.27,11.57,0.020192
-GRNBYDRY,,,,,,,
-GRNBYDRY,18.5,13.4,10.1,11,9.7,8.8,0.01904
-GRNBYDRY,18.5,14.5,14.8,11.9,14.1,,0.02704
-GRNBYDRY,19.8,16.7,16.6,13.7,15.9,,0.03088
-GRNBYDRY,19,15.4,15.5,12.8,,,0.02192
-GRNBYDRY,,,,,,,
-GRNBYDRY,19.95,13.88,13.35,11.1,12.65,12.65,0.04232
-GRNBYDRY,,,,,,,
-GRNBYDRY,,,,,,,
-GRNBYDRY,19.4899999999999,14.42,13.5599999999999,11.8599999999999,12.9111111111111,9.85833333333333,0.023248
-GRNBYDRY,,,,,,,
-,,,,,,,
-,,,,,,,
-,19.1,7.258,8.9,5.5,8.3,5.05,0.02176
-,,,,,,,
-LEAVES,18.5,,,,,,
-,,,,,,,
-,,,,,,,
-,17.1,12.996,14.6,10.3,,,0.016
-MZGLTM,23.1,22.9,21.4,16.6,19.8,16.7,0.10752
-MZGLTF,18.8,15.1,12.3,12.2,11.6,8.6,0.03472
-,18.4,8.6,3.3,7,,,0.00288
-BPULP,17.05,13.8105,12.2,11.4,11.5,2.83333333333333,0.01424
-,17.2,,10.5,,,,
-,,,,,,,
-GRNBYWET,20.7285714285714,14.7748571428571,14.2181818181818,11.7615384615384,13.3111111111111,11.2222222222222,0.0470285714285714
-SWILL,,,,,,,
-SWILL,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-LIMESTONE,,,,,,,
-SWILL,,,,,,,
-Raw milk of pig,25.8435754189944,,25.0682681564246,,24.0655374301676,,0.0467592511514685
+GLEAM_code,Item_Name,GLEAM3_name,Category,data,item_code_cpc,source_item_code_cpc,item_code_fao,source_item_code_fao,description,cattle,sheep,goat,pigs,chicken,species,faostat_domain,cr_slope,cr_intercept,DM,GE,DE_ruminants,DE_pigs,ME_ruminants,ME_pigs,ME_chickens,CP,N_content,N_dig_ruminants,N_dig_pigs,reference1,reference2,note
+F1,Fresh grass,GRASSF,Grass and leaves,available,,,,,Any type of natural or cultivated fresh grass grazed or fed to the animals.,Y,Y,Y,Y,Y,All,,,,20.555,18.7,12.7908,7.9,10.7,7.25,5.65,16.2,0.02592,71.3,52.4,https://www.feedtables.com/content/grass-dehydrated,,
+F2,"Wheat, straw",WSTRAW,Crop residues,available,1913,111,635,15,"Fibrous residual plant material such as straw, brans, leaves, etc. from wheat (Triticum spp.) cultivation.",Y,Y,,Y,Y,Ruminants,Production,1.51,0.52,91,18.5,8.3,2.29999999999999,6.8,2,,4.2,0.00672,3.5,,http://www.feedipedia.org/node/12758,,
+F3,Wheat,WHEAT,Cereals,available,111,111,15,15,Grains from wheat (Triticum aestivum).,Y,,Y,Y,Y,All,Production,,,87,18.2,15.6,15.9,13.1,15.5,14.1,12.6,0.02016,70.4,83.5,https://www.feedipedia.org/node/223,,
+F4,"Maize (corn), stover",ZSTOVER,Crop residues,available,1913,112,635,56,"Fibrous residual plant material such as straw, brans, leaves, etc. from maize (Zea mays) cultivation.",Y,Y,,Y,Y,Ruminants,Production,1.03,0.61,61.2,18.2,9.4,,7.65,,,5.35,0.00855999999999999,-37,,see sheet Maize stover),,
+F5,Maize (corn),MAIZE,Cereals,available,112,112,56,56,Grains from maize (Zea mays).,Y,,,Y,Y,All,Production,,,87.26,18.7166666666666,16.0999999999999,16.4166666666666,13.5833333333333,16.0333333333333,15.1374999999999,9.1,0.01456,66,80.4,see sheet Maize),,
+F6,"Rice, straw",RSTRAW,Crop residues,available,1913,113,635,27,"Fibrous residual plant material such as straw, brans, leaves, etc. from rice (Oryza spp.) cultivation.",Y,Y,Y,Y,,Ruminants,Production,0.95,2.46,92.8,15.5,7.2,5.4,5.8,,,4.2,0.00672,2.1,,http://www.feedipedia.org/node/11646,,
+F7,Rice,RICE,Cereals,available,113,113,27,27,"Grains from rice (Oryza spp.), polished",Y,Y,Y,Y,Y,All,Production,,,89.2,18,15.9,17.1,13.4,16.6,15.75,10.4,0.01664,70,92,https://www.feedipedia.org/node/12526,,
+F8,"Sorghum, stover",SSTOVER,Crop residues,available,1913,114,635,83,"Fibrous residual plant material such as straw, brans, leaves, etc. from sorghum (Sorghum spp.) cultivation.",Y,Y,Y,,,Ruminants,Production,0.88,1.33,93,18.1,8.9,,7.3,,,3.7,0.00592,30,,http://www.feedipedia.org/node/12618,,
+F9,Sorghum,SORGHUM,Cereals,available,114,114,83,83,Grains from sorghum (Sorghum spp.).,Y,Y,,Y,Y,All,Production,,,87.4,18.8,16,16.1,13.5,15.7,15.85,10.8,0.01728,68.4,70.6,https://www.feedipedia.org/node/224,,
+F10,"Barley, straw",BSTRAW,Crop residues,available,1913,115,635,44,"Fibrous residual plant material such as straw, brans, leaves, etc. from barley (Hordeum vulgare), rye (Secale cereale) or oat (Avena sativa) cultivation.",Y,Y,,Y,Y,All,Production,0.98,0.59,90.9,18.2,8,0.025,6.5,2.2,,3.8,0.00607999999999999,22.8,,https://www.feedipedia.org/node/11830,,
+F11,Barley,BARLEY,Cereals,available,115,115,44,44,Grains from barley (Hordeum vulgare).,Y,Y,Y,Y,Y,All,Production,,,87.1,18.3999999999999,14.8,14.8,12.4,14.3,12.25,11.8,0.01888,66.6,76.2,https://www.feedipedia.org/node/227,,
+F12,"Rye, straw",,Crop residues,available,1913,116,635,71,"Fibrous residual plant material such as straw, brans, leaves, etc. from ryey (Secale cereale) cultivation.",Y,Y,,Y,Y,All,Production,1.09,0.88,92,18.3,8.19999999999999,2.2,6.6,1.9,,4.09999999999999,0.00655999999999999,2,,https://www.feedipedia.org/node/14205,,
+F13,Rye,GRAINS,Cereals,available,116,116,71,71,Grains from rye (Secale cereale),Y,Y,,Y,Y,Ruminants,Production,,,86.6,18,15.5,15.1,13,14.6,13.25,10.3,0.01648,68.3,70.9,https://www.feedipedia.org/node/12542,,not used commonly as feed low protein low fibre not palatable
+F14,"Oats, straw",,Crop residues,available,1913,117,635,75,"Fibrous residual plant material such as straw, brans, leaves, etc. from oat (Avena sativa) cultivation.",Y,Y,,Y,Y,Ruminants,Production,0.91,0.89,89.6,18,8.1,2.7,6.6,2.4,,3.6,0.00576,31,,https://www.feedipedia.org/node/12389,,
+F15,Oats,GRAINS,Cereals,available,117,117,75,75,Grains from oat (Avena sativa).,Y,Y,,Y,Y,All,Production,,,87.9,19.5,14.7,12.7,12.2,12.2,11.5,11,0.0176,63.9,75.9,https://www.feedipedia.org/node/12391,,
+F16,"Millet, stover",MSTOVER,Crop residues,available,1913,118,635,79,"Fibrous residual plant material such as straw, brans, leaves, etc. from millet (Pennisetum glaucum, Eleusine coracana, Panicum miliaceum, etc) cultivation.",Y,Y,Y,,,Ruminants,Production,1.43,0.14,93.6,17.725,8.925,,7.22499999999999,,,4.375,0.00699999999999999,10.3,,see sheet Millet stover),,
+F17,Millet,MILLET,Cereals,available,118,118,79,79,"Grains from millet (P. glaucum, E. coracana, P. miliaceum, and others).",,,,,,Monogastrics,Production,,,89.8,18.7249999999999,15.1489333333333,14.45,12.6333333333333,14.0333333333333,14.3333333333333,11.875,0.019,76.5,,see sheet Millet),,
+F18,"Triticale, straw",,Crop residues,"available, item missing from SUAS",1913,1191,635,97,Straws from Triticale,Y,,,Y,Y,,,1.09,0.88,92.5,18.7,8.8,3,7.2,2.7,,3.2,0.00512,,,https://www.feedipedia.org/node/60,,
+F19,Triticale,,Cereals,available,1191,1191,97,97,Grains from Triticale,Y,,,Y,Y,,,,,87.1,18.1,15.5,15.6,12.9,15.1,13.85,11.7,0.01872,69.5,83.9,https://www.feedipedia.org/node/6476,Feedipedia page under costruction,
+F20,"Buckwheat, straw",,Crop residues,available,1913,1192,635,89,"Fibrous residual plant material such as straw, brans, leaves, etc. from Buckwheat ((Fagopyrum esculentum) cultivation.",Y,Y,,Y,Y,Ruminants,Production,1.09,0.88,87.2,18.7,6.2,,4.9,,,4.59999999999999,0.00736,5.9,,https://www.feedipedia.org/node/25610,,
+F21,Buckwheat,GRAINS,Cereals,available,1192,1192,89,89,Grains from buckwheat (Fagopyrum esculentum).,Y,Y,,Y,Y,Ruminants,Production,,,84.9,18.7,11.6875,12.3,9.6,11.9,,13.2,0.02112,58.3,70.7,https://www.feedipedia.org/node/25140,,
+F22,"Fonio, straw",,Crop residues,"available, item missing from SUAS",1913,1193,,94,"Fibrous residueal material such as straw, brans, leaves, etc, from Fonio (Digitaria exilis)",,Y,,,,Ruminants,,1.09,0.88,94.1,18.2,,,7.2,,,5.6,0.00896,60,,https://www.feedipedia.org/node/460,,
+F23,Fonio,,Cereals,available,1193,1193,94,94,Grains from Fonio (Digitaria exilis),Y,Y,Y,Y,Y,All,,,,89.1,18.2,,13.5,13.6,13.2,13.2,8.6,0.01376,70.9,75.6,https://www.feedipedia.org/node/228,,
+F24,Quinoa,,Cereals,available,1194,1194,92,92,Grain from Quinoa( Chenopodium quinoa),,Y,Y,Y,Y,All,,,,88.2,19.1,,16.2,13.7,15.7,15.25,13.6,0.02176,71.5,82.5,https://www.feedipedia.org/node/229,,
+F25,"Quinoa, forage",,Fodder crop,"available, item missing from SUAS",,1194,,92,Quinoa aerial part fresh,Y,Y,Y,Y,,,,,,13.8,15.4,12.1,,9.5,,,18.8,0.03008,,,https://www.feedipedia.org/node/26044,,
+F26,Canary seed,,Other,missing,1195,,,,,,,,,,,,,,,,,,,,,,,,,,,Used as bird feed.
+F27,Mixed grain,GRAINS,Cereals,available,1199.02,,103,,Mixed grains is a mixture of cereal species that are sown and harvested together. It does not include meslin (a mixture wheat/rye),,,,,,All,,,,87.63,18.5368055555555,15.0936433333333,15.0138888888889,12.8013888888889,14.5722222222222,14.042803030303,11.2479166666667,0.0179966666666667,68.3583333333333,78.3818181818182,average from Cereals,,
+F28,Other cereals n.e.,,Cereals,available,1199.9,,108,,"This subclass includes among all: Chenopodium pallidicaule (canagua or coaihua), Amaranthus caudatus (quihuicha or Inca wheat), Coix lacryma-jobi (adlay or Job's tears), Zizania aquatica (wild rice) and other cereal crops and hybrid grains that are not identified separately because of their minor relevance at the international level.",,,,,,All,,,,87.63,18.5368055555555,15.0936433333333,15.0138888888889,12.8013888888889,14.5722222222222,14.042803030303,11.2479166666667,0.0179966666666667,68.3583333333333,78.3818181818182,average from Cereals,,
+F29,Cabbages,,Fruits and vegetables,available,1212,1212,358,358,"Rape forage, fresh (Brassica sp)",,,,,,,Trade,,,12.1,17.4,13.2,,10.6,,,19.3,0.03088,88.5,,https://www.feedipedia.org/node/15685,,
+F30,Cauliflowers and broccoli,,Fruits and vegetables,missing,1213,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F31,Lettuce and chicory,,Fruits and vegetables,missing,1214,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F32,Watermelons,,Fruits and vegetables,available,1221,1221,567,567,Fruit fresh (Citrullus lanatus),Y,,,Y,,,Trade,,,7.9,19.5,,9.4,,,,10,0.016,,,https://www.feedipedia.org/node/166,Feedipedia page under costruction,
+F33,Cantaloupes and other melons,,Fruits and vegetables,available,1229,1229,568,568,Fruit fresh (Cucumis melo),Y,,,Y,,,Trade,,,8.2,17.5,,9,8.3,,,17.7,0.02832,,,https://www.feedipedia.org/node/12325,Feedipedia page under costruction,
+F34,Cucumbers and gherkins,,Fruits and vegetables,missing,1232,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F35,Eggplants (aubergines),,Fruits and vegetables,missing,1233,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F36,Tomatoes,,Fruits and vegetables,available,1234,1234,388,388,Fruit fresh,Y,Y,Y,Y,Y,All,Trade,,,7.3,,,,,,,,,,,https://www.feedipedia.org/node/7791,,
+F37,Tomato pomace,,Other,"available, item missing from SUAS",,1234,,388,"Tomato pomace, tomato skins and tomato seeds",Y,Y,Y,Y,Y,All,,,,93.5,21.8,12,7.6,9.3,6.8,,21,0.0336,65.4,,https://www.feedipedia.org/node/12705,,
+F38,"Pumpkins, squash and gourds",,Fruits and vegetables,available,1235,1235,394,394,"Pumpkins fresh, seeds, oil, hulls",Y,,,Y,,,Trade,,,70.6,22.8,,,11.9,,,31,0.0496,70.3,,see sheet Pumpkin,,
+F39,Okra,,Fruits and vegetables,available,1239.01,1239.01,430,430,"Okra (Abelmoschus esculentus) fruits, seeds, oil, fresh",,,,,,,Trade,,,52.7,19.4,,10.7,,,,19.6,0.03136,,,see sheet Okra,,
+F40,"Other beans, green",,Pulses,missing,1241.9,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F41,"Peas, green",PULSES,Pulses,available,1242,1242,417,417,Peas seeds,Y,Y,Y,Y,Y,All,Trade,,,86.5,18.3,16.5,16.1,13.4,15.4,12.5,23.9,0.03824,78,84.9,https://www.feedipedia.org/node/264,,
+F42,"Broad beans and horse beans, green",,Pulses,missing,1243,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F43,Carrots and turnips,,Roots and tubers,available,1251,1251,426,426,Carrot roots  (Daucus  carota) fresh,Y,Y,Y,Y,,,Trade,,,10.7,17.1,14.2,14.1,11.9,,,9.1,0.01456,77,61.1,https://www.feedipedia.org/node/11940,,
+F44,Carrots roots dehydrated,,Roots and tubers,"available, item missing from SUAS",,1251,,426,"Carrot roots, dehydrated",Y,Y,Y,Y,,,,,,90,17.7,14.8,13.3,12.3,12.8,,11.1,0.01776,,,https://www.feedipedia.org/node/14338,,
+F45,Carrots top fresh,,Crop residues,"available, item missing from SUAS",,1251,,426,"Carrot tops, fresh",,,,,,,,1.07,1.54,16.4,16.1,,,10.2,,,11.7,0.01872,62,,https://www.feedipedia.org/node/11939,,
+F46,Green garlic,,Roots and tubers,missing,1252,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F47,"Onions and shallots, green",,Roots and tubers,missing,1253.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F48,"Onions and shallots, dry (excluding dehydrated)",,Roots and tubers,missing,1253.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F49,Leeks and other alliaceous vegetables,,Roots and tubers,missing,1254,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F50,Green corn (maize),MAIZE,Cereals,available,1290.01,1290.01,446,446,"Green corn (maize), species of Zea mays, particularly var. Saccharata, includes maize harvested green for food. Saccharata variety is commonly known as sweet corn, whether or not in the cob.",Y,,,Y,Y,All,Production,,,87.26,18.7166666666666,16.0999999999999,16.4166666666666,13.5833333333333,16.0333333333333,15.1374999999999,9.1,0.01456,66,80.4,same as Maize (corn),,"Previously associated to fresh aerial parts from Maize, used as fodder; in FAOSTAT, this is actually a variety of maize used for sweet corn production."
+F51,"Other vegetables, fresh n.e.",,Fruits and vegetables,available,1290.9,NA,463,,"Includes the fresh vegetables not elsewhere classified. They may not be identified separately because of their minor relevance at the international level. Because of their limited local importance, some countries report vegetables under this heading that are classified individually by FAO",,,,,,,,,,26.4666666666667,19.32,13.2,9.7,10.2666666666667,0,0,19.52,0.031232,79.4,0,average of other vegetables,,
+F52,Avocados,,Fruits and vegetables,missing,1311,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F53,Banana stems,BNSTEM,Crop residues,available,,1312,,486,Residual plant material such as stems from banana (Musa spp.) cultivation.,,,,,,Monogastrics,Production,1,0,11.6,17.4,12.4,5,9.9,,,9.8,0.01568,54.7,,see sheet Banana stems),,
+F54,Banana fruit,BNFRUIT,Fruits and vegetables,available,1312,1312,486,486,Fruit from banana trees (Musa spp.),Y,Y,Y,Y,Y,All,Production,,,21.9,17.1,13.3,14.2,11.3,13.8,13.7,5.2,0.00832,,53.6,https://www.feedipedia.org/node/11811,,
+F55,Plantains and others,,Fruits and vegetables,available,1313,1313,489,489,,,,,,,,Production,,,6.9,16.9,,5.75,,,,6.1,0.00976,,,,,
+F56,Dates,,Fruits and vegetables,available,1314,1314,577,577,"Date palm (Phoenix dactylifera), fruits",Y,Y,Y,Y,Y,All,Production,,,84,17.6,14,14.2,11.9,,,3.7,0.00592,30.1,,https://www.feedipedia.org/node/12049,,
+F57,Figs,,Fruits and vegetables,available,1315,1315,569,569,"Fig (Ficus carica), leaves, fresh",Y,,,,,,Production,,,32,17,,,9.7,,,13.9,0.02224,68.4,,https://www.feedipedia.org/node/12086,Feedipedia page under costruction,
+F58,"Mangoes, guavas, mangosteens",,Fruits and vegetables,available,1316,1316,571,571,"Mango fruits, kernel, peels, juice",Y,Y,Y,Y,Y,All,Production,,,59.17,18.3,16.4,14,11.9,,10.8,5.7,0.00912,72.1,,see sheet Mango,,
+F59,Papayas,,Fruits and vegetables,available,1317,1317,600,600,"Papaya leaves, fruits fresh and dried",,Y,Y,Y,,,Production,,,44.6,17.5,,11.4,,,,17.5,0.028,,,see sheet Papaya,,
+F60,Pomelos and grapefruits,,Fruits and vegetables,available,1321,1321,507,507,"Grapefruit (Citrus paradisi), fruits, fresh",Y,,Y,Y,,,Production,,,12.7,17.9,,13.7,,,,7,0.0112,,,https://www.feedipedia.org/node/12141,,
+F61,Lemons and limes,,Fruits and vegetables,available,1322,1322,497,497,Lemon and lime fruits,Y,,Y,Y,,,Production,,,62,18.5,12.3,7.8,10.2,,,9.7,0.01552,,41.4,see sheet Lemon and Lime,,
+F62,"Citrus pulp, fresh",,Fruits and vegetables,"available, item missing from SUAS",,1322,,497,"Citrus pulp, fresh",Y,Y,Y,Y,Y,All,,,,17.5,18.3,,14.1,,13.6,6.7,6.5,0.0104,64.5,64.7,https://www.feedipedia.org/node/12840,,
+F63,Oranges,,Fruits and vegetables,available,1323,1323,490,490,Orange peels fresh and silage,Y,Y,,Y,,,Production,,,17.85,18.2,16.2,13.9,13.6,,,7.3,0.01168,72.3,67.7,see sheet Orange,,
+F64,Grapes,,Fruits and vegetables,available,1330,1330,560,560,"Grapes leaves and branches , fresh",Y,Y,,,,,Production,,,45.45,18.3,7,,5.7,,,7.5,0.012,7.9,,see sheet Grape,,
+F65,Apples,,Fruits and vegetables,available,1341,1341,515,515,Apples fresh,Y,Y,Y,Y,Y,All,Production,,,20.8,19,12.8,10,10.7,,,6.8,0.01088,51.8,58,https://www.feedipedia.org/node/22381,,less used for chicken
+F66,"Apple pomace, dehydrated",,By-products,"available, item missing from SUAS",,1341,,515,"Apple pomace, dehydrated",Y,Y,Y,Y,Y,All,,,,91.2,19.4,10.4,5.3,8.5,4.7,,8,0.0128,50,40.1,https://www.feedipedia.org/node/22380,,less used for chicken
+F67,Pears,,Fruits and vegetables,missing,1342.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F68,Quinces,,Fruits and vegetables,missing,1342.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F69,Apricots,,Fruits and vegetables,missing,1343,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F70,Sour cherries,,Fruits and vegetables,missing,1344.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F71,Cherries,,Fruits and vegetables,missing,1344.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F72,Peaches and nectarines,,Fruits and vegetables,missing,1345,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F73,Plums and sloes,,Fruits and vegetables,missing,1346,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F74,Other stone fruits,,Fruits and vegetables,missing,1349.2,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F75,Locust beans (carobs),,Pulses,available,1356,1356,461,461,"Carobs( Ceratonia siliqua) pod meal, seeds, dehydrated",,Y,Y,Y,,,Production,,,86.7,18.7,13.6,12.5,10.9,10.8,,20,0.032,46.6,70.6,see sheet Carrob,,
+F76,Soya beans,SOY,Oil crops,available,141,141,236,236,Beans from soy (Glicyne max).,,,,,,Monogastrics,Production,,,88.7,23.6,19.8,19.3,15.3,14,16.55,39.6,0.06336,92.5,86.5,https://www.feedipedia.org/node/12625,,
+F77,"Groundnuts, excluding shelled",,Oil crops,available,142,142,242,242,"Peanuts, with shells",Y,Y,,Y,,,Production,,,92.9,25.9,22.9,12.5,18.2,,,20.4,,74,,https://www.feedipedia.org/node/12164,,
+F78,Cottonseed,,Oil crops,available,143,01921.01,329,328,"Cotton seeds, whole",Y,Y,Y,Y,Y,All,Production,,,92.3,23.8,15.2,15.2,12,13.4,10.55,21.8,0.03488,70.2,66,https://www.feedipedia.org/node/12024,https://www.feedtables.com/content/table-feed-profile?feed_pr_id=12356,less used for chicken
+F79,Linseed,,Oil crops,available,1441,1441,333,333,"Linseeds, Includes raw and processed linseeds",Y,,,Y,Y,All,Production,,,91.5,27.1,22.6,20.9,18.2,20.2,16.1,23.7,0.03792,73.9,83,https://www.feedipedia.org/node/12102,,
+F80,Mustard seed,,Oil crops,available,1442,1442,292,292,Mustard whole seed,,,,,,,Production,,,91.7,28.4,,21.7,,,,23.4,0.03744,,,https://www.feedipedia.org/node/12361,,feedipedia under costruction
+F81,Rapeseed or colza seed,RAPESEED,Oil crops,available,1443,1443,270,270,"Rapeseeds, low erucic, low glucosinolates",Y,Y,Y,Y,Y,All,Production,,,92.3,28.8,25,23.5,20.3,22.8,16.8,20.9,0.03344,74.6,73.3,https://www.feedipedia.org/node/12504,,
+F82,Sesame seed,,Oil crops,available,1444,1444,289,289,Sesam seed whole,,,,,,,Production,,,96.6,29.1,,,,,,23.4,0.03744,,,https://www.feedipedia.org/node/12579,,
+F83,Sunflower seed,,Oil crops,available,1445,1445,267,267,"Sunflower seeds, whole",Y,Y,Y,Y,Y,All,Production,,,92.8,28.7,,20.2,17.8,19.7,19.1,16,0.0256,67.4,78.8,https://www.feedipedia.org/node/40,https://www.feedtables.com/content/table-feed-profile?feed_pr_id=12345,
+F84,Safflower seed,,Oil crops,available,1446,1446,280,280,"Safflower (Carthamus tinctorius), seeds",Y,Y,,Y,Y,All,Production,,,94.7,26.1,,10.8,,,,15.6,,,,https://www.feedipedia.org/node/12554,,
+F85,Castor oil seeds,,Oil crops,available,1447,1447,265,265,,Y,Y,Y,Y,Y,All,Production,,,89.7,20.3,13.3,11.95,10.1,11.15,9.27,34.5,0.0552,76.1,53.35,see sheet Castor oil,,used almost in India and Brazil
+F86,Poppy seed,,Oil crops,available,1448,1448,296,296,"Poppy (Papaver somniferum), seeds",Y,Y,Y,Y,Y,All,Production,,,93.9,26.8,,19.4,,18.6,,24,0.0384,,,https://www.feedipedia.org/node/12465,,not recent literature on the use as feed
+F87,Melonseed,,Oil crops,available,1449.01,1449.01,299,299,Melon seed,Y,,,Y,,,,,,95,,,,,,,16.4,,,,https://www.feedipedia.org/node/12811,Feedipedia page under costruction,
+F88,Hempseed,,Oil crops,available,1449.02,1449.02,336,336,,Y,Y,,,Y,,Production,,,90.6,26.2,21.6,16.8,17.2,,,23.9,,75.3,,https://www.feedipedia.org/node/11696,,
+F89,"Other oil seeds, n.e.",,Oil crops,available,1449.9,NA,339,NA,"other oilseeds, oleaginous fruits and nuts that are not identified separately because of their minor relevance at the international level.",,,,,,,,,,90.035625,26.3766666666667,20.3033333333333,18.1214285714286,16.36,17.91875,14.7283333333333,22.759375,0.03838,77.89,74.9642857142857,average of other Oil crops,,
+F90,Olives,,Oil crops,missing,1450,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F91,"Coconuts, in shell",,Oil crops,missing,1460,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F92,Oil palm fruit,,Oil crops,missing,1491.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F93,Palm kernels,,Oil crops,available,1491.02,1491.01,256,254,"Babassu (Attalea speciosa), oil meal, partially and decorticated, expeller extraction and solvent",,,,,,,Production,,,91.67,19.45,13.53,10.15,11.5,,,22.45,0.03592,85,,see sheet Palm kernels,,
+F94,Copra,,Oil crops,available,1492,1460,251,249,"Coconut, copra, fresh",,,,,,,Trade,,,50.7,32.1,,27,,,,8.6,0.01376,,83.8,https://www.feedipedia.org/node/11996,,
+F95,Potatoes,,Roots and tubers,available,1510,1510,116,116,"Potato, tuber, raw",Y,,,Y,Y,All,Production,,,20.6,16.8,14.952,15.4,11.9,15.1,14.85,10.8,0.01728,75,60,https://www.feedipedia.org/node/12472,,
+F96,"Cassava, fresh",CASSAVA,Roots and tubers,available,1520.01,1520.01,125,125,"Cassava tubers, fresh",,,,,,Monogastrics,Production,,,37.6,17.1,14.5,15.7,12.4,15.4,15.2,2.6,0.00416,31.4,,https://www.feedipedia.org/node/11946,,
+F97,"Cassava, dry",CASSAVA,Roots and tubers,available,1520.02,1520.01,128,125,"Cassava tubers, dehydrated",,,,,,,,,,87.6,16.8,14.2,15.3,12.2,15,15.1,2.9,0.00464,35.3,52.3,https://www.feedipedia.org/node/12798,,
+F98,Sweet potatoes,,Roots and tubers,available,1530,1530,122,122,"Sweet potato tubers, fresh",Y,Y,,Y,Y,All,Production,,,30,17.4,14.1,14.6,12,14.3,,5.5,0.0088,37.5,44.7,https://www.feedipedia.org/node/12681,,
+F99,Yams,,Roots and tubers,available,1540,1540,137,137,"Yams (Dioscorea rotundata, D. esculenta, D.cayenensis, D.alata), tuber, fresh",,,,Y,,Monogastic,Production,,,22.8,17.22,,14.8,,,,7.42,,,,see sheet Yams,,
+F100,Taro,,Roots and tubers,available,1550,1550,136,136,"Taro (Colocasia esculenta), tuber fresh,dryed peeled",Y,Y,,Y,Y,,Production,,,50,17.23,14.1,14.8,11.8,14.5,11.25,6.8,0.01088,62.7,,see sheet Taro,,
+F101,Yautia,,Roots and tubers,available,1591,1591,135,135,"Yautia or Malanga (Xanthosoma sagittifolium) fresh, peelings and tuber",Y,Y,Y,Y,,All,Production,,,28.2,16.19,,14.8,,,,6.96,0.011136,,,see sheet Yautia,,
+F102,"Edible roots and tubers with high starch or inulin content, n.e., fresh",,Roots and tubers,missing,1599.1,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F103,"Edible roots and tubers with high starch or inulin content, n.e., dried",,Roots and tubers,missing,1599.2,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F104,"Coffee, green",,Other,available,1610,1610,656,656,Coffee hulls,,,,,,,Production,,,88.5,19.5,,6.5,,,,9.4,,,16.3,https://www.feedipedia.org/node/11612,,
+F105,Mate leaves,LEAVES,Grass and leaves,missing,1630,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F106,"Cloves (whole stems), raw",,Other,missing,1656,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F107,Hop cones,,Other,missing,1659,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F108,Chicory roots,,Roots and tubers,missing,1691,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F109,"Beans, straw",PSTRAW,Crop residues,available,,1701,,176,"Fibrous residual plant material such as straw, from leguminous plants cultivation (Phaseolus spp., Vigna spp.).",Y,Y,Y,Y,Y,Monogastrics,Production,1.13,0.85,88,17.8999999999999,9.19999999999999,,7.4,,,7.1,0.0113599999999999,38.8,,https://www.feedipedia.org/node/12006,,
+F110,"Beans, dry",PULSES,Pulses,available,1701,1701,176,176,"Leguminous beans (Phaseolus spp., Vigna spp.)",Y,Y,Y,Y,Y,Monogastrics,Production,,,89.1,18.6,16.8,16.3,13.6,15.3,12.15,24.8,0.03968,87.2,93.4,https://www.feedipedia.org/node/12005,https://www.feedtables.com/content/common-bean,
+F111,"Broad and horse beans, straw",PSTRAW,Crop residues,available,,1702,,181,"Fibrous residual plant material such as straw, from leguminous plants cultivation (Vicia faba).",,,,,,Monogastrics,Production,1.13,0.85,89.7,18.1,7.9,,6.4,,,7.4,0.01184,38.3,,https://www.feedipedia.org/node/19703,,
+F112,"Broad beans and horse beans, dry",PULSES,Pulses,available,1702,1702,181,181,Leguminous beans (Vicia faba),,,,,,Monogastrics,Production,,,85.9,18.7,16.8,15.5,13.3,14.7,12.2,29,0.0463999999999999,79.2,83.1,https://www.feedipedia.org/node/19701,,
+F113,"Chick peas, straw",PSTRAW,Crop residues,available,,1703,,191,"Fibrous residual plant material such as straw, from leguminous plants cultivation (Cicer arietinum).",Y,,,Y,Y,Monogastrics,Production,1.13,0.85,90.4,18.1,7.5,,6.1,,,5.4,0.00864,47.3,,https://www.feedipedia.org/node/11976,,
+F114,"Chick peas, dry",PULSES,Pulses,available,1703,1703,191,191,Leguminous beans (Cicer arietinum),Y,,,Y,Y,Monogastrics,Production,,,89,19.6,17.0499999999999,15.5,13.85,14.85,12.7,22.2,0.03552,79,82.3,https://www.feedipedia.org/node/17358,,
+F115,"Lentils, straw",PSTRAW,Crop residues,available,,1704,,201,"Fibrous residual plant material such as straw, from leguminous plants cultivation (Lens spp.).",Y,,,Y,Y,Monogastrics,Production,1.13,0.85,92.1,17.8999999999999,9.19999999999999,,7.5,,,7,0.0112,40.4,,https://www.feedipedia.org/node/12250,,
+F116,"Lentils, dry",PULSES,Pulses,available,1704,1704,201,201,Leguminous beans (Lens spp.),Y,,,Y,Y,Monogastrics,Production,,,88.3,18.5,16.8,14.4,13.5,9.8,12.75,26.9,0.0430399999999999,78.5,72,https://www.feedipedia.org/node/284,https://www.feedtables.com/content/lentils,
+F117,"Peas, straw",PSTRAW,Crop residues,available,,1705,,187,"Fibrous residual plant material such as straw, from leguminous plants cultivation (Pisum sativum).",Y,Y,Y,Y,Y,All,Production,1.13,0.85,88.8,18.1,9.8,,7.9,,,8.19999999999999,0.0131199999999999,59.2,,https://www.feedipedia.org/node/12929,,
+F118,"Peas, dry",PULSES,Pulses,available,1705,1705,187,187,Leguminous beans (Pisum sativum),Y,Y,Y,Y,Y,Monogastrics,Production,,,86.5,18.3,16.5,16.1,13.4,15.4,12.5,23.9,0.0382399999999999,78,84.9,https://www.feedipedia.org/node/264,,
+F119,"Cow peas, straw",PSTRAW,Crop residues,available,,1706,,195,"Fibrous residual plant material such as straw, from leguminous plants cultivation (Vigna unguiculata).",Y,Y,,Y,Y,Monogastrics,Production,1.13,0.85,95,17.8999999999999,11.2,,9,,,13.7,0.0219199999999999,67.6,,https://www.feedipedia.org/node/17446,,
+F120,"Cow peas, dry",PULSES,Pulses,available,1706,1706,195,195,Leguminous beans (Vigna unguiculata),Y,Y,,Y,Y,Monogastrics,Production,,,89.9,18.7,16.8999999999999,15.2,13.6,14.5,13.4,25.2,0.04032,,72.3,https://www.feedipedia.org/node/11572,,
+F121,"Pigeon peas, straw",PSTRAW,Crop residues,available,,1707,,197,"Fibrous residual plant material such as straw, from leguminous plants cultivation (Cajanus cajan).",Y,Y,Y,Y,Y,All,Production,1.13,0.85,61.05,19.45,11.45,,9.14999999999999,,,16.75,0.0268,64.5,,see sheet Pigeon peas straw),,
+F122,"Pigeon peas, dry",PULSES,Pulses,available,1707,1707,197,197,Leguminous beans (Cajanus cajan),,,,,,Monogastrics,Production,,,89.2,18.7,16.7,14.3,13.5,13.6,14.1,22.4,0.0358399999999999,,88.4,https://www.feedipedia.org/node/329,,
+F123,"Bambara beans, straw",PSTRAW,Crop residues,available,,1708,,203,"Fibrous residual plant material such as straw, from leguminous plants cultivation (Vigna subterranea) .",Y,Y,Y,,,Ruminants,Production,1.13,0.85,91.3,17.2,8,,6.5,,,11.2,0.0179199999999999,,,https://www.feedipedia.org/node/531,,
+F124,"Bambara beans, dry",PULSES,Pulses,available,1708,1708,203,203,Leguminous beans (Vigna subterranea),Y,Y,Y,,,Ruminants,Production,,,86.8,19.3999999999999,17.6,14.4,15.9,11.5,10.5,19.8,0.03168,,,https://www.feedipedia.org/node/530,,
+F125,"Vetches, straw",PSTRAW,Crop residues,available,,1709.01,,205,"Fibrous residual plant material such as straw, from leguminous plants cultivation (Vicia sativa).",Y,Y,Y,Y,Y,All,Production,1.13,0.85,91.1,17.8,9.5,,7.7,,,7,0.0112,47.8,,https://www.feedipedia.org/node/16591,,
+F126,Vetches,PULSES,Pulses,available,1709.01,1709.01,205,205,Leguminous beans (Vicia sativa),Y,Y,Y,Y,Y,All,Production,,,87.9,18.8999999999999,17.2,15.5,13.8,14.7,10.8,28.4,0.0454399999999999,86,95.5,https://www.feedipedia.org/node/12014,https://www.feedtables.com/content/common-vetch,
+F127,"Lupins, straw",PSTRAW,Crop residues,available,,1709.02,,210,"Fibrous residual plant material such as straw, from leguminous plants cultivation (Lupinus spp.).",Y,Y,Y,Y,,Monogastrics,Production,1.13,0.85,17.8,18.2,11.1,,8.8,,,15.5,0.0247999999999999,,,https://www.feedipedia.org/node/24503,,
+F128,Lupins,PULSES,Pulses,available,1709.02,1709.02,210,210,Leguminous beans (Lupinus spp.),Y,Y,Y,Y,Y,All,Production,,,89,20.6666666666666,18.5063999999999,16.1333333333333,14.2666666666666,14.9666666666666,11.25,37.9333333333333,0.0606933333333333,80,83.3,see sheet Lupins),,
+F129,"Other pulses n.e.c., straw",PSTRAW,Crop residues,available,,1709.9,,211,"Fibrous residual plant material such as straw, from leguminous plants cultivation (other pulses).",,,,,,Monogastrics,Production,1.13,0.85,80.525,18.065,9.48499999999999,,7.645,,,9.925,0.01588,50.4875,,Calculates as average of values for known pulses straw,,
+F130,Other pulses n.e.c.,PULSES,Pulses,available,1709.9,1709.9,211,211,Other leguminous beans.,,,,,,Monogastrics,Production,,,87.9,18.9222222222222,16.7463666666666,15.1611111111111,13.5847222222222,13.7930555555556,12.2590909090909,25.3694444444444,0.0405911111111111,76.9444444444445,82.7909090909091,Calculates as average of values for known pulses,,
+F131,Sugar beet,,Other,available,1801,1801,157,157,"Sugar beet pulp, dehydrated",Y,Y,Y,Y,Y,All,Production,,,88.8,17.1,11.97,12.2,11.4,11.5,,8.9,0.01424,70,49,https://www.feedipedia.org/node/24378,,
+F132,"Sugar cane, tops",TOPS,Crop residues,available,,1802,,156,"Top portion of sugarcane (Saccharum spp.) plants, consisting of green leaves, bundle sheath and variable proportions of immature cane.",,,,,,All,Production,0.28,0,26.8,18,9.8,,8,,,4.9,0.00783999999999999,43.6,,http://www.feedipedia.org/node/558,,
+F133,Sugar cane,,Other,available,1802,1802,156,156,"Sugar cane (Saccharum officinarum); Sugarcane forage, whole plant",,,,,,,Production,,,23.2,18.2,11,,9,,,4.3,0.00688,65,,https://www.feedipedia.org/node/14464,,
+F134,Other sugar crops n.e.,,Other,missing,1809,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F135,Fodder silage cerelas,FDDRSIL,Fodder crop,missing,,,,,"Silage from whole barley (Hordeum vulgare), oat (Avena sativa), buckwheat (Fagopyrum esculentum), fonio (Digitaria spp.) plants.",,,,,,Ruminants,,1.09,0.88,,,,,,,,,,,,,,
+F136,Maize for forage and silage,FDDRSIL,Fodder crop,available,1911,112,636,56,Hay or silage from whole maize (Zea mays) plants.,Y,Y,Y,Y,,All,Trade,1.03,0.61,30.3,18.95,13.0249999999999,,10.775,,,7.225,0.01156,58.6,,see sheet Fodder silage maize),,
+F137,Alfalfa for forage and silage,FDDRSIL,Fodder crop,available,1912,1912,641,641,Hay or silage from alfalfa (Medicago sativa).,Y,Y,,Y,Y,All,Trade,,,30.8,18.2,11.3,8,8.9,,,19.1,0.03056,71,,https://www.feedipedia.org/node/11746,,
+F138,"Cereal straw, husks, unprepared, ground, pressed, or in the form of pellets",,Crop residues,,1913,NA,635,NA,"Cereal Straws (Wheat, Barley, Oat, Triticale, Rye, Tef)",,,,,,,Trade,1.09,0.88,91.26,18.3,8.5,2.54,6.93,2.24,3.1,3.83,0.006128,16.48,60.95,see sheet Cereal straw,,"This is redundant, as we have data on crop residues from single cereals"
+F139,"Sorghum, for forage",FDDRSIL,Fodder crop,missing,1919.01,114,,83,,,,,,,,,0.88,1.33,,,,,,,,,,,,,,
+F140,"Rye grass, for forage",,Fodder crop,available,1919.02,116,,71,"Rye, aerial part, fresh",,Y,Y,Y,,All,,1.09,0.88,16.8,17.8,11.9,,9.5,,,15.1,,71.7,,https://www.feedipedia.org/node/12543,,
+F141,"Clover, for forage",,Fodder crop,available,1919.03,NA,640,NA,"Clover (Trifulium spp),fresh",Y,Y,Y,,,,Trade,,,17.15,18.05,13.01,,10.34,,,19.7,0.03152,76.71,,see sheet Clover,,
+F142,"Cabbage, for forage",,Fodder crop,missing,1919.04,1212,,358,,,,,,,,,,,,,,,,,,,,,,,,
+F143,"Turnips, for forage",,Fodder crop,available,1919.05,1251,646,426,"Rape forage, silage (Brassica sp)",,,,,,,Trade,1.07,1.54,17.2,16.5,12.4,,9.9,,,16.4,0.02624,74.9,,https://www.feedipedia.org/node/15686,,
+F144,Beets for fodder,FDDRBEET,Fodder crop,available,1919.06,1801,647,157,"Fodder beet (Beta vulgaris), also known as mangel beet or field beet, used as animal feed.",Y,y,Y,Y,,All,Trade,1.07,1.54,16.1,16.2,13.6889999999999,13,11.5,12.7,10.1,16.7,0.0267199999999999,68.9,67.3,httphttps://www.feedipedia.org/node/11842,,
+F145,"Carrots, for forage",,Fodder crop,available,1919.07,1251,NA,426,"Carrot roots, dehydrated",,,,,,,Production,1.07,1.54,90,17.7,14.8,13.3,12.3,12.8,,11.1,0.01776,,,https://www.feedipedia.org/node/14338,,
+F146,"Swedes, for forage",,Fodder crop,missing,1919.08,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F147,"Hay, from grasses",GRASSH,Fodder crop,available,1919.09,1919.09,857,857,"Hay (grass is cut, dried and stored) or silage (grass is cut and fermented) from any natural or cultivated grass.",,,,,,Ruminants,Trade,,,89.9,18.09,10.18,,8.22,,,9.35,0.01496,47.65,,see sheet Hay grass non-leguminose,,
+F148,"Hay, from grasses, imported",GRASSH2,Fodder crop,available,1919.09,1919.09,857,857,Hay from adjacent areas.,,,,,,Ruminants,Trade,,,89.9,18.09,10.18,,8.22,,,9.35,0.01496,47.65,,see sheet Hay grass non-leguminose,,
+F149,"Hay for forage, from legumes",GRASSLEGH,Fodder crop,available,1919.1,NA,858,NA,Hay or silage produced from a mixture of any type of leguminous plants (Fabacae).,,,,,,,Trade,1.13,0.85,89.9,18.36,10.3,,8.16,,,16.2,0.02592,73.74,,see sheet Hay grass leguminose,,
+F150,"Hay for forage, from other crops n.e.c.",FDDRSIL,Fodder crop,available,1919.11,NA,859,NA,Hay from unspecified plants.,,,,,,Ruminants,,,,66.16,18.338,10.997,8,8.855,,,12.245,0.019592,59.728,,average of other Hay items,,
+F151,"Other grasses, for forage",GRASSF,Grass and leaves,available,1919.91,NA,639,NA,"Fresh grass for forage ( Agrostis spp,Sorghum almum,Pennisetum purpureum …)",Y,Y,Y,,,Ruminans,Trade,,,24.31,17.98,11.11,,8.91,,,11,0.0176,58.45,,see sheet Other grass,,
+F152,"Other legumes, for forage",GRASSLEGF,Fodder crop,available,1919.92,NA,643,NA,,,,,,,,Trade,,,21.71,18.55,12.68,,10.05,,,20.22,0.032352,68.45,,see sheet Other legumes,,
+F153,"Mixed grass and legumes, for forage",GRASSLEGF,Fodder crop,available,1919.93,,,,Fresh mixture of any type of grass and leguminous plants that is fed to the animals.,,,,,,Ruminants,Trade,,,21.1325,18.625,12.7354,7.9,10.375,7.25,5.65,18.21,0.029136,69.875,52.4,"average of Fresh Grass and Other legumes, for forage.",,
+F154,"Other oilseeds, for forage",,Fodder crop,available,1919.94,,,,,,,,,,,,,,15.8,17.3,11,,8.9,,,13,0.0208,,70.3,https://www.feedipedia.org/node/12667,,
+F155,"Other forage crops, n.e.c.",,Fodder crop,available,1919.95,,655,NA,Any other crop of the vegetable group that is cultivated for fodder.,,,,,,,,,,41.1,16.8,13.6296666666666,13.15,11.2333333333333,12.75,10.1,14.7333333333333,0.0235733333333333,71.9,67.3,"average from turnips, beet and carrots forage",,
+F156,"Other forage products, n.e.c.",,Fodder crop,available,1919.96,,651,NA,,,,,,,,,,,48.805,17.794,12.0784,11.4333333333333,9.7815,12.75,10.1,14.0225,0.0222444444444444,65.65,67.3,aerage from other Fodder crops,,
+F157,"Seed cotton, unginned",,Oil crops,missing,1921.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F158,"True hemp, raw or retted",,Other,missing,1929.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F159,"Vegetable products, fresh or dry nes",,Other,missing,1990.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F160,Raw milk of cattle,Raw milk of cattle,Animal products,available,2211,,,,Raw milk of cattle,Y,,,,,,,,,12.2,21.9488524590164,21.2903868852459,,20.4387714098361,,,26.2295081967213,0.0411120818130428,,,"Nayak, C., C. T. Ramachandra, and G. Kumar. ""A Comprehensive Review on Composition of Donkey Milk in Comparison to Human, Cow, Buffalo, Sheep, Goat, Camel and Horse Milk."" Mysore Journal of Agricultural Sciences 54, no. 3 (2020). | GE=value in kcal*conversion factor from kcal to MJ of 0.004184 | From GE to DE=0.97; From DE to ME=0.96 (Calculated from National Research Council, Committee on Animal Nutrition, & Subcommittee on Dairy Cattle Nutrition. (2001). Nutrient requirements of dairy cattle: 2001. National Academies Press.)",,
+F161,Raw milk of buffalo,Raw milk of buffalo,Animal products,available,2212,,,,Raw milk of buffalo,,,,,,,,,,17.6,24.3195,23.589915,,22.6463184,,,28.4090909090909,0.0445283556568823,,,"Nayak, C., C. T. Ramachandra, and G. Kumar. ""A Comprehensive Review on Composition of Donkey Milk in Comparison to Human, Cow, Buffalo, Sheep, Goat, Camel and Horse Milk."" Mysore Journal of Agricultural Sciences 54, no. 3 (2020). | GE=value in kcal*conversion factor from kcal to MJ of 0.004184 | From GE to DE=0.97; From DE to ME=0.96 (Calculated from National Research Council, Committee on Animal Nutrition, & Subcommittee on Dairy Cattle Nutrition. (2001). Nutrient requirements of dairy cattle: 2001. National Academies Press.)",,
+F162,Raw milk of sheep,Raw milk of sheep,Animal products,available,2291,,,,Raw milk of sheep,,Y,,,,,,,,18.4,20.4197391304348,19.8071469565217,,19.0148610782609,,,30.9782608695652,0.0485552678206351,,,"Nayak, C., C. T. Ramachandra, and G. Kumar. ""A Comprehensive Review on Composition of Donkey Milk in Comparison to Human, Cow, Buffalo, Sheep, Goat, Camel and Horse Milk."" Mysore Journal of Agricultural Sciences 54, no. 3 (2020). | GE=value in kcal*conversion factor from kcal to MJ of 0.004184 | From GE to DE=0.97; From DE to ME=0.96 (Calculated from National Research Council, Committee on Animal Nutrition, & Subcommittee on Dairy Cattle Nutrition. (2001). Nutrient requirements of dairy cattle: 2001. National Academies Press.)",,
+F163,Raw milk of goats,Raw milk of goats,Animal products,available,2292,,,,Raw milk of goats,,,Y,,,,,,,12.2,21.9488524590164,21.2903868852459,,20.4387714098361,,,26.2295081967213,0.0411120818130428,,,"Nayak, C., C. T. Ramachandra, and G. Kumar. ""A Comprehensive Review on Composition of Donkey Milk in Comparison to Human, Cow, Buffalo, Sheep, Goat, Camel and Horse Milk."" Mysore Journal of Agricultural Sciences 54, no. 3 (2020). | GE=value in kcal*conversion factor from kcal to MJ of 0.004184 | From GE to DE=0.97; From DE to ME=0.96 (Calculated from National Research Council, Committee on Animal Nutrition, & Subcommittee on Dairy Cattle Nutrition. (2001). Nutrient requirements of dairy cattle: 2001. National Academies Press.)",,
+F164,Raw milk of camel,Raw milk of camel,Animal products,available,2293,,,,Raw milk of camel,,,,,,,,,,11.56,22.2229757785467,21.5562865051903,,20.6940350449827,,,25.5190311418685,0.039998481413587,,,"Nayak, C., C. T. Ramachandra, and G. Kumar. ""A Comprehensive Review on Composition of Donkey Milk in Comparison to Human, Cow, Buffalo, Sheep, Goat, Camel and Horse Milk."" Mysore Journal of Agricultural Sciences 54, no. 3 (2020). | GE=value in kcal*conversion factor from kcal to MJ of 0.004184 | From GE to DE=0.97; From DE to ME=0.96 (Calculated from National Research Council, Committee on Animal Nutrition, & Subcommittee on Dairy Cattle Nutrition. (2001). Nutrient requirements of dairy cattle: 2001. National Academies Press.)",,
+F165,"Hen eggs in shell, fresh",,Animal products,missing,231,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F166,"Eggs from other birds in shell, fresh, n.e.",,Animal products,missing,232,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F167,Natural honey,,Animal products,missing,2910,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F168,"Fine hair, n.e.",,Animal products,missing,2943.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F169,"Hides, wet-salted of horses",,Animal products,missing,2952.04,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F170,"Other raw skins of other animals, preserved",,Animal products,missing,2959.99,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F171,"Meat of cattle with the bone, fresh or chilled",,Animal products,missing,21111.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F172,"Meat of goat, fresh or chilled",,Animal products,missing,21116,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F173,"Meat of camels, fresh or chilled",,Animal products,missing,21117.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F174,"Horse meat, fresh or chilled",,Animal products,missing,21118.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F175,"Meat of asses, fresh or chilled",,Animal products,missing,21118.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F176,"Meat of mules, fresh or chilled",,Animal products,missing,21118.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F177,"Meat of chickens, fresh or chilled",,Animal products,missing,21121,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F178,"Edible offal of cattle, fresh, chilled or frozen",,Animal products,missing,21151,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F179,"Edible offal of pigs, fresh, chilled or frozen",,Animal products,missing,21153,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F180,"Edible offal of sheep, fresh, chilled or frozen",,Animal products,missing,21155,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F181,"Edible offal of goat, fresh, chilled or frozen",,Animal products,missing,21156,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F182,"Edible offals of horses and other equines,  fresh, chilled or frozen",,Animal products,missing,21159.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F183,"Edible offals and liver of chickens and guinea fowl, fresh, chilled or frozen",,Animal products,available,21160.01,NA,1059,NA,Poultry offal meal,,,,,,,Trade,,,92.3,24.4,,,,,15.2,60.2,,,87,https://www.feedipedia.org/node/12474,,
+F184,"Edible offals and liver of ducks, fresh, chilled or frozen",,Animal products,missing,21160.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F185,"Offals n.e.c. (excluding mammals),fresh, chilled or frozen",,Animal products,missing,21170.93,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F186,Meat meal,,By-products,available,21190.01,NA,1173,NA,"Meat and bone meal, high and low fat",,,,,,,Trade,,,94.5,17.2,,11.85,,10.55,11.85,58.45,0.09352,,81.65,see sheet Meat meal,,
+F187,"Flours, meals and pellets, inedible, of fish, crustaceans, molluscs or other aquatic invertebrates",FISHMEAL,By-products,available,21291,NA,,NA,By-products from the fish industries.,,,,,,Monogastrics,,,,92.26,20.43,20.45,18.03,14.2,16.25,14.13,64.8,0.10368,95,89.65,see sheet Fish meal,,
+F188,"Flour, meal, powder, flakes, granules and pellets of potatoes",,By-products,available,21392,1510,117,116,Steamed potato peels (liquid potato feed),Y,Y,,Y,Y,All,Trade,,,17,16.8,13.608,15.1,11.4,14.5,10.45,12.8,0.02048,69.8,73.7,https://www.feedipedia.org/node/26046,,
+F189,"Sweet Corn, Prepared or Preserved",,Cereals,missing,21399.03,1290.01,448,446,Prepared or preserved other than by vinegar or acetic acid; not frozen,,,,,,,,,,,,,,,,,,,,,,,
+F190,"Figs, Dried",,Fruits and vegetables,missing,21419.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F191,"Groundnuts, shelled",,Oil crops,available,21421,142,243,242,"Peanuts, without shells",Y,Y,,Y,,,Trade,,,95.5,29.3,28.8,24.3,23,23.5,,29.5,0.0472,89.9,,https://www.feedipedia.org/node/12165,,
+F192,Grapefruit juice,,Other,missing,21432,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F193,Mango Pulp,,Other,available,21499.01,1316,584,571,"Mango (Mangifera indica), pulp, fresh",,,,,,,Trade,,,17.5,17.8,,14.1,,,,4.2,,,,https://www.feedipedia.org/node/12308,,
+F194,Fat of pigs,,Animal products,missing,21511.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F195,"Pig, Butcher Fat",,Animal products,missing,21511.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F196,"Cattle fat, unrendered",,Animal products,missing,21512,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F197,"Goat fat, unrendered",,Animal products,missing,21515,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F198,Tallow,,Animal products,missing,21523,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F199,Animal Oils and Fats nes,,Animal products,missing,21529.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F200,Soya bean oil,SOY OIL,Other,available,2161,141,237,236,Oil extracted from soybeans (Glicyne max).,,,,,,Monogastrics,Production,,,99.8,39.2999999999999,39.1427999999999,34.5,36.7,34.3499999999999,37.9,0,0,0,0,https://www.feedtables.com/content/soybean-oil,https://www.feedtables.com/content/bananas-immature-dried,
+F201,"Sunflower-seed oil, crude",,Other,available,21631.01,1445,268,267,Sunflower oil,,,,,,,Production,,,99.3,39.3,,34.5,36.7,34.3,,0,0,0,0,https://www.feedtables.com/content/table-feed-profile?feed_pr_id=12394,,
+F202,"Safflower-seed oil, crude",,Other,missing,21631.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F203,"Rapeseed or canola oil, crude",,Other,missing,21641.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F204,Palm oil,,Other,available,2165,1491.01,257,254,"Babbassu (Attalea speciosa) oil meal partially and decorticated , expellent and solvent extraction",,,,,,,Production,,,99.8,39.2,34.496,34.5,36.6,34.3,31.35,0,,,,https://www.feedtables.com/content/table-feed-profile?feed_pr_id=12403,,
+F205,Oil of olive residues,,Oil crop cakes,available,21673,1450,274,260,"Olive oil cake, crude and exhausted with and whiout stones",,,,,,,Trade,,,86.6,19.7,6.2,7.6,5,,,10.25,0.0164,16.25,,see sheet Olive oil cake,,
+F206,Oil of Sesame Seed,,Other,missing,21691.07,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F207,"Other oil of Vegetable Origin, crude n.e.",,Other,missing,21691.9,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F208,Cake of Rice Bran,,By-products,available,21910.01,113,37,27,"Rice bran, defatted (Fibre: <11%, 11-20%,>20%)",Y,Y,Y,Y,Y,All,Trade,,,90.1,17.33,10.66,10.63,8.66,10.03,7.51,13.26,0.021216,56.83,59.15,see sheet Cake of Bran Rice,,
+F209,Cake of Maize,,Oil crop cakes,available,21910.02,112,61,56,,Y,Y,Y,Y,Y,All,Trade,,,91.22,19.65,15.9,13.76,12.92,12.53,10.3,20.92,0.033472,59.72,67.4,see sheet Maize germ meal,,
+F210,Cake of Soya beans,MLSOY,Oil crop cakes,available,21910.03,141,238,236,"By-product from soy (Glycine max) oil production, commonly referred to as ‚Äòsoy cakes‚Äô or ‚Äòsoybean meal‚Äô.",Y,Y,Y,Y,Y,All,Trade,,,88,19.7,17.95655,17.05,13.35,15.55,11.05,53.9,0.08624,80.2,88.4,see sheet Soybean meal),,
+F211,Cake of Groundnuts,MLOILSDS,Oil crop cakes,available,21910.04,142,245,242,"By-product (cakes, meals) from Groundnuts oil production.",,,,,,Monogastrics,Trade,,,90.7,20.6333333333333,17.3666666666666,16.1240666666666,12.9666666666666,15.2999999999999,11.6499999999999,52.3,0.08368,86.7,83.1,see sheet Groundnut meal),,
+F212,Cake of Copra,MLOILSDS,Oil crop cakes,available,21910.05,1492,253,251,"By-product (cakes, meals) from Copra oil production.",,,,,,Monogastrics,Trade,,,90.7,19.3999999999999,15.2,10.55,12.15,9.8,8.69999999999999,22.95,0.0367199999999999,76.6,69.4,see sheet Copra meal),,
+F213,Cake of Palm kernel,PKEXP,Oil crop cakes,available,21910.06,1491.01,259,254,"By-products from the production of kernel palm oil (Elaeis guineensis), commonly referred to as 'kernel cake'.",Y,Y,Y,y,Y,All,Trade,,,91.1,19.45,13.8,8.1,11.1499999999999,7.55,10.6,17.7,0.0283199999999999,73.8,63.9,see sheet Palm kernel meal),,
+F214,Cake of Sunflower seed,MLOILSDS,Oil crop cakes,available,21910.07,1445,269,267,"By-product (cakes, meals) from Sunflower oil production.",Y,Y,Y,Y,Y,All,Trade,,,89.9,20,12.8,11.025,9.625,10.0749999999999,8.6,32.3249999999999,0.0517199999999999,74.8,77.7,see sheet Sunflower meal),,
+F215,Cake of Rapeseed,MLRAPE,Oil crop cakes,available,21910.08,21641.01,272,271,"By-product from rape (Brassica napus) oil production, commonly referred to as ‚Äòrape cakes‚Äô or ‚Äòrapeseed meal‚Äô.",Y,Y,Y,Y,Y,All,Trade,,,90.5,20.35,15.637,14.25,12.1,13.2,9.05,35.9,0.05744,77.1,77.8,see sheet Rapeseed meal),,
+F216,Olive Residues,,Oil crop cakes,available,21910.09,1450,273,260,"Olive leaves, braches fresh and dry",,,,,,,Trade,,,72.3,18.66,7.65,,6.6,,,9.93,0.015888,27.76,,see sheet Olive residues,,
+F217,Cake of Safflowerseed,MLOILSDS,Oil crop cakes,available,21910.1,1446,282,280,"By-product (cakes, meals) from Safflowerseed oil production.",,,,,,Monogastrics,Trade,,,93.2,21.4,10.2291999999999,8.1,8.3,,,24.8,0.03968,80,,https://www.feedipedia.org/node/12552,,
+F218,Cake of Sesame seed,MLOILSDS,Oil crop cakes,available,21910.11,1444,291,289,"By-product (cakes, meals) from Sesame oil production.",Y,Y,Y,Y,Y,All,Trade,,,92.8,20.6,16.6,15.7,12.5,14.4,11.3,44.9,0.07184,78.4,88.6,https://www.feedipedia.org/node/12577,,
+F219,Cake of Mustard seed,MLOILSDS,Oil crop cakes,available,21910.12,1442,294,292,"By-product (cakes, meals) from Mustard oil production.",,,,,,Monogastrics,Trade,,,89.5,20,12.64,12,10.9,11.35,7.1,18.2,0.02912,71.1,50.1,https://www.feedtables.com/content/mustard-bran,,
+F220,Cake of Kapok,,Oil crop cakes,available,21910.14,1499.05,314,310,,Y,Y,Y,Y,Y,All,Trade,,,89.5,20.4,,12.7,9.1,,8.8,34.1,,74.1,,https://www.feedipedia.org/node/12220,,
+F221,Cake of Cottonseed,MLCTTN,Oil crop cakes,available,21910.15,143,332,329,"By-product from cottonseed (Gossypium spp.) oil production, commonly referred to as ‚Äòcottonseed meal‚Äô.",,,,,,All,Trade,,,91.6,20.65,15.545,13.1,11.7666666666666,11.9333333333333,9.7,42.4249999999999,0.0678799999999999,80.4,73.4,see sheet Cottonseed meal),,
+F222,Cake of Linseed,MLOILSDS,Oil crop cakes,available,21910.16,1441,335,333,"By-product (cakes, meals) from Linseed oil production.",,,,,,Monogastrics,Trade,,,89.1,19.7,17.95655,17.05,13.35,15.55,11.05,53.9,0.08624,76.8,87.7,see sheet Linseed meal),,
+F223,Cake of Hempseed,MLOILSDS,Oil crop cakes,available,21910.17,1449.02,338,336,"By-product (cakes, meals) from Hempseed oil production.",Y,Y,,,Y,,Trade,,,90,20.5,11.1315,9.9091,9,9.75,10.25,35.5499999999999,0.05688,71.9,55.6,see sheet Hempseed meal),,
+F224,Cake of Poppy seed,,Oil crop cakes,"available, item missing from SUAS",,1448,,296,"Poppy (Papaver somniferum), oil meal, mechanical and solvent extraction",Y,Y,Y,Y,Y,All,Production,,,91.15,19,14.4,11.8,11,11.7,,29.6,0.04736,79.1,,see cheet Poppy oil meal,,not recent literature on the use as feed
+F225,Cake of Oilseeds nes,MLOILSDS,Oil crop cakes,available,21910.9,1449.9,341,339,"By-product (cakes, meals) from other oilseed production.",,,,,,Monogastrics,Trade,,,89.2864705882353,19.9878431372549,13.8132791666667,12.4261354166667,10.6928431372549,12.2067948717949,9.8576923076923,31.7441176470588,0.050555,69.69,73.5916666666667,Calculates as average of values for known oil seed meals,,
+F226,"Flours and meals of oil seeds or oleaginous fruits, except those of mustard",,Oil crop cakes,missing,21920,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F227,Skim Milk of Cows,,Animal products,missing,22110.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F228,Skim Milk of Buffalo,,Animal products,missing,22110.04,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F229,Skim Sheep Milk,,Animal products,missing,22110.05,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F230,"Whey, Fresh",,Animal products,missing,22130.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F231,"Whey, dry",,Animal products,available,22130.02,NA,900,NA,,,,,,,,Production,,,97.05,15.75,14.35,14.95,12.05,14.5,12.1,10.9,0.01744,72.55,,see sheet Whey dry,,
+F232,"Whey, Condensed",,Animal products,available,22130.03,NA,890,NA,"Whey, permeate",,,,,,,Production,,,97.7,15.6,14.352,15.2,11.7,14.8,8.1,5.8,0.00928,64.1,95,https://www.feedtables.com/content/table-feed-profile?feed_pr_id=12552,,Whey permeated == condensed?
+F233,Whole milk powder,,Animal products,available,22211,NA,897,NA,"Milk powder, whole",,,,,,,Trade,,,96,23.2,24.9462365591398,21.5,18.8,20.7,16,25.4,0.04064,95,95,https://www.feedtables.com/content/milk-powder-whole,,
+F234,Skim milk and whey powder,,Animal products,available,22212,NA,898,NA,"Milk powder, skimmed",,,,,,,Trade,,,94.8,18.3,19.6774193548387,17.6,13.7,16.6,,34.1,0.05456,79.6,95,https://www.feedtables.com/content/milk-powder-skimmed,,
+F235,"Whole Milk, Evaporated",,Animal products,missing,22221.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F236,"Whole Milk, Condensed",,Animal products,missing,22222.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F237,"Skim Milk, Condensed",,Animal products,missing,22222.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F238,"Buttermilk, curdled and acidified milk",,Animal products,missing,22230.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F239,"Buttermilk, dry",,Animal products,missing,22230.04,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F240,Butter of Cow Milk,,Animal products,missing,22241.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F241,Ghee from Cow Milk,,Animal products,missing,22241.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F242,Cheese from Skimmed Cow Milk,,Animal products,missing,22251.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F243,Whey Cheese,,Animal products,missing,22251.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F244,Casein,,Animal products,missing,22260,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F245,Dairy products n.e.,,Animal products,missing,22290,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F246,Wheat and meslin flour,,Other,missing,23110,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F247,Flour of Rice,,Other,missing,23120.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F248,Barley Flour and Grits,,Other,missing,23120.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F249,Flour of Maize,,Other,missing,23120.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F250,Flour of Rye,,Other,missing,23120.04,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F251,Flour of Millet,,Other,missing,23120.05,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F252,Flour of Sorghum,,Other,missing,23120.06,114,,83,,,,,,,,,,,,,,,,,,,,,,,,
+F253,Flour of Mixed Grain,,Other,missing,23120.1,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F254,Flour of Cereals nes,,Other,missing,23120.9,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F255,Germ of Wheat,,Other,available,23140.01,111,19,15,,,,,,,,Trade,,,88.7,20.6,17.6,17.2,14,16.4,,29.5,0.0472,,,https://www.feedipedia.org/node/12753,,
+F256,Bulgur,,Other,missing,23140.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F257,Breakfast Cereals,,Other,missing,23140.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F258,Pot Barley,,Other,missing,23140.04,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F259,"Barley, Pearled",,Other,missing,23140.05,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F260,Germ of Maize,,Other,available,23140.06,112,57,56,,Y,Y,Y,Y,Y,All,Trade,,,93.15,25.7,18.25,19.6,18.25,19,15.6,14.05,0.02248,83,76.3,see sheet Maize germ,,
+F261,"Oats, Rolled",,Other,available,23140.07,117,76,75,Oats flaked,,,,,,,Trade,,,87.6,19.5,13.65,13.7,11.5,13,11,9.4,0.01504,59.3,84.7,https://www.feedtables.com/content/table-feed-profile?feed_pr_id=12425,,
+F262,Cereal Preparations,,Other,missing,23140.08,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F263,"Rice, Milled (Husked)",,Other,missing,23161.01,113,,27,,,,,,,,,,,,,,,,,,,,,,,,
+F264,"Rice, Milled",,Other,available,23161.02,113,31,27,,,Y,Y,Y,Y,Monogastrics,Trade,,,88,17.6,12.1,13.1,10.1,12.7,9.19999999999999,8.3,0.01328,76,,https://www.feedipedia.org/node/12525,,
+F265,"Rice, Broken",,Other,available,23161.03,113,32,27,,,,,,,,Trade,,,87.5,18.1,15.9,16.9,13.4,16.5,15.95,9,0.0144,68,88,https://www.feedipedia.org/node/24397,,
+F266,Husked rice,,Other,missing,23162,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F267,Flour of Cassava,,Other,available,23170.01,1520.01,126,125,"Cassava pulp, dried",,,,,,,Trade,,,89,15.6,7.956,12.4,,12,10.1,2.3,0.00368,0,100,https://www.feedtables.com/content/table-feed-profile?feed_pr_id=269566,,
+F268,Flour of Roots and Tubers nes,,Other,missing,23170.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F269,Flour of Pulses,,Other,missing,23170.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F270,Flour of Fruits,,Other,available,23170.04,1359.9,624,619,Banana flour,,,,,,,Trade,,,90,18.5,,15.6,,,,16.7,,,,,,
+F271,Mixes and doughs for the preparation of bakers' wares,,Other,missing,23180,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F272,Lactose,,Other,missing,23210.06,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F273,Isoglucose,,Other,missing,23210.08,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F274,Starch of Wheat,,Other,missing,23220.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F275,Wheat Gluten,,Other,missing,23220.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F276,Starch of Rice,,Other,missing,23220.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F277,Starch of Maize,,Other,available,23220.04,112,NA,64,,,,,Y,,Monogastric,Food Balance,,,88.1,0.8,,17,,16.8,,17.4,0.02784,,64.6,https://www.feedipedia.org/node/12641,,
+F278,Starch of Potatoes,,Other,available,23220.05,1510,NA,116,"Potato pulp, dehydrated",Y,Y,,Y,Y,All,Food Balance,,,86.9,17.6,11.44,12.8,9.2,12.4,8.8,5.4,0.00864,28.4,57.2,https://www.feedipedia.org/node/26045,,
+F279,Starch of Cassava,,Other,available,23220.06,1520.01,129,125,"Cassava pomace, dehydrated",,,,,,,Trade,,,89,17.5,9.8,11.5,7.7,11.2,10.1,2.4,0.00384,0,54.8,https://www.feedipedia.org/node/11945,,
+F280,Tapioca of Potatoes,,By-products,missing,23230.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F281,Tapioca of Cassava,,By-products,missing,23230.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F282,"Dog or cat food, put up for retail sale",,,missing,23311,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F283,"Compound Feed, Cattle",,,missing,23319.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F284,"Compound Feed, Poultry",,,missing,23319.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F285,"Compound Feed, Pigs",,,missing,23319.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F286,Compound Feed nes,,,missing,23319.04,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F287,Feed Supplements,SYNTHETIC,Other,missing,23319.06,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F288,Other Concentrates nes,,,missing,23319.08,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F289,Feed Additives,SYNTHETIC,Other,missing,23319.1,23319.1,854,854,Synthetic additives such as amino-acids or minerals.,,,,,,Monogastrics,Trade,,,,,,,,,,,,,,,,
+F290,Feed Minerals,SYNTHETIC,Other,missing,23319.11,,,,Synthetic additives such as amino-acids or minerals.,,,,,,,,,,,,,,,,,,,,,,,
+F291,Lucerne (alfalfa) meal and pellets,GRASSH,Fodder crop,available,23320,23320,862,862,"Alfalfa, protein concentrate",Y,Y,,Y,Y,All,Trade,,,92.1,21.7,19.5,18.8,14.4,17.4,12.4,56.9,0.09104,80.4,89.4,https://www.feedipedia.org/node/11748,https://www.feedtables.com/content/alfalfa-protein-concentrate,
+F292,"Cane sugar, non-centrifugal",,Other,missing,23511.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F293,Raw cane or beet sugar (centrifugal only),,Other,missing,2351f,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F294,Refined sugar,,Other,missing,23520,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F295,Molasses (from cane),MOLASSES,By-products,available,23540,1802,165,156,By-product from the sugarcane sugar extraction.,,,,,,All,Trade,,,73,14.7,11.3,13.3,9.6,13,13,5.5,0.0088,,,https://www.feedipedia.org/node/12341,,
+F296,Molasses (from beet),MOLASSES,By-products,available,23540,1801,165,157,By-product from the sugarcane sugar extraction.,,,,,,All,Trade,,,75.4,15.5,13.3144999999999,13.1,11,12.8,12.3,14.2,0.0227199999999999,72,50,https://www.feedipedia.org/node/12340,,
+F297,"Fruit, Nuts, Peel, Sugar Preserved",,Other,missing,23670.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F298,"Uncooked pasta, not stuffed or otherwise prepared",,Other,missing,23710,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F299,"Extracts, essences and concentrates of tea or mate, and preparations with a basis thereof or with a basis of tea or matÔøΩ",,Other,missing,23914,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F300,Egg Albumin,,Animal products,missing,23993.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F301,Soya Paste,,By-products,missing,23995.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F302,Flour of Mustard Seed,,Other,missing,23995.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F303,Undenatured ethyl alcohol of an alcoholic strength by volume of 80% vol or higher,,Other,missing,24110,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F304,"Malt, whether or not roasted",,Other,missing,24320,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F305,Other non-alcoholic caloric beverages n.e.c,,Other,missing,24490,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F306,Industrial monocarboxylic fatty acids; acid oils from refining/n,,Other,missing,34120,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F307,"Animal or vegetable fats and oils and their fractions, chemically modified, except those hydrogenated, inter-esterified, re-esterified or elaidinized; inedible mixtures or preparations of animal or vegetable fats or oils/n",,Other,missing,34550,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F308,Bran of Wheat,GRNBYDRY,By-products,available,39120.01,111,17,15,,,,,,,,Trade,,,87,18.9,13.5,10.8,11,10.2,7.6,17.3,0.02768,68.2,64.9,https://www.feedipedia.org/node/12751,,
+F309,Bran of Rice,GRNBYDRY,By-products,available,39120.02,113,35,27,,Y,Y,Y,Y,Y,All,Trade,,,90.5,20.3,13.87,13.8,11.42,13.27,11.57,12.62,0.020192,59.32,74.2,se sheet Bran of Rice,,
+F310,Bran of Barley,GRNBYDRY,By-products,missing,39120.03,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F311,Bran of Maize,GRNBYDRY,By-products,available,39120.04,112,59,56,,,,,,,,Trade,,,88.7,18.5,13.4,10.1,11,9.7,8.8,11.9,0.01904,92.3,45.5,https://www.feedipedia.org/node/12280,,
+F312,Bran of Rye,GRNBYDRY,By-products,available,39120.05,116,73,71,Rye bran,Y,Y,Y,Y,,All,Trade,,,88,18.5,14.5,14.8,11.9,14.1,,16.9,0.02704,83,,https://www.feedipedia.org/node/12541,,
+F313,Bran of Oats,GRNBYDRY,By-products,available,39120.06,117,77,75,,,,,,,,Trade,,,90.6,19.8,16.7,16.6,13.7,15.9,,19.3,0.03088,,,https://www.feedipedia.org/node/12385,,
+F314,Bran of Millet,GRNBYDRY,By-products,available,39120.07,118,81,79,Pearl millet bran,,,,,,,Trade,,,92,19,15.4,15.5,12.8,,,13.7,0.02192,,,https://www.feedipedia.org/node/11690,,
+F315,Bran of Sorghum,GRNBYDRY,By-products,missing,39120.08,114,,83,,,,,,,,,,,,,,,,,,,,,,,,
+F316,Bran of Buckwheat,GRNBYDRY,By-products,available,39120.09,1192,91,89,,,,,,,,Trade,,,88.45,19.95,13.88,13.35,11.1,12.65,12.65,26.45,0.04232,70.5,70.1,see sheet Buckwheat bran,,
+F317,Bran of Fonio,GRNBYDRY,By-products,missing,39120.1,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F318,Bran of Triticale,GRNBYDRY,By-products,missing,39120.11,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F319,Bran of Mixed Grain,GRNBYDRY,By-products,available,39120.12,1199.02,105,103,"‚ÄòDry‚Äô by-products of grain industries such as brans, middlings, etc.",,,,,,All,Trade,,,89.4,19.4899999999999,14.42,13.5599999999999,11.8599999999999,12.9111111111111,9.85833333333333,14.53,0.023248,69.7,66.1,see sheet GRNBYDRY),,
+F320,Bran of Cereals nes,GRNBYDRY,By-products,missing,39120.13,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F321,Bran of Pulses,,By-products,missing,39120.14,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F322,"Pulp, Waste of Fruit for Feed",,By-products,missing,39120.15,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F323,Marc of grape,,By-products,available,39120.18,1330,566,560,"Grape pomace, dehydrated",,,,,,,Trade,,,91.2,19.1,7.258,8.9,5.5,8.3,5.05,13.6,0.02176,52.3,47.6,https://www.feedipedia.org/node/12133,,
+F324,Vegetable Products for Feed nes,,Other,missing,39120.91,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F325,"Leaves, Tops and Vines n.e.",LEAVES,Grass and leaves,missing,39120.92,NA,NA,NA,"Leaves from natural, uncultivated vegetation found in trees, forest, lanes etc.",,,,,,All,NA,,,,18.5,,,,,,,,,,,,
+F326,"Rice, Gluten",,By-products,missing,39130.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F327,Maize Gluten,,By-products,missing,39130.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F328,Potato Offals,,By-products,available,39130.03,1510,120,116,"Potato peels, fresh",Y,Y,,Y,Y,All,Trade,,,20.1,17.1,12.996,14.6,10.3,,,10,0.016,60.3,66.1,https://www.feedipedia.org/node/12471,,
+F329,Maize Gluten meal,MZGLTM,By-products,available,39130.04,112,846,56,"By-product from maize processing. It is a protein-rich feed, with about 65% crude protein content.",,,,,,Ruminants,Trade,,,90,23.1,22.9,21.4,16.6,19.8,16.7,67.2,0.10752,81,86.2,https://www.feedipedia.org/node/715,,
+F330,Maize Gluten feed,MZGLTF,By-products,available,39130.04,112,846,56,"By-product from maize processing. Unlike the gluten meal, its protein content is lower, of about 25% crude protein content.",,,,,,Ruminants,Trade,,,88.3,18.8,15.1,12.3,12.2,11.6,8.6,21.7,0.03472,74.4,60.2,https://www.feedipedia.org/node/12287,,
+F331,Bagasse,,By-products,available,39141,1802,170,156,,,,,,,,Trade,,,46,18.4,8.6,3.3,7,,,1.8,0.00288,,,https://www.feedipedia.org/node/11672,,
+F332,Beet pulp,BPULP,By-products,available,39149.01,1801,169,157,"Also known as ‚Äòbeet pulp‚Äô, is the remaining material after the juice extraction for sugar production from the sugar beet (Beta vulgaris).",,,,,,Ruminants,Trade,,,88.8,17.05,13.8105,12.2,11.4,11.5,2.83333333333333,8.9,0.01424,70,49,https://www.feedipedia.org/node/24378,https://www.feedtables.com/content/table-dry-matter,
+F333,Coffee Husks and Skins,,By-products,available,39150.01,1610,660,656,"Coffee pulp, dehydrated",,,,,,,Trade,,,91.8,17.2,,10.5,,,,11.3,,,,https://www.feedipedia.org/node/11613,,
+F334,Cocoa Husks and Shells,,By-products,missing,39150.02,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F335,Brewing or distilling dregs and waste,GRNBYWET,By-products,available,39160,115,654,44,"‚ÄòWet‚Äô by-products of grain industries such as biofuels, distilleries, breweries, etc.",,,,,,All,Trade,,,72.8,20.7285714285714,14.7748571428571,14.2181818181818,11.7615384615384,13.3111111111111,11.2222222222222,29.3928571428571,0.0470285714285714,76,76.9,see sheet GRNBYWET),,
+F336,Food Wastes,SWILL,Other,missing,39170.01,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F337,"Food Waste, Prep. for Feed",SWILL,Other,missing,39170.02,NA,NA,NA,Household food waste and other organic material used as feed.,,,,,,Monogastrics,NA,,,,,,,,,,,,,,,,
+F338,bread,,Other,missing,F0020,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F339,fruit prepared n.e.,,By-products,missing,F0623,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F340,cocoa powder and cake,,By-products,missing,F0665,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F341,fat preparations n.e.,,Other,missing,F1243,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F342,seeds for planting,,Other,missing,F1294,,,,,,,,,,,,,,,,,,,,,,,,,,,
+F343,Limestone,LIMESTONE,Other,not applicable,NA,NA,NA,NA,"Used as source of calcium, is given to laying hens to favor the formation of the egg shell.",,,,,,Monogastrics,NA,,,,,,,,,,,,,,NA,,
+F344,Scavenging,SWILL,Other,missing,NA,NA,NA,NA,Organic material from scavenging in extensive systems.,,,,,,Monogastrics,NA,,,,,,,,,,,,,,,,
+F345,Raw milk of pig,Raw milk of pig,Animal products,available,,,,,Raw milk of pig,,,,Y,,,,,,17.9,25.8435754189944,,25.0682681564246,,24.0655374301676,,29.8324022346369,0.0467592511514685,,,"Aguinaga, M. A., F. Gómez-Carballar, R. Nieto, and J. F. Aguilera. ""Production and composition of Iberian sow's milk and use of milk nutrients by the suckling Iberian piglet."" Animal 5, no. 9 (2011): 1390-1397. (assuming 97% from GE to DE, and 96% from DE to ME)",,
