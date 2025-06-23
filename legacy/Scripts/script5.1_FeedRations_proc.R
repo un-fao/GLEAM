@@ -52,7 +52,10 @@ feed_params[Item_Name %in% milk_items, GLEAM3_name := Item_Name]
 
 # Write out the new CSV to use directly in the feed_rations function
 fwrite(
-  feed_params,
+  feed_params[, .(
+    GLEAM3_name, GE, DE_ruminants, DE_pigs,
+    ME_ruminants, ME_pigs, ME_chickens, N_content
+  )],
   file = system.file("extdata/Feed_parameters.csv", package = "gleam")
 )
 
