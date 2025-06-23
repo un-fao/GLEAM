@@ -17,11 +17,13 @@
 #' @export
 compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
   validate_fecundity_inputs(part_rate, prolif_rate, fem_birth_ratio)
-
+  
   # Calculate fecundity rates
-  list(
-    fem_fec = prolif_rate * fem_birth_ratio * (part_rate / 365),
-    mal_fec = prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
+  return(
+    list(
+      fem_fec = prolif_rate * fem_birth_ratio * (part_rate / 365),
+      mal_fec = prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
+    )
   )
 }
 
@@ -47,81 +49,83 @@ compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
 #' @export
 compute_transition_probabilities <- function(duration, offtake_rate, death_rate) {
   validate_transition_inputs(duration, offtake_rate, death_rate)
-
+  
   # --- Part 1: Compute values for 6 core sex-age classes ---
-
+  
   # Instantaneous mortality hazard rate (hazard_death), adjusted by duration
   hazard_death <- ifelse(
     duration < 365, -log(1 - death_rate) / duration, -log(1 - death_rate) / 365
   )
-
+  
   # Adjusted duration: keep original if <365, otherwise cap at 365
   duration_max365 <- ifelse(duration < 365, duration, 365)
-
+  
   # Initialize offtake hazard rate (hazard_offtake)
   hazard_offtake <- NA
-
+  
   # Estimate hazard_offtake using Newton-Raphson method for each class
   for (class in 1:6) {
     hazard_death_adj <- hazard_death[class] * duration_max365[class]
-
+    
     for (t in 1:15) {
       class_hazard_offtake <- ifelse(
         t == 1, offtake_rate[class], class_hazard_offtake - (class_f / class_deriv)
       )
-
+      
       class_f <- (class_hazard_offtake / (hazard_death_adj + class_hazard_offtake)) *
         (1 - exp(-hazard_death_adj - class_hazard_offtake)) - offtake_rate[class]
-
+      
       class_deriv <- (
         hazard_death_adj * (1 - exp(-hazard_death_adj - class_hazard_offtake)) +
           class_hazard_offtake * (hazard_death_adj + class_hazard_offtake) *
           exp(-hazard_death_adj - class_hazard_offtake)
       ) / (hazard_death_adj + class_hazard_offtake)^2
     }
-
+    
     hazard_offtake[class] <- class_hazard_offtake / duration_max365[class]
   }
-
+  
   # --- Part 2: Extend to 10 cohorts (6 sex-age classes + 2 birth + 2 culling) ---
-
+  
   # Extend hazard_death and hazard_offtake for 10 cohorts: copy juvenile/adult rates to birth/culling cohorts
   hazard_death_all <- hazard_death[c(1, 1:3, 3, 4, 4:6, 6)]
   hazard_offtake_all <- hazard_offtake[c(1, 1:3, 3, 4, 4:6, 6)]
-
+  
   # Extend duration: assign 1 day to birth/culling cohorts; subtract 1 day where split
   duration_all <- c(1, duration[1] - 1, duration[c(2:3)], 1, 1,
                     duration[4] - 1, duration[c(5:6)], 1)
-
+  
   # Daily probability of death (prob_death)
   prob_death <- (hazard_death_all / (hazard_death_all + hazard_offtake_all)) *
     (1 - exp(-(hazard_death_all + hazard_offtake_all)))
   prob_death[c(5, 10)] <- 0  # Culling cohorts cannot die again
-
+  
   # Daily probability of offtake (prob_offtake)
   prob_offtake <- (hazard_offtake_all / (hazard_death_all + hazard_offtake_all)) *
     (1 - exp(-(hazard_death_all + hazard_offtake_all)))
   prob_offtake[c(5, 10)] <- 1  # Culling cohorts are entirely offtaken
-
+  
   # Daily survival probability (prob_survival)
   prob_survival <- 1 - prob_death - prob_offtake
-
+  
   # Probability of growing into the next class (prob_growth)
   prob_growth <- (prob_survival^(duration_all - 1) - prob_survival^duration_all) / (1 - prob_survival^duration_all)
-
+  
   # --- Prepare and return results ---
-
+  
   names(prob_death) <- names(prob_offtake) <- names(prob_survival) <- names(prob_growth) <-
     c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
   names(hazard_death) <- names(hazard_offtake) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-
-  list(
-    hazard_death = hazard_death,
-    hazard_offtake = hazard_offtake,
-    prob_death = prob_death,
-    prob_offtake = prob_offtake,
-    prob_survival = prob_survival,
-    prob_growth = prob_growth
+  
+  return(
+    list(
+      hazard_death = hazard_death,
+      hazard_offtake = hazard_offtake,
+      prob_death = prob_death,
+      prob_offtake = prob_offtake,
+      prob_survival = prob_survival,
+      prob_growth = prob_growth
+    )
   )
 }
 
@@ -163,16 +167,16 @@ simulate_steady_state_structure <- function(
     fem_fec, mal_fec,
     prob_death, prob_offtake, prob_growth
   )
-
+  
   # Initialize population vectors
   fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- numeric()
   mal_birth <- mal_juv <- mal_sub <- mal_adult <- mal_cull <- numeric()
-
+  
   fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- numeric()
   mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- numeric()
-
+  
   lambda_change <- rep(1, 6)
-
+  
   # Run simulation for up to max_years
   for (t in 1:(max_years * 365 + 1)) {
     if (t == 1) {
@@ -184,7 +188,7 @@ simulate_steady_state_structure <- function(
       fem_sub_fec <- initial_structure[["FS"]]
       fem_adult_fec <- initial_structure[["FA"]]
       fem_cull_fec <- 0
-
+      
       mal_birth_fec <- initial_structure[["FA"]] * mal_fec
       mal_juv_fec <- initial_structure[["MJ"]]
       mal_sub_fec <- initial_structure[["MS"]]
@@ -199,14 +203,14 @@ simulate_steady_state_structure <- function(
       fem_adult_fec[t] <- fem_adult_grow[t - 1]
       fem_cull_fec[t] <- 0
       fem_birth_fec[t] <- fem_adult_fec[t] * fem_fec
-
+      
       mal_juv_fec[t] <- mal_juv_grow[t - 1]
       mal_sub_fec[t] <- mal_sub_grow[t - 1]
       mal_adult_fec[t] <- mal_adult_grow[t - 1]
       mal_cull_fec[t] <- 0
       mal_birth_fec[t] <- fem_adult_fec[t] * mal_fec
     }
-
+    
     # Compute class-specific growth rate change (lambda)
     if (t > 2) {
       lambda_change <- c(
@@ -218,38 +222,38 @@ simulate_steady_state_structure <- function(
         mal_adult_fec[t] / mal_adult_fec[t - 1] - mal_adult_fec[t - 1] / mal_adult_fec[t - 2]
       )
     }
-
+    
     # Exit early if all 6 lambda changes are below threshold
     if (all(lambda_change < min_lambda_change)) break
-
+    
     # Apply death and offtake rates to each class
     fem_birth[t] <- fem_birth_fec[t] * (1 - prob_death[["FB"]] - prob_offtake[["FB"]])
     fem_juv[t] <- fem_juv_fec[t] * (1 - prob_death[["FJ"]] - prob_offtake[["FJ"]])
     fem_sub[t] <- fem_sub_fec[t] * (1 - prob_death[["FS"]] - prob_offtake[["FS"]])
     fem_adult[t] <- fem_adult_fec[t] * (1 - prob_death[["FA"]] - prob_offtake[["FA"]])
     fem_cull[t] <- fem_cull_fec[t] * (1 - prob_death[["FC"]] - prob_offtake[["FC"]])
-
+    
     mal_birth[t] <- mal_birth_fec[t] * (1 - prob_death[["MB"]] - prob_offtake[["MB"]])
     mal_juv[t] <- mal_juv_fec[t] * (1 - prob_death[["MJ"]] - prob_offtake[["MJ"]])
     mal_sub[t] <- mal_sub_fec[t] * (1 - prob_death[["MS"]] - prob_offtake[["MS"]])
     mal_adult[t] <- mal_adult_fec[t] * (1 - prob_death[["MA"]] - prob_offtake[["MA"]])
     mal_cull[t] <- mal_cull_fec[t] * (1 - prob_death[["MC"]] - prob_offtake[["MC"]])
-
+    
     # Apply transition probabilities (growth to next class)
     fem_juv_grow[t] <- fem_birth[t] + (1 - prob_growth[["FJ"]]) * fem_juv[t]
     fem_sub_grow[t] <- prob_growth[["FJ"]] * fem_juv[t] + (1 - prob_growth[["FS"]]) * fem_sub[t]
     fem_adult_grow[t] <- prob_growth[["FS"]] * fem_sub[t] + (1 - prob_growth[["FA"]]) * fem_adult[t]
     fem_cull_grow[t] <- prob_growth[["FA"]] * fem_adult[t]
-
+    
     mal_juv_grow[t] <- mal_birth[t] + (1 - prob_growth[["MJ"]]) * mal_juv[t]
     mal_sub_grow[t] <- prob_growth[["MJ"]] * mal_juv[t] + (1 - prob_growth[["MS"]]) * mal_sub[t]
     mal_adult_grow[t] <- prob_growth[["MS"]] * mal_sub[t] + (1 - prob_growth[["MA"]]) * mal_adult[t]
     mal_cull_grow[t] <- prob_growth[["MA"]] * mal_adult[t]
   }
-
+  
   # Final iteration count
   days_steady <- t
-
+  
   # Extract population state at steady-state
   xend <- c(
     fem_birth_fec[days_steady], fem_juv_fec[days_steady],
@@ -257,11 +261,11 @@ simulate_steady_state_structure <- function(
     mal_birth_fec[days_steady], mal_juv_fec[days_steady],
     mal_sub_fec[days_steady], mal_adult_fec[days_steady]
   )
-
+  
   # Compute final structure (8 classes)
   structure <- xend / sum(xend)
   names(structure) <- c("FB", "FJ", "FS", "FA", "MB", "MJ", "MS", "MA")
-
+  
   # Compute condensed share (6 classes: juveniles = birth + juvenile)
   share <- c(
     structure["FB"] + structure["FJ"],
@@ -270,16 +274,18 @@ simulate_steady_state_structure <- function(
     structure[c("MS", "MA")]
   )
   names(share) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-
+  
   # Compute steady-state annual growth rate
   growth_rate_pop <- (fem_juv_fec[days_steady] / fem_juv_fec[days_steady - 1])^365 - 1
-
+  
   # Return output
-  list(
-    days_steady = days_steady,
-    structure = structure,
-    share = share,
-    growth_rate_pop = growth_rate_pop
+  return(
+    list(
+      days_steady = days_steady,
+      structure = structure,
+      share = share,
+      growth_rate_pop = growth_rate_pop
+    )
   )
 }
 
@@ -323,25 +329,25 @@ project_population_size <- function(
     growth_rate_pop,
     structure, share
   )
-
+  
   # Calculate initial number of individuals in each of the 8 sex-age classes
   xini <- size_total * structure
-
+  
   # Compute beginning, end (via growth rate), and average size for 6 sex-age classes
   size <- size_total * share
   size_end <- (1 + growth_rate_pop) * size
   size_avg <- (size + size_end) / 2
-
+  
   # Initialize all tracking vectors
   fem_birth <- fem_juv <- fem_sub <- fem_adult <- fem_cull <- numeric()
   mal_birth <- mal_juv <- mal_sub <- mal_adult <- mal_cull <- numeric()
-
+  
   fem_birth_death <- fem_juv_death <- fem_sub_death <- fem_adult_death <- fem_cull_death <- numeric()
   mal_birth_death <- mal_juv_death <- mal_sub_death <- mal_adult_death <- mal_cull_death <- numeric()
-
+  
   fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- numeric()
   mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- numeric()
-
+  
   # Simulate daily dynamics over 366 days (leap year assumption)
   for (t in seq_len(366)) {
     if (t == 1) {
@@ -351,7 +357,7 @@ project_population_size <- function(
       fem_adult_fec <- xini[["FA"]]
       fem_cull_fec <- 0
       fem_birth_fec <- fem_adult_fec * fem_fec
-
+      
       mal_juv_fec <- xini[["MJ"]]
       mal_sub_fec <- xini[["MS"]]
       mal_adult_fec <- xini[["MA"]]
@@ -364,14 +370,14 @@ project_population_size <- function(
       fem_adult_fec[t] <- fem_adult_grow[t - 1]
       fem_cull_fec[t] <- 0
       fem_birth_fec[t] <- fem_adult_fec[t] * fem_fec
-
+      
       mal_juv_fec[t] <- mal_juv_grow[t - 1]
       mal_sub_fec[t] <- mal_sub_grow[t - 1]
       mal_adult_fec[t] <- mal_adult_grow[t - 1]
       mal_cull_fec[t] <- 0
       mal_birth_fec[t] <- fem_adult_fec[t] * mal_fec
     }
-
+    
     if (t <= 365) {
       # Apply death rates
       fem_birth[t] <- fem_birth_fec[t] * (1 - prob_death[["FB"]] - prob_offtake[["FB"]])
@@ -379,66 +385,68 @@ project_population_size <- function(
       fem_sub[t] <- fem_sub_fec[t]   * (1 - prob_death[["FS"]] - prob_offtake[["FS"]])
       fem_adult[t] <- fem_adult_fec[t] * (1 - prob_death[["FA"]] - prob_offtake[["FA"]])
       fem_cull[t] <- fem_cull_fec[t]  * (1 - prob_death[["FC"]] - prob_offtake[["FC"]])
-
+      
       mal_birth[t] <- mal_birth_fec[t] * (1 - prob_death[["MB"]] - prob_offtake[["MB"]])
       mal_juv[t] <- mal_juv_fec[t]   * (1 - prob_death[["MJ"]] - prob_offtake[["MJ"]])
       mal_sub[t] <- mal_sub_fec[t]   * (1 - prob_death[["MS"]] - prob_offtake[["MS"]])
       mal_adult[t] <- mal_adult_fec[t] * (1 - prob_death[["MA"]] - prob_offtake[["MA"]])
       mal_cull[t] <- mal_cull_fec[t]  * (1 - prob_death[["MC"]] - prob_offtake[["MC"]])
-
+      
       # Apply offtake rates
       fem_birth_death[t] <- prob_offtake[["FB"]] * fem_birth_fec[t]
       fem_juv_death[t] <- prob_offtake[["FJ"]] * fem_juv_fec[t]
       fem_sub_death[t] <- prob_offtake[["FS"]] * fem_sub_fec[t]
       fem_adult_death[t] <- prob_offtake[["FA"]] * fem_adult_fec[t]
       fem_cull_death[t] <- prob_offtake[["FC"]] * fem_cull_fec[t]
-
+      
       mal_birth_death[t] <- prob_offtake[["MB"]] * mal_birth_fec[t]
       mal_juv_death[t] <- prob_offtake[["MJ"]] * mal_juv_fec[t]
       mal_sub_death[t] <- prob_offtake[["MS"]] * mal_sub_fec[t]
       mal_adult_death[t] <- prob_offtake[["MA"]] * mal_adult_fec[t]
       mal_cull_death[t] <- prob_offtake[["MC"]] * mal_cull_fec[t]
-
+      
       # Transition
       fem_juv_grow[t] <- fem_birth[t] + (1 - prob_growth[["FJ"]]) * fem_juv[t]
       fem_sub_grow[t] <- prob_growth[["FJ"]] * fem_juv[t] + (1 - prob_growth[["FS"]]) * fem_sub[t]
       fem_adult_grow[t] <- prob_growth[["FS"]] * fem_sub[t] + (1 - prob_growth[["FA"]]) * fem_adult[t]
       fem_cull_grow[t] <- prob_growth[["FA"]] * fem_adult[t]
-
+      
       mal_juv_grow[t] <- mal_birth[t] + (1 - prob_growth[["MJ"]]) * mal_juv[t]
       mal_sub_grow[t] <- prob_growth[["MJ"]] * mal_juv[t] + (1 - prob_growth[["MS"]]) * mal_sub[t]
       mal_adult_grow[t] <- prob_growth[["MS"]] * mal_sub[t] + (1 - prob_growth[["MA"]]) * mal_adult[t]
       mal_cull_grow[t] <- prob_growth[["MA"]] * mal_adult[t]
     }
   }
-
+  
   # Compute offtake and final sizes
   offtake <- c(
     sum(fem_birth_death), sum(fem_juv_death), sum(fem_sub_death), sum(fem_adult_death), sum(fem_cull_grow),
     sum(mal_birth_death), sum(mal_juv_death), sum(mal_sub_death), sum(mal_adult_death), sum(mal_cull_grow)
   )
-
+  
   size_end_exact <- c(
     fem_birth_fec[366], fem_juv_fec[366], fem_sub_fec[366], fem_adult_fec[366],
     fem_cull_fec[366],
     mal_birth_fec[366], mal_juv_fec[366], mal_sub_fec[366], mal_adult_fec[366],
     mal_cull_fec[366]
   )
-
+  
   names(size_end_exact) <- names(offtake) <- c(
     "FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC"
   )
   names(size) <- names(size_end) <- names(size_avg) <- c(
     "FJ", "FS", "FA", "MJ", "MS", "MA"
   )
-
+  
   # Prepare output
-  list(
-    size = size,
-    size_end = size_end,
-    size_end_exact = size_end_exact,
-    size_avg = size_avg,
-    offtake = offtake
+  return(
+    list(
+      size = size,
+      size_end = size_end,
+      size_end_exact = size_end_exact,
+      size_avg = size_avg,
+      offtake = offtake
+    )
   )
 }
 
@@ -466,7 +474,7 @@ project_population_size <- function(
 #' @export
 summarise_offtake <- function(size, size_end, size_avg, offtake) {
   validate_offtake_summary_inputs(size, size_end, size_avg, offtake)
-
+  
   # Aggregate offtake: collapse 10 sex-age classes into 6
   offtake_number <- c(
     FJ = sum(offtake[c("FB", "FJ")]),
@@ -476,37 +484,39 @@ summarise_offtake <- function(size, size_end, size_avg, offtake) {
     MS = offtake["MS"],
     MA = sum(offtake[c("MA", "MC")])
   )
-
+  
   # Offtake rates
   offtake_share <- offtake_number / size
   offtake_share_avg <- offtake_number / size_avg
-
+  
   # Calculate stock variation for each sex-age class from numbers at
   # beginning and end of a steady-state year
   stock_variation <- size_end - size
-
+  
   # Calculate sum of offtake and stock variation (sv),
   # then calculate the rate for start and average cohort sizes:
   # Offtake + stock variation (SV), and corresponding rates
   offtake_sv_number <- stock_variation + offtake_number
   offtake_sv_share <- offtake_sv_number / size
   offtake_sv_share_avg <- offtake_sv_number / size_avg
-
+  
   # Assign names
   names(stock_variation) <- names(offtake_number) <-
     names(offtake_share) <- names(offtake_share_avg) <-
     names(offtake_sv_number) <- names(offtake_sv_share) <-
     names(offtake_sv_share_avg) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-
+  
   # Prepare output
-  list(
-    stock_variation = stock_variation,
-    offtake_number = offtake_number,
-    offtake_share = offtake_share,
-    offtake_share_avg = offtake_share_avg,
-    offtake_sv_number = offtake_sv_number,
-    offtake_sv_share = offtake_sv_share,
-    offtake_sv_share_avg = offtake_sv_share_avg
+  return(
+    list(
+      stock_variation = stock_variation,
+      offtake_number = offtake_number,
+      offtake_share = offtake_share,
+      offtake_share_avg = offtake_share_avg,
+      offtake_sv_number = offtake_sv_number,
+      offtake_sv_share = offtake_sv_share,
+      offtake_sv_share_avg = offtake_sv_share_avg
+    )
   )
 }
 
@@ -550,15 +560,15 @@ calc_cohort_weights <- function(
     age_first_calving,
     animal_age
   )
-
+  
   # Helper function for growing weight
   grow_weight <- function(adult_weight) {
     ((adult_weight - birth_weight) / age_first_calving) * animal_age + birth_weight
   }
-
+  
   # Defaults
   initial_weight <- potential_final_weight <- slaughter_weight <- NA_real_
-
+  
   # Juvenile cohorts
   if (cohort %in% c("FJ", "MJ")) {
     initial_weight <- birth_weight
@@ -568,7 +578,7 @@ calc_cohort_weights <- function(
       adult_weight <- if (cohort == "FJ") adult_fem_weight else adult_mal_weight
       potential_final_weight <- slaughter_weight <- grow_weight(adult_weight)
     }
-
+    
     # Subadult cohorts
   } else if (cohort %in% c("FS", "MS")) {
     if (animal %in% c("PGS", "CML")) {
@@ -579,18 +589,20 @@ calc_cohort_weights <- function(
     }
     potential_final_weight <- if (cohort == "FS") adult_fem_weight else adult_mal_weight
     slaughter_weight <- if (cohort == "FS") slaughter_weight_fem else slaughter_weight_mal
-
+    
     # Adult cohorts
   } else if (cohort == "FA") {
     initial_weight <- potential_final_weight <- slaughter_weight <- adult_fem_weight
   } else if (cohort == "MA") {
     initial_weight <- potential_final_weight <- slaughter_weight <- adult_mal_weight
   }
-
-  list(
-    initial_weight = initial_weight,
-    potential_final_weight = potential_final_weight,
-    slaughter_weight = slaughter_weight
+  
+  return(
+    list(
+      initial_weight = initial_weight,
+      potential_final_weight = potential_final_weight,
+      slaughter_weight = slaughter_weight
+    )
   )
 }
 
@@ -620,16 +632,18 @@ calc_avg_weights <- function(
     slaughter_weight,
     offtake_rate
   )
-
+  
   # Weighted final weight: survivors reach potential_final_weight, offtaken animals go to slaughter
   final_weight <- potential_final_weight * (1 - offtake_rate) + slaughter_weight * offtake_rate
-
+  
   # Average weight across the stage
   average_weight <- (initial_weight + final_weight) / 2
-
-  list(
-    average_weight = average_weight,
-    final_weight = final_weight
+  
+  return(
+    list(
+      average_weight = average_weight,
+      final_weight = final_weight
+    )
   )
 }
 
@@ -647,7 +661,9 @@ calc_avg_weights <- function(
 #' @export
 calc_daily_weight_gain <- function(potential_final_weight, initial_weight, duration) {
   validate_daily_gain_inputs(potential_final_weight, initial_weight, duration)
-
+  
   # Average daily gain over the period
-  (potential_final_weight - initial_weight) / duration
+  return(
+    (potential_final_weight - initial_weight) / duration
+  )
 }
