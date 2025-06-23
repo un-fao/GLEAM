@@ -97,11 +97,13 @@ run_feed_rations <- function(rations_share, feed_params, input_feed) {
   ), by = .(Animal_short, COUNTRY, ADM0_CODE, HerdType, LPS, cohort)]
 
   # Merge back with input data and return output
-  merge(
-    input_feed,
-    rations_summary,
-    by = c("Animal_short", "ADM0_CODE", "COUNTRY", "HerdType", "LPS", "cohort"),
-    all.x = TRUE,
-    allow.cartesian = TRUE
+  return(
+    merge(
+      input_feed,
+      rations_summary,
+      by = c("Animal_short", "ADM0_CODE", "COUNTRY", "HerdType", "LPS", "cohort"),
+      all.x = TRUE,
+      allow.cartesian = TRUE
+    )
   )
 }
