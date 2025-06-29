@@ -4,3 +4,4 @@
 ^\.github$
 ^\.lintr$
 ^legacy$
+^data-raw$
