@@ -68,6 +68,11 @@ validate_fecundity_inputs <- function(part_rate, prolif_rate, fem_birth_ratio) {
   validate_scalar_numeric(part_rate, "part_rate")
   validate_scalar_numeric(prolif_rate, "prolif_rate")
   validate_scalar_numeric(fem_birth_ratio, "fem_birth_ratio")
+
+  # Enforce configured bounds
+  validate_param_range(part_rate)
+  validate_param_range(prolif_rate)
+  validate_param_range(fem_birth_ratio)
 }
 
 #' Validate inputs for compute_transition_probabilities
@@ -79,8 +84,9 @@ validate_transition_inputs <- function(duration, offtake_rate, death_rate) {
   validate_named_numeric_vector(death_rate, "death_rate", 6)
 
   # Enforce configured bounds
-  validate_param_range(death_rate, "death_rate")
-  validate_param_range(offtake_rate, "offtake_rate")
+  validate_param_range(duration)
+  validate_param_range(death_rate)
+  validate_param_range(offtake_rate)
 }
 
 #' Validate inputs for simulate_steady_state_structure
@@ -162,6 +168,9 @@ validate_population_size_inputs <- function(
   validate_scalar_numeric(fem_fec, "fem_fec")
   validate_scalar_numeric(mal_fec, "mal_fec")
   validate_scalar_numeric(growth_rate_pop, "growth_rate_pop")
+
+  # Enforce configured bounds
+  validate_param_range(size_total)
 }
 
 #' Validate inputs for summarise_offtake
@@ -232,7 +241,7 @@ validate_avg_weight_inputs <- function(
   validate_scalar_numeric(offtake_rate, "offtake_rate")
 
   # Enforce configured bounds
-  validate_param_range(offtake_rate, "offtake_rate")
+  validate_param_range(offtake_rate)
 }
 
 #' Validate inputs for calc_daily_weight_gain
@@ -248,6 +257,9 @@ validate_daily_gain_inputs <- function(
   validate_scalar_numeric(potential_final_weight, "potential_final_weight")
   validate_scalar_numeric(initial_weight, "initial_weight")
   validate_scalar_numeric(duration, "duration")
+
+  # Enforce configured bounds
+  validate_param_range(duration)
 }
 
 #' Validate a numeric parameter (scalar or vector) against predefined bounds
@@ -267,7 +279,7 @@ validate_daily_gain_inputs <- function(
 #' @noRd
 validate_param_range <- function(
     x,
-    arg_name,
+    arg_name = deparse(substitute(x)),
     parameter_ranges = herd_module_parameter_ranges
 ) {
 
@@ -322,8 +334,8 @@ validate_param_range <- function(
       paste0("[", invalid_label, "]")
     }
 
-    lower_operator <- if (is_lower_strict) ">" else "≥"
-    upper_operator <- if (is_upper_strict) "<" else "≤"
+    lower_operator <- if (is_lower_strict) "<" else "\u2265"
+    upper_operator <- if (is_upper_strict) "<" else "\u2264"
 
     cli::cli_abort(
       "{.arg {arg_name}}{label_suffix} = {invalid_value} is out of range;
