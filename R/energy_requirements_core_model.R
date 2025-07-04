@@ -5,14 +5,14 @@
 #' @param animal Character. Species code (e.g., "CTL", "BFL", "SHP", "GTS", "PGS", "CHK", "CML").
 #' @param cohort Character. Cohort code.
 #' @param average_weight Numeric. Average live weight (kg).
-#' @param idle Numeric. Fraction of time idle (for PGS).
-#' @param gest Numeric. Fraction of time gestating (for PGS).
-#' @param lact Numeric. Fraction of time lactating (for PGS).
-#' @param litsize Numeric. Litter size (for PGS, SHP, GTS).
-#' @param ckg Numeric. Birth weight (for PGS).
-#' @param milking_fraction Numeric. Proportion of lactating adult females.
-#' @param offtake_rate Numeric. Offtake rate by cohort.
-#' @param afc Numeric. Age at first calving (for SHP).
+#' @param idle Numeric. Fraction of time idle (only for PGS–FA, default NA).
+#' @param gest Numeric. Fraction of time gestating (only for PGS–FA, default NA).
+#' @param lact Numeric. Fraction of time lactating (only for PGS–FA, default NA).
+#' @param litsize Numeric. Litter size (only for PGS–FA, default NA).
+#' @param ckg Numeric. Birth weight (only for PGS–FA, default NA).
+#' @param milking_fraction Numeric. Proportion of lactating adult females (only for CTL/BFL–FA, default NA).
+#' @param offtake_rate Numeric. Offtake rate by cohort (only for some cohorts, default NA).
+#' @param afc Numeric. Age at first calving (only for SHP, default NA).
 #'
 #' @return Numeric. Net energy for maintenance (MJ/head/day).
 #' @export
@@ -20,20 +20,20 @@ calculate_net_energy_maintenance <- function(
     animal,
     cohort,
     average_weight,
-    idle = NA,
-    gest = NA,
-    lact = NA,
-    litsize = NA,
-    ckg = NA,
-    milking_fraction = NA,
-    offtake_rate = NA,
-    afc = NA
+    idle = NA_real_,
+    gest = NA_real_,
+    lact = NA_real_,
+    litsize = NA_real_,
+    ckg = NA_real_,
+    milking_fraction = NA_real_,
+    offtake_rate = NA_real_,
+    afc = NA_real_
 ) {
   cmain <- NA
 
   if (animal %in% c("CTL", "BFL")) {
-    if (cohort %in% c("FA")) {
-      # Weighted by milking fraction
+    if (cohort == "FA") {
+      # Weighted by milking_fraction
       cmain <- 0.386 * milking_fraction + 0.322 * (1 - milking_fraction)
     } else if (cohort %in% c("FS", "FJ", "MJ")) {
       cmain <- 0.322
