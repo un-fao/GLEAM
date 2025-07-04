@@ -68,11 +68,11 @@ calculate_net_energy_maintenance <- function(
     cmain <- 0.4435 # Pigs fixed coefficient
     if (cohort == "FA") {
       # Weighted average for adult females based on physiological state
-      lw_AF <- ((average_weight^0.75 * idle) +
+      weighted_met_weight_af <- ((average_weight^0.75 * idle) +
                   ((average_weight + (litsize * ckg + 0.15 * average_weight) / 2)^0.75 * gest) +
                   ((average_weight + (0.15 * average_weight) / 2)^0.75 * lact)) /
         (idle + gest + lact)
-      return(lw_AF * cmain)
+      return(weighted_met_weight_af * cmain)
     }
   }
   # Default: metabolic body weight scaling
@@ -111,7 +111,9 @@ calculate_net_energy_activity <- function(
     ret <- cact * nemain
   } else if (animal == "SHP") {
     # Sheep: more complex, includes offtake effect
-    cact <- (0.0107 * mmspasture * past_man_frac) + (0.024 * mmspasture * (1 - past_man_frac)) * (1 - offtake_rate) + (0.0067 * offtake_rate)
+    cact <- (0.0107 * mmspasture * past_man_frac) +
+      (0.024 * mmspasture * (1 - past_man_frac)) *
+      (1 - offtake_rate) + (0.0067 * offtake_rate)
     if (cohort == "FA") {
       cact <- 0.0096 # Adult females fixed
     }
@@ -244,7 +246,8 @@ calculate_net_energy_lactation <- function(
 ) {
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / 365) * (milk_fat * 100 * 0.40 + 1.47) * milking_fraction
+      ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / 365) *
+        (milk_fat * 100 * 0.40 + 1.47) * milking_fraction
     } else {
       ret <- 0
     }
@@ -257,13 +260,15 @@ calculate_net_energy_lactation <- function(
   } else if (animal %in% c("SHP")) {
     if (cohort == "FA") {
       # Includes effect of litter size and lambing interval
-      ret <- (milk_yield + (litsize * (365 * parturition_rate / lambing_interval) * 5 * (wkg - ckg)) / 365) * 4.6 * milking_fraction
+      ret <- (milk_yield + (litsize * (365 * parturition_rate / lambing_interval) * 5 *
+                              (wkg - ckg)) / 365) * 4.6 * milking_fraction
     } else {
       ret <- 0
     }
   } else if (animal %in% c("GTS")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (litsize * (365 * parturition_rate / lambing_interval) * 5 * (wkg - ckg)) / 365) * 3 * milking_fraction
+      ret <- (milk_yield + (litsize * (365 * parturition_rate / lambing_interval) * 5 *
+                              (wkg - ckg)) / 365) * 3 * milking_fraction
     } else {
       ret <- 0
     }
@@ -401,7 +406,7 @@ calculate_net_energy_pregnancy <- function(
     if (cohort == "FA") {
       cpreg <- 0
       # Litter size effect
-      if (litsize >= 1 & litsize <= 2) {
+      if (litsize >= 1 && litsize <= 2) {
         cpreg <- (0.077 * (2 - litsize) + 0.126 * (litsize - 1))
       } else if (litsize > 2) {
         cpreg <- 0.150
@@ -559,7 +564,8 @@ calculate_net_energy_meat <- function(
     } else if (cohort %in% c("MA", "MS", "MJ")) {
       cgro <- 1
     }
-    ret <- ((22.02 * (((slaughter_weight - ckg) / 2) / (cgro * slaughter_weight))^0.75 * (slaughter_weight - ckg)^1.097)) / slaughter_weight
+    ret <- (22.02 * (((slaughter_weight - ckg) / 2) / (cgro * slaughter_weight))^0.75 *
+              (slaughter_weight - ckg)^1.097) / slaughter_weight
   } else if (animal %in% c("SHP", "GTS")) {
     # Sheep, goats: a, b coefficients
     if (animal == "SHP") {
