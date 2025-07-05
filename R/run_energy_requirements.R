@@ -1,3 +1,29 @@
+#' Run Energy Requirements and Dry Matter Intake Calculation (Internal)
+#'
+#' Computes energy requirements and dry matter intake (DMI) for each row of input data
+#' using the GLEAM core model functions. This function is intended for internal workflows
+#' and does not perform any file I/O.
+#'
+#' It adds columns for net energy for maintenance (nemain), activity (neact), growth (negrow),
+#' lactation (nelact), work (nework), fibre production (nefibre), pregnancy (nepreg), diet net energy
+#' fractions (rem, reg), total metabolizable energy requirement (getot), embedded meat energy (nemeat),
+#' and dry matter intake (dmi
+#'
+#' @param data A `data.table` or `data.frame` containing all required columns for energy requirements
+#'   (see core model functions documentation for required fields).
+#'
+#' @return The input data with new columns: nemain, neact, negrow, nelact, nework,
+#' nefibre, nepreg, rem, reg, getot, nemeat, dmi.
+#'
+#' @examples
+#' \dontrun{
+#' # Load example input from the package and run the function
+#' input_path <- system.file("extdata/GLEAM_input_energyrequirements.csv", package = "gleam")
+#' data <- data.table::fread(input_path)
+#' energy_results <- run_energy_requirements(data)
+#' }
+#'
+#' @keywords internal
 run_energy_requirements <- function(data) {
   # Internal checks: ensure essential structure
   stopifnot(is.data.frame(data))
