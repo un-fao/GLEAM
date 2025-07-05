@@ -1,7 +1,7 @@
 library(data.table)
 
 GLEAM_input_energyrequirement <- fread(
-  system.file("extdata/GLEAM_input_energyrequirements.csv", package = "gleam")
+  "legacy/inputs/GLEAM_input_energyrequirements.csv"
 )
 
 # upload functions
@@ -10,21 +10,21 @@ source("legacy/Functions/04_functions_drymatterintake.R")
 
 
 GLEAM_input_energyrequirement[, nemain := Dfunction_nemain(
-  Animal_short, cohort, averageLW, idle,
+  Animal_short, cohort, average_weight, idle,
   gest, lact, litsize, ckg, milking_fraction, offtake_rate, afc
 ), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 ## energy for activity
 GLEAM_input_energyrequirement[, neact := Dfunction_neact(
   Animal_short, cohort, past_man_frac, mmspasture,
-  nemain, averageLW, offtake_rate
+  nemain, average_weight, offtake_rate
 ), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 
 ## energy for growing
 GLEAM_input_energyrequirement[, negrow := Dfunction_negrow(
   Animal_short, cohort,
-  averageLW, final_weight, initial_weight, dwg, offtake_rate,
+  average_weight, final_weight, initial_weight, dwg, offtake_rate,
   duration
 ), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
