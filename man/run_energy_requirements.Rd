@@ -23,7 +23,7 @@ and does not perform any file I/O.
 It adds columns for net energy for maintenance (nemain), activity (neact), growth (negrow),
 lactation (nelact), work (nework), fibre production (nefibre), pregnancy (nepreg), diet net energy
 fractions (rem, reg), total metabolizable energy requirement (getot), embedded meat energy (nemeat),
-and dry matter intake (dmi
+and dry matter intake (dmi).
 }
 \examples{
 \dontrun{

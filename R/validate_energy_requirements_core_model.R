@@ -255,7 +255,7 @@ validate_rem_inputs <- function(
     diet_dig
 ) {
   validate_animal_species(animal)
-  #validate_scalar_numeric(diet_dig, "diet_dig")
+  validate_scalar_numeric(diet_dig, "diet_dig")
 }
 
 #' Validate inputs for calc_reg_growth
