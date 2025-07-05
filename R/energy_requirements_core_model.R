@@ -16,7 +16,7 @@
 #'
 #' @return Numeric. Net energy for maintenance (MJ/head/day).
 #' @export
-calculate_net_energy_maintenance <- function(
+calc_net_energy_maintenance <- function(
     animal,
     cohort,
     average_weight,
@@ -93,7 +93,7 @@ calculate_net_energy_maintenance <- function(
 #'
 #' @return Numeric. Net energy for activity (MJ/head/day).
 #' @export
-calculate_net_energy_activity <- function(
+calc_net_energy_activity <- function(
     animal,
     cohort,
     past_man_frac,
@@ -143,7 +143,7 @@ calculate_net_energy_activity <- function(
 #'
 #' @return Numeric. Net energy for growth (MJ/head/day).
 #' @export
-calculate_net_energy_growth <- function(
+calc_net_energy_growth <- function(
     animal,
     cohort,
     average_weight,
@@ -228,7 +228,7 @@ calculate_net_energy_growth <- function(
 #'
 #' @return Numeric. Net energy for lactation (MJ/head/day).
 #' @export
-calculate_net_energy_lactation <- function(
+calc_net_energy_lactation <- function(
     animal,
     cohort,
     milking_fraction,
@@ -296,7 +296,7 @@ calculate_net_energy_lactation <- function(
 #'
 #' @return Numeric. Net energy for work (MJ/head/day).
 #' @export
-calculate_net_energy_work <- function(
+calc_net_energy_work <- function(
     animal,
     cohort,
     nemain,
@@ -333,7 +333,7 @@ calculate_net_energy_work <- function(
 #'
 #' @return Numeric. Net energy for fibre production (MJ/head/day).
 #' @export
-calculate_net_energy_fibre <- function(
+calc_net_energy_fibre <- function(
     animal,
     cohort,
     fibre_prod
@@ -374,7 +374,7 @@ calculate_net_energy_fibre <- function(
 #'
 #' @return Numeric. Net energy for pregnancy (MJ/head/day).
 #' @export
-calculate_net_energy_pregnancy <- function(
+calc_net_energy_pregnancy <- function(
     animal,
     cohort,
     nemain,
@@ -445,7 +445,7 @@ calculate_net_energy_pregnancy <- function(
 #'
 #' @return Numeric. REM value (fraction).
 #' @export
-calculate_rem_maintenance <- function(
+calc_rem_maintenance <- function(
     animal,
     diet_dig
 ) {
@@ -468,7 +468,7 @@ calculate_rem_maintenance <- function(
 #'
 #' @return Numeric. REG value (fraction).
 #' @export
-calculate_reg_growth <- function(
+calc_reg_growth <- function(
     animal,
     diet_dig
 ) {
@@ -503,7 +503,7 @@ calculate_reg_growth <- function(
 #'
 #' @return Numeric. Total energy requirement (MJ/head/day).
 #' @export
-calculate_total_energy_requirement <- function(
+calc_total_energy_requirement <- function(
     animal,
     cohort,
     nemain,
@@ -548,7 +548,7 @@ calculate_total_energy_requirement <- function(
 #'
 #' @return Numeric. Net energy for meat production (MJ/head).
 #' @export
-calculate_net_energy_meat <- function(
+calc_net_energy_meat <- function(
     animal,
     cohort,
     ckg,
@@ -598,7 +598,7 @@ calculate_net_energy_meat <- function(
 #'
 #' @return Numeric. Dry matter intake (kg DM/head/day).
 #' @export
-calculate_dry_matter_intake <- function(
+calc_dry_matter_intake <- function(
     animal,
     total_energy,
     diet_ge,
