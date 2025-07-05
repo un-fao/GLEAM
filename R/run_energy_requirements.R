@@ -173,3 +173,4 @@ run_energy_requirements <- function(data) {
 
   return(data)
 }
+
