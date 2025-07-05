@@ -1,4 +1,17 @@
 run_energy_requirements <- function(data) {
+  # Internal checks: ensure essential structure
+  stopifnot(is.data.frame(data))
+  if (nrow(data) == 0) stop("Input data has 0 rows.")
+  required <- c(
+    "Animal_short","cohort","afc","average_weight","milking_fraction",
+    "offtake_rate","idle","gest","lact","litsize","ckg",
+    "work_hours","draught_fraction","fibre_prod",
+    "parturition_rate","duration",
+    "diet_dig","diet_ge","diet_me",
+    "slaughter_weight","initial_weight"
+  )
+  miss <- setdiff(required, names(data))
+  if (length(miss)) stop("Missing required columns: ", paste(miss, collapse = ", "))
 
   # 1. Maintenance energy (MJ/day)
   data[, nemain := calc_net_energy_maintenance(
