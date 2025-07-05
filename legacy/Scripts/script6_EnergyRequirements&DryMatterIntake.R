@@ -10,8 +10,8 @@ source("legacy/Functions/04_functions_drymatterintake.R")
 
 
 GLEAM_input_energyrequirement[, nemain := Dfunction_nemain(
-  Animal_short, cohort, average_weight, idle,
-  gest, lact, litsize, ckg, milking_fraction, offtake_rate, afc
+  Animal_short, cohort, afc, average_weight, milking_fraction, offtake_rate,
+  idle, gest, lact, litsize, ckg
 ), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 ## energy for activity
@@ -31,9 +31,9 @@ GLEAM_input_energyrequirement[, negrow := Dfunction_negrow(
 
 ## energy for lactation
 GLEAM_input_energyrequirement[, nelact := Dfunction_nelact(
-  Animal_short, cohort, milk_yield, milking_fraction,
-  milk_fat, idle, gest, litsize, lambing_interval, parturition_rate,
-  dr1, ckg, wkg, lact
+  Animal_short, cohort, milking_fraction, milk_yield,
+  milk_fat, idle, gest, litsize,
+  dr1, ckg, wkg, lact, parturition_rate, lambing_interval
 ), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 
@@ -55,8 +55,7 @@ GLEAM_input_energyrequirement[, nefibre := Dfunction_nefibre(
 ## energy for pregnancy
 GLEAM_input_energyrequirement[, nepreg := Dfunction_nepreg(
   Animal_short, cohort, nemain, parturition_rate,
-  duration, idle, gest, lact, litsize,
-  offtake_rate = offtake_rate
+  idle, lact, litsize, gest, duration, offtake_rate
 ), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 
@@ -81,9 +80,8 @@ GLEAM_input_energyrequirement[, getot := Dfunction_getot(
 
 ## energy for meat production
 GLEAM_input_energyrequirement[, nemeat := Dfunction_nemeat(
-  Animal_short,
-  cohort = cohort,
-  ckg, afc, slaughter_weight, initial_weight
+  Animal_short, cohort,
+  afc, slaughter_weight, initial_weight, ckg
 ), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 
