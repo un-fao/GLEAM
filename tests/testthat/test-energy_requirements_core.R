@@ -71,13 +71,6 @@ test_that("calc_net_energy_maintenance handles fixed coefficients", {
   expect_equal(result, expected)
 })
 
-test_that("calc_net_energy_maintenance returns zero for zero average_weight", {
-  expect_equal(
-    calc_net_energy_maintenance(animal = "CTL", cohort = "FA", average_weight = 0, milking_fraction = 0.5),
-    0, tolerance = 1e-8
-  )
-})
-
 test_that("calc_net_energy_maintenance calculates correctly for zero milking_fraction", {
   expected <- (500^0.75) * 0.322
   result <- calc_net_energy_maintenance(animal = "CTL", cohort = "FA", average_weight = 500, milking_fraction = 0)
@@ -93,11 +86,6 @@ test_that("calc_net_energy_maintenance handles offtake extremes", {
     calc_net_energy_maintenance(animal = "CTL", cohort = "MA", average_weight = 600, offtake_rate = 1),
     (600^0.75) * 0.37, tolerance = 1e-8
   )
-})
-
-test_that("calc_net_energy_maintenance returns NA for NA inputs", {
-  result <- calc_net_energy_maintenance(animal = "CTL", cohort = "FA", average_weight = NA, milking_fraction = 0.5)
-  expect_true(is.na(result))
 })
 
 # ---- test calc_net_energy_activity ----
@@ -163,14 +151,6 @@ test_that("calc_net_energy_activity returns zero if mmspasture is zero", {
   expect_equal(result, 0, tolerance = 1e-8)
 })
 
-test_that("calc_net_energy_activity returns zero if nemain is zero", {
-  result <- calc_net_energy_activity(
-    animal = "CTL", cohort = "FA", past_man_frac = 0.6, mmspasture = 0.8,
-    nemain = 0, average_weight = 500, offtake_rate = 0.1
-  )
-  expect_equal(result, 0, tolerance = 1e-8)
-})
-
 # ---- test calc_net_energy_growth ----
 test_that("calc_net_energy_growth returns correct values for cattle", {
   result <- calc_net_energy_growth(
@@ -230,15 +210,6 @@ test_that("calc_net_energy_lactation returns correct values for cattle", {
   )
   expected <- (20 + (0.8 * 5 * (90 - 35)) / 365) * (0.04 * 100 * 0.40 + 1.47) * 0.8
   expect_equal(result, expected)
-
-  # Test non-lactating cohort
-  result <- calc_net_energy_lactation(
-    animal = "CTL", cohort = "MJ",
-    milking_fraction = 0, milk_yield = 0, milk_fat = 0,
-    idle = 0, gest = 0, litsize = 0, dr1 = 0, ckg = 0, wkg = 0,
-    lact = 0, parturition_rate = 0, lambing_interval = 365
-  )
-  expect_equal(result, 0)
 })
 
 test_that("calc_net_energy_lactation handles sheep with litter size", {

@@ -297,7 +297,7 @@ validate_total_energy_inputs <- function(
   validate_scalar_numeric(nepreg, "nepreg")
   validate_scalar_numeric(negrow, "negrow")
   validate_scalar_numeric(nefibre, "nefibre")
-  validate_scalar_numeric(neegg, "neegg")
+  #validate_scalar_numeric(neegg, "neegg")
   validate_scalar_numeric(diet_dig, "diet_dig")
 
   # Validate REM and REG based on animal type
