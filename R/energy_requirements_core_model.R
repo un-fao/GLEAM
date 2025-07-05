@@ -29,6 +29,11 @@ calc_net_energy_maintenance <- function(
     offtake_rate = NA_real_,
     afc = NA_real_
 ) {
+  # Validate inputs
+  validate_maintenance_inputs(
+    animal, cohort, average_weight, idle, gest, lact,
+    litsize, ckg, milking_fraction, offtake_rate, afc
+  )
   cmain <- NA
 
   if (animal %in% c("CTL", "BFL")) {
@@ -102,6 +107,11 @@ calc_net_energy_activity <- function(
     average_weight,
     offtake_rate
 ) {
+  # Validate inputs
+  validate_activity_inputs(
+    animal, cohort, past_man_frac, mmspasture,
+    nemain, average_weight, offtake_rate
+  )
   if (animal %in% c("CTL", "BFL")) {
     # Weighted by pasture management
     cact <- (0.17 * mmspasture * past_man_frac) + (0.36 * mmspasture * (1 - past_man_frac))
@@ -153,6 +163,11 @@ calc_net_energy_growth <- function(
     offtake_rate,
     duration
 ) {
+  # Validate inputs
+  validate_growth_inputs(
+    animal, cohort, average_weight, final_weight,
+    initial_weight, dwg, offtake_rate, duration
+  )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort %in% c("FS", "FJ")) {
       cgro <- 0.8
@@ -244,6 +259,12 @@ calc_net_energy_lactation <- function(
     parturition_rate,
     lambing_interval
 ) {
+  # Validate inputs
+  validate_lactation_inputs(
+    animal, cohort, milking_fraction, milk_yield, milk_fat,
+    idle, gest, litsize, dr1, ckg, wkg, lact,
+    parturition_rate, lambing_interval
+  )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
       ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / 365) *
@@ -303,6 +324,8 @@ calc_net_energy_work <- function(
     work_hours,
     draught_fraction
 ) {
+  # Validate inputs
+  validate_work_inputs(animal, cohort, nemain, work_hours, draught_fraction)
   # Only adult males (MA) work
   if (animal %in% c("CTL", "BFL")) {
     if (cohort != "MA") {
@@ -338,6 +361,8 @@ calc_net_energy_fibre <- function(
     cohort,
     fibre_prod
 ) {
+  # Validate inputs
+  validate_fibre_inputs(animal, cohort, fibre_prod)
   # Only sheep, goats, camelids produce fibre
   if (animal %in% c("GTS", "SHP")) {
     if (cohort %in% c("FA", "FS", "MA", "MS")) {
@@ -386,6 +411,11 @@ calc_net_energy_pregnancy <- function(
     duration,
     offtake_rate
 ) {
+  # Validate inputs
+  validate_pregnancy_inputs(
+    animal, cohort, nemain, parturition_rate, idle, lact,
+    litsize, gest, duration, offtake_rate
+  )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
       ret <- (nemain * 0.1 * parturition_rate)
@@ -449,6 +479,8 @@ calc_rem_maintenance <- function(
     animal,
     diet_dig
 ) {
+  # Validate inputs
+  validate_rem_inputs(animal, diet_dig)
   # Only ruminants: cattle, buffalo, sheep, goats
   if (animal %in% c("CTL", "BFL", "SHP", "GTS")) {
     # Polynomial fit from GLEAM
@@ -472,6 +504,8 @@ calc_reg_growth <- function(
     animal,
     diet_dig
 ) {
+  # Validate inputs
+  validate_reg_inputs(animal, diet_dig)
   # Only ruminants: cattle, buffalo, sheep, goats
   if (animal %in% c("CTL", "BFL", "SHP", "GTS")) {
     # Polynomial fit
@@ -519,6 +553,11 @@ calc_total_energy_requirement <- function(
     diet_dig,
     afc
 ) {
+  # Validate inputs
+  validate_total_energy_inputs(
+    animal, cohort, nemain, neact, nelact, nework, nepreg,
+    rem, negrow, nefibre, neegg, reg, diet_dig, afc
+  )
   # Cattle, buffalo: sum maintenance, activity, lactation, work, pregnancy, growth
   if (animal %in% c("CTL", "BFL")) {
     ret <- (((nemain + neact + nelact + nework + nepreg) / rem) + ((negrow) / reg)) / diet_dig
@@ -556,6 +595,8 @@ calc_net_energy_meat <- function(
     slaughter_weight,
     initial_weight
 ) {
+  # Validate inputs
+  validate_meat_inputs(animal, cohort, ckg, afc, slaughter_weight, initial_weight)
   ret <- NA_real_
   # Cattle, buffalo: cohort-specific cgro
   if (animal %in% c("CTL", "BFL")) {
@@ -604,6 +645,8 @@ calc_dry_matter_intake <- function(
     diet_ge,
     diet_me
 ) {
+  # Validate inputs
+  validate_dmi_inputs(animal, total_energy, diet_ge, diet_me)
   # Ruminants: use gross energy
   if (animal %in% c("CTL", "BFL", "SHP", "GTS")) {
     ret <- total_energy / diet_ge
