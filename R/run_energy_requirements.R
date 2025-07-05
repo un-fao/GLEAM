@@ -7,7 +7,7 @@
 #' It adds columns for net energy for maintenance (nemain), activity (neact), growth (negrow),
 #' lactation (nelact), work (nework), fibre production (nefibre), pregnancy (nepreg), diet net energy
 #' fractions (rem, reg), total metabolizable energy requirement (getot), embedded meat energy (nemeat),
-#' and dry matter intake (dmi
+#' and dry matter intake (dmi).
 #'
 #' @param data A `data.table` or `data.frame` containing all required columns for energy requirements
 #'   (see core model functions documentation for required fields).
@@ -26,8 +26,10 @@
 #' @keywords internal
 run_energy_requirements <- function(data) {
   # Internal checks: ensure essential structure
-  stopifnot(is.data.frame(data))
-  if (nrow(data) == 0) stop("Input data has 0 rows.")
+  if (!inherits(data, "data.frame") || nrow(data) == 0) {
+    stop("Input must be a non-empty data.frame or data.table.")
+  }
+
   required <- c(
     "Animal_short","cohort","afc","average_weight","milking_fraction",
     "offtake_rate","idle","gest","lact","litsize","ckg",
@@ -52,7 +54,7 @@ run_energy_requirements <- function(data) {
     milking_fraction = milking_fraction,
     offtake_rate = offtake_rate,
     afc = afc
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   # 2. Activity energy (MJ/day)
   data[, neact := calc_net_energy_activity(
@@ -63,7 +65,7 @@ run_energy_requirements <- function(data) {
     nemain = nemain,
     average_weight = average_weight,
     offtake_rate = offtake_rate
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   # 3. Growth energy (MJ/day)
   data[, negrow := calc_net_energy_growth(
@@ -75,7 +77,7 @@ run_energy_requirements <- function(data) {
     dwg = dwg,
     offtake_rate = offtake_rate,
     duration = duration
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   # 4. Lactation energy (MJ/day)
   data[, nelact := calc_net_energy_lactation(
@@ -93,7 +95,7 @@ run_energy_requirements <- function(data) {
     lact = lact,
     parturition_rate = parturition_rate,
     lambing_interval = lambing_interval
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   # 5. Work energy (MJ/day)
   data[, nework := calc_net_energy_work(
@@ -102,14 +104,14 @@ run_energy_requirements <- function(data) {
     nemain = nemain,
     work_hours = work_hours,
     draught_fraction = draught_fraction
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   # 6. Fibre production energy (MJ/day)
   data[, nefibre := calc_net_energy_fibre(
     animal = Animal_short,
     cohort = cohort,
     fibre_prod = fibre_prod
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   # 7. Pregnancy energy (MJ/day)
   data[, nepreg := calc_net_energy_pregnancy(
@@ -123,18 +125,18 @@ run_energy_requirements <- function(data) {
     gest = gest,
     duration = duration,
     offtake_rate = offtake_rate
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   # 8–9. Diet NE fractions for maintenance & growth
   data[, rem := calc_rem_maintenance(
     animal = Animal_short,
     diet_dig = diet_dig
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   data[, reg := calc_reg_growth(
     animal = Animal_short,
     diet_dig = diet_dig
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   # 10. Total ME requirement (MJ/day)
   data[, getot := calc_total_energy_requirement(
@@ -152,7 +154,7 @@ run_energy_requirements <- function(data) {
     reg = reg,
     diet_dig = diet_dig,
     afc = afc
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   # 11. Embedded meat energy (MJ/head)
   data[, nemeat := calc_net_energy_meat(
@@ -161,7 +163,7 @@ run_energy_requirements <- function(data) {
     ckg = ckg, afc = afc,
     slaughter_weight = slaughter_weight,
     initial_weight = initial_weight
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   # 12. Dry matter intake (kg DM/day)
   data[, dmi := calc_dry_matter_intake(
@@ -169,8 +171,7 @@ run_energy_requirements <- function(data) {
     total_energy = getot,
     diet_ge = diet_ge,
     diet_me = diet_me
-  ), by = seq_len(nrow(data))]
+  ), by = .I]
 
   return(data)
 }
-
