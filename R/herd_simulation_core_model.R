@@ -51,7 +51,7 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
   # Prevent 0/0 in downstream hazard math by ensuring each cohort has at least
   # one non-zero rate. We choose to bump death_rate, leaving offtake_rate at 0.
   EPSILON <- 1e-12
-  zero_hazard <- (offtake_rate == 0 & death_rate == 0)
+  zero_hazard <- offtake_rate == 0 & death_rate == 0
   if (any(zero_hazard)) {
     # bump death_rate for those cohorts
     death_rate[zero_hazard] <- EPSILON
