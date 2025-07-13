@@ -334,7 +334,7 @@ validate_param_range <- function(
       paste0("[", invalid_label, "]")
     }
 
-    lower_operator <- if (is_lower_strict) "<" else "\u2265"
+    lower_operator <- if (is_lower_strict) ">" else "\u2265"
     upper_operator <- if (is_upper_strict) "<" else "\u2264"
 
     cli::cli_abort(
