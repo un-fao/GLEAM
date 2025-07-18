@@ -65,11 +65,6 @@ run_feed_rations <- function(rations_share, feed_params, input_feed) {
     by = "GLEAM3_name", all.x = TRUE, allow.cartesian = TRUE
   )
 
-  # Add species abbreviations
-  abbr_animals <- data.table(
-    Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
-    Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
-  )
   rations_detailed <- merge(rations_detailed, abbr_animals, by = "Animal", all.x = TRUE)
 
   # Calculate cohort feed contributions: GE, ME, digestibility, nitrogen

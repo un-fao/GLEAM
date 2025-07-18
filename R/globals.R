@@ -48,3 +48,9 @@ utils::globalVariables(c(
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations"
 ))
+
+# Add species abbreviations
+abbr_animals <- data.table(
+  Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
+  Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
+)
