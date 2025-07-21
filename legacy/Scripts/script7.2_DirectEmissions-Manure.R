@@ -351,4 +351,8 @@ GLEAM_input_directemissions$total_n2o_manure_pasture2006 <- GLEAM_input_directem
 GLEAM_input_directemissions$total_n2o_manure_other2006 <- GLEAM_input_directemissions$direct_n2o_manure_other2006 + GLEAM_input_directemissions$indirect_n2o_manure_other2006
 
 
+<<<<<<< HEAD
 fwrite(GLEAM_input_directemissions, "inst/extdata/GLEAM_input_feedemissions.csv")
+=======
+fwrite(GLEAM_input_directemissions, "inst/extdata/GLEAM_input_allocation.csv")
+>>>>>>> fab3d5e2ec6d3cc5d9699f70b7a81ba48184f26b
