@@ -9,19 +9,29 @@ wide_camels_dt <- fread(
   system.file("extdata/Pre_processing/Camelids/camels_inputs.csv", package = "gleam")
 )
 
+wide_dt[,MOLT:= ifelse(MOLT<0.5, 0, 1)] #this should be a boolean variable, there's some error in the file
+wide_dt[,MALE:= ifelse(MALE<0.5, 0, 1)] #this should be a boolean variable, there's some error in the file
+
 wide_dt[Animal_short == "PGS", c("AFC", "AFCM") := get.afc_pigs(AFKG=AFKG,AMKG=AMKG,DWG2=DWG2,WKG=WKG,WA=WA),by=.I]
 
-wide_dt[Animal_short != "CHK",c("offtake_rate.FJ", "offtake_rate.FS", "offtake_rate.FA", "offtake_rate.MJ", "offtake_rate.MS", "offtake_rate.MA") :=
-          get.offtake_rate(Animal_short =  Animal_short, AFC = AFC, AFCM = AFCM, CKG =  CKG, WKG =  WKG, AFKG = AFKG,AMKG =  AMKG,
-                          M2SKG = M2SKG, MFSKG =  MFSKG, MMSKG =  MMSKG, DR1 =  DR1, DR1M =  DR1M, DR2 = DR2, DRR2A =  DRR2A, DRR2B = DRR2B, DRF = DRF,
-                          FR = FR, FRRF = FRRF, RRF = RRF, RRM =  RRM, WA = WA, BCR = BCR, DWG2 = DWG2,
-                          LITSIZE = LITSIZE),by=.I]
+wide_dt[Animal_short == "CHK", c("LITSIZE") := 
+          get.litsize_chk(LPS_short, AF_FRAC, CKG, M2SKG, DR1, DRL2, DR2, DRF, DRM, FRRF, FRMF, BCR,
+                          LAYTIME1, MOLTTIME, LAYTIME2, BIDLE, AFC, AFS, A2S, CYCLE, CLTSIZE, HATCH, EGGSYEAR, 
+                          MALE, MOLT),by=.I]
 
-wide_dt[Animal_short != "CHK",c("mort_rate.FJ", "mort_rate.FS", "mort_rate.FA", "mort_rate.MJ", "mort_rate.MS", "mort_rate.MA") :=
-          get.mort_rate(Animal_short, DR1, DR1M, DR2, DRR2A, DRR2B, DRF, offtake_rate.FS, offtake_rate.MS),by=.I]
+wide_dt[,c("offtake_rate.FJ", "offtake_rate.FS", "offtake_rate.FA", "offtake_rate.MJ", "offtake_rate.MS", "offtake_rate.MA") :=
+          get.offtake_rate(Animal_short =  Animal_short, LPS_short = LPS_short, AFC = AFC, AFCM = AFCM, AFS = AFS, A2S = A2S, CKG =  CKG, WKG =  WKG, AFKG = AFKG, AMKG =  AMKG,
+                          M2SKG = M2SKG, MFSKG =  MFSKG, MMSKG =  MMSKG, AF1KG = AF1KG, AF2KG = AF2KG, AM2KG = AM2KG, 
+                          DR1 =  DR1, DR1M =  DR1M, DR2 = DR2, DRL2 = DRL2, DRR2A =  DRR2A, DRR2B = DRR2B, DRF = DRF, DRM = DRM,
+                          FR = FR, FRRF = FRRF, FRMF = FRMF, RRF = RRF, RRM =  RRM, WA = WA, BCR = BCR, DWG2 = DWG2,
+                          LAYTIME1 = LAYTIME1, MOLTTIME = MOLTTIME, LAYTIME2 = LAYTIME2, CYCLE = CYCLE, CLTSIZE = CLTSIZE, HATCH = HATCH,
+                          EGGSYEAR = EGGSYEAR, LITSIZE = LITSIZE),by=.I]
 
-wide_dt[Animal_short != "CHK",c("duration.FJ", "duration.FS", "duration.FA", "duration.MJ", "duration.MS", "duration.MA") :=
-          get.duration(Animal_short, WA, AFC, AFCM, RRF, mort_rate.FA, mort_rate.MA),by=.I]
+wide_dt[,c("mort_rate.FJ", "mort_rate.FS", "mort_rate.FA", "mort_rate.MJ", "mort_rate.MS", "mort_rate.MA") :=
+          get.mort_rate(Animal_short, LPS_short, DR1, DR1M, DR2, DRL2, DRM, DRR2A, DRR2B, DRF, LAYTIME1, LAYTIME2, MOLTTIME, AFS, AFC, offtake_rate.FS, offtake_rate.MS),by=.I]
+
+wide_dt[,c("duration.FJ", "duration.FS", "duration.FA", "duration.MJ", "duration.MS", "duration.MA") :=
+          get.duration(Animal_short, LPS_short, WA, AFC, AFCM, AFS, RRF, LAYTIME1, LAYTIME2, MOLTTIME, mort_rate.FA, mort_rate.MA),by=.I]
 
 
 # add camels input parameters
@@ -63,11 +73,11 @@ wide_dt <- wide_dt[,!c("ACT", "DCR", "POPULATION", "AF_FRAC", "DISCARGE", "DISCH
 # FISHPOND, INCINERATION, PUBLSEWAGE - used in NUE / Not used at the moment
 # CLIM ???????
 
-chicken_only_variables <- c("A2S", "AF1KG", "AF2KG", "AFS", "AM1KG", "AM2KG", "BIDLE", "CLTSIZE", "CYCLE",
-                            "DRL2", "DRM", "EGGSYEAR", "EGGWGHT", "EGG_PROTEIN", "FRMF", "HATCH",
-                            "LAYTIME1", "LAYTIME2", "MALE", "MOLT", "MOLTTIME")
+#chicken_only_variables <- c("A2S", "AF1KG", "AF2KG", "AFS", "AM1KG", "AM2KG", "BIDLE", "CLTSIZE", "CYCLE",
+#                            "DRL2", "DRM", "EGGSYEAR", "EGGWGHT", "EGG_PROTEIN", "FRMF", "HATCH",
+#                            "LAYTIME1", "LAYTIME2", "MALE", "MOLT", "MOLTTIME")
 
-wide_dt <- wide_dt[, !chicken_only_variables, with = FALSE]
+#wide_dt <- wide_dt[, !chicken_only_variables, with = FALSE]
 # // THOSE VARIABLES ARE ONLY FOR CHICKENS. FOR NOW I WOULD KEEP THEM OUT TO AVOID MESS
 
 # PROPOSAL:
@@ -121,12 +131,16 @@ setcolorder(wide_dt, c(
   "ADM0_CODE", "ISO3", "ISO3_num", "M49_code", "COUNTRY",
   "RegionClass",  "CLIM", "CLIMATE_ZONE", "TEMPERATURE",  "AFCM",
   "AFKG", "AMKG", "BCR", "DR1M", "DR2", "DRF", "DRR2A", "DRR2B",
-  "DWG2", "FRRF", "LW", "M2SKG", "MFSKG","MMSKG", "RRF", "RRM", "WA"
+  "DWG2", "FRRF", "FRMF","LW", "M2SKG", "MFSKG","MMSKG", "RRF", "RRM", "BIDLE",
+  "CLTSIZE","CYCLE","HATCH","LAYTIME1","LAYTIME2","MOLTTIME","MALE","MOLT","WA"
 ))
 
 
 # Assigning 1 to all litsize
 wide_dt[!(Animal_short %in% c("PGS", "CHK")), litsize := 1]
+
+# Assigning "parturition rate" to chickens, correponding to eggs hatching rate
+wide_dt[Animal_short %in% c("CHK"), parturition_rate := HATCH]
 
 # END VARIABLES RENAMING-----
 
