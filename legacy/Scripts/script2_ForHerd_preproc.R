@@ -145,5 +145,5 @@ wide_dt[Animal_short %in% c("CHK"), parturition_rate := HATCH]
 # END VARIABLES RENAMING-----
 
 fwrite(
-  wide_dt[Animal_short!="CHK",], system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
+  wide_dt, system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
 )
