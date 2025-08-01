@@ -2,10 +2,18 @@ library(data.table)
 library(readxl)
 
 #inputs---
-feed_params <- as.data.table(read_excel(
-  system.file("extdata/Feed_list_complete.xlsx", package = "gleam"),
-  sheet = "Complete_list"
-))
+# Sourcing from original location:
+# feed_params <- as.data.table(read_excel("~/Library/CloudStorage/OneDrive-FoodandAgricultureOrganization/GLEAM scripts and codes/GLEAStat/dataDirectory/Feed_list_complete.xlsx",
+#                                         sheet = "Complete_list"))
+# 
+# fwrite(feed_params,
+#        "~/Library/CloudStorage/OneDrive-FoodandAgricultureOrganization/GLEAM scripts and codes/gleam/inst//extdata/Feed_list_complete.csv"
+# )
+
+feed_params <-fread(
+  system.file("extdata/Feed_list_complete.csv", package = "gleam")
+  )
+
 
 rations_share <- fread(
   system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
@@ -110,7 +118,6 @@ rations_summary <- rations_temp[, .(
   diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
   diet_dig      = sum(diet_dig, na.rm = TRUE)
 ), by = .(Animal_short, COUNTRY, ADM0_CODE, HerdType, LPS, cohort)]
-
 
 
 # add feed nutritional parameters
