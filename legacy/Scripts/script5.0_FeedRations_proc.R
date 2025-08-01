@@ -1,4 +1,4 @@
-
+library(readxl)
 #inputs---
 camels_rations <- fread(
   system.file("extdata/Pre_processing/Camelids/camels_rations.csv", package = "gleam")
@@ -7,6 +7,9 @@ rations <- fread(file.path(
   system.file("extdata/Pre_processing/GLEAM_input_feed_GLEAM3_rations.csv", package = "gleam")
 ))
 rations <- rbind(camels_rations, rations, fill = TRUE)
+
+country_income_class <- read_excel("~/Library/CloudStorage/OneDrive-FoodandAgricultureOrganization/GLEAM scripts and codes/Working scripts/GLEAM-X/Inputs/Pre_processing/WorldBank_income_CLASS_2025_07_02.xlsx")
+country_income_class<-as.data.table(country_income_class)
 
 
 # preparing the feed basket composition dataframe-----
