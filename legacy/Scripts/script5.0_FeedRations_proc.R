@@ -64,6 +64,34 @@ rations_share[, GLEAM3_name := fcase(
 )]
 
 
+# Assigning GRASSF/GRASSH_cultivated to high income economies (from World Bank classification: https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups)
+gleam_feedbasket <- merge(
+  rations_share,
+  country_income_class[, .(Economy, Code, `Income group`)],
+  by.x = "ISO3",
+  by.y = "Code",
+  all.x = TRUE
+)
+
+
+# Assuming DMI is a data.table
+gleam_feedbasket[GLEAM3_name %in% c("GRASSH", "GRASSH2") & `Income group` == "High income", GLEAM3_name := "GRASSH_cultivated"]
+gleam_feedbasket[GLEAM3_name %in% c("GRASSH", "GRASSH2") & (`Income group` != "High income" | is.na(`Income group`)), 
+                 GLEAM3_name := "GRASSH_uncultivated"]
+
+gleam_feedbasket[GLEAM3_name == "GRASSLEGH" & `Income group` == "High income", GLEAM3_name := "GRASSLEGH_cultivated"]
+gleam_feedbasket[GLEAM3_name == "GRASSLEGH" & (`Income group` != "High income" | is.na(`Income group`)), 
+                 GLEAM3_name := "GRASSLEGH_uncultivated"]
+
+gleam_feedbasket[GLEAM3_name == "GRASSF" & `Income group` == "High income", GLEAM3_name := "GRASSF_cultivated"]
+gleam_feedbasket[GLEAM3_name == "GRASSF" & (`Income group` != "High income" | is.na(`Income group`)), 
+                 GLEAM3_name := "GRASSF_uncultivated"]
+
+gleam_feedbasket[GLEAM3_name == "GRASSLEGF" & `Income group` == "High income", GLEAM3_name := "GRASSLEGF_cultivated"]
+gleam_feedbasket[GLEAM3_name == "GRASSLEGF" & (`Income group` != "High income" | is.na(`Income group`)), 
+                 GLEAM3_name := "GRASSLEGF_uncultivated"]
+
+
 
 fwrite(
   rations_share, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
