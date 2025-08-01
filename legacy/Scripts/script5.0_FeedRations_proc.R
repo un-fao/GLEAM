@@ -42,6 +42,28 @@ milk_entries[, value := fifelse(cohort %in% c("FJ", "MJ"), 1, 0)]
 rations_share <- rbind(rations_share, milk_entries, fill = TRUE)
 
 
+# Harmonizing the feed GLEAM3_names names with the ones of feed EF
+rations_share[, GLEAM3_name := fcase(
+  GLEAM3_name == "GRAINSIL", "FDDRSIL",
+  GLEAM3_name %in% c("MAIZEN", "MAIZES", "CMAIZE", "CORN"), "MAIZE",
+  GLEAM3_name %in% c("CWHEAT", "WHEATS", "WHEATN"), "WHEAT",
+  GLEAM3_name == "CBARLEY", "BARLEY",
+  GLEAM3_name == "CMLOILSDS", "MLOILSDS",
+  GLEAM3_name=="CGRNBYDRY", "GRNBYDRY",
+  GLEAM3_name == "CMLSOY", "MLSOY",
+  GLEAM3_name == "LIME", "LIMESTONE",
+  GLEAM3_name == "CSORGHUM", "SORGHUM",
+  GLEAM3_name == "CSOY", "SOY",
+  GLEAM3_name == "CCASSAVA", "CASSAVA",
+  GLEAM3_name == "CPULSES", "PULSES",
+  GLEAM3_name == "SOY OIL", "SOYOIL",
+  GLEAM3_name == "CMLCTTN", "MLCTTN",
+  GLEAM3_name == "CMILLET", "MILLET",
+  GLEAM3_name == "CRICE", "RICE",
+  default = GLEAM3_name  # keep unchanged if no match
+)]
+
+
 
 fwrite(
   rations_share, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
