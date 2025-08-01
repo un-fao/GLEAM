@@ -92,6 +92,10 @@ gleam_feedbasket[GLEAM3_name == "GRASSLEGF" & (`Income group` != "High income" |
                  GLEAM3_name := "GRASSLEGF_uncultivated"]
 
 
+gleam_feedbasket <- gleam_feedbasket[
+  , .(value = sum(value, na.rm = TRUE)),
+  by = c("ADM0_CODE", "ISO3", "Animal", "LPS", "HerdType", "variable", "Unit", "cohort", "GLEAM3_name", "COUNTRY")
+]
 
 fwrite(
   rations_share, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
