@@ -87,11 +87,6 @@ feed_params_sel_summary <- feed_params_sel[, .(
 
 # merge with the feed rations
 rations_temp <- merge(rations_share, feed_params_sel_summary, by = "GLEAM3_name", all.x = TRUE, allow.cartesian = TRUE)
-abbr_animals <- data.frame(Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
-                           Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML"))
-
-rations_temp <- merge(rations_temp, abbr_animals, by = "Animal")
-
 
 # calculating the feed value
 rations_temp[, `:=` (

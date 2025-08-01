@@ -131,6 +131,8 @@ gleam_feedbasket[, `:=`(
 )]
 
 
+gleam_feedbasket[is.na(value), value := 0]
+
 fwrite(
   rations_share, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
 )
