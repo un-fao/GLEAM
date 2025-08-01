@@ -97,6 +97,40 @@ gleam_feedbasket <- gleam_feedbasket[
   by = c("ADM0_CODE", "ISO3", "Animal", "LPS", "HerdType", "variable", "Unit", "cohort", "GLEAM3_name", "COUNTRY")
 ]
 
+gleam_feedbasket[, `:=`(
+  Animal_short = fcase(
+    Animal == "Camels", "CML",
+    Animal == "Sheep", "SHP",
+    Animal == "Cattle", "CTL",
+    Animal == "Buffalo", "BFL",
+    Animal == "Chicken", "CHK",
+    Animal == "Pigs", "PGS",
+    Animal == "Goats", "GTS",
+    default = NA_character_
+  ),
+  LPS_short = fcase(
+    LPS == "Grassland", "GRS",
+    LPS == "Mixed", "MXD",
+    LPS == "ALL", "ALL",
+    LPS == "Backyard", "BCK",
+    LPS == "Broiler", "BRL",
+    LPS == "Layer", "LYR",
+    LPS == "Industrial", "IND",
+    LPS == "Intermediate", "MED",
+    LPS == "Feedlots", "FED",
+    default = NA_character_
+  ),
+  HerdType_short = fcase(
+    HerdType == "Beef", "BEF",
+    HerdType == "Dairy", "DRY",
+    HerdType == "ALL", "ALL",
+    HerdType == "Pigs", "PGS",
+    HerdType == "Chicken", "CHK",
+    default = NA_character_
+  )
+)]
+
+
 fwrite(
   rations_share, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
 )
