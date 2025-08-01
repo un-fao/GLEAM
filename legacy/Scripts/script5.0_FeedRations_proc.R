@@ -23,10 +23,12 @@ rations_share <- rations[rations$variable == "Share", ]
 rations_share <- rations_share[, .(cohort = cohort_levels), by = .(ADM0_CODE, ISO3, COUNTRY, Animal, HerdType, LPS, GLEAM3_name, variable, value, Unit)]
 
 # assign to juveniles cohort the value of 0 - assumed to be milk-fed
-rations_share[cohort %in% c("FJ", "MJ"), value := 0]
+rations_share[Animal %in% c("Buffalo", "Cattle", "Camels", "Sheep", "Goats",
+                            "Pigs") &
+                            cohort %in% c("FJ", "MJ"), value := 0]
 
 #create a new GLEAM3_name feed called milk - assign 100% to juveniles and 0 to the rest of the cohorts
-milk_entries <- unique(rations_share[, .(ADM0_CODE, ISO3, COUNTRY, Animal, HerdType, LPS, cohort, variable, Unit)])
+milk_entries <- unique(rations_share[ Animal != "Chicken", .(ADM0_CODE, ISO3, COUNTRY, Animal, HerdType, LPS, cohort, variable, Unit)])
 
 milk_entries[Animal=="Buffalo", GLEAM3_name := "Raw milk of buffalo"]
 milk_entries[Animal=="Cattle", GLEAM3_name := "Raw milk of cattle"]
@@ -134,5 +136,5 @@ gleam_feedbasket[, `:=`(
 gleam_feedbasket[is.na(value), value := 0]
 
 fwrite(
-  rations_share, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
+  gleam_feedbasket, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
 )
