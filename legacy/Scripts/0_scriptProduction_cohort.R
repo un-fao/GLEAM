@@ -1,7 +1,7 @@
-GLEAM_input_production <- fread("inst/extdata/GLEAM_input_production.csv")
+GLEAM_input_production <- fread("inst/extdata/GLEAM_input_directemissions.csv")
 lactose_lookup <- fread("inst/extdata/GLEAM_MilkDefault_LactoseContent.csv")
 
-source("legacy/Functions/02.1_functions_production.R")
+source("legacy/Functions/0_functions_production.R")
 
 
 
@@ -48,7 +48,7 @@ GLEAM_input_production[, output_fibre_production :=
 # Output: kg meat/head/year (as live weight, carcass weight, bone-free-meat, meat protein)
 GLEAM_input_production[, c("output_meat_production_liveweight", "output_meat_production_carcassweight", "output_meat_production_meat", "output_meat_production_protein") := 
                          calculate_meat_production(offtake_number, 
-                                                   slaughter_weight, 
+                                                   slaughterLW, 
                                                    carcass_dressing_percentage, 
                                                    bone_free_meat_fraction, 
                                                    meat_protein)]
@@ -61,4 +61,4 @@ GLEAM_input_production[, c("output_meat_production_liveweight", "output_meat_pro
 # PLACEHOLDER
 
 # OUTPUT TABLE -----
-fwrite(GLEAM_input_production, "inst/extdata/GLEAM_input_feed.csv")
+fwrite(GLEAM_input_production, "inst/extdata/GLEAM_input_allocation.csv")
