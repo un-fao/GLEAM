@@ -1,24 +1,53 @@
 # Milk production
 # kg milk/head/year
-calculate_milk_production <- function(milk_yield, assessment_duration, size, milking_fraction, milk_protein) {
+calculate_milk_production <- function(milk_yield, assessment_duration, size, milking_fraction, milk_protein,
+                                      milk_fat, Animal_short, lactose_lookup,
+                                      standard_protein,
+                                      standard_fat,
+                                      standard_lactose) {
+ 
+   # ---- Step 1: Calculate energy content of standard milk ----
+  energy_standard <- (0.0929 * standard_fat + 0.0547 * standard_protein + 0.0395 * standard_lactose)  # Mcal/kg (IDF 2022 / Bulletin of the IDF N°520/2022: The IDF global Carbon Footprint standard for the dairy sector / pag 82)
   
-  # Annual milk production 
+  # ---- Step 2: Get lactose content for the animal from the lookup table ----
+  lactose_row <- lactose_lookup[lactose_lookup$Animal_short == Animal_short, ]
+  
+  if (nrow(lactose_row) == 0) {
+    lactose <- standard_lactose
+  } else {
+    lactose <- lactose_row$Value/100
+  }
+  
+  # ---- Step 3: Calculate energy content of actual milk ----
+  energy_milk <- (0.0929 * milk_fat + 0.0547 * milk_protein + 0.0395 * standard_lactose)  # Mcal/kg (IDF 2022, pag82)
+  
+  # ---- Step 4: Calculate milk production ----
   milk_production <- milk_yield * assessment_duration * size * milking_fraction
   
-  # Annual milk protein production
+  # ---- Step 5: Calculate milk protein production ----
   milk_protein_production <- milk_production * milk_protein
+  
+  # ---- Step 6: Calculate FPCM ----
+  energy_ratio <- energy_milk / energy_standard
+  fpcm_production <- energy_ratio * milk_production
   
   # Return both as a data.frame or list
   return(data.frame(
     milk_production = milk_production,
-    milk_protein_production = milk_protein_production
+    milk_protein_production = milk_protein_production,
+    fpcm_production = fpcm_production
+    
   ))
 }
 
 
+
 # Fibre yield (this is needed also to use the data for energy requirements calculations)
 # Output: kg fibre/head/day
-calculate_fibre_yield_per_head <- function(dt, assessment_duration, fibre_cohorts = c("FA", "MA", "SA", "SM"), non_fibre_cohorts = c("FJ", "MJ")) {
+calculate_fibre_yield_per_head <- function(dt, assessment_duration, 
+                                           fibre_cohorts, 
+                                           non_fibre_cohorts,
+                                           merge_by) {
   
   # Step 1: Calculate total fibre-producing size per group
   fibre_cohort_size_per_group <- dt[cohort %in% fibre_cohorts,
@@ -28,7 +57,7 @@ calculate_fibre_yield_per_head <- function(dt, assessment_duration, fibre_cohort
   # Step 2: Merge with original table
   dt <- merge(dt,
               fibre_cohort_size_per_group,
-              by = c("ADM0_CODE", "Animal_short", "LPS_short", "HerdType_short"),
+              by = merge_by,
               all.x = TRUE)
   
   # Step 3: Replace fibre_prod with per-head values
