@@ -571,6 +571,9 @@ Dfunction_nelact = function(Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
       }
       ret <- ( ( 22.02*( ( (slaughter_weight - ckg)/2) / (cgro*slaughter_weight) )^0.75 * (slaughter_weight-ckg)^1.097) ) / slaughter_weight
 
+    } else if (Animal_short %in% c("CML")) {
+      ret  <- ( 41.8 * (slaughterLW - ckg) )/slaughterLW
+    
     } else if (Animal_short %in% c("SHP", "GTS")) {
       if (Animal_short == "SHP") {
         if (cohort %in% c("FA", "FS", "FJ")) {
