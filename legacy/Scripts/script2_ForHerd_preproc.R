@@ -5,9 +5,33 @@ source("legacy/Functions/00_Preprocessing_functions.R")
 wide_dt <- fread(
   system.file("extdata/GLEAM_input_preproc.csv", package = "gleam")
 )
+
+
 wide_camels_dt <- fread(
   system.file("extdata/Pre_processing/Camelids/camels_inputs.csv", package = "gleam")
 )
+
+# Rename MMS in camelds_dt to allign with the rest of the dataset
+mms_cols <- grep("^MMS", names(wide_camels_dt), value = TRUE)
+mms_cols_to_rename <- setdiff(mms_cols, "MMSKG")
+
+# Rename those columns to lowercase
+setnames(wide_camels_dt, old = mms_cols_to_rename, new = tolower(mms_cols_to_rename))
+
+
+setnames(wide_camels_dt, old = c(
+  "mmsbiogas",
+  "mmspastpadd"
+), new = c(
+  "mmsbiogashighleak1",
+  "mmspasture"
+))
+
+missing_cols <- setdiff(new_col_names, names(wide_camels_dt))
+
+
+
+# wide_dt re-naming and re-arrangement
 
 wide_dt[Animal_short == "PGS", c("AFC", "AFCM") := get.afc_pigs(AFKG=AFKG,AMKG=AMKG,DWG2=DWG2,WKG=WKG,WA=WA),by=.I]
 
@@ -90,29 +114,17 @@ col_rename_map <- c(
   MET_PROTEIN = "meat_protein",
   MLK_FAT = "milk_fat",
   MLK_PROTEIN = "milk_protein",
-  MLK_YIELD = "milk_yield",
-  MMSAEROBIC = "mmsaerobic",
-  MMSAERPROC = "mmsaerproc",
-  MMSBIOGAS = "mmsbiogas",
-  MMSBURNED = "mmsburned",
-  MMSCOMPOST = "mmscompost",
-  MMSCONFIN = "mmsconfin",
-  MMSDAILY = "mmsdaily",
-  MMSDEEPLITT = "mmsdeeplitt",
-  MMSDRYLOT = "mmsdrylot",
-  MMSLAGOON = "mmslagoon",
-  MMSLIQCRUST = "mmsliqcrust",
-  MMSLIQOTH = "mmsliqoth",
-  MMSLIQUID = "mmsliquid",
-  MMSLITTER = "mmslitter",
-  MMSNOLITTER = "mmsnolitter",
-  MMSPASTPADD = "mmspasture",
-  MMSPIT1 = "mmspit1",
-  MMSPIT2 = "mmspit2",
-  MMSSOLID = "mmssolid",
-  MMSTHERMAL = "mmsthermal"
+  MLK_YIELD = "milk_yield"
 )
 setnames(wide_dt, old = names(col_rename_map), new = unname(col_rename_map))
+
+
+
+
+
+
+
+
 
 # Reorder
 setcolorder(wide_dt, c(
