@@ -28,7 +28,7 @@ calculate_feed_emissions <- function(
     gleam_feedEF,
     trade_preferences = NULL,
     default_trade_option = "With Trade",
-    feed_id_col = "GLEAM3_name",
+    feed_id_col,
     country_code = "ADM0_CODE",
     by_merge
 ) {
