@@ -1,3 +1,11 @@
+# Load the parameters
+load_gleam_feedEF <- function(file_path, version) {
+  dt <- fread(file_path)                            
+  dt <- dt[GLEASTAT_version == version]             
+  dt[, ADM0_CODE := as.factor(ADM0_CODE)]           
+  return(dt)
+}
+
 # Dry Matter intake by feed-----
 # Output: kg DM/head/day per feed item
 calculate_intake_byfeed <- function(gleam_dmi, gleam_feedbasket, by_merge) {
