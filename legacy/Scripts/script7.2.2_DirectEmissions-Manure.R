@@ -1,6 +1,6 @@
-source("Functions/05.2.2_functions_directemissions-Manure.R")
-load_manure_parameters(input_path = "Inputs/Manure_parameters/", ipcc_methods = c("2006", "2019"))
-GLEAM_input_directemissions <- fread("Inputs/GLEAM_input_directemissions_manure2.csv")[, ADM0_CODE := as.factor(ADM0_CODE)][, Animal_short := as.factor(Animal_short)][, HerdType_short := as.factor(HerdType_short)]
+source("legacy/Functions/05.2.2_functions_directemissions-Manure.R")
+load_manure_parameters(input_path = "inst/extdata/Manure_parameters", ipcc_methods = c("2006", "2019"))
+GLEAM_input_directemissions <- fread("inst/extdata/GLEAM_input_directemissions_manure2.csv")[, ADM0_CODE := as.factor(ADM0_CODE)][, Animal_short := as.factor(Animal_short)][, HerdType_short := as.factor(HerdType_short)]
 
 
 

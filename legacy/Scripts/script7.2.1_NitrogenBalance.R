@@ -1,5 +1,5 @@
-GLEAM_input_directemissions <- fread("Inputs/GLEAM_input_directemissions_manure.csv")[, ADM0_CODE := as.character(ADM0_CODE)]
-source("Functions/05.2.1_functions_NitrogenBalance.R")
+GLEAM_input_directemissions <- fread("inst/extdata/GLEAM_input_directemissions_manure.csv")[, ADM0_CODE := as.character(ADM0_CODE)]
+source("legacy/Functions/05.2.1_functions_NitrogenBalance.R")
 
 
 ## N balance------
@@ -34,4 +34,4 @@ GLEAM_input_directemissions[, n_excretion :=
                               ]
 ]
 
-fwrite(GLEAM_input_directemissions, "Inputs/GLEAM_input_directemissions_manure2.csv")
+fwrite(GLEAM_input_directemissions, "inst/extdata/GLEAM_input_directemissions_manure2.csv")
