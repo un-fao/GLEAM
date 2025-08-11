@@ -4,7 +4,9 @@ library(data.table)
 ParameterALLNoCohorts <- fread(
   "your_data_directory/GLEAM_ENGINE/data_input/ParameterALLNoCohorts.csv"
 )[RegionClass=="Countries",]
+
 GLEAM_bulk <- fread("your_data_directory/GLEAM_ENGINE/data_input/GLEAMDataALL.csv")
+
 country_list <- fread(
   system.file("extdata/Pre_processing/GAULListUsedByGLEAM_GIUSY_20230316.csv", package = "gleam")
 )
@@ -65,6 +67,58 @@ abbr_LPS <- data.frame(LPS = sort(unique(wide_dt$LPS)),
                        LPS_short = c("BCK", "BRL", "GRS", "IND", "MED", "LYR", "MXD"))
 wide_dt <- merge(wide_dt, abbr_LPS, by = "LPS")
 
+
+# Renaming manure variables----
+mcf_country2019 <- fread("inst/extdata/Manure_parameters/manure_ch4_mcf_ipcc2019_bycountry.csv")[, ADM0_CODE := as.character(ADM0_CODE)][]
+
+# Identify columns starting with "MMS" except "MMSKG"
+mms_cols <- grep("^MMS", names(wide_dt), value = TRUE)
+mms_cols_to_rename <- setdiff(mms_cols, "MMSKG")
+
+# Rename those columns to lowercase
+setnames(wide_dt, old = mms_cols_to_rename, new = tolower(mms_cols_to_rename))
+
+
+col_names <- names(mcf_country2019)
+new_col_names <- tolower(gsub("^mcf", "mms", col_names))
+
+wide_dt[, mmsdeepnomix2 := fifelse(is.na(mmsconfin), 0, mmsconfin) +
+                              fifelse(is.na(mmsdeeplitt), 0, mmsdeeplitt)] 
+wide_dt[, c("mmsconfin", "mmsdeeplitt") := NULL]
+
+
+wide_dt[, mmsliquid6 :=
+                              fifelse(is.na(mmsliqoth), 0, mmsliqoth) +
+                              fifelse(is.na(mmsliquid), 0, mmsliquid)
+                            
+] 
+wide_dt[, c("mmsliqoth", "mmsliquid") := NULL]
+
+
+
+setnames(wide_dt, old = c(
+  "mmsliqcrust",
+  "mmspit2",
+  "mmsthermal",
+  "mmsbiogas",
+  "mmscompost",
+  "mmspastpadd"
+), new = c(
+  "mmsliquidnatcov6",
+  "mmspit6",
+  "mmssolidadd",
+  "mmsbiogashighleak1",
+  "mmscompostint",
+  "mmspasture"
+))
+
+
+missing_cols <- setdiff(new_col_names, names(wide_dt))
+
+# Add them with default value (e.g., 0 or NA)
+for (col in missing_cols) {
+  wide_dt[[col]] <- 0  # or NA_real_, depending on your needs
+}
 
 
 fwrite(wide_dt, system.file("extdata/GLEAM_input_preproc.csv", package = "gleam"))

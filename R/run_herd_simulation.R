@@ -46,8 +46,14 @@ run_herd_simulation <- function(
     herd_data,
     initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
     max_years = 100,
-    lambda_threshold = 1e-9
+    lambda_threshold = 1e-9,
+    show_indicator = TRUE
 ) {
+
+  # If the user wants feedback, show one persistent "please wait" message.
+  if (show_indicator) {
+    cli::cli_status("🕒 Running herd simulation, please wait…")
+  }
 
   # --- Step 1: Compute Core Demographic Parameters -----------------------------
 
@@ -353,6 +359,12 @@ run_herd_simulation <- function(
   )
 
   herd_final <- herd_merged[, !..cols_to_drop]
+
+  # Clear the spinner and leave a permanent success alert.
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Herd simulation complete.")
+  }
 
   return(herd_final)
 }

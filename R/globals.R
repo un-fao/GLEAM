@@ -36,7 +36,7 @@ utils::globalVariables(c(
   "size_end.FJ", "size_end.FS", "size_end.MA", "size_end.MJ", "size_end.MS",
   "size_total", "slaughter_weight", "structure.FA", "structure.FB", "structure.FJ",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
-  "variable", "wkg"
+  "variable", "wkg", "variable_name"
 ))
 
 utils::globalVariables(c(
