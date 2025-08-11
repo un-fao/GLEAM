@@ -5,23 +5,46 @@ source("legacy/Functions/00_Preprocessing_functions.R")
 wide_dt <- fread(
   system.file("extdata/GLEAM_input_preproc.csv", package = "gleam")
 )
+
+
 wide_camels_dt <- fread(
   system.file("extdata/Pre_processing/Camelids/camels_inputs.csv", package = "gleam")
 )
 
-wide_dt[,MOLT:= ifelse(MOLT<0.5, 0, 1)] #this should be a boolean variable, there's some error in the file
-wide_dt[,MALE:= ifelse(MALE<0.5, 0, 1)] #this should be a boolean variable, there's some error in the file
+wide_dt[, MOLT := ifelse(MOLT < 0.5, 0, 1)] #this should be a boolean variable, there's some error in the file
+wide_dt[, MALE := ifelse(MALE < 0.5, 0, 1)] #this should be a boolean variable, there's some error in the file
 
+# Rename MMS in camelds_dt to allign with the rest of the dataset
+mms_cols <- grep("^MMS", names(wide_camels_dt), value = TRUE)
+mms_cols_to_rename <- setdiff(mms_cols, "MMSKG")
+
+# Rename those columns to lowercase
+setnames(wide_camels_dt, old = mms_cols_to_rename, new = tolower(mms_cols_to_rename))
+
+
+setnames(wide_camels_dt, old = c(
+  "mmsbiogas",
+  "mmspastpadd"
+), new = c(
+  "mmsbiogashighleak1",
+  "mmspasture"
+))
+
+missing_cols <- setdiff(new_col_names, names(wide_camels_dt))
+
+
+
+# wide_dt re-naming and re-arrangement
 wide_dt[Animal_short == "PGS", c("AFC", "AFCM") := get.afc_pigs(AFKG=AFKG,AMKG=AMKG,DWG2=DWG2,WKG=WKG,WA=WA),by=.I]
 
-wide_dt[Animal_short == "CHK", c("LITSIZE") := 
+wide_dt[Animal_short == "CHK", c("LITSIZE") :=
           get.litsize_chk(LPS_short, AF_FRAC, CKG, M2SKG, DR1, DRL2, DR2, DRF, DRM, FRRF, FRMF, BCR,
-                          LAYTIME1, MOLTTIME, LAYTIME2, BIDLE, AFC, AFS, A2S, CYCLE, CLTSIZE, HATCH, EGGSYEAR, 
+                          LAYTIME1, MOLTTIME, LAYTIME2, BIDLE, AFC, AFS, A2S, CYCLE, CLTSIZE, HATCH, EGGSYEAR,
                           MALE, MOLT),by=.I]
 
 wide_dt[,c("offtake_rate.FJ", "offtake_rate.FS", "offtake_rate.FA", "offtake_rate.MJ", "offtake_rate.MS", "offtake_rate.MA") :=
           get.offtake_rate(Animal_short =  Animal_short, LPS_short = LPS_short, AFC = AFC, AFCM = AFCM, AFS = AFS, A2S = A2S, CKG =  CKG, WKG =  WKG, AFKG = AFKG, AMKG =  AMKG,
-                          M2SKG = M2SKG, MFSKG =  MFSKG, MMSKG =  MMSKG, AF1KG = AF1KG, AF2KG = AF2KG, AM2KG = AM2KG, 
+                          M2SKG = M2SKG, MFSKG =  MFSKG, MMSKG =  MMSKG, AF1KG = AF1KG, AF2KG = AF2KG, AM2KG = AM2KG,
                           DR1 =  DR1, DR1M =  DR1M, DR2 = DR2, DRL2 = DRL2, DRR2A =  DRR2A, DRR2B = DRR2B, DRF = DRF, DRM = DRM,
                           FR = FR, FRRF = FRRF, FRMF = FRMF, RRF = RRF, RRM =  RRM, WA = WA, BCR = BCR, DWG2 = DWG2,
                           LAYTIME1 = LAYTIME1, MOLTTIME = MOLTTIME, LAYTIME2 = LAYTIME2, CYCLE = CYCLE, CLTSIZE = CLTSIZE, HATCH = HATCH,
@@ -100,29 +123,17 @@ col_rename_map <- c(
   MET_PROTEIN = "meat_protein",
   MLK_FAT = "milk_fat",
   MLK_PROTEIN = "milk_protein",
-  MLK_YIELD = "milk_yield",
-  MMSAEROBIC = "mmsaerobic",
-  MMSAERPROC = "mmsaerproc",
-  MMSBIOGAS = "mmsbiogas",
-  MMSBURNED = "mmsburned",
-  MMSCOMPOST = "mmscompost",
-  MMSCONFIN = "mmsconfin",
-  MMSDAILY = "mmsdaily",
-  MMSDEEPLITT = "mmsdeeplitt",
-  MMSDRYLOT = "mmsdrylot",
-  MMSLAGOON = "mmslagoon",
-  MMSLIQCRUST = "mmsliqcrust",
-  MMSLIQOTH = "mmsliqoth",
-  MMSLIQUID = "mmsliquid",
-  MMSLITTER = "mmslitter",
-  MMSNOLITTER = "mmsnolitter",
-  MMSPASTPADD = "mmspasture",
-  MMSPIT1 = "mmspit1",
-  MMSPIT2 = "mmspit2",
-  MMSSOLID = "mmssolid",
-  MMSTHERMAL = "mmsthermal"
+  MLK_YIELD = "milk_yield"
 )
 setnames(wide_dt, old = names(col_rename_map), new = unname(col_rename_map))
+
+
+
+
+
+
+
+
 
 # Reorder
 setcolorder(wide_dt, c(
