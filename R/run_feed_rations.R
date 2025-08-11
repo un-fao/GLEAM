@@ -47,21 +47,9 @@ run_feed_rations <- function(rations_share, feed_params, input_feed) {
     N_content, dig_ruminants, dig_pigs, dig_chickens
   )]
 
-  # Average nutritional values across feed types
-  cols_to_average <- c(
-    "GE", "ME_ruminants", "ME_pigs", "ME_chickens",
-    "N_content", "dig_ruminants", "dig_pigs", "dig_chickens"
-  )
-
-  feed_params_summary <- feed_params_nutrients[
-    , lapply(.SD, function(x) mean(x, na.rm = TRUE)),
-    by = GLEAM3_name,
-    .SDcols = cols_to_average
-  ]
-
   # Merge ration shares with feed parameters
   rations_detailed <- merge(
-    rations_share, feed_params_summary,
+    rations_share, feed_params_nutrients,
     by = "GLEAM3_name", all.x = TRUE, allow.cartesian = TRUE
   )
 
