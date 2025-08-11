@@ -32,11 +32,12 @@
 #'   - cohort-level liveweights and weight gain
 #'
 #' @examples
+#' \dontrun{
 #' # Load example input from the package and run the simulation
 #' input_path <- system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
 #' herd_data <- data.table::fread(input_path)[1:20, ]
 #' sim_results <- run_herd_simulation(herd_data)
-#'
+#' }
 #' @keywords internal
 #'
 #' @importFrom data.table := .SD .I melt dcast setcolorder
@@ -53,6 +54,9 @@ run_herd_simulation <- function(
   if (show_indicator) {
     cli::cli_status("🕒 Running herd simulation, please wait…")
   }
+
+  # Capture the initial column names
+  base_cols <- names(data.table::copy(herd_data))
 
   # --- Step 1: Compute Core Demographic Parameters -----------------------------
 
@@ -223,11 +227,7 @@ run_herd_simulation <- function(
 
   # --- Step 4: Filter and Prepare Data for Reshaping -------------------------
 
-  # Define columns to keep
-  cols_all <- names(herd_data)
-  col_start <- which(cols_all == "LPS")
-  col_end <- which(cols_all == "fibre_prod")
-
+  # Explicit list of computed columns to keep in the final output
   extra_cols <- c(
     "share.FJ", "share.FS", "share.FA", "share.MJ", "share.MS", "share.MA",
     "growth_rate_pop", "size.FJ", "size.FS", "size.FA", "size.MJ", "size.MS", "size.MA",
@@ -235,7 +235,11 @@ run_herd_simulation <- function(
     "offtake_number.MJ", "offtake_number.MS", "offtake_number.MA"
   )
 
-  final_cols <- c(cols_all[col_start:col_end], extra_cols)
+  # Merge the original columns with the desired new ones
+  # intersect() ensures we keep only columns that actually exist in herd_data
+  final_cols <- intersect(unique(c(base_cols, extra_cols)), names(herd_data))
+
+  # Subset herd_data to keep only the intended columns
   herd_data <- herd_data[, ..final_cols]
 
   # Define ID and cohort-specific columns
