@@ -3,12 +3,12 @@ library(data.table)
 source("legacy/Functions/00_Preprocessing_functions.R")
 
 wide_dt <- fread(
-  system.file("extdata/GLEAM_input_preproc.csv", package = "gleam")
+  system.file("extdata/pre-processing-inputs/GLEAM_input_preproc.csv", package = "gleam")
 )
 
 
 wide_camels_dt <- fread(
-  system.file("extdata/Pre_processing/Camelids/camels_inputs.csv", package = "gleam")
+  system.file("extdata/pre-processing-inputs/Camelids/camels_inputs.csv", package = "gleam")
 )
 
 # Rename MMS in camelds_dt to allign with the rest of the dataset
