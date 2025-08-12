@@ -52,7 +52,7 @@ run_herd_simulation <- function(
 
   # If the user wants feedback, show one persistent "please wait" message.
   if (show_indicator) {
-    cli::cli_status("🕒 Running herd simulation, please wait…")
+    cli::cli_status("\U1F552 Running herd simulation, please wait\U2026")
   }
 
   # Capture the initial column names
