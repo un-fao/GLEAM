@@ -165,7 +165,7 @@ GLEAM_input_directemissions[, n_excretion := Dfunction_n_excretion(
 
 ## N2O from manure - direct ------
 ### EF3 - IPCC 2019------
-ef3_result <- Dfunction_ef3_manure(emissions_dt=GLEAM_input_directemissions, 
+ef3_result <- Dfunction_ef3_manure(emissions_dt=GLEAM_input_directemissions,
                                    ef3_dt=ef3_country2019)
 
 GLEAM_input_directemissions[, c("ef3_n2o_manure_pasture2019",
@@ -173,7 +173,7 @@ GLEAM_input_directemissions[, c("ef3_n2o_manure_pasture2019",
                                 "ef3_n2o_manure_other2019") := ef3_result]
 
 ### EF3 - IPCC 2006------
-ef3_result <- Dfunction_ef3_manure(emissions_dt=GLEAM_input_directemissions, 
+ef3_result <- Dfunction_ef3_manure(emissions_dt=GLEAM_input_directemissions,
                                    ef3_dt=ef3_country2006)
 
 GLEAM_input_directemissions[, c("ef3_n2o_manure_pasture2006",
@@ -188,7 +188,7 @@ GLEAM_input_directemissions[, c("direct_n2o_manure_burned2019",
                               Dfunction_direct_n2o_manure(
                                 ef3_pasture = ef3_n2o_manure_pasture2019,
                                 ef3_burned = ef3_n2o_manure_burned2019,
-                                ef3_other = ef3_n2o_manure_other2019,  
+                                ef3_other = ef3_n2o_manure_other2019,
                                 n_excretion = n_excretion
                               ), by = seq_len(nrow(GLEAM_input_directemissions))]
 
@@ -200,7 +200,7 @@ GLEAM_input_directemissions[, c("direct_n2o_manure_burned2006",
                               Dfunction_direct_n2o_manure(
                                 ef3_pasture = ef3_n2o_manure_pasture2006,
                                 ef3_burned = ef3_n2o_manure_burned2006,
-                                ef3_other = ef3_n2o_manure_other2006,  
+                                ef3_other = ef3_n2o_manure_other2006,
                                 n_excretion = n_excretion
                               ), by = seq_len(nrow(GLEAM_input_directemissions))]
 
@@ -229,7 +229,7 @@ GLEAM_input_directemissions[, c("n_vol_manure_burned2019",
                               Dfunction_n_volatilization_manure(
                                 fracgas_pasture = fracgas_n2o_manure_pasture2019,
                                 fracgas_burned = fracgas_n2o_manure_burned2019,
-                                fracgas_other = fracgas_n2o_manure_other2019,  
+                                fracgas_other = fracgas_n2o_manure_other2019,
                                 n_excretion = n_excretion
                               ), by = seq_len(nrow(GLEAM_input_directemissions))]
 
@@ -242,7 +242,7 @@ GLEAM_input_directemissions[, c("n_vol_manure_burned2006",
                               Dfunction_n_volatilization_manure(
                                 fracgas_pasture = fracgas_n2o_manure_pasture2006,
                                 fracgas_burned = fracgas_n2o_manure_burned2006,
-                                fracgas_other = fracgas_n2o_manure_other2006,  
+                                fracgas_other = fracgas_n2o_manure_other2006,
                                 n_excretion = n_excretion
                               ), by = seq_len(nrow(GLEAM_input_directemissions))]
 
@@ -288,7 +288,7 @@ GLEAM_input_directemissions[, c("n_leach_manure_burned2019",
                               Dfunction_n_leaching_manure(
                                 fracleach_pasture = fracleach_n2o_manure_pasture2019,
                                 fracleach_burned = fracleach_n2o_manure_burned2019,
-                                fracleach_other = fracleach_n2o_manure_other2019,  
+                                fracleach_other = fracleach_n2o_manure_other2019,
                                 n_excretion = n_excretion
                               ), by = seq_len(nrow(GLEAM_input_directemissions))]
 
@@ -300,7 +300,7 @@ GLEAM_input_directemissions[, c("n_leach_manure_burned2006",
                               Dfunction_n_leaching_manure(
                                 fracleach_pasture = fracleach_n2o_manure_pasture2006,
                                 fracleach_burned = fracleach_n2o_manure_burned2006,
-                                fracleach_other = fracleach_n2o_manure_other2006,  
+                                fracleach_other = fracleach_n2o_manure_other2006,
                                 n_excretion = n_excretion
                               ), by = seq_len(nrow(GLEAM_input_directemissions))]
 
@@ -351,8 +351,5 @@ GLEAM_input_directemissions$total_n2o_manure_pasture2006 <- GLEAM_input_directem
 GLEAM_input_directemissions$total_n2o_manure_other2006 <- GLEAM_input_directemissions$direct_n2o_manure_other2006 + GLEAM_input_directemissions$indirect_n2o_manure_other2006
 
 
-<<<<<<< HEAD
-fwrite(GLEAM_input_directemissions, "inst/extdata/GLEAM_input_feedemissions.csv")
-=======
-fwrite(GLEAM_input_directemissions, "inst/extdata/GLEAM_input_allocation.csv")
->>>>>>> fab3d5e2ec6d3cc5d9699f70b7a81ba48184f26b
+# fwrite(GLEAM_input_directemissions, "inst/extdata/GLEAM_input_feedemissions.csv")
+# fwrite(GLEAM_input_directemissions, "inst/extdata/GLEAM_input_allocation.csv")
