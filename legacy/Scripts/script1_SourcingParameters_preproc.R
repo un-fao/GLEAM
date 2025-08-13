@@ -123,7 +123,7 @@ for (col in missing_cols) {
   wide_dt[[col]] <- 0  # or NA_real_, depending on your needs
 }
 
-
-fwrite(wide_dt, system.file("extdata/pre-processing-inputs/GLEAM_input_preproc.csv", package = "gleam"))
-
-
+fwrite(
+  wide_dt,
+  system.file("extdata/pre-processing-inputs/GLEAM_input_preproc.csv", package = "gleam")
+)
