@@ -17,7 +17,7 @@
 #' \dontrun{
 #' # Load cleaned example input from the package and compute feed intake metrics
 #' feed_params <- data.table::fread(
-#'   system.file("extdata/Feed_parameters.csv", package = "gleam")
+#'   system.file("extdata/Feed_parameters/GLEAM_Feed_parameters.csv", package = "gleam")
 #' )
 #'
 #' rations_share <- data.table::fread(
