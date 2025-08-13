@@ -2,16 +2,17 @@ library(data.table)
 
 
 ParameterALLNoCohorts <- fread(
-  "your_data_directory/GLEAM_ENGINE/data_input/ParameterALLNoCohorts.csv"
-)[RegionClass=="Countries",]
+  system.file("extdata/pre-processing-inputs/ParameterALLNoCohorts.csv", package = "gleam")
+)[RegionClass == "Countries", ]
 
-GLEAM_bulk <- fread("your_data_directory/GLEAM_ENGINE/data_input/GLEAMDataALL.csv")
-
+GLEAM_bulk <- fread(
+  system.file("extdata/pre-processing-inputs/GLEAMDataALL.csv", package = "gleam")
+)
 country_list <- fread(
-  system.file("extdata/Pre_processing/GAULListUsedByGLEAM_GIUSY_20230316.csv", package = "gleam")
+  system.file("extdata/pre-processing-inputs/GAULListUsedByGLEAM_GIUSY_20230316.csv", package = "gleam")
 )
 past_man_frac_df <- fread(
-  system.file("extdata/Pre_processing/variables_calc/past_man_frac/faostat_pastmanfrac.csv", package = "gleam")
+  system.file("extdata/pre-processing-inputs/variables_calc/past_man_frac/faostat_pastmanfrac.csv", package = "gleam")
 )
 
 
@@ -69,7 +70,9 @@ wide_dt <- merge(wide_dt, abbr_LPS, by = "LPS")
 
 
 # Renaming manure variables----
-mcf_country2019 <- fread("inst/extdata/Manure_parameters/manure_ch4_mcf_ipcc2019_bycountry.csv")[, ADM0_CODE := as.character(ADM0_CODE)][]
+mcf_country2019 <- fread(
+  system.file("extdata/Manure_parameters/manure_ch4_mcf_ipcc2019_bycountry.csv", package = "gleam")
+)[, ADM0_CODE := as.character(ADM0_CODE)][]
 
 # Identify columns starting with "MMS" except "MMSKG"
 mms_cols <- grep("^MMS", names(wide_dt), value = TRUE)
@@ -83,15 +86,15 @@ col_names <- names(mcf_country2019)
 new_col_names <- tolower(gsub("^mcf", "mms", col_names))
 
 wide_dt[, mmsdeepnomix2 := fifelse(is.na(mmsconfin), 0, mmsconfin) +
-                              fifelse(is.na(mmsdeeplitt), 0, mmsdeeplitt)] 
+                              fifelse(is.na(mmsdeeplitt), 0, mmsdeeplitt)]
 wide_dt[, c("mmsconfin", "mmsdeeplitt") := NULL]
 
 
 wide_dt[, mmsliquid6 :=
                               fifelse(is.na(mmsliqoth), 0, mmsliqoth) +
                               fifelse(is.na(mmsliquid), 0, mmsliquid)
-                            
-] 
+
+]
 wide_dt[, c("mmsliqoth", "mmsliquid") := NULL]
 
 
@@ -120,7 +123,7 @@ for (col in missing_cols) {
   wide_dt[[col]] <- 0  # or NA_real_, depending on your needs
 }
 
-
-fwrite(wide_dt, system.file("extdata/GLEAM_input_preproc.csv", package = "gleam"))
-
-
+fwrite(
+  wide_dt,
+  system.file("extdata/pre-processing-inputs/GLEAM_input_preproc.csv", package = "gleam")
+)
