@@ -8,7 +8,8 @@ run_herd_simulation(
   herd_data,
   initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
   max_years = 100,
-  lambda_threshold = 1e-09
+  lambda_threshold = 1e-09,
+  show_indicator = TRUE
 )
 }
 \arguments{
@@ -52,10 +53,11 @@ load it using \code{\link[=system.file]{system.file()}} and \code{\link[=fread]{
 This function is intended for internal use.
 }
 \examples{
+\dontrun{
 # Load example input from the package and run the simulation
 input_path <- system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
 herd_data <- data.table::fread(input_path)[1:20, ]
 sim_results <- run_herd_simulation(herd_data)
-
+}
 }
 \keyword{internal}
