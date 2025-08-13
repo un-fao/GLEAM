@@ -1,15 +1,13 @@
-library(readxl)
-#inputs---
+
+# Inputs---
 camels_rations <- fread(
-  system.file("extdata/Pre_processing/Camelids/camels_rations.csv", package = "gleam")
+  system.file("extdata/pre-processing-inputs/Camelids/camels_rations.csv", package = "gleam")
 )
 rations <- fread(file.path(
-  system.file("extdata/Pre_processing/GLEAM_input_feed_GLEAM3_rations.csv", package = "gleam")
+  system.file("extdata/pre-processing-inputs/GLEAM_input_feed_GLEAM3_rations.csv", package = "gleam")
 ))
-rations <- rbind(camels_rations, rations, fill = TRUE)
 
-country_income_class <- read_excel("~/Library/CloudStorage/OneDrive-FoodandAgricultureOrganization/GLEAM scripts and codes/Working scripts/GLEAM-X/Inputs/Pre_processing/WorldBank_income_CLASS_2025_07_02.xlsx")
-country_income_class<-as.data.table(country_income_class)
+rations <- rbind(camels_rations, rations, fill = TRUE)
 
 
 # preparing the feed basket composition dataframe-----
@@ -23,12 +21,10 @@ rations_share <- rations[rations$variable == "Share", ]
 rations_share <- rations_share[, .(cohort = cohort_levels), by = .(ADM0_CODE, ISO3, COUNTRY, Animal, HerdType, LPS, GLEAM3_name, variable, value, Unit)]
 
 # assign to juveniles cohort the value of 0 - assumed to be milk-fed
-rations_share[Animal %in% c("Buffalo", "Cattle", "Camels", "Sheep", "Goats",
-                            "Pigs") &
-                            cohort %in% c("FJ", "MJ"), value := 0]
+rations_share[cohort %in% c("FJ", "MJ"), value := 0]
 
 #create a new GLEAM3_name feed called milk - assign 100% to juveniles and 0 to the rest of the cohorts
-milk_entries <- unique(rations_share[ Animal != "Chicken", .(ADM0_CODE, ISO3, COUNTRY, Animal, HerdType, LPS, cohort, variable, Unit)])
+milk_entries <- unique(rations_share[, .(ADM0_CODE, ISO3, COUNTRY, Animal, HerdType, LPS, cohort, variable, Unit)])
 
 milk_entries[Animal=="Buffalo", GLEAM3_name := "Raw milk of buffalo"]
 milk_entries[Animal=="Cattle", GLEAM3_name := "Raw milk of cattle"]
@@ -38,103 +34,26 @@ milk_entries[Animal=="Goats", GLEAM3_name := "Raw milk of goats"]
 milk_entries[Animal=="Pigs", GLEAM3_name := "Raw milk of pig"]
 milk_entries[, value := fifelse(cohort %in% c("FJ", "MJ"), 1, 0)]
 
-
-
 # combine with the original data
 rations_share <- rbind(rations_share, milk_entries, fill = TRUE)
 
+# Harmonize GLEAM3_name
+rations_share[GLEAM3_name %in% c("CORN", "MAIZEN", "MAIZES", "CMAIZE"), GLEAM3_name := "MAIZE"]
+rations_share[GLEAM3_name %in% c("WHEATN", "WHEATS", "CWHEAT"), GLEAM3_name := "WHEAT"]
+rations_share[GLEAM3_name %in% c("CBARLEY"), GLEAM3_name := "BARLEY"]
+rations_share[GLEAM3_name %in% c("CMLOILSDS"), GLEAM3_name := "MLOILSDS"]
+rations_share[GLEAM3_name %in% c("CMLSOY"), GLEAM3_name := "MLSOY"]
+rations_share[GLEAM3_name %in% c("CSORGHUM"), GLEAM3_name := "SORGHUM"]
+rations_share[GLEAM3_name %in% c("CSOY"), GLEAM3_name := "SOY"]
+rations_share[GLEAM3_name %in% c("CCASSAVA"), GLEAM3_name := "CASSAVA"]
+rations_share[GLEAM3_name %in% c("CGRNBYDRY"), GLEAM3_name := "GRNBYDRY"]
+rations_share[GLEAM3_name %in% c("CPULSES"), GLEAM3_name := "PULSES"]
+rations_share[GLEAM3_name %in% c("CMLCTTN"), GLEAM3_name := "MLCTTN"]
+rations_share[GLEAM3_name %in% c("CMILLET"), GLEAM3_name := "MILLET"]
+rations_share[GLEAM3_name %in% c("CRICE"), GLEAM3_name := "RICE"]
+rations_share[GLEAM3_name %in% c("LIME"), GLEAM3_name := "LIMESTONE"]
 
-# Harmonizing the feed GLEAM3_names names with the ones of feed EF
-rations_share[, GLEAM3_name := fcase(
-  GLEAM3_name == "GRAINSIL", "FDDRSIL",
-  GLEAM3_name %in% c("MAIZEN", "MAIZES", "CMAIZE", "CORN"), "MAIZE",
-  GLEAM3_name %in% c("CWHEAT", "WHEATS", "WHEATN"), "WHEAT",
-  GLEAM3_name == "CBARLEY", "BARLEY",
-  GLEAM3_name == "CMLOILSDS", "MLOILSDS",
-  GLEAM3_name=="CGRNBYDRY", "GRNBYDRY",
-  GLEAM3_name == "CMLSOY", "MLSOY",
-  GLEAM3_name == "LIME", "LIMESTONE",
-  GLEAM3_name == "CSORGHUM", "SORGHUM",
-  GLEAM3_name == "CSOY", "SOY",
-  GLEAM3_name == "CCASSAVA", "CASSAVA",
-  GLEAM3_name == "CPULSES", "PULSES",
-  GLEAM3_name == "SOY OIL", "SOYOIL",
-  GLEAM3_name == "CMLCTTN", "MLCTTN",
-  GLEAM3_name == "CMILLET", "MILLET",
-  GLEAM3_name == "CRICE", "RICE",
-  default = GLEAM3_name  # keep unchanged if no match
-)]
-
-
-# Assigning GRASSF/GRASSH_cultivated to high income economies (from World Bank classification: https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups)
-gleam_feedbasket <- merge(
-  rations_share,
-  country_income_class[, .(Economy, Code, `Income group`)],
-  by.x = "ISO3",
-  by.y = "Code",
-  all.x = TRUE
-)
-
-
-# Assuming DMI is a data.table
-gleam_feedbasket[GLEAM3_name %in% c("GRASSH", "GRASSH2") & `Income group` == "High income", GLEAM3_name := "GRASSH_cultivated"]
-gleam_feedbasket[GLEAM3_name %in% c("GRASSH", "GRASSH2") & (`Income group` != "High income" | is.na(`Income group`)), 
-                 GLEAM3_name := "GRASSH_uncultivated"]
-
-gleam_feedbasket[GLEAM3_name == "GRASSLEGH" & `Income group` == "High income", GLEAM3_name := "GRASSLEGH_cultivated"]
-gleam_feedbasket[GLEAM3_name == "GRASSLEGH" & (`Income group` != "High income" | is.na(`Income group`)), 
-                 GLEAM3_name := "GRASSLEGH_uncultivated"]
-
-gleam_feedbasket[GLEAM3_name == "GRASSF" & `Income group` == "High income", GLEAM3_name := "GRASSF_cultivated"]
-gleam_feedbasket[GLEAM3_name == "GRASSF" & (`Income group` != "High income" | is.na(`Income group`)), 
-                 GLEAM3_name := "GRASSF_uncultivated"]
-
-gleam_feedbasket[GLEAM3_name == "GRASSLEGF" & `Income group` == "High income", GLEAM3_name := "GRASSLEGF_cultivated"]
-gleam_feedbasket[GLEAM3_name == "GRASSLEGF" & (`Income group` != "High income" | is.na(`Income group`)), 
-                 GLEAM3_name := "GRASSLEGF_uncultivated"]
-
-
-gleam_feedbasket <- gleam_feedbasket[
-  , .(value = sum(value, na.rm = TRUE)),
-  by = c("ADM0_CODE", "ISO3", "Animal", "LPS", "HerdType", "variable", "Unit", "cohort", "GLEAM3_name", "COUNTRY")
-]
-
-gleam_feedbasket[, `:=`(
-  Animal_short = fcase(
-    Animal == "Camels", "CML",
-    Animal == "Sheep", "SHP",
-    Animal == "Cattle", "CTL",
-    Animal == "Buffalo", "BFL",
-    Animal == "Chicken", "CHK",
-    Animal == "Pigs", "PGS",
-    Animal == "Goats", "GTS",
-    default = NA_character_
-  ),
-  LPS_short = fcase(
-    LPS == "Grassland", "GRS",
-    LPS == "Mixed", "MXD",
-    LPS == "ALL", "ALL",
-    LPS == "Backyard", "BCK",
-    LPS == "Broiler", "BRL",
-    LPS == "Layer", "LYR",
-    LPS == "Industrial", "IND",
-    LPS == "Intermediate", "MED",
-    LPS == "Feedlots", "FED",
-    default = NA_character_
-  ),
-  HerdType_short = fcase(
-    HerdType == "Beef", "BEF",
-    HerdType == "Dairy", "DRY",
-    HerdType == "ALL", "ALL",
-    HerdType == "Pigs", "PGS",
-    HerdType == "Chicken", "CHK",
-    default = NA_character_
-  )
-)]
-
-
-gleam_feedbasket[is.na(value), value := 0]
 
 fwrite(
-  gleam_feedbasket, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
+  rations_share, system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
 )
