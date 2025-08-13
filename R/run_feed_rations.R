@@ -4,7 +4,7 @@
 #' from feed rations and nutritional parameters. Assumes inputs are pre-cleaned.
 #'
 #' @param rations_share A data.table containing feed shares per cohort. Must include:
-#'   - `Animal`, `Item_Name`, `COUNTRY`, `ADM0_CODE`, `HerdType`, `LPS`, `cohort`, and `value`.
+#'   - `Animal`, `Animal_short`, `Item_Name`, `ADM0_CODE`, `HerdType`, `LPS`, `cohort`, and `value`.
 #' @param feed_params A data.table of nutrient parameters. Must include:
 #'   - `Item_Name`, `GE`, `DE_ruminants`, `DE_pigs`, `ME_ruminants`, `ME_pigs`, `ME_chickens`, `N_content`.
 #' @param input_feed A data.table of cohort-level baseline GLEAM data. Must include:
