@@ -53,8 +53,6 @@ run_feed_rations <- function(rations_share, feed_params, input_feed) {
     by = "Item_Name", all.x = TRUE, allow.cartesian = TRUE
   )
 
-  rations_detailed <- merge(rations_detailed, abbr_animals, by = "Animal", all.x = TRUE)
-
   # Calculate cohort feed contributions: GE, ME, digestibility, nitrogen
   rations_detailed[, `:=`(
     diet_ge = value * GE,
