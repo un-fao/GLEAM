@@ -19,9 +19,11 @@ compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
   validate_fecundity_inputs(part_rate, prolif_rate, fem_birth_ratio)
 
   # Calculate fecundity rates
-  list(
-    fem_fec = prolif_rate * fem_birth_ratio * (part_rate / 365),
-    mal_fec = prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
+  return(
+    list(
+      fem_fec = prolif_rate * fem_birth_ratio * (part_rate / 365),
+      mal_fec = prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
+    )
   )
 }
 
@@ -47,6 +49,15 @@ compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
 #' @export
 compute_transition_probabilities <- function(duration, offtake_rate, death_rate) {
   validate_transition_inputs(duration, offtake_rate, death_rate)
+
+  # Prevent 0/0 in downstream hazard math by ensuring each cohort has at least
+  # one non-zero rate. We choose to bump death_rate, leaving offtake_rate at 0.
+  EPSILON <- 1e-12
+  zero_hazard <- offtake_rate == 0 & death_rate == 0
+  if (any(zero_hazard)) {
+    # bump death_rate for those cohorts
+    death_rate[zero_hazard] <- EPSILON
+  }
 
   # --- Part 1: Compute values for 6 core sex-age classes ---
 
@@ -115,13 +126,15 @@ compute_transition_probabilities <- function(duration, offtake_rate, death_rate)
     c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
   names(hazard_death) <- names(hazard_offtake) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
-  list(
-    hazard_death = hazard_death,
-    hazard_offtake = hazard_offtake,
-    prob_death = prob_death,
-    prob_offtake = prob_offtake,
-    prob_survival = prob_survival,
-    prob_growth = prob_growth
+  return(
+    list(
+      hazard_death = hazard_death,
+      hazard_offtake = hazard_offtake,
+      prob_death = prob_death,
+      prob_offtake = prob_offtake,
+      prob_survival = prob_survival,
+      prob_growth = prob_growth
+    )
   )
 }
 
@@ -275,11 +288,13 @@ simulate_steady_state_structure <- function(
   growth_rate_pop <- (fem_juv_fec[days_steady] / fem_juv_fec[days_steady - 1])^365 - 1
 
   # Return output
-  list(
-    days_steady = days_steady,
-    structure = structure,
-    share = share,
-    growth_rate_pop = growth_rate_pop
+  return(
+    list(
+      days_steady = days_steady,
+      structure = structure,
+      share = share,
+      growth_rate_pop = growth_rate_pop
+    )
   )
 }
 
@@ -433,12 +448,14 @@ project_population_size <- function(
   )
 
   # Prepare output
-  list(
-    size = size,
-    size_end = size_end,
-    size_end_exact = size_end_exact,
-    size_avg = size_avg,
-    offtake = offtake
+  return(
+    list(
+      size = size,
+      size_end = size_end,
+      size_end_exact = size_end_exact,
+      size_avg = size_avg,
+      offtake = offtake
+    )
   )
 }
 
@@ -499,14 +516,16 @@ summarise_offtake <- function(size, size_end, size_avg, offtake) {
     names(offtake_sv_share_avg) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
   # Prepare output
-  list(
-    stock_variation = stock_variation,
-    offtake_number = offtake_number,
-    offtake_share = offtake_share,
-    offtake_share_avg = offtake_share_avg,
-    offtake_sv_number = offtake_sv_number,
-    offtake_sv_share = offtake_sv_share,
-    offtake_sv_share_avg = offtake_sv_share_avg
+  return(
+    list(
+      stock_variation = stock_variation,
+      offtake_number = offtake_number,
+      offtake_share = offtake_share,
+      offtake_share_avg = offtake_share_avg,
+      offtake_sv_number = offtake_sv_number,
+      offtake_sv_share = offtake_sv_share,
+      offtake_sv_share_avg = offtake_sv_share_avg
+    )
   )
 }
 
@@ -587,10 +606,12 @@ calc_cohort_weights <- function(
     initial_weight <- potential_final_weight <- slaughter_weight <- adult_mal_weight
   }
 
-  list(
-    initial_weight = initial_weight,
-    potential_final_weight = potential_final_weight,
-    slaughter_weight = slaughter_weight
+  return(
+    list(
+      initial_weight = initial_weight,
+      potential_final_weight = potential_final_weight,
+      slaughter_weight = slaughter_weight
+    )
   )
 }
 
@@ -627,9 +648,11 @@ calc_avg_weights <- function(
   # Average weight across the stage
   average_weight <- (initial_weight + final_weight) / 2
 
-  list(
-    average_weight = average_weight,
-    final_weight = final_weight
+  return(
+    list(
+      average_weight = average_weight,
+      final_weight = final_weight
+    )
   )
 }
 
@@ -649,5 +672,7 @@ calc_daily_weight_gain <- function(potential_final_weight, initial_weight, durat
   validate_daily_gain_inputs(potential_final_weight, initial_weight, duration)
 
   # Average daily gain over the period
-  (potential_final_weight - initial_weight) / duration
+  return(
+    (potential_final_weight - initial_weight) / duration
+  )
 }
