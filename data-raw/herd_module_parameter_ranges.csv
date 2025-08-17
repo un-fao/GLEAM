@@ -1,8 +1,8 @@
 variable_name,lower_bound,lower_inclusive,upper_bound,upper_inclusive
-death_rate,0,TRUE,1,FALSE
+mort_rate,0,TRUE,1,FALSE
 offtake_rate,-2,TRUE,1,TRUE
 duration,1,TRUE,5000,TRUE
-fem_birth_ratio,0,TRUE,1,TRUE
-prolif_rate,0.01,TRUE,25,TRUE
-part_rate,0.01,TRUE,3,TRUE
+fem_birth_fraction,0,TRUE,1,TRUE
+litsize,0.01,TRUE,25,TRUE
+parturition_rate,0.01,TRUE,3,TRUE
 size_total,1,TRUE,Inf,TRUE

@@ -2,9 +2,9 @@
 #'
 #' Calculates the daily number of male and female offspring produced per adult female.
 #'
-#' @param part_rate Numeric. Parturition rate (probability of an adult female to give birth).
-#' @param prolif_rate Numeric. Prolificacy rate (mean number of offspring per parturition).
-#' @param fem_birth_ratio Numeric. Female birth ratio (probability that an offspring is female).
+#' @param parturition_rate Numeric. Parturition rate (probability of an adult female to give birth).
+#' @param litsize Numeric. Prolificacy rate (mean number of offspring per parturition).
+#' @param fem_birth_fraction Numeric. Female birth ratio (probability that an offspring is female).
 #'
 #' @return A named list with two elements:
 #' \describe{
@@ -12,17 +12,17 @@
 #'   \item{mal_fec}{Daily number of male offspring per adult female.}
 #' }
 #' @examples
-#' compute_fecundity_rates(part_rate = 0.8, prolif_rate = 2, fem_birth_ratio = 0.5)
+#' compute_fecundity_rates(parturition_rate = 0.8, litsize = 2, fem_birth_fraction = 0.5)
 #'
 #' @export
-compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
-  validate_fecundity_inputs(part_rate, prolif_rate, fem_birth_ratio)
+compute_fecundity_rates <- function(parturition_rate, litsize, fem_birth_fraction) {
+  validate_fecundity_inputs(parturition_rate, litsize, fem_birth_fraction)
 
   # Calculate fecundity rates
   return(
     list(
-      fem_fec = prolif_rate * fem_birth_ratio * (part_rate / 365),
-      mal_fec = prolif_rate * (1 - fem_birth_ratio) * (part_rate / 365)
+      fem_fec = litsize * fem_birth_fraction * (parturition_rate / 365),
+      mal_fec = litsize * (1 - fem_birth_fraction) * (parturition_rate / 365)
     )
   )
 }
@@ -34,7 +34,7 @@ compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
 #'
 #' @param duration Numeric vector of length 6. Duration (in days) of each sex-age class.
 #' @param offtake_rate Numeric vector of length 6. Annual offtake rate for each sex-age class.
-#' @param death_rate Numeric vector of length 6. Annual death rate for each sex-age class.
+#' @param mort_rate Numeric vector of length 6. Annual death rate for each sex-age class.
 #'
 #' @return A named list with:
 #' \describe{
@@ -47,23 +47,23 @@ compute_fecundity_rates <- function(part_rate, prolif_rate, fem_birth_ratio) {
 #' }
 #'
 #' @export
-compute_transition_probabilities <- function(duration, offtake_rate, death_rate) {
-  validate_transition_inputs(duration, offtake_rate, death_rate)
+compute_transition_probabilities <- function(duration, offtake_rate, mort_rate) {
+  validate_transition_inputs(duration, offtake_rate, mort_rate)
 
   # Prevent 0/0 in downstream hazard math by ensuring each cohort has at least
-  # one non-zero rate. We choose to bump death_rate, leaving offtake_rate at 0.
+  # one non-zero rate. We choose to bump mort_rate, leaving offtake_rate at 0.
   EPSILON <- 1e-12
-  zero_hazard <- offtake_rate == 0 & death_rate == 0
+  zero_hazard <- offtake_rate == 0 & mort_rate == 0
   if (any(zero_hazard)) {
-    # bump death_rate for those cohorts
-    death_rate[zero_hazard] <- EPSILON
+    # bump mort_rate for those cohorts
+    mort_rate[zero_hazard] <- EPSILON
   }
 
   # --- Part 1: Compute values for 6 core sex-age classes ---
 
   # Instantaneous mortality hazard rate (hazard_death), adjusted by duration
   hazard_death <- ifelse(
-    duration < 365, -log(1 - death_rate) / duration, -log(1 - death_rate) / 365
+    duration < 365, -log(1 - mort_rate) / duration, -log(1 - mort_rate) / 365
   )
 
   # Adjusted duration: keep original if <365, otherwise cap at 365
