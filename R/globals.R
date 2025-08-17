@@ -36,5 +36,21 @@ utils::globalVariables(c(
   "size_end.FJ", "size_end.FS", "size_end.MA", "size_end.MJ", "size_end.MS",
   "size_total", "slaughter_weight", "structure.FA", "structure.FB", "structure.FJ",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
-  "variable", "wkg"
+  "variable", "wkg", "variable_name"
 ))
+
+utils::globalVariables(c(
+  # Columns used in run_feed_rations
+  "DE_pigs", "DE_ruminants", "GE", "GLEAM3_name", "HerdType", "LPS",
+  "ME_chickens", "ME_pigs", "ME_ruminants", "N_content",
+  "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
+  "dig_chickens", "dig_pigs", "dig_ruminants", "value",
+  # Variables used with .. for validation
+  "..numeric_cols_feed", "..numeric_cols_rations"
+))
+
+# Add species abbreviations
+abbr_animals <- data.table(
+  Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
+  Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
+)
