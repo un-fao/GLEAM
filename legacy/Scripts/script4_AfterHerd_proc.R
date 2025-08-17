@@ -131,6 +131,4 @@ herd_final <- herd_merged[, !..cols_to_drop]
 # Optional: assign final object
 GLEAM_input_feed_preproc <- herd_final
 
-
-
-fwrite(GLEAM_input_feed_preproc, system.file("extdata/GLEAM_input_feed.csv", package = "gleam"))
+fwrite(GLEAM_input_feed_preproc, "inst/extdata/GLEAM_input_production.csv")
