@@ -62,9 +62,9 @@ run_herd_simulation <- function(
 
   # Compute fecundity rates
   herd_data[, c("fem_fec", "mal_fec") := compute_fecundity_rates(
-    part_rate = parturition_rate,
-    prolif_rate = litsize,
-    fem_birth_ratio = female_birth_fraction
+    parturition_rate = parturition_rate,
+    litsize = litsize,
+    fem_birth_fraction = female_birth_fraction
   ), by = seq_len(nrow(herd_data))]
 
   # Compute transition probabilities
@@ -74,7 +74,7 @@ run_herd_simulation <- function(
                    MJ = duration.MJ, MS = duration.MS, MA = duration.MA),
       offtake_rate = c(FJ = offtake_rate.FJ, FS = offtake_rate.FS, FA = offtake_rate.FA,
                        MJ = offtake_rate.MJ, MS = offtake_rate.MS, MA = offtake_rate.MA),
-      death_rate = c(FJ = mort_rate.FJ, FS = mort_rate.FS, FA = mort_rate.FA,
+      mort_rate = c(FJ = mort_rate.FJ, FS = mort_rate.FS, FA = mort_rate.FA,
                      MJ = mort_rate.MJ, MS = mort_rate.MS, MA = mort_rate.MA)
     ))
   ))
@@ -86,7 +86,7 @@ run_herd_simulation <- function(
                    MJ = duration.MJ, MS = duration.MS, MA = duration.MA),
       offtake_rate = c(FJ = offtake_rate.FJ, FS = offtake_rate.FS, FA = offtake_rate.FA,
                        MJ = offtake_rate.MJ, MS = offtake_rate.MS, MA = offtake_rate.MA),
-      death_rate = c(FJ = mort_rate.FJ, FS = mort_rate.FS, FA = mort_rate.FA,
+      mort_rate = c(FJ = mort_rate.FJ, FS = mort_rate.FS, FA = mort_rate.FA,
                      MJ = mort_rate.MJ, MS = mort_rate.MS, MA = mort_rate.MA)
     )
   )), by = seq_len(nrow(herd_data))]
