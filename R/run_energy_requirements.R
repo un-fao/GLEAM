@@ -6,14 +6,13 @@
 #'
 #' It adds columns for net energy for maintenance (nemain), activity (neact), growth (negrow),
 #' lactation (nelact), work (nework), fibre production (nefibre), pregnancy (nepreg), diet net energy
-#' fractions (rem, reg), total metabolizable energy requirement (getot), embedded meat energy (nemeat),
-#' and dry matter intake (dmi).
+#' fractions (rem, reg), total metabolizable energy requirement (getot) and dry matter intake (dmi).
 #'
 #' @param data A `data.table` or `data.frame` containing all required columns for energy requirements
 #'   (see core model functions documentation for required fields).
 #'
 #' @return The input data with new columns: nemain, neact, negrow, nelact, nework,
-#' nefibre, nepreg, rem, reg, getot, nemeat, dmi.
+#' nefibre, nepreg, rem, reg, getot, dmi.
 #'
 #' @examples
 #' \dontrun{
@@ -156,16 +155,7 @@ run_energy_requirements <- function(data) {
     afc = afc
   ), by = .I]
 
-  # 11. Embedded meat energy (MJ/head)
-  data[, nemeat := calc_net_energy_meat(
-    animal = Animal_short,
-    cohort = cohort,
-    ckg = ckg, afc = afc,
-    slaughter_weight = slaughter_weight,
-    initial_weight = initial_weight
-  ), by = .I]
-
-  # 12. Dry matter intake (kg DM/day)
+  # 11. Dry matter intake (kg DM/day)
   data[, dmi := calc_dry_matter_intake(
     animal = Animal_short,
     total_energy = getot,

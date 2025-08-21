@@ -428,47 +428,6 @@ test_that("calc_total_energy_requirement handles different species", {
   expect_equal(result, expected)
 })
 
-# ---- test calc_net_energy_meat ----
-test_that("calc_net_energy_meat returns correct values for cattle", {
-  result <- calc_net_energy_meat(
-    animal = "CTL", cohort = "FJ",
-    ckg = 35, afc = 730, slaughter_weight = 300, initial_weight = 200
-  )
-  expected <- (22.02 * (((300 - 35) / 2) / (0.8 * 300))^0.75 * (300 - 35)^1.097) / 300
-  expect_equal(result, expected)
-
-  result <- calc_net_energy_meat(
-    animal = "CTL", cohort = "MJ",
-    ckg = 35, afc = 730, slaughter_weight = 350, initial_weight = 250
-  )
-  expected <- (22.02 * (((350 - 35) / 2) / (1 * 350))^0.75 * (350 - 35)^1.097) / 350
-  expect_equal(result, expected)
-})
-
-test_that("calc_net_energy_meat handles sheep and goats", {
-  result <- calc_net_energy_meat(
-    animal = "SHP", cohort = "FJ",
-    ckg = 4, afc = 400, slaughter_weight = 45, initial_weight = 30
-  )
-  expected <- ((45 - 4) * (2.1 + 0.5 * 0.45 * (4 + 45))) / 45
-  expect_equal(result, expected)
-
-  result <- calc_net_energy_meat(
-    animal = "GTS", cohort = "MJ",
-    ckg = 3, afc = 365, slaughter_weight = 35, initial_weight = 25
-  )
-  expected <- ((35 - 3) * (5 + 0.5 * 0.33 * (3 + 35))) / 35
-  expect_equal(result, expected)
-})
-
-test_that("calc_net_energy_meat returns NA for pigs", {
-  result <- calc_net_energy_meat(
-    animal = "PGS", cohort = "FJ",
-    ckg = 1.5, afc = 365, slaughter_weight = 100, initial_weight = 80
-  )
-  expect_true(is.na(result))
-})
-
 # ---- test calc_dry_matter_intake ----
 test_that("calc_dry_matter_intake uses gross energy for ruminants", {
   result <- calc_dry_matter_intake(

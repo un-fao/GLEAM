@@ -318,29 +318,6 @@ validate_total_energy_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_net_energy_meat
-#'
-#' @noRd
-validate_meat_inputs <- function(
-    animal,
-    cohort,
-    ckg,
-    afc,
-    slaughter_weight,
-    initial_weight
-) {
-  validate_animal_species(animal)
-  validate_cohort_code(cohort)
-  validate_positive_numeric(ckg, "ckg")
-  validate_positive_numeric(slaughter_weight, "slaughter_weight")
-  validate_positive_numeric(initial_weight, "initial_weight")
-
-  # Validate afc for sheep and goats
-  if (animal %in% c("SHP", "GTS")) {
-    if (!is.na(afc)) validate_positive_numeric(afc, "afc")
-  }
-}
-
 #' Validate inputs for calc_dry_matter_intake
 #'
 #' @noRd

@@ -12,7 +12,7 @@ run_energy_requirements(data)
 }
 \value{
 The input data with new columns: nemain, neact, negrow, nelact, nework,
-nefibre, nepreg, rem, reg, getot, nemeat, dmi.
+nefibre, nepreg, rem, reg, getot, dmi.
 }
 \description{
 Computes energy requirements and dry matter intake (DMI) for each row of input data
@@ -22,8 +22,7 @@ and does not perform any file I/O.
 \details{
 It adds columns for net energy for maintenance (nemain), activity (neact), growth (negrow),
 lactation (nelact), work (nework), fibre production (nefibre), pregnancy (nepreg), diet net energy
-fractions (rem, reg), total metabolizable energy requirement (getot), embedded meat energy (nemeat),
-and dry matter intake (dmi).
+fractions (rem, reg), total metabolizable energy requirement (getot) and dry matter intake (dmi).
 }
 \examples{
 \dontrun{

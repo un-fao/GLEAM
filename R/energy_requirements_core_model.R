@@ -574,60 +574,6 @@ calc_total_energy_requirement <- function(
   return(ret)
 }
 
-#' Calculate Net Energy for Meat Production
-#'
-#' Computes the energy requirement for meat production (MJ/head).
-#'
-#' @param animal Character. Species code.
-#' @param cohort Character. Cohort code.
-#' @param ckg Numeric. Birth weight (kg).
-#' @param afc Numeric. Age at first calving (for SHP, GTS).
-#' @param slaughter_weight Numeric. Slaughter weight (kg).
-#' @param initial_weight Numeric. Initial live weight (kg).
-#'
-#' @return Numeric. Net energy for meat production (MJ/head).
-#' @export
-calc_net_energy_meat <- function(
-    animal,
-    cohort,
-    ckg,
-    afc,
-    slaughter_weight,
-    initial_weight
-) {
-  # Validate inputs
-  validate_meat_inputs(animal, cohort, ckg, afc, slaughter_weight, initial_weight)
-  ret <- NA_real_
-  # Cattle, buffalo: cohort-specific cgro
-  if (animal %in% c("CTL", "BFL")) {
-    if (cohort %in% c("FA", "FS", "FJ")) {
-      cgro <- 0.8
-    } else if (cohort %in% c("MA", "MS", "MJ")) {
-      cgro <- 1
-    }
-    ret <- (22.02 * (((slaughter_weight - ckg) / 2) / (cgro * slaughter_weight))^0.75 *
-              (slaughter_weight - ckg)^1.097) / slaughter_weight
-  } else if (animal %in% c("SHP", "GTS")) {
-    # Sheep, goats: a, b coefficients
-    if (animal == "SHP") {
-      if (cohort %in% c("FA", "FS", "FJ")) {
-        a <- 2.1
-        b <- 0.45
-      } else if (cohort %in% c("MA", "MS", "MJ")) {
-        a <- 4.4
-        b <- 0.32
-      }
-    } else if (animal == "GTS") {
-      a <- 5
-      b <- 0.33
-    }
-    ret <- ((slaughter_weight - ckg) * (a + 0.5 * b * (ckg + slaughter_weight))) / slaughter_weight
-  } else if (animal %in% c("PGS")) {
-    ret <- NA # Not applicable
-  }
-  return(ret)
-}
-
 #' Calculate Daily Dry Matter Intake
 #'
 #' Computes daily feed intake per animal (kg DM/head/day).

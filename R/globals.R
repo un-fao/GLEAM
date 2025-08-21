@@ -54,7 +54,7 @@ utils::globalVariables(c(
   "average_weight", "dmi", "dr1", "draught_fraction", "fibre_prod",
   "final_weight", "gest", "getot", "idle", "lact", "lambing_interval",
   "milk_fat", "milk_yield", "milking_fraction", "mmspasture", "neact",
-  "neegg", "nefibre", "negrow", "nelact", "nemain", "nemeat", "nepreg",
+  "neegg", "nefibre", "negrow", "nelact", "nemain", "nepreg",
   "nework", "past_man_frac", "reg", "rem", "work_hours"
 ))
 
