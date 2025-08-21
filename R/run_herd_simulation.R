@@ -46,8 +46,17 @@ run_herd_simulation <- function(
     herd_data,
     initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
     max_years = 100,
-    lambda_threshold = 1e-9
+    lambda_threshold = 1e-9,
+    show_indicator = TRUE
 ) {
+
+  # If the user wants feedback, show one persistent "please wait" message.
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Running herd simulation, please wait\U2026")
+  }
+
+  # Capture the initial column names
+  base_cols <- names(data.table::copy(herd_data))
 
   # --- Step 1: Compute Core Demographic Parameters -----------------------------
 
@@ -218,11 +227,7 @@ run_herd_simulation <- function(
 
   # --- Step 4: Filter and Prepare Data for Reshaping -------------------------
 
-  # Define columns to keep
-  cols_all <- names(herd_data)
-  col_start <- which(cols_all == "LPS")
-  col_end <- which(cols_all == "fibre_prod")
-
+  # Explicit list of computed columns to keep in the final output
   extra_cols <- c(
     "share.FJ", "share.FS", "share.FA", "share.MJ", "share.MS", "share.MA",
     "growth_rate_pop", "size.FJ", "size.FS", "size.FA", "size.MJ", "size.MS", "size.MA",
@@ -230,7 +235,11 @@ run_herd_simulation <- function(
     "offtake_number.MJ", "offtake_number.MS", "offtake_number.MA"
   )
 
-  final_cols <- c(cols_all[col_start:col_end], extra_cols)
+  # Merge the original columns with the desired new ones
+  # intersect() ensures we keep only columns that actually exist in herd_data
+  final_cols <- intersect(unique(c(base_cols, extra_cols)), names(herd_data))
+
+  # Subset herd_data to keep only the intended columns
   herd_data <- herd_data[, ..final_cols]
 
   # Define ID and cohort-specific columns
@@ -353,6 +362,12 @@ run_herd_simulation <- function(
   )
 
   herd_final <- herd_merged[, !..cols_to_drop]
+
+  # Clear the spinner and leave a permanent success alert.
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Herd simulation complete.")
+  }
 
   return(herd_final)
 }

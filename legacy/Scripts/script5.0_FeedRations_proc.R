@@ -1,10 +1,10 @@
 
 # Inputs---
 camels_rations <- fread(
-  system.file("extdata/Pre_processing/Camelids/camels_rations.csv", package = "gleam")
+  system.file("extdata/pre-processing-inputs/Camelids/camels_rations.csv", package = "gleam")
 )
 rations <- fread(file.path(
-  system.file("extdata/Pre_processing/GLEAM_input_feed_GLEAM3_rations.csv", package = "gleam")
+  system.file("extdata/pre-processing-inputs/GLEAM_input_feed_GLEAM3_rations.csv", package = "gleam")
 ))
 
 rations <- rbind(camels_rations, rations, fill = TRUE)
