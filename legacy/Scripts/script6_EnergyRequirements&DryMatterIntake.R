@@ -70,7 +70,7 @@ GLEAM_input_energyrequirement[, getot := Dfunction_getot(Animal_short, cohort, n
 GLEAM_input_energyrequirement[, dmi := Dfunction_dmi(Animal_short, getot, diet_ge, diet_me), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 
-fwrite(GLEAM_input_energyrequirement, system.file("extdata/GLEAM_input_directemissions.csv", package = "gleam"))
+fwrite(GLEAM_input_energyrequirement, "inst/extdata/GLEAM_input_directemissions_enteric.csv")
 
 
 # View(GLEAM_input_energyrequirement[,.(Animal_short, COUNTRY, LPS, HerdType, cohort, MLK_YIELD, FR, WKG, initial_weight,nelact, average_weight, nemain,   nepreg, negrow, diet_dig, rem, reg, getot, dmi)])
