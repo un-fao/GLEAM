@@ -1,6 +1,34 @@
-# Energy to produce meat
+#===== FIRST PART======
+
+# Energy to produce milk----
+# Energy to produce total milk, MJ
+calculate_milk_production <- function(output_milk_fpcm_production, 
+                                      standard_protein,
+                                      standard_fat,
+                                      standard_lactose) {
+  
+  # Calculate energy content of standard milk ----
+  energy_standard <- (0.0929 * standard_fat + 0.0547 * standard_protein + 0.0395 * standard_lactose) * 4.184 * 100 # MJ/kg milk (IDF 2022 / Bulletin of the IDF N°520/2022: The IDF global Carbon Footprint standard for the dairy sector / pag 82) || 
+  # The coefficients (0.0929, 0.0547, 0.0395) used to estimate energy standards are from IDF (2022) and represent
+  # kcal per 100 g milk for each 1% unit of fat, protein, or lactose.
+  # -> Multiply by % composition (g/100 g) to get kcal per 100 g milk.
+  # -> Multiply by 100 to scale to kcal per kg milk.
+  # -> Multiply by 4.184 to convert kcal → kJ, then ÷1000 → MJ.
+  # Final result: MJ/kg milk (energy density of standard milk).
+  
+  energy_allocation_milk <- energy_standard * output_milk_fpcm_production # Energy to produce total milk, MJ
+  
+  # Return both as a data.frame or list
+  return(energy_allocation_milk)
+}
+
+
+
+
+
+# Energy to produce meat-----
 # energy requirement for meat production by Animal_short 
-# MJ/kg Slaughter weight
+# Energy to produce total meat, MJ
 calculate_energy_allocation_meat <- function(Animal_short, 
                                              cohort, 
                                              afc,
@@ -59,31 +87,22 @@ calculate_energy_allocation_meat <- function(Animal_short,
   return(energy_allocation_meat)
 }
 
-
-
-
-# Energy to produce milk
-# MJ/kg FPCM
-calculate_milk_production <- function(milk_output_fpcm, 
-                                      standard_protein,
-                                      standard_fat,
-                                      standard_lactose) {
+# Energy to produce fiber------
+# Energy to produce total fiber, MJ
+calculate_energy_allocation_fibre <- function(Animal_short,
+                                              nefibre,  
+                                              ratio_ne_me,
+                                              assessment_duration = 365) {
   
-  # Calculate energy content of standard milk ----
-  energy_standard <- (0.0929 * standard_fat + 0.0547 * standard_protein + 0.0395 * standard_lactose) * 4.184 * 100 # MJ/kg (IDF 2022 / Bulletin of the IDF N°520/2022: The IDF global Carbon Footprint standard for the dairy sector / pag 82)
-  
-  energy_allocation_milk <- energy_standard * milk_output_fpcm
-  
-  # Return both as a data.frame or list
-  return(energy_allocation_milk)
-}
-
-
-
-calculate_energy_allocation_fibre <- function(nefibre,  assessment_duration = 365) {
-  
-  energy_allocation_fibre<-nefibre * assessment_duration
-  
+  if (Animal_short %in% c("GTS", "SHP")) {
+    energy_allocation_fibre <- nefibre * assessment_duration
+    
+    } else if (Animal_short %in% c("CML")) {
+    energy_allocation_fibre <- nefibre * ratio_ne_me * assessment_duration 
+   
+    } else {
+    energy_allocation_fibre <- 0
+  }
   
   # Return both as a data.frame or list
   return(energy_allocation_fibre)
@@ -91,19 +110,24 @@ calculate_energy_allocation_fibre <- function(nefibre,  assessment_duration = 36
 
 
 
-calculate_energy_allocation_work <- function(nework,  assessment_duration = 365) {
+# Energy for working-----
+# Energy associated with total working time in the assessment timespan, MJ
+calculate_energy_allocation_work <- function(Animal_short, nework, ratio_ne_me, assessment_duration = 365) {
   
-  energy_allocation_work<-nework * assessment_duration
+  if (Animal_short %in% c("CML")) {
+    energy_allocation_work <- nework * ratio_ne_me * assessment_duration 
+  } else {
+    energy_allocation_work <- nework * assessment_duration 
+  }
   
-  
-  # Return both as a data.frame or list
+  # Return as a numeric value 
   return(energy_allocation_work)
 }
 
 
 
-
-
+# Energy for egg production-----
+# Energy associated with total egg production, MJ
 # calculate_energy_allocation_eggs <- function(**,  assessment_duration = 365) {
 #   
 #   energy_allocation_eggs<-** * assessment_duration
@@ -113,13 +137,36 @@ calculate_energy_allocation_work <- function(nework,  assessment_duration = 365)
 #   return(energy_allocation_eggs)
 # }
 
+#===== SECOND PART======
 
-calculate_allocation_shares <- function(
-    energy_meat, energy_milk, energy_fibre, energy_work, energy_eggs,
+# From cohort to hed----
+calculate_from_cohort_to_herd_energy_allocation <- function(gleam_data,
+                                        summarize_by) {
+  
+  # ensure data.table behavior
+  summary_dt <- gleam_data[
+    ,
+    .(
+      energy_allocation_meat   = sum(energy_allocation_meat, na.rm = TRUE),
+      energy_allocation_milk   = sum(energy_allocation_milk, na.rm = TRUE),
+      energy_allocation_fibre  = sum(energy_allocation_fibre, na.rm = TRUE),
+      energy_allocation_work   = sum(energy_allocation_work, na.rm = TRUE)
+      # energy_allocation_eggs = sum(energy_allocation_eggs, na.rm = TRUE) # optional
+    ),
+    by = summarize_by
+  ]
+  
+  return(summary_dt)
+}
+
+
+# Allocation fractions-----
+calculate_allocation_fractions <- function(
+    energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre, energy_allocation_work, energy_allocation_eggs,
     Animal_short
 ) {
   # Use provided energy values (not undefined variables)
-  total_energy <- energy_meat + energy_milk + energy_fibre + energy_work + energy_eggs
+  total_allocation_energy <- energy_allocation_meat + energy_allocation_milk + energy_allocation_fibre + energy_allocation_work + energy_allocation_eggs
   
   # If Animal_short is "PGS", assign 100% allocation to meat
   if (!is.null(Animal_short) && Animal_short == "PGS") {
@@ -127,31 +174,62 @@ calculate_allocation_shares <- function(
       allocation_share_meat = 1,
       allocation_share_milk = 0,
       allocation_share_work = 0,
-      allocation_share_wool = 0,
+      allocation_share_fibre = 0,
       allocation_share_eggs = 0
     ))
   }
   
   # Check for NA or zero total
-  if (is.na(total_energy) || total_energy == 0) {
-    share_meat <- NA_real_
-    share_milk <- NA_real_
-    share_work <- NA_real_
-    share_wool <- NA_real_
-    share_eggs <- NA_real_
+  if (is.na(total_allocation_energy) || total_allocation_energy == 0) {
+    allocation_share_meat <- NA_real_
+    allocation_share_milk <- NA_real_
+    allocation_share_work <- NA_real_
+    allocation_share_fibre <- NA_real_
+    allocation_share_eggs <- NA_real_
   } else {
-    share_meat <- energy_meat / total_energy
-    share_milk <- energy_milk / total_energy
-    share_work <- energy_work / total_energy
-    share_wool <- energy_fibre / total_energy  
-    share_eggs <- energy_eggs / total_energy
+    allocation_share_meat <- energy_allocation_meat / total_allocation_energy
+    allocation_share_milk <- energy_allocation_milk / total_allocation_energy
+    allocation_share_work <- energy_allocation_work / total_allocation_energy
+    allocation_share_fibre <- energy_allocation_fibre / total_allocation_energy  
+    allocation_share_eggs <- energy_allocation_eggs / total_allocation_energy
   }
   
   return(list(
-    allocation_share_meat = share_meat,
-    allocation_share_milk = share_milk,
-    allocation_share_work = share_work,
-    allocation_share_wool = share_wool,
-    allocation_share_eggs = share_eggs
+    allocation_share_meat, 
+    allocation_share_milk,
+    allocation_share_work,
+    allocation_share_fibre,
+    allocation_share_eggs
   ))
+}
+
+
+
+# From width to long----
+melt_energy_allocation <- function(gleam_data,
+                                   id_vars) {
+  
+  # melt allocation share columns into long format
+  long_dt <- melt(
+    gleam_data,
+    id.vars = id_vars,
+    measure.vars = patterns("^allocation_share_"),
+    variable.name = "commodity_name",
+    value.name   = "V1"
+  )
+  
+  # clean up commodity_name (remove prefix)
+  long_dt[, commodity_name := gsub("^allocation_share_", "", commodity_name)]
+  long_dt[, commodity_name := paste0(toupper(substr(commodity_name, 1, 1)),
+                                     substr(commodity_name, 2, nchar(commodity_name)))] 
+  # map commodity_type
+  edible     <- c("Meat", "Milk", "Eggs")
+  non_edible <- c("Fibre", "Work")
+  
+  long_dt[, commodity_type := fifelse(commodity_name %in% edible, "Edible",
+                                      fifelse(commodity_name %in% non_edible, "NonEdible", NA_character_))]
+  
+  setcolorder(long_dt, c(setdiff(names(long_dt), "V1"), "V1"))
+  
+  return(long_dt[])
 }
