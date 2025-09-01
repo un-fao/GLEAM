@@ -4,11 +4,11 @@
 #' from feed rations and nutritional parameters. Assumes inputs are pre-cleaned.
 #'
 #' @param rations_share A data.table containing feed shares per cohort. Must include:
-#'   - `Animal`, `GLEAM3_name`, `COUNTRY`, `ADM0_CODE`, `HerdType`, `LPS`, `cohort`, and `value`.
+#'   - `Animal_short`, `Item_Name`, `ADM0_CODE`, `HerdType_short`, `LPS_short`, `cohort`, and `value`.
 #' @param feed_params A data.table of nutrient parameters. Must include:
-#'   - `GLEAM3_name`, `GE`, `DE_ruminants`, `DE_pigs`, `ME_ruminants`, `ME_pigs`, `ME_chickens`, `N_content`.
+#'   - `Item_Name`, `GE`, `DE_ruminants`, `DE_pigs`, `ME_ruminants`, `ME_pigs`, `ME_chickens`, `N_content`.
 #' @param input_feed A data.table of cohort-level baseline GLEAM data. Must include:
-#'   - `Animal_short`, `ADM0_CODE`, `COUNTRY`, `HerdType`, `LPS`, `cohort`.
+#'   - `Animal_short`, `ADM0_CODE`, `HerdType_short`, `LPS_short`, `cohort`.
 #'
 #' @return A data.table matching `input_feed` enriched with dietary metrics:
 #'   - `diet_ge`, `diet_me`, `diet_nitrogen`, `diet_dig`
@@ -17,7 +17,7 @@
 #' \dontrun{
 #' # Load cleaned example input from the package and compute feed intake metrics
 #' feed_params <- data.table::fread(
-#'   system.file("extdata/Feed_parameters.csv", package = "gleam")
+#'   system.file("extdata/Feed_parameters/GLEAM_Feed_parameters.csv", package = "gleam")
 #' )
 #'
 #' rations_share <- data.table::fread(
@@ -43,14 +43,14 @@ run_feed_rations <- function(rations_share, feed_params, input_feed) {
 
   # Select relevant nutrient columns
   feed_params_nutrients <- feed_params[, .(
-    GLEAM3_name, GE, ME_ruminants, ME_pigs, ME_chickens,
+    Item_Name, GE, ME_ruminants, ME_pigs, ME_chickens,
     N_content, dig_ruminants, dig_pigs, dig_chickens
   )]
 
   # Merge ration shares with feed parameters
   rations_detailed <- merge(
     rations_share, feed_params_nutrients,
-    by = "GLEAM3_name", all.x = TRUE, allow.cartesian = TRUE
+    by = "Item_Name", all.x = TRUE, allow.cartesian = TRUE
   )
 
   rations_detailed <- merge(rations_detailed, abbr_animals, by = "Animal_short")
@@ -77,14 +77,14 @@ run_feed_rations <- function(rations_share, feed_params, input_feed) {
     diet_me = sum(diet_me, na.rm = TRUE),
     diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
     diet_dig = sum(diet_dig, na.rm = TRUE)
-  ), by = .(Animal_short, COUNTRY, ADM0_CODE, HerdType, LPS, cohort)]
+  ), by = .(Animal_short, ADM0_CODE, HerdType_short, LPS_short, cohort)]
 
   # Merge back with input data and return output
   return(
     merge(
       input_feed,
       rations_summary,
-      by = c("Animal_short", "ADM0_CODE", "COUNTRY", "HerdType", "LPS", "cohort"),
+      by = c("Animal_short", "ADM0_CODE", "HerdType_short", "LPS_short", "cohort"),
       all.x = TRUE,
       allow.cartesian = TRUE
     )
