@@ -20,19 +20,6 @@ mms_cols_to_rename <- setdiff(mms_cols, "MMSKG")
 # Rename those columns to lowercase
 setnames(wide_camels_dt, old = mms_cols_to_rename, new = tolower(mms_cols_to_rename))
 
-
-setnames(wide_camels_dt, old = c(
-  "mmsbiogas",
-  "mmspastpadd"
-), new = c(
-  "mmsbiogashighleak1",
-  "mmspasture"
-))
-
-# missing_cols <- setdiff(new_col_names, names(wide_camels_dt))
-
-
-
 # wide_dt re-naming and re-arrangement
 wide_dt[Animal_short == "PGS", c("AFC", "AFCM") := get.afc_pigs(AFKG=AFKG,AMKG=AMKG,DWG2=DWG2,WKG=WKG,WA=WA),by=.I]
 
