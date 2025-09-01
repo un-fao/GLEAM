@@ -343,9 +343,8 @@ get.offtake_rate <- function (
     offtake_rate.FJ = offtake_rate.FS
     offtake_rate.MJ = offtake_rate.MS
   }
-  offtake_rate.FA = AFexit/AFin # to be replaced with line 348 in a separate debugging
-  offtake_rate.MA = AMexit/AMin # to be replaced with line 348 in a separate debugging
-  #offtake_rate.FA = offtake_rate.MA <- 0
+  offtake_rate.FA = 0
+  offtake_rate.MA = 0
   ret <- list(offtake_rate.FJ, offtake_rate.FS, offtake_rate.FA, offtake_rate.MJ, offtake_rate.MS, offtake_rate.MA)
   names(ret) <- c("offtake_rate.FJ", "offtake_rate.FS", "offtake_rate.FA", "offtake_rate.MJ", "offtake_rate.MS", "offtake_rate.MA")
   return(ret)
