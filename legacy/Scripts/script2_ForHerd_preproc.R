@@ -6,7 +6,6 @@ wide_dt <- fread(
   system.file("extdata/pre-processing-inputs/GLEAM_input_preproc.csv", package = "gleam")
 )
 
-
 wide_camels_dt <- fread(
   system.file("extdata/pre-processing-inputs/Camelids/camels_inputs.csv", package = "gleam")
 )
@@ -30,7 +29,7 @@ setnames(wide_camels_dt, old = c(
   "mmspasture"
 ))
 
-missing_cols <- setdiff(new_col_names, names(wide_camels_dt))
+# missing_cols <- setdiff(new_col_names, names(wide_camels_dt))
 
 
 
@@ -58,6 +57,7 @@ wide_dt[,c("duration.FJ", "duration.FS", "duration.FA", "duration.MJ", "duration
 
 
 # add camels input parameters
+wide_dt[,milking_fraction:=0]
 wide_dt<-rbind(wide_dt, wide_camels_dt, fill = TRUE)
 
 
@@ -66,7 +66,7 @@ wide_dt[, draught_fraction := function_draught_proportion(BCR)]
 
 # add milking_fraction----
 wide_dt[HerdType_short=="DRY", milking_fraction:=1]
-wide_dt[HerdType_short!="DRY", milking_fraction:=0]
+wide_dt[HerdType_short!="DRY" & Animal_short!="CML", milking_fraction:=0]
 
 
 #RENAMING VARIABLES DRAFT------------
@@ -76,13 +76,12 @@ wide_dt[HerdType_short!="DRY", milking_fraction:=0]
 #CLEANING
 
 # Fiber production----
-wide_dt[, fibre_prod := CSH + MHR + WOOL]
+wide_dt[, fibre_prod := rowSums(.SD, na.rm = TRUE), .SDcols = c("CSH", "MHR", "WOOL")]
 wide_dt <- wide_dt[,!c("CSH", "MHR", "WOOL")]
 # Summing-up fiber production and create a new column called "prod_fiber"
 # CSH / total amount of cashmere produced by system
 # MHR / total amount of mohair produced by the system
 # WOOL /total amount of wool produced by the system
-
 
 # Removing variables----
 
