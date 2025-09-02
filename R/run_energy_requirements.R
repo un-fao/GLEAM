@@ -149,7 +149,7 @@ run_energy_requirements <- function(data) {
     rem = rem,
     negrow = negrow,
     nefibre = nefibre,
-    neegg = neegg,
+    neegg = 0,
     reg = reg,
     diet_dig = diet_dig,
     afc = afc

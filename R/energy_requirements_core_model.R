@@ -74,8 +74,8 @@ calc_net_energy_maintenance <- function(
     if (cohort == "FA") {
       # Weighted average for adult females based on physiological state
       weighted_met_weight_af <- ((average_weight^0.75 * idle) +
-                  ((average_weight + (litsize * ckg + 0.15 * average_weight) / 2)^0.75 * gest) +
-                  ((average_weight + (0.15 * average_weight) / 2)^0.75 * lact)) /
+                                   ((average_weight + (litsize * ckg + 0.15 * average_weight) / 2)^0.75 * gest) +
+                                   ((average_weight + (0.15 * average_weight) / 2)^0.75 * lact)) /
         (idle + gest + lact)
       return(weighted_met_weight_af * cmain)
     }
@@ -303,6 +303,27 @@ calc_net_energy_lactation <- function(
     }
     return(ret)
   }
+}
+
+#' Calculate Net Energy for Egg Production (placeholder)
+#'
+#' Placeholder for metabolizable energy required for egg production (MJ/head/day).
+#' Not implemented yet.
+#'
+#' @param animal Character. Species code (e.g., "CHK").
+#' @param cohort Character. Cohort code.
+#' @param eggs_year Numeric. Eggs produced per hen per year.
+#' @param egg_weight Numeric. Average egg weight (kg/egg).
+#'
+#' @return No return value; this function always errors to indicate it's a stub.
+#' @noRd
+calc_net_energy_eggs <- function(
+    animal,
+    cohort,
+    eggs_year,
+    egg_weight
+) {
+  return(NA_real_)
 }
 
 #' Calculate Net Energy for Work
