@@ -96,6 +96,16 @@ wide_dt <- wide_dt[,!c("ACT", "DCR", "POPULATION", "AF_FRAC", "DISCARGE", "DISCH
 # FISHPOND, INCINERATION, PUBLSEWAGE - used in NUE / Not used at the moment
 # CLIM ???????
 
+
+
+wide_dt[, activity_fraction:=mmspasture * past_man_frac]
+wide_dt[, high_activity_fraction:=mmspasture * (1 - past_man_frac)]
+wide_dt[, past_man_frac:=NULL]
+
+
+
+
+
 #chicken_only_variables <- c("A2S", "AF1KG", "AF2KG", "AFS", "AM1KG", "AM2KG", "BIDLE", "CLTSIZE", "CYCLE",
 #                            "DRL2", "DRM", "EGGSYEAR", "EGGWGHT", "EGG_PROTEIN", "FRMF", "HATCH",
 #                            "LAYTIME1", "LAYTIME2", "MALE", "MOLT", "MOLTTIME")
