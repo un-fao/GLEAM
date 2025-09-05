@@ -86,19 +86,20 @@ validate_maintenance_inputs <- function(
 validate_activity_inputs <- function(
     animal,
     cohort,
-    past_man_frac,
-    mmspasture,
     nemain,
     average_weight,
-    offtake_rate
+    offtake_rate,
+    activity_fraction ,
+    high_activity_fraction
 ) {
   validate_animal_species(animal)
   validate_cohort_code(cohort)
-  validate_scalar_numeric(past_man_frac, "past_man_frac")
-  validate_scalar_numeric(mmspasture, "mmspasture")
   validate_positive_numeric(nemain, "nemain")
   validate_positive_numeric(average_weight, "average_weight")
   validate_scalar_numeric(offtake_rate, "offtake_rate")
+  validate_scalar_numeric(activity_fraction, "activity_fraction")
+  validate_scalar_numeric(high_activity_fraction, "high_activity_fraction")
+  
 }
 
 #' Validate inputs for calc_net_energy_growth
