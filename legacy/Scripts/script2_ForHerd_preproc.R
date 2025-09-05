@@ -99,7 +99,9 @@ wide_dt <- wide_dt[,!c("ACT", "DCR", "POPULATION", "AF_FRAC", "DISCARGE", "DISCH
 
 
 wide_dt[, activity_fraction:=mmspasture * past_man_frac]
+wide_dt[Animal_short %in% c("CML", "PGS"), activity_fraction:=mmspasture]
 wide_dt[, high_activity_fraction:=mmspasture * (1 - past_man_frac)]
+wide_dt[Animal_short %in% c("CML", "PGS"), high_activity_fraction:=0]
 wide_dt[, past_man_frac:=NULL]
 
 
@@ -168,3 +170,4 @@ wide_dt[Animal_short %in% c("CHK"), parturition_rate := HATCH]
 fwrite(
   wide_dt, system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
 )
+

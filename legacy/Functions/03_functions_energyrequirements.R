@@ -99,36 +99,29 @@ Dfunction_nemain <- function(
 Dfunction_neact <- function(
     Animal_short, # CTL, BFL, SHP, GTS, PGS, CHK, CML
     cohort, # SHP
-    past_man_frac, # CTL, BFL, SHP, GTS, CML
-    mmspasture, # CTL, BFL, SHP, GTS, CML
     nemain, # CTL, BFL, PGS, CHK
     average_weight, # SHP, GTS, CML
-    offtake_rate # CTL, BFL, SHP, GTS, PGS, CHK, CML / offtake rate by cohort
-    # activity_fraction,
-    # high_activity_fraction
+    offtake_rate, # CTL, BFL, SHP, GTS, PGS, CHK, CML / offtake rate by cohort
+    activity_fraction,
+    high_activity_fraction
 ) {
   if (Animal_short %in% c("CTL", "BFL")) {
-    # cact = (0.17 * activity_fraction) + (0.36 * high_activity_fraction)
-    cact <- (0.17 * mmspasture * past_man_frac) + (0.36 * mmspasture * (1 - past_man_frac))
+    cact = (0.17 * activity_fraction) + (0.36 * high_activity_fraction)
     ret <- cact * nemain
   } else if (Animal_short %in% c("CML")) {
-    # cact = (0.1 * activity_fraction)
-    cact <- (0.1 * mmspasture)
+    cact <- (0.1 * activity_fraction)
     ret <- cact * nemain
   } else if (Animal_short == "SHP") {
-    # cact = (0.0107 * activity_fraction) + (0.024 * high_activity_fraction)*(1-offtake_rate) + (0.0067 * offtake_rate)
-    cact <- (0.0107 * mmspasture * past_man_frac) + (0.024 * mmspasture * (1 - past_man_frac)) * (1 - offtake_rate) + (0.0067 * offtake_rate)
+    cact <- (0.0107 * activity_fraction) + (0.024 * high_activity_fraction) * (1 - offtake_rate) + (0.0067 * offtake_rate)
     if (cohort == "FA") {
       cact <- 0.0096
     }
     ret <- cact * average_weight
   } else if (Animal_short %in% c("GTS")) {
-    # cact = (0.019 * activity_fraction) + (0.024 * high_activity_fraction)
-    cact <- (0.019 * mmspasture * past_man_frac) + (0.024 * mmspasture * (1 - past_man_frac))
+    cact = (0.019 * activity_fraction) + (0.024 * high_activity_fraction)
     ret <- cact * average_weight
   } else if (Animal_short == "PGS") { # ASSUMING MMSPASTURE AS A PROXY ALSO FOR PIGS. NEED TO BE REVISED!
-    # cact = 0.125 * activity_fraction
-    cact <- 0.125 * mmspasture
+    cact = 0.125 * activity_fraction
     ret <- cact * nemain
   }
 
