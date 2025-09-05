@@ -101,38 +101,40 @@ calc_net_energy_maintenance <- function(
 calc_net_energy_activity <- function(
     animal,
     cohort,
-    past_man_frac,
-    mmspasture,
     nemain,
     average_weight,
-    offtake_rate
+    offtake_rate,
+    activity_fraction,
+    high_activity_fraction
 ) {
   # Validate inputs
   validate_activity_inputs(
-    animal, cohort, past_man_frac, mmspasture,
-    nemain, average_weight, offtake_rate
+    animal, cohort,
+    nemain, average_weight, offtake_rate,  
+    activity_fraction,
+    high_activity_fraction
   )
   if (animal %in% c("CTL", "BFL")) {
     # Weighted by pasture management
-    cact <- (0.17 * mmspasture * past_man_frac) + (0.36 * mmspasture * (1 - past_man_frac))
+    cact <- (0.17 * activity_fraction) + (0.36 * high_activity_fraction)
     ret <- cact * nemain
   } else if (animal %in% c("CML")) {
-    cact <- (0.1 * mmspasture)
+    cact <- (0.1 * activity_fraction)
     ret <- cact * nemain
   } else if (animal == "SHP") {
     # Sheep: more complex, includes offtake effect
-    cact <- (0.0107 * mmspasture * past_man_frac) +
-      (0.024 * mmspasture * (1 - past_man_frac)) *
+    cact <- (0.0107 * activity_fraction) +
+      (0.024 * high_activity_fraction) *
       (1 - offtake_rate) + (0.0067 * offtake_rate)
     if (cohort == "FA") {
       cact <- 0.0096 # Adult females fixed
     }
     ret <- cact * average_weight
   } else if (animal %in% c("GTS")) {
-    cact <- (0.019 * mmspasture * past_man_frac) + (0.024 * mmspasture * (1 - past_man_frac))
+    cact <- (0.019 * activity_fraction) + (0.024 * high_activity_fraction)
     ret <- cact * average_weight
   } else if (animal == "PGS") {
-    cact <- 0.125 * mmspasture # Pigs: fixed activity coefficient
+    cact <- 0.125 * activity_fraction # Pigs: fixed activity coefficient
     ret <- cact * nemain
   }
   return(ret)
