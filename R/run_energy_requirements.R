@@ -59,11 +59,11 @@ run_energy_requirements <- function(data) {
   data[, neact := calc_net_energy_activity(
     animal = Animal_short,
     cohort = cohort,
-    past_man_frac = past_man_frac,
-    mmspasture = mmspasture,
     nemain = nemain,
     average_weight = average_weight,
-    offtake_rate = offtake_rate
+    offtake_rate = offtake_rate,
+    activity_fraction = activity_fraction,
+    high_activity_fraction = high_activity_fraction
   ), by = .I]
 
   # 3. Growth energy (MJ/day)
