@@ -44,7 +44,7 @@ utils::globalVariables(c(
   "DE_pigs", "DE_ruminants", "GE", "GLEAM3_name", "HerdType", "LPS",
   "ME_chickens", "ME_pigs", "ME_ruminants", "N_content",
   "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
-  "dig_chickens", "dig_pigs", "dig_ruminants", "value",
+  "dig_chickens", "dig_pigs", "dig_ruminants", "value", "Item_Name",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations"
 ))
@@ -53,9 +53,9 @@ utils::globalVariables(c(
   # Columns used in run_energy_requirements
   "average_weight", "dmi", "dr1", "draught_fraction", "fibre_prod",
   "final_weight", "gest", "getot", "idle", "lact", "lambing_interval",
-  "milk_fat", "milk_yield", "milking_fraction", "mmspasture", "neact",
+  "milk_fat", "milk_yield", "milking_fraction", "high_activity_fraction", "neact",
   "neegg", "nefibre", "negrow", "nelact", "nemain", "nepreg",
-  "nework", "past_man_frac", "reg", "rem", "work_hours"
+  "nework", "activity_fraction", "reg", "rem", "work_hours"
 ))
 
 # Add species abbreviations
