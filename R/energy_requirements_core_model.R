@@ -90,11 +90,11 @@ calc_net_energy_maintenance <- function(
 #'
 #' @param animal Character. Species code.
 #' @param cohort Character. Cohort code.
-#' @param past_man_frac Numeric. Pasture management fraction.
-#' @param mmspasture Numeric. Fraction of time on pasture.
 #' @param nemain Numeric. Net energy for maintenance.
 #' @param average_weight Numeric. Average live weight (kg).
 #' @param offtake_rate Numeric. Offtake rate by cohort.
+#' @param activity_fraction Numeric. Fraction of time under low-activity conditions.
+#' @param high_activity_fraction Numeric. Fraction of time under high-activity conditions.
 #'
 #' @return Numeric. Net energy for activity (MJ/head/day).
 #' @export
@@ -110,7 +110,7 @@ calc_net_energy_activity <- function(
   # Validate inputs
   validate_activity_inputs(
     animal, cohort,
-    nemain, average_weight, offtake_rate,  
+    nemain, average_weight, offtake_rate,
     activity_fraction,
     high_activity_fraction
   )

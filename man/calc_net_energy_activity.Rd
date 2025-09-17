@@ -7,11 +7,11 @@
 calc_net_energy_activity(
   animal,
   cohort,
-  past_man_frac,
-  mmspasture,
   nemain,
   average_weight,
-  offtake_rate
+  offtake_rate,
+  activity_fraction,
+  high_activity_fraction
 )
 }
 \arguments{
@@ -19,15 +19,15 @@ calc_net_energy_activity(
 
 \item{cohort}{Character. Cohort code.}
 
-\item{past_man_frac}{Numeric. Pasture management fraction.}
-
-\item{mmspasture}{Numeric. Fraction of time on pasture.}
-
 \item{nemain}{Numeric. Net energy for maintenance.}
 
 \item{average_weight}{Numeric. Average live weight (kg).}
 
 \item{offtake_rate}{Numeric. Offtake rate by cohort.}
+
+\item{activity_fraction}{Numeric. Fraction of time under low-activity conditions.}
+
+\item{high_activity_fraction}{Numeric. Fraction of time under high-activity conditions.}
 }
 \value{
 Numeric. Net energy for activity (MJ/head/day).

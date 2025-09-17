@@ -6,6 +6,8 @@
 \usage{
 run_gleam(
   herd_data_path = NULL,
+  rations_share_path = NULL,
+  feed_params_path = NULL,
   initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
   max_years = 100,
   lambda_threshold = 1e-09,
@@ -14,6 +16,12 @@ run_gleam(
 }
 \arguments{
 \item{herd_data_path}{Character. Path to the GLEAM herd input CSV file.
+Defaults to the package example data.}
+
+\item{rations_share_path}{Character. Path to feed rations CSV file.
+Defaults to the package example data.}
+
+\item{feed_params_path}{Character. Path to feed parameters CSV file.
 Defaults to the package example data.}
 
 \item{initial_structure}{Numeric vector. Initial population structure for simulation.
@@ -33,6 +41,7 @@ A \code{data.table} containing the complete GLEAM assessment results with:
 \itemize{
 \item Original herd input data
 \item Population simulation results (structure, offtake, transitions)
+\item Feed ration calculations (diet_ge, diet_me, diet_dig, diet_nitrogen)
 \item Energy requirements (maintenance, activity, growth, lactation, work, fibre, pregnancy)
 \item Dry matter intake calculations
 \item Cohort-level weight metrics
@@ -40,7 +49,7 @@ A \code{data.table} containing the complete GLEAM assessment results with:
 }
 \description{
 This function orchestrates the complete GLEAM workflow, processing livestock data
-through herd simulation and energy requirements calculations. It serves as the
+through herd simulation, feed rations, and energy requirements calculations. It serves as the
 main entry point for running comprehensive livestock assessments.
 }
 \details{
@@ -48,24 +57,15 @@ The pipeline follows this sequence:
 \enumerate{
 \item Load and validate herd input data
 \item Run herd simulation to get population dynamics
+\item Run feed rations to calculate dietary metrics
 \item Calculate energy requirements and dry matter intake
-\item Return comprehensive results
+\item Return results
 }
 }
 \examples{
 \dontrun{
 # Run the complete pipeline with default settings
 results <- run_gleam()
-
-# Run with custom herd data
-results <- run_gleam("path/to/your/herd_data.csv")
-
-# Run with custom simulation parameters
-results <- run_gleam(
-  initial_structure = c(FJ = 200, FS = 100, FA = 60, MJ = 200, MS = 100, MA = 60),
-  max_years = 150,
-  lambda_threshold = 1e-10
-)
 }
 
 }
