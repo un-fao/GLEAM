@@ -1,0 +1,72 @@
+cohorts_small <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+
+# ---- test compute_methane_conversion_factor ----
+test_that("compute_methane_conversion_factor validates inputs and computes YM", {
+  # Valid cattle case
+  ym <- compute_methane_conversion_factor("CTL", "FA", 0.6)
+  expect_type(ym, "double")
+  expect_gt(ym, 0)
+
+  # Digestibility bounds
+  expect_error(compute_methane_conversion_factor("CTL", "FA", -0.1))
+  expect_error(compute_methane_conversion_factor("CTL", "FA", 1.1))
+
+  # Boundary values for digestibility
+  expect_equal(compute_methane_conversion_factor("CTL", "FA", 0), 9.75)
+  expect_equal(compute_methane_conversion_factor("CTL", "FA", 1), 4.75)
+
+  # Pigs: adult vs juvenile
+  expect_equal(compute_methane_conversion_factor("PGS", "AF", 0.65), 1.01)
+  expect_equal(compute_methane_conversion_factor("PGS", "FJ", 0.65), 0.39)
+
+  # Small ruminants/camels: juvenile/subadult vs adult
+  ym_juv <- compute_methane_conversion_factor("SHP", "JF", 0.65) # 7.75 rule
+  ym_adult <- compute_methane_conversion_factor("SHP", "FA", 0.65) # 9.75 rule
+  expect_lt(ym_juv, ym_adult)
+
+  # Buffalo: same formula as cattle
+  expect_equal(
+    compute_methane_conversion_factor("BFL", "FA", 0.6),
+    compute_methane_conversion_factor("CTL", "FA", 0.6)
+  )
+
+  # Chickens: always NA
+  expect_true(is.na(compute_methane_conversion_factor("CHK", "FA", 0.65)))
+
+  # Invalid species should error
+  expect_error(compute_methane_conversion_factor("XXX", "FA", 0.65))
+})
+
+# ---- test compute_daily_enteric_emissions ----
+test_that("compute_daily_enteric_emissions validates inputs and returns expected numeric", {
+  # Valid cattle case with consistent YM
+  ym <- compute_methane_conversion_factor("CTL", "FA", 0.6)
+  ch4 <- compute_daily_enteric_emissions(
+    Animal_short = "CTL",
+    cohort = "FA",
+    ym = ym,
+    diet_ge = 18.4,
+    dmi = 10,
+    afc = 700
+  )
+  expect_type(ch4, "double")
+  expect_true(ch4 > 0)
+
+  # Chickens: emissions NA
+  ym_ch <- compute_methane_conversion_factor("CHK", "AF", 0.7)
+  ch4_ch <- compute_daily_enteric_emissions("CHK", "AF", ym_ch, 16, 0.1, 200)
+  expect_true(is.na(ch4_ch))
+
+  # Zero inputs give zero emissions
+  expect_equal(compute_daily_enteric_emissions("CTL", "FA", 0, 18, 10, 500), 0)
+  expect_equal(compute_daily_enteric_emissions("CTL", "FA", 5, 18, 0, 500), 0)
+
+  # Invalid arguments
+  expect_error(compute_daily_enteric_emissions("CTL", "FA", -1, 18, 10, 500))  # ym < 0
+  expect_error(compute_daily_enteric_emissions("CTL", "FA", 5, 0, 10, 500))   # diet_ge <= 0
+  expect_error(compute_daily_enteric_emissions("CTL", "FA", 5, 18, -1, 500))  # dmi < 0
+  expect_error(compute_daily_enteric_emissions("CTL", "FA", 5, 18, 10, -1))   # afc < 0
+
+  # Emissions must be non-negative
+  expect_gte(ch4, 0)
+})
