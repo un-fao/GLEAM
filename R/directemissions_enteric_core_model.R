@@ -16,6 +16,7 @@ compute_methane_conversion_factor <- function(
     cohort,
     diet_dig
 ) {
+  validate_ym_inputs(Animal_short, cohort, diet_dig)
   if (Animal_short %in% c("CTL", "BFL")) {
     ret = 9.75 - 0.05 * diet_dig * 100
   } else if (Animal_short %in% c("SHP", "GTS", "CML")) {
@@ -60,6 +61,7 @@ compute_daily_enteric_emissions <- function(
     dmi,
     afc
 ) {
+  validate_enteric_emission_inputs(Animal_short, cohort, ym, diet_ge, dmi, afc)
   if (Animal_short %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
     ret <- diet_ge * dmi * (ym / 100) / 55.65
   } else if (Animal_short == "CHK") {
