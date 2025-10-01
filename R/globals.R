@@ -46,7 +46,10 @@ utils::globalVariables(c(
   "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
   "dig_chickens", "dig_pigs", "dig_ruminants", "value",
   # Variables used with .. for validation
-  "..numeric_cols_feed", "..numeric_cols_rations"
+  "..numeric_cols_feed", "..numeric_cols_rations",
+  # Columns used in nitrogen_balance
+  "n_intake", "n_retention", "n_excretion"
+  #
 ))
 
 # Add species abbreviations
