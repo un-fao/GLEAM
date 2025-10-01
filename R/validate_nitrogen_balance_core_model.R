@@ -108,7 +108,7 @@ validate_nitrogen_excretion_inputs <- function(animal, n_intake, n_retention) {
   validate_scalar_character(animal, "animal")
 
   # Validate animal species
-  valid_animals <- c("CTL", "BFL", "CML", "GTS", "SHP", "PGS")
+  valid_animals <- c("CTL", "BFL", "CML", "GTS", "SHP", "PGS", "CHK")
   if (!animal %in% valid_animals) {
     cli::cli_abort(
       "{.arg animal} must be one of: {cli::format_inline('{valid_animals}')}"
