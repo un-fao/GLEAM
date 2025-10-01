@@ -10,6 +10,8 @@
 #'
 #' @export
 compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
+  # Validate inputs
+  validate_nitrogen_intake_inputs(dmi, diet_nitrogen)
   return(dmi * diet_nitrogen)
 }
 
@@ -47,6 +49,13 @@ compute_nitrogen_retention <- function(
     ckg = NA_real_,
     afc = NA_real_
 ) {
+  # Validate inputs
+  validate_nitrogen_retention_inputs(
+    animal, cohort, milk_protein, milk_yield,
+    dwg, fibre_prod, litsize, parturition_rate,
+    wkg, ckg, afc
+  )
+
   if (animal %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
     tissue_n <- ifelse(animal %in% c("CTL", "BFL"), 0.0326, 0.026)
     milk_n <- milk_protein / 6.38
@@ -100,6 +109,9 @@ compute_nitrogen_excretion <- function(
     n_intake,
     n_retention
 ) {
+  # Validate inputs
+  validate_nitrogen_excretion_inputs(animal, n_intake, n_retention)
+
   if (animal %in% c("CTL", "BFL", "CML", "GTS", "SHP", "PGS")) {
     return(n_intake - n_retention)
   } else {
