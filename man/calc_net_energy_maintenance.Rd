@@ -8,11 +8,6 @@ calc_net_energy_maintenance(
   animal,
   cohort,
   average_weight,
-  idle = NA_real_,
-  gest = NA_real_,
-  lact = NA_real_,
-  litsize = NA_real_,
-  ckg = NA_real_,
   milking_fraction = NA_real_,
   offtake_rate = NA_real_,
   afc = NA_real_
@@ -24,16 +19,6 @@ calc_net_energy_maintenance(
 \item{cohort}{Character. Cohort code.}
 
 \item{average_weight}{Numeric. Average live weight (kg).}
-
-\item{idle}{Numeric. Fraction of time idle (only for PGS–FA, default NA).}
-
-\item{gest}{Numeric. Fraction of time gestating (only for PGS–FA, default NA).}
-
-\item{lact}{Numeric. Fraction of time lactating (only for PGS–FA, default NA).}
-
-\item{litsize}{Numeric. Litter size (only for PGS–FA, default NA).}
-
-\item{ckg}{Numeric. Birth weight (only for PGS–FA, default NA).}
 
 \item{milking_fraction}{Numeric. Proportion of lactating adult females (only for CTL/BFL–FA, default NA).}
 

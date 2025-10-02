@@ -18,7 +18,8 @@ calc_net_energy_lactation(
   wkg,
   lact,
   parturition_rate,
-  lambing_interval
+  lambing_interval,
+  assessment_duration
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ calc_net_energy_lactation(
 \item{parturition_rate}{Numeric. Parturition rate.}
 
 \item{lambing_interval}{Numeric. Lambing interval (for SHP, GTS).}
+
+\item{assessment_duration}{Numeric. Duration of the assessment (days)}
 }
 \value{
 Numeric. Net energy for lactation (MJ/head/day).

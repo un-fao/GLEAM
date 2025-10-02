@@ -9,8 +9,6 @@ calc_net_energy_pregnancy(
   cohort,
   nemain,
   parturition_rate,
-  idle,
-  lact,
   litsize,
   gest,
   duration,
@@ -26,13 +24,9 @@ calc_net_energy_pregnancy(
 
 \item{parturition_rate}{Numeric. Parturition rate.}
 
-\item{idle}{Numeric. Fraction of time idle (for PGS).}
-
-\item{lact}{Numeric. Fraction of time lactating (for PGS).}
-
 \item{litsize}{Numeric. Litter size (for SHP, GTS, PGS).}
 
-\item{gest}{Numeric. Fraction of time gestating (for PGS).}
+\item{gest}{Numeric. Fraction of time gestating (for all species).}
 
 \item{duration}{Numeric. Duration in days.}
 

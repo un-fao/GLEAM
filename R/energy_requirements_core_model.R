@@ -5,7 +5,6 @@
 #' @param animal Character. Species code (e.g., "CTL", "BFL", "SHP", "GTS", "PGS", "CHK", "CML").
 #' @param cohort Character. Cohort code.
 #' @param average_weight Numeric. Average live weight (kg).
-#' @param ckg Numeric. Birth weight (only for PGS–FA, default NA).
 #' @param milking_fraction Numeric. Proportion of lactating adult females (only for CTL/BFL–FA, default NA).
 #' @param offtake_rate Numeric. Offtake rate by cohort (only for some cohorts, default NA).
 #' @param afc Numeric. Age at first calving (only for SHP, default NA).

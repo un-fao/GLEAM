@@ -10,6 +10,7 @@ calc_net_energy_growth(
   average_weight,
   final_weight,
   initial_weight,
+  adult_weight,
   dwg,
   offtake_rate,
   duration
@@ -25,6 +26,8 @@ calc_net_energy_growth(
 \item{final_weight}{Numeric. Final live weight (kg).}
 
 \item{initial_weight}{Numeric. Initial live weight (kg).}
+
+\item{adult_weight}{Numeric. Adult weight that could be reached by the animal (kg).}
 
 \item{dwg}{Numeric. Daily weight gain (kg/day).}
 

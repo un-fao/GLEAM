@@ -9,7 +9,6 @@ calc_net_energy_activity(
   cohort,
   nemain,
   average_weight,
-  offtake_rate,
   activity_fraction,
   high_activity_fraction
 )
@@ -22,8 +21,6 @@ calc_net_energy_activity(
 \item{nemain}{Numeric. Net energy for maintenance.}
 
 \item{average_weight}{Numeric. Average live weight (kg).}
-
-\item{offtake_rate}{Numeric. Offtake rate by cohort.}
 
 \item{activity_fraction}{Numeric. Fraction of time under low-activity conditions.}
 
