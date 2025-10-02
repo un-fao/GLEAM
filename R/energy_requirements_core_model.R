@@ -75,7 +75,6 @@ calc_net_energy_maintenance <- function(
 #' @param cohort Character. Cohort code.
 #' @param nemain Numeric. Net energy for maintenance.
 #' @param average_weight Numeric. Average live weight (kg).
-#' @param offtake_rate Numeric. Offtake rate by cohort.
 #' @param activity_fraction Numeric. Fraction of time under low-activity conditions.
 #' @param high_activity_fraction Numeric. Fraction of time under high-activity conditions.
 #'
@@ -86,14 +85,13 @@ calc_net_energy_activity <- function(
     cohort,
     nemain,
     average_weight,
-    offtake_rate,
     activity_fraction,
     high_activity_fraction
 ) {
   # Validate inputs
   validate_activity_inputs(
     animal, cohort,
-    nemain, average_weight, offtake_rate,
+    nemain, average_weight,
     activity_fraction,
     high_activity_fraction
   )
@@ -105,13 +103,7 @@ calc_net_energy_activity <- function(
     cact <- (0.1 * activity_fraction)
     ret <- cact * nemain
   } else if (animal == "SHP") {
-    # Sheep: more complex, includes offtake effect
-    cact <- (0.0107 * activity_fraction) +
-      (0.024 * high_activity_fraction) *
-      (1 - offtake_rate) + (0.0067 * offtake_rate)
-    if (cohort == "FA") {
-      cact <- 0.0096 # Adult females fixed
-    }
+    cact <- (0.0107 * activity_fraction) + (0.024 * high_activity_fraction) 
     ret <- cact * average_weight
   } else if (animal %in% c("GTS")) {
     cact <- (0.019 * activity_fraction) + (0.024 * high_activity_fraction)

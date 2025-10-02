@@ -76,7 +76,6 @@ validate_activity_inputs <- function(
     cohort,
     nemain,
     average_weight,
-    offtake_rate,
     activity_fraction ,
     high_activity_fraction
 ) {
@@ -84,7 +83,6 @@ validate_activity_inputs <- function(
   validate_cohort_code(cohort)
   validate_positive_numeric(nemain, "nemain")
   validate_positive_numeric(average_weight, "average_weight")
-  validate_scalar_numeric(offtake_rate, "offtake_rate")
   validate_scalar_numeric(activity_fraction, "activity_fraction")
   validate_scalar_numeric(high_activity_fraction, "high_activity_fraction")
   

@@ -56,7 +56,6 @@ run_energy_requirements <- function(data) {
     cohort = cohort,
     nemain = nemain,
     average_weight = average_weight,
-    offtake_rate = offtake_rate,
     activity_fraction = activity_fraction,
     high_activity_fraction = high_activity_fraction
   ), by = .I]

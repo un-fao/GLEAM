@@ -87,7 +87,7 @@ test_that("calc_net_energy_activity returns correct values for cattle", {
   nemain <- 15.0
   result <- calc_net_energy_activity(
     animal = "CTL", cohort = "FA",
-    nemain = nemain, average_weight = 500, offtake_rate = 0.1,
+    nemain = nemain, average_weight = 500,
     activity_fraction = 0.6, high_activity_fraction = 0.8
   )
   cact <- (0.17 * 0.6) + (0.36 * 0.8)
@@ -99,7 +99,7 @@ test_that("calc_net_energy_activity returns correct values for buffalo", {
   nemain <- 18.0
   result <- calc_net_energy_activity(
     animal = "BFL", cohort = "FA",
-    nemain = nemain, average_weight = 600, offtake_rate = 0.1,
+    nemain = nemain, average_weight = 600, 
     activity_fraction = 0.5, high_activity_fraction = 0.7
   )
   cact <- (0.17 * 0.5) + (0.36 * 0.7)
@@ -110,21 +110,21 @@ test_that("calc_net_energy_activity returns correct values for buffalo", {
 test_that("calc_net_energy_activity handles sheep complexity", {
   result <- calc_net_energy_activity(
     animal = "SHP", cohort = "MS",
-    nemain = 8.0, average_weight = 45, offtake_rate = 0.2,
-    activity_fraction = 0.5, high_activity_fraction = 0.7
+    nemain = 8.0, average_weight = 45, 
+    activity_fraction = 0.5, high_activity_fraction = 0.2
   )
-  cact <- (0.0107 * 0.5) +
-    (0.024 * 0.7) * (1 - 0.2) + (0.0067 * 0.2)
+  cact <- (0.0107 * 0.5) +  (0.024 * 0.2)
   expected <- cact * 45
   expect_equal(result, expected)
 
   # Test adult female sheep (fixed coefficient)
   result <- calc_net_energy_activity(
     animal = "SHP", cohort = "FA",
-    nemain = 8.0, average_weight = 60, offtake_rate = 0.1,
-    activity_fraction = 0.5, high_activity_fraction = 0.7
+    nemain = 8.0, average_weight = 60,
+    activity_fraction = 0.5, high_activity_fraction = 0.2
   )
-  expected <- 0.0096 * 60
+  cact <- (0.0107 * 0.5) +  (0.024 * 0.2)
+  expected <- cact * 60
   expect_equal(result, expected)
 })
 
@@ -132,7 +132,7 @@ test_that("calc_net_energy_activity handles different species", {
   # Test camelids
   result <- calc_net_energy_activity(
     animal = "CML", cohort = "FA",
-    nemain = 12.0, average_weight = 400, offtake_rate = 0.1,
+    nemain = 12.0, average_weight = 400,
     activity_fraction = 0.5, high_activity_fraction = 0.6
   )
   expected <- (0.1 * 0.5) * 12.0
@@ -141,7 +141,7 @@ test_that("calc_net_energy_activity handles different species", {
   # Test pigs
   result <- calc_net_energy_activity(
     animal = "PGS", cohort = "FA",
-    nemain = 10.0, average_weight = 150, offtake_rate = 0.1,
+    nemain = 10.0, average_weight = 150,
     activity_fraction = 0.5, high_activity_fraction = 0.3
   )
   expected <- 0.125 * 0.5 * 10.0
@@ -150,7 +150,7 @@ test_that("calc_net_energy_activity handles different species", {
   # Test goats
   result <- calc_net_energy_activity(
     animal = "GTS", cohort = "FA",
-    nemain = 8.0, average_weight = 50, offtake_rate = 0.1,
+    nemain = 8.0, average_weight = 50,
     activity_fraction = 0.4, high_activity_fraction = 0.6
   )
   expected <- ((0.019 * 0.4) + (0.024 * 0.6)) * 50
@@ -161,7 +161,7 @@ test_that("calc_net_energy_activity handles zero high_activity_fraction for catt
   nemain <- 12.0
   result <- calc_net_energy_activity(
     animal = "CTL", cohort = "FA",
-    nemain = nemain, average_weight = 500, offtake_rate = 0.1,
+    nemain = nemain, average_weight = 500,
     activity_fraction = 0.6, high_activity_fraction = 0
   )
   cact <- (0.17 * 0.6) + (0.36 * 0)
@@ -169,16 +169,6 @@ test_that("calc_net_energy_activity handles zero high_activity_fraction for catt
   expect_equal(result, expected)
 })
 
-test_that("calc_net_energy_activity handles zero offtake_rate for sheep", {
-  result <- calc_net_energy_activity(
-    animal = "SHP", cohort = "MS",
-    nemain = 8.0, average_weight = 45, offtake_rate = 0,
-    activity_fraction = 0.5, high_activity_fraction = 0.7
-  )
-  cact <- (0.0107 * 0.5) + (0.024 * 0.7) * (1 - 0) + (0.0067 * 0)
-  expected <- cact * 45
-  expect_equal(result, expected)
-})
 
 # ---- test calc_net_energy_growth ----
 test_that("calc_net_energy_growth returns correct values for cattle", {
