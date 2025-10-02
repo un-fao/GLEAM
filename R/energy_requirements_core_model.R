@@ -415,7 +415,7 @@ calc_net_energy_fibre <- function(
 #' @param nemain Numeric. Net energy for maintenance.
 #' @param parturition_rate Numeric. Parturition rate.
 #' @param litsize Numeric. Litter size (for SHP, GTS, PGS).
-#' @param gest Numeric. Fraction of time gestating (for PGS).
+#' @param gest Numeric. Fraction of time gestating (for all species).
 #' @param duration Numeric. Duration in days.
 #' @param offtake_rate Numeric. Offtake rate by cohort.
 #'
