@@ -97,6 +97,7 @@ validate_growth_inputs <- function(
     average_weight,
     final_weight,
     initial_weight,
+    adult_weight,
     dwg,
     offtake_rate,
     duration
@@ -106,6 +107,7 @@ validate_growth_inputs <- function(
   validate_positive_numeric(average_weight, "average_weight")
   validate_positive_numeric(final_weight, "final_weight")
   validate_positive_numeric(initial_weight, "initial_weight")
+  validate_positive_numeric(initial_weight, "adult_weight")
   validate_scalar_numeric(dwg, "dwg")
   validate_scalar_numeric(offtake_rate, "offtake_rate")
   validate_positive_numeric(duration, "duration")

@@ -67,6 +67,7 @@ run_energy_requirements <- function(data) {
     average_weight = average_weight,
     final_weight = final_weight,
     initial_weight = initial_weight,
+    adult_weight = adult_weight,
     dwg = dwg,
     offtake_rate = offtake_rate,
     duration = duration

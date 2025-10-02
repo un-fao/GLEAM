@@ -175,16 +175,16 @@ test_that("calc_net_energy_growth returns correct values for cattle", {
   result <- calc_net_energy_growth(
     animal = "CTL", cohort = "FJ",
     average_weight = 200, final_weight = 300,
-    initial_weight = 150, dwg = 0.5, offtake_rate = 0.1, duration = 100
+    initial_weight = 150, adult_weight = 500, dwg = 0.5, offtake_rate = 0.1, duration = 100
   )
-  expected <- 22.02 * ((200 / (0.8 * 300))^0.75) * (0.5^1.097)
+  expected <- 22.02 * ((200 / (0.8 * 500))^0.75) * (0.5^1.097)
   expect_equal(result, expected)
 
   # Test adult cohort (no growth)
   result <- calc_net_energy_growth(
     animal = "CTL", cohort = "FA",
     average_weight = 500, final_weight = 500,
-    initial_weight = 500, dwg = 0, offtake_rate = 0.1, duration = 365
+    initial_weight = 500, adult_weight = 500, dwg = 0, offtake_rate = 0.1, duration = 365
   )
   expect_equal(result, 0)
 })
@@ -193,7 +193,7 @@ test_that("calc_net_energy_growth handles sheep linear formula", {
   result <- calc_net_energy_growth(
     animal = "SHP", cohort = "FJ",
     average_weight = 30, final_weight = 50,
-    initial_weight = 25, dwg = 0.1, offtake_rate = 0.1, duration = 250
+    initial_weight = 25,  adult_weight = 60, dwg = 0.1, offtake_rate = 0.1, duration = 250
   )
   expected <- ((50 - 25) * (2.1 + 0.5 * 0.45 * (25 + 50))) / 250
   expect_equal(result, expected)
@@ -202,7 +202,7 @@ test_that("calc_net_energy_growth handles sheep linear formula", {
   result <- calc_net_energy_growth(
     animal = "SHP", cohort = "FA",
     average_weight = 60, final_weight = 60,
-    initial_weight = 60, dwg = 0, offtake_rate = 0.1, duration = 365
+    initial_weight = 60,  adult_weight = 60, dwg = 0, offtake_rate = 0.1, duration = 365
   )
   expect_equal(result, 0)
 })
@@ -211,7 +211,7 @@ test_that("calc_net_energy_growth handles pigs", {
   result <- calc_net_energy_growth(
     animal = "PGS", cohort = "FJ",
     average_weight = 50, final_weight = 80,
-    initial_weight = 40, dwg = 0.3, offtake_rate = 0.1, duration = 133
+    initial_weight = 40,  adult_weight = 300, dwg = 0.3, offtake_rate = 0.1, duration = 133
   )
   prot_tissue_frac <- 0.65
   cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * 0.9 * 52.3)

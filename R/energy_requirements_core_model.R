@@ -124,6 +124,7 @@ calc_net_energy_activity <- function(
 #' @param average_weight Numeric. Average live weight (kg).
 #' @param final_weight Numeric. Final live weight (kg).
 #' @param initial_weight Numeric. Initial live weight (kg).
+#' @param adult_weight Numeric. Adult weight that could be reached by the animal (kg).
 #' @param dwg Numeric. Daily weight gain (kg/day).
 #' @param offtake_rate Numeric. Offtake rate by cohort.
 #' @param duration Numeric. Duration in days.
@@ -136,6 +137,7 @@ calc_net_energy_growth <- function(
     average_weight,
     final_weight,
     initial_weight,
+    adult_weight,
     dwg,
     offtake_rate,
     duration
@@ -143,7 +145,7 @@ calc_net_energy_growth <- function(
   # Validate inputs
   validate_growth_inputs(
     animal, cohort, average_weight, final_weight,
-    initial_weight, dwg, offtake_rate, duration
+    initial_weight, adult_weight, dwg, offtake_rate, duration
   )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort %in% c("FS", "FJ")) {
@@ -152,7 +154,7 @@ calc_net_energy_growth <- function(
       cgro <- 1.2 * (1 - offtake_rate) + 1 * offtake_rate
     }
     if (cohort %in% c("FS", "FJ", "MS", "MJ")) {
-      ret <- 22.02 * ((average_weight / (cgro * final_weight))^0.75) * (dwg^1.097)
+      ret <- 22.02 * ((average_weight / (cgro * adult_weight))^0.75) * (dwg^1.097)
     } else {
       return(0) # No growth for other cohorts
     }
