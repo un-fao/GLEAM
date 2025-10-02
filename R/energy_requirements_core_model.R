@@ -20,6 +20,17 @@ calc_net_energy_maintenance <- function(
     offtake_rate = NA_real_,
     afc = NA_real_
 ) {
+  
+  
+  # Normalize offtake_rate
+  if (!is.na(offtake_rate)) {
+    if (offtake_rate < 0) {
+      offtake_rate <- 0
+    } else if (offtake_rate > 1) {
+      offtake_rate <- 1
+    }
+  }
+  
   # Validate inputs
   validate_maintenance_inputs(
     animal, cohort, average_weight,
@@ -142,6 +153,17 @@ calc_net_energy_growth <- function(
     offtake_rate,
     duration
 ) {
+  
+  
+  # Normalize offtake_rate
+  if (!is.na(offtake_rate)) {
+    if (offtake_rate < 0) {
+      offtake_rate <- 0
+    } else if (offtake_rate > 1) {
+      offtake_rate <- 1
+    }
+  }
+  
   # Validate inputs
   validate_growth_inputs(
     animal, cohort, average_weight, final_weight,
@@ -409,6 +431,17 @@ calc_net_energy_pregnancy <- function(
     duration,
     offtake_rate
 ) {
+  
+  
+  # Normalize offtake_rate
+  if (!is.na(offtake_rate)) {
+    if (offtake_rate < 0) {
+      offtake_rate <- 0
+    } else if (offtake_rate > 1) {
+      offtake_rate <- 1
+    }
+  }
+  
   # Validate inputs
   validate_pregnancy_inputs(
     animal, cohort, nemain, parturition_rate,
