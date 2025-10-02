@@ -396,8 +396,6 @@ calc_net_energy_fibre <- function(
 #' @param cohort Character. Cohort code.
 #' @param nemain Numeric. Net energy for maintenance.
 #' @param parturition_rate Numeric. Parturition rate.
-#' @param idle Numeric. Fraction of time idle (for PGS).
-#' @param lact Numeric. Fraction of time lactating (for PGS).
 #' @param litsize Numeric. Litter size (for SHP, GTS, PGS).
 #' @param gest Numeric. Fraction of time gestating (for PGS).
 #' @param duration Numeric. Duration in days.
@@ -410,8 +408,6 @@ calc_net_energy_pregnancy <- function(
     cohort,
     nemain,
     parturition_rate,
-    idle,
-    lact,
     litsize,
     gest,
     duration,
@@ -419,14 +415,14 @@ calc_net_energy_pregnancy <- function(
 ) {
   # Validate inputs
   validate_pregnancy_inputs(
-    animal, cohort, nemain, parturition_rate, idle, lact,
+    animal, cohort, nemain, parturition_rate,
     litsize, gest, duration, offtake_rate
   )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
       ret <- (nemain * 0.1 * parturition_rate)
     } else if (cohort == "FS") {
-      ret <- (nemain * 0.1) * (1 / (duration / 365)) * (1 - offtake_rate)
+      ret <- (nemain * 0.1) * (gest/duration) * (1 - offtake_rate)
     } else {
       ret <- 0
     }
@@ -434,7 +430,7 @@ calc_net_energy_pregnancy <- function(
     if (cohort == "FA") {
       ret <- nemain * 0.12 * parturition_rate
     } else if (cohort == "FS") {
-      ret <- nemain * 0.12 * (1 / (duration / 365)) * (1 - offtake_rate)
+      ret <- nemain * 0.12 * (gest/duration) * (1 - offtake_rate)
     } else {
       ret <- 0
     }
@@ -450,19 +446,19 @@ calc_net_energy_pregnancy <- function(
       ret <- nemain * cpreg * parturition_rate
     } else if (cohort == "FS") {
       # 5 months pregnancy assumed
-      ret <- nemain * 0.077 * (1 / (duration / 365)) * (1 - offtake_rate)
+      ret <- nemain * 0.077 * (gest/duration) * (1 - offtake_rate)
     } else {
       ret <- 0
     }
   } else if (animal == "PGS") {
     cgest <- 0.14985 # GLEAM coefficient for pigs
     if (cohort == "FA") {
-      cadj <- gest / (idle + gest + lact)
-    } else if (cohort == "FS") {
-      cadj <- (gest / (duration)) * (1 / (duration / 365)) * (1 - offtake_rate)
-    }
-    if (cohort %in% c("FA", "FS")) {
-      ret <- cgest * litsize * cadj
+      ret <- cgest * litsize * parturition_rate 
+      
+      } else if (cohort == "FS") {
+        
+        ret <- cgest * litsize * (gest / duration) * parturition_rate * (1 - offtake_rate)
+        
     } else {
       ret <- 0
     }

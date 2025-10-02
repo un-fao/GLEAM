@@ -113,8 +113,6 @@ run_energy_requirements <- function(data) {
     cohort = cohort,
     nemain = nemain,
     parturition_rate = parturition_rate,
-    idle = idle,
-    lact = lact,
     litsize = litsize,
     gest = gest,
     duration = duration,

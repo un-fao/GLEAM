@@ -335,7 +335,7 @@ test_that("calc_net_energy_pregnancy returns correct values for cattle", {
   result <- calc_net_energy_pregnancy(
     animal = "CTL", cohort = "FA",
     nemain = 15.0, parturition_rate = 0.8,
-    idle = 0, lact = 0, litsize = 1, gest = 0, duration = 365, offtake_rate = 0.1
+   litsize = 1, gest = 283,  duration = 365, offtake_rate = 0.2
   )
   expected <- 15.0 * 0.1 * 0.8
   expect_equal(result, expected)
@@ -344,9 +344,9 @@ test_that("calc_net_energy_pregnancy returns correct values for cattle", {
   result <- calc_net_energy_pregnancy(
     animal = "CTL", cohort = "FS",
     nemain = 12.0, parturition_rate = 0.8,
-    idle = 0, lact = 0, litsize = 1, gest = 0, duration = 730, offtake_rate = 0.2
+    litsize = 1, gest = 283, duration = 730, offtake_rate = 0.2
   )
-  expected <- (12.0 * 0.1) * (1 / (730 / 365)) * 0.8
+  expected <- (12.0 * 0.1) * (283 / 730) * (1-0.2)
   expect_equal(result, expected)
 })
 
@@ -354,8 +354,8 @@ test_that("calc_net_energy_pregnancy handles sheep with litter size effects", {
   # Test with litter size 1.5
   result <- calc_net_energy_pregnancy(
     animal = "SHP", cohort = "FA",
-    nemain = 8.0, parturition_rate = 1.2,
-    idle = 0, lact = 0, litsize = 1.5, gest = 0, duration = 365, offtake_rate = 0.1
+    nemain = 8.0, parturition_rate = 1.2, litsize = 1.5, 
+    gest = 152, duration = 365, offtake_rate = 0.1
   )
   cpreg <- (0.077 * 0.5 + 0.126 * 0.5)
   expected <- 8.0 * cpreg * 1.2
@@ -365,7 +365,7 @@ test_that("calc_net_energy_pregnancy handles sheep with litter size effects", {
   result <- calc_net_energy_pregnancy(
     animal = "SHP", cohort = "FA",
     nemain = 8.0, parturition_rate = 1.2,
-    idle = 0, lact = 0, litsize = 2.5, gest = 0, duration = 365, offtake_rate = 0.1
+    litsize = 2.5, gest = 152, duration = 365, offtake_rate = 0.1
   )
   expected <- 8.0 * 0.150 * 1.2
   expect_equal(result, expected)
@@ -375,10 +375,9 @@ test_that("calc_net_energy_pregnancy handles pigs", {
   result <- calc_net_energy_pregnancy(
     animal = "PGS", cohort = "FA",
     nemain = 12.0, parturition_rate = 2.2,
-    idle = 0.2, lact = 0.3, litsize = 10, gest = 0.5, duration = 365, offtake_rate = 0.1
+    litsize = 10, gest = 115, duration = 365, offtake_rate = 0.1
   )
-  cadj <- 0.5 / (0.2 + 0.5 + 0.3)
-  expected <- 0.14985 * 10 * cadj
+  expected <- 0.14985 * 10 * 2.2
   expect_equal(result, expected)
 })
 

@@ -209,8 +209,6 @@ validate_pregnancy_inputs <- function(
     cohort,
     nemain,
     parturition_rate,
-    idle,
-    lact,
     litsize,
     gest,
     duration,
@@ -225,8 +223,6 @@ validate_pregnancy_inputs <- function(
 
   # Validate animal-specific parameters
   if (animal == "PGS") {
-    if (!is.na(idle)) validate_scalar_numeric(idle, "idle")
-    if (!is.na(lact)) validate_scalar_numeric(lact, "lact")
     if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")
     if (!is.na(gest)) validate_scalar_numeric(gest, "gest")
   }
