@@ -563,7 +563,7 @@ calc_total_energy_requirement <- function(
     # Sheep, goats: add fibre
     ret <- (((nemain + neact + nelact + nepreg) / rem) + ((negrow + nefibre) / reg)) / diet_dig
   } else if (animal == "CML") {
-    ret <- nemain + neact + nelact + nework + nefibre + nepreg
+    ret <- nemain + neact + nelact + nework + nefibre + nepreg + negrow
   } else if (animal == "PGS") {
     ret <- nemain + neact + nelact + nepreg + negrow
   } else if (animal == "CHK") {

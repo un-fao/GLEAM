@@ -433,7 +433,7 @@ test_that("calc_total_energy_requirement handles different species", {
     nemain = 12.0, neact = 2.0, nelact = 6.0, nework = 1.0, nepreg = 1.5,
     rem = NA, negrow = 0, nefibre = 0.3, neegg = 0, reg = NA, diet_dig = 0.70, afc = 730
   )
-  expected <- 12.0 + 2.0 + 6.0 + 1.0 + 0.3 + 1.5
+  expected <- 12.0 + 2.0 + 6.0 + 1.0 + 0.3 + 1.5 + 0
   expect_equal(result, expected)
 
   # Test pigs
