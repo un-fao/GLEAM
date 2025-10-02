@@ -45,11 +45,6 @@ run_energy_requirements <- function(data) {
     animal = Animal_short,
     cohort = cohort,
     average_weight = average_weight,
-    idle = idle,
-    gest = gest,
-    lact = lact,
-    litsize = litsize,
-    ckg = ckg,
     milking_fraction = milking_fraction,
     offtake_rate = offtake_rate,
     afc = afc

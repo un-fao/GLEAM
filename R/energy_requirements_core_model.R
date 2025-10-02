@@ -5,10 +5,6 @@
 #' @param animal Character. Species code (e.g., "CTL", "BFL", "SHP", "GTS", "PGS", "CHK", "CML").
 #' @param cohort Character. Cohort code.
 #' @param average_weight Numeric. Average live weight (kg).
-#' @param idle Numeric. Fraction of time idle (only for PGS–FA, default NA).
-#' @param gest Numeric. Fraction of time gestating (only for PGS–FA, default NA).
-#' @param lact Numeric. Fraction of time lactating (only for PGS–FA, default NA).
-#' @param litsize Numeric. Litter size (only for PGS–FA, default NA).
 #' @param ckg Numeric. Birth weight (only for PGS–FA, default NA).
 #' @param milking_fraction Numeric. Proportion of lactating adult females (only for CTL/BFL–FA, default NA).
 #' @param offtake_rate Numeric. Offtake rate by cohort (only for some cohorts, default NA).
@@ -20,19 +16,14 @@ calc_net_energy_maintenance <- function(
     animal,
     cohort,
     average_weight,
-    idle = NA_real_,
-    gest = NA_real_,
-    lact = NA_real_,
-    litsize = NA_real_,
-    ckg = NA_real_,
     milking_fraction = NA_real_,
     offtake_rate = NA_real_,
     afc = NA_real_
 ) {
   # Validate inputs
   validate_maintenance_inputs(
-    animal, cohort, average_weight, idle, gest, lact,
-    litsize, ckg, milking_fraction, offtake_rate, afc
+    animal, cohort, average_weight,
+    milking_fraction, offtake_rate, afc
   )
   cmain <- NA
 
@@ -44,7 +35,7 @@ calc_net_energy_maintenance <- function(
       cmain <- 0.322
     } else if (cohort %in% c("MA", "MS")) {
       # Weighted by offtake rate
-      cmain <- 0.37 * offtake_rate + 0.322 * (1 - offtake_rate)
+      cmain <- 0.322 * offtake_rate + 0.37 * (1 - offtake_rate)
     }
   } else if (animal == "CML") {
     cmain <- 0.435 # Camelids fixed coefficient
@@ -64,21 +55,13 @@ calc_net_energy_maintenance <- function(
       cmain <- 0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)
     } else if (cohort == "MS") {
       # Complex weighted average for subadult males
-      cmain <- ((0.271 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)) * ((afc - 1) / afc) +
+      cmain <- ((0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)) * ((afc - 1) / afc) +
                   (0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)) * (1 / afc))
     } else if (cohort == "MJ") {
       cmain <- 0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)
     }
   } else if (animal == "PGS") {
     cmain <- 0.4435 # Pigs fixed coefficient
-    if (cohort == "FA") {
-      # Weighted average for adult females based on physiological state
-      weighted_met_weight_af <- ((average_weight^0.75 * idle) +
-                                   ((average_weight + (litsize * ckg + 0.15 * average_weight) / 2)^0.75 * gest) +
-                                   ((average_weight + (0.15 * average_weight) / 2)^0.75 * lact)) /
-        (idle + gest + lact)
-      return(weighted_met_weight_af * cmain)
-    }
   }
   # Default: metabolic body weight scaling
   return((average_weight^0.75) * cmain)

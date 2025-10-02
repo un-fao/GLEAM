@@ -41,11 +41,6 @@ validate_maintenance_inputs <- function(
     animal,
     cohort,
     average_weight,
-    idle = NA_real_,
-    gest = NA_real_,
-    lact = NA_real_,
-    litsize = NA_real_,
-    ckg = NA_real_,
     milking_fraction = NA_real_,
     offtake_rate = NA_real_,
     afc = NA_real_
@@ -55,13 +50,6 @@ validate_maintenance_inputs <- function(
   validate_positive_numeric(average_weight, "average_weight")
 
   # Validate optional parameters based on animal/cohort combinations
-  if (animal == "PGS" && cohort == "FA") {
-    if (!is.na(idle)) validate_scalar_numeric(idle, "idle")
-    if (!is.na(gest)) validate_scalar_numeric(gest, "gest")
-    if (!is.na(lact)) validate_scalar_numeric(lact, "lact")
-    if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")
-    if (!is.na(ckg)) validate_positive_numeric(ckg, "ckg")
-  }
 
   if (animal %in% c("CTL", "BFL") && cohort == "FA") {
     if (!is.na(milking_fraction)) validate_scalar_numeric(milking_fraction, "milking_fraction")

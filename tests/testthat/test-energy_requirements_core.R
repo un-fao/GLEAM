@@ -20,7 +20,7 @@ test_that("calc_net_energy_maintenance returns correct values for cattle", {
     animal = "CTL", cohort = "MA", average_weight = 600,
     offtake_rate = 0.3
   )
-  expected <- (600^0.75) * (0.37 * 0.3 + 0.322 * 0.7)
+  expected <- (600^0.75) * (0.322 * 0.3 + 0.37 * 0.7)
   expect_equal(result, expected)
 })
 
@@ -43,15 +43,9 @@ test_that("calc_net_energy_maintenance handles sheep with age at first calving",
 
 test_that("calc_net_energy_maintenance handles pigs with physiological states", {
   result <- calc_net_energy_maintenance(
-    animal = "PGS", cohort = "FA", average_weight = 150,
-    idle = 0.3, gest = 0.4, lact = 0.3,
-    litsize = 8, ckg = 1.5
-  )
-  # Complex weighted calculation for pigs
-  weighted_met_weight <- ((150^0.75 * 0.3) +
-    ((150 + (8 * 1.5 + 0.15 * 150) / 2)^0.75 * 0.4) +
-    ((150 + (0.15 * 150) / 2)^0.75 * 0.3)) / (0.3 + 0.4 + 0.3)
-  expected <- weighted_met_weight * 0.4435
+    animal = "PGS", cohort = "FA", average_weight = 150)
+
+  expected <- (150^0.75) * 0.4435
   expect_equal(result, expected)
 })
 
@@ -80,11 +74,11 @@ test_that("calc_net_energy_maintenance calculates correctly for zero milking_fra
 test_that("calc_net_energy_maintenance handles offtake extremes", {
   expect_equal(
     calc_net_energy_maintenance(animal = "CTL", cohort = "MA", average_weight = 600, offtake_rate = 0),
-    (600^0.75) * 0.322, tolerance = 1e-8
+    (600^0.75) * 0.37, tolerance = 1e-8
   )
   expect_equal(
     calc_net_energy_maintenance(animal = "CTL", cohort = "MA", average_weight = 600, offtake_rate = 1),
-    (600^0.75) * 0.37, tolerance = 1e-8
+    (600^0.75) * 0.322, tolerance = 1e-8
   )
 })
 
