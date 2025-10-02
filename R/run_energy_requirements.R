@@ -39,6 +39,16 @@ run_energy_requirements <- function(data) {
   )
   miss <- setdiff(required, names(data))
   if (length(miss)) stop("Missing required columns: ", paste(miss, collapse = ", "))
+  
+  # 0.2 Create a new variable (adult_weight) - this might be done in a previous step (herd module?)
+  data[, adult_weight := fifelse(
+    cohort %in% c("FA", "FS", "FJ"),
+    average_weight[cohort == "FA"][1],   # female adult ref for this group
+    fifelse(cohort %in% c("MA", "MS", "MJ"),
+            average_weight[cohort == "MA"][1], # male adult ref for this group
+            NA_real_)
+  ), by = .(ADM0_CODE, Animal_short, LPS_short, HerdType_short)]
+  
 
   # 1. Maintenance energy (MJ/day)
   data[, nemain := calc_net_energy_maintenance(
