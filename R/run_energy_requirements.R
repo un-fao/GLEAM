@@ -19,6 +19,9 @@
 #' # Load example input from the package and run the function
 #' input_path <- system.file("extdata/GLEAM_input_energyrequirements.csv", package = "gleam")
 #' data <- data.table::fread(input_path)
+#' input_path2 <- system.file("extdata/Herd_parameters/herd_param_gest.csv", package = "gleam")
+#' herd_param_gest <- data.table::fread(input_path2)
+#' 
 #' energy_results <- run_energy_requirements(data)
 #' }
 #'
@@ -39,6 +42,15 @@ run_energy_requirements <- function(data) {
   )
   miss <- setdiff(required, names(data))
   if (length(miss)) stop("Missing required columns: ", paste(miss, collapse = ", "))
+  
+  # 0.1 Assign "gest" from parameter file
+  data[,gest:=NULL]
+  
+  data<-merge(data,
+              herd_param_gest[,.(Animal_short, gest)],
+              by="Animal_short",
+              all.x = T)
+  
   
   # 0.2 Create a new variable (adult_weight) - this might be done in a previous step (herd module?)
   data[, adult_weight := fifelse(
