@@ -225,6 +225,7 @@ calc_net_energy_growth <- function(
 #' @param lact Numeric. Fraction of time lactating (for PGS).
 #' @param parturition_rate Numeric. Parturition rate.
 #' @param lambing_interval Numeric. Lambing interval (for SHP, GTS).
+#' @param assessment_duration Numeric. Duration of the assessment (days)
 #'
 #' @return Numeric. Net energy for lactation (MJ/head/day).
 #' @export
@@ -242,39 +243,40 @@ calc_net_energy_lactation <- function(
     wkg,
     lact,
     parturition_rate,
-    lambing_interval
+    lambing_interval,
+    assessment_duration
 ) {
   # Validate inputs
   validate_lactation_inputs(
     animal, cohort, milking_fraction, milk_yield, milk_fat,
     idle, gest, litsize, dr1, ckg, wkg, lact,
-    parturition_rate, lambing_interval
+    parturition_rate, lambing_interval, assessment_duration
   )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / 365) *
+      ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) *
         (milk_fat * 100 * 0.40 + 1.47) * milking_fraction
     } else {
       ret <- 0
     }
   } else if (animal %in% c("CML")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / 365) * 4.063 * milking_fraction
+      ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) * 4.063 * milking_fraction
     } else {
       ret <- 0
     }
   } else if (animal %in% c("SHP")) {
     if (cohort == "FA") {
       # Includes effect of litter size and lambing interval
-      ret <- (milk_yield + (litsize * (365 * parturition_rate / lambing_interval) * 5 *
-                              (wkg - ckg)) / 365) * 4.6 * milking_fraction
+      ret <- (milk_yield + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
+                              (wkg - ckg)) / assessment_duration) * 4.6 * milking_fraction
     } else {
       ret <- 0
     }
   } else if (animal %in% c("GTS")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (litsize * (365 * parturition_rate / lambing_interval) * 5 *
-                              (wkg - ckg)) / 365) * 3 * milking_fraction
+      ret <- (milk_yield + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
+                              (wkg - ckg)) / assessment_duration) * 3 * milking_fraction
     } else {
       ret <- 0
     }
