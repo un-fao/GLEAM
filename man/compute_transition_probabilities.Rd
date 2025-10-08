@@ -4,14 +4,14 @@
 \alias{compute_transition_probabilities}
 \title{Compute Transition Probabilities for Sex-Age Classes}
 \usage{
-compute_transition_probabilities(duration, offtake_rate, death_rate)
+compute_transition_probabilities(duration, offtake_rate, mort_rate)
 }
 \arguments{
 \item{duration}{Numeric vector of length 6. Duration (in days) of each sex-age class.}
 
 \item{offtake_rate}{Numeric vector of length 6. Annual offtake rate for each sex-age class.}
 
-\item{death_rate}{Numeric vector of length 6. Annual death rate for each sex-age class.}
+\item{mort_rate}{Numeric vector of length 6. Annual death rate for each sex-age class.}
 }
 \value{
 A named list with:

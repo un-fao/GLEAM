@@ -5,9 +5,9 @@ share_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 # ---- test compute_fecundity_rates ----
 test_that("compute_fecundity_rates returns expected output", {
   res <- compute_fecundity_rates(
-    part_rate = 0.8,
-    prolif_rate = 2,
-    fem_birth_ratio = 0.5
+    parturition_rate = 0.8,
+    litsize = 2,
+    fem_birth_fraction = 0.5
   )
 
   expect_type(res, "list")
@@ -25,7 +25,7 @@ test_that("compute_transition_probabilities returns named list with correct leng
   res <- compute_transition_probabilities(
     duration = dur,
     offtake_rate = off,
-    death_rate = death
+    mort_rate = death
   )
 
   expect_type(res, "list")
@@ -40,7 +40,7 @@ test_that("simulate_steady_state_structure converges and returns valid structure
   trans <- compute_transition_probabilities(
     duration = setNames(rep(365, 6), share_cohorts),
     offtake_rate = setNames(rep(0.1, 6), share_cohorts),
-    death_rate = setNames(rep(0.05, 6), share_cohorts)
+    mort_rate = setNames(rep(0.05, 6), share_cohorts)
   )
 
   result <- simulate_steady_state_structure(
@@ -70,7 +70,7 @@ test_that("project_population_size runs and returns list with expected elements"
   trans <- compute_transition_probabilities(
     duration = setNames(rep(365, 6), share_cohorts),
     offtake_rate = setNames(rep(0.1, 6), share_cohorts),
-    death_rate = setNames(rep(0.05, 6), share_cohorts)
+    mort_rate = setNames(rep(0.05, 6), share_cohorts)
   )
 
   cohorts <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")

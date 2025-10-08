@@ -64,28 +64,28 @@ validate_named_numeric_vector <- function(
 #' Validate inputs for compute_fecundity_rates
 #'
 #' @noRd
-validate_fecundity_inputs <- function(part_rate, prolif_rate, fem_birth_ratio) {
-  validate_scalar_numeric(part_rate, "part_rate")
-  validate_scalar_numeric(prolif_rate, "prolif_rate")
-  validate_scalar_numeric(fem_birth_ratio, "fem_birth_ratio")
+validate_fecundity_inputs <- function(parturition_rate, litsize, fem_birth_fraction) {
+  validate_scalar_numeric(parturition_rate, "parturition_rate")
+  validate_scalar_numeric(litsize, "litsize")
+  validate_scalar_numeric(fem_birth_fraction, "fem_birth_fraction")
 
   # Enforce configured bounds
-  validate_param_range(part_rate)
-  validate_param_range(prolif_rate)
-  validate_param_range(fem_birth_ratio)
+  validate_param_range(parturition_rate)
+  validate_param_range(litsize)
+  validate_param_range(fem_birth_fraction)
 }
 
 #' Validate inputs for compute_transition_probabilities
 #'
 #' @noRd
-validate_transition_inputs <- function(duration, offtake_rate, death_rate) {
+validate_transition_inputs <- function(duration, offtake_rate, mort_rate) {
   validate_named_numeric_vector(duration, "duration", 6)
   validate_named_numeric_vector(offtake_rate, "offtake_rate", 6)
-  validate_named_numeric_vector(death_rate, "death_rate", 6)
+  validate_named_numeric_vector(mort_rate, "mort_rate", 6)
 
   # Enforce configured bounds
   validate_param_range(duration)
-  validate_param_range(death_rate)
+  validate_param_range(mort_rate)
   validate_param_range(offtake_rate)
 }
 
