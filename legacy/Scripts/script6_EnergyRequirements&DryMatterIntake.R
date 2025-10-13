@@ -62,9 +62,7 @@ GLEAM_input_energyrequirement[, getot := Dfunction_getot(Animal_short, cohort, n
                                              nefibre, neegg, reg, diet_dig, afc), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 
-## energy for meat production
-GLEAM_input_energyrequirement[, nemeat := Dfunction_nemeat(Animal_short, cohort = cohort,
-                                               ckg, afc, slaughter_weight, initial_weight), by = seq_len(nrow(GLEAM_input_energyrequirement))]
+
 
 
 
