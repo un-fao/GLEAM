@@ -150,6 +150,9 @@ setcolorder(wide_dt, c(
 # Assigning 1 to all litsize
 wide_dt[!(Animal_short %in% c("PGS", "CHK")), litsize := 1]
 
+
+wide_dt[, energy_onfarm:=0] #this should be in kWh
+
 # Assigning "parturition rate" to chickens, correponding to eggs hatching rate
 wide_dt[Animal_short %in% c("CHK"), parturition_rate := HATCH]
 
