@@ -88,9 +88,9 @@ test_that("calc_net_energy_activity returns correct values for cattle", {
   result <- calc_net_energy_activity(
     animal = "CTL", cohort = "FA",
     nemain = nemain, average_weight = 500,
-    activity_fraction = 0.6, high_activity_fraction = 0.8
+    activity_fraction = 0.6, high_activity_fraction = 0.2
   )
-  cact <- (0.17 * 0.6) + (0.36 * 0.8)
+  cact <- (0.17 * 0.6) + (0.36 * 0.2)
   expected <- cact * nemain
   expect_equal(result, expected)
 })
@@ -100,9 +100,9 @@ test_that("calc_net_energy_activity returns correct values for buffalo", {
   result <- calc_net_energy_activity(
     animal = "BFL", cohort = "FA",
     nemain = nemain, average_weight = 600, 
-    activity_fraction = 0.5, high_activity_fraction = 0.7
+    activity_fraction = 0.5, high_activity_fraction = 0.2
   )
-  cact <- (0.17 * 0.5) + (0.36 * 0.7)
+  cact <- (0.17 * 0.5) + (0.36 * 0.2)
   expected <- cact * nemain
   expect_equal(result, expected)
 })
@@ -133,7 +133,7 @@ test_that("calc_net_energy_activity handles different species", {
   result <- calc_net_energy_activity(
     animal = "CML", cohort = "FA",
     nemain = 12.0, average_weight = 400,
-    activity_fraction = 0.5, high_activity_fraction = 0.6
+    activity_fraction = 0.5, high_activity_fraction = 0
   )
   expected <- (0.1 * 0.5) * 12.0
   expect_equal(result, expected)
@@ -151,9 +151,9 @@ test_that("calc_net_energy_activity handles different species", {
   result <- calc_net_energy_activity(
     animal = "GTS", cohort = "FA",
     nemain = 8.0, average_weight = 50,
-    activity_fraction = 0.4, high_activity_fraction = 0.6
+    activity_fraction = 0.4, high_activity_fraction = 0.2
   )
-  expected <- ((0.019 * 0.4) + (0.024 * 0.6)) * 50
+  expected <- ((0.019 * 0.4) + (0.024 * 0.2)) * 50
   expect_equal(result, expected)
 })
 

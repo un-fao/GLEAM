@@ -85,8 +85,18 @@ validate_activity_inputs <- function(
   validate_positive_numeric(average_weight, "average_weight")
   validate_scalar_numeric(activity_fraction, "activity_fraction")
   validate_scalar_numeric(high_activity_fraction, "high_activity_fraction")
+ 
+  validate_fraction(activity_fraction, "activity_fraction")
+  validate_fraction(high_activity_fraction, "high_activity_fraction")
   
-}
+  if ((activity_fraction + high_activity_fraction) > 1) {
+    cli::cli_abort(
+      "Sum of {.field activity_fraction} + {.field high_activity_fraction} must be between 0 and 1."
+    )
+  }
+
+  
+  }
 
 #' Validate inputs for calc_net_energy_growth
 #'
@@ -111,7 +121,28 @@ validate_growth_inputs <- function(
   validate_scalar_numeric(dwg, "dwg")
   validate_scalar_numeric(offtake_rate, "offtake_rate")
   validate_positive_numeric(duration, "duration")
-}
+  
+  if (initial_weight > final_weight) {
+    cli::cli_abort("final_weight cannot be higher than initial_weight")
+  }
+  
+  
+  if (initial_weight > average_weight) {
+    cli::cli_abort("final_weight cannot be higher than average_weight")
+  }
+  
+  
+  if (average_weight > final_weight) {
+    cli::cli_abort("average_weight cannot be higher than final_weight")
+  }
+  
+  if (duration < 10) {
+    cli::cli_warn(
+      "{.field duration} is less than 10 days. Results might not be reliable."
+    )
+  }
+  
+  }
 
 #' Validate inputs for calc_net_energy_lactation
 #'
@@ -140,6 +171,16 @@ validate_lactation_inputs <- function(
   validate_scalar_numeric(milk_fat, "milk_fat")
   validate_positive_numeric(parturition_rate, "parturition_rate")
   validate_positive_numeric(parturition_rate, "assessment_duration")
+  
+  validate_fraction(milking_fraction, "milking_fraction")
+  validate_fraction(milk_fat, "milk_fat")
+
+  
+  # Logical validations
+  if (ckg > wkg) {
+    cli::cli_abort("ckg cannot be higher than wkg")
+  }
+  
 
   # Validate animal-specific parameters
   if (animal == "PGS") {
@@ -157,12 +198,20 @@ validate_lactation_inputs <- function(
     if (!is.na(ckg)) validate_positive_numeric(ckg, "ckg")
     if (!is.na(wkg)) validate_positive_numeric(wkg, "wkg")
     if (!is.na(lambing_interval)) validate_positive_numeric(lambing_interval, "lambing_interval")
-  }
+    
+    if (lambing_interval < 200) {
+      cli::cli_warn(
+        "{.field lambing_interval} is below 200 days. This may indicate an unrealistic input."
+      )
+    }
+    
+    }
 
   if (animal %in% c("CTL", "BFL", "CML")) {
     if (!is.na(ckg)) validate_positive_numeric(ckg, "ckg")
     if (!is.na(wkg)) validate_positive_numeric(wkg, "wkg")
   }
+  
 }
 
 #' Validate inputs for calc_net_energy_work
@@ -180,6 +229,9 @@ validate_work_inputs <- function(
   validate_positive_numeric(nemain, "nemain")
   validate_scalar_numeric(work_hours, "work_hours")
   validate_scalar_numeric(draught_fraction, "draught_fraction")
+  validate_fraction(draught_fraction, "draught_fraction")
+  
+  
 
   if (work_hours < 0 || work_hours > 24) {
     cli::cli_abort("{.arg work_hours} must be between 0 and 24.")
@@ -222,6 +274,12 @@ validate_pregnancy_inputs <- function(
   validate_positive_numeric(parturition_rate, "parturition_rate")
   validate_positive_numeric(duration, "duration")
   validate_scalar_numeric(offtake_rate, "offtake_rate")
+  
+  if (duration < 10) {
+    cli::cli_warn(
+      "{.field duration} is less than 10 days. This may indicate an unrealistic input."
+    )
+  }
 
   # Validate animal-specific parameters
   if (animal == "PGS") {
@@ -243,6 +301,15 @@ validate_rem_inputs <- function(
 ) {
   validate_animal_species(animal)
   validate_scalar_numeric(diet_dig, "diet_dig")
+  validate_fraction(diet_dig, "diet_dig")
+  
+  
+  if (diet_dig < 0.5) {
+    cli::cli_warn(
+      "{.field diet_dig} is below 0.5. This may indicate an unrealistic input."
+    )
+  }
+  
 }
 
 #' Validate inputs for calc_reg_growth
@@ -254,6 +321,12 @@ validate_reg_inputs <- function(
 ) {
   validate_animal_species(animal)
   validate_scalar_numeric(diet_dig, "diet_dig")
+  validate_fraction(diet_dig, "diet_dig")
+  if (diet_dig < 0.5) {
+    cli::cli_warn(
+      "{.field diet_dig} is below 0.5. The results might not be reliable."
+    )
+  }
 }
 
 #' Validate inputs for calc_total_energy_requirement
@@ -286,6 +359,13 @@ validate_total_energy_inputs <- function(
   validate_scalar_numeric(nefibre, "nefibre")
   #validate_scalar_numeric(neegg, "neegg")
   validate_scalar_numeric(diet_dig, "diet_dig")
+  validate_fraction(diet_dig, "diet_dig")
+  
+  if (diet_dig < 0.5) {
+    cli::cli_warn(
+      "{.field diet_dig} is below 0.5. The results might not be reliable."
+    )
+  }
 
   # Validate REM and REG based on animal type
   if (animal %in% c("CTL", "BFL", "SHP", "GTS")) {
@@ -318,4 +398,17 @@ validate_dmi_inputs <- function(
   validate_positive_numeric(total_energy, "total_energy")
   validate_positive_numeric(diet_ge, "diet_ge")
   validate_positive_numeric(diet_me, "diet_me")
+  
+  if (diet_me < 4) {
+    cli::cli_warn(
+      "{.field diet_me} is below 4 MJ/kg DM. This is a low value and may indicate an unrealistic input."
+    )
+  }
+  
+  # Warn for implausibly low gross energy
+  if (diet_ge < 10) {
+    cli::cli_warn(
+      "{.field diet_ge} is below 10 MJ/kg DM. This is a low value and may indicate an unrealistic input."
+    )
+  }
 }
