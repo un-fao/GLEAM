@@ -1,5 +1,5 @@
 # Inputs----
-gleam_feedEF<-fread("inst/extdata/GLEAM_FeedEF.csv")[, ADM0_CODE := as.factor(ADM0_CODE)]
+gleam_feedEF<-fread("inst/extdata/Feed_parameters/GLEAM_Feed_EF.csv")[, ADM0_CODE := as.factor(ADM0_CODE)]
 
 gleam_dmi <- fread("inst/extdata/GLEAM_input_directemissions_enteric.csv")[
   , .(ADM0_CODE = as.factor(ADM0_CODE), Animal, Animal_short, LPS, LPS_short, HerdType, HerdType_short, COUNTRY, ISO3, ISO3_num, M49_code, cohort, dmi)
