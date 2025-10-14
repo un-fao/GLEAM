@@ -226,5 +226,6 @@ extra_cols <- c(
 
 final_cols <- c(cols_all[col_start:col_end], extra_cols)
 
+
 #fwrite(herd_data[, ..final_cols], system.file("extdata/GLEAM_input_herdproc.csv", package = "gleam"))
 #rm(col_start, col_end, extra_cols)
