@@ -105,7 +105,7 @@
 #'
 #' @keywords internal
 #'
-#' @importFrom data.table := .I data.table rbind
+#' @importFrom data.table := .I data.table
 #' @importFrom stats setNames
 run_indirectemissions_feed <- function(
     gleam_dmi,
@@ -183,7 +183,7 @@ run_indirectemissions_feed <- function(
     trade_prefs_all <- rbind(trade_prefs_user, trade_prefs_default)
   }
 
-  setNames(trade_prefs_all, "feed_id", feed_id_col)
+  data.table::setnames(trade_prefs_all, "feed_id", feed_id_col)
 
   # --- 3. Filter EF table by trade options -----------------------------------
   # Merge EF data with trade preferences
@@ -214,7 +214,8 @@ run_indirectemissions_feed <- function(
     , feed_emissions_kgGas := compute_feed_emissions(
       dmi_byfeed = dmi_byfeed,
       emission_factor = EF
-    ), by = .I]
+    ), by = .I
+  ]
 
   # --- 5. Return result -------------------------------------------------------
   return(result)
