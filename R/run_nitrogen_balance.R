@@ -23,7 +23,8 @@
 #' }
 #'
 #' @keywords internal
-#' @importFrom data.table :=
+#'
+#' @importFrom data.table := .I
 run_nitrogen_balance <- function(data) {
   # --- Internal checks
   if (!inherits(data, "data.frame") || nrow(data) == 0) {

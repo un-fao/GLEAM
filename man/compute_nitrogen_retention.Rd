@@ -11,8 +11,8 @@ compute_nitrogen_retention(
   milk_yield = NA_real_,
   dwg = NA_real_,
   fibre_prod = NA_real_,
-  litsize = NA_real_,
-  parturition_rate = NA_real_,
+  litsize,
+  parturition_rate,
   wkg = NA_real_,
   ckg = NA_real_,
   afc = NA_real_
