@@ -12,19 +12,22 @@ test_that("retention for cattle: milk + growth add up correctly", {
   base <- compute_nitrogen_retention(
     "CTL","AF",
     milk_protein = 32, milk_yield = 20,
-    dwg = 0, fibre_prod = 0
+    dwg = 0, fibre_prod = 0,
+    litsize = 1, parturition_rate = 1
   )
   with_growth <- compute_nitrogen_retention(
     "CTL","AF",
     milk_protein = 32, milk_yield = 20,
-    dwg = 0.5, fibre_prod = 0
+    dwg = 0.5, fibre_prod = 0,
+    litsize = 1, parturition_rate = 1
   )
   expect_equal(with_growth - base, 0.5 * 0.0326, tolerance = 1e-12)
 
   none <- compute_nitrogen_retention(
     "CTL","AF",
     milk_protein = 32, milk_yield = 0,
-    dwg = 0, fibre_prod = 0
+    dwg = 0, fibre_prod = 0,
+    litsize = 1, parturition_rate = 1
   )
   expect_equal(base - none, 20 * (32/6.38), tolerance = 1e-12)
   expect_gt(base, 0)
@@ -35,12 +38,14 @@ test_that("retention for goats includes fibre component", {
   base <- compute_nitrogen_retention(
     "GTS","FA",
     milk_protein = NA_real_, milk_yield = NA_real_,
-    dwg = 0, fibre_prod = 0
+    dwg = 0, fibre_prod = 0,
+    litsize = 1, parturition_rate = 1
   )
   with_fibre <- compute_nitrogen_retention(
     "GTS","FA",
     milk_protein = NA_real_, milk_yield = NA_real_,
-    dwg = 0, fibre_prod = 10
+    dwg = 0, fibre_prod = 10,
+    litsize = 1, parturition_rate = 1
   )
   expect_equal(with_fibre - base, (10/365) * 0.0134, tolerance = 1e-12)
 })
@@ -50,7 +55,8 @@ test_that("retention for sheep with only fibre is positive", {
   val <- compute_nitrogen_retention(
     "SHP","FA",
     milk_protein = NA_real_, milk_yield = NA_real_,
-    dwg = NA_real_, fibre_prod = 20
+    dwg = NA_real_, fibre_prod = 20,
+    litsize = 1, parturition_rate = 1
   )
   expect_gt(val, 0)
 })
@@ -78,13 +84,13 @@ test_that("retention for pigs RF cohort includes growth and reproductive", {
 
 # ---- test compute_nitrogen_retention (pigs growers) ----
 test_that("retention for pigs growers matches 0.025*dwg", {
-  val <- compute_nitrogen_retention("PGS","FS", dwg = 0.8)
+  val <- compute_nitrogen_retention("PGS","FS", dwg = 0.8, litsize = 1, parturition_rate = 1)
   expect_equal(val, 0.025 * 0.8, tolerance = 1e-12)
 })
 
 # ---- test compute_nitrogen_retention (chickens) ----
 test_that("retention returns NA for chickens", {
-  val <- compute_nitrogen_retention("CHK","FA")
+  val <- compute_nitrogen_retention("CHK","FA", litsize = 1, parturition_rate = 1)
   expect_true(is.na(val))
 })
 

@@ -43,8 +43,8 @@ compute_nitrogen_retention <- function(
     milk_yield = NA_real_,
     dwg = NA_real_,
     fibre_prod = NA_real_,
-    litsize = NA_real_,
-    parturition_rate = NA_real_,
+    litsize,
+    parturition_rate,
     wkg = NA_real_,
     ckg = NA_real_,
     afc = NA_real_
@@ -61,9 +61,9 @@ compute_nitrogen_retention <- function(
     milk_n <- milk_protein / 6.38
     fibre_n <- 0.0134
 
-    milk_comp   <- if (!is.na(milk_yield) && cohort == "AF" && milk_yield > 0) milk_yield * milk_n else 0
+    milk_comp <- if (!is.na(milk_yield) && cohort == "AF" && milk_yield > 0) milk_yield * milk_n else 0
     growth_comp <- if (!is.na(dwg) && dwg > 0) dwg * tissue_n else 0
-    fibre_comp  <- if (!is.na(fibre_prod) && fibre_prod > 0) fibre_prod / 365 * fibre_n else 0
+    fibre_comp <- if (!is.na(fibre_prod) && fibre_prod > 0) fibre_prod / 365 * fibre_n else 0
 
     return(milk_comp + growth_comp + fibre_comp)
 

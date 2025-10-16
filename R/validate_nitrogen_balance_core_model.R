@@ -83,12 +83,6 @@ validate_nitrogen_retention_inputs <- function(
   if (!is.na(fibre_prod) && (fibre_prod < 0 || fibre_prod > 100)) {
     cli::cli_abort("{.arg fibre_prod} must be between 0 and 100.")
   }
-  if (!is.na(litsize) && (litsize < 0 || litsize > 25)) {
-    cli::cli_abort("{.arg litsize} must be between 0 and 25.")
-  }
-  if (!is.na(parturition_rate) && (parturition_rate < 0 || parturition_rate > 3)) {
-    cli::cli_abort("{.arg parturition_rate} must be between 0 and 3.")
-  }
   if (!is.na(wkg) && (wkg < 0 || wkg > 1000)) {
     cli::cli_abort("{.arg wkg} must be between 0 and 1000.")
   }
@@ -98,6 +92,10 @@ validate_nitrogen_retention_inputs <- function(
   if (!is.na(afc) && (afc < 100 || afc > 2000)) {
     cli::cli_abort("{.arg afc} must be between 100 and 2000.")
   }
+
+  # Enforce configured bounds
+  validate_param_range(parturition_rate)
+  validate_param_range(litsize)
 }
 
 #' Validate inputs for compute_nitrogen_excretion
