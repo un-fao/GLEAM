@@ -49,6 +49,12 @@ utils::globalVariables(c(
   "..numeric_cols_feed", "..numeric_cols_rations"
 ))
 
+utils::globalVariables(c(
+  # Columns used in indirectemissions feed
+  "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
+  "feed_emissions_kgGas", "feed_share"
+))
+
 # Add species abbreviations
 abbr_animals <- data.table(
   Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
