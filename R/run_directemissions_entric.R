@@ -49,14 +49,14 @@ run_directemissions_enteric <- function(data) {
 
   # Compute methane conversion factor (YM)
   data[, ym := compute_methane_conversion_factor(
-    Animal_short,
-    cohort,
-    diet_dig
+    animal = Animal_short,
+    cohort = cohort,
+    diet_dig = diet_dig
   ), by = seq_len(nrow(data))]
 
   # Compute enteric methane emissions (kg CH4/day)
   data[, ch4_enteric := compute_daily_enteric_emissions(
-    Animal_short = Animal_short,
+    animal = Animal_short,
     cohort = cohort,
     ym = ym,
     diet_ge = diet_ge,
@@ -66,4 +66,3 @@ run_directemissions_enteric <- function(data) {
 
   return(data)
 }
-

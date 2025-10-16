@@ -4,7 +4,7 @@
 #' for a given species and cohort based on diet digestibility. Implements species- and cohort-specific
 #' rules consistent with the GLEAM methodology.
 #'
-#' @param Animal_short Character. Species code: one of `CTL`, `BFL`, `CML`, `SHP`, `GTS`, `PGS`, `CHK`.
+#' @param animal Character. Species code: one of `CTL`, `BFL`, `CML`, `SHP`, `GTS`, `PGS`, `CHK`.
 #' @param cohort Character. Cohort code (e.g., `FA`, `FS`, `MJ`).
 #' @param diet_dig Numeric. Diet digestibility (DE/GE ratio, unitless fraction).
 #'
@@ -12,22 +12,22 @@
 #'
 #' @export
 compute_methane_conversion_factor <- function(
-    Animal_short,
+    animal,
     cohort,
     diet_dig
 ) {
-  validate_ym_inputs(Animal_short, cohort, diet_dig)
-  if (Animal_short %in% c("CTL", "BFL")) {
+  validate_ym_inputs(animal, cohort, diet_dig)
+  if (animal %in% c("CTL", "BFL")) {
     ret = 9.75 - 0.05 * diet_dig * 100
-  } else if (Animal_short %in% c("SHP", "GTS", "CML")) {
+  } else if (animal %in% c("SHP", "GTS", "CML")) {
     if (cohort %in% c("SF", "SM", "JF", "JM")) {
       ret = 7.75 - 0.05 * diet_dig * 100
     } else {
       ret = 9.75 - 0.05 * diet_dig * 100
     }
-  } else if (Animal_short %in% c("PGS")) {
+  } else if (animal %in% c("PGS")) {
     ret <- if (cohort %in% c("AF", "AM")) 1.01 else 0.39
-  } else if (Animal_short == "CHK") {
+  } else if (animal == "CHK") {
     ret <- NA_real_
   }
   return(ret)
@@ -43,7 +43,7 @@ compute_methane_conversion_factor <- function(
 #'
 #' where 55.65 MJ/kg is the energy content of methane. Returns `NA` for chickens.
 #'
-#' @param Animal_short Character. Species code: `CTL`, `BFL`, `CML`, `SHP`, `GTS`, `PGS`, `CHK`.
+#' @param animal Character. Species code: `CTL`, `BFL`, `CML`, `SHP`, `GTS`, `PGS`, `CHK`.
 #' @param cohort Character. Cohort code (e.g., `FA`, `MJ`); retained for compatibility.
 #' @param ym Numeric. Methane conversion factor (percentage of GE converted to CH₄).
 #' @param diet_ge Numeric. Gross energy content of the diet (MJ/kg DM).
@@ -54,17 +54,17 @@ compute_methane_conversion_factor <- function(
 #'
 #' @export
 compute_daily_enteric_emissions <- function(
-    Animal_short,
+    animal,
     cohort,
     ym,
     diet_ge,
     dmi,
     afc
 ) {
-  validate_enteric_emission_inputs(Animal_short, cohort, ym, diet_ge, dmi, afc)
-  if (Animal_short %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
+  validate_enteric_emission_inputs(animal, cohort, ym, diet_ge, dmi, afc)
+  if (animal %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
     ret <- diet_ge * dmi * (ym / 100) / 55.65
-  } else if (Animal_short == "CHK") {
+  } else if (animal == "CHK") {
     ret <- NA_real_
   }
   return(ret)

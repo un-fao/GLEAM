@@ -2,7 +2,7 @@
 #'
 #' Ensures that inputs for the methane conversion factor (YM) calculation
 #' are correctly typed and within valid ranges. Specifically:
-#' * `Animal_short` and `cohort` must be scalar characters.
+#' * `animal` and `cohort` must be scalar characters.
 #' * `diet_dig` must be a scalar numeric between 0 and 1 (fraction of GE).
 #'
 #' This validator is designed for internal use in
@@ -10,11 +10,11 @@
 #'
 #' @noRd
 validate_ym_inputs <- function(
-    Animal_short,
+    animal,
     cohort,
     diet_dig
 ) {
-  validate_scalar_character(Animal_short, "Animal_short")
+  validate_scalar_character(animal, "animal")
   validate_scalar_character(cohort, "cohort")
   validate_scalar_numeric(diet_dig, "diet_dig")
 
@@ -28,7 +28,7 @@ validate_ym_inputs <- function(
 #'
 #' Ensures that inputs for the daily enteric methane emissions calculation
 #' are valid. Specifically:
-#' * `Animal_short` and `cohort` must be scalar characters.
+#' * `animal` and `cohort` must be scalar characters.
 #' * For chickens (`CHK`), YM is always `NA` and validation is skipped.
 #' * For other species:
 #'   - `ym` must be a non-negative numeric scalar (percentage).
@@ -41,18 +41,18 @@ validate_ym_inputs <- function(
 #'
 #' @noRd
 validate_enteric_emission_inputs <- function(
-    Animal_short,
+    animal,
     cohort,
     ym,
     diet_ge,
     dmi,
     afc
 ) {
-  validate_scalar_character(Animal_short, "Animal_short")
+  validate_scalar_character(animal, "animal")
   validate_scalar_character(cohort, "cohort")
 
   # Special case: chickens always return NA for now
-  if (Animal_short == "CHK") {
+  if (animal == "CHK") {
     return(invisible(TRUE))
   }
 

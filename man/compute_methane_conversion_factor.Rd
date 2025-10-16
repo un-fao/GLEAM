@@ -4,10 +4,10 @@
 \alias{compute_methane_conversion_factor}
 \title{Compute Methane Conversion Factor (YM)}
 \usage{
-compute_methane_conversion_factor(Animal_short, cohort, diet_dig)
+compute_methane_conversion_factor(animal, cohort, diet_dig)
 }
 \arguments{
-\item{Animal_short}{Character. Species code: one of \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}, \code{CHK}.}
+\item{animal}{Character. Species code: one of \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}, \code{CHK}.}
 
 \item{cohort}{Character. Cohort code (e.g., \code{FA}, \code{FS}, \code{MJ}).}
 

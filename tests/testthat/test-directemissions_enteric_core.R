@@ -42,7 +42,7 @@ test_that("compute_daily_enteric_emissions validates inputs and returns expected
   # Valid cattle case with consistent YM
   ym <- compute_methane_conversion_factor("CTL", "FA", 0.6)
   ch4 <- compute_daily_enteric_emissions(
-    Animal_short = "CTL",
+    animal = "CTL",
     cohort = "FA",
     ym = ym,
     diet_ge = 18.4,

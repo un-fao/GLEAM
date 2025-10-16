@@ -4,10 +4,10 @@
 \alias{compute_daily_enteric_emissions}
 \title{Compute Daily Enteric Methane Emissions}
 \usage{
-compute_daily_enteric_emissions(Animal_short, cohort, ym, diet_ge, dmi, afc)
+compute_daily_enteric_emissions(animal, cohort, ym, diet_ge, dmi, afc)
 }
 \arguments{
-\item{Animal_short}{Character. Species code: \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}, \code{CHK}.}
+\item{animal}{Character. Species code: \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}, \code{CHK}.}
 
 \item{cohort}{Character. Cohort code (e.g., \code{FA}, \code{MJ}); retained for compatibility.}
 
