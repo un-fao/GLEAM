@@ -55,18 +55,19 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   # Internal helper function to compute weighted terms
   compute_weighted_terms <- function(dt, mms_cols, factor_suffix) {
     dt[, {
-      mms_vals    <- unlist(.SD[, mms_cols, with = FALSE])
+      mms_vals <- unlist(.SD[, mms_cols, with = FALSE])
       factor_vals <- unlist(.SD[, paste0(mms_cols, factor_suffix), with = FALSE])
 
-      names(mms_vals)    <- sub("^mms", "", mms_cols)
+      names(mms_vals) <- sub("^mms", "", mms_cols)
       names(factor_vals) <- sub("^mms", "", mms_cols)
 
       pasture <- if (!is.na(mms_vals["pasture"]) && !is.na(factor_vals["pasture"])) mms_vals["pasture"] * factor_vals["pasture"] else 0
-      burned  <- if (!is.na(mms_vals["burned"])  && !is.na(factor_vals["burned"]))  mms_vals["burned"]  * factor_vals["burned"]  else 0
-      other   <- sum(mms_vals[setdiff(names(mms_vals), c("pasture","burned"))] *
-                       factor_vals[setdiff(names(factor_vals), c("pasture","burned"))],
-                     na.rm = TRUE)
-
+      burned <- if (!is.na(mms_vals["burned"])  && !is.na(factor_vals["burned"]))  mms_vals["burned"]  * factor_vals["burned"]  else 0
+      other <- sum(
+        mms_vals[setdiff(names(mms_vals), c("pasture","burned"))] *
+          factor_vals[setdiff(names(factor_vals), c("pasture","burned"))],
+        na.rm = TRUE
+      )
       list(pasture = pasture, burned = burned, other = other)
     }, by = .I]
   }
@@ -95,7 +96,13 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   # Merge MCF data into temporary variable (like legacy)
   mms_cols <- grep("^mms", names(mcf_table), value = TRUE)
   mcf_subset <- mcf_table[, c("ADM0_CODE", mms_cols), with = FALSE]
-  mcf_merged <- merge(gleam_data, mcf_subset, by = "ADM0_CODE", suffixes = c("", "_mcf"), allow.cartesian = TRUE)
+  mcf_merged <- merge(
+    gleam_data,
+    mcf_subset,
+    by = "ADM0_CODE",
+    suffixes = c("", "_mcf"),
+    allow.cartesian = TRUE
+  )
 
   # Calculate MCF values
   mcf_temp <- compute_weighted_terms(mcf_merged, mms_cols, "_mcf")
@@ -105,8 +112,14 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     mcf_other = mcf_temp$other / 100
   )
 
-  gleam_data[, c(paste0("mcf_pasture", ipcc_method), paste0("mcf_burned", ipcc_method), paste0("mcf_other", ipcc_method)) := list(
-    mcf_result$mcf_pasture, mcf_result$mcf_burned, mcf_result$mcf_other
+  gleam_data[, c(
+    paste0("mcf_pasture", ipcc_method),
+    paste0("mcf_burned", ipcc_method),
+    paste0("mcf_other", ipcc_method)
+  ) := list(
+    mcf_result$mcf_pasture,
+    mcf_result$mcf_burned,
+    mcf_result$mcf_other
   )]
 
   #### CH4 manure - IPCC method -----
@@ -128,10 +141,22 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     !(Animal_short %in% c("CTL", "CHK") & HerdType_short %in% c("DRY", "LAY", "BRL"))
   ]
 
-  gleam_with_herd <- merge(gleam_with_herd, b0_with_herd, by = c("ADM0_CODE", "Animal_short", "HerdType_short"), all.x = TRUE)
-  gleam_without_herd <- merge(gleam_without_herd, b0_without_herd[, .(ADM0_CODE, Animal_short, mms_all_b0, mmspasture_b0)], by = c("ADM0_CODE", "Animal_short"), all.x = TRUE)
+  gleam_with_herd <- merge(
+    gleam_with_herd,
+    b0_with_herd,
+    by = c("ADM0_CODE", "Animal_short", "HerdType_short"),
+    all.x = TRUE
+  )
+  gleam_without_herd <- merge(
+    gleam_without_herd,
+    b0_without_herd[, .(ADM0_CODE, Animal_short, mms_all_b0, mmspasture_b0)],
+    by = c("ADM0_CODE", "Animal_short"),
+    all.x = TRUE
+  )
 
-  ch4_merged <- rbindlist(list(gleam_with_herd, gleam_without_herd), fill = TRUE)
+  ch4_merged <- rbindlist(
+    list(gleam_with_herd, gleam_without_herd), fill = TRUE
+  )
 
   # Calculate CH4 emissions
   vs_col <- paste0("vs", ipcc_method)
@@ -164,7 +189,13 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   # Merge EF3 data into temporary variable
   mms_cols <- grep("^mms", names(ef3_table), value = TRUE)
   ef3_subset <- ef3_table[, c("ADM0_CODE", "Animal_short", mms_cols), with = FALSE]
-  ef3_merged <- merge(gleam_data, ef3_subset, by = c("ADM0_CODE", "Animal_short"), suffixes = c("", "_ef3"), allow.cartesian = TRUE)
+  ef3_merged <- merge(
+    gleam_data,
+    ef3_subset,
+    by = c("ADM0_CODE", "Animal_short"),
+    suffixes = c("", "_ef3"),
+    allow.cartesian = TRUE
+  )
 
   # Calculate EF3 values
   ef3_temp <- compute_weighted_terms(ef3_merged, mms_cols, "_ef3")
@@ -174,8 +205,14 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     ef3_other = ef3_temp$other
   )
 
-  gleam_data[, c(paste0("ef3_pasture", ipcc_method), paste0("ef3_burned", ipcc_method), paste0("ef3_other", ipcc_method)) := list(
-    ef3_result$ef3_pasture, ef3_result$ef3_burned, ef3_result$ef3_other
+  gleam_data[, c(
+    paste0("ef3_pasture", ipcc_method),
+    paste0("ef3_burned", ipcc_method),
+    paste0("ef3_other", ipcc_method)
+  ) := list(
+    ef3_result$ef3_pasture,
+    ef3_result$ef3_burned,
+    ef3_result$ef3_other
   )]
 
   ### N2O manure direct - IPCC method------
@@ -196,8 +233,10 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     paste0("direct_n2o_manure_other", ipcc_method),
     paste0("direct_n2o_manure_all_noburn", ipcc_method)
   ) := list(
-    direct_n2o_result$direct_n2o_manure_pasture, direct_n2o_result$direct_n2o_manure_burned,
-    direct_n2o_result$direct_n2o_manure_other, direct_n2o_result$direct_n2o_manure_all_noburn
+    direct_n2o_result$direct_n2o_manure_pasture,
+    direct_n2o_result$direct_n2o_manure_burned,
+    direct_n2o_result$direct_n2o_manure_other,
+    direct_n2o_result$direct_n2o_manure_all_noburn
   )]
 
   ## N2O from manure - indirect ------
@@ -219,10 +258,23 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     !(Animal_short %in% c("CTL", "CHK") & HerdType_short %in% c("DRY", "LAY", "BRL"))
   ]
 
-  gleam_fracgas_with_herd <- merge(gleam_fracgas_with_herd, fracgas_with_herd, by = c("ADM0_CODE", "Animal_short", "HerdType_short"), suffixes = c("", "_fracgas"), all.x = TRUE)
-  gleam_fracgas_without_herd <- merge(gleam_fracgas_without_herd, fracgas_without_herd[, .(ADM0_CODE, Animal_short, mmspasture, mmsdaily, mmssolid, mmssolidcov, mmssolidbulk, mmssolidadd, mmsdrylot, mmspit1, mmspit3, mmspit4, mmspit6, mmspit12, mmsliquid1, mmsliquid3, mmsliquid4, mmsliquid6, mmsliquid12, mmsliquidnatcov1, mmsliquidnatcov3, mmsliquidnatcov4, mmsliquidnatcov6, mmsliquidnatcov12, mmsliquidsolcov1, mmsliquidsolcov3, mmsliquidsolcov4, mmsliquidsolcov6, mmsliquidsolcov12, mmslagoon, mmsbiogaslowleak1, mmsbiogaslowleak2, mmsbiogaslowleak3, mmsbiogashighleak1, mmsbiogashighleak2, mmsbiogashighleak3, mmsburned, mmsdeepnomix2, mmsdeepnomix1, mmsdeepmix2, mmsdeepmix1, mmscompostves, mmscompoststat, mmscompostint, mmscompostpass, mmslitter, mmsnolitter, mmsareobic, mmsaerproc)], by = c("ADM0_CODE", "Animal_short"), suffixes = c("", "_fracgas"), all.x = TRUE)
+  gleam_fracgas_with_herd <- merge(
+    gleam_fracgas_with_herd,
+    fracgas_with_herd,
+    by = c("ADM0_CODE", "Animal_short", "HerdType_short"),
+    suffixes = c("", "_fracgas"),
+    all.x = TRUE
+  )
+  gleam_fracgas_without_herd <- merge(
+    gleam_fracgas_without_herd,
+    fracgas_without_herd[, .(ADM0_CODE, Animal_short, mmspasture, mmsdaily, mmssolid, mmssolidcov, mmssolidbulk, mmssolidadd, mmsdrylot, mmspit1, mmspit3, mmspit4, mmspit6, mmspit12, mmsliquid1, mmsliquid3, mmsliquid4, mmsliquid6, mmsliquid12, mmsliquidnatcov1, mmsliquidnatcov3, mmsliquidnatcov4, mmsliquidnatcov6, mmsliquidnatcov12, mmsliquidsolcov1, mmsliquidsolcov3, mmsliquidsolcov4, mmsliquidsolcov6, mmsliquidsolcov12, mmslagoon, mmsbiogaslowleak1, mmsbiogaslowleak2, mmsbiogaslowleak3, mmsbiogashighleak1, mmsbiogashighleak2, mmsbiogashighleak3, mmsburned, mmsdeepnomix2, mmsdeepnomix1, mmsdeepmix2, mmsdeepmix1, mmscompostves, mmscompoststat, mmscompostint, mmscompostpass, mmslitter, mmsnolitter, mmsareobic, mmsaerproc)], by = c("ADM0_CODE", "Animal_short"),
+    suffixes = c("", "_fracgas"),
+    all.x = TRUE
+  )
 
-  fracgas_merged <- rbindlist(list(gleam_fracgas_with_herd, gleam_fracgas_without_herd), use.names = TRUE, fill = TRUE)
+  fracgas_merged <- rbindlist(
+    list(gleam_fracgas_with_herd, gleam_fracgas_without_herd), use.names = TRUE, fill = TRUE
+  )
 
   # Calculate FracGAS values
   fracgas_temp <- compute_weighted_terms(fracgas_merged, mms_cols, "_fracgas")
@@ -232,8 +284,14 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     fracgas_other = fracgas_temp$other
   )
 
-  gleam_data[, c(paste0("fracgas_pasture", ipcc_method), paste0("fracgas_burned", ipcc_method), paste0("fracgas_other", ipcc_method)) := list(
-    fracgas_result$fracgas_pasture, fracgas_result$fracgas_burned, fracgas_result$fracgas_other
+  gleam_data[, c(
+    paste0("fracgas_pasture", ipcc_method),
+    paste0("fracgas_burned", ipcc_method),
+    paste0("fracgas_other", ipcc_method)
+  ) := list(
+    fracgas_result$fracgas_pasture,
+    fracgas_result$fracgas_burned,
+    fracgas_result$fracgas_other
   )]
 
   ### Nvol - IPCC method------
@@ -260,7 +318,12 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
 
   ### N2O manure indirect volatilization - IPCC method------
   # Merge EF4 data into temporary variable
-  ef4_merged <- merge(gleam_data, ef4_table, by = "ADM0_CODE", allow.cartesian = TRUE)
+  ef4_merged <- merge(
+    gleam_data,
+    ef4_table,
+    by = "ADM0_CODE",
+    allow.cartesian = TRUE
+  )
 
   n_vol_pasture_col <- paste0("n_vol_manure_pasture", ipcc_method)
   n_vol_burned_col <- paste0("n_vol_manure_burned", ipcc_method)
@@ -300,10 +363,24 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     !(Animal_short %in% c("CTL", "CHK") & HerdType_short %in% c("DRY", "LAY", "BRL"))
   ]
 
-  gleam_fracleach_with_herd <- merge(gleam_fracleach_with_herd, fracleach_with_herd, by = c("ADM0_CODE", "Animal_short", "HerdType_short"), suffixes = c("", "_fracleach"), all.x = TRUE)
-  gleam_fracleach_without_herd <- merge(gleam_fracleach_without_herd, fracleach_without_herd[, .(ADM0_CODE, Animal_short, mmspasture, mmsdaily, mmssolid, mmssolidcov, mmssolidbulk, mmssolidadd, mmsdrylot, mmspit1, mmspit3, mmspit4, mmspit6, mmspit12, mmsliquid1, mmsliquid3, mmsliquid4, mmsliquid6, mmsliquid12, mmsliquidnatcov1, mmsliquidnatcov3, mmsliquidnatcov4, mmsliquidnatcov6, mmsliquidnatcov12, mmsliquidsolcov1, mmsliquidsolcov3, mmsliquidsolcov4, mmsliquidsolcov6, mmsliquidsolcov12, mmslagoon, mmsbiogaslowleak1, mmsbiogaslowleak2, mmsbiogaslowleak3, mmsbiogashighleak1, mmsbiogashighleak2, mmsbiogashighleak3, mmsburned, mmsdeepnomix2, mmsdeepnomix1, mmsdeepmix2, mmsdeepmix1, mmscompostves, mmscompoststat, mmscompostint, mmscompostpass, mmslitter, mmsnolitter, mmsareobic, mmsaerproc)], by = c("ADM0_CODE", "Animal_short"), suffixes = c("", "_fracleach"), all.x = TRUE)
+  gleam_fracleach_with_herd <- merge(
+    gleam_fracleach_with_herd,
+    fracleach_with_herd,
+    by = c("ADM0_CODE", "Animal_short", "HerdType_short"),
+    suffixes = c("", "_fracleach"),
+    all.x = TRUE
+  )
+  gleam_fracleach_without_herd <- merge(
+    gleam_fracleach_without_herd,
+    fracleach_without_herd[, .(ADM0_CODE, Animal_short, mmspasture, mmsdaily, mmssolid, mmssolidcov, mmssolidbulk, mmssolidadd, mmsdrylot, mmspit1, mmspit3, mmspit4, mmspit6, mmspit12, mmsliquid1, mmsliquid3, mmsliquid4, mmsliquid6, mmsliquid12, mmsliquidnatcov1, mmsliquidnatcov3, mmsliquidnatcov4, mmsliquidnatcov6, mmsliquidnatcov12, mmsliquidsolcov1, mmsliquidsolcov3, mmsliquidsolcov4, mmsliquidsolcov6, mmsliquidsolcov12, mmslagoon, mmsbiogaslowleak1, mmsbiogaslowleak2, mmsbiogaslowleak3, mmsbiogashighleak1, mmsbiogashighleak2, mmsbiogashighleak3, mmsburned, mmsdeepnomix2, mmsdeepnomix1, mmsdeepmix2, mmsdeepmix1, mmscompostves, mmscompoststat, mmscompostint, mmscompostpass, mmslitter, mmsnolitter, mmsareobic, mmsaerproc)],
+    by = c("ADM0_CODE", "Animal_short"),
+    suffixes = c("", "_fracleach"),
+    all.x = TRUE
+  )
 
-  fracleach_merged <- rbindlist(list(gleam_fracleach_with_herd, gleam_fracleach_without_herd), use.names = TRUE, fill = TRUE)
+  fracleach_merged <- rbindlist(
+    list(gleam_fracleach_with_herd, gleam_fracleach_without_herd), use.names = TRUE, fill = TRUE
+  )
 
   # Calculate FracLEACH values
   fracleach_temp <- compute_weighted_terms(fracleach_merged, mms_cols, "_fracleach")
@@ -313,8 +390,14 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     fracleach_other = fracleach_temp$other
   )
 
-  gleam_data[, c(paste0("fracleach_pasture", ipcc_method), paste0("fracleach_burned", ipcc_method), paste0("fracleach_other", ipcc_method)) := list(
-    fracleach_result$fracleach_pasture, fracleach_result$fracleach_burned, fracleach_result$fracleach_other
+  gleam_data[, c(
+    paste0("fracleach_pasture", ipcc_method),
+    paste0("fracleach_burned", ipcc_method),
+    paste0("fracleach_other", ipcc_method)
+  ) := list(
+    fracleach_result$fracleach_pasture,
+    fracleach_result$fracleach_burned,
+    fracleach_result$fracleach_other
   )]
 
   ### Nleach - IPCC method------
@@ -341,7 +424,12 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
 
   ### N2O manure indirect leaching - IPCC method------
   # Merge EF5 data into temporary variable
-  ef5_merged <- merge(gleam_data, ef5_table, by = "ADM0_CODE", allow.cartesian = TRUE)
+  ef5_merged <- merge(
+    gleam_data,
+    ef5_table,
+    by = "ADM0_CODE",
+    allow.cartesian = TRUE
+  )
 
   n_leach_pasture_col <- paste0("n_leach_manure_pasture", ipcc_method)
   n_leach_burned_col <- paste0("n_leach_manure_burned", ipcc_method)
@@ -360,8 +448,10 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     paste0("n2o_leach_manure_other", ipcc_method),
     paste0("n2o_leach_manure_all_noburn", ipcc_method)
   ) := list(
-    n2o_leach_result$n2o_leach_manure_pasture, n2o_leach_result$n2o_leach_manure_burned,
-    n2o_leach_result$n2o_leach_manure_other, n2o_leach_result$n2o_leach_manure_all_noburn
+    n2o_leach_result$n2o_leach_manure_pasture,
+    n2o_leach_result$n2o_leach_manure_burned,
+    n2o_leach_result$n2o_leach_manure_other,
+    n2o_leach_result$n2o_leach_manure_all_noburn
   )]
 
   ## TOTAL N2O -----
@@ -401,9 +491,12 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     paste0("total_n2o_manure_pasture", ipcc_method),
     paste0("total_n2o_manure_other", ipcc_method)
   ) := list(
-    total_n2o_result$indirect_n2o_manure_burned, total_n2o_result$indirect_n2o_manure_pasture,
-    total_n2o_result$indirect_n2o_manure_other, total_n2o_result$total_n2o_manure_burned,
-    total_n2o_result$total_n2o_manure_pasture, total_n2o_result$total_n2o_manure_other
+    total_n2o_result$indirect_n2o_manure_burned,
+    total_n2o_result$indirect_n2o_manure_pasture,
+    total_n2o_result$indirect_n2o_manure_other,
+    total_n2o_result$total_n2o_manure_burned,
+    total_n2o_result$total_n2o_manure_pasture,
+    total_n2o_result$total_n2o_manure_other
   )]
 
   return(gleam_data)
