@@ -88,6 +88,7 @@ calc_methane_conversion_factor <- function(
 #' @param mcf_other Numeric vector of methane conversion factor for other systems (dimensionless)
 #' @param b0_mms_all Numeric vector of maximum methane producing capacity for all systems (m³ CH4/kg VS)
 #' @param b0_mms_pasture Numeric vector of maximum methane producing capacity for pasture (m³ CH4/kg VS)
+#' @param ratio_m3CH4_kgCH4 Numeric. Conversion factor from m³ CH4 to kg CH4. Defaults to 0.67.
 #'
 #' @return A named list with:
 #' \describe{
@@ -104,12 +105,13 @@ calc_ch4_emissions <- function(
     mcf_burned,
     mcf_other,
     b0_mms_all,
-    b0_mms_pasture
+    b0_mms_pasture,
+    ratio_m3CH4_kgCH4 = 0.67
 ) {
   #validate_ch4_inputs(vs, mcf_pasture, mcf_burned, mcf_other, b0_mms_all, b0_mms_pasture)
-  ch4_pasture <- vs * 0.67 * mcf_pasture * b0_mms_pasture
-  ch4_burned  <- vs * 0.67 * mcf_burned  * b0_mms_all
-  ch4_other   <- vs * 0.67 * mcf_other   * b0_mms_all
+  ch4_pasture <- vs * ratio_m3CH4_kgCH4 * mcf_pasture * b0_mms_pasture
+  ch4_burned  <- vs * ratio_m3CH4_kgCH4 * mcf_burned  * b0_mms_all
+  ch4_other   <- vs * ratio_m3CH4_kgCH4 * mcf_other   * b0_mms_all
   ch4_all_noburn <- ch4_pasture + ch4_other
   return(list(
     ch4_manure_pasture = ch4_pasture,
@@ -128,6 +130,7 @@ calc_ch4_emissions <- function(
 #' @param ef3_pasture Numeric vector of EF3 emission factor for pasture (kg N2O-N/kg N)
 #' @param ef3_burned Numeric vector of EF3 emission factor for burned (kg N2O-N/kg N)
 #' @param ef3_other Numeric vector of EF3 emission factor for other systems (kg N2O-N/kg N)
+#' @param ratio_N2O_N2ON Numeric. Conversion factor from kg N2O-N to kg N2O. Defaults to 44/28.
 #'
 #' @return A named list with:
 #' \describe{
@@ -142,12 +145,13 @@ calc_direct_n2o_emissions <- function(
     n_excretion,
     ef3_pasture,
     ef3_burned,
-    ef3_other
+    ef3_other,
+    ratio_N2O_N2ON = 44/28
 ) {
   #validate_direct_n2o_inputs(n_excretion, ef3_pasture, ef3_burned, ef3_other)
-  n2o_pasture <- n_excretion * ef3_pasture * 44 / 28
-  n2o_burned  <- n_excretion * ef3_burned  * 44 / 28
-  n2o_other   <- n_excretion * ef3_other   * 44 / 28
+  n2o_pasture <- n_excretion * ef3_pasture * ratio_N2O_N2ON
+  n2o_burned  <- n_excretion * ef3_burned  * ratio_N2O_N2ON
+  n2o_other   <- n_excretion * ef3_other   * ratio_N2O_N2ON
   n2o_all_noburn <- n2o_pasture + n2o_other
   return(list(
     direct_n2o_manure_pasture = n2o_pasture,
@@ -242,6 +246,7 @@ calc_nitrogen_volatilization <- function(
 #' @param n_vol_burned Numeric vector of nitrogen volatilized from burned manure (kg N/head/day)
 #' @param n_vol_other Numeric vector of nitrogen volatilized from other systems (kg N/head/day)
 #' @param ef4 Numeric vector of EF4 emission factor (kg N2O-N/kg N)
+#' @param ratio_N2O_N2ON Numeric. Conversion factor from kg N2O-N to kg N2O. Defaults to 44/28.
 #'
 #' @return A named list with:
 #' \describe{
@@ -256,12 +261,13 @@ calc_n2o_from_volatilization <- function(
     n_vol_pasture,
     n_vol_burned,
     n_vol_other,
-    ef4
+    ef4,
+    ratio_N2O_N2ON = 44/28
 ) {
   #validate_n2o_volatilization_inputs(n_vol_pasture, n_vol_burned, n_vol_other, ef4)
-  n2o_pasture <- n_vol_pasture * ef4 * 44 / 28
-  n2o_burned  <- n_vol_burned  * ef4 * 44 / 28
-  n2o_other   <- n_vol_other   * ef4 * 44 / 28
+  n2o_pasture <- n_vol_pasture * ef4 * ratio_N2O_N2ON
+  n2o_burned  <- n_vol_burned  * ef4 * ratio_N2O_N2ON
+  n2o_other   <- n_vol_other   * ef4 * ratio_N2O_N2ON
   n2o_all_noburn <- n2o_pasture + n2o_other
   return(list(
     n2o_vol_manure_pasture = n2o_pasture,
@@ -356,6 +362,7 @@ calc_nitrogen_leaching <- function(
 #' @param n_leach_burned Numeric vector of nitrogen leached from burned manure (kg N/head/day)
 #' @param n_leach_other Numeric vector of nitrogen leached from other systems (kg N/head/day)
 #' @param ef5 Numeric vector of EF5 emission factor (kg N2O-N/kg N)
+#' @param ratio_N2O_N2ON Numeric. Conversion factor from kg N2O-N to kg N2O. Defaults to 44/28.
 #'
 #' @return A named list with:
 #' \describe{
@@ -370,12 +377,13 @@ calc_n2o_from_leaching <- function(
     n_leach_pasture,
     n_leach_burned,
     n_leach_other,
-    ef5
+    ef5,
+    ratio_N2O_N2ON = 44/28
 ) {
   #validate_n2o_leaching_inputs(n_leach_pasture, n_leach_burned, n_leach_other, ef5)
-  n2o_pasture <- n_leach_pasture * ef5 * 44 / 28
-  n2o_burned  <- n_leach_burned  * ef5 * 44 / 28
-  n2o_other   <- n_leach_other   * ef5 * 44 / 28
+  n2o_pasture <- n_leach_pasture * ef5 * ratio_N2O_N2ON
+  n2o_burned  <- n_leach_burned  * ef5 * ratio_N2O_N2ON
+  n2o_other   <- n_leach_other   * ef5 * ratio_N2O_N2ON
   n2o_all_noburn <- n2o_pasture + n2o_other
   return(list(
     n2o_leach_manure_pasture = n2o_pasture,
