@@ -52,6 +52,25 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   fracgas_table <- read_param("fracgas")
   fracleach_table <- read_param("fracleach")
 
+  # Internal helper function to compute weighted terms
+  compute_weighted_terms <- function(dt, mms_cols, factor_suffix) {
+    dt[, {
+      mms_vals    <- unlist(.SD[, mms_cols, with = FALSE])
+      factor_vals <- unlist(.SD[, paste0(mms_cols, factor_suffix), with = FALSE])
+
+      names(mms_vals)    <- sub("^mms", "", mms_cols)
+      names(factor_vals) <- sub("^mms", "", mms_cols)
+
+      pasture <- if (!is.na(mms_vals["pasture"]) && !is.na(factor_vals["pasture"])) mms_vals["pasture"] * factor_vals["pasture"] else 0
+      burned  <- if (!is.na(mms_vals["burned"])  && !is.na(factor_vals["burned"]))  mms_vals["burned"]  * factor_vals["burned"]  else 0
+      other   <- sum(mms_vals[setdiff(names(mms_vals), c("pasture","burned"))] *
+                       factor_vals[setdiff(names(factor_vals), c("pasture","burned"))],
+                     na.rm = TRUE)
+
+      list(pasture = pasture, burned = burned, other = other)
+    }, by = .I]
+  }
+
   # CH4-----
 
   ## CH4 from manure-----
@@ -74,34 +93,17 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
 
   #### MCF - IPCC method -----
   # Merge MCF data into temporary variable (like legacy)
-  mms_cols <- setdiff(intersect(names(gleam_data), names(mcf_table)), "ADM0_CODE")
+  mms_cols <- grep("^mms", names(mcf_table), value = TRUE)
   mcf_subset <- mcf_table[, c("ADM0_CODE", mms_cols), with = FALSE]
   mcf_merged <- merge(gleam_data, mcf_subset, by = "ADM0_CODE", suffixes = c("", "_mcf"), allow.cartesian = TRUE)
 
   # Calculate MCF values
-  mcf_result <- mcf_merged[, {
-    available_mms_cols <- intersect(mms_cols, names(.SD))
-    available_mcf_cols <- intersect(paste0(mms_cols, "_mcf"), names(.SD))
-
-    mms_vals <- unlist(.SD[, available_mms_cols, with = FALSE])
-    mcf_vals <- unlist(.SD[, available_mcf_cols, with = FALSE])
-
-    names(mms_vals) <- sub("^mms", "", available_mms_cols)
-    names(mcf_vals) <- sub("^mms", "", sub("_mcf$", "", available_mcf_cols))
-
-    pasture <- if (!is.na(mms_vals["pasture"]) && !is.na(mcf_vals["pasture"])) {
-      mms_vals["pasture"] * mcf_vals["pasture"] / 100
-    } else 0
-
-    burned <- if (!is.na(mms_vals["burned"]) && !is.na(mcf_vals["burned"])) {
-      mms_vals["burned"] * mcf_vals["burned"] / 100
-    } else 0
-
-    other_names <- setdiff(intersect(names(mms_vals), names(mcf_vals)), c("pasture", "burned"))
-    other <- sum(mms_vals[other_names] * mcf_vals[other_names] / 100, na.rm = TRUE)
-
-    list(mcf_pasture = pasture, mcf_burned = burned, mcf_other = other)
-  }, by = seq_len(nrow(mcf_merged))]
+  mcf_temp <- compute_weighted_terms(mcf_merged, mms_cols, "_mcf")
+  mcf_result <- data.table(
+    mcf_pasture = mcf_temp$pasture / 100,
+    mcf_burned = mcf_temp$burned / 100,
+    mcf_other = mcf_temp$other / 100
+  )
 
   gleam_data[, c(paste0("mcf_pasture", ipcc_method), paste0("mcf_burned", ipcc_method), paste0("mcf_other", ipcc_method)) := list(
     mcf_result$mcf_pasture, mcf_result$mcf_burned, mcf_result$mcf_other
@@ -160,33 +162,17 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   ## N2O from manure - direct ------
   ### EF3 - IPCC method------
   # Merge EF3 data into temporary variable
+  mms_cols <- grep("^mms", names(ef3_table), value = TRUE)
   ef3_subset <- ef3_table[, c("ADM0_CODE", "Animal_short", mms_cols), with = FALSE]
   ef3_merged <- merge(gleam_data, ef3_subset, by = c("ADM0_CODE", "Animal_short"), suffixes = c("", "_ef3"), allow.cartesian = TRUE)
 
   # Calculate EF3 values
-  ef3_result <- ef3_merged[, {
-    available_mms_cols <- intersect(mms_cols, names(.SD))
-    available_ef3_cols <- intersect(paste0(mms_cols, "_ef3"), names(.SD))
-
-    mms_vals <- unlist(.SD[, available_mms_cols, with = FALSE])
-    ef3_vals <- unlist(.SD[, available_ef3_cols, with = FALSE])
-
-    names(mms_vals) <- sub("^mms", "", available_mms_cols)
-    names(ef3_vals) <- sub("^mms", "", sub("_ef3$", "", available_ef3_cols))
-
-    pasture_term <- if (!is.na(mms_vals["pasture"]) && !is.na(ef3_vals["pasture"])) {
-      mms_vals["pasture"] * ef3_vals["pasture"]
-    } else 0
-
-    burned_term <- if (!is.na(mms_vals["burned"]) && !is.na(ef3_vals["burned"])) {
-      mms_vals["burned"] * ef3_vals["burned"]
-    } else 0
-
-    other_names <- setdiff(intersect(names(mms_vals), names(ef3_vals)), c("pasture", "burned"))
-    other_terms <- sum(mms_vals[other_names] * ef3_vals[other_names], na.rm = TRUE)
-
-    list(ef3_pasture = pasture_term, ef3_burned = burned_term, ef3_other = other_terms)
-  }, by = seq_len(nrow(ef3_merged))]
+  ef3_temp <- compute_weighted_terms(ef3_merged, mms_cols, "_ef3")
+  ef3_result <- data.table(
+    ef3_pasture = ef3_temp$pasture,
+    ef3_burned = ef3_temp$burned,
+    ef3_other = ef3_temp$other
+  )
 
   gleam_data[, c(paste0("ef3_pasture", ipcc_method), paste0("ef3_burned", ipcc_method), paste0("ef3_other", ipcc_method)) := list(
     ef3_result$ef3_pasture, ef3_result$ef3_burned, ef3_result$ef3_other
@@ -218,6 +204,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
 
   ### Fracgas - IPCC method------
   # Merge FracGAS data into temporary variable (handle HerdType_short for CTL/CHK)
+  mms_cols <- grep("^mms", names(fracgas_table), value = TRUE)
   fracgas_with_herd <- fracgas_table[
     HerdType_short %in% c("DRY", "LAY", "BRL") & Animal_short %in% c("CTL", "CHK")
   ]
@@ -238,29 +225,12 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   fracgas_merged <- rbindlist(list(gleam_fracgas_with_herd, gleam_fracgas_without_herd), use.names = TRUE, fill = TRUE)
 
   # Calculate FracGAS values
-  fracgas_result <- fracgas_merged[, {
-    available_mms_cols <- intersect(mms_cols, names(.SD))
-    available_fracgas_cols <- intersect(paste0(mms_cols, "_fracgas"), names(.SD))
-
-    mms_vals <- unlist(.SD[, available_mms_cols, with = FALSE])
-    fracgas_vals <- unlist(.SD[, available_fracgas_cols, with = FALSE])
-
-    names(mms_vals) <- sub("^mms", "", available_mms_cols)
-    names(fracgas_vals) <- sub("^mms", "", sub("_fracgas$", "", available_fracgas_cols))
-
-    pasture_term <- if (!is.na(mms_vals["pasture"]) && !is.na(fracgas_vals["pasture"])) {
-      mms_vals["pasture"] * fracgas_vals["pasture"]
-    } else 0
-
-    burned_term <- if (!is.na(mms_vals["burned"]) && !is.na(fracgas_vals["burned"])) {
-      mms_vals["burned"] * fracgas_vals["burned"]
-    } else 0
-
-    other_names <- setdiff(intersect(names(mms_vals), names(fracgas_vals)), c("pasture", "burned"))
-    other_terms <- sum(mms_vals[other_names] * fracgas_vals[other_names], na.rm = TRUE)
-
-    list(fracgas_pasture = pasture_term, fracgas_burned = burned_term, fracgas_other = other_terms)
-  }, by = seq_len(nrow(fracgas_merged))]
+  fracgas_temp <- compute_weighted_terms(fracgas_merged, mms_cols, "_fracgas")
+  fracgas_result <- data.table(
+    fracgas_pasture = fracgas_temp$pasture,
+    fracgas_burned = fracgas_temp$burned,
+    fracgas_other = fracgas_temp$other
+  )
 
   gleam_data[, c(paste0("fracgas_pasture", ipcc_method), paste0("fracgas_burned", ipcc_method), paste0("fracgas_other", ipcc_method)) := list(
     fracgas_result$fracgas_pasture, fracgas_result$fracgas_burned, fracgas_result$fracgas_other
@@ -315,6 +285,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
 
   ### Fracleach - IPCC method------
   # Merge FracLEACH data into temporary variable (handle HerdType_short for CTL/CHK)
+  mms_cols <- grep("^mms", names(fracleach_table), value = TRUE)
   fracleach_with_herd <- fracleach_table[
     HerdType_short %in% c("DRY", "LAY", "BRL") & Animal_short %in% c("CTL", "CHK")
   ]
@@ -335,29 +306,12 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   fracleach_merged <- rbindlist(list(gleam_fracleach_with_herd, gleam_fracleach_without_herd), use.names = TRUE, fill = TRUE)
 
   # Calculate FracLEACH values
-  fracleach_result <- fracleach_merged[, {
-    available_mms_cols <- intersect(mms_cols, names(.SD))
-    available_fracleach_cols <- intersect(paste0(mms_cols, "_fracleach"), names(.SD))
-
-    mms_vals <- unlist(.SD[, available_mms_cols, with = FALSE])
-    fracleach_vals <- unlist(.SD[, available_fracleach_cols, with = FALSE])
-
-    names(mms_vals) <- sub("^mms", "", available_mms_cols)
-    names(fracleach_vals) <- sub("^mms", "", sub("_fracleach$", "", available_fracleach_cols))
-
-    pasture_term <- if (!is.na(mms_vals["pasture"]) && !is.na(fracleach_vals["pasture"])) {
-      mms_vals["pasture"] * fracleach_vals["pasture"]
-    } else 0
-
-    burned_term <- if (!is.na(mms_vals["burned"]) && !is.na(fracleach_vals["burned"])) {
-      mms_vals["burned"] * fracleach_vals["burned"]
-    } else 0
-
-    other_names <- setdiff(intersect(names(mms_vals), names(fracleach_vals)), c("pasture", "burned"))
-    other_terms <- sum(mms_vals[other_names] * fracleach_vals[other_names], na.rm = TRUE)
-
-    list(fracleach_pasture = pasture_term, fracleach_burned = burned_term, fracleach_other = other_terms)
-  }, by = seq_len(nrow(fracleach_merged))]
+  fracleach_temp <- compute_weighted_terms(fracleach_merged, mms_cols, "_fracleach")
+  fracleach_result <- data.table(
+    fracleach_pasture = fracleach_temp$pasture,
+    fracleach_burned = fracleach_temp$burned,
+    fracleach_other = fracleach_temp$other
+  )
 
   gleam_data[, c(paste0("fracleach_pasture", ipcc_method), paste0("fracleach_burned", ipcc_method), paste0("fracleach_other", ipcc_method)) := list(
     fracleach_result$fracleach_pasture, fracleach_result$fracleach_burned, fracleach_result$fracleach_other
