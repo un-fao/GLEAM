@@ -46,7 +46,10 @@ utils::globalVariables(c(
   "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
   "dig_chickens", "dig_pigs", "dig_ruminants", "value",
   # Variables used with .. for validation
-  "..numeric_cols_feed", "..numeric_cols_rations"
+  "..numeric_cols_feed", "..numeric_cols_rations",
+  # Columns used in run_soil_carbon
+  "area", "climate_zone", "soil_carbon_reference", "soil_type",
+  "management_start", "management_end", "SOC1", "SOC2", "dSOC"
 ))
 
 # Add species abbreviations
