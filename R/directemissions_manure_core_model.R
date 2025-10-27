@@ -3,41 +3,42 @@
 #' Calculates volatile solids (VS) production from animal feed intake and diet composition
 #' using IPCC methodology for different animal types and production systems.
 #'
-#' @param animal_short Character vector of animal types (CTL, BFL, CML, SHP, GTS, PGS, CHK)
-#' @param lps_short Character vector of livestock production systems
-#' @param dmi Numeric vector of dry matter intake (kg/head/day)
-#' @param diet_dig Numeric vector of diet digestibility (0-1)
-#' @param diet_me Numeric vector of metabolizable energy content (MJ/kg DM)
-#' @param diet_ge Numeric vector of gross energy content (MJ/kg DM)
+#' @param animal Character. Animal type (CTL, BFL, CML, SHP, GTS, PGS, CHK)
+#' @param lps_short Character. Livestock production system
+#' @param dmi Numeric. Dry matter intake (kg/head/day)
+#' @param diet_dig Numeric. Diet digestibility (0-1)
+#' @param diet_me Numeric. Metabolizable energy content (MJ/kg DM)
+#' @param diet_ge Numeric. Gross energy content (MJ/kg DM)
 #' @param ipcc_method Character. IPCC method ('2006' or '2019')
 #'
-#' @return Numeric vector of volatile solids (kg VS/head/day)
+#' @return Numeric. Volatile solids (kg VS/head/day)
 #'
 #' @export
-calc_volatile_solids <- function(animal_short, lps_short, dmi, diet_dig, diet_me, diet_ge, ipcc_method) {
-  #validate_manure_inputs(animal_short, lps_short, dmi, diet_dig, diet_me, diet_ge, ipcc_method)
-  vs <- numeric(length(animal_short))
+calc_volatile_solids <- function(animal, lps_short, dmi, diet_dig, diet_me, diet_ge, ipcc_method) {
+  validate_manure_inputs(animal, lps_short, dmi, diet_dig, diet_me, diet_ge, ipcc_method)
 
-  # Case 1: CTL, BFL, CML, SHP, GTS
-  idx <- animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")
-  vs[idx] <- dmi[idx] * (1.04 - diet_dig[idx]) * 0.92
-
-  # Case 2: PGS
-  idx <- animal_short == "PGS" & ipcc_method == "2019"
-  vs[idx] <- dmi[idx] * (1.02 - diet_dig[idx]) * 0.94
-
-  idx <- animal_short == "PGS" & ipcc_method == "2006"
-  vs[idx] <- dmi[idx] * (1.02 - diet_dig[idx]) * 0.8
-
-  # Case 3: CHK
-  idx <- animal_short == "CHK" & ipcc_method == "2006" & lps_short == "BRL"
-  vs[idx] <- dmi[idx] * (1 - diet_me[idx] / diet_ge[idx]) * 0.95
-
-  idx <- animal_short == "CHK" & ipcc_method == "2006" & lps_short != "BRL"
-  vs[idx] <- dmi[idx] * (1 - diet_me[idx] / diet_ge[idx]) * 0.89
-
-  idx <- animal_short == "CHK" & ipcc_method == "2019"
-  vs[idx] <- dmi[idx] * (1 - diet_me[idx] / diet_ge[idx]) * 0.70
+  # Row-by-row calculation (scalar values)
+  if (animal %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+    # Case 1: CTL, BFL, CML, SHP, GTS
+    vs <- dmi * (1.04 - diet_dig) * 0.92
+  } else if (animal == "PGS" && ipcc_method == "2019") {
+    # Case 2: PGS (2019)
+    vs <- dmi * (1.02 - diet_dig) * 0.94
+  } else if (animal == "PGS" && ipcc_method == "2006") {
+    # Case 2: PGS (2006)
+    vs <- dmi * (1.02 - diet_dig) * 0.8
+  } else if (animal == "CHK" && ipcc_method == "2006" && lps_short == "BRL") {
+    # Case 3: CHK 2006 BRL
+    vs <- dmi * (1 - diet_me / diet_ge) * 0.95
+  } else if (animal == "CHK" && ipcc_method == "2006" && lps_short != "BRL") {
+    # Case 3: CHK 2006 non-BRL
+    vs <- dmi * (1 - diet_me / diet_ge) * 0.89
+  } else if (animal == "CHK" && ipcc_method == "2019") {
+    # Case 3: CHK 2019
+    vs <- dmi * (1 - diet_me / diet_ge) * 0.70
+  } else {
+    vs <- 0
+  }
 
   return(vs)
 }
@@ -70,7 +71,7 @@ calc_methane_conversion_factor <- function(
     ef_mcf_burned,
     ef_mcf_other
 ) {
-  #validate_mcf_inputs(mms_pasture, mms_burned, mms_other, ef_mcf_pasture, ef_mcf_burned, ef_mcf_other)
+  validate_mcf_inputs(mms_pasture, mms_burned, mms_other, ef_mcf_pasture, ef_mcf_burned, ef_mcf_other)
   mcf_pasture <- mms_pasture * ef_mcf_pasture / 100
   mcf_burned <- mms_burned * ef_mcf_burned / 100
   mcf_other <- mms_other * ef_mcf_other / 100
@@ -108,7 +109,7 @@ calc_ch4_emissions <- function(
     b0_mms_pasture,
     ratio_m3CH4_kgCH4 = 0.67
 ) {
-  #validate_ch4_inputs(vs, mcf_pasture, mcf_burned, mcf_other, b0_mms_all, b0_mms_pasture)
+  validate_ch4_inputs(vs, mcf_pasture, mcf_burned, mcf_other, b0_mms_all, b0_mms_pasture)
   ch4_pasture <- vs * ratio_m3CH4_kgCH4 * mcf_pasture * b0_mms_pasture
   ch4_burned <- vs * ratio_m3CH4_kgCH4 * mcf_burned * b0_mms_all
   ch4_other <- vs * ratio_m3CH4_kgCH4 * mcf_other * b0_mms_all
@@ -148,7 +149,7 @@ calc_direct_n2o_emissions <- function(
     ef3_other,
     ratio_N2O_N2ON = 44/28
 ) {
-  #validate_direct_n2o_inputs(n_excretion, ef3_pasture, ef3_burned, ef3_other)
+  validate_direct_n2o_inputs(n_excretion, ef3_pasture, ef3_burned, ef3_other)
   n2o_pasture <- n_excretion * ef3_pasture * ratio_N2O_N2ON
   n2o_burned <- n_excretion * ef3_burned * ratio_N2O_N2ON
   n2o_other <- n_excretion * ef3_other * ratio_N2O_N2ON
@@ -189,7 +190,9 @@ calc_nitrogen_volatilization_fraction <- function(
     ef_fracgas_burned,
     ef_fracgas_other
 ) {
-  #validate_volatilization_fraction_inputs(mms_pasture, mms_burned, mms_other, ef_fracgas_pasture, ef_fracgas_burned, ef_fracgas_other)
+  validate_volatilization_fraction_inputs(
+    mms_pasture, mms_burned, mms_other, ef_fracgas_pasture, ef_fracgas_burned, ef_fracgas_other
+  )
   fracgas_pasture <- mms_pasture * ef_fracgas_pasture
   fracgas_burned <- mms_burned * ef_fracgas_burned
   fracgas_other <- mms_other * ef_fracgas_other
@@ -225,7 +228,7 @@ calc_nitrogen_volatilization <- function(
     fracgas_burned,
     fracgas_other
 ) {
-  #validate_nitrogen_volatilization_inputs(n_excretion, fracgas_pasture, fracgas_burned, fracgas_other)
+  validate_nitrogen_volatilization_inputs(n_excretion, fracgas_pasture, fracgas_burned, fracgas_other)
   n_vol_pasture <- n_excretion * fracgas_pasture
   n_vol_burned <- n_excretion * fracgas_burned
   n_vol_other <- n_excretion * fracgas_other
@@ -264,7 +267,7 @@ calc_n2o_from_volatilization <- function(
     ef4,
     ratio_N2O_N2ON = 44/28
 ) {
-  #validate_n2o_volatilization_inputs(n_vol_pasture, n_vol_burned, n_vol_other, ef4)
+  validate_n2o_volatilization_inputs(n_vol_pasture, n_vol_burned, n_vol_other, ef4)
   n2o_pasture <- n_vol_pasture * ef4 * ratio_N2O_N2ON
   n2o_burned <- n_vol_burned * ef4 * ratio_N2O_N2ON
   n2o_other <- n_vol_other * ef4 * ratio_N2O_N2ON
@@ -305,7 +308,9 @@ calc_nitrogen_leaching_fraction <- function(
     ef_fracleach_burned,
     ef_fracleach_other
 ) {
-  #validate_leaching_fraction_inputs(mms_pasture, mms_burned, mms_other, ef_fracleach_pasture, ef_fracleach_burned, ef_fracleach_other)
+  validate_leaching_fraction_inputs(
+    mms_pasture, mms_burned, mms_other, ef_fracleach_pasture, ef_fracleach_burned, ef_fracleach_other
+  )
   fracleach_pasture <- mms_pasture * ef_fracleach_pasture
   fracleach_burned <- mms_burned * ef_fracleach_burned
   fracleach_other <- mms_other * ef_fracleach_other
@@ -341,7 +346,7 @@ calc_nitrogen_leaching <- function(
     fracleach_burned,
     fracleach_other
 ) {
-  #validate_nitrogen_leaching_inputs(n_excretion, fracleach_pasture, fracleach_burned, fracleach_other)
+  validate_nitrogen_leaching_inputs(n_excretion, fracleach_pasture, fracleach_burned, fracleach_other)
   n_leach_pasture <- n_excretion * fracleach_pasture
   n_leach_burned <- n_excretion * fracleach_burned
   n_leach_other <- n_excretion * fracleach_other
@@ -380,7 +385,7 @@ calc_n2o_from_leaching <- function(
     ef5,
     ratio_N2O_N2ON = 44/28
 ) {
-  #validate_n2o_leaching_inputs(n_leach_pasture, n_leach_burned, n_leach_other, ef5)
+  validate_n2o_leaching_inputs(n_leach_pasture, n_leach_burned, n_leach_other, ef5)
   n2o_pasture <- n_leach_pasture * ef5 * ratio_N2O_N2ON
   n2o_burned <- n_leach_burned * ef5 * ratio_N2O_N2ON
   n2o_other <- n_leach_other * ef5 * ratio_N2O_N2ON
@@ -420,7 +425,7 @@ calc_total_n2o_emissions <- function(
     vol,
     leach
 ) {
-  #validate_total_n2o_inputs(direct, vol, leach)
+  validate_total_n2o_inputs(direct, vol, leach)
   indirect_pasture <- vol$n2o_vol_manure_pasture + leach$n2o_leach_manure_pasture
   indirect_burned <- vol$n2o_vol_manure_burned + leach$n2o_leach_manure_burned
   indirect_other <- vol$n2o_vol_manure_other + leach$n2o_leach_manure_other

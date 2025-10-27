@@ -12,7 +12,7 @@
 #'   diet_ge, mms_pasture, mms_burned, mms_other, n_excretion
 #' @param ipcc_method Character. IPCC method to use: "2006" or "2019". Defaults to "2019".
 #'
-#' @return A data.table with added emission columns following the exact legacy order
+#' @return A data.table with added emission columns
 #'
 #' @examples
 #' \dontrun{
@@ -25,9 +25,33 @@
 #'
 #' @importFrom data.table := .SD .I merge rbindlist setcolorder
 run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
+  # Internal checks
+  if (!inherits(gleam_data, "data.frame") || nrow(gleam_data) == 0) {
+    cli::cli_abort("Input must be a non-empty data.frame or data.table.")
+  }
 
-  # Convert ADM0_CODE to character to avoid merge issues
-  gleam_data[, ADM0_CODE := as.character(ADM0_CODE)]
+  required <- c(
+    "Animal_short", "LPS_short", "ADM0_CODE", "dmi", "diet_dig",
+    "diet_me", "diet_ge", "mmspasture", "mmsburned", "n_excretion"
+  )
+  miss <- setdiff(required, names(gleam_data))
+  if (length(miss)) {
+    cli::cli_abort(c(
+      "!" = "Missing required columns in input data.",
+      "x" = paste(miss, collapse = ", ")
+    ))
+  }
+
+  if (!ipcc_method %in% c("2006", "2019")) {
+    cli::cli_abort("ipcc_method must be either '2006' or '2019'.")
+  }
+
+  # Convert factor columns to character to avoid comparison issues in core functions
+  gleam_data[, Animal_short := as.character(Animal_short)]
+  gleam_data[, LPS_short := as.character(LPS_short)]
+  if ("HerdType_short" %in% names(gleam_data)) {
+    gleam_data[, HerdType_short := as.character(HerdType_short)]
+  }
 
   # Load parameter tables
   read_param <- function(param_name) {
@@ -79,21 +103,21 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   ### Volatile Solids (VS)------
 
   #### VS - IPCC method------
-  gleam_data[, c(
-    paste0("vs", ipcc_method)
-  ) :=
-    calc_volatile_solids(
-      animal_short = Animal_short,
-      lps_short = LPS_short,
-      dmi = dmi,
-      diet_dig = diet_dig,
-      diet_me = diet_me,
-      diet_ge = diet_ge,
-      ipcc_method = ipcc_method
-    )]
+  gleam_data[, paste0("vs", ipcc_method) :=
+               calc_volatile_solids(
+                 animal = Animal_short,
+                 lps_short = LPS_short,
+                 dmi = dmi,
+                 diet_dig = diet_dig,
+                 diet_me = diet_me,
+                 diet_ge = diet_ge,
+                 ipcc_method = ipcc_method
+               ),
+             by = .I
+  ]
 
   #### MCF - IPCC method -----
-  # Merge MCF data into temporary variable (like legacy)
+  # Merge MCF data into temporary variable
   mms_cols <- grep("^mms", names(mcf_table), value = TRUE)
   mcf_subset <- mcf_table[, c("ADM0_CODE", mms_cols), with = FALSE]
   mcf_merged <- merge(
@@ -123,7 +147,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   )]
 
   #### CH4 manure - IPCC method -----
-  # Merge B0 data into temporary variable (handle HerdType_short for CTL/CHK) - rename columns like legacy
+  # Merge B0 data into temporary variable (handle HerdType_short for CTL/CHK)
   b0_table[, mms_all_b0 := mms_all]
   b0_table[, mmspasture_b0 := mmspasture]
 
@@ -171,7 +195,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     mcf_other = get(mcf_other_col),
     b0_mms_all = mms_all_b0,
     b0_mms_pasture = mmspasture_b0
-  ), by = seq_len(nrow(ch4_merged))]
+  ), by = .I]
 
   gleam_data[, c(
     paste0("ch4_manure_pasture", ipcc_method),
@@ -225,7 +249,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     ef3_pasture = get(ef3_pasture_col),
     ef3_burned = get(ef3_burned_col),
     ef3_other = get(ef3_other_col)
-  ), by = seq_len(nrow(gleam_data))]
+  ), by = .I]
 
   gleam_data[, c(
     paste0("direct_n2o_manure_pasture", ipcc_method),
@@ -267,7 +291,20 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   )
   gleam_fracgas_without_herd <- merge(
     gleam_fracgas_without_herd,
-    fracgas_without_herd[, .(ADM0_CODE, Animal_short, mmspasture, mmsdaily, mmssolid, mmssolidcov, mmssolidbulk, mmssolidadd, mmsdrylot, mmspit1, mmspit3, mmspit4, mmspit6, mmspit12, mmsliquid1, mmsliquid3, mmsliquid4, mmsliquid6, mmsliquid12, mmsliquidnatcov1, mmsliquidnatcov3, mmsliquidnatcov4, mmsliquidnatcov6, mmsliquidnatcov12, mmsliquidsolcov1, mmsliquidsolcov3, mmsliquidsolcov4, mmsliquidsolcov6, mmsliquidsolcov12, mmslagoon, mmsbiogaslowleak1, mmsbiogaslowleak2, mmsbiogaslowleak3, mmsbiogashighleak1, mmsbiogashighleak2, mmsbiogashighleak3, mmsburned, mmsdeepnomix2, mmsdeepnomix1, mmsdeepmix2, mmsdeepmix1, mmscompostves, mmscompoststat, mmscompostint, mmscompostpass, mmslitter, mmsnolitter, mmsareobic, mmsaerproc)], by = c("ADM0_CODE", "Animal_short"),
+    fracgas_without_herd[, .(
+      ADM0_CODE, Animal_short, mmspasture, mmsdaily, mmssolid, mmssolidcov,
+      mmssolidbulk, mmssolidadd, mmsdrylot, mmspit1, mmspit3, mmspit4, mmspit6, mmspit12,
+      mmsliquid1, mmsliquid3, mmsliquid4, mmsliquid6, mmsliquid12,
+      mmsliquidnatcov1, mmsliquidnatcov3, mmsliquidnatcov4, mmsliquidnatcov6, mmsliquidnatcov12,
+      mmsliquidsolcov1, mmsliquidsolcov3, mmsliquidsolcov4, mmsliquidsolcov6, mmsliquidsolcov12,
+      mmslagoon,
+      mmsbiogaslowleak1, mmsbiogaslowleak2, mmsbiogaslowleak3,
+      mmsbiogashighleak1, mmsbiogashighleak2, mmsbiogashighleak3,
+      mmsburned, mmsdeepnomix2, mmsdeepnomix1, mmsdeepmix2, mmsdeepmix1,
+      mmscompostves, mmscompoststat, mmscompostint, mmscompostpass,
+      mmslitter, mmsnolitter, mmsareobic, mmsaerproc
+    )],
+    by = c("ADM0_CODE", "Animal_short"),
     suffixes = c("", "_fracgas"),
     all.x = TRUE
   )
@@ -304,7 +341,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     fracgas_pasture = get(fracgas_pasture_col),
     fracgas_burned = get(fracgas_burned_col),
     fracgas_other = get(fracgas_other_col)
-  ), by = seq_len(nrow(gleam_data))]
+  ), by = .I]
 
   gleam_data[, c(
     paste0("n_vol_manure_pasture", ipcc_method),
@@ -334,7 +371,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     n_vol_burned = get(n_vol_burned_col),
     n_vol_other = get(n_vol_other_col),
     ef4 = ef4
-  ), by = seq_len(nrow(ef4_merged))]
+  ), by = .I]
 
   gleam_data[, c(
     paste0("n2o_vol_manure_pasture", ipcc_method),
@@ -372,7 +409,19 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   )
   gleam_fracleach_without_herd <- merge(
     gleam_fracleach_without_herd,
-    fracleach_without_herd[, .(ADM0_CODE, Animal_short, mmspasture, mmsdaily, mmssolid, mmssolidcov, mmssolidbulk, mmssolidadd, mmsdrylot, mmspit1, mmspit3, mmspit4, mmspit6, mmspit12, mmsliquid1, mmsliquid3, mmsliquid4, mmsliquid6, mmsliquid12, mmsliquidnatcov1, mmsliquidnatcov3, mmsliquidnatcov4, mmsliquidnatcov6, mmsliquidnatcov12, mmsliquidsolcov1, mmsliquidsolcov3, mmsliquidsolcov4, mmsliquidsolcov6, mmsliquidsolcov12, mmslagoon, mmsbiogaslowleak1, mmsbiogaslowleak2, mmsbiogaslowleak3, mmsbiogashighleak1, mmsbiogashighleak2, mmsbiogashighleak3, mmsburned, mmsdeepnomix2, mmsdeepnomix1, mmsdeepmix2, mmsdeepmix1, mmscompostves, mmscompoststat, mmscompostint, mmscompostpass, mmslitter, mmsnolitter, mmsareobic, mmsaerproc)],
+    fracleach_without_herd[, .(
+      ADM0_CODE, Animal_short, mmspasture, mmsdaily, mmssolid, mmssolidcov,
+      mmssolidbulk, mmssolidadd, mmsdrylot, mmspit1, mmspit3, mmspit4, mmspit6, mmspit12,
+      mmsliquid1, mmsliquid3, mmsliquid4, mmsliquid6, mmsliquid12,
+      mmsliquidnatcov1, mmsliquidnatcov3, mmsliquidnatcov4, mmsliquidnatcov6, mmsliquidnatcov12,
+      mmsliquidsolcov1, mmsliquidsolcov3, mmsliquidsolcov4, mmsliquidsolcov6, mmsliquidsolcov12,
+      mmslagoon,
+      mmsbiogaslowleak1, mmsbiogaslowleak2, mmsbiogaslowleak3,
+      mmsbiogashighleak1, mmsbiogashighleak2, mmsbiogashighleak3,
+      mmsburned, mmsdeepnomix2, mmsdeepnomix1, mmsdeepmix2, mmsdeepmix1,
+      mmscompostves, mmscompoststat, mmscompostint, mmscompostpass,
+      mmslitter, mmsnolitter, mmsareobic, mmsaerproc
+    )],
     by = c("ADM0_CODE", "Animal_short"),
     suffixes = c("", "_fracleach"),
     all.x = TRUE
@@ -410,7 +459,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     fracleach_pasture = get(fracleach_pasture_col),
     fracleach_burned = get(fracleach_burned_col),
     fracleach_other = get(fracleach_other_col)
-  ), by = seq_len(nrow(gleam_data))]
+  ), by = .I]
 
   gleam_data[, c(
     paste0("n_leach_manure_pasture", ipcc_method),
@@ -440,7 +489,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     n_leach_burned = get(n_leach_burned_col),
     n_leach_other = get(n_leach_other_col),
     ef5 = ef5
-  ), by = seq_len(nrow(ef5_merged))]
+  ), by = .I]
 
   gleam_data[, c(
     paste0("n2o_leach_manure_pasture", ipcc_method),
@@ -481,7 +530,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
       n2o_leach_manure_burned = get(leach_burned_col),
       n2o_leach_manure_other = get(leach_other_col)
     )
-  ), by = seq_len(nrow(gleam_data))]
+  ), by = .I]
 
   gleam_data[, c(
     paste0("indirect_n2o_manure_burned", ipcc_method),
