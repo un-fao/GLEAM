@@ -46,7 +46,19 @@ utils::globalVariables(c(
   "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
   "dig_chickens", "dig_pigs", "dig_ruminants", "value",
   # Variables used with .. for validation
-  "..numeric_cols_feed", "..numeric_cols_rations"
+  "..numeric_cols_feed", "..numeric_cols_rations",
+  # Columns used in run_directemissions_manure
+  "dmi", "n_excretion", "ef4", "ef5", "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
+  "mmsdaily", "mmssolid", "mmssolidcov", "mmssolidbulk", "mmssolidadd", "mmsdrylot",
+  "mmspit1", "mmspit3", "mmspit4", "mmspit6", "mmspit12",
+  "mmsliquid1", "mmsliquid3", "mmsliquid4", "mmsliquid6", "mmsliquid12",
+  "mmsliquidnatcov1", "mmsliquidnatcov3", "mmsliquidnatcov4", "mmsliquidnatcov6", "mmsliquidnatcov12",
+  "mmsliquidsolcov1", "mmsliquidsolcov3", "mmsliquidsolcov4", "mmsliquidsolcov6", "mmsliquidsolcov12",
+  "mmslagoon", "mmsbiogaslowleak1", "mmsbiogaslowleak2", "mmsbiogaslowleak3",
+  "mmsbiogashighleak1", "mmsbiogashighleak2", "mmsbiogashighleak3",
+  "mmsburned", "mmsdeepnomix2", "mmsdeepnomix1", "mmsdeepmix2", "mmsdeepmix1",
+  "mmscompostves", "mmscompoststat", "mmscompostint", "mmscompostpass",
+  "mmslitter", "mmsnolitter", "mmsareobic", "mmsaerproc"
 ))
 
 # Add species abbreviations

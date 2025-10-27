@@ -23,7 +23,7 @@
 #' }
 #' @keywords internal
 #'
-#' @importFrom data.table := .SD .I merge rbindlist setcolorder
+#' @importFrom data.table := .SD .I rbindlist setcolorder
 run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   # Internal checks
   if (!inherits(gleam_data, "data.frame") || nrow(gleam_data) == 0) {
