@@ -48,13 +48,14 @@ calc_soil_carbon <- function(
 
   # Use provided soil_carbon_reference, or fallback to lookup from soil_type_params
   if (is.na(soil_carbon_reference)) {
-    cz <- climate_zone
-    st <- soil_type
-
-    socRef <- soil_type_params[
-      climate_zone == cz & soil_type == st,
-      V1
-    ]
+    # Create lookup data.table to avoid name conflicts
+    lookup <- data.table::data.table(
+      climate_zone = climate_zone,
+      soil_type = soil_type
+    )
+    matched <- merge(soil_type_params, lookup, by = c("climate_zone", "soil_type"))
+    
+    socRef <- matched$V1
 
     if (length(socRef) == 0 || anyNA(socRef)) {
       cli::cli_abort(
@@ -72,18 +73,19 @@ calc_soil_carbon <- function(
   }
 
   # Lookup management factors
-  cz <- climate_zone
-  mgmt1 <- management_start
-  mgmt2 <- management_end
+  lookup1 <- data.table::data.table(
+    climate_zone = climate_zone,
+    management_type = management_start
+  )
+  matched1 <- merge(management_params, lookup1, by = c("climate_zone", "management_type"))
+  mgmtFactor1 <- matched1$V1
 
-  mgmtFactor1 <- management_params[
-    climate_zone == cz & management_type == mgmt1,
-    V1
-  ]
-  mgmtFactor2 <- management_params[
-    climate_zone == cz & management_type == mgmt2,
-    V1
-  ]
+  lookup2 <- data.table::data.table(
+    climate_zone = climate_zone,
+    management_type = management_end
+  )
+  matched2 <- merge(management_params, lookup2, by = c("climate_zone", "management_type"))
+  mgmtFactor2 <- matched2$V1
 
   if (length(mgmtFactor1) == 0 || anyNA(mgmtFactor1)) {
     cli::cli_abort("No management factor found for starting management.")
@@ -102,7 +104,9 @@ calc_soil_carbon <- function(
   }
 
   # Lookup land-use change factors (same for both start and end)
-  luFactor <- luc_factors[climate_zone == cz, V1]
+  lookup_luc <- data.table::data.table(climate_zone = climate_zone)
+  matched_luc <- merge(luc_factors, lookup_luc, by = "climate_zone")
+  luFactor <- matched_luc$V1
 
   if (length(luFactor) == 0 || anyNA(luFactor)) {
     cli::cli_abort("No land-use change factor found for climate zone {.val {climate_zone}}.")

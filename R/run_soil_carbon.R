@@ -42,7 +42,7 @@
 #'
 #' @keywords internal
 #'
-#' @export
+#' @importFrom data.table := .I
 run_soil_carbon <- function(
     data,
     management_params,
