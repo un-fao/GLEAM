@@ -72,8 +72,8 @@ calc_methane_conversion_factor <- function(
 ) {
   #validate_mcf_inputs(mms_pasture, mms_burned, mms_other, ef_mcf_pasture, ef_mcf_burned, ef_mcf_other)
   mcf_pasture <- mms_pasture * ef_mcf_pasture / 100
-  mcf_burned  <- mms_burned  * ef_mcf_burned  / 100
-  mcf_other   <- mms_other   * ef_mcf_other   / 100
+  mcf_burned <- mms_burned * ef_mcf_burned / 100
+  mcf_other <- mms_other * ef_mcf_other / 100
   return(list(mcf_pasture = mcf_pasture, mcf_burned = mcf_burned, mcf_other = mcf_other))
 }
 
@@ -110,8 +110,8 @@ calc_ch4_emissions <- function(
 ) {
   #validate_ch4_inputs(vs, mcf_pasture, mcf_burned, mcf_other, b0_mms_all, b0_mms_pasture)
   ch4_pasture <- vs * ratio_m3CH4_kgCH4 * mcf_pasture * b0_mms_pasture
-  ch4_burned  <- vs * ratio_m3CH4_kgCH4 * mcf_burned  * b0_mms_all
-  ch4_other   <- vs * ratio_m3CH4_kgCH4 * mcf_other   * b0_mms_all
+  ch4_burned <- vs * ratio_m3CH4_kgCH4 * mcf_burned * b0_mms_all
+  ch4_other <- vs * ratio_m3CH4_kgCH4 * mcf_other * b0_mms_all
   ch4_all_noburn <- ch4_pasture + ch4_other
   return(list(
     ch4_manure_pasture = ch4_pasture,
@@ -150,13 +150,13 @@ calc_direct_n2o_emissions <- function(
 ) {
   #validate_direct_n2o_inputs(n_excretion, ef3_pasture, ef3_burned, ef3_other)
   n2o_pasture <- n_excretion * ef3_pasture * ratio_N2O_N2ON
-  n2o_burned  <- n_excretion * ef3_burned  * ratio_N2O_N2ON
-  n2o_other   <- n_excretion * ef3_other   * ratio_N2O_N2ON
+  n2o_burned <- n_excretion * ef3_burned * ratio_N2O_N2ON
+  n2o_other <- n_excretion * ef3_other * ratio_N2O_N2ON
   n2o_all_noburn <- n2o_pasture + n2o_other
   return(list(
     direct_n2o_manure_pasture = n2o_pasture,
-    direct_n2o_manure_burned  = n2o_burned,
-    direct_n2o_manure_other   = n2o_other,
+    direct_n2o_manure_burned = n2o_burned,
+    direct_n2o_manure_other = n2o_other,
     direct_n2o_manure_all_noburn = n2o_all_noburn
   ))
 }
@@ -191,8 +191,8 @@ calc_nitrogen_volatilization_fraction <- function(
 ) {
   #validate_volatilization_fraction_inputs(mms_pasture, mms_burned, mms_other, ef_fracgas_pasture, ef_fracgas_burned, ef_fracgas_other)
   fracgas_pasture <- mms_pasture * ef_fracgas_pasture
-  fracgas_burned  <- mms_burned  * ef_fracgas_burned
-  fracgas_other   <- mms_other   * ef_fracgas_other
+  fracgas_burned <- mms_burned * ef_fracgas_burned
+  fracgas_other <- mms_other * ef_fracgas_other
   return(list(
     fracgas_pasture = fracgas_pasture,
     fracgas_burned = fracgas_burned,
@@ -227,8 +227,8 @@ calc_nitrogen_volatilization <- function(
 ) {
   #validate_nitrogen_volatilization_inputs(n_excretion, fracgas_pasture, fracgas_burned, fracgas_other)
   n_vol_pasture <- n_excretion * fracgas_pasture
-  n_vol_burned  <- n_excretion * fracgas_burned
-  n_vol_other   <- n_excretion * fracgas_other
+  n_vol_burned <- n_excretion * fracgas_burned
+  n_vol_other <- n_excretion * fracgas_other
   n_vol_all_noburn <- n_vol_pasture + n_vol_other
   return(list(
     n_vol_manure_pasture = n_vol_pasture,
@@ -266,13 +266,13 @@ calc_n2o_from_volatilization <- function(
 ) {
   #validate_n2o_volatilization_inputs(n_vol_pasture, n_vol_burned, n_vol_other, ef4)
   n2o_pasture <- n_vol_pasture * ef4 * ratio_N2O_N2ON
-  n2o_burned  <- n_vol_burned  * ef4 * ratio_N2O_N2ON
-  n2o_other   <- n_vol_other   * ef4 * ratio_N2O_N2ON
+  n2o_burned <- n_vol_burned * ef4 * ratio_N2O_N2ON
+  n2o_other <- n_vol_other * ef4 * ratio_N2O_N2ON
   n2o_all_noburn <- n2o_pasture + n2o_other
   return(list(
     n2o_vol_manure_pasture = n2o_pasture,
-    n2o_vol_manure_burned  = n2o_burned,
-    n2o_vol_manure_other   = n2o_other,
+    n2o_vol_manure_burned = n2o_burned,
+    n2o_vol_manure_other = n2o_other,
     n2o_vol_manure_all_noburn = n2o_all_noburn
   ))
 }
@@ -307,8 +307,8 @@ calc_nitrogen_leaching_fraction <- function(
 ) {
   #validate_leaching_fraction_inputs(mms_pasture, mms_burned, mms_other, ef_fracleach_pasture, ef_fracleach_burned, ef_fracleach_other)
   fracleach_pasture <- mms_pasture * ef_fracleach_pasture
-  fracleach_burned  <- mms_burned  * ef_fracleach_burned
-  fracleach_other   <- mms_other   * ef_fracleach_other
+  fracleach_burned <- mms_burned * ef_fracleach_burned
+  fracleach_other <- mms_other * ef_fracleach_other
   return(list(
     fracleach_pasture = fracleach_pasture,
     fracleach_burned = fracleach_burned,
@@ -343,8 +343,8 @@ calc_nitrogen_leaching <- function(
 ) {
   #validate_nitrogen_leaching_inputs(n_excretion, fracleach_pasture, fracleach_burned, fracleach_other)
   n_leach_pasture <- n_excretion * fracleach_pasture
-  n_leach_burned  <- n_excretion * fracleach_burned
-  n_leach_other   <- n_excretion * fracleach_other
+  n_leach_burned <- n_excretion * fracleach_burned
+  n_leach_other <- n_excretion * fracleach_other
   n_leach_all_noburn <- n_leach_pasture + n_leach_other
   return(list(
     n_leach_manure_pasture = n_leach_pasture,
@@ -382,8 +382,8 @@ calc_n2o_from_leaching <- function(
 ) {
   #validate_n2o_leaching_inputs(n_leach_pasture, n_leach_burned, n_leach_other, ef5)
   n2o_pasture <- n_leach_pasture * ef5 * ratio_N2O_N2ON
-  n2o_burned  <- n_leach_burned  * ef5 * ratio_N2O_N2ON
-  n2o_other   <- n_leach_other   * ef5 * ratio_N2O_N2ON
+  n2o_burned <- n_leach_burned * ef5 * ratio_N2O_N2ON
+  n2o_other <- n_leach_other * ef5 * ratio_N2O_N2ON
   n2o_all_noburn <- n2o_pasture + n2o_other
   return(list(
     n2o_leach_manure_pasture = n2o_pasture,
@@ -422,19 +422,19 @@ calc_total_n2o_emissions <- function(
 ) {
   #validate_total_n2o_inputs(direct, vol, leach)
   indirect_pasture <- vol$n2o_vol_manure_pasture + leach$n2o_leach_manure_pasture
-  indirect_burned  <- vol$n2o_vol_manure_burned  + leach$n2o_leach_manure_burned
-  indirect_other   <- vol$n2o_vol_manure_other   + leach$n2o_leach_manure_other
+  indirect_burned <- vol$n2o_vol_manure_burned + leach$n2o_leach_manure_burned
+  indirect_other <- vol$n2o_vol_manure_other + leach$n2o_leach_manure_other
 
   total_pasture <- direct$direct_n2o_manure_pasture + indirect_pasture
-  total_burned  <- direct$direct_n2o_manure_burned  + indirect_burned
-  total_other   <- direct$direct_n2o_manure_other   + indirect_other
+  total_burned <- direct$direct_n2o_manure_burned + indirect_burned
+  total_other <- direct$direct_n2o_manure_other + indirect_other
 
   return(list(
     indirect_n2o_manure_pasture = indirect_pasture,
-    indirect_n2o_manure_burned  = indirect_burned,
-    indirect_n2o_manure_other   = indirect_other,
+    indirect_n2o_manure_burned = indirect_burned,
+    indirect_n2o_manure_other = indirect_other,
     total_n2o_manure_pasture = total_pasture,
-    total_n2o_manure_burned  = total_burned,
-    total_n2o_manure_other   = total_other
+    total_n2o_manure_burned = total_burned,
+    total_n2o_manure_other = total_other
   ))
 }
