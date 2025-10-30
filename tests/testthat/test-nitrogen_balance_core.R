@@ -10,13 +10,13 @@ test_that("compute_nitrogen_intake produces expected results", {
 # ---- test compute_nitrogen_retention (cattle) ----
 test_that("retention for cattle: milk + growth add up correctly", {
   base <- compute_nitrogen_retention(
-    "CTL","AF",
+    "CTL","FA",
     milk_protein = 32, milk_yield = 20,
     dwg = 0, fibre_prod = 0,
     litsize = 1, parturition_rate = 1
   )
   with_growth <- compute_nitrogen_retention(
-    "CTL","AF",
+    "CTL","FA",
     milk_protein = 32, milk_yield = 20,
     dwg = 0.5, fibre_prod = 0,
     litsize = 1, parturition_rate = 1
@@ -24,7 +24,7 @@ test_that("retention for cattle: milk + growth add up correctly", {
   expect_equal(with_growth - base, 0.5 * 0.0326, tolerance = 1e-12)
 
   none <- compute_nitrogen_retention(
-    "CTL","AF",
+    "CTL","FA",
     milk_protein = 32, milk_yield = 0,
     dwg = 0, fibre_prod = 0,
     litsize = 1, parturition_rate = 1
@@ -62,9 +62,9 @@ test_that("retention for sheep with only fibre is positive", {
 })
 
 # ---- test compute_nitrogen_retention (pigs AF) ----
-test_that("retention for pigs AF cohort is positive", {
+test_that("retention for pigs FA cohort is positive", {
   val <- compute_nitrogen_retention(
-    "PGS","AF",
+    "PGS","FA",
     litsize = 10, parturition_rate = 2,
     wkg = 30, ckg = 1
   )
@@ -72,9 +72,9 @@ test_that("retention for pigs AF cohort is positive", {
 })
 
 # ---- test compute_nitrogen_retention (pigs RF) ----
-test_that("retention for pigs RF cohort includes growth and reproductive", {
+test_that("retention for pigs FS cohort includes growth and reproductive", {
   val <- compute_nitrogen_retention(
-    "PGS","RF",
+    "PGS","FS",
     dwg = 0.5,
     litsize = 12, parturition_rate = 2.2,
     wkg = 20, ckg = 1, afc = 365
@@ -84,7 +84,7 @@ test_that("retention for pigs RF cohort includes growth and reproductive", {
 
 # ---- test compute_nitrogen_retention (pigs growers) ----
 test_that("retention for pigs growers matches 0.025*dwg", {
-  val <- compute_nitrogen_retention("PGS","FS", dwg = 0.8, litsize = 1, parturition_rate = 1)
+  val <- compute_nitrogen_retention("PGS","MS", dwg = 0.8, litsize = 1, parturition_rate = 1)
   expect_equal(val, 0.025 * 0.8, tolerance = 1e-12)
 })
 

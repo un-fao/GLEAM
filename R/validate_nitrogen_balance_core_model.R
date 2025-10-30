@@ -43,7 +43,7 @@ validate_nitrogen_retention_inputs <- function(
   }
 
   # Validate cohort
-  valid_cohorts <- c("FJ", "FS", "FA", "FC", "MJ", "MS", "MA", "MC", "AF", "RF")
+  valid_cohorts <- c("FJ", "FS", "FA", "FC", "MJ", "MS", "MA", "MC")
   if (!cohort %in% valid_cohorts) {
     cli::cli_abort(
       "{.arg cohort} must be one of: {cli::format_inline('{valid_cohorts}')}"
