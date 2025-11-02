@@ -49,7 +49,29 @@ run_production_cohort <- function(
     standard_lactose = 0.048
 ) {
   # --- Step 1: Validate inputs -------------------------------------------------
-  #validate_production_inputs(data, lactose_lookup)
+  if (!inherits(data, "data.frame") || nrow(data) == 0) {
+    cli::cli_abort("Input must be a non-empty data.frame or data.table.")
+  }
+
+  if (!data.table::is.data.table(lactose_lookup) || nrow(lactose_lookup) == 0) {
+    cli::cli_abort("{.arg lactose_lookup} must be a non-empty data.table.")
+  }
+
+  required_data <- unique(c(
+    "Animal_short", "cohort", "milk_yield", "size", "milking_fraction",
+    "milk_protein", "milk_fat", "fibre_prod", "offtake_number",
+    "slaughter_weight", "carcass_dressing_percentage",
+    "bone_free_meat_fraction", "meat_protein", merge_by
+  ))
+  miss_data <- setdiff(required_data, names(data))
+  if (length(miss_data)) {
+    cli::cli_abort("Missing required columns in {.arg data}: {miss_data}.")
+  }
+
+  if (!"Animal_short" %in% names(lactose_lookup) || !"Value" %in% names(lactose_lookup)) {
+    cli::cli_abort("{.arg lactose_lookup} must contain columns {.field Animal_short} and {.field Value}.")
+  }
+
   validate_scalar_numeric(assessment_duration, "assessment_duration")
   validate_scalar_numeric(standard_lactose, "standard_lactose")
 

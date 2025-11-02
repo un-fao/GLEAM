@@ -32,6 +32,19 @@ compute_milk_outputs <- function(
   standard_fat,
   standard_lactose
 ) {
+  validate_milk_outputs_inputs(
+    milk_yield = milk_yield,
+    assessment_duration = assessment_duration,
+    size = size,
+    milking_fraction = milking_fraction,
+    milk_protein = milk_protein,
+    milk_fat = milk_fat,
+    lactose = lactose,
+    standard_protein = standard_protein,
+    standard_fat = standard_fat,
+    standard_lactose = standard_lactose
+  )
+
   # Energy content of standard milk (Mcal/kg) - IDF 2022 formula
   energy_standard <- (0.0929 * standard_fat + 0.0547 * standard_protein + 0.0395 * standard_lactose)
 
@@ -77,6 +90,14 @@ compute_fibre_yield_per_head <- function(
   cohort,
   non_fibre_cohorts
 ) {
+  validate_fibre_yield_inputs(
+    fibre_prod = fibre_prod,
+    fibre_cohorts_size = fibre_cohorts_size,
+    assessment_duration = assessment_duration,
+    cohort = cohort,
+    non_fibre_cohorts = non_fibre_cohorts
+  )
+
   # Force zero for non-fibre cohorts
   if (cohort %in% non_fibre_cohorts) {
     return(0)
@@ -99,6 +120,12 @@ compute_fibre_yield_per_head <- function(
 #' @return Numeric. Fibre production per cohort (kg/year).
 #' @export
 compute_fibre_output <- function(fibre_yield, assessment_duration, size) {
+  validate_fibre_output_inputs(
+    fibre_yield = fibre_yield,
+    assessment_duration = assessment_duration,
+    size = size
+  )
+
   fibre_production <- fibre_yield * assessment_duration * size
   return(fibre_production)
 }
@@ -127,6 +154,14 @@ compute_meat_outputs <- function(
   bone_free_meat_fraction,
   meat_protein
 ) {
+  validate_meat_outputs_inputs(
+    offtake_number = offtake_number,
+    slaughter_weight = slaughter_weight,
+    carcass_dressing_percentage = carcass_dressing_percentage,
+    bone_free_meat_fraction = bone_free_meat_fraction,
+    meat_protein = meat_protein
+  )
+
   meat_production_liveweight <- offtake_number * slaughter_weight
   meat_production_carcassweight <- meat_production_liveweight * carcass_dressing_percentage
   meat_production_meat <- meat_production_carcassweight * bone_free_meat_fraction
