@@ -21,16 +21,16 @@
 #'   \item{output_milk_fpcm_production}{Numeric. Fat-protein-corrected milk production (kg FPCM/year).}
 #' @export
 compute_milk_outputs <- function(
-  milk_yield,
-  assessment_duration,
-  size,
-  milking_fraction,
-  milk_protein,
-  milk_fat,
-  lactose,
-  standard_protein,
-  standard_fat,
-  standard_lactose
+    milk_yield,
+    assessment_duration,
+    size,
+    milking_fraction,
+    milk_protein,
+    milk_fat,
+    lactose,
+    standard_protein,
+    standard_fat,
+    standard_lactose
 ) {
   validate_milk_outputs_inputs(
     milk_yield = milk_yield,
@@ -84,11 +84,11 @@ compute_milk_outputs <- function(
 #' @return Numeric. Fibre yield per head per day (kg/head/day).
 #' @export
 compute_fibre_yield_per_head <- function(
-  fibre_prod,
-  fibre_cohorts_size,
-  assessment_duration,
-  cohort,
-  non_fibre_cohorts
+    fibre_prod,
+    fibre_cohorts_size,
+    assessment_duration,
+    cohort,
+    non_fibre_cohorts
 ) {
   validate_fibre_yield_inputs(
     fibre_prod = fibre_prod,
@@ -119,7 +119,11 @@ compute_fibre_yield_per_head <- function(
 #'
 #' @return Numeric. Fibre production per cohort (kg/year).
 #' @export
-compute_fibre_output <- function(fibre_yield, assessment_duration, size) {
+compute_fibre_output <- function(
+    fibre_yield,
+    assessment_duration,
+    size
+) {
   validate_fibre_output_inputs(
     fibre_yield = fibre_yield,
     assessment_duration = assessment_duration,
@@ -148,11 +152,11 @@ compute_fibre_output <- function(fibre_yield, assessment_duration, size) {
 #'   \item{output_meat_production_protein}{Numeric. Meat protein production (kg protein/year).}
 #' @export
 compute_meat_outputs <- function(
-  offtake_number,
-  slaughter_weight,
-  carcass_dressing_percentage,
-  bone_free_meat_fraction,
-  meat_protein
+    offtake_number,
+    slaughter_weight,
+    carcass_dressing_percentage,
+    bone_free_meat_fraction,
+    meat_protein
 ) {
   validate_meat_outputs_inputs(
     offtake_number = offtake_number,
