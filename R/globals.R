@@ -46,7 +46,12 @@ utils::globalVariables(c(
   "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
   "dig_chickens", "dig_pigs", "dig_ruminants", "value",
   # Variables used with .. for validation
-  "..numeric_cols_feed", "..numeric_cols_rations"
+  "..numeric_cols_feed", "..numeric_cols_rations",
+  # Columns used in run_production_cohort
+  "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",
+  "milk_fat", "fibre_cohorts_size", "fibre_yield", "fibre_prod",
+  "output_fibre_production", "offtake_number", "carcass_dressing_percentage",
+  "bone_free_meat_fraction", "meat_protein"
 ))
 
 # Add species abbreviations
