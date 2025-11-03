@@ -3,8 +3,8 @@
 #' Calculates nitrogen intake as the product of dry matter intake (DMI) and diet nitrogen content.
 #' This represents the gross nitrogen consumed per head per day.
 #'
-#' @param dmi Numeric. Dry matter intake (kg DM/head/day).
-#' @param diet_nitrogen Numeric. Nitrogen content per kg of dry matter (kg N/kg DM).
+#' @param dmi Numeric. Dry matter intake of feed (kg DM/head/day).
+#' @param diet_nitrogen Numeric. Nitrogen content per kg of feed dry matter intake (kg N/kg DM).
 #'
 #' @return Numeric. Daily nitrogen intake (kg N/head/day).
 #'
@@ -18,20 +18,20 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #' Compute Daily Nitrogen Retention
 #'
 #' Calculates nitrogen retention by species and cohort. Retention includes nitrogen
-#' deposited in milk, growth, and fibre (for ruminants) or in reproductive processes (for pigs).
+#' retained in milk, growth, and fibre (for ruminants only), and in growth and reproductive processes (for pigs only).
 #' Chickens are not implemented yet and return `NA`.
 #'
 #' @param animal Character. Species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").
 #' @param cohort Character. Cohort code (e.g., "FJ", "MJ", "FS", "MS", "FA", "MA").
-#' @param milk_protein Numeric. Milk protein content (g/kg), used to derive milk nitrogen.
-#' @param milk_yield Numeric. Milk yield (kg/day).
-#' @param dwg Numeric. Daily weight gain (kg/day).
-#' @param fibre_prod Numeric. Fibre production (kg/year).
-#' @param litsize Numeric. Litter size (pigs).
-#' @param parturition_rate Numeric. Annual parturition rate (pigs).
+#' @param milk_protein Numeric. Milk protein content (fraction), used to derive milk nitrogen.
+#' @param milk_yield Numeric. Milk yield (kg/head/day).
+#' @param dwg Numeric. Daily weight gain (kg/head/day).
+#' @param fibre_prod Numeric. Production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
+#' @param litsize Numeric. Litter size (mean number of offspring per parturition).
+#' @param parturition_rate Numeric. Annual parturition rate of adult females (parturitions/head/year).
 #' @param wkg Numeric. Weaning weight (kg).
 #' @param ckg Numeric. Birth weight (kg).
-#' @param afc Numeric. Age at first calving (days).
+#' @param afc Numeric. Age at first parturition (years).
 #'
 #' @return Numeric. Daily nitrogen retention (kg N/head/day).
 #'

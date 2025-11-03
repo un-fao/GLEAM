@@ -7,9 +7,9 @@
 compute_nitrogen_intake(dmi, diet_nitrogen)
 }
 \arguments{
-\item{dmi}{Numeric. Dry matter intake (kg DM/head/day).}
+\item{dmi}{Numeric. Dry matter intake of feed (kg DM/head/day).}
 
-\item{diet_nitrogen}{Numeric. Nitrogen content per kg of dry matter (kg N/kg DM).}
+\item{diet_nitrogen}{Numeric. Nitrogen content per kg of feed dry matter intake (kg N/kg DM).}
 }
 \value{
 Numeric. Daily nitrogen intake (kg N/head/day).

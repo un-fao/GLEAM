@@ -23,29 +23,29 @@ compute_nitrogen_retention(
 
 \item{cohort}{Character. Cohort code (e.g., "FJ", "MJ", "FS", "MS", "FA", "MA").}
 
-\item{milk_protein}{Numeric. Milk protein content (g/kg), used to derive milk nitrogen.}
+\item{milk_protein}{Numeric. Milk protein content (fraction), used to derive milk nitrogen.}
 
-\item{milk_yield}{Numeric. Milk yield (kg/day).}
+\item{milk_yield}{Numeric. Milk yield (kg/head/day).}
 
-\item{dwg}{Numeric. Daily weight gain (kg/day).}
+\item{dwg}{Numeric. Daily weight gain (kg/head/day).}
 
-\item{fibre_prod}{Numeric. Fibre production (kg/year).}
+\item{fibre_prod}{Numeric. Production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
 
-\item{litsize}{Numeric. Litter size (pigs).}
+\item{litsize}{Numeric. Litter size (mean number of offspring per parturition).}
 
-\item{parturition_rate}{Numeric. Annual parturition rate (pigs).}
+\item{parturition_rate}{Numeric. Annual parturition rate of adult females (parturitions/head/year).}
 
 \item{wkg}{Numeric. Weaning weight (kg).}
 
 \item{ckg}{Numeric. Birth weight (kg).}
 
-\item{afc}{Numeric. Age at first calving (days).}
+\item{afc}{Numeric. Age at first parturition (years).}
 }
 \value{
 Numeric. Daily nitrogen retention (kg N/head/day).
 }
 \description{
 Calculates nitrogen retention by species and cohort. Retention includes nitrogen
-deposited in milk, growth, and fibre (for ruminants) or in reproductive processes (for pigs).
+retained in milk, growth, and fibre (for ruminants only), and in growth and reproductive processes (for pigs only).
 Chickens are not implemented yet and return \code{NA}.
 }
