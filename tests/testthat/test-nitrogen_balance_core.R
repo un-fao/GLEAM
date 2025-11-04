@@ -77,7 +77,7 @@ test_that("retention for pigs FS cohort includes growth and reproductive", {
     "PGS","FS",
     dwg = 0.5,
     litsize = 12, parturition_rate = 2.2,
-    wkg = 20, ckg = 1, afc = 365
+    wkg = 20, ckg = 1, afc = 1
   )
   expect_gt(val, 0)
 })
