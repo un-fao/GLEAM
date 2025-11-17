@@ -28,11 +28,7 @@ fractions (rem, reg), total metabolizable energy requirement (getot) and dry mat
 \dontrun{
 # Load example input from the package and run the function
 input_path <- system.file("extdata/GLEAM_input_energyrequirements.csv", package = "gleam")
-data <- data.table::fread(input_path)[size_total>100 & Animal_short!="CHK" & !COUNTRY\%in\% c("Mongolia","Martinique", "Saint Kitts and Nevis", "Singapore", "Saint Vincent and the Grenadines", "Sao Tome and Principe","Denmark", "Faroe Islands")]
-data[is.na(data)] <- 0
-input_path2 <- system.file("extdata/Herd_parameters/herd_param_gest.csv", package = "gleam")
-herd_param_gest <- data.table::fread(input_path2)
-
+data <- data.table::fread(input_path)
 energy_results <- run_energy_requirements(data)
 }
 
