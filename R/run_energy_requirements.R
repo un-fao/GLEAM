@@ -18,11 +18,7 @@
 #' \dontrun{
 #' # Load example input from the package and run the function
 #' input_path <- system.file("extdata/GLEAM_input_energyrequirements.csv", package = "gleam")
-#' data <- data.table::fread(input_path)[size_total>100 & diet_dig < 1 & Animal_short!="CHK" & !COUNTRY%in% c("Mongolia","Martinique", "Saint Kitts and Nevis", "Singapore", "Saint Vincent and the Grenadines", "Sao Tome and Principe","Denmark", "Faroe Islands")]
-#' data[is.na(data)] <- 0
-#' input_path2 <- system.file("extdata/Herd_parameters/herd_param_gest.csv", package = "gleam")
-#' herd_param_gest <- data.table::fread(input_path2)
-#' 
+#' data <- data.table::fread(input_path)
 #' energy_results <- run_energy_requirements(data)
 #' }
 #'
@@ -45,25 +41,17 @@ run_energy_requirements <- function(data) {
   )
   miss <- setdiff(required, names(data))
   if (length(miss)) stop("Missing required columns: ", paste(miss, collapse = ", "))
-  
-  # 0.1 Assign "gest" from parameter file
-  data[,gest:=NULL]
-  
-  data<-merge(data,
-              herd_param_gest[,.(Animal_short, gest)],
-              by="Animal_short",
-              all.x = T)
-  
-  
-  # 0.2 Create a new variable (adult_weight) - this might be done in a previous step (herd module?)
+
+  # 0. Create a new variable (adult_weight)
   data[, adult_weight := fifelse(
     cohort %in% c("FA", "FS", "FJ"),
     average_weight[cohort == "FA"][1],   # female adult ref for this group
-    fifelse(cohort %in% c("MA", "MS", "MJ"),
-            average_weight[cohort == "MA"][1], # male adult ref for this group
-            NA_real_)
+    fifelse(
+      cohort %in% c("MA", "MS", "MJ"),
+      average_weight[cohort == "MA"][1], # male adult ref for this group
+      NA_real_
+    )
   ), by = .(ADM0_CODE, Animal_short, LPS_short, HerdType_short)]
-  
 
   # 1. Maintenance energy (MJ/day)
   data[, nemain := calc_net_energy_maintenance(
