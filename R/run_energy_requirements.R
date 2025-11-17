@@ -26,7 +26,7 @@
 run_energy_requirements <- function(data) {
   # Internal checks: ensure essential structure
   if (!inherits(data, "data.frame") || nrow(data) == 0) {
-    stop("Input must be a non-empty data.frame or data.table.")
+    cli::cli_abort("Input must be a non-empty data.frame or data.table.")
   }
 
   required <- c(
@@ -40,7 +40,9 @@ run_energy_requirements <- function(data) {
     "milk_yield","milk_fat","dr1","wkg","lambing_interval"
   )
   miss <- setdiff(required, names(data))
-  if (length(miss)) stop("Missing required columns: ", paste(miss, collapse = ", "))
+  if (length(miss)) {
+    cli::cli_abort("Missing required columns: {paste(miss, collapse = ', ')}")
+  }
 
   # 0. Create a new variable (adult_weight)
   data[, adult_weight := fifelse(
