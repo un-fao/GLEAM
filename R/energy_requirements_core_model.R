@@ -19,8 +19,7 @@ calc_net_energy_maintenance <- function(
     offtake_rate = NA_real_,
     afc = NA_real_
 ) {
-  
-  
+
   # Normalize offtake_rate
   if (!is.na(offtake_rate)) {
     if (offtake_rate < 0) {
@@ -29,7 +28,7 @@ calc_net_energy_maintenance <- function(
       offtake_rate <- 1
     }
   }
-  
+
   # Validate inputs
   validate_maintenance_inputs(
     animal, cohort, average_weight,
@@ -113,7 +112,7 @@ calc_net_energy_activity <- function(
     cact <- (0.1 * activity_fraction)
     ret <- cact * nemain
   } else if (animal == "SHP") {
-    cact <- (0.0107 * activity_fraction) + (0.024 * high_activity_fraction) 
+    cact <- (0.0107 * activity_fraction) + (0.024 * high_activity_fraction)
     ret <- cact * average_weight
   } else if (animal %in% c("GTS")) {
     cact <- (0.019 * activity_fraction) + (0.024 * high_activity_fraction)
@@ -152,8 +151,7 @@ calc_net_energy_growth <- function(
     offtake_rate,
     duration
 ) {
-  
-  
+
   # Normalize offtake_rate
   if (!is.na(offtake_rate)) {
     if (offtake_rate < 0) {
@@ -162,7 +160,7 @@ calc_net_energy_growth <- function(
       offtake_rate <- 1
     }
   }
-  
+
   # Validate inputs
   validate_growth_inputs(
     animal, cohort, average_weight, final_weight,
@@ -231,16 +229,16 @@ calc_net_energy_growth <- function(
 #' @param milking_fraction Numeric. Proportion of lactating adult females.
 #' @param milk_yield Numeric. Milk yield (kg/day).
 #' @param milk_fat Numeric. Milk fat content (fraction).
-#' @param idle Numeric. Fraction of time idle (for PGS).
-#' @param gest Numeric. Fraction of time gestating (for PGS).
+#' @param idle Numeric. Number of days idle (for PGS).
+#' @param gest Numeric. Number of days gestating per reproductive cycle (for PGS).
 #' @param litsize Numeric. Litter size (for PGS, SHP, GTS).
 #' @param dr1 Numeric. Death rate in first year (for PGS).
 #' @param ckg Numeric. Birth weight (for PGS).
 #' @param wkg Numeric. Weaning weight (for PGS).
-#' @param lact Numeric. Fraction of time lactating (for PGS).
+#' @param lact Numeric. Number of days lactating per reproductive cycle (for PGS).
 #' @param parturition_rate Numeric. Parturition rate.
 #' @param lambing_interval Numeric. Lambing interval (for SHP, GTS).
-#' @param assessment_duration Numeric. Duration of the assessment (days)
+#' @param assessment_duration Numeric. Duration of the assessment (days).
 #'
 #' @return Numeric. Net energy for lactation (MJ/head/day).
 #' @export
@@ -414,7 +412,7 @@ calc_net_energy_fibre <- function(
 #' @param nemain Numeric. Net energy for maintenance.
 #' @param parturition_rate Numeric. Parturition rate.
 #' @param litsize Numeric. Litter size (for SHP, GTS, PGS).
-#' @param gest Numeric. Fraction of time gestating (for all species).
+#' @param gest Numeric. Number of days gestating during the assessment period (for all species).
 #' @param duration Numeric. Duration in days.
 #' @param offtake_rate Numeric. Offtake rate by cohort.
 #'
@@ -430,8 +428,7 @@ calc_net_energy_pregnancy <- function(
     duration,
     offtake_rate
 ) {
-  
-  
+
   # Normalize offtake_rate
   if (!is.na(offtake_rate)) {
     if (offtake_rate < 0) {
@@ -440,7 +437,7 @@ calc_net_energy_pregnancy <- function(
       offtake_rate <- 1
     }
   }
-  
+
   # Validate inputs
   validate_pregnancy_inputs(
     animal, cohort, nemain, parturition_rate,
@@ -481,12 +478,12 @@ calc_net_energy_pregnancy <- function(
   } else if (animal == "PGS") {
     cgest <- 0.14985 # GLEAM coefficient for pigs
     if (cohort == "FA") {
-      ret <- cgest * litsize * parturition_rate 
-      
-      } else if (cohort == "FS") {
-        
-        ret <- cgest * litsize * (gest / duration) * parturition_rate * (1 - offtake_rate)
-        
+      ret <- cgest * litsize * parturition_rate
+
+    } else if (cohort == "FS") {
+
+      ret <- cgest * litsize * (gest / duration) * parturition_rate * (1 - offtake_rate)
+
     } else {
       ret <- 0
     }
