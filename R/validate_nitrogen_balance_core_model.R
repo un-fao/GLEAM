@@ -50,6 +50,19 @@ validate_nitrogen_retention_inputs <- function(
     )
   }
 
+  # Validate requested variables for pigs only
+  if (animal == "PGS") {
+    if (is.na(dwg)) {
+      cli::cli_abort("`dwg` must be supplied for pigs.")
+    }
+    if (is.na(litsize)) {
+      cli::cli_abort("`litsize` must be supplied for pigs.")
+    }
+    if (is.na(parturition_rate)) {
+      cli::cli_abort("`parturition_rate` must be supplied for pigs.")
+    }
+  }
+
   # Numeric inputs (allow NA)
   args <- list(
     milk_protein = milk_protein,

@@ -43,8 +43,8 @@ compute_nitrogen_retention <- function(
     milk_yield = NA_real_,
     dwg = NA_real_,
     fibre_prod = NA_real_,
-    litsize,
-    parturition_rate,
+    litsize = NA_real_,
+    parturition_rate = NA_real_,
     wkg = NA_real_,
     ckg = NA_real_,
     afc = NA_real_
@@ -81,10 +81,8 @@ compute_nitrogen_retention <- function(
                0.025 * litsize * parturition_rate * ckg) / 365
           )
       )
-    } else if (!is.na(dwg)) {
-      return(0.025 * dwg)
     } else {
-      return(NA_real_)
+      return(0.025 * dwg)
     }
 
   } else if (animal == "CHK") {
