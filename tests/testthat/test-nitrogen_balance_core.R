@@ -66,7 +66,7 @@ test_that("retention for pigs FA cohort is positive", {
   val <- compute_nitrogen_retention(
     "PGS","FA",
     litsize = 10, parturition_rate = 2,
-    wkg = 30, ckg = 1
+    wkg = 30, ckg = 1, dwg = 1,
   )
   expect_gt(val, 0)
 })
