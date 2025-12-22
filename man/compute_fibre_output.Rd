@@ -4,10 +4,10 @@
 \alias{compute_fibre_output}
 \title{Compute Fibre Production}
 \usage{
-compute_fibre_output(fibre_yield, assessment_duration, size)
+compute_fibre_output(fibre_prod, assessment_duration, size)
 }
 \arguments{
-\item{fibre_yield}{Numeric. Fibre yield per head per day (kg/head/day).}
+\item{fibre_prod}{Numeric. Fibre yield per head per year (kg/head/year).}
 
 \item{assessment_duration}{Numeric. Number of assessment days used to annualise fibre output.}
 

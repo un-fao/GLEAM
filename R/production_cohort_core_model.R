@@ -71,66 +71,26 @@ compute_milk_outputs <- function(
   ))
 }
 
-#' Compute Fibre Yield Per Head
-#'
-#' Calculates fibre yield per head per day (kg/head/day) for a single cohort row.
-#'
-#' @param fibre_prod Numeric. Total fibre production for the cohort group (kg/year).
-#' @param fibre_cohorts_size Numeric. Total size of all fibre-producing cohorts in the group (heads).
-#' @param assessment_duration Numeric. Number of assessment days used when annualising fibre output.
-#' @param cohort Character. Cohort code for the current row.
-#' @param non_fibre_cohorts Character vector. Cohort codes forced to zero fibre production.
-#'
-#' @return Numeric. Fibre yield per head per day (kg/head/day).
-#' @export
-compute_fibre_yield_per_head <- function(
-    fibre_prod,
-    fibre_cohorts_size,
-    assessment_duration,
-    cohort,
-    non_fibre_cohorts
-) {
-  validate_fibre_yield_inputs(
-    fibre_prod = fibre_prod,
-    fibre_cohorts_size = fibre_cohorts_size,
-    assessment_duration = assessment_duration,
-    cohort = cohort,
-    non_fibre_cohorts = non_fibre_cohorts
-  )
-
-  # Force zero for non-fibre cohorts
-  if (cohort %in% non_fibre_cohorts) {
-    return(0)
-  }
-
-  # Calculate fibre yield if there are fibre cohorts in the group
-  if (fibre_cohorts_size > 0) {
-    return((fibre_prod / fibre_cohorts_size) / assessment_duration)
-  }
-
-  return(0)
-}
-
 #' Compute Fibre Production
 #'
-#' @param fibre_yield Numeric. Fibre yield per head per day (kg/head/day).
+#' @param fibre_prod Numeric. Fibre yield per head per year (kg/head/year).
 #' @param assessment_duration Numeric. Number of assessment days used to annualise fibre output.
 #' @param size Numeric. Herd size (heads) for the cohort.
 #'
 #' @return Numeric. Fibre production per cohort (kg/year).
 #' @export
 compute_fibre_output <- function(
-    fibre_yield,
+    fibre_prod,
     assessment_duration,
     size
 ) {
   validate_fibre_output_inputs(
-    fibre_yield = fibre_yield,
+    fibre_prod = fibre_prod,
     assessment_duration = assessment_duration,
     size = size
   )
 
-  fibre_production <- fibre_yield * assessment_duration * size
+  fibre_production <- fibre_prod / 365 * assessment_duration * size
   return(fibre_production)
 }
 

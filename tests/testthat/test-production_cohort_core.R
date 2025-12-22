@@ -203,145 +203,21 @@ test_that("compute_milk_outputs handles validation errors", {
 })
 
 
-# ---- test compute_fibre_yield_per_head ----
-test_that("compute_fibre_yield_per_head returns expected value for fibre cohort", {
-  result <- compute_fibre_yield_per_head(
-    fibre_prod = 3650,
-    fibre_cohorts_size = 100,
-    assessment_duration = 365,
-    cohort = "FA",
-    non_fibre_cohorts = c("FJ", "MJ")
-  )
-
-  expected <- (3650 / 100) / 365
-  expect_equal(result, expected)
-})
-
-test_that("compute_fibre_yield_per_head returns zero for non-fibre cohorts", {
-  result_fj <- compute_fibre_yield_per_head(
-    fibre_prod = 3650,
-    fibre_cohorts_size = 100,
-    assessment_duration = 365,
-    cohort = "FJ",
-    non_fibre_cohorts = c("FJ", "MJ")
-  )
-
-  result_mj <- compute_fibre_yield_per_head(
-    fibre_prod = 3650,
-    fibre_cohorts_size = 100,
-    assessment_duration = 365,
-    cohort = "MJ",
-    non_fibre_cohorts = c("FJ", "MJ")
-  )
-
-  expect_equal(result_fj, 0)
-  expect_equal(result_mj, 0)
-})
-
-test_that("compute_fibre_yield_per_head returns zero when fibre_cohorts_size is zero", {
-  result <- compute_fibre_yield_per_head(
-    fibre_prod = 3650,
-    fibre_cohorts_size = 0,
-    assessment_duration = 365,
-    cohort = "FA",
-    non_fibre_cohorts = c("FJ", "MJ")
-  )
-
-  expect_equal(result, 0)
-})
-
-test_that("compute_fibre_yield_per_head handles different assessment durations", {
-  result_365 <- compute_fibre_yield_per_head(
-    fibre_prod = 3650,
-    fibre_cohorts_size = 100,
-    assessment_duration = 365,
-    cohort = "FA",
-    non_fibre_cohorts = c("FJ", "MJ")
-  )
-
-  result_180 <- compute_fibre_yield_per_head(
-    fibre_prod = 1800,
-    fibre_cohorts_size = 100,
-    assessment_duration = 180,
-    cohort = "FA",
-    non_fibre_cohorts = c("FJ", "MJ")
-  )
-
-  # Both should give same daily rate (10 kg/day)
-  expect_equal(result_365, result_180)
-})
-
-test_that("compute_fibre_yield_per_head handles multiple non-fibre cohorts", {
-  non_fibre <- c("FJ", "MJ", "FS", "MS")
-  result <- compute_fibre_yield_per_head(
-    fibre_prod = 3650,
-    fibre_cohorts_size = 100,
-    assessment_duration = 365,
-    cohort = "FJ",
-    non_fibre_cohorts = non_fibre
-  )
-
-  expect_equal(result, 0)
-})
-
-test_that("compute_fibre_yield_per_head calculates correctly for sheep cohort", {
-  result <- compute_fibre_yield_per_head(
-    fibre_prod = 7300,
-    fibre_cohorts_size = 200,
-    assessment_duration = 365,
-    cohort = "SA",
-    non_fibre_cohorts = c("FJ", "MJ")
-  )
-
-  expected <- (7300 / 200) / 365
-  expect_equal(result, expected)
-})
-
-test_that("compute_fibre_yield_per_head handles validation errors", {
-  expect_error(
-    compute_fibre_yield_per_head(
-      fibre_prod = -100, fibre_cohorts_size = 100,
-      assessment_duration = 365, cohort = "FA",
-      non_fibre_cohorts = c("FJ", "MJ")
-    ),
-    "fibre_prod"
-  )
-
-  expect_error(
-    compute_fibre_yield_per_head(
-      fibre_prod = 3650, fibre_cohorts_size = 100,
-      assessment_duration = 0, cohort = "FA",
-      non_fibre_cohorts = c("FJ", "MJ")
-    ),
-    "assessment_duration"
-  )
-
-  expect_error(
-    compute_fibre_yield_per_head(
-      fibre_prod = 3650, fibre_cohorts_size = 100,
-      assessment_duration = 365, cohort = 123,
-      non_fibre_cohorts = c("FJ", "MJ")
-    ),
-    "cohort"
-  )
-})
-
-
 # ---- test compute_fibre_output ----
 test_that("compute_fibre_output returns expected value", {
   result <- compute_fibre_output(
-    fibre_yield = 0.1,
+    fibre_prod = 0.1,
     assessment_duration = 365,
     size = 100
   )
 
-  expected <- 0.1 * 365 * 100
+  expected <- 0.1 / 365 * 365 * 100
   expect_equal(result, expected)
 })
 
 test_that("compute_fibre_output handles zero fibre yield", {
   result <- compute_fibre_output(
-    fibre_yield = 0,
+    fibre_prod = 0,
     assessment_duration = 365,
     size = 100
   )
@@ -351,7 +227,7 @@ test_that("compute_fibre_output handles zero fibre yield", {
 
 test_that("compute_fibre_output handles zero size", {
   result <- compute_fibre_output(
-    fibre_yield = 0.1,
+    fibre_prod = 0.1,
     assessment_duration = 365,
     size = 0
   )
@@ -361,13 +237,13 @@ test_that("compute_fibre_output handles zero size", {
 
 test_that("compute_fibre_output handles different assessment durations", {
   result_365 <- compute_fibre_output(
-    fibre_yield = 0.1,
+    fibre_prod = 0.1,
     assessment_duration = 365,
     size = 100
   )
 
   result_180 <- compute_fibre_output(
-    fibre_yield = 0.1,
+    fibre_prod = 0.1,
     assessment_duration = 180,
     size = 100
   )
@@ -377,28 +253,28 @@ test_that("compute_fibre_output handles different assessment durations", {
 
 test_that("compute_fibre_output handles large values", {
   result <- compute_fibre_output(
-    fibre_yield = 5.0,
+    fibre_prod = 5.0,
     assessment_duration = 365,
     size = 1000
   )
 
-  expected <- 5.0 * 365 * 1000
+  expected <- 5.0 / 365 * 365 * 1000
   expect_equal(result, expected)
 })
 
 test_that("compute_fibre_output handles validation errors", {
   expect_error(
-    compute_fibre_output(fibre_yield = -0.1, assessment_duration = 365, size = 100),
-    "fibre_yield"
+    compute_fibre_output(fibre_prod = -0.1, assessment_duration = 365, size = 100),
+    "fibre_prod"
   )
 
   expect_error(
-    compute_fibre_output(fibre_yield = 0.1, assessment_duration = 0, size = 100),
+    compute_fibre_output(fibre_prod = 0.1, assessment_duration = 0, size = 100),
     "assessment_duration"
   )
 
   expect_error(
-    compute_fibre_output(fibre_yield = 0.1, assessment_duration = 365, size = -100),
+    compute_fibre_output(fibre_prod = 0.1, assessment_duration = 365, size = -100),
     "size"
   )
 })

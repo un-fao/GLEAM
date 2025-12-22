@@ -15,12 +15,6 @@
 #'   in column `Value`.
 #' @param assessment_duration Numeric. Number of assessment days used to annualise production outputs.
 #'   Defaults to `365`.
-#' @param fibre_cohorts Character vector. Cohort codes that contribute to fibre production. Defaults to
-#'   `c("FA", "MA", "SA", "SM")`.
-#' @param non_fibre_cohorts Character vector. Cohort codes forced to zero fibre allocation. Defaults to
-#'   `c("FJ", "MJ")`.
-#' @param merge_by Character vector. Key columns used to aggregate cohort sizes before distributing fibre.
-#'   Defaults to `c("ADM0_CODE", "Animal_short", "LPS_short", "HerdType_short")`.
 #' @param standard_lactose Numeric. Reference lactose fraction used for FPCM energy calculations.
 #'   Defaults to `0.048` (reflecting IDF 2022 guidance).
 #'
@@ -43,9 +37,6 @@ run_production_cohort <- function(
     data,
     lactose_lookup,
     assessment_duration = 365,
-    fibre_cohorts = c("FA", "MA", "SA", "SM"),
-    non_fibre_cohorts = c("FJ", "MJ"),
-    merge_by = c("ADM0_CODE", "Animal_short", "LPS_short", "HerdType_short"),
     standard_lactose = 0.048
 ) {
   # --- Step 1: Validate inputs -------------------------------------------------
@@ -61,7 +52,7 @@ run_production_cohort <- function(
     "Animal_short", "cohort", "milk_yield", "size", "milking_fraction",
     "milk_protein", "milk_fat", "fibre_prod", "offtake_number",
     "slaughter_weight", "carcass_dressing_percentage",
-    "bone_free_meat_fraction", "meat_protein", merge_by
+    "bone_free_meat_fraction", "meat_protein"
   ))
   miss_data <- setdiff(required_data, names(data))
   if (length(miss_data)) {
@@ -117,48 +108,17 @@ run_production_cohort <- function(
   # Clean up temporary lactose column
   data[, lactose := NULL]
 
-  # --- Step 3: Derive fibre yield per head ------------------------------------
-  # Aggregate fibre cohort sizes by grouping keys
-  fibre_cohort_size_per_group <- data[
-    cohort %in% fibre_cohorts,
-    .(fibre_cohorts_size = sum(size, na.rm = TRUE)),
-    by = merge_by
-  ]
-
-  # Merge back to main data table
-  data <- merge(
-    data,
-    fibre_cohort_size_per_group,
-    by = merge_by,
-    all.x = TRUE
-  )
-
-  # Fill NA values with 0 for groups without fibre cohorts
-  data[is.na(fibre_cohorts_size), fibre_cohorts_size := 0]
-
-  # Calculate fibre yield per head for each row
-  data[, fibre_yield := compute_fibre_yield_per_head(
-    fibre_prod = fibre_prod,
-    fibre_cohorts_size = fibre_cohorts_size,
-    assessment_duration = assessment_duration,
-    cohort = cohort,
-    non_fibre_cohorts = non_fibre_cohorts
-  ), by = .I]
-
-  # Clean up temporary column
-  data[, fibre_cohorts_size := NULL]
-
-  # --- Step 4: Aggregate fibre production ------------------------------------
+  # --- Step 3: Aggregate fibre production ------------------------------------
   # The downstream energy requirements module expects annual fibre tonnage at the cohort level.
   data[ , output_fibre_production := compute_fibre_output(
-    fibre_yield = fibre_yield,
+    fibre_prod = fibre_prod,
     assessment_duration = assessment_duration,
     size = size
   ),
   by = .I
   ]
 
-  # --- Step 5: Compute meat production outputs --------------------------------
+  # --- Step 4: Compute meat production outputs --------------------------------
   meat_output_cols <- c(
     "output_meat_production_liveweight",
     "output_meat_production_carcassweight",

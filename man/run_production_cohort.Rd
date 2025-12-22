@@ -8,9 +8,6 @@ run_production_cohort(
   data,
   lactose_lookup,
   assessment_duration = 365,
-  fibre_cohorts = c("FA", "MA", "SA", "SM"),
-  non_fibre_cohorts = c("FJ", "MJ"),
-  merge_by = c("ADM0_CODE", "Animal_short", "LPS_short", "HerdType_short"),
   standard_lactose = 0.048
 )
 }
@@ -24,15 +21,6 @@ in column \code{Value}.}
 
 \item{assessment_duration}{Numeric. Number of assessment days used to annualise production outputs.
 Defaults to \code{365}.}
-
-\item{fibre_cohorts}{Character vector. Cohort codes that contribute to fibre production. Defaults to
-\code{c("FA", "MA", "SA", "SM")}.}
-
-\item{non_fibre_cohorts}{Character vector. Cohort codes forced to zero fibre allocation. Defaults to
-\code{c("FJ", "MJ")}.}
-
-\item{merge_by}{Character vector. Key columns used to aggregate cohort sizes before distributing fibre.
-Defaults to \code{c("ADM0_CODE", "Animal_short", "LPS_short", "HerdType_short")}.}
 
 \item{standard_lactose}{Numeric. Reference lactose fraction used for FPCM energy calculations.
 Defaults to \code{0.048} (reflecting IDF 2022 guidance).}

@@ -60,57 +60,22 @@ validate_milk_outputs_inputs <- function(
   }
 }
 
-#' Validate inputs for compute_fibre_yield_per_head
-#'
-#' @noRd
-validate_fibre_yield_inputs <- function(
-    fibre_prod,
-    fibre_cohorts_size,
-    assessment_duration,
-    cohort,
-    non_fibre_cohorts
-) {
-  # Scalar numeric inputs
-  validate_scalar_numeric(fibre_prod, "fibre_prod")
-  validate_scalar_numeric(fibre_cohorts_size, "fibre_cohorts_size")
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
-
-  # Character inputs
-  validate_scalar_character(cohort, "cohort")
-
-  # Vector input validation
-  if (!is.character(non_fibre_cohorts) || length(non_fibre_cohorts) == 0) {
-    cli::cli_abort("{.arg non_fibre_cohorts} must be a non-empty character vector.")
-  }
-
-  # Non-negative checks
-  if (fibre_prod < 0) {
-    cli::cli_abort("{.arg fibre_prod} must be non-negative.")
-  }
-  if (fibre_cohorts_size < 0) {
-    cli::cli_abort("{.arg fibre_cohorts_size} must be non-negative.")
-  }
-  if (assessment_duration <= 0) {
-    cli::cli_abort("{.arg assessment_duration} must be positive.")
-  }
-}
-
 #' Validate inputs for compute_fibre_output
 #'
 #' @noRd
 validate_fibre_output_inputs <- function(
-    fibre_yield,
+    fibre_prod,
     assessment_duration,
     size
 ) {
   # Scalar numeric inputs
-  validate_scalar_numeric(fibre_yield, "fibre_yield")
+  validate_scalar_numeric(fibre_prod, "fibre_prod")
   validate_scalar_numeric(assessment_duration, "assessment_duration")
   validate_scalar_numeric(size, "size")
 
   # Non-negative checks
-  if (fibre_yield < 0) {
-    cli::cli_abort("{.arg fibre_yield} must be non-negative.")
+  if (fibre_prod < 0) {
+    cli::cli_abort("{.arg fibre_prod} must be non-negative.")
   }
   if (assessment_duration <= 0) {
     cli::cli_abort("{.arg assessment_duration} must be positive.")
