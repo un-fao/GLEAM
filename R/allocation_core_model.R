@@ -196,3 +196,34 @@ calc_energy_allocation_work <- function(
 
   return(energy_allocation_work)
 }
+
+#' Aggregate Cohort-Level Data to Herd-Level
+#'
+#' This function aggregates a dataset from cohort level to herd level by summing
+#' specified variables over the defined ID columns.
+#' 
+#' @param data A `data.table` containing cohort-level data.
+#' @param id_cols Character vector of ID variables (e.g., Animal_short, LPS_short, HerdType_short).@Yassine: this should be revised. Record_id should be used.
+#' @param vars_to_sum Character vector of column names to be summed during aggregation.
+#' @param cohort Character. Cohort code (e.g., "FJ", "MJ", "FS", "MS", "FA", "MA").
+
+#'
+#' @return A `data.table` with summed values at the herd level.
+#' @export
+#'
+
+aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) {
+  
+  # Aggregate over cohorts
+  data_herd <- data_cohort[
+    ,
+    lapply(.SD, sum, na.rm = TRUE),
+    by = id_cols,
+    .SDcols = vars_to_sum
+  ]
+  
+  # Add cohort = "ALL"
+  data_herd[, (cohort) := "ALL"]
+  
+  return(data_herd[])
+}

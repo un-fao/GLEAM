@@ -117,16 +117,25 @@ run_allocation <- function(
 
   # --- Aggregate from cohort to herd level
   # Sum energy allocations by grouping keys to get herd-level totals
-  herd_summary_dt <- allocation_inputs[, .(
-    energy_allocation_meat = sum(energy_allocation_meat, na.rm = TRUE),
-    energy_allocation_milk = sum(energy_allocation_milk, na.rm = TRUE),
-    energy_allocation_fibre = sum(energy_allocation_fibre, na.rm = TRUE),
-    energy_allocation_work = sum(energy_allocation_work, na.rm = TRUE),
-    energy_allocation_eggs = sum(energy_allocation_eggs, na.rm = TRUE)
-  ),
-  by = group_by_keys
-  ]
+  allocation_herd <- aggregate_cohort_to_herd(
+    data_cohort = allocation_inputs,
+    id_cols = c( "ADM0_CODE",
+                 "HerdType_short",
+                 "Animal_short",
+                 "LPS_short"),
+    vars_to_sum = c("energy_allocation_meat", 
+                    "energy_allocation_milk", 
+                    "energy_allocation_fibre",
+                    "energy_allocation_work", 
+                    "energy_allocation_eggs"),
+    cohort = "cohort")
+  
+  
 
+        ),
+  by = group_by_keys
+    ]
+    
   # Calculate total allocation energy for share calculations
   herd_summary_dt[, total_allocation_energy :=
                     energy_allocation_meat +
@@ -171,7 +180,7 @@ run_allocation <- function(
       allocation_share_eggs = 0
     )]
   }
-
+  
   # --- Reshape to long format
   # Convert allocation shares from wide to long format for downstream processing
   # Note: id_vars order matches legacy: ADM0_CODE, Animal_short, LPS_short, HerdType_short
@@ -183,10 +192,10 @@ run_allocation <- function(
     herd_summary_dt,
     id.vars = id_vars_for_melt,
     measure.vars = patterns("^allocation_share_"),
-    variable.name = "commodity_name",
+      variable.name = "commodity_name",
     value.name = "V1"
-  )
-
+    )
+    
   # Clean up commodity names: remove prefix and capitalize first letter
   allocation_long_dt[, commodity_name := gsub(
     "^allocation_share_",
@@ -210,14 +219,14 @@ run_allocation <- function(
       NA_character_
     )
   )]
-
+    
   # Set column order to match legacy exactly:
   # ADM0_CODE, Animal_short, LPS_short, HerdType_short, commodity_name, commodity_type, V1
   setcolorder(
     allocation_long_dt,
     c(id_vars_for_melt, "commodity_name", "commodity_type", "V1")
   )
-
+    
   # Remove temporary total_allocation_energy column from herd summary
   herd_summary_dt[, total_allocation_energy := NULL]
 
