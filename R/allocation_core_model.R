@@ -289,3 +289,70 @@ calc_allocation_shares <- function(animal,
     allocation_share_eggs  = allocation_share_eggs
   )
 }
+
+
+
+
+#' Assign Allocation Shares to Emission Variables by Commodity
+#'
+#' Expands an allocation table so that each commodity is combined with each emission source.
+#' Then enforces the allocation of emissions from manure burned as fuel and deposited on pasture
+#' to be **100% to the commodity "Other"**.
+#'
+#' @param allocation_herd_long A `data.table` containing a commodity column (levels=Eggs, Milk, Meat, Work, Fibre..) and an allocation share column.
+#' @param emissions_vars Character vector of names of emission variable sources to assign to different emission shares (e.g. `"ch4_enteric"`, `"direct_n2o_manure_other"`).
+#' @param commodities Character vector of commodity names to create combinations for. (e.g., "Other","Milk","Meat","Fibre","Work","Eggs")
+#' @param excluded_vars Character vector of emission sources that must be allocated fully to `"Other"`.
+#' @param commodity_col Character scalar. Name of the commodity column in the dataset `allocation_herd_long` (e.g. `"commodity_name"`).
+#' @param allocation_col Character scalar. Name of the allocation share column in the dataset `allocation_herd_long` (e.g. `"allocation_share"`).
+#'
+#' @return A `data.table` equal to `allocation_herd_long` expanded over all `emissions_vars`,
+#' with enforced allocation rules:
+#' \describe{
+#'   \item{Excluded emission variables}{`allocation_col = 1` when `commodity_col == "Other"`, else `0`.}
+#'   \item{Non-excluded emission variables}{`allocation_col = 0` when `commodity_col == "Other"` (others unchanged).}
+#' }
+#'
+#' @export
+
+assign_allocation_to_emissions <- function(allocation_herd_long,
+                                           emissions_vars,
+                                           commodities,
+                                           excluded_vars,
+                                           commodity_col,
+                                           allocation_col) {
+  
+  
+  # 1) All combinations: commodity x emission variable
+  grid <- CJ(
+    variable_name  = emissions_vars,
+    commodity_name = commodities,
+    unique = TRUE
+  )
+  
+  # 2) Expand allocation table by emission variables
+  out <- merge(
+    allocation_herd_long,
+    grid,
+    by = commodity_col,
+    allow.cartesian = TRUE
+  )
+  
+  # 3) Excluded vars → 100% to Other, 0% to others
+  out[variable_name %in% excluded_vars & get(commodity_col) == "Other",
+      (allocation_col) := 1]
+  
+  out[variable_name %in% excluded_vars & get(commodity_col) != "Other",
+      (allocation_col) := 0]
+  
+  # 4) Non-excluded vars → Other = 0
+  out[!(variable_name %in% excluded_vars) & get(commodity_col) == "Other",
+      (allocation_col) := 0]
+  
+  return(out[])
+}
+
+
+
+
+

@@ -150,6 +150,8 @@ run_allocation <- function(
       by = .I
     ]
     
+  allocation_herd[,allocation_share_other:=NA_real_]
+  
   
   # --- Reshape to long format
   # Convert allocation shares from wide to long format for downstream processing
@@ -168,7 +170,8 @@ run_allocation <- function(
                        "allocation_share_milk",
                        "allocation_share_fibre",
                        "allocation_share_work",
-                       "allocation_share_eggs"),
+                       "allocation_share_eggs",
+                       "allocation_share_other"),
       variable.name = "commodity_name",
       value.name = "allocation_share"
     )
@@ -179,7 +182,8 @@ run_allocation <- function(
       allocation_share_milk  = "Milk",
       allocation_share_fibre = "Fibre",
       allocation_share_work  = "Work",
-      allocation_share_eggs  = "Eggs"
+      allocation_share_eggs  = "Eggs",
+      allocation_share_other  = "Other"
     )
     
     allocation_herd_long[, commodity_name := rename_map[commodity_name]]
@@ -188,9 +192,32 @@ run_allocation <- function(
     # Adding a commodity_type column to group commodity into edible and non-edible
     
     allocation_herd_long[commodity_name %in% c("Meat", "Milk", "Eggs"), commodity_type:="Edible"]
-    allocation_herd_long[commodity_name %in% c("Work", "Fibre"), commodity_type:="Non-Edible"]
+    allocation_herd_long[commodity_name %in% c("Work", "Fibre", "Other"), commodity_type:="Non-Edible"]
     
-
+    
+    
+    
+    # Assigning allocation to emission sources------
+    allocation_herd_long_all <- assign_allocation_to_emissions(
+      allocation_herd_long = allocation_herd_long,
+      emissions_vars = c(
+        "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",
+        "direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other",
+        "indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other"
+      ),
+      commodities = c("Other","Milk","Meat","Fibre","Work","Eggs"),
+      excluded_vars = c(
+        "ch4_manure_pasture","ch4_manure_burned",
+        "direct_n2o_manure_pasture","direct_n2o_manure_burned",
+        "indirect_n2o_manure_burned","indirect_n2o_manure_pasture"
+      ),
+      commodity_col   = "commodity_name",
+      allocation_col = "allocation_share"
+    )
+    
+    
+    
+    
   # Return list with all two outputs
   list(
     cohort_allocation_inputs = allocation_inputs,
