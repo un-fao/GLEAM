@@ -198,7 +198,7 @@ run_allocation <- function(
     
     
     # Assigning allocation to emission sources------
-    allocation_herd_long_all <- assign_allocation_to_emissions(
+    allocation_herd_long <- assign_allocation_to_emissions(
       allocation_herd_long = allocation_herd_long,
       emissions_vars = c(
         "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",
