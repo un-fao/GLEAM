@@ -227,3 +227,65 @@ aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) 
   
   return(data_herd[])
 }
+
+
+#' Calculate Energy Allocation Shares for Livestock Commodities
+#'
+#' Computes allocation shares of energy required for meat, milk, fibre, work, and eggs
+#' based on total energy demand per output. 
+#'
+#' @param animal Character vector of animal species codes (e.g., "CTL", "SHP", "PGS").
+#' @param energy_meat Numeric vector: Herd-level energy requirement for meat production (MJ).
+#' @param energy_milk Numeric vector: Herd-level energy requirement for milk production (MJ).
+#' @param energy_fibre Numeric vector: Herd-level energy requirement for fibre production (MJ).
+#' @param energy_work Numeric vector: Herd-level energy requirement for work (MJ).
+#' @param energy_eggs Numeric vector: Herd-level energy requirement for eggs (MJ). 
+#'
+#' @return A named list of numeric vectors with same length as input, containing:
+#' \describe{
+#'   \item{allocation_share_meat}{Proportion of total energy allocated to meat}
+#'   \item{allocation_share_milk}{... to milk}
+#'   \item{allocation_share_fibre}{... to fibre}
+#'   \item{allocation_share_work}{... to work}
+#'   \item{allocation_share_eggs}{... to eggs}
+#' }
+#' @export
+#' 
+calc_allocation_shares <- function(animal,
+                                   energy_allocation_meat,
+                                   energy_allocation_milk,
+                                   energy_allocation_fibre,
+                                   energy_allocation_work,
+                                   energy_allocation_eggs) {
+  
+  total_energy <- sum(
+    c(energy_allocation_meat,
+      energy_allocation_milk,
+      energy_allocation_fibre,
+      energy_allocation_work,
+      energy_allocation_eggs),
+    na.rm = TRUE
+  )
+  
+  if (animal == "PGS") {
+    allocation_share_meat  <- 1
+    allocation_share_milk  <- 0
+    allocation_share_fibre <- 0
+    allocation_share_work  <- 0
+    allocation_share_eggs  <- 0
+  } else {
+    allocation_share_meat  <- ifelse(is.na(energy_allocation_meat), 0, energy_allocation_meat / total_energy)
+    allocation_share_milk  <- ifelse(is.na(energy_allocation_milk), 0, energy_allocation_milk / total_energy)
+    allocation_share_fibre  <- ifelse(is.na(energy_allocation_fibre), 0, energy_allocation_fibre / total_energy)
+    allocation_share_work  <- ifelse(is.na(energy_allocation_work), 0, energy_allocation_work / total_energy)
+    allocation_share_eggs  <- ifelse(is.na(energy_allocation_eggs), 0, energy_allocation_eggs / total_energy)
+    
+  }
+  list(
+    allocation_share_meat  = allocation_share_meat,
+    allocation_share_milk  = allocation_share_milk,
+    allocation_share_fibre = allocation_share_fibre,
+    allocation_share_work  = allocation_share_work,
+    allocation_share_eggs  = allocation_share_eggs
+  )
+}

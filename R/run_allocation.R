@@ -132,54 +132,25 @@ run_allocation <- function(
   
   
 
+  # Calculate allocation shares to each commodity
+  allocation_herd[
+      ,
+      c("allocation_share_meat",
+        "allocation_share_milk",
+        "allocation_share_fibre",
+        "allocation_share_work",
+        "allocation_share_eggs") :=
+        calc_allocation_shares(
+          animal = Animal_short,
+          energy_allocation_meat  = energy_allocation_meat,
+          energy_allocation_milk  = energy_allocation_milk,
+          energy_allocation_fibre = energy_allocation_fibre,
+          energy_allocation_work  = energy_allocation_work,
+          energy_allocation_eggs  = energy_allocation_eggs
         ),
-  by = group_by_keys
+      by = .I
     ]
     
-  # Calculate total allocation energy for share calculations
-  herd_summary_dt[, total_allocation_energy :=
-                    energy_allocation_meat +
-                    energy_allocation_milk +
-                    energy_allocation_fibre +
-                    energy_allocation_work +
-                    energy_allocation_eggs]
-
-  # Initialize allocation shares as NA
-  herd_summary_dt[, `:=`(
-    allocation_share_meat = NA_real_,
-    allocation_share_milk = NA_real_,
-    allocation_share_work = NA_real_,
-    allocation_share_fibre = NA_real_,
-    allocation_share_eggs = NA_real_
-  )]
-
-  # --- Calculate allocation shares
-  # For non-pig species with valid totals: calculate proportional shares
-  valid_rows <- !is.na(herd_summary_dt$total_allocation_energy) &
-    herd_summary_dt$total_allocation_energy != 0 &
-    herd_summary_dt$Animal_short != "PGS"
-
-  if (any(valid_rows)) {
-    herd_summary_dt[valid_rows, `:=`(
-      allocation_share_meat = energy_allocation_meat / total_allocation_energy,
-      allocation_share_milk = energy_allocation_milk / total_allocation_energy,
-      allocation_share_work = energy_allocation_work / total_allocation_energy,
-      allocation_share_fibre = energy_allocation_fibre / total_allocation_energy,
-      allocation_share_eggs = energy_allocation_eggs / total_allocation_energy
-    )]
-  }
-
-  # Special case: pigs get 100% allocation to meat (no milk, work, or fibre)
-  pgs_rows <- herd_summary_dt$Animal_short == "PGS"
-  if (any(pgs_rows)) {
-    herd_summary_dt[pgs_rows, `:=`(
-      allocation_share_meat = 1,
-      allocation_share_milk = 0,
-      allocation_share_work = 0,
-      allocation_share_fibre = 0,
-      allocation_share_eggs = 0
-    )]
-  }
   
   # --- Reshape to long format
   # Convert allocation shares from wide to long format for downstream processing
