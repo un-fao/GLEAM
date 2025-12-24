@@ -125,21 +125,21 @@ run_wrap_up <- function(
   
 
   
-  #5. Allocate emissions to the different commodities
-  data_herd_long_allocation[, value_allocated := calc_allocated_emissions(value=value, 
+  #6. Allocate emissions to the different commodities
+  data_herd_long_allocation[, value_allocated := calc_allocated_emissions(value=value_total, 
                                                                           allocation_share=allocation_share)]
     
 
-  #6. Create the "gas" column
+  #7. Create the "gas" column
   data_herd_long_allocation[
-    variable_type == "Emissions",
+    ,
     gas := fcase(
       grepl("^ch4", variable_name), "CH4",
       grepl("n2o", variable_name), "N2O"
     )
   ]
   
-  #7. Apply CO2eq conversion factors (GWP) to emissions resoults
+  #8. Apply CO2eq conversion factors (GWP) to emissions resoults
   data_herd_long_allocation[
     ,  c("value_allocated_co2e", "gwp") := calc_co2eq(
     gas = gas, 
@@ -149,31 +149,16 @@ run_wrap_up <- function(
   
   
   
-  #8. Cleaning-up emissions variables
-  subset_raw<-data_herd_long_allocation[variable_type=="Emissions",.(ADM0_CODE, HerdType_short, Animal_short, LPS_short, variable_name, gas, variable_type, commodity_name, allocation_share, commodity_type, value)]
-  subset_raw[,unit:="kg gas"]
-  subset_raw[variable_type=="Emissions",commodity_name:="ALL"]
-  subset_raw[variable_type=="Emissions",commodity_type:="ALL"]
-  subset_raw[variable_type=="Emissions",allocation_share:=1]
-  
-  subset_allocated<-data_herd_long_allocation[variable_type=="Emissions",.(ADM0_CODE, HerdType_short, Animal_short, LPS_short, variable_name, gas, variable_type, commodity_name, allocation_share, commodity_type, value=value_allocated, allocation_type)]
-  subset_allocated[,unit:="kg gas"]
-  
-  subset_allocatedco2e<-data_herd_long_allocation[variable_type=="Emissions",.(ADM0_CODE, HerdType_short, Animal_short, LPS_short, variable_name, gas, variable_type, commodity_name, allocation_share, commodity_type, value=value_allocated_co2e, allocation_type)]
+  #9. Cleaning-up emissions variables
+  subset_allocatedco2e<-data_herd_long_allocation[variable_type=="Emissions",.(ADM0_CODE, HerdType_short, Animal_short, LPS_short, variable_name, gas, variable_type, commodity_name, allocation_share, commodity_type, value_total=value_allocated_co2e, allocation_type, gwp)]
   subset_allocatedco2e[,unit:="kg co2eq"]
   
-  data_herd_long_allocation <- rbind(subset_raw, subset_allocated, use.names = TRUE,
-                        fill = TRUE)
-  
-  data_herd_long_allocation <- rbind(data_herd_long_allocation, subset_allocatedco2e, use.names = TRUE,
-                        fill = TRUE)
   
   
   
-  
-  #89. Combine the Emissions results allocated with other variables.
+  #10. Combine the Emissions results allocated with other variables.
   results_herd <- rbindlist(
-    list(data_herd_long_allocation, 
+    list(subset_allocatedco2e, 
          data_herd_long[variable_type!="Emissions"]),
     use.names = TRUE,
     fill = TRUE
@@ -223,6 +208,10 @@ run_wrap_up <- function(
   results_herd[!variable_type %in% c("Emissions")
                , allocation_type := NA]
   
+  results_herd[!variable_type %in% c("Emissions")
+               , gwp := 1]
+  
+  results_herd[,cohort:="ALL"]
   
   #11. Renaming variables
   levels(results_herd$variable_name) <- c(
@@ -258,14 +247,17 @@ run_wrap_up <- function(
     "HerdType_short",
     "Animal_short",
     "LPS_short",
+    "cohort",
     "variable_type",
     "variable_name",
     "unit",
     "gas",
+    "gwp",
     "allocation_type",
     "allocation_share",
     "commodity_type",
-    "value"
+    "commodity_name",
+    "value_total"
   )
   
   setcolorder(
