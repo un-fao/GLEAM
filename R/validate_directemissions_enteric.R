@@ -34,7 +34,6 @@ validate_ym_inputs <- function(
 #'   - `ym` must be a non-negative numeric scalar (percentage).
 #'   - `diet_ge` must be a strictly positive numeric scalar (MJ/kg DM).
 #'   - `dmi` must be a non-negative numeric scalar (kg DM/head/day).
-#'   - `afc` must be a non-negative numeric scalar (days).
 #'
 #' This validator is designed for internal use in
 #' [compute_daily_enteric_emissions()].
@@ -45,8 +44,7 @@ validate_enteric_emission_inputs <- function(
     cohort,
     ym,
     diet_ge,
-    dmi,
-    afc
+    dmi
 ) {
   validate_scalar_character(animal, "animal")
   validate_scalar_character(cohort, "cohort")
@@ -59,7 +57,6 @@ validate_enteric_emission_inputs <- function(
   validate_scalar_numeric(ym, "ym")
   validate_scalar_numeric(diet_ge, "diet_ge")
   validate_scalar_numeric(dmi, "dmi")
-  validate_scalar_numeric(afc, "afc")
 
   # Minimal, generic bounds
   if (ym < 0) {
@@ -70,8 +67,5 @@ validate_enteric_emission_inputs <- function(
   }
   if (dmi < 0) {
     cli::cli_abort("{.arg dmi} must be non-negative (kg DM/head/day).")
-  }
-  if (afc < 0) {
-    cli::cli_abort("{.arg afc} must be non-negative (days).")
   }
 }

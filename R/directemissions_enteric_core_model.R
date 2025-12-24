@@ -3,7 +3,7 @@
 #' Calculates the methane conversion factor (YM, % of dietary gross energy converted to methane)
 #' for a given species and cohort based on diet digestibility. Implements species- and cohort-specific
 #' rules consistent with the GLEAM methodology.
-#'
+#' 
 #' @param animal Character. Species code: one of `CTL`, `BFL`, `CML`, `SHP`, `GTS`, `PGS`, `CHK`.
 #' @param cohort Character. Cohort code (e.g., `FA`, `FS`, `MJ`).
 #' @param diet_dig Numeric. Diet digestibility (DE/GE ratio, unitless fraction).
@@ -49,7 +49,7 @@ compute_methane_conversion_factor <- function(
 #' @param diet_ge Numeric. Gross energy content of the diet (MJ/kg DM).
 #' @param dmi Numeric. Dry matter intake (kg DM/head/day).
 #' @param afc Numeric. Age at first calving (days); not used but included for signature consistency.
-#'
+#' 
 #' @return Numeric scalar. Daily enteric methane emissions (kg CH₄ per animal).
 #'
 #' @export
@@ -58,10 +58,9 @@ compute_daily_enteric_emissions <- function(
     cohort,
     ym,
     diet_ge,
-    dmi,
-    afc
+    dmi
 ) {
-  validate_enteric_emission_inputs(animal, cohort, ym, diet_ge, dmi, afc)
+  validate_enteric_emission_inputs(animal, cohort, ym, diet_ge, dmi)
   if (animal %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
     ret <- diet_ge * dmi * (ym / 100) / 55.65
   } else if (animal == "CHK") {

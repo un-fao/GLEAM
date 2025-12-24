@@ -20,7 +20,7 @@
 #' @param data A `data.table` with cohort-level nutritional and demographic inputs.
 #'
 #' @return The same `data.table` with new columns `ym` and `ch4_enteric`.
-#'
+#' 
 #' @examples
 #' \dontrun{
 #' # Load example input from the package and run the simulation
@@ -39,7 +39,7 @@ run_directemissions_enteric <- function(data) {
     cli::cli_abort("Input must be a non-empty data.frame or data.table.")
   }
 
-  required <- c("Animal_short", "cohort", "diet_dig", "diet_ge", "dmi", "afc")
+  required <- c("Animal_short", "cohort", "diet_dig", "diet_ge", "dmi")
   miss <- setdiff(required, names(data))
   if (length(miss)) {
     cli::cli_abort(c(
@@ -60,8 +60,7 @@ run_directemissions_enteric <- function(data) {
     cohort = cohort,
     ym = ym,
     diet_ge = diet_ge,
-    dmi = dmi,
-    afc = afc
+    dmi = dmi
   ), by = seq_len(nrow(data))]
 
   return(data)
