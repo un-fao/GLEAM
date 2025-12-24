@@ -7,6 +7,7 @@
 #' following the IDF (2022) global carbon footprint standard for the dairy sector.
 #'
 #' @param allocation_inputs Cohort-level input table provided as data.frame or data.table.
+#' @param allocation_type Character vector that defines the allocation methodology in use. Default= "biophysical-energy"
 #' @param group_by_keys Character vector that lists the columns used for herd aggregation.
 #' @param standard_protein Numeric scalar for reference milk protein content (g per 100 g milk).
 #' @param standard_fat Numeric scalar for reference milk fat content (g per 100 g milk).
@@ -35,6 +36,7 @@
 #' @importFrom data.table := .I melt patterns fifelse setcolorder
 run_allocation <- function(
     allocation_inputs,
+    allocation_type="biophysical-energy", #Temporary here set as default allocation_type. It defines the methodology. At the moment only 1 is implemented, but in future developments other approaches will be implemented.
     group_by_keys = c(
       "ADM0_CODE",
       "HerdType_short",
@@ -216,11 +218,12 @@ run_allocation <- function(
     )
     
     
+    allocation_herd_long_all[,allocation_type:=allocation_type]
     
     
   # Return list with all two outputs
   list(
     cohort_allocation_inputs = allocation_inputs,
-    allocation_herd_long = allocation_herd_long
+    allocation_herd_long = allocation_herd_long_all
   )
 }
