@@ -4,23 +4,21 @@
 \alias{compute_daily_enteric_emissions}
 \title{Compute Daily Enteric Methane Emissions}
 \usage{
-compute_daily_enteric_emissions(animal, cohort, ym, diet_ge, dmi, afc)
+compute_daily_enteric_emissions(animal, cohort, ym, diet_ge, dmi)
 }
 \arguments{
-\item{animal}{Character. Species code: \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}, \code{CHK}.}
+\item{animal}{Character. Species code  (e.g., \code{PGS}, \code{CML}, \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}).}
 
-\item{cohort}{Character. Cohort code (e.g., \code{FA}, \code{MJ}); retained for compatibility.}
+\item{cohort}{Character. Cohort code (e.g., \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS},\code{MJ}).}
 
-\item{ym}{Numeric. Methane conversion factor (percentage of GE converted to CH₄).}
+\item{ym}{Numeric. Methane conversion factor (YM), representing the share of  gross energy of the feed ration that is converted to CH₄.}
 
-\item{diet_ge}{Numeric. Gross energy content of the diet (MJ/kg DM).}
+\item{diet_ge}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 
-\item{dmi}{Numeric. Dry matter intake (kg DM/head/day).}
-
-\item{afc}{Numeric. Age at first calving (days); not used but included for signature consistency.}
+\item{dmi}{Numeric. Daily dry matter intake of feed (kg DM/head/day).}
 }
 \value{
-Numeric scalar. Daily enteric methane emissions (kg CH₄ per animal).
+Numeric scalar. Daily enteric methane emissions (kg CH₄/head/day).
 }
 \description{
 Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross energy intake,
@@ -30,4 +28,11 @@ methane conversion factor (YM), and dry matter intake (DMI). The formula assumes
 \deqn{CH₄ = diet\_ge × dmi × (ym / 100) / 55.65}
 
 where 55.65 MJ/kg is the energy content of methane. Returns \code{NA} for chickens.
+}
+\references{
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.21.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.21.
 }

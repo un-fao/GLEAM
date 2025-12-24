@@ -9,17 +9,17 @@ run_feed_rations(rations_share, feed_params, input_feed)
 \arguments{
 \item{rations_share}{A data.table containing feed shares per cohort. Must include:
 \itemize{
-\item \code{Animal}, \code{GLEAM3_name}, \code{COUNTRY}, \code{ADM0_CODE}, \code{HerdType}, \code{LPS}, \code{cohort}, and \code{value}.
+\item \code{Animal_short}, \code{Item_Name}, \code{ADM0_CODE}, \code{HerdType_short}, \code{LPS_short}, \code{cohort}, and \code{value}.
 }}
 
 \item{feed_params}{A data.table of nutrient parameters. Must include:
 \itemize{
-\item \code{GLEAM3_name}, \code{GE}, \code{DE_ruminants}, \code{DE_pigs}, \code{ME_ruminants}, \code{ME_pigs}, \code{ME_chickens}, \code{N_content}.
+\item \code{Item_Name}, \code{GE}, \code{DE_ruminants}, \code{DE_pigs}, \code{ME_ruminants}, \code{ME_pigs}, \code{ME_chickens}, \code{N_content}.
 }}
 
 \item{input_feed}{A data.table of cohort-level baseline GLEAM data. Must include:
 \itemize{
-\item \code{Animal_short}, \code{ADM0_CODE}, \code{COUNTRY}, \code{HerdType}, \code{LPS}, \code{cohort}.
+\item \code{Animal_short}, \code{ADM0_CODE}, \code{HerdType_short}, \code{LPS_short}, \code{cohort}.
 }}
 }
 \value{
@@ -36,7 +36,7 @@ from feed rations and nutritional parameters. Assumes inputs are pre-cleaned.
 \dontrun{
 # Load cleaned example input from the package and compute feed intake metrics
 feed_params <- data.table::fread(
-  system.file("extdata/Feed_parameters.csv", package = "gleam")
+  system.file("extdata/Feed_parameters/GLEAM_Feed_parameters.csv", package = "gleam")
 )
 
 rations_share <- data.table::fread(

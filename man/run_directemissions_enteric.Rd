@@ -11,14 +11,21 @@ run_directemissions_enteric(data)
 }
 \value{
 The same \code{data.table} with new columns \code{ym} and \code{ch4_enteric}.
+
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.21.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.21.
 }
 \description{
-Computes daily enteric methane emissions (kg CH4 head^-1 day^-1) for each
-cohort record by applying species- and cohort-specific methane yield (YM) rules
-and the CH4 conversion formula. This function is intended for internal workflows
-and does not perform any file I/O.
+Computes daily enteric methane emissions (kg CH₄/head/day) for each
+cohort record by applying species-, cohort- and diet- specific methane conversion factors (YM),
+using a Tier 2 approach (IPCC 2006, 2019)
 }
 \details{
+This function is intended for internal workflows and does not perform any file I/O.
+
 It adds two columns:
 \itemize{
 \item \code{ym}: Methane conversion factor (\% of gross energy intake converted to CH4).
@@ -27,12 +34,11 @@ It adds two columns:
 
 Input data must at minimum include the following columns:
 \itemize{
-\item \code{Animal_short}: Species abbreviation (e.g. CTL, BFL, SHP, GTS, PGS, CML, CHK).
-\item \code{cohort}: Cohort identifier (e.g. FJ, FS, FA, MJ, MS, MA).
-\item \code{diet_dig}: Diet digestibility (fraction of GE).
-\item \code{diet_ge}: Gross energy content of the diet (MJ/kg DM).
-\item \code{dmi}: Dry matter intake (kg DM/head/day).
-\item \code{afc}: Age at first calving (years, required for some species).
+\item \code{Animal_short}: Character. Species code  (e.g., \code{PGS}, \code{CML}, \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}).
+\item \code{cohort}: Character. Cohort code (e.g., \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS},\code{MJ}).
+\item \code{diet_dig}: Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
+\item \code{diet_ge}: Numeric. Average gross energy content of the diet (MJ/kg DM).
+\item \code{dmi}: Numeric. Daily dry matter intake of feed (kg DM/head/day).
 }
 }
 \examples{

@@ -1,26 +1,32 @@
 #' Run Enteric Methane Direct Emissions (Internal)
 #'
-#' Computes daily enteric methane emissions (kg CH4 head^-1 day^-1) for each
-#' cohort record by applying species- and cohort-specific methane yield (YM) rules
-#' and the CH4 conversion formula. This function is intended for internal workflows
-#' and does not perform any file I/O.
+#' Computes daily enteric methane emissions (kg CH₄/head/day) for each
+#' cohort record by applying species-, cohort- and diet- specific methane conversion factors (YM),
+#' using a Tier 2 approach (IPCC 2006, 2019)
+#' 
+#' This function is intended for internal workflows and does not perform any file I/O.
 #'
 #' It adds two columns:
 #' - `ym`: Methane conversion factor (% of gross energy intake converted to CH4).
 #' - `ch4_enteric`: Daily enteric methane emissions (kg CH4/head/day).
 #'
 #' Input data must at minimum include the following columns:
-#' - `Animal_short`: Species abbreviation (e.g. CTL, BFL, SHP, GTS, PGS, CML, CHK).
-#' - `cohort`: Cohort identifier (e.g. FJ, FS, FA, MJ, MS, MA).
-#' - `diet_dig`: Diet digestibility (fraction of GE).
-#' - `diet_ge`: Gross energy content of the diet (MJ/kg DM).
-#' - `dmi`: Dry matter intake (kg DM/head/day).
-#' - `afc`: Age at first calving (years, required for some species).
+#' - `Animal_short`: Character. Species code  (e.g., `PGS`, `CML`, `CTL`, `BFL`, `SHP`, `GTS`). 
+#' - `cohort`: Character. Cohort code (e.g., `FA`, `FS`, `FJ`, `MA`, `MS`,`MJ`).
+#' - `diet_dig`: Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
+#' - `diet_ge`: Numeric. Average gross energy content of the diet (MJ/kg DM).
+#' - `dmi`: Numeric. Daily dry matter intake of feed (kg DM/head/day).
 #'
 #' @param data A `data.table` with cohort-level nutritional and demographic inputs.
 #'
 #' @return The same `data.table` with new columns `ym` and `ch4_enteric`.
 #' 
+#' #' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.21.
+#' 
+#' IPCC. (2006). *2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.21.
+#'
 #' @examples
 #' \dontrun{
 #' # Load example input from the package and run the simulation

@@ -7,17 +7,28 @@
 compute_methane_conversion_factor(animal, cohort, diet_dig)
 }
 \arguments{
-\item{animal}{Character. Species code: one of \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}, \code{CHK}.}
+\item{animal}{Character. Species code  (e.g., \code{PGS}, \code{CML}, \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}).}
 
-\item{cohort}{Character. Cohort code (e.g., \code{FA}, \code{FS}, \code{MJ}).}
+\item{cohort}{Character. Cohort code (e.g., \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS},\code{MJ}).}
 
-\item{diet_dig}{Numeric. Diet digestibility (DE/GE ratio, unitless fraction).}
+\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
 }
 \value{
-Numeric scalar. Methane conversion factor (YM) as percentage of GE converted to CH₄.
+Numeric scalar. Methane conversion factor (YM), representing the share of  gross energy of the feed ration that is converted to CH₄.
 }
 \description{
-Calculates the methane conversion factor (YM, \% of dietary gross energy converted to methane)
+Calculates the methane conversion factor (YM, \% of dietary gross energy in feed converted to methane)
 for a given species and cohort based on diet digestibility. Implements species- and cohort-specific
-rules consistent with the GLEAM methodology.
+rules consistent with the GLEAM methodology and with IPCC Tier 2 approach.
+}
+\references{
+Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
+MacLeod, M., Vellinga, T., Henderson, B. & Steinfeld, H. (2013).
+\emph{Greenhouse gas emissions from ruminant supply chains – A global life cycle assessment}. Food and Agriculture Organization of the United Nations (FAO), Rome.
+
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.21.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.21.
 }

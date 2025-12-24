@@ -1,14 +1,26 @@
 #' Compute Methane Conversion Factor (YM)
 #'
-#' Calculates the methane conversion factor (YM, % of dietary gross energy converted to methane)
+#' Calculates the methane conversion factor (YM, % of dietary gross energy in feed converted to methane)
 #' for a given species and cohort based on diet digestibility. Implements species- and cohort-specific
-#' rules consistent with the GLEAM methodology.
+#' rules consistent with the GLEAM methodology and with IPCC Tier 2 approach.
 #' 
-#' @param animal Character. Species code: one of `CTL`, `BFL`, `CML`, `SHP`, `GTS`, `PGS`, `CHK`.
-#' @param cohort Character. Cohort code (e.g., `FA`, `FS`, `MJ`).
-#' @param diet_dig Numeric. Diet digestibility (DE/GE ratio, unitless fraction).
 #'
-#' @return Numeric scalar. Methane conversion factor (YM) as percentage of GE converted to CH₄.
+#' @param animal Character. Species code  (e.g., `PGS`, `CML`, `CTL`, `BFL`, `SHP`, `GTS`). 
+#' @param cohort Character. Cohort code (e.g., `FA`, `FS`, `FJ`, `MA`, `MS`,`MJ`).
+#' @param diet_dig Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
+#'
+#' @return Numeric scalar. Methane conversion factor (YM), representing the share of  gross energy of the feed ration that is converted to CH₄.
+#'
+#' @references
+#' Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
+#' MacLeod, M., Vellinga, T., Henderson, B. & Steinfeld, H. (2013).
+#' *Greenhouse gas emissions from ruminant supply chains – A global life cycle assessment*. Food and Agriculture Organization of the United Nations (FAO), Rome.
+#'
+#' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.21.
+#' 
+#' IPCC. (2006). *2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.21.
 #'
 #' @export
 compute_methane_conversion_factor <- function(
@@ -43,14 +55,22 @@ compute_methane_conversion_factor <- function(
 #'
 #' where 55.65 MJ/kg is the energy content of methane. Returns `NA` for chickens.
 #'
-#' @param animal Character. Species code: `CTL`, `BFL`, `CML`, `SHP`, `GTS`, `PGS`, `CHK`.
-#' @param cohort Character. Cohort code (e.g., `FA`, `MJ`); retained for compatibility.
-#' @param ym Numeric. Methane conversion factor (percentage of GE converted to CH₄).
-#' @param diet_ge Numeric. Gross energy content of the diet (MJ/kg DM).
-#' @param dmi Numeric. Dry matter intake (kg DM/head/day).
-#' @param afc Numeric. Age at first calving (days); not used but included for signature consistency.
+#' @param animal Character. Species code  (e.g., `PGS`, `CML`, `CTL`, `BFL`, `SHP`, `GTS`). 
+#' @param cohort Character. Cohort code (e.g., `FA`, `FS`, `FJ`, `MA`, `MS`,`MJ`).
+#' @param ym Numeric. Methane conversion factor (YM), representing the share of  gross energy of the feed ration that is converted to CH₄.
+#' @param diet_ge Numeric. Average gross energy content of the diet (MJ/kg DM).
+#' @param dmi Numeric. Daily dry matter intake of feed (kg DM/head/day).
+#'
+#' @return Numeric scalar. Daily enteric methane emissions (kg CH₄/head/day).
+#'
+#'
+#' @references
+#' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.21.
 #' 
-#' @return Numeric scalar. Daily enteric methane emissions (kg CH₄ per animal).
+#' IPCC. (2006). *2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.21.
+#' 
 #'
 #' @export
 compute_daily_enteric_emissions <- function(
