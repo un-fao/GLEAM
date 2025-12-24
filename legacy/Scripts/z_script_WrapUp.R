@@ -84,7 +84,7 @@ run_wrap_up <- function(
                "LPS_short"),
   measure.vars = c(feed_vars, nitrogen_balance_vars, production_vars, emissions_vars),
   variable.name = "variable_name",
-  value.name = "value_raw"
+  value.name = "value"
 )
 
   #3. Adding a grouping column in data_herd_long to facilitate filtering on other operations
@@ -98,6 +98,9 @@ run_wrap_up <- function(
   
 
   #4. Merge the subset of data_herd_long (with only emissions_vars) with allocation_herd_long
+  
+  allocation_herd_long[,allocation_type:="biophysical-energy"] # This should be a variable already included in the allocation_herd_long. Therefore, included in the allocation module.
+  
   data_herd_long_allocation <- merge(
   data_herd_long[variable_type=="Emissions",],
   allocation_herd_long, #This is the output of the allocation module
@@ -109,7 +112,7 @@ run_wrap_up <- function(
 
   
   #5. Allocate emissions to the different commodities
-  data_herd_long_allocation[, value_allocated := calc_allocated_emissions(value=value_raw, 
+  data_herd_long_allocation[, value_allocated := calc_allocated_emissions(value=value, 
                                                                           allocation_share=allocation_share)]
     
 
@@ -132,7 +135,29 @@ run_wrap_up <- function(
   
   
   
-  #8. Combine the Emissions results allocated with other variables.
+  #8. Cleaning-up emissions variables
+  subset_raw<-data_herd_long_allocation[variable_type=="Emissions",.(ADM0_CODE, HerdType_short, Animal_short, LPS_short, variable_name, gas, variable_type, commodity_name, allocation_share, commodity_type, value)]
+  subset_raw[,unit:="kg gas"]
+  subset_raw[variable_type=="Emissions",commodity_name:="ALL"]
+  subset_raw[variable_type=="Emissions",commodity_type:="ALL"]
+  subset_raw[variable_type=="Emissions",allocation_share:=1]
+  
+  subset_allocated<-data_herd_long_allocation[variable_type=="Emissions",.(ADM0_CODE, HerdType_short, Animal_short, LPS_short, variable_name, gas, variable_type, commodity_name, allocation_share, commodity_type, value=value_allocated, allocation_type)]
+  subset_allocated[,unit:="kg gas"]
+  
+  subset_allocatedco2e<-data_herd_long_allocation[variable_type=="Emissions",.(ADM0_CODE, HerdType_short, Animal_short, LPS_short, variable_name, gas, variable_type, commodity_name, allocation_share, commodity_type, value=value_allocated_co2e, allocation_type)]
+  subset_allocatedco2e[,unit:="kg co2eq"]
+  
+  data_herd_long_allocation <- rbind(subset_raw, subset_allocated, use.names = TRUE,
+                        fill = TRUE)
+  
+  data_herd_long_allocation <- rbind(data_herd_long_allocation, subset_allocatedco2e, use.names = TRUE,
+                        fill = TRUE)
+  
+  
+  
+  
+  #89. Combine the Emissions results allocated with other variables.
   results_herd <- rbindlist(
     list(data_herd_long_allocation, 
          data_herd_long[variable_type!="Emissions"]),
@@ -141,23 +166,51 @@ run_wrap_up <- function(
   )
   
   
-  #9. Cleaning-up the table
+  #10. Cleaning-up the table
+  
+  #10.1 Production
+  results_herd[
+    ,unit := fcase(
+      variable_name %in% c("output_milk_mass_production", "output_fibre_production"), "kg",
+      variable_name %in% c( "output_milk_protein_production", "output_meat_production_protein"), "kg protein",
+      variable_name %in% c( "output_milk_fpcm_production"), "kg fat-protein corrected",
+      variable_name %in% c("output_meat_production_liveweight"), "kg live weight",
+      variable_name %in% c("output_meat_production_carcassweight"), "kg carcass weight",
+      variable_name %in% c("output_meat_production_meat"), "kg bone-free meat",
+      default = unit
+    )]
+  
   results_herd[
     , commodity_name := fcase(
       variable_name %in% c("output_milk_mass_production", "output_milk_protein_production", "output_milk_fpcm_production"), "Milk",
       variable_name %in% c("output_meat_production_liveweight", "output_meat_production_carcassweight", "output_meat_production_meat", "output_meat_production_protein"), "Meat",
-      variable_name == "output_fibre_production", "Fibre")]
+      variable_name == "output_fibre_production", "Fibre",
+      default = commodity_name)][
+    , commodity_type := fcase(
+      variable_type %in% c("Production"), "Edible",
+      default = commodity_type)
+    ]
+    
+    
+  #10.2 Feed & N balance 
+  results_herd[
+    ,unit := fcase(
+      variable_name %in% c("DryMatterIntake"), "kg dry matter",
+      variable_name %in% c( "NitrogenIntake", "NitrogenRetention", "NitrogenExcretion"), "kg N",
+      default = unit
+    )]
+  
   
   results_herd[!variable_type %in% c("Emissions", "Production")
     , commodity_name := "ALL"]
   
   results_herd[!variable_type %in% c("Emissions")
                , allocation_share := 1]
+  results_herd[!variable_type %in% c("Emissions")
+               , allocation_type := NA]
   
   
-  
-  
-  #10. Renaming variables
+  #11. Renaming variables
   levels(results_herd$variable_name) <- c(
     size                          = "LivestockNumbers",
     ch4_enteric                   = "Enteric",
@@ -183,6 +236,28 @@ run_wrap_up <- function(
     output_meat_production_protein= "MeatProtein",
     output_fibre_production       = "Fibre"
   )[levels(results_herd$variable_name)]
+  
+  
+  #12. Variables order
+  variable_order <- c(
+    "ADM0_CODE",
+    "HerdType_short",
+    "Animal_short",
+    "LPS_short",
+    "variable_type",
+    "variable_name",
+    "unit",
+    "gas",
+    "allocation_type",
+    "allocation_share",
+    "commodity_type",
+    "value"
+  )
+  
+  setcolorder(
+    results_herd,
+    intersect(variable_order, names(results_herd))
+  )
   
   return(list(
     data_cohort = data_cohort,
