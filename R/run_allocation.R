@@ -90,9 +90,7 @@ run_allocation <- function(
   allocation_inputs[, energy_allocation_meat := calc_energy_allocation_meat(
     animal = Animal_short,
     cohort_code = cohort,
-    age_first_parturition_years = afc,
     slaughter_liveweight = slaughterLW,
-    initial_liveweight = initialLW,
     birth_liveweight = ckg,
     meat_output_liveweight = output_meat_production_liveweight
   ), by = .I]
@@ -200,7 +198,7 @@ run_allocation <- function(
     
     
     # Assigning allocation to emission sources------
-    allocation_herd_long_all <- assign_allocation_to_emissions(
+    allocation_herd_long <- assign_allocation_to_emissions(
       allocation_herd_long = allocation_herd_long,
       emissions_vars = c(
         "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",

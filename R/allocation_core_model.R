@@ -42,9 +42,7 @@ calc_energy_allocation_milk <- function(
 #'
 #' @param animal Character scalar. Species code (e.g., "CTL", "BFL", "CML", "SHP", "GTS", "PGS").
 #' @param cohort_code Character scalar. Cohort identifier (e.g., "FA", "FS", "FJ", "MA", "MS", "MJ").
-#' @param age_first_parturition_years Numeric scalar. Age at first parturition (years). Not currently used but retained for compatibility.
 #' @param slaughter_liveweight Numeric scalar. Slaughter liveweight (kg).
-#' @param initial_liveweight Numeric scalar. Initial cohort liveweight (kg). Not currently used but retained for compatibility.
 #' @param birth_liveweight Numeric scalar. Birthweight (kg).
 #' @param meat_output_liveweight Numeric scalar. Liveweight meat output (kg).
 #'
@@ -53,15 +51,13 @@ calc_energy_allocation_milk <- function(
 calc_energy_allocation_meat <- function(
     animal,
     cohort_code,
-    age_first_parturition_years,
     slaughter_liveweight,
-    initial_liveweight,
     birth_liveweight,
     meat_output_liveweight
 ) {
   validate_allocation_meat_inputs(
-    animal, cohort_code, age_first_parturition_years,
-    slaughter_liveweight, initial_liveweight, birth_liveweight, meat_output_liveweight
+    animal, cohort_code,
+    slaughter_liveweight, birth_liveweight, meat_output_liveweight
   )
 
   # Default fallback
