@@ -54,6 +54,17 @@ utils::globalVariables(c(
   "bone_free_meat_fraction", "meat_protein"
 ))
 
+utils::globalVariables(c(
+  # Columns used in run_allocation
+  "slaughterLW", "initialLW", "output_meat_production_liveweight",
+  "output_milk_fpcm_production", "nefibre", "nework",
+  "energy_allocation_milk", "energy_allocation_meat",
+  "energy_allocation_fibre", "energy_allocation_work", "energy_allocation_eggs",
+  "total_allocation_energy", "allocation_share_meat", "allocation_share_milk",
+  "allocation_share_work", "allocation_share_fibre", "allocation_share_eggs",
+  "commodity_name", "commodity_type", "V1"
+))
+
 # Add species abbreviations
 abbr_animals <- data.table(
   Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
