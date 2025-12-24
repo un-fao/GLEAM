@@ -1,3 +1,36 @@
+
+#' Calculate totals of the variables by cohort
+#' 
+#' This function calculates the totals by cohort for the whole assessment duration.
+#' 
+#' @param value Numeric value expressed in kg (unit)/head/day, with the exception of the variable_type=="Production", where the unit is kg/cohort/assessment duration.
+#' @param size  Numeric value. Cohort-specific variables. Number of heads in the specific cohort.
+#' @param assessment_duration  Numeric value representing the duration of the assessment (days)
+#' @param variable_type Character vector. Variable type represents the variable group (e.g., Production, Emissions, Feed...etc)
+#'
+#' @return `value_total` Numeric value. Value for each variables harmonized at cohort and assessment duration level (kg/cohort/assessment duration)
+#' @export
+#'
+
+calc_totals_by_cohort <- function(value,
+                                  size,
+                                  assessment_duration,
+                                  variable_type) {
+  
+  if (variable_type == "Production") {
+    value_total <- value
+    
+    
+  } else {
+    value_total <- value * size * assessment_duration
+    
+    }
+  
+  return(value_total)
+}
+
+
+
 #' Aggregate Cohort-Level Data to Herd-Level
 #' 
 #' @Yassine: this should be moved somewhere else/ it is created also in the allocation module

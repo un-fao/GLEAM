@@ -63,41 +63,56 @@ run_wrap_up <- function(
     "indirect_n2o_manure_burned", "indirect_n2o_manure_pasture", "indirect_n2o_manure_other"
   )
   
-  #1. Summing up all relevant variables in data_cohort. The file returned is at herd level (data_herd)
-  data_herd <- aggregate_cohort_to_herd(
-  data_cohort = data_cohort,  
+  #1. Reshaping data_cohort to long format
+  data_cohort_long <- melt(
+    data_cohort,
+    id.vars = c( "ADM0_CODE", # @Yassine: this should be replaced with the "ID" once introduce in the code
+                 "HerdType_short",
+                 "Animal_short",
+                 "LPS_short",
+                 "cohort",
+                 "assessment_duration",
+                 "size"),
+    measure.vars = c(feed_vars, nitrogen_balance_vars, production_vars, emissions_vars),
+    variable.name = "variable_name",
+    value.name = "value"
+  )
+  
+  #2. Adding a grouping column in data_herd_long to facilitate filtering on other operations
+  data_cohort_long[
+    , variable_type := fcase(
+      variable_name %in% feed_vars, "Feed",
+      variable_name %in% nitrogen_balance_vars, "NitrogenBalance",
+      variable_name %in% production_vars, "Production",
+      variable_name %in% emissions_vars, "Emissions"
+    )]
+  
+  
+  
+  #3. Summing up values by cohort
+  data_cohort_long[
+    , value_total := calc_totals_by_cohort(
+      value = value,
+      size = size,
+      assessment_duration = assessment_duration,
+      variable_type = variable_type
+    ), by = .I]
+  
+  
+  #4. Summing up all relevant variables in data_cohort. The file returned is at herd level (data_herd)
+  data_herd_long <- aggregate_cohort_to_herd(
+  data_cohort = data_cohort_long,  
   id_cols = c( "ADM0_CODE",  
                "HerdType_short",
                "Animal_short",
-               "LPS_short"),
-  vars_to_sum = c(feed_vars, nitrogen_balance_vars, production_vars, emissions_vars),
+               "LPS_short",
+               "variable_type",
+               "variable_name"),
+  vars_to_sum = "value_total",
   cohort = "cohort"
   )
-  
-  
-  #2. Reshaping data_herd to long format
-  data_herd_long <- melt(
-  data_herd,
-  id.vars = c( "ADM0_CODE", # @Yassine: this should be replaced with the "ID" once introduce in the code
-               "HerdType_short",
-               "Animal_short",
-               "LPS_short"),
-  measure.vars = c(feed_vars, nitrogen_balance_vars, production_vars, emissions_vars),
-  variable.name = "variable_name",
-  value.name = "value"
-)
 
-  #3. Adding a grouping column in data_herd_long to facilitate filtering on other operations
-  data_herd_long[
-  , variable_type := fcase(
-    variable_name %in% feed_vars, "Feed",
-    variable_name %in% nitrogen_balance_vars, "NitrogenBalance",
-    variable_name %in% production_vars, "Production",
-    variable_name %in% emissions_vars, "Emissions"
-  )]
-  
-
-  #4. Merge the subset of data_herd_long (with only emissions_vars) with allocation_herd_long
+  #5. Merge the subset of data_herd_long (with only emissions_vars) with allocation_herd_long
   
   allocation_herd_long[,allocation_type:="biophysical-energy"] # This should be a variable already included in the allocation_herd_long. Therefore, included in the allocation module.
   
@@ -105,8 +120,7 @@ run_wrap_up <- function(
   data_herd_long[variable_type=="Emissions",],
   allocation_herd_long, #This is the output of the allocation module
   by = c("ADM0_CODE", "HerdType_short","Animal_short","LPS_short", "variable_name"), # @Yassine: this should be replaced with the "ID" once introduce in the code. "variable_name" should stay.
-  all = TRUE,
-  allow.cartesian = TRUE
+  all = TRUE
   )
   
 
