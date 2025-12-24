@@ -17,6 +17,7 @@
 #'   - `commodity_name` (e.g., "Meat", "Milk")
 #'   - `allocation_share` (numeric share between 0–1)
 #'   - `variable_name`. Character with emission sources.
+#'   - `allocation_type`. Character with the definition of the allocation methodology.
 #'   
 #'   
 #' @param gwp Character scalar indicating which Global Warming Potential-100 conversion factors to use.
@@ -113,9 +114,6 @@ run_wrap_up <- function(
   )
 
   #5. Merge the subset of data_herd_long (with only emissions_vars) with allocation_herd_long
-  
-  allocation_herd_long[,allocation_type:="biophysical-energy"] # This should be a variable already included in the allocation_herd_long. Therefore, included in the allocation module.
-  
   data_herd_long_allocation <- merge(
   data_herd_long[variable_type=="Emissions",],
   allocation_herd_long, #This is the output of the allocation module
