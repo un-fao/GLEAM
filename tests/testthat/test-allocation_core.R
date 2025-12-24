@@ -54,9 +54,7 @@ test_that("calc_energy_allocation_meat returns correct value for cattle female",
   result <- calc_energy_allocation_meat(
     animal = "CTL",
     cohort_code = "FA",
-    age_first_parturition_years = 3,
     slaughter_liveweight = 500,
-    initial_liveweight = 400,
     birth_liveweight = 40,
     meat_output_liveweight = 100
   )
@@ -74,9 +72,7 @@ test_that("calc_energy_allocation_meat returns correct value for cattle male", {
   result <- calc_energy_allocation_meat(
     animal = "CTL",
     cohort_code = "MA",
-    age_first_parturition_years = 3,
     slaughter_liveweight = 600,
-    initial_liveweight = 500,
     birth_liveweight = 45,
     meat_output_liveweight = 150
   )
@@ -91,9 +87,7 @@ test_that("calc_energy_allocation_meat returns correct value for camelids", {
   result <- calc_energy_allocation_meat(
     animal = "CML",
     cohort_code = "FA",
-    age_first_parturition_years = 4,
     slaughter_liveweight = 450,
-    initial_liveweight = 400,
     birth_liveweight = 35,
     meat_output_liveweight = 80
   )
@@ -109,9 +103,7 @@ test_that("calc_energy_allocation_meat returns correct value for sheep female", 
   result <- calc_energy_allocation_meat(
     animal = "SHP",
     cohort_code = "FA",
-    age_first_parturition_years = 1.5,
     slaughter_liveweight = 60,
-    initial_liveweight = 50,
     birth_liveweight = 4,
     meat_output_liveweight = 20
   )
@@ -128,9 +120,7 @@ test_that("calc_energy_allocation_meat returns correct value for sheep male", {
   result <- calc_energy_allocation_meat(
     animal = "SHP",
     cohort_code = "MA",
-    age_first_parturition_years = 1.5,
     slaughter_liveweight = 70,
-    initial_liveweight = 60,
     birth_liveweight = 4.5,
     meat_output_liveweight = 25
   )
@@ -144,9 +134,7 @@ test_that("calc_energy_allocation_meat returns correct value for goats", {
   result <- calc_energy_allocation_meat(
     animal = "GTS",
     cohort_code = "FA",
-    age_first_parturition_years = 1.5,
     slaughter_liveweight = 50,
-    initial_liveweight = 40,
     birth_liveweight = 3.5,
     meat_output_liveweight = 15
   )
@@ -162,9 +150,7 @@ test_that("calc_energy_allocation_meat returns NA for pigs", {
   result <- calc_energy_allocation_meat(
     animal = "PGS",
     cohort_code = "FA",
-    age_first_parturition_years = 1,
     slaughter_liveweight = 150,
-    initial_liveweight = 120,
     birth_liveweight = 1.5,
     meat_output_liveweight = 100
   )
@@ -177,9 +163,7 @@ test_that("calc_energy_allocation_meat validates animal species", {
     calc_energy_allocation_meat(
       animal = "INVALID",
       cohort_code = "FA",
-      age_first_parturition_years = 3,
       slaughter_liveweight = 500,
-      initial_liveweight = 400,
       birth_liveweight = 40,
       meat_output_liveweight = 100
     ),
@@ -192,9 +176,7 @@ test_that("calc_energy_allocation_meat validates cohort codes", {
     calc_energy_allocation_meat(
       animal = "CTL",
       cohort_code = "INVALID",
-      age_first_parturition_years = 3,
       slaughter_liveweight = 500,
-      initial_liveweight = 400,
       birth_liveweight = 40,
       meat_output_liveweight = 100
     ),
@@ -207,9 +189,7 @@ test_that("calc_energy_allocation_meat validates weight bounds", {
     calc_energy_allocation_meat(
       animal = "CTL",
       cohort_code = "FA",
-      age_first_parturition_years = 3,
       slaughter_liveweight = -10,
-      initial_liveweight = 400,
       birth_liveweight = 40,
       meat_output_liveweight = 100
     ),
@@ -219,9 +199,7 @@ test_that("calc_energy_allocation_meat validates weight bounds", {
     calc_energy_allocation_meat(
       animal = "CTL",
       cohort_code = "FA",
-      age_first_parturition_years = 3,
       slaughter_liveweight = 500,
-      initial_liveweight = 400,
       birth_liveweight = 300,
       meat_output_liveweight = 100
     ),

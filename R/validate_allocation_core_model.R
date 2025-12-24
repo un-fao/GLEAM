@@ -60,9 +60,7 @@ validate_allocation_milk_inputs <- function(
 #'
 #' @param animal Character scalar. Species code (e.g., "CTL", "BFL", "CML", "SHP", "GTS", "PGS", "CHK").
 #' @param cohort_code Character scalar. Cohort identifier (e.g., "FA", "FS", "FJ", "MA", "MS", "MJ").
-#' @param age_first_parturition_years Numeric scalar. Age at first parturition (years).
 #' @param slaughter_liveweight Numeric scalar. Slaughter liveweight (kg).
-#' @param initial_liveweight Numeric scalar. Initial cohort liveweight (kg).
 #' @param birth_liveweight Numeric scalar. Birthweight (kg).
 #' @param meat_output_liveweight Numeric scalar. Liveweight meat output (kg).
 #'
@@ -70,17 +68,13 @@ validate_allocation_milk_inputs <- function(
 validate_allocation_meat_inputs <- function(
     animal,
     cohort_code,
-    age_first_parturition_years,
     slaughter_liveweight,
-    initial_liveweight,
     birth_liveweight,
     meat_output_liveweight
 ) {
   validate_scalar_character(animal, "animal")
   validate_scalar_character(cohort_code, "cohort_code")
-  validate_scalar_numeric(age_first_parturition_years, "age_first_parturition_years")
   validate_scalar_numeric(slaughter_liveweight, "slaughter_liveweight")
-  validate_scalar_numeric(initial_liveweight, "initial_liveweight")
   validate_scalar_numeric(birth_liveweight, "birth_liveweight")
   validate_scalar_numeric(meat_output_liveweight, "meat_output_liveweight")
 

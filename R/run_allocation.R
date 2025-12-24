@@ -88,9 +88,7 @@ run_allocation <- function(
   allocation_inputs[, energy_allocation_meat := calc_energy_allocation_meat(
     animal = Animal_short,
     cohort_code = cohort,
-    age_first_parturition_years = afc,
     slaughter_liveweight = slaughterLW,
-    initial_liveweight = initialLW,
     birth_liveweight = ckg,
     meat_output_liveweight = output_meat_production_liveweight
   ), by = .I]
