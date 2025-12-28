@@ -58,7 +58,7 @@ utils::globalVariables(c(
   "mmsbiogashighleak1", "mmsbiogashighleak2", "mmsbiogashighleak3",
   "mmsburned", "mmsdeepnomix2", "mmsdeepnomix1", "mmsdeepmix2", "mmsdeepmix1",
   "mmscompostves", "mmscompoststat", "mmscompostint", "mmscompostpass",
-  "mmslitter", "mmsnolitter", "mmsareobic", "mmsaerproc"
+  "mmslitter", "mmsnolitter", "mmsareobic", "mmsaerproc",
   # Columns used in run_production_cohort
   "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",
   "milk_fat", "fibre_cohorts_size", "fibre_prod",
