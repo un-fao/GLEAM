@@ -14,7 +14,7 @@ GLEAM_input_directemissions <- fread("inst/extdata/GLEAM_input_directemissions_m
 ##### VS - IPCC 2019------
 GLEAM_input_directemissions[, c("vs2019") :=
                               Dfunction_vs(
-                                gleam_data=GLEAM_input_directemissions, 
+                                gleam_data=GLEAM_input_directemissions,
                                 ipcc_method=="2019")[
                                   , .(vs)
                                 ]
@@ -24,7 +24,7 @@ GLEAM_input_directemissions[, c("vs2019") :=
 ##### VS - IPCC 2006------
 GLEAM_input_directemissions[, c("vs2006") :=
                               Dfunction_vs(
-                                gleam_data=GLEAM_input_directemissions, 
+                                gleam_data=GLEAM_input_directemissions,
                                 ipcc_method=="2006")[
                                   , .(vs)
                                 ]
@@ -33,7 +33,7 @@ GLEAM_input_directemissions[, c("vs2006") :=
 ##### MCF - IPCC 2019 -----
 GLEAM_input_directemissions[, c("mcf_pasture2019", "mcf_burned2019", "mcf_other2019") :=
                               Dfunction_mcf_emissions(
-                                gleam_data=GLEAM_input_directemissions, 
+                                gleam_data=GLEAM_input_directemissions,
                                 mcf_dataset=mcf_2019,
                                 ipcc_method=="2019")[
                                 , .(mcf_pasture, mcf_burned, mcf_other)
@@ -52,9 +52,9 @@ GLEAM_input_directemissions[, c("mcf_pasture2006", "mcf_burned2006", "mcf_other2
 
 #### CH4 manure - IPCC 2019 -----
 GLEAM_input_directemissions[, c(
-  "ch4_manure_pasture2019", 
-  "ch4_manure_burned2019", 
-  "ch4_manure_other2019", 
+  "ch4_manure_pasture2019",
+  "ch4_manure_burned2019",
+  "ch4_manure_other2019",
   "ch4_manure_all_noburn2019"
 ) := Dfunction_ch4_manure(
   gleam_data = GLEAM_input_directemissions,
@@ -66,9 +66,9 @@ GLEAM_input_directemissions[, c(
 
 #### CH4 manure - IPCC 2006 -----
 GLEAM_input_directemissions[, c(
-  "ch4_manure_pasture2006", 
-  "ch4_manure_burned2006", 
-  "ch4_manure_other2006", 
+  "ch4_manure_pasture2006",
+  "ch4_manure_burned2006",
+  "ch4_manure_other2006",
   "ch4_manure_all_noburn2006"
 ) := Dfunction_ch4_manure(
   gleam_data = GLEAM_input_directemissions,
@@ -102,9 +102,9 @@ GLEAM_input_directemissions[, c("ef3_pasture2006", "ef3_burned2006", "ef3_other2
 
 
 ### N2O manure direct - IPCC 2019------
-GLEAM_input_directemissions[, c("direct_n2o_manure_pasture2019", 
-                                "direct_n2o_manure_burned2019", 
-                                "direct_n2o_manure_other2019", 
+GLEAM_input_directemissions[, c("direct_n2o_manure_pasture2019",
+                                "direct_n2o_manure_burned2019",
+                                "direct_n2o_manure_other2019",
                                 "direct_n2o_manure_all_noburn2019") :=
                               Dfunction_direct_n2o_manure(
                                 gleam_data = GLEAM_input_directemissions,
@@ -114,9 +114,9 @@ GLEAM_input_directemissions[, c("direct_n2o_manure_pasture2019",
 ]
 
 ### N2O manure direct - IPCC 2006------
-GLEAM_input_directemissions[, c("direct_n2o_manure_pasture2006", 
-                                "direct_n2o_manure_burned2006", 
-                                "direct_n2o_manure_other2006", 
+GLEAM_input_directemissions[, c("direct_n2o_manure_pasture2006",
+                                "direct_n2o_manure_burned2006",
+                                "direct_n2o_manure_other2006",
                                 "direct_n2o_manure_all_noburn2006") :=
                               Dfunction_direct_n2o_manure(
                                 gleam_data = GLEAM_input_directemissions,
@@ -130,8 +130,8 @@ GLEAM_input_directemissions[, c("direct_n2o_manure_pasture2006",
 
 
 ### Fracgas - IPCC 2019------
-GLEAM_input_directemissions[, c("fracgas_pasture2019", 
-                                "fracgas_burned2019", 
+GLEAM_input_directemissions[, c("fracgas_pasture2019",
+                                "fracgas_burned2019",
                                 "fracgas_other2019") :=
                               Dfunction_fracgas_manure(
                                 gleam_data = GLEAM_input_directemissions,
@@ -142,8 +142,8 @@ GLEAM_input_directemissions[, c("fracgas_pasture2019",
 
 
 ### Fracgas - IPCC 2006------
-GLEAM_input_directemissions[, c("fracgas_pasture2006", 
-                                "fracgas_burned2006", 
+GLEAM_input_directemissions[, c("fracgas_pasture2006",
+                                "fracgas_burned2006",
                                 "fracgas_other2006") :=
                               Dfunction_fracgas_manure(
                                 gleam_data = GLEAM_input_directemissions,
@@ -154,26 +154,26 @@ GLEAM_input_directemissions[, c("fracgas_pasture2006",
 
 
 ### Nvol - IPCC 2019------
-GLEAM_input_directemissions[, c("n_vol_manure_pasture2019", 
-                                "n_vol_manure_burned2019", 
-                                "n_vol_manure_other2019", 
+GLEAM_input_directemissions[, c("n_vol_manure_pasture2019",
+                                "n_vol_manure_burned2019",
+                                "n_vol_manure_other2019",
                                 "n_vol_manure_all_noburn2019") :=
                               Dfunction_n_volatilization_manure(
                                 gleam_data = GLEAM_input_directemissions,
                                 ipcc_method = "2019"
-                              )[, .(n_vol_manure_pasture, n_vol_manure_burned, 
+                              )[, .(n_vol_manure_pasture, n_vol_manure_burned,
                                     n_vol_manure_other, n_vol_manure_all_noburn)]
 ]
 
 ### Nvol - IPCC 2006------
-GLEAM_input_directemissions[, c("n_vol_manure_pasture2006", 
-                                "n_vol_manure_burned2006", 
-                                "n_vol_manure_other2006", 
+GLEAM_input_directemissions[, c("n_vol_manure_pasture2006",
+                                "n_vol_manure_burned2006",
+                                "n_vol_manure_other2006",
                                 "n_vol_manure_all_noburn2006") :=
                               Dfunction_n_volatilization_manure(
                                 gleam_data = GLEAM_input_directemissions,
                                 ipcc_method = "2006"
-                              )[, .(n_vol_manure_pasture, n_vol_manure_burned, 
+                              )[, .(n_vol_manure_pasture, n_vol_manure_burned,
                                     n_vol_manure_other, n_vol_manure_all_noburn)]
 ]
 
@@ -182,9 +182,9 @@ GLEAM_input_directemissions[, c("n_vol_manure_pasture2006",
 
 
 ### N2O manure indirect volatilization - IPCC 2019------
-GLEAM_input_directemissions[, c("n2o_vol_manure_pasture2019", 
-                                "n2o_vol_manure_burned2019", 
-                                "n2o_vol_manure_other2019", 
+GLEAM_input_directemissions[, c("n2o_vol_manure_pasture2019",
+                                "n2o_vol_manure_burned2019",
+                                "n2o_vol_manure_other2019",
                                 "n2o_vol_manure_all_noburn2019") :=
                               Dfunction_n2o_volatilization_manure(
                                 gleam_data = GLEAM_input_directemissions,
@@ -199,9 +199,9 @@ GLEAM_input_directemissions[, c("n2o_vol_manure_pasture2019",
 
 
 ### N2O manure indirect volatilization - IPCC 2006------
-GLEAM_input_directemissions[, c("n2o_vol_manure_pasture2006", 
-                                "n2o_vol_manure_burned2006", 
-                                "n2o_vol_manure_other2006", 
+GLEAM_input_directemissions[, c("n2o_vol_manure_pasture2006",
+                                "n2o_vol_manure_burned2006",
+                                "n2o_vol_manure_other2006",
                                 "n2o_vol_manure_all_noburn2006") :=
                               Dfunction_n2o_volatilization_manure(
                                 gleam_data = GLEAM_input_directemissions,
@@ -215,8 +215,8 @@ GLEAM_input_directemissions[, c("n2o_vol_manure_pasture2006",
 
 
 ### Fracleach - IPCC 2019------
-GLEAM_input_directemissions[, c("fracleach_pasture2019", 
-                                "fracleach_burned2019", 
+GLEAM_input_directemissions[, c("fracleach_pasture2019",
+                                "fracleach_burned2019",
                                 "fracleach_other2019") :=
                               Dfunction_fracleach_manure(
                                 gleam_data = GLEAM_input_directemissions,
@@ -226,8 +226,8 @@ GLEAM_input_directemissions[, c("fracleach_pasture2019",
 ]
 
 ### Fracleach - IPCC 2006------
-GLEAM_input_directemissions[, c("fracleach_pasture2006", 
-                                "fracleach_burned2006", 
+GLEAM_input_directemissions[, c("fracleach_pasture2006",
+                                "fracleach_burned2006",
                                 "fracleach_other2006") :=
                               Dfunction_fracleach_manure(
                                 gleam_data = GLEAM_input_directemissions,
@@ -242,14 +242,14 @@ GLEAM_input_directemissions[, c("fracleach_pasture2006",
 
 
 ### Nleach - IPCC 2019------
-GLEAM_input_directemissions[, c("n_leach_manure_pasture2019", 
-                                "n_leach_manure_burned2019", 
-                                "n_leach_manure_other2019", 
+GLEAM_input_directemissions[, c("n_leach_manure_pasture2019",
+                                "n_leach_manure_burned2019",
+                                "n_leach_manure_other2019",
                                 "n_leach_manure_all_noburn2019") :=
                               Dfunction_n_leaching_manure(
                                 gleam_data = GLEAM_input_directemissions,
                                 ipcc_method = "2019"
-                              )[, .(n_leach_manure_pasture, n_leach_manure_burned, 
+                              )[, .(n_leach_manure_pasture, n_leach_manure_burned,
                                     n_leach_manure_other, n_leach_manure_all_noburn)]
 ]
 
@@ -257,23 +257,23 @@ GLEAM_input_directemissions[, c("n_leach_manure_pasture2019",
 
 
 ### Nleach - IPCC 2006------
-GLEAM_input_directemissions[, c("n_leach_manure_pasture2006", 
-                                "n_leach_manure_burned2006", 
-                                "n_leach_manure_other2006", 
+GLEAM_input_directemissions[, c("n_leach_manure_pasture2006",
+                                "n_leach_manure_burned2006",
+                                "n_leach_manure_other2006",
                                 "n_leach_manure_all_noburn2006") :=
                               Dfunction_n_leaching_manure(
                                 gleam_data = GLEAM_input_directemissions,
                                 ipcc_method = "2006"
-                              )[, .(n_leach_manure_pasture, n_leach_manure_burned, 
+                              )[, .(n_leach_manure_pasture, n_leach_manure_burned,
                                     n_leach_manure_other, n_leach_manure_all_noburn)]
 ]
 
 
 
 ### N2O manure indirect leaching - IPCC 2019------
-GLEAM_input_directemissions[, c("n2o_leach_manure_pasture2019", 
-                                "n2o_leach_manure_burned2019", 
-                                "n2o_leach_manure_other2019", 
+GLEAM_input_directemissions[, c("n2o_leach_manure_pasture2019",
+                                "n2o_leach_manure_burned2019",
+                                "n2o_leach_manure_other2019",
                                 "n2o_leach_manure_all_noburn2019") :=
                               Dfunction_n2o_leaching_manure(
                                 gleam_data = GLEAM_input_directemissions,
@@ -289,9 +289,9 @@ GLEAM_input_directemissions[, c("n2o_leach_manure_pasture2019",
 
 
 ### N2O manure indirect leaching - IPCC 2006------
-GLEAM_input_directemissions[, c("n2o_leach_manure_pasture2006", 
-                                "n2o_leach_manure_burned2006", 
-                                "n2o_leach_manure_other2006", 
+GLEAM_input_directemissions[, c("n2o_leach_manure_pasture2006",
+                                "n2o_leach_manure_burned2006",
+                                "n2o_leach_manure_other2006",
                                 "n2o_leach_manure_all_noburn2006") :=
                               Dfunction_n2o_leaching_manure(
                                 gleam_data = GLEAM_input_directemissions,
