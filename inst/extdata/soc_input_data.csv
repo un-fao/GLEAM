@@ -1,0 +1,4 @@
+area,climate_zone,socRef,soil_type,management_start,management_end
+100,TropicalMoist,,Wetland,ImprovedMediumInput,ImprovedHighInput
+50,WarmTemperateDry,,Sandy,HighIntensityGrazing,NonDegraded
+75,CoolTemperateMoist,,Volcanic,SeverelyDegraded,ImprovedMediumInput

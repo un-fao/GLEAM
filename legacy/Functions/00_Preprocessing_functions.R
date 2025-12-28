@@ -343,9 +343,8 @@ get.offtake_rate <- function (
     offtake_rate.FJ = offtake_rate.FS
     offtake_rate.MJ = offtake_rate.MS
   }
-  offtake_rate.FA = AFexit/AFin # to be replaced with line 348 in a separate debugging
-  offtake_rate.MA = AMexit/AMin # to be replaced with line 348 in a separate debugging
-  #offtake_rate.FA = offtake_rate.MA <- 0
+  offtake_rate.FA = 0
+  offtake_rate.MA = 0
   ret <- list(offtake_rate.FJ, offtake_rate.FS, offtake_rate.FA, offtake_rate.MJ, offtake_rate.MS, offtake_rate.MA)
   names(ret) <- c("offtake_rate.FJ", "offtake_rate.FS", "offtake_rate.FA", "offtake_rate.MJ", "offtake_rate.MS", "offtake_rate.MA")
   return(ret)
@@ -399,7 +398,7 @@ get.mort_rate <- function(Animal_short, LPS_short, DR1, DR1M, DR2, DRL2, DRM, DR
 get.duration <- function(Animal_short, LPS_short, WA, AFC, AFCM, AFS, RRF, LAYTIME1, LAYTIME2, MOLTTIME, mort_rate.FA, mort_rate.MA) {
   if (Animal_short != "CHK") {
     duration.FJ = duration.MJ = WA*365
-    duration.FA = 1 / (RRF - mort_rate.FA) * 365
+    duration.FA = 1 / RRF * 365
   } else {
     # LAYING TIME
     if  (LPS_short %in% c("BCK")) {
@@ -422,13 +421,13 @@ get.duration <- function(Animal_short, LPS_short, WA, AFC, AFCM, AFS, RRF, LAYTI
     duration.MS = AFC*365 - duration.MJ
   }
   if (Animal_short %in% c("CTL", "BFL")) {
-    duration.MA = 1/(1/AFC-mort_rate.MA)*365
+    duration.MA = 1/(1/AFC)*365
   }
   else if (Animal_short %in% c("SHP", "GTS")) {
-    duration.MA = 1/(1/(3*AFC)-mort_rate.MA)*365
+    duration.MA = 1/(1/(3*AFC))*365
   }
   else if (Animal_short %in% c("PGS")) {
-    duration.MA = 1 / (RRF - mort_rate.MA) * 365
+    duration.MA = 1 / RRF * 365
   }
   ret <- list(duration.FJ, duration.FS, duration.FA, duration.MJ, duration.MS, duration.MA)
   names(ret) <- c("duration.FJ", "duration.FS", "duration.FA", "duration.MJ", "duration.MS", "duration.MA")
