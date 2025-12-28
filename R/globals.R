@@ -77,6 +77,11 @@ utils::globalVariables(c(
   "nework", "activity_fraction", "reg", "rem", "work_hours"
 ))
 
+utils::globalVariables(c(
+  # Columns added by run_directemissions_enteric
+  "ym", "ch4_enteric"
+))
+
 # Add species abbreviations
 abbr_animals <- data.table(
   Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
