@@ -33,9 +33,9 @@ calc_net_energy_lactation(
 
 \item{milk_fat}{Numeric. Milk fat content (fraction).}
 
-\item{idle}{Numeric. Fraction of time idle (for PGS).}
+\item{idle}{Numeric. Number of days idle (for PGS).}
 
-\item{gest}{Numeric. Fraction of time gestating (for PGS).}
+\item{gest}{Numeric. Number of days gestating per reproductive cycle (for PGS).}
 
 \item{litsize}{Numeric. Litter size (for PGS, SHP, GTS).}
 
@@ -45,13 +45,13 @@ calc_net_energy_lactation(
 
 \item{wkg}{Numeric. Weaning weight (for PGS).}
 
-\item{lact}{Numeric. Fraction of time lactating (for PGS).}
+\item{lact}{Numeric. Number of days lactating per reproductive cycle (for PGS).}
 
 \item{parturition_rate}{Numeric. Parturition rate.}
 
 \item{lambing_interval}{Numeric. Lambing interval (for SHP, GTS).}
 
-\item{assessment_duration}{Numeric. Duration of the assessment (days)}
+\item{assessment_duration}{Numeric. Duration of the assessment (days).}
 }
 \value{
 Numeric. Net energy for lactation (MJ/head/day).

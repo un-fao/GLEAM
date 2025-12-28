@@ -7,9 +7,7 @@
 calc_energy_allocation_meat(
   animal,
   cohort_code,
-  age_first_parturition_years,
   slaughter_liveweight,
-  initial_liveweight,
   birth_liveweight,
   meat_output_liveweight
 )
@@ -19,11 +17,7 @@ calc_energy_allocation_meat(
 
 \item{cohort_code}{Character scalar. Cohort identifier (e.g., "FA", "FS", "FJ", "MA", "MS", "MJ").}
 
-\item{age_first_parturition_years}{Numeric scalar. Age at first parturition (years). Not currently used but retained for compatibility.}
-
 \item{slaughter_liveweight}{Numeric scalar. Slaughter liveweight (kg).}
-
-\item{initial_liveweight}{Numeric scalar. Initial cohort liveweight (kg). Not currently used but retained for compatibility.}
 
 \item{birth_liveweight}{Numeric scalar. Birthweight (kg).}
 
