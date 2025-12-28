@@ -3,6 +3,7 @@
 export(calc_avg_weights)
 export(calc_cohort_weights)
 export(calc_daily_weight_gain)
+export(calc_soil_carbon)
 export(compute_dmi_by_feed)
 export(compute_fecundity_rates)
 export(compute_feed_emissions)

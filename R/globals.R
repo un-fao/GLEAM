@@ -47,6 +47,9 @@ utils::globalVariables(c(
   "dig_chickens", "dig_pigs", "dig_ruminants", "value", "Item_Name",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
+  # Columns used in run_soil_carbon
+  "area", "climate_zone", "soil_carbon_reference", "soil_type",
+  "management_start", "management_end", "SOC1", "SOC2", "dSOC",
   # Columns used in nitrogen_balance
   "n_intake", "n_retention", "n_excretion", "fibre_prod", "milk_protein",
   "Item_Name", "dmi", "milk_yield",
