@@ -78,6 +78,9 @@ utils::globalVariables(c(
 ))
 
 utils::globalVariables(c(
+  # Columns used in indirectemissions feed
+  "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
+  "feed_emissions_kgGas", "feed_share",
   # Columns added by run_directemissions_enteric
   "ym", "ch4_enteric"
 ))
