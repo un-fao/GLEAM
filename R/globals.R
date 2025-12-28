@@ -47,6 +47,12 @@ utils::globalVariables(c(
   "dig_chickens", "dig_pigs", "dig_ruminants", "value", "Item_Name",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
+  # Columns used in run_soil_carbon
+  "area", "climate_zone", "soil_carbon_reference", "soil_type",
+  "management_start", "management_end", "SOC1", "SOC2", "dSOC",
+  # Columns used in nitrogen_balance
+  "n_intake", "n_retention", "n_excretion", "fibre_prod", "milk_protein",
+  "Item_Name", "dmi", "milk_yield",
   # Columns used in run_production_cohort
   "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",
   "milk_fat", "fibre_cohorts_size", "fibre_prod",
@@ -79,7 +85,12 @@ utils::globalVariables(c(
   "energy_onfarm", "VarName", "RefYear", "Item", "V1", "GWP",
   "onfarm_emissions", "Unit",
   # Variables used with .. for column selection
-  "..energy_select_cols", "..emission_factor_merge_cols", "..output_cols"
+  "..energy_select_cols", "..emission_factor_merge_cols", "..output_cols",
+  # Columns used in indirectemissions feed
+  "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
+  "feed_emissions_kgGas", "feed_share",
+  # Columns added by run_directemissions_enteric
+  "ym", "ch4_enteric"
 ))
 
 # Add species abbreviations
