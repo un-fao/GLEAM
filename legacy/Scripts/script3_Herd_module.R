@@ -215,7 +215,7 @@ herd_data[, (offtake_cols) := as.list(
 # --- Output Export ------------------------------------------------------------
 cols_all <- names(herd_data)
 col_start <- which(cols_all == "LPS")
-col_end <- which(cols_all == "fibre_prod")
+col_end <- which(cols_all == "high_activity_fraction")
 
 extra_cols <- c(
   "share.FJ", "share.FS", "share.FA", "share.MJ", "share.MS", "share.MA",
