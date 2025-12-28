@@ -29,13 +29,17 @@ calc_totals_by_cohort <- function(
     assessment_duration,
     variable_type
 ) {
+  validate_totals_by_cohort_inputs(
+    value, size, assessment_duration, variable_type
+  )
+
   # Production variables are already at cohort level for entire assessment
-  if (variable_type == "Production") {
-    value_total <- value
-  } else {
-    # Scale per-head-per-day values by cohort size and assessment duration
-    value_total <- value * size * assessment_duration
-  }
+  # Use ifelse to handle both scalar and vector inputs
+  value_total <- ifelse(
+    variable_type == "Production",
+    value,
+    value * size * assessment_duration
+  )
 
   return(value_total)
 }
@@ -65,6 +69,8 @@ calc_allocated_emissions <- function(
     value,
     allocation_share
 ) {
+  validate_allocated_emissions_inputs(value, allocation_share)
+
   value_allocated <- value * allocation_share
   return(value_allocated)
 }
@@ -115,14 +121,16 @@ calc_co2eq <- function(
     value_allocated,
     gwp
 ) {
+  validate_co2eq_inputs(gas, value_allocated, gwp)
+
   # Define GWP factors for each IPCC assessment report
+  # Note: Validation ensures gwp is valid, so switch will always match
   gwp_factors <- switch(
     gwp,
     AR6 = c(CH4 = 27, N2O = 273, CO2 = 1),
     AR5_excluding_carbon_feedback = c(CH4 = 28, N2O = 265, CO2 = 1),
     AR5_including_carbon_feedback = c(CH4 = 34, N2O = 298, CO2 = 1),
-    AR4 = c(CH4 = 25, N2O = 298, CO2 = 1),
-    stop("Unsupported GWP version. Must be one of: AR6, AR5_excluding_carbon_feedback, AR5_including_carbon_feedback, AR4")
+    AR4 = c(CH4 = 25, N2O = 298, CO2 = 1)
   )
 
   # Extract GWP factor for each gas type
