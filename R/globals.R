@@ -102,7 +102,11 @@ utils::globalVariables(c(
   "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
   "feed_emissions_kgGas", "feed_share",
   # Columns added by run_directemissions_enteric
-  "ym", "ch4_enteric"
+  "ym", "ch4_enteric",
+  # Columns used in run_aggregation
+  "value", "value_total", "value_allocated", "value_allocated_co2e", "gwp_factor",
+  "variable_type", "variable_name", "unit", "gas", "allocation_share",
+  "allocation_type", "commodity_name", "commodity_type"
 ))
 
 # Add species abbreviations

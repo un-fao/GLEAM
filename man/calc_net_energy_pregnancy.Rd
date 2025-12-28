@@ -26,7 +26,7 @@ calc_net_energy_pregnancy(
 
 \item{litsize}{Numeric. Litter size (for SHP, GTS, PGS).}
 
-\item{gest}{Numeric. Fraction of time gestating (for all species).}
+\item{gest}{Numeric. Number of days gestating during the assessment period (for all species).}
 
 \item{duration}{Numeric. Duration in days.}
 

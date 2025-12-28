@@ -6,6 +6,7 @@
 \usage{
 run_allocation(
   allocation_inputs,
+  allocation_type = "biophysical-energy",
   group_by_keys = c("ADM0_CODE", "HerdType_short", "Animal_short", "LPS_short"),
   standard_protein = 0.033,
   standard_fat = 0.04,
@@ -16,6 +17,8 @@ run_allocation(
 }
 \arguments{
 \item{allocation_inputs}{Cohort-level input table provided as data.frame or data.table.}
+
+\item{allocation_type}{Character vector that defines the allocation methodology in use. Default= "biophysical-energy"}
 
 \item{group_by_keys}{Character vector that lists the columns used for herd aggregation.}
 
@@ -32,9 +35,8 @@ run_allocation(
 \value{
 A named list of three \code{data.table} objects:
 \itemize{
-\item \code{cohort_energy}: Cohort-level inputs augmented with calculated energy allocations.
-\item \code{herd_summary}: Aggregated totals and allocation shares per grouping key.
-\item \code{allocation_long}: Long-format representation of allocation shares with commodity labels.
+\item \code{cohort_allocation_inputs}: Cohort-level inputs to estimate allocation shares at herd-level.
+\item \code{allocation_long}: Herd-level, long-format representation of allocation shares with commodity labels.
 }
 }
 \description{
