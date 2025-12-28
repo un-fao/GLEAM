@@ -48,7 +48,7 @@ as well as daily weight gain (DWG). It also fills in weaning weights for non-pig
 based on FS cohorts.
 
 Input data must be preloaded. If using example data from the package (located in \code{inst/extdata}),
-load it using \code{\link[=system.file]{system.file()}} and \code{\link[=fread]{fread()}} as shown in the examples.
+load it using \code{\link[=system.file]{system.file()}} and \code{\link[data.table:fread]{data.table::fread()}} as shown in the examples.
 
 This function is intended for internal use.
 }
