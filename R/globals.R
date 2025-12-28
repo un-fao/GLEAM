@@ -44,9 +44,65 @@ utils::globalVariables(c(
   "DE_pigs", "DE_ruminants", "GE", "GLEAM3_name", "HerdType", "LPS",
   "ME_chickens", "ME_pigs", "ME_ruminants", "N_content",
   "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
-  "dig_chickens", "dig_pigs", "dig_ruminants", "value",
+  "dig_chickens", "dig_pigs", "dig_ruminants", "value", "Item_Name",
   # Variables used with .. for validation
-  "..numeric_cols_feed", "..numeric_cols_rations"
+  "..numeric_cols_feed", "..numeric_cols_rations",
+  # Columns used in run_directemissions_manure
+  "dmi", "n_excretion", "ef4", "ef5", "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
+  "mmsdaily", "mmssolid", "mmssolidcov", "mmssolidbulk", "mmssolidadd", "mmsdrylot",
+  "mmspit1", "mmspit3", "mmspit4", "mmspit6", "mmspit12",
+  "mmsliquid1", "mmsliquid3", "mmsliquid4", "mmsliquid6", "mmsliquid12",
+  "mmsliquidnatcov1", "mmsliquidnatcov3", "mmsliquidnatcov4", "mmsliquidnatcov6", "mmsliquidnatcov12",
+  "mmsliquidsolcov1", "mmsliquidsolcov3", "mmsliquidsolcov4", "mmsliquidsolcov6", "mmsliquidsolcov12",
+  "mmslagoon", "mmsbiogaslowleak1", "mmsbiogaslowleak2", "mmsbiogaslowleak3",
+  "mmsbiogashighleak1", "mmsbiogashighleak2", "mmsbiogashighleak3",
+  "mmsburned", "mmsdeepnomix2", "mmsdeepnomix1", "mmsdeepmix2", "mmsdeepmix1",
+  "mmscompostves", "mmscompoststat", "mmscompostint", "mmscompostpass",
+  "mmslitter", "mmsnolitter", "mmsareobic", "mmsaerproc",
+  # Columns used in run_soil_carbon
+  "area", "climate_zone", "soil_carbon_reference", "soil_type",
+  "management_start", "management_end", "SOC1", "SOC2", "dSOC",
+  # Columns used in nitrogen_balance
+  "n_intake", "n_retention", "n_excretion", "fibre_prod", "milk_protein",
+  "Item_Name", "dmi", "milk_yield",
+  # Columns used in run_production_cohort
+  "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",
+  "milk_fat", "fibre_cohorts_size", "fibre_prod",
+  "output_fibre_production", "offtake_number", "carcass_dressing_percentage",
+  "bone_free_meat_fraction", "meat_protein"
+))
+
+utils::globalVariables(c(
+  # Columns used in run_allocation
+  "slaughterLW", "initialLW", "output_meat_production_liveweight",
+  "output_milk_fpcm_production", "nefibre", "nework",
+  "energy_allocation_milk", "energy_allocation_meat",
+  "energy_allocation_fibre", "energy_allocation_work", "energy_allocation_eggs",
+  "total_allocation_energy", "allocation_share_meat", "allocation_share_milk",
+  "allocation_share_work", "allocation_share_fibre", "allocation_share_eggs",
+  "commodity_name", "commodity_type", "V1"
+))
+
+utils::globalVariables(c(
+  # Columns used in run_energy_requirements
+  "average_weight", "dmi", "dr1", "draught_fraction", "fibre_prod",
+  "final_weight", "gest", "getot", "idle", "lact", "lambing_interval",
+  "milk_fat", "milk_yield", "milking_fraction", "high_activity_fraction", "neact",
+  "neegg", "nefibre", "negrow", "nelact", "nemain", "nepreg",
+  "nework", "activity_fraction", "reg", "rem", "work_hours"
+))
+
+utils::globalVariables(c(
+  # Columns used in run_energy_on_farm
+  "energy_onfarm", "VarName", "RefYear", "Item", "V1", "GWP",
+  "onfarm_emissions", "Unit",
+  # Variables used with .. for column selection
+  "..energy_select_cols", "..emission_factor_merge_cols", "..output_cols",
+  # Columns used in indirectemissions feed
+  "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
+  "feed_emissions_kgGas", "feed_share",
+  # Columns added by run_directemissions_enteric
+  "ym", "ch4_enteric"
 ))
 
 # Add species abbreviations
