@@ -7,7 +7,7 @@ Description: Implements steady-state herd simulation components used in the Glob
     Environmental Assessment Model (GLEAM), including population structure, offtake 
     flows, demographic transitions, and cohort-level weight metrics. Designed to be 
     modular, testable, and integrated with downstream feed and emissions models.
-License: MIT + file LICENSE
+License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

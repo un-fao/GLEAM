@@ -78,11 +78,15 @@ GLEAM_input_energyrequirement[, getot := Dfunction_getot(
 ), by = seq_len(nrow(GLEAM_input_energyrequirement))]
 
 
+<<<<<<< HEAD
 ## energy for meat production
 GLEAM_input_energyrequirement[, nemeat := Dfunction_nemeat(
   Animal_short, cohort,
   afc, slaughter_weight, initial_weight, ckg
 ), by = seq_len(nrow(GLEAM_input_energyrequirement))]
+=======
+
+>>>>>>> staging
 
 
 

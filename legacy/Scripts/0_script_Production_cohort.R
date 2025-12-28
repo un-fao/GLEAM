@@ -61,4 +61,4 @@ GLEAM_input_production[, c("output_meat_production_liveweight", "output_meat_pro
 # PLACEHOLDER
 
 # OUTPUT TABLE -----
-fwrite(GLEAM_input_production, "inst/extdata/GLEAM_input_feed.csv")
+fwrite(GLEAM_input_production, "inst/extdata/GLEAM_input_allocation.csv")
