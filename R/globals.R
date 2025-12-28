@@ -44,12 +44,37 @@ utils::globalVariables(c(
   "DE_pigs", "DE_ruminants", "GE", "GLEAM3_name", "HerdType", "LPS",
   "ME_chickens", "ME_pigs", "ME_ruminants", "N_content",
   "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
-  "dig_chickens", "dig_pigs", "dig_ruminants", "value",
+  "dig_chickens", "dig_pigs", "dig_ruminants", "value", "Item_Name",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
   # Columns used in nitrogen_balance
   "n_intake", "n_retention", "n_excretion", "fibre_prod", "milk_protein",
-  "Item_Name", "dmi", "milk_yield"
+  "Item_Name", "dmi", "milk_yield",
+  # Columns used in run_production_cohort
+  "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",
+  "milk_fat", "fibre_cohorts_size", "fibre_prod",
+  "output_fibre_production", "offtake_number", "carcass_dressing_percentage",
+  "bone_free_meat_fraction", "meat_protein"
+))
+
+utils::globalVariables(c(
+  # Columns used in run_allocation
+  "slaughterLW", "initialLW", "output_meat_production_liveweight",
+  "output_milk_fpcm_production", "nefibre", "nework",
+  "energy_allocation_milk", "energy_allocation_meat",
+  "energy_allocation_fibre", "energy_allocation_work", "energy_allocation_eggs",
+  "total_allocation_energy", "allocation_share_meat", "allocation_share_milk",
+  "allocation_share_work", "allocation_share_fibre", "allocation_share_eggs",
+  "commodity_name", "commodity_type", "V1"
+))
+
+utils::globalVariables(c(
+  # Columns used in run_energy_requirements
+  "average_weight", "dmi", "dr1", "draught_fraction", "fibre_prod",
+  "final_weight", "gest", "getot", "idle", "lact", "lambing_interval",
+  "milk_fat", "milk_yield", "milking_fraction", "high_activity_fraction", "neact",
+  "neegg", "nefibre", "negrow", "nelact", "nemain", "nepreg",
+  "nework", "activity_fraction", "reg", "rem", "work_hours"
 ))
 
 # Add species abbreviations

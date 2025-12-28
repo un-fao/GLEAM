@@ -6,7 +6,6 @@ wide_dt <- fread(
   system.file("extdata/pre-processing-inputs/GLEAM_input_preproc.csv", package = "gleam")
 )
 
-
 wide_camels_dt <- fread(
   system.file("extdata/pre-processing-inputs/Camelids/camels_inputs.csv", package = "gleam")
 )
@@ -20,19 +19,6 @@ mms_cols_to_rename <- setdiff(mms_cols, "MMSKG")
 
 # Rename those columns to lowercase
 setnames(wide_camels_dt, old = mms_cols_to_rename, new = tolower(mms_cols_to_rename))
-
-
-setnames(wide_camels_dt, old = c(
-  "mmsbiogas",
-  "mmspastpadd"
-), new = c(
-  "mmsbiogashighleak1",
-  "mmspasture"
-))
-
-missing_cols <- setdiff(new_col_names, names(wide_camels_dt))
-
-
 
 # wide_dt re-naming and re-arrangement
 wide_dt[Animal_short == "PGS", c("AFC", "AFCM") := get.afc_pigs(AFKG=AFKG,AMKG=AMKG,DWG2=DWG2,WKG=WKG,WA=WA),by=.I]
@@ -58,6 +44,7 @@ wide_dt[,c("duration.FJ", "duration.FS", "duration.FA", "duration.MJ", "duration
 
 
 # add camels input parameters
+wide_dt[,milking_fraction:=0]
 wide_dt<-rbind(wide_dt, wide_camels_dt, fill = TRUE)
 
 
@@ -66,7 +53,7 @@ wide_dt[, draught_fraction := function_draught_proportion(BCR)]
 
 # add milking_fraction----
 wide_dt[HerdType_short=="DRY", milking_fraction:=1]
-wide_dt[HerdType_short!="DRY", milking_fraction:=0]
+wide_dt[HerdType_short!="DRY" & Animal_short!="CML", milking_fraction:=0]
 
 
 #RENAMING VARIABLES DRAFT------------
@@ -76,13 +63,12 @@ wide_dt[HerdType_short!="DRY", milking_fraction:=0]
 #CLEANING
 
 # Fiber production----
-wide_dt[, fibre_prod := CSH + MHR + WOOL]
+wide_dt[, fibre_prod := rowSums(.SD, na.rm = TRUE), .SDcols = c("CSH", "MHR", "WOOL")]
 wide_dt <- wide_dt[,!c("CSH", "MHR", "WOOL")]
 # Summing-up fiber production and create a new column called "prod_fiber"
 # CSH / total amount of cashmere produced by system
 # MHR / total amount of mohair produced by the system
 # WOOL /total amount of wool produced by the system
-
 
 # Removing variables----
 
@@ -95,6 +81,18 @@ wide_dt <- wide_dt[,!c("ACT", "DCR", "POPULATION", "AF_FRAC", "DISCARGE", "DISCH
 # DWG - daily weight gain / Not used at the moment
 # FISHPOND, INCINERATION, PUBLSEWAGE - used in NUE / Not used at the moment
 # CLIM ???????
+
+
+
+wide_dt[, activity_fraction:=mmspasture * past_man_frac]
+wide_dt[Animal_short %in% c("CML", "PGS"), activity_fraction:=mmspasture]
+wide_dt[, high_activity_fraction:=mmspasture * (1 - past_man_frac)]
+wide_dt[Animal_short %in% c("CML", "PGS"), high_activity_fraction:=0]
+wide_dt[, past_man_frac:=NULL]
+
+
+
+
 
 #chicken_only_variables <- c("A2S", "AF1KG", "AF2KG", "AFS", "AM1KG", "AM2KG", "BIDLE", "CLTSIZE", "CYCLE",
 #                            "DRL2", "DRM", "EGGSYEAR", "EGGWGHT", "EGG_PROTEIN", "FRMF", "HATCH",
@@ -150,6 +148,9 @@ setcolorder(wide_dt, c(
 # Assigning 1 to all litsize
 wide_dt[!(Animal_short %in% c("PGS", "CHK")), litsize := 1]
 
+
+wide_dt[, energy_onfarm:=0] #this should be in kWh
+
 # Assigning "parturition rate" to chickens, correponding to eggs hatching rate
 wide_dt[Animal_short %in% c("CHK"), parturition_rate := HATCH]
 
@@ -158,3 +159,4 @@ wide_dt[Animal_short %in% c("CHK"), parturition_rate := HATCH]
 fwrite(
   wide_dt, system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
 )
+

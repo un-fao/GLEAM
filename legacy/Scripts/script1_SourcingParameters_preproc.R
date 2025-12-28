@@ -71,7 +71,7 @@ wide_dt <- merge(wide_dt, abbr_LPS, by = "LPS")
 
 # Renaming manure variables----
 mcf_country2019 <- fread(
-  system.file("extdata/Manure_parameters/manure_ch4_mcf_ipcc2019_bycountry.csv", package = "gleam")
+  system.file("extdata/Manure_parameters/manure_ch4_mcf.csv", package = "gleam")
 )[, ADM0_CODE := as.character(ADM0_CODE)][]
 
 # Identify columns starting with "MMS" except "MMSKG"
