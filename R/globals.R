@@ -47,6 +47,9 @@ utils::globalVariables(c(
   "dig_chickens", "dig_pigs", "dig_ruminants", "value", "Item_Name",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
+  # Columns used in nitrogen_balance
+  "n_intake", "n_retention", "n_excretion", "fibre_prod", "milk_protein",
+  "Item_Name", "dmi", "milk_yield",
   # Columns used in run_production_cohort
   "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",
   "milk_fat", "fibre_cohorts_size", "fibre_prod",
