@@ -50,6 +50,9 @@ utils::globalVariables(c(
   # Columns used in run_soil_carbon
   "area", "climate_zone", "soil_carbon_reference", "soil_type",
   "management_start", "management_end", "SOC1", "SOC2", "dSOC",
+  # Columns used in nitrogen_balance
+  "n_intake", "n_retention", "n_excretion", "fibre_prod", "milk_protein",
+  "Item_Name", "dmi", "milk_yield",
   # Columns used in run_production_cohort
   "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",
   "milk_fat", "fibre_cohorts_size", "fibre_prod",
@@ -75,6 +78,14 @@ utils::globalVariables(c(
   "milk_fat", "milk_yield", "milking_fraction", "high_activity_fraction", "neact",
   "neegg", "nefibre", "negrow", "nelact", "nemain", "nepreg",
   "nework", "activity_fraction", "reg", "rem", "work_hours"
+))
+
+utils::globalVariables(c(
+  # Columns used in indirectemissions feed
+  "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
+  "feed_emissions_kgGas", "feed_share",
+  # Columns added by run_directemissions_enteric
+  "ym", "ch4_enteric"
 ))
 
 # Add species abbreviations
