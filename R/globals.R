@@ -81,6 +81,11 @@ utils::globalVariables(c(
 ))
 
 utils::globalVariables(c(
+  # Columns used in run_energy_on_farm
+  "energy_onfarm", "VarName", "RefYear", "Item", "V1", "GWP",
+  "onfarm_emissions", "Unit",
+  # Variables used with .. for column selection
+  "..energy_select_cols", "..emission_factor_merge_cols", "..output_cols",
   # Columns used in indirectemissions feed
   "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
   "feed_emissions_kgGas", "feed_share",
