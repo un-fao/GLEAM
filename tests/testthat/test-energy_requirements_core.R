@@ -144,7 +144,7 @@ test_that("calc_net_energy_activity handles different species", {
     nemain = 10.0, average_weight = 150,
     activity_fraction = 0.5, high_activity_fraction = 0.3
   )
-  expected <- 0.125 * 0.5 * 10.0
+  expected <- 0.125 * (0.5+0.3) * 10.0
   expect_equal(result, expected)
 
   # Test goats

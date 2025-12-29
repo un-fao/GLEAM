@@ -269,7 +269,7 @@ calc_net_energy_activity <- function(
     cact <- (0.17 * activity_fraction) + (0.36 * high_activity_fraction)
     ret <- cact * nemain
   } else if (animal %in% c("CML")) {
-    cact <- (0.1 * activity_fraction)
+    cact <- (0.1 * (activity_fraction+high_activity_fraction))
     ret <- cact * nemain
   } else if (animal == "SHP") {
     cact <- (0.0107 * activity_fraction) + (0.024 * high_activity_fraction)
@@ -278,7 +278,7 @@ calc_net_energy_activity <- function(
     cact <- (0.019 * activity_fraction) + (0.024 * high_activity_fraction)
     ret <- cact * average_weight
   } else if (animal == "PGS") {
-    cact <- 0.125 * activity_fraction # Pigs: fixed activity coefficient
+    cact <- 0.125 * (activity_fraction+high_activity_fraction)
     ret <- cact * nemain
   }
   return(ret)
