@@ -110,7 +110,7 @@ utils::globalVariables(c(
 ))
 
 # Add species abbreviations
-abbr_animals <- data.table(
+abbr_animals <- data.table::data.table(
   Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
   Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
 )

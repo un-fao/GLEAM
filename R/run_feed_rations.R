@@ -59,15 +59,15 @@ run_feed_rations <- function(rations_share, feed_params, input_feed) {
   rations_detailed[, `:=`(
     diet_ge = value * GE,
     diet_nitrogen = value * N_content,
-    diet_dig = fifelse(
+    diet_dig = data.table::fifelse(
       Animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), value * dig_ruminants,
-      fifelse(Animal_short == "CHK", value * dig_chickens,
-              fifelse(Animal_short == "PGS", value * dig_pigs, NA_real_))
+      data.table::fifelse(Animal_short == "CHK", value * dig_chickens,
+              data.table::fifelse(Animal_short == "PGS", value * dig_pigs, NA_real_))
     ),
-    diet_me = fifelse(
+    diet_me = data.table::fifelse(
       Animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), value * ME_ruminants,
-      fifelse(Animal_short == "CHK", value * ME_chickens,
-              fifelse(Animal_short == "PGS", value * ME_pigs, NA_real_))
+      data.table::fifelse(Animal_short == "CHK", value * ME_chickens,
+              data.table::fifelse(Animal_short == "PGS", value * ME_pigs, NA_real_))
     )
   )]
 

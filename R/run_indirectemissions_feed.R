@@ -165,22 +165,22 @@ run_indirectemissions_feed <- function(
 
   if (is.null(trade_preferences)) {
     # Default: all feeds use the default trade option
-    trade_prefs_all <- data.table(
+    trade_prefs_all <- data.table::data.table(
       feed_id = feeds_in_dmi,
       TradeOption_selected = default_trade_option
     )
   } else {
     # Combine user preferences and defaults for missing feeds
-    trade_prefs_user <- data.table(
+    trade_prefs_user <- data.table::data.table(
       feed_id = names(trade_preferences),
       TradeOption_selected = unlist(trade_preferences, use.names = FALSE)
     )
     missing_feeds <- setdiff(feeds_in_dmi, trade_prefs_user$feed_id)
-    trade_prefs_default <- data.table(
+    trade_prefs_default <- data.table::data.table(
       feed_id = missing_feeds,
       TradeOption_selected = default_trade_option
     )
-    trade_prefs_all <- rbind(trade_prefs_user, trade_prefs_default)
+    trade_prefs_all <- data.table::rbindlist(list(trade_prefs_user, trade_prefs_default))
   }
 
   data.table::setnames(trade_prefs_all, "feed_id", feed_id_col)

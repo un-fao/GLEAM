@@ -132,7 +132,7 @@ run_aggregation <- function(
   }
 
   # --- Step 2: Reshape data_cohort to long format --------------------------
-  data_cohort_long <- melt(
+  data_cohort_long <- data.table::melt(
     data_cohort,
     id.vars = c(
       "ADM0_CODE",
@@ -151,7 +151,7 @@ run_aggregation <- function(
 
   # --- Step 3: Classify variables by type ----------------------------------
   data_cohort_long[
-    , variable_type := fcase(
+    , variable_type := data.table::fcase(
       variable_name %in% feed_vars, "Feed",
       variable_name %in% nitrogen_balance_vars, "NitrogenBalance",
       variable_name %in% production_vars, "Production",
@@ -207,7 +207,7 @@ run_aggregation <- function(
 
   # --- Step 8: Identify gas type for GWP conversion -------------------------
   data_herd_long_allocation[
-    , gas := fcase(
+    , gas := data.table::fcase(
       grepl("^ch4", variable_name, ignore.case = TRUE), "CH4",
       grepl("n2o", variable_name, ignore.case = TRUE), "N2O",
       default = NA_character_
@@ -236,7 +236,7 @@ run_aggregation <- function(
   subset_allocatedco2e[, unit := "kg co2eq"]
 
   # --- Step 11: Combine the Emissions results allocated with other variables --
-  results_herd <- rbindlist(
+  results_herd <- data.table::rbindlist(
     list(
       subset_allocatedco2e,
       data_herd_long[variable_type != "Emissions"]
@@ -249,7 +249,7 @@ run_aggregation <- function(
 
   # 12.1 Production
   results_herd[
-    , unit := fcase(
+    , unit := data.table::fcase(
       variable_name %in% c("output_milk_mass_production", "output_fibre_production"), "kg",
       variable_name %in% c("output_milk_protein_production", "output_meat_production_protein"), "kg protein",
       variable_name %in% c("output_milk_fpcm_production"), "kg fat-protein corrected",
@@ -261,14 +261,14 @@ run_aggregation <- function(
   ]
 
   results_herd[
-    , commodity_name := fcase(
+    , commodity_name := data.table::fcase(
       variable_name %in% c("output_milk_mass_production", "output_milk_protein_production", "output_milk_fpcm_production"), "Milk",
       variable_name %in% c("output_meat_production_liveweight", "output_meat_production_carcassweight", "output_meat_production_meat", "output_meat_production_protein"), "Meat",
       variable_name == "output_fibre_production", "Fibre",
       default = commodity_name
     )
   ][
-    , commodity_type := fcase(
+    , commodity_type := data.table::fcase(
       variable_type %in% c("Production"), "Edible",
       default = commodity_type
     )
@@ -276,7 +276,7 @@ run_aggregation <- function(
 
   # 12.2 Feed & N balance
   results_herd[
-    , unit := fcase(
+    , unit := data.table::fcase(
       variable_name %in% c("DryMatterIntake"), "kg dry matter",
       variable_name %in% c("NitrogenIntake", "NitrogenRetention", "NitrogenExcretion"), "kg N",
       default = unit
@@ -356,7 +356,7 @@ run_aggregation <- function(
     "value_total"
   )
 
-  setcolorder(
+  data.table::setcolorder(
     results_herd,
     intersect(variable_order, names(results_herd))
   )
