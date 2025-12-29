@@ -444,7 +444,7 @@ calc_net_energy_growth <- function(
     }
   } else if (animal %in% c("CML")) {
     if (cohort %in% c("FS", "FJ", "MS", "MJ")) {
-      ret <- 41.8 * dwg
+      ret <- 41.2 * dwg
     } else {
       ret <- 0
     }
