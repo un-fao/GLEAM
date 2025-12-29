@@ -130,7 +130,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
 
   # Calculate MCF values
   mcf_temp <- compute_weighted_terms(mcf_merged, mms_cols, "_mcf")
-  mcf_result <- data.table(
+  mcf_result <- data.table::data.table(
     mcf_pasture = mcf_temp$pasture / 100,
     mcf_burned = mcf_temp$burned / 100,
     mcf_other = mcf_temp$other / 100
@@ -178,7 +178,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     all.x = TRUE
   )
 
-  ch4_merged <- rbindlist(
+  ch4_merged <- data.table::rbindlist(
     list(gleam_with_herd, gleam_without_herd), fill = TRUE
   )
 
@@ -223,7 +223,7 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
 
   # Calculate EF3 values
   ef3_temp <- compute_weighted_terms(ef3_merged, mms_cols, "_ef3")
-  ef3_result <- data.table(
+  ef3_result <- data.table::data.table(
     ef3_pasture = ef3_temp$pasture,
     ef3_burned = ef3_temp$burned,
     ef3_other = ef3_temp$other
@@ -309,13 +309,13 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     all.x = TRUE
   )
 
-  fracgas_merged <- rbindlist(
+  fracgas_merged <- data.table::rbindlist(
     list(gleam_fracgas_with_herd, gleam_fracgas_without_herd), use.names = TRUE, fill = TRUE
   )
 
   # Calculate FracGAS values
   fracgas_temp <- compute_weighted_terms(fracgas_merged, mms_cols, "_fracgas")
-  fracgas_result <- data.table(
+  fracgas_result <- data.table::data.table(
     fracgas_pasture = fracgas_temp$pasture,
     fracgas_burned = fracgas_temp$burned,
     fracgas_other = fracgas_temp$other
@@ -427,13 +427,13 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
     all.x = TRUE
   )
 
-  fracleach_merged <- rbindlist(
+  fracleach_merged <- data.table::rbindlist(
     list(gleam_fracleach_with_herd, gleam_fracleach_without_herd), use.names = TRUE, fill = TRUE
   )
 
   # Calculate FracLEACH values
   fracleach_temp <- compute_weighted_terms(fracleach_merged, mms_cols, "_fracleach")
-  fracleach_result <- data.table(
+  fracleach_result <- data.table::data.table(
     fracleach_pasture = fracleach_temp$pasture,
     fracleach_burned = fracleach_temp$burned,
     fracleach_other = fracleach_temp$other

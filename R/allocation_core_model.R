@@ -320,7 +320,7 @@ assign_allocation_to_emissions <- function(allocation_herd_long,
   
   
   # 1) All combinations: commodity x emission variable
-  grid <- CJ(
+  grid <- data.table::CJ(
     variable_name  = emissions_vars,
     commodity_name = commodities,
     unique = TRUE

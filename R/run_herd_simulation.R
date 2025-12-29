@@ -266,7 +266,7 @@ run_herd_simulation <- function(
   # --- Step 5: Reshape Data and Calculate Final Metrics ----------------------
 
   # Reshape to long format
-  herd_long <- melt(
+  herd_long <- data.table::melt(
     herd_data[, .SD, .SDcols = c(id_cols, cohort_cols)],
     id.vars = id_cols,
     variable.name = "variable",
@@ -284,7 +284,7 @@ run_herd_simulation <- function(
   )]
 
   # Reshape to wide by item
-  herd_wide <- dcast(
+  herd_wide <- data.table::dcast(
     herd_long,
     LPS + HerdType + Animal + ADM0_CODE + ISO3 + ISO3_num +
       RegionClass + COUNTRY + M49_code + cohort + RegionClass ~ item,
@@ -300,7 +300,7 @@ run_herd_simulation <- function(
   )
 
   # Set preferred column order
-  setcolorder(herd_merged, c(
+  data.table::setcolorder(herd_merged, c(
     "LPS", "LPS_short", "HerdType", "HerdType_short",
     "Animal", "Animal_short",
     "ADM0_CODE", "ISO3", "ISO3_num", "M49_code",

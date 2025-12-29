@@ -45,10 +45,10 @@ run_energy_requirements <- function(data) {
   }
 
   # 0. Create a new variable (adult_weight)
-  data[, adult_weight := fifelse(
+  data[, adult_weight := data.table::fifelse(
     cohort %in% c("FA", "FS", "FJ"),
     average_weight[cohort == "FA"][1],   # female adult ref for this group
-    fifelse(
+    data.table::fifelse(
       cohort %in% c("MA", "MS", "MJ"),
       average_weight[cohort == "MA"][1], # male adult ref for this group
       NA_real_

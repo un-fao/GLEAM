@@ -163,7 +163,7 @@ run_allocation <- function(
     id_vars <- c("ADM0_CODE", "Animal_short", "LPS_short", "HerdType_short")
     
     # Reshape allocation shares from wide to long
-    allocation_herd_long <- melt(
+    allocation_herd_long <- data.table::melt(
       allocation_herd,
       id.vars = id_vars,
       measure.vars = c("allocation_share_meat",
