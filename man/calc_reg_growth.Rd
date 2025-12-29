@@ -7,13 +7,35 @@
 calc_reg_growth(animal, diet_dig)
 }
 \arguments{
-\item{animal}{Character. Species code.}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{diet_dig}{Numeric. Diet digestibility (fraction).}
+\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{
-Numeric. REG value (fraction).
+Ratio of net energy available for growth in a diet to digestible energy consumed, REG (fraction)
 }
 \description{
-Computes the ratio of net energy available in the diet for growth to digestible energy.
+Computes the ratio of \strong{net energy available for growth} to \strong{digestible
+energy consumed} (REG). REG represents the efficiency with which digestible
+energy in the diet is converted into net energy retained as body tissue
+(and wool growth where applicable).
+}
+\references{
+Gibbs M.J., Johnson D.E. (1993) \emph{Livestock Emissions}.
+In: International Methane Emissions. Washington, D.C., U.S.A: US Environmental Protection Agency, Climate Change Division.
+
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.15.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.15.
 }

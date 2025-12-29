@@ -2,7 +2,7 @@
 % Please edit documentation in R/energy_requirements_core_model.R
 \name{calc_net_energy_lactation}
 \alias{calc_net_energy_lactation}
-\title{Calculate Net Energy for Lactation}
+\title{Calculate Energy for Lactation}
 \usage{
 calc_net_energy_lactation(
   animal,
@@ -23,39 +23,182 @@ calc_net_energy_lactation(
 )
 }
 \arguments{
-\item{animal}{Character. Species code.}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{cohort}{Character. Cohort code.}
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 
-\item{milking_fraction}{Numeric. Proportion of lactating adult females.}
+\item{milking_fraction}{Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).}
 
-\item{milk_yield}{Numeric. Milk yield (kg/day).}
+\item{milk_yield}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destinated to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
 
-\item{milk_fat}{Numeric. Milk fat content (fraction).}
+\item{milk_fat}{Numeric. Milk fat fraction (kg fat / kg milk).}
 
-\item{idle}{Numeric. Number of days idle (for PGS).}
+\item{idle}{Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days).}
 
-\item{gest}{Numeric. Number of days gestating per reproductive cycle (for PGS).}
+\item{gest}{Numeric. Duration of pregnancy period (days).}
 
-\item{litsize}{Numeric. Litter size (for PGS, SHP, GTS).}
+\item{litsize}{Numeric. Average number of offspring born per parturition (#).
+This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
-\item{dr1}{Numeric. Death rate in first year (for PGS).}
+\item{dr1}{Numeric. Percentage of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ) (fraction).}
 
-\item{ckg}{Numeric. Birth weight (for PGS).}
+\item{ckg}{Numeric. Live body weight of the animal at birth (kg).}
 
-\item{wkg}{Numeric. Weaning weight (for PGS).}
+\item{wkg}{Numeric. Live body weight of the animal at weaning (kg).}
 
-\item{lact}{Numeric. Number of days lactating per reproductive cycle (for PGS).}
+\item{lact}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).}
 
-\item{parturition_rate}{Numeric. Parturition rate.}
+\item{parturition_rate}{Numeric. Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.}
 
-\item{lambing_interval}{Numeric. Lambing interval (for SHP, GTS).}
+\item{lambing_interval}{Numeric. Average time interval between two successive births (days)}
 
-\item{assessment_duration}{Numeric. Duration of the assessment (days).}
+\item{assessment_duration}{Numeric. Length of the assessment period (days)}
 }
 \value{
-Numeric. Net energy for lactation (MJ/head/day).
+Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
-Computes net energy required for lactation (MJ/head/day).
+Computes the \strong{energy requirement for lactation} (MJ/head/day), defined as the
+energy needed to support milk production by lactating females.
+This approach follows the IPCC Tier 2 partitioning method and applies
+species-specific equations for lactation energy requirements.
+}
+\details{
+Energy for lactation (\code{energy_lactation}) represents the additional
+energy required to support \strong{milk synthesis} during lactation. Following
+IPCC Tier 2 guidelines, lactation energy is calculated as a function of the
+\strong{quantity of milk produced} and a \strong{species-specific energy cost per unit
+of milk}.
+
+\itemize{\strong{For CTL, BFL, CML, SHP and GTS}:
+Total milk production includes:
+\itemize{
+\item milk extracted for human consumption (\code{milk_yield})
+\item milk consumed directly by offspring (\code{milk_from_offspring})
+when milk yield is not directly observed (e.g., suckling systems).
+}
+
+Lactation energy requirements are applied \strong{only to adult females} and are
+scaled by the proportion of animals that are lactating within the cohort
+(\code{milking_fraction}).
+
+In general form, lactation energy is computed as:
+
+\deqn{
+energy\_lactation =
+(milk\_yield + milk\_from\_offspring)
+\times energy\_milk
+\times milking\_fraction
+}
+
+where \code{energy_milk} is a species-specific coefficient representing the
+net energy cost of producing one kilogram of milk (MJ kg\eqn{^{-1}}).
+
+Species-specific values of \code{energy_milk} are:
+\itemize{
+\item \code{CTL}, \code{BFL}: estimated as a function of milk fat content,
+\eqn{1.47 + 0.40 \times (milk\_fat \times 100)} (NRC 1989),
+\item \code{CML}: 4.063 (Wardeh, 2004),
+\item \code{SHP}: 4.6 (AFRC, 1993; AFRC, 1995),
+\item \code{GTS}: 3.0 (AFRC, 1998).
+}
+
+When milk yield is not directly observed the amount of milk required to rear offspring
+is aproximated at \strong{5 kilograms of milk per
+kilogram of live-weight gain to weaning}:
+
+\deqn{
+milk\_from\_offspring =
+\frac{parturition\_rate \times 5 \times (wkg - ckg)}
+{assessment\_duration} \code(AFRC, 1990)
+}
+}
+
+\itemize{\strong{For PGS} — NRC (1998).
+
+For pigs, lactation energy is implemented as a \strong{per-litter energy requirement}
+adjusted to the fraction of the reproductive cycle spent in lactation.
+
+The adjustment factor is defined as:
+
+\deqn{
+cadj = \frac{lact}{idle + gest + lact}
+}
+
+where \eqn{lact}, \eqn{idle}, and \eqn{gest} represent the durations (days)
+of lactation, non-productive (idle), and gestation phases, respectively.
+
+Lactation energy per sow per day is calculated as:
+
+\deqn{
+energy\_lactation =
+litsize \times (1 - 0.5 \times dr1)
+\times \left(
+\frac{0.02059 \times (wkg - ckg) \times 1000}{lact}
+- \frac{0.3766}{0.67}
+\right)
+\times cadj
+}
+
+where:
+\itemize{
+\item \eqn{0.02059} is the coefficient for lactation energy requirement
+(MJ g live-weight\eqn{^{-1}}),
+\item \eqn{0.3766} is the coefficient for sow weight loss during lactation
+(\eqn{C_{wloss}}, MJ head\eqn{^{-1}} day\eqn{^{-1}}),
+\item \eqn{0.67} is the efficiency of conversion of dietary intake to milk
+energy (\eqn{C_{conv}}, fraction),
+\item \code{litsize} is litter size,
+\item \code{dr1} is the proportion of stillborn piglets,
+\item \eqn{wkg} and \eqn{ckg} are live weights at weaning and at birth,
+respectively (kg).
+}
+}
+}
+\references{
+AFRC (1998) \emph{The Nutrition of Goats. Wallingford: CAB International}.
+Animut G., Puchala R., Goetsch A.L., Patra A.K., Sahlu T., Varel V.H., Wells J.
+
+AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+CAB International, Wallingford, UK.
+
+AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+CAB International, Wallingford, UK.
+
+AFRC (1990). \emph{Nutritive Requirements of Ruminant Animals: Energy.}
+Rep. 5. Wallingford, UK: CAB International.
+
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.8-10.10.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.8-10.10.
+
+NRC (1998). \emph{Nutrient Requirements of Swine},
+10th Revised Edition. National Academies Press, Washington, DC.
+
+NRC (1989) \emph{Nutrient Requirements of Dairy Cattle},
+6th Ed. . Washington, D.C. U.S.A: National Academy Press.
+
+Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
+Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 }

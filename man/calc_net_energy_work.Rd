@@ -2,24 +2,99 @@
 % Please edit documentation in R/energy_requirements_core_model.R
 \name{calc_net_energy_work}
 \alias{calc_net_energy_work}
-\title{Calculate Net Energy for Work}
+\title{Calculate Energy for Work}
 \usage{
 calc_net_energy_work(animal, cohort, nemain, work_hours, draught_fraction)
 }
 \arguments{
-\item{animal}{Character. Species code.}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{cohort}{Character. Cohort code.}
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 
-\item{nemain}{Numeric. Net energy for maintenance.}
+\item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{work_hours}{Numeric. Number of work hours.}
+\item{work_hours}{Numeric. Mean daily working time per animal for CTL, BFL and CML, expressed as hours worked per head per day (hours/head/day).}
 
-\item{draught_fraction}{Numeric. Draught fraction.}
+\item{draught_fraction}{Numeric. Fraction of adult males involved in draught work (fraction).}
 }
 \value{
-Numeric. Net energy for work (MJ/head/day).
+Numeric. Energy required for work, used to estimate the energy required for draft power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
-Computes net energy required for work (MJ/head/day).
+Computes the \strong{energy requirement for work} (MJ/head/day), defined as the
+energy required for draft power. This approach follows the IPCC Tier 2 partitioning method and applies
+species-specific coefficients.
+}
+\details{
+Energy for work (\code{energy_work}) represents the additional energy required
+to support \strong{draught power generation} by working animals.
+
+This component is applied only to draught-capable species and is scaled by
+the fraction of adult males involved in draught work (\code{draught_fraction})
+and their average daily working time (\code{work_hours}).
+
+\strong{CTL and BFL} - Bamualim & Kartiarso (1985); IPCC (2006, 2019).
+For cattle and buffalo, draught work energy is expressed as a proportion of
+net energy for maintenance:
+
+\eqn{
+energy\_work = 0.1 \times NEm \times work\_hours \times draught\_fraction
+}
+
+where:
+\itemize{
+\item \eqn{energy\_work} is net energy required for maintenance (MJ head\eqn{^{-1}} day\eqn{^{-1}}),
+\item \eqn{0.1} represents a 10\\% increase in maintenance energy per hour of work,
+\item \eqn{work\_hours} is the mean number of hours worked per animal per day,
+\item \eqn{draught\_fraction} is the fraction of adult males performing draught work.
+}
+
+\strong{CML} -  Wilson (1989)
+For camels, draught work energy is calculated using a fixed metabolizable
+energy cost per hour of work:
+
+\deqn{
+energy\_work = 4 \times work\_hours \times draught\_fraction
+}
+
+where:
+\itemize{
+\item \eqn{4} is the metabolizable energy requirement for draught work
+(MJ head\eqn{^{-1}} hour\eqn{^{-1}}),
+\item \eqn{work\_hours} is the mean daily working time per animal,
+\item \eqn{draught\_fraction} is the fraction of adult males involved in draught work.
+}
+}
+\references{
+Bamualim A., Kartiarso (1985). \emph{Nutrition of draught animals with special reference to Indonesia}.
+In:Draught Animal Power for Production. Australian Centre for International agricultural Research (ACIAR),
+Proceedings Series No. 10, ed. JW Copland. Canberra, A.C.T., Australia: ACIAR.
+
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.11.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.11.
+
+Wilson (1989). \emph{The nutritional requirements of camel}.
+In: Tisserand J.-L. (ed.). Séminaire sur la digestion, la nutrition et l'alimentation du dromadaire.
+Zaragoza : CIHEAM. (1989). p. 171-179 (Options Méditerranéennes : Série A. Séminaires Méditerranéens; n. 2)
 }
