@@ -683,29 +683,29 @@ calc_net_energy_lactation <- function(
   )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) *
-        (milk_fat * 100 * 0.40 + 1.47) * milking_fraction
+      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) *
+        (milk_fat * 100 * 0.40 + 1.47) 
     } else {
       ret <- 0
     }
   } else if (animal %in% c("CML")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) * 4.063 * milking_fraction
+      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) * 4.063 
     } else {
       ret <- 0
     }
   } else if (animal %in% c("SHP")) {
     if (cohort == "FA") {
       # Includes effect of litter size and lambing interval
-      ret <- (milk_yield + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
-                              (wkg - ckg)) / assessment_duration) * 4.6 * milking_fraction
+      ret <- ((milk_yield * milking_fraction)  + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
+                              (wkg - ckg)) / assessment_duration) * 4.6 
     } else {
       ret <- 0
     }
   } else if (animal %in% c("GTS")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
-                              (wkg - ckg)) / assessment_duration) * 3 * milking_fraction
+      ret <- ((milk_yield * milking_fraction)  + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
+                              (wkg - ckg)) / assessment_duration) * 3
     } else {
       ret <- 0
     }

@@ -227,7 +227,7 @@ test_that("calc_net_energy_lactation returns correct values for cattle", {
     idle = 0, gest = 0, litsize = 1, dr1 = 0, ckg = 35, wkg = 90,
     lact = 0, parturition_rate = 0.8, lambing_interval = 365, assessment_duration=365
   )
-  expected <- (20 + (0.8 * 5 * (90 - 35)) / 365) * (0.04 * 100 * 0.40 + 1.47) * 0.8
+  expected <- ((20*0.8) + (0.8 * 5 * (90 - 35)) / 365) * (0.04 * 100 * 0.40 + 1.47)
   expect_equal(result, expected)
 })
 
@@ -238,7 +238,7 @@ test_that("calc_net_energy_lactation handles sheep with litter size", {
     idle = 0, gest = 0, litsize = 1.5, dr1 = 0, ckg = 4, wkg = 18,
     lact = 0, parturition_rate = 1.2, lambing_interval = 365, assessment_duration=365
   )
-  expected <- (1.5 + (1.5 * (365 * 1.2 / 365) * 5 * (18 - 4)) / 365) * 4.6 * 0.9
+  expected <- ((1.5*0.9) + (1.5 * (365 * 1.2 / 365) * 5 * (18 - 4)) / 365) * 4.6
   expect_equal(result, expected)
 })
 
