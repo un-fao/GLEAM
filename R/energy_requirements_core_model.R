@@ -1,16 +1,122 @@
-#' Calculate Net Energy for Maintenance
+#' Calculate Energy for Maintenance
 #'
-#' Computes net energy required for maintenance (MJ/head/day).
+#' Computes the **energy requirement for maintenance** (MJ/head/day).
+#' This approach follows the IPCC Tier 2 partitioning method, and applies this general equation:
+#' energy_maintenance = cmain * average_weight^0.75
+#' where cmain is a category-specific coefficient (MJ d^-1 kg^-1).
 #'
-#' @param animal Character. Species code (e.g., "CTL", "BFL", "SHP", "GTS", "PGS", "CHK", "CML").
-#' @param cohort Character. Cohort code.
-#' @param average_weight Numeric. Average live weight (kg).
-#' @param milking_fraction Numeric. Proportion of lactating adult females (only for CTL/BFL–FA, default NA).
-#' @param offtake_rate Numeric. Offtake rate by cohort (only for some cohorts, default NA).
-#' @param afc Numeric. Age at first calving (only for SHP, default NA).
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
+#' @param average_weight Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).
+#' @param milking_fraction Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
+#' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
+#' @param afc Numeric. Age at first parturition for female breeding animals (years)
 #'
-#' @return Numeric. Net energy for maintenance (MJ/head/day).
+#' @return Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal
+#' in equilibrium such that body energy is neither gained nor lost.
+#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#'
+#' @details
+#' The maintenance coefficient \eqn{cmain} reflects basal metabolic requirements and differs
+#' by species, physiological status, and sex. For selected cohorts it is computed as a
+#' weighted average to account for:
+#'
+#' \itemize{
+#'   \item lactating vs. non-lactating females (CTL, BFL),
+#'   \item intact vs. castrated males (CTL, BFL, SHP). Offtaken animals are assumed castrated,
+#'   \item animals below vs. above one year of age (SHP).
+#' }
+#'
+#'**Specific cofficients by species and cohort:**
+#'
+#' \strong{CTL and BFL} (NRC, 1996; AFRC, 1993, 1995):
+#' \itemize{
+#'   \item \code{FA}:
+#'     \eqn{cmain = 0.386 \times milking\_fraction + 0.322 \times (1 - milking\_fraction)}
+#'   \item \code{FS}, \code{FJ}, \code{MJ}:
+#'     \eqn{cmain = 0.322}
+#'   \item \code{MA}, \code{MS}:
+#'     \eqn{cmain = 0.322 \times offtake\_rate + 0.370 \times (1 - offtake\_rate)}
+#' }
+#'
+#' \strong{CML} (Wardeh, 2004):
+#' \itemize{
+#'   \item All cohorts:
+#'     \eqn{cmain = 0.435}
+#' }
+#'
+#' \strong{GTS} (AFRC, 1993, 1995):
+#' \itemize{
+#'   \item All cohorts:
+#'     \eqn{cmain = 0.315}
+#' }
+#'
+#' \strong{SHP} (AFRC, 1993, 1995):
+#' \itemize{
+#'   \item \code{FA}:
+#'     \eqn{cmain = 0.217}
+#'   \item \code{FJ}:
+#'     \eqn{cmain = 0.236}
+#'   \item \code{FS}:
+#'     \eqn{cmain = 0.236 \times (1/afc) + 0.217 \times ((afc - 1)/afc)}
+#'   \item \code{MA}:
+#'     \eqn{cmain = 0.217 \times offtake\_rate + (0.217 \times 1.15) \times (1 - offtake\_rate)}
+#'   \item \code{MJ}:
+#'     \eqn{cmain = 0.236 \times offtake\_rate + (0.236 \times 1.15) \times (1 - offtake\_rate)}
+#'   \item \code{MS}:
+#'     A weighted average of juvenile and adult male coefficients using \code{afc},
+#'     with an additional intact-male adjustment (multiplied by 1.15) weighted by \code{offtake\_rate}.
+#' }
+#'
+#' \strong{PGS} (NRC, 1998):
+#' \itemize{
+#'   \item All cohorts:
+#'     \deqn{cmain = 0.4435}
+#' }
+#'
+#' @references
+#' NRC (1998). \emph{Nutrient Requirements of Swine},
+#' 10th Revised Edition. National Academies Press, Washington, DC.
+#'
+#' NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
+#' 7th Revised Edition. National Academies Press, Washington, DC.
+#'
+#' AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+#' CAB International, Wallingford, UK.
+#'
+#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+#' CAB International, Wallingford, UK.
+#'
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.3; Table 10.4.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.3; Table 10.4.
+#'
+#' Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
+#' Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+#' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+#'
 #' @export
+#'
 calc_net_energy_maintenance <- function(
     animal,
     cohort,
@@ -76,19 +182,72 @@ calc_net_energy_maintenance <- function(
   return((average_weight^0.75) * cmain)
 }
 
-#' Calculate Net Energy for Activity
+#' Calculate Energy for Activity
 #'
-#' Computes net energy required for activity (MJ/head/day).
+#' Computes the **energy requirement for activity** (MJ/head/day).
+#' This approach follows the IPCC Tier 2 energy partitioning method and applies
+#' the following general equation:
+#' energy_activity = cact * energy_maintenance
+#' (except for sheep: cact * average_weight)
+#' where cact is an activity coefficient reflecting the animal’s feeding
+#' and management situation. (MJ d^-1 kg^-1).
 #'
-#' @param animal Character. Species code.
-#' @param cohort Character. Cohort code.
-#' @param nemain Numeric. Net energy for maintenance.
-#' @param average_weight Numeric. Average live weight (kg).
-#' @param activity_fraction Numeric. Fraction of time under low-activity conditions.
-#' @param high_activity_fraction Numeric. Fraction of time under high-activity conditions.
+#'@param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
+#' @param nemain Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param average_weight Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).
+#' @param activity_fraction Numeric. Proportion of the assessment period during which the animal performs low-intensity movement typical of stall-feeding or near-field grazing, characterized by minimal walking distances and flat terrain  (fraction).
+#' @param high_activity_fraction Numeric. Proportion of the assessment period during which the animal engages in sustained locomotion associated with herding or long-distance grazing, typically involving extended walking distances and/or uneven or hilly terrain (fraction).
 #'
-#' @return Numeric. Net energy for activity (MJ/head/day).
+#' @return Numeric. Energy required for activity, defined as the amount of energy needed to obtain food, water and
+#' shelter (example stall, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable
+#' energy for CML and PGS (MJ/head/day).
+#'
+#' @details
+#' The activity coefficient \code{cact} reflects the animal’s feeding and management conditions.
+#' For CTL, BFL, SHP, and GTS, \code{cact} is calculated as a **weighted average** of the different activity levels over the assessment period.
+#' Reference coefficients are derived from NRC (1996) and AFRC (1993) for CTL, BFL, SHP, and GTS; NRC (1998) for PGS; and Wardeh (2004) for camels.
+#'
+#' @references
+#' NRC (1998). \emph{Nutrient Requirements of Swine},
+#' 10th Revised Edition. National Academies Press, Washington, DC.
+#'
+#' NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
+#' 7th Revised Edition. National Academies Press, Washington, DC.
+#'
+#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+#' CAB International, Wallingford, UK.
+#'
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.4; Table 10.5.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.4; Table 10.5.
+#'
+#' Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
+#' Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+#' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+#'
 #' @export
+
 calc_net_energy_activity <- function(
     animal,
     cohort,
@@ -109,7 +268,7 @@ calc_net_energy_activity <- function(
     cact <- (0.17 * activity_fraction) + (0.36 * high_activity_fraction)
     ret <- cact * nemain
   } else if (animal %in% c("CML")) {
-    cact <- (0.1 * activity_fraction)
+    cact <- (0.1 * (activity_fraction + high_activity_fraction))
     ret <- cact * nemain
   } else if (animal == "SHP") {
     cact <- (0.0107 * activity_fraction) + (0.024 * high_activity_fraction)
@@ -118,28 +277,133 @@ calc_net_energy_activity <- function(
     cact <- (0.019 * activity_fraction) + (0.024 * high_activity_fraction)
     ret <- cact * average_weight
   } else if (animal == "PGS") {
-    cact <- 0.125 * activity_fraction # Pigs: fixed activity coefficient
+    cact <- 0.125 * (activity_fraction + high_activity_fraction)
     ret <- cact * nemain
   }
   return(ret)
 }
 
-#' Calculate Net Energy for Growth
+#' Calculate Energy for Growth
 #'
-#' Computes net energy required for growth (MJ/head/day).
+#' Computes the **energy requirement for growth** (MJ/head/day), defined as the energy needed for body weight gain.
+#' This approach follows the IPCC Tier 2 partitioning method and applies species-specific equations for growth energy requirements.
 #'
-#' @param animal Character. Species code.
-#' @param cohort Character. Cohort code.
-#' @param average_weight Numeric. Average live weight (kg).
-#' @param final_weight Numeric. Final live weight (kg).
-#' @param initial_weight Numeric. Initial live weight (kg).
-#' @param adult_weight Numeric. Adult weight that could be reached by the animal (kg).
-#' @param dwg Numeric. Daily weight gain (kg/day).
-#' @param offtake_rate Numeric. Offtake rate by cohort.
-#' @param duration Numeric. Duration in days.
+#'@param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
+#' @param average_weight Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).
+#' @param final_weight Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).
+#' @param initial_weight Numeric. Live weight at the beginning of the cohort stage (kg).
+#' @param adult_weight Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).
+#' @param dwg Numeric. Average live weight of the cohort over the cohort stage (kg/head/day).
+#' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
+#' @param duration Numeric. Amount of time that each animal spends in a specific cohort (days).
 #'
-#' @return Numeric. Net energy for growth (MJ/head/day).
+#' @return Numeric. Energy required for growth (i.e., weight gain). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#'
+#' @details
+#' Energy for growth represents the energy required for tissue accretion associated with live weight gain.
+#' Species-specific formulations follow IPCC Tier 2 guidelines.
+#'
+#' \itemize{
+#'
+#'   \item\strong{CTL and BFL} — NRC (1996); IPCC (2006, 2019).
+#'
+#' The equation uses a growth coefficient (\eqn{cgro}) that differs between
+#' castrated and intact males. For male cohorts, the code calculates
+#' \eqn{cgro} as a **weighted average** using `offtake_rate`, assuming that
+#' animals removed from the herd are castrated and animals remaining in the
+#' cohort are intact.
+#'
+#
+#'   \item\strong{SHP and GTS} — Gibbs et al. (2002); AFRC (1993, 1995); IPCC (2006, 2019).
+#'
+#' For sheep, the coefficients \eqn{a} and \eqn{b} (MJ kg\eqn{^{-1}}) differ
+#' between castrated and intact males. The code calculates a **weighted average**
+#' using `offtake_rate`, assuming that offtaken animals are castrated.
+#'
+
+#'   \item\strong{CML} — Al-Jassim (2019).
+#'
+#' Growth energy is represented using a simplified linear relationship with
+#' daily weight gain.
+#'
+#'   \item\strong{PGS} — NRC (1998)
+#'
+#' For pigs, growth is assumed to consist exclusively of **protein tissue**
+#' and **fat tissue**, and growth energy requirements are expressed as
+#' **metabolizable energy (ME)**.
+#'
+#' A growth energy coefficient (\eqn{cgro}, MJ kg\eqn{^{-1}} LW) is calculated as:
+#'
+#' \eqn{
+#' cgro =
+#' \mathrm{prot\_tissue\_frac} \times \mathrm{meat\_protein} \times \mathrm{meat\_protein\_energy}
+#' + (1 - \mathrm{prot\_tissue\_frac}) \times \mathrm{fat\_adipose\_tissue\_frac} \times \mathrm{meat\_fat\_energy}
+#' }
+#'
+#' Total metabolizable energy required for growth is then:
+#'
+#' \eqn{ME_{growth} = DWG \times cgro}
+#'
+#' where:
+#' \itemize{
+#'   \item \eqn{cgro} is the growth energy coefficient
+#'     (MJ kg\eqn{^{-1}} live weight),
+#'     \item \code{prot_tissue_frac = 0.65} is the fraction of protein tissue in daily weight gain,
+#'   \item \code{meat_protein = 0.23} is the fraction of protein in protein tissue,
+#'   \item \code{meat_protein_energy = 54.0} is the metabolizable energy cost of protein deposition
+#'     (MJ kg protein\eqn{^{-1}}),
+#'   \item \code{fat_adipose_tissue_frac = 0.90} is the fraction of fat in adipose tissue,
+#'   \item \code{meat_fat_energy = 52.3} is the metabolizable energy cost of fat deposition
+#'     (MJ kg fat\eqn{^{-1}}).
+#' }
+#' }
+#'
+#' @references
+#' Al-Jassim, R. (2019). \emph{Metabolisable energy and protein requirements of the Arabian camel (Camelus dromedarius)}.
+#' Journal of Camelid Science (12) 33-45
+#'
+#' NRC (1998). \emph{Nutrient Requirements of Swine},
+#' 10th Revised Edition. National Academies Press, Washington, DC.
+#'
+#' NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
+#' 7th Revised Edition. National Academies Press, Washington, DC.
+#'
+#' AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+#' CAB International, Wallingford, UK.
+#'
+#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+#' CAB International, Wallingford, UK.
+#'
+#' Gibbs, M.J., Conneely, D., Johnson, D., Lassey, K.R. and Ulyatt, M.J. (2002).
+#' \emph{CH4 emissions from enteric fermentation}. In: Background Papers: IPCC Expert Meetings on Good Practice Guidance and Uncertainty Management in National Greenhouse Gas Inventories, p 297–320. IPCC-NGGIP, Institute for Global Environmental Strategies (IGES), Hayama, Kanagawa, Japan.
+#'
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
+#'
 #' @export
+
 calc_net_energy_growth <- function(
     animal,
     cohort,
@@ -179,7 +443,7 @@ calc_net_energy_growth <- function(
     }
   } else if (animal %in% c("CML")) {
     if (cohort %in% c("FS", "FJ", "MS", "MJ")) {
-      ret <- 41.8 * dwg
+      ret <- 41.2 * dwg
     } else {
       ret <- 0
     }
@@ -208,8 +472,9 @@ calc_net_energy_growth <- function(
     ret <- ((final_weight - initial_weight) * (a + 0.5 * b * (initial_weight + final_weight))) / duration
   } else if (animal == "PGS") {
     prot_tissue_frac <- 0.65 # Protein tissue fraction
+    fat_adipose_tissue_frac <- 0.9 # Fat in adipose tissue fraction
     if (cohort %in% c("FS", "FJ", "MS", "MJ")) {
-      cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * 0.9 * 52.3)
+      cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * fat_adipose_tissue_frac * 52.3)
       ret <- dwg * cgro
     } else {
       ret <- 0
@@ -220,28 +485,178 @@ calc_net_energy_growth <- function(
   return(ret)
 }
 
-#' Calculate Net Energy for Lactation
+#' Calculate Energy for Lactation
 #'
-#' Computes net energy required for lactation (MJ/head/day).
+#' Computes the **energy requirement for lactation** (MJ/head/day), defined as the
+#' energy needed to support milk production by lactating females.
+#' This approach follows the IPCC Tier 2 partitioning method and applies
+#' species-specific equations for lactation energy requirements.
 #'
-#' @param animal Character. Species code.
-#' @param cohort Character. Cohort code.
-#' @param milking_fraction Numeric. Proportion of lactating adult females.
-#' @param milk_yield Numeric. Milk yield (kg/day).
-#' @param milk_fat Numeric. Milk fat content (fraction).
-#' @param idle Numeric. Number of days idle (for PGS).
-#' @param gest Numeric. Number of days gestating per reproductive cycle (for PGS).
-#' @param litsize Numeric. Litter size (for PGS, SHP, GTS).
-#' @param dr1 Numeric. Death rate in first year (for PGS).
-#' @param ckg Numeric. Birth weight (for PGS).
-#' @param wkg Numeric. Weaning weight (for PGS).
-#' @param lact Numeric. Number of days lactating per reproductive cycle (for PGS).
-#' @param parturition_rate Numeric. Parturition rate.
-#' @param lambing_interval Numeric. Lambing interval (for SHP, GTS).
-#' @param assessment_duration Numeric. Duration of the assessment (days).
+#'@param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
+#' @param milking_fraction Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
+#' @param milk_yield Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destinated to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.
+#' @param milk_fat Numeric. Milk fat fraction (kg fat / kg milk).
+#' @param idle Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days).
+#' @param gest Numeric. Duration of pregnancy period (days).
+#' @param litsize Numeric. Average number of offspring born per parturition (#).
+#' This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
 #'
-#' @return Numeric. Net energy for lactation (MJ/head/day).
+#' @param dr1 Numeric. Percentage of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ) (fraction).
+#' @param ckg Numeric. Live body weight of the animal at birth (kg).
+#' @param wkg Numeric. Live body weight of the animal at weaning (kg).
+#' @param lact Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).
+#' @param parturition_rate Numeric. Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.
+#' @param lambing_interval Numeric. Average time interval between two successive births (days)
+#' @param assessment_duration Numeric. Length of the assessment period (days)
+#'
+#' @return Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#'
+#'
+#' @details
+#'
+#' Energy for lactation (\code{energy_lactation}) represents the additional
+#' energy required to support **milk synthesis** during lactation. Following
+#' IPCC Tier 2 guidelines, lactation energy is calculated as a function of the
+#' **quantity of milk produced** and a **species-specific energy cost per unit
+#' of milk**.
+#'
+#'\itemize{\strong{For CTL, BFL, CML, SHP and GTS}:
+#' Total milk production includes:
+#' \itemize{
+#'   \item milk extracted for human consumption (\code{milk_yield})
+#'   \item milk consumed directly by offspring (\code{milk_from_offspring})
+#'     when milk yield is not directly observed (e.g., suckling systems).
+#' }
+#'
+#' Lactation energy requirements are applied **only to adult females** and are
+#' scaled by the proportion of animals that are lactating within the cohort
+#' (\code{milking_fraction}).
+#'
+#' In general form, lactation energy is computed as:
+#'
+#' \deqn{
+#' energy\_lactation =
+#' (milk\_yield + milk\_from\_offspring)
+#' \times energy\_milk
+#' \times milking\_fraction
+#' }
+#'
+#' where \code{energy_milk} is a species-specific coefficient representing the
+#' net energy cost of producing one kilogram of milk (MJ kg\eqn{^{-1}}).
+#'
+#' Species-specific values of \code{energy_milk} are:
+#' \itemize{
+#'   \item \code{CTL}, \code{BFL}: estimated as a function of milk fat content,
+#'     \eqn{1.47 + 0.40 \times (milk\_fat \times 100)} (NRC 1989),
+#'   \item \code{CML}: 4.063 (Wardeh, 2004),
+#'   \item \code{SHP}: 4.6 (AFRC, 1993; AFRC, 1995),
+#'   \item \code{GTS}: 3.0 (AFRC, 1998).
+#' }
+#'
+#' When milk yield is not directly observed the amount of milk required to rear offspring
+#' is aproximated at **5 kilograms of milk per
+#' kilogram of live-weight gain to weaning**:
+#'
+#' \deqn{
+#' milk\_from\_offspring =
+#' \frac{parturition\_rate \times 5 \times (wkg - ckg)}
+#' {assessment\_duration} \code(AFRC, 1990)
+#' }
+#' }
+#'
+#' \itemize{\strong{For PGS} — NRC (1998).
+#'
+#' For pigs, lactation energy is implemented as a **per-litter energy requirement**
+#' adjusted to the fraction of the reproductive cycle spent in lactation.
+#'
+#' The adjustment factor is defined as:
+#'
+#' \deqn{
+#' cadj = \frac{lact}{idle + gest + lact}
+#' }
+#'
+#' where \eqn{lact}, \eqn{idle}, and \eqn{gest} represent the durations (days)
+#' of lactation, non-productive (idle), and gestation phases, respectively.
+#'
+#' Lactation energy per sow per day is calculated as:
+#'
+#' \deqn{
+#' energy\_lactation =
+#' litsize \times (1 - 0.5 \times dr1)
+#' \times \left(
+#' \frac{0.02059 \times (wkg - ckg) \times 1000}{lact}
+#' - \frac{0.3766}{0.67}
+#' \right)
+#' \times cadj
+#' }
+#'
+#' where:
+#' \itemize{
+#'   \item \eqn{0.02059} is the coefficient for lactation energy requirement
+#'     (MJ g live-weight\eqn{^{-1}}),
+#'   \item \eqn{0.3766} is the coefficient for sow weight loss during lactation
+#'     (\eqn{C_{wloss}}, MJ head\eqn{^{-1}} day\eqn{^{-1}}),
+#'   \item \eqn{0.67} is the efficiency of conversion of dietary intake to milk
+#'     energy (\eqn{C_{conv}}, fraction),
+#'   \item \code{litsize} is litter size,
+#'   \item \code{dr1} is the proportion of stillborn piglets,
+#'   \item \eqn{wkg} and \eqn{ckg} are live weights at weaning and at birth,
+#'     respectively (kg).
+#' }
+#' }
+#'
+#' @references
+#' AFRC (1998) \emph{The Nutrition of Goats. Wallingford: CAB International}.
+#' Animut G., Puchala R., Goetsch A.L., Patra A.K., Sahlu T., Varel V.H., Wells J.
+#'
+#' AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+#' CAB International, Wallingford, UK.
+#'
+#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+#' CAB International, Wallingford, UK.
+#'
+#' AFRC (1990). \emph{Nutritive Requirements of Ruminant Animals: Energy.}
+#' Rep. 5. Wallingford, UK: CAB International.
+#'
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.8-10.10.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.8-10.10.
+#'
+#' NRC (1998). \emph{Nutrient Requirements of Swine},
+#' 10th Revised Edition. National Academies Press, Washington, DC.
+#'
+#' NRC (1989) \emph{Nutrient Requirements of Dairy Cattle},
+#' 6th Ed. . Washington, D.C. U.S.A: National Academy Press.
+#'
+#' Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
+#' Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+#' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+#'
 #' @export
+#'
+#'
+#'
 calc_net_energy_lactation <- function(
     animal,
     cohort,
@@ -267,29 +682,29 @@ calc_net_energy_lactation <- function(
   )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) *
-        (milk_fat * 100 * 0.40 + 1.47) * milking_fraction
+      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) *
+        (milk_fat * 100 * 0.40 + 1.47)
     } else {
       ret <- 0
     }
   } else if (animal %in% c("CML")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) * 4.063 * milking_fraction
+      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) * 4.063
     } else {
       ret <- 0
     }
   } else if (animal %in% c("SHP")) {
     if (cohort == "FA") {
       # Includes effect of litter size and lambing interval
-      ret <- (milk_yield + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
-                              (wkg - ckg)) / assessment_duration) * 4.6 * milking_fraction
+      ret <- ((milk_yield * milking_fraction)  + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
+                                                    (wkg - ckg)) / assessment_duration) * 4.6
     } else {
       ret <- 0
     }
   } else if (animal %in% c("GTS")) {
     if (cohort == "FA") {
-      ret <- (milk_yield + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
-                              (wkg - ckg)) / assessment_duration) * 3 * milking_fraction
+      ret <- ((milk_yield * milking_fraction)  + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
+                                                    (wkg - ckg)) / assessment_duration) * 3
     } else {
       ret <- 0
     }
@@ -305,13 +720,31 @@ calc_net_energy_lactation <- function(
   }
 }
 
-#' Calculate Net Energy for Egg Production (placeholder)
+#' Calculate Energy for Egg Production (placeholder)
 #'
 #' Placeholder for metabolizable energy required for egg production (MJ/head/day).
 #' Not implemented yet.
 #'
-#' @param animal Character. Species code (e.g., "CHK").
-#' @param cohort Character. Cohort code.
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
 #' @param eggs_year Numeric. Eggs produced per hen per year.
 #' @param egg_weight Numeric. Average egg weight (kg/egg).
 #'
@@ -326,17 +759,94 @@ calc_net_energy_eggs <- function(
   return(NA_real_)
 }
 
-#' Calculate Net Energy for Work
+#' Calculate Energy for Work
 #'
-#' Computes net energy required for work (MJ/head/day).
+#' Computes the **energy requirement for work** (MJ/head/day), defined as the
+#' energy required for draft power. This approach follows the IPCC Tier 2 partitioning method and applies
+#' species-specific coefficients.
 #'
-#' @param animal Character. Species code.
-#' @param cohort Character. Cohort code.
-#' @param nemain Numeric. Net energy for maintenance.
-#' @param work_hours Numeric. Number of work hours.
-#' @param draught_fraction Numeric. Draught fraction.
 #'
-#' @return Numeric. Net energy for work (MJ/head/day).
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
+#' @param nemain Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param work_hours Numeric. Mean daily working time per animal for CTL, BFL and CML, expressed as hours worked per head per day (hours/head/day).
+#' @param draught_fraction Numeric. Fraction of adult males involved in draught work (fraction).
+#'
+#' @return Numeric. Energy required for work, used to estimate the energy required for draft power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#'
+#'@details
+#' Energy for work (\code{energy_work}) represents the additional energy required
+#' to support \strong{draught power generation} by working animals.
+#'
+#' This component is applied only to draught-capable species and is scaled by
+#' the fraction of adult males involved in draught work (\code{draught_fraction})
+#' and their average daily working time (\code{work_hours}).
+#'
+#' \strong{CTL and BFL} - Bamualim & Kartiarso (1985); IPCC (2006, 2019).
+#' For cattle and buffalo, draught work energy is expressed as a proportion of
+#' net energy for maintenance:
+#'
+#' \eqn{
+#' energy\_work = 0.1 \times NEm \times work\_hours \times draught\_fraction
+#' }
+#'
+#' where:
+#' \itemize{
+#'   \item \eqn{energy\_work} is net energy required for maintenance (MJ head\eqn{^{-1}} day\eqn{^{-1}}),
+#'   \item \eqn{0.1} represents a 10\% increase in maintenance energy per hour of work,
+#'   \item \eqn{work\_hours} is the mean number of hours worked per animal per day,
+#'   \item \eqn{draught\_fraction} is the fraction of adult males performing draught work.
+#' }
+#'
+#' \strong{CML} -  Wilson (1989)
+#' For camels, draught work energy is calculated using a fixed metabolizable
+#' energy cost per hour of work:
+#'
+#' \deqn{
+#' energy\_work = 4 \times work\_hours \times draught\_fraction
+#' }
+#'
+#' where:
+#' \itemize{
+#'   \item \eqn{4} is the metabolizable energy requirement for draught work
+#'     (MJ head\eqn{^{-1}} hour\eqn{^{-1}}),
+#'   \item \eqn{work\_hours} is the mean daily working time per animal,
+#'   \item \eqn{draught\_fraction} is the fraction of adult males involved in draught work.
+#' }
+#'
+#'@references
+#' Bamualim A., Kartiarso (1985). \emph{Nutrition of draught animals with special reference to Indonesia}.
+#' In:Draught Animal Power for Production. Australian Centre for International agricultural Research (ACIAR),
+#' Proceedings Series No. 10, ed. JW Copland. Canberra, A.C.T., Australia: ACIAR.
+#'
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.11.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.11.
+#'
+#' Wilson (1989). \emph{The nutritional requirements of camel}.
+#' In: Tisserand J.-L. (ed.). Séminaire sur la digestion, la nutrition et l'alimentation du dromadaire.
+#' Zaragoza : CIHEAM. (1989). p. 171-179 (Options Méditerranéennes : Série A. Séminaires Méditerranéens; n. 2)
+#'
 #' @export
 calc_net_energy_work <- function(
     animal,
@@ -367,16 +877,116 @@ calc_net_energy_work <- function(
   return(ret)
 }
 
-#' Calculate Net Energy for Fibre Production
+#' Calculate Energy for Fibre Production
 #'
-#' Computes net energy required for fibre production (MJ/head/day).
+#' Computes the **energy requirement for fibre production** (MJ/head/day),
+#' defined as the energy needed to produce animal fibres such as wool or hair.
+#' This component follows the IPCC Tier 2 partitioning approach and is applied
+#' only to fibre-producing species and relevant cohorts, which are assumed by the model to be = ("FA", "FS", "MA", "MS").
 #'
-#' @param animal Character. Species code.
-#' @param cohort Character. Cohort code.
-#' @param fibre_prod Numeric. Fibre production (kg/year).
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
+#' @param fibre_prod Numeric. Annual fibre production yield (kg/head/year).
 #'
-#' @return Numeric. Net energy for fibre production (MJ/head/day).
+#' @return Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @details
+#'
+#' \itemize{
+#'
+#' \item\strong{SHP and GTS} - (AFRC 1995); IPCC (2006, 2019):
+#'
+#' For sheep and goats, fibre production energy is calculated assuming a fixed
+#' net energy cost of \eqn{24} MJ per kilogram of fibre produced. Annual fibre
+#' production is converted to a daily requirement as:
+#'
+#' \deqn{
+#' energy\_fibre =
+#' \frac{24 \times fibre\_prod}{365}
+#' }
+#'
+#' where:
+#' \itemize{
+#'   \item \eqn{fibre\_prod} is annual fibre production
+#'     (kg head\eqn{^{-1}} year\eqn{^{-1}}),
+#'   \item \eqn{24} is the net energy requirement per kilogram of fibre
+#'     (MJ kg fibre\eqn{^{-1}}).
+#' }
+#'
+#' \item\strong{CML} - (AFRC, 1998; Cannas et al, 2007):
+#'
+#' For camels, energy requirements for fibre production are first calculated on
+#' a **net energy (NE)** basis and then converted to **metabolizable energy (ME)**
+#' using a net-to-metabolizable energy efficiency coefficient.
+#'
+#' Fibre energy requirements are calculated as:
+#'
+#' \deqn{
+#' energy\_fibre =
+#' \frac{24}{0.43}
+#' \times
+#' \frac{fibre\_prod}{365}
+#' }
+#'
+#' where:
+#' \itemize{
+#'   \item \eqn{24} is the net energy requirement per kilogram of fibre
+#'     (MJ kg fibre\eqn{^{-1}}),
+#'   \item \eqn{0.43} is the efficiency of conversion from metabolizable energy
+#'     to net energy for fibre production (dimensionless fraction),
+#'   \item \code{fibre_prod} is the annual fibre production per animal
+#'     (kg head\eqn{^{-1}} year\eqn{^{-1}}),
+#'   \item division by \eqn{365} converts annual fibre production to a
+#'     daily basis.
+#' }
+#'
+#' The efficiency coefficient of 0.43 is adopted by analogy with goats, assuming
+#' a dietary metabolizability of approximately 0.55, following AFRC guidance and
+#' subsequent synthesis by Cannas et al. (2007).
+#'
+#'
+#' \item\strong{Other species}
+#' Fibre production energy is assumed to be zero for cattle, buffalo, pigs, and
+#' poultry.
+#' }
+#'
+#' @references
+#'
+#' AFRC (1998) \emph{The Nutrition of Goats. Wallingford: CAB International}.
+#' Animut G., Puchala R., Goetsch A.L., Patra A.K., Sahlu T., Varel V.H., Wells J.
+#'
+#' AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+#' CAB International, Wallingford, UK.
+#'
+#' Cannas, A., Atzori, A. S., Boe, F., & Teixeira, I. (2007).
+#' \emph{Energy and protein requirements of goats}.
+#' In: Dairy sheep nutrition (pp. 31-49). CAB International, Wallingford, UK.
+#'
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.12.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.12.
+#'
 #' @export
+#'
 calc_net_energy_fibre <- function(
     animal,
     cohort,
@@ -403,21 +1013,117 @@ calc_net_energy_fibre <- function(
   return(ret)
 }
 
-#' Calculate Net Energy for Pregnancy
+#' Calculate Energy for Pregnancy
 #'
-#' Computes net energy required for pregnancy (MJ/head/day).
+#' Computes the **energy requirement for pregnancy** (MJ/head/day) for pregnant
+#' females. This approach follows the IPCC Tier 2 partitioning framework, where
+#' pregnancy energy is expressed as a fraction of the energy required for
+#' maintenance and is applied only to **female cohorts**.
 #'
-#' @param animal Character. Species code.
-#' @param cohort Character. Cohort code.
-#' @param nemain Numeric. Net energy for maintenance.
-#' @param parturition_rate Numeric. Parturition rate.
-#' @param litsize Numeric. Litter size (for SHP, GTS, PGS).
-#' @param gest Numeric. Number of days gestating during the assessment period (for all species).
-#' @param duration Numeric. Duration in days.
-#' @param offtake_rate Numeric. Offtake rate by cohort.
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
+#' @param nemain Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param parturition_rate Numeric. Numeric. Average annual number of parturitions per female animal (fraction).
+#' At herd level, calculated as offspring delivered divided by the number of adult females.
+#' @param litsize Numeric. Average number of offspring born per parturition (#). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
+#' @param gest Numeric. Duration of pregnancy period (days).
+#' @param duration Numeric. Amount of time that each animal spends in a specific cohort (days).
+#' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
 #'
-#' @return Numeric. Net energy for pregnancy (MJ/head/day).
+#' @return Numeric. Energy required for pregnancy for pregnant adult females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#'
+#'@details
+#' Pregnancy energy is applied only to female cohorts and is scaled according to
+#' reproductive exposure during the cohort stage:
+#' \itemize{
+#'   \item For adult females (\code{FA}), pregnancy energy is proportional to
+#'     \code{parturition_rate}.
+#'   \item For replacement females (\code{FS}), pregnancy energy is applied only
+#'     to the fraction of animals that remain in the cohort, using
+#'     \code{(1 - offtake_rate)}, and is scaled to the time pregnant within the
+#'     cohort using \code{gest / duration}.
+#' }
+#'
+#'Specifics by species:
+#'
+#' \itemize{
+#'   \item
+#'   \strong{CTL and BFL} — IPCC (2006, 2019).
+#'   Pregnancy is approximated as 10\% of maintenance energy averaged over the year:
+#'   \itemize{
+#'   \item \code{FA}:
+#'     \deqn{energy\_pregnancy = 0.10 \times nemain \times parturition\_rate}
+#'   \item \code{FS}:
+#'     \deqn{energy\_pregnancy = 0.10 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
+#' }
+#'
+#' \strong{CML} — (Wardeh, 2004)
+#' \itemize{
+#'   \item \code{FA}:
+#'     \deqn{energy\_pregnancy = 0.12 \times nemain \times parturition\_rate}
+#'   \item \code{FS}:
+#'     \deqn{energy\_pregnancy = 0.12 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
+#' }
+#'
+#' \strong{SHP and GTS} — IPCC (2006, 2019).
+#' Pregnancy is calculated as a litter-size dependent fraction of maintenance:
+#' \deqn{energy\_pregnancy = cpreg(litsize) \times nemain \times parturition\_rate}
+#' where \eqn{cpreg} is defined as:
+#' \itemize{
+#'   \item If \eqn{1 \le litsize \le 2}:
+#'     \deqn{cpreg = 0.077 \times (2 - litsize) + 0.126 \times (litsize - 1)}
+#'   \item If \eqn{litsize > 2}: \deqn{cpreg = 0.150}
+#' }
+#' For replacement females (\code{FS}), the implementation applies the single-birth
+#' coefficient scaled by pregnancy exposure:
+#' \deqn{energy\_pregnancy = 0.077 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
+#'
+#' \strong{PGS} — (NRC, 1998):
+#' Pregnancy energy is implemented as a litter-based daily requirement using a
+#' gestation coefficient (\eqn{cgest}, MJ piglet\eqn{^{-1}}):
+#' \itemize{
+#'   \item \code{FA}:
+#'     \deqn{energy\_pregnancy = cgest \times litsize \times parturition\_rate}
+#'   \item \code{FS}:
+#'     \deqn{energy\_pregnancy = cgest \times litsize \times parturition\_rate \times (gest/duration) \times (1-offtake\_rate)}
+#' }
+#' with default \eqn{cgest = 0.14985} MJ piglet\eqn{^{-1}}.
+#' }
+#'
+#' @references
+#' NRC (1998). \emph{Nutrient Requirements of Swine},
+#' 10th Revised Edition. National Academies Press, Washington, DC.
+#'
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.13; Table 10.7.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.13; Table 10.7.
+#'
+#' Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
+#' Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+#' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+#'
 #' @export
+#'
 calc_net_energy_pregnancy <- function(
     animal,
     cohort,
@@ -497,10 +1203,31 @@ calc_net_energy_pregnancy <- function(
 #'
 #' Computes the ratio of net energy available in the diet for maintenance to digestible energy.
 #'
-#' @param animal Character. Species code.
-#' @param diet_dig Numeric. Diet digestibility (fraction).
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param diet_dig Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #'
-#' @return Numeric. REM value (fraction).
+#' @return Ratio of net energy available in diet for maintenance to digestible energy consumed, REM (fraction)
+#'
+#' @references
+#' Gibbs M.J., Johnson D.E. (1993) \emph{Livestock Emissions}.
+#' In: International Methane Emissions. Washington, D.C., U.S.A: US Environmental Protection Agency, Climate Change Division.
+#'
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.14.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.14.
+#'
+#'
 #' @export
 calc_rem_maintenance <- function(
     animal,
@@ -520,13 +1247,37 @@ calc_rem_maintenance <- function(
 
 #' Calculate REG (Net Energy for Growth / Digestible Energy)
 #'
-#' Computes the ratio of net energy available in the diet for growth to digestible energy.
+#' Computes the ratio of **net energy available for growth** to **digestible
+#' energy consumed** (REG). REG represents the efficiency with which digestible
+#' energy in the diet is converted into net energy retained as body tissue
+#' (and wool growth where applicable).
 #'
-#' @param animal Character. Species code.
-#' @param diet_dig Numeric. Diet digestibility (fraction).
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param diet_dig Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #'
-#' @return Numeric. REG value (fraction).
+#' @return Ratio of net energy available for growth in a diet to digestible energy consumed, REG (fraction)
+#'
+#' @references
+#' Gibbs M.J., Johnson D.E. (1993) \emph{Livestock Emissions}.
+#' In: International Methane Emissions. Washington, D.C., U.S.A: US Environmental Protection Agency, Climate Change Division.
+#'
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.15.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.15.
+#'
 #' @export
+
 calc_reg_growth <- function(
     animal,
     diet_dig
@@ -545,25 +1296,109 @@ calc_reg_growth <- function(
 
 #' Calculate Total Energy Requirement
 #'
-#' Computes the total energy requirement (MJ/head/day).
+#' Computes the **total daily energy requirement** (MJ/head/day) by summing
+#' relevant energy partitions (maintenance, activity, lactation, work, pregnancy,
+#' growth, fibre, egg production).
 #'
-#' @param animal Character. Species code.
-#' @param cohort Character. Cohort code.
-#' @param nemain Numeric. Net energy for maintenance.
-#' @param neact Numeric. Net energy for activity.
-#' @param nelact Numeric. Net energy for lactation.
-#' @param nework Numeric. Net energy for work.
-#' @param nepreg Numeric. Net energy for pregnancy.
-#' @param rem Numeric. REM value.
-#' @param negrow Numeric. Net energy for growth.
-#' @param nefibre Numeric. Net energy for fibre production.
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
+#' @param nemain Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param neact Numeric. Energy required for activity, defined as the amount of energy needed to obtain food, water and shelter (example stall, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param nelact Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param nework Numeric. Energy required for work, used to estimate the energy required for draft power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param nepreg Numeric. Energy required for pregnancy for pregnant adult females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param rem Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)
+#' @param negrow Numeric. Energy required for growth (i.e., weight gain). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param nefibre Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param neegg Numeric. Net energy for egg production.
-#' @param reg Numeric. REG value.
-#' @param diet_dig Numeric. Diet digestibility (fraction).
-#' @param afc Numeric. Age at first calving (for SHP, GTS).
+#' @param reg Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)
+#' @param diet_dig Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
+#' @param afc Numeric. Age at first parturition for female breeding animals (years)
 #'
-#' @return Numeric. Total energy requirement (MJ/head/day).
+#' @return Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS
+#'   this is expressed as **gross energy intake requirement (GE)**. For CML and PGS
+#'   the function returns the summed daily metabolizable energy requirement.
+#'
+#' @details
+#' The total energy requirement is computed differently depending on whether
+#' species energy requirements are expressed as **net energy (NE)** or
+#' **metabolizable energy (ME)**.
+#'
+#' \itemize{
+#'
+#' \item \strong{Energy requirements expressed as net energy
+#' (CTL, BFL, SHP, GTS)}:
+#'
+#' For these species, the calculation follows the IPCC Tier 2 structure
+#' (Equation 10.16). Net energy requirements are converted to gross energy (GE)
+#' intake using efficiency ratios for maintenance-type (\eqn{REM}) and
+#' growth-type (\eqn{REG}) functions, and diet digestibility
+#' (\eqn{diet\_dig = DE/GE}).
+#'
+#' \itemize{
+#'   \item \strong{Cattle and buffalo (CTL, BFL)}:
+#'     \deqn{
+#'       energy\_total =
+#'       \frac{\left(\frac{nemain + neact + nelact + nework + nepreg}{rem}\right)
+#'       + \left(\frac{negrow}{reg}\right)}{diet\_dig}
+#'     }
+#'
+#'   \item \strong{Sheep and goats (SHP, GTS)}:
+#'     Fibre production is treated as a growth-type requirement:
+#'     \deqn{
+#'       energy\_total =
+#'       \frac{\left(\frac{nemain + neact + nelact + nepreg}{rem}\right)
+#'       + \left(\frac{negrow + nefibre}{reg}\right)}{diet\_dig}
+#'     }
+#' }
+#'
+#' \item \strong{Energy requirements expressed as metabolizable energy
+#' (CML, PGS)}:
+#'
+#' For these species, total energy requirement is calculated as the
+#' **direct sum** of the relevant daily energy components.
+#'
+#' \itemize{
+#'   \item \strong{Camels (CML)}:
+#'     \deqn{
+#'       energy\_total =
+#'       nemain + neact + nelact + nework + nefibre + nepreg + negrow
+#'     }
+#'
+#'   \item \strong{Pigs (PGS)}:
+#'     \deqn{
+#'       energy\_total =
+#'       nemain + neact + nelact + nepreg + negrow
+#'     }
+#' }
+#' }
+#' @references
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.16.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' Livestock and Manure Management, Equation 10.16.
+#'
 #' @export
+
 calc_total_energy_requirement <- function(
     animal,
     cohort,
@@ -603,14 +1438,55 @@ calc_total_energy_requirement <- function(
 
 #' Calculate Daily Dry Matter Intake
 #'
-#' Computes daily feed intake per animal (kg DM/head/day).
+#' Computes feed intake, expressed as **daily dry matter intake (DMI)** per animal (kg DM/head/day) from the
+#' animal's daily energy requirement and the diet energy density.
 #'
-#' @param animal Character. Species code.
-#' @param total_energy Numeric. Total energy requirement (MJ/head/day).
-#' @param diet_ge Numeric. Gross energy of diet (MJ/kg DM).
-#' @param diet_me Numeric. Metabolizable energy of diet (MJ/kg DM).
+#' This function follows the IPCC Tier 2, logic.
+#' Dry matter intake by dividing the appropriate daily energy requirement by the
+#' corresponding diet energy content (MJ per kg DM).
 #'
-#' @return Numeric. Dry matter intake (kg DM/head/day).
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#' @param total_energy "Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as **gross energy intake requirement (GE)**. For CML and PGS the function returns the summed daily metabolizable energy requirement.
+#' @param diet_ge Numeric. Average gross energy content of the diet (MJ/kg DM).
+#' @param diet_me Numeric. Average metabolizable energy content of the diet (MJ/kg DM).
+#'
+#' @return Numeric. Daily dry matter intake of feed (kg DM/head/day).
+#'
+#' @details
+#' The function applies one of two analogous intake calculations, depending on how the
+#' upstream energy requirement is expressed:
+#'
+#' \itemize{
+#'   \item \strong{total_energy expressed as total gross energy - (CTL, BFL, SHP, GTS):}
+#'
+#'   Upstream calculations provide total energy as **gross energy intake requirement**
+#'   (\eqn{GE}, MJ/head/day). Dry matter intake is:
+#'   \deqn{DMI = \frac{GE}{diet\_ge}}
+#'
+#'   \item \strong{total_energy expressed as total metabolizable energy and camelids - (PGS, CML):}
+#'
+#'   Upstream calculations provide total energy as **metabolizable energy requirement**
+#'   (\eqn{ME}, MJ/head/day). Dry matter intake is:
+#'   \deqn{DMI = \frac{ME}{diet\_me}}
+#' }
+#'
+#' @references
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+#' Volume 4 (AFOLU), Chapter 10: \emph{Emissions from Livestock and Manure Management}.
+#'
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+#' Volume 4 (AFOLU), Chapter 10: \emph{Emissions from Livestock and Manure Management}.
+#'
+#'
 #' @export
 calc_dry_matter_intake <- function(
     animal,
