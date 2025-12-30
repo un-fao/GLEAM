@@ -104,7 +104,7 @@ run_energy_requirements <- function(data) {
     lact = lact,
     parturition_rate = parturition_rate,
     lambing_interval = lambing_interval,
-    assessment_duration = 365
+    weaning_age = weaning_age
   ), by = .I]
 
   # 5. Work energy (MJ/day)

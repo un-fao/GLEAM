@@ -19,7 +19,7 @@ calc_net_energy_lactation(
   lact,
   parturition_rate,
   lambing_interval,
-  assessment_duration
+  weaning_age
 )
 }
 \arguments{
@@ -70,7 +70,7 @@ This value can be calculated as the total number of offspring born divided by th
 
 \item{lambing_interval}{Numeric. Average time interval between two successive births (days)}
 
-\item{assessment_duration}{Numeric. Length of the assessment period (days)}
+\item{weaning_age}{Numeric. Average age of the juvenile animals at weaning (days)}
 }
 \value{
 Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).

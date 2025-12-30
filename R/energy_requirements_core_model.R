@@ -526,7 +526,7 @@ calc_net_energy_growth <- function(
 #' @param lact Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).
 #' @param parturition_rate Numeric. Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.
 #' @param lambing_interval Numeric. Average time interval between two successive births (days)
-#' @param assessment_duration Numeric. Length of the assessment period (days)
+#' @param weaning_age Numeric. Average age of the juvenile animals at weaning (days)
 #'
 #' @return Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #'
@@ -672,39 +672,39 @@ calc_net_energy_lactation <- function(
     lact,
     parturition_rate,
     lambing_interval,
-    assessment_duration
+    weaning_age
 ) {
   # Validate inputs
   validate_lactation_inputs(
     animal, cohort, milking_fraction, milk_yield, milk_fat,
     idle, gest, litsize, dr1, ckg, wkg, lact,
-    parturition_rate, lambing_interval, assessment_duration
+    parturition_rate, lambing_interval, weaning_age
   )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
-      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) *
+      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg) / weaning_age)) *
         (milk_fat * 100 * 0.40 + 1.47)
     } else {
       ret <- 0
     }
   } else if (animal %in% c("CML")) {
     if (cohort == "FA") {
-      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) * 4.063
+      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg) / weaning_age)) * 4.063
     } else {
       ret <- 0
     }
   } else if (animal %in% c("SHP")) {
     if (cohort == "FA") {
       # Includes effect of litter size and lambing interval
-      ret <- ((milk_yield * milking_fraction)  + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
-                                                    (wkg - ckg)) / assessment_duration) * 4.6
+      ret <- ((milk_yield * milking_fraction)  + (litsize * (parturition_rate / lambing_interval) * 5 *
+                                                    (wkg - ckg) / weaning_age)) * 4.6
     } else {
       ret <- 0
     }
   } else if (animal %in% c("GTS")) {
     if (cohort == "FA") {
-      ret <- ((milk_yield * milking_fraction)  + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
-                                                    (wkg - ckg)) / assessment_duration) * 3
+      ret <- ((milk_yield * milking_fraction)  + (litsize * (parturition_rate / lambing_interval) * 5 *
+                                                    (wkg - ckg) / weaning_age)) * 3
     } else {
       ret <- 0
     }
