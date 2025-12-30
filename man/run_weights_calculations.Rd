@@ -9,8 +9,8 @@ run_weights_calculations(data)
 \arguments{
 \item{data}{A \code{data.table} in long format (one row per cohort) with mandatory columns:
 \describe{
-\item{\code{herd_id}}{Unique identifier for each herd.}
-\item{\code{cohort}}{Cohort code (e.g., "FJ", "FS", "FA", "MJ", "MS", "MA").}
+\item{\code{cohort}}{Cohort code (e.g., "FJ", "FS", "FA", "MJ", "MS", "MA"). Required for
+determining which weight calculation logic to apply.}
 \item{\code{duration}}{Duration of the cohort stage (in days).}
 \item{\code{Animal_short}}{Animal species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").}
 \item{\code{offtake_rate}}{Offtake rate for the cohort.}
