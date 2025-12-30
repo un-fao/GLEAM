@@ -7,16 +7,35 @@
 compute_nitrogen_excretion(animal, n_intake, n_retention)
 }
 \arguments{
-\item{animal}{Character. Species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{n_intake}{Numeric. Nitrogen intake (kg N/head/day).}
+\item{n_intake}{Numeric. Daily nitrogen intake (kg N/head/day)}
 
-\item{n_retention}{Numeric. Nitrogen retention (kg N/head/day).}
+\item{n_retention}{Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)}
 }
 \value{
 Numeric. Daily nitrogen excretion (kg N/head/day).
 }
 \description{
-Calculates nitrogen excretion (kg N/head/day) as the difference between
-nitrogen intake and retention for applicable species.
+Calculates daily nitrogen excretion per animal (kg N/head/day) as the difference between
+nitrogen intake and nitrogen retention.
+}
+\details{
+Nitrogen excretion represents the fraction of consumed nitrogen that is not
+retained in animal products or body tissues and is therefore excreted in urine
+and dung. This quantity forms the basis for subsequent calculations of
+nitrous oxide (N2O) emissions from manure management and agricultural soils.
+The approach follows the Tier 2 IPCC guidelines.
+}
+\references{
+Livestock and Manure Management. Equation 10.31A.
 }
