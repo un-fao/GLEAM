@@ -1,13 +1,10 @@
 #' Validate inputs for calc_volatile_solids
 #'
 #' @noRd
-validate_manure_inputs <- function(animal_short, lps_short, dmi, diet_dig, diet_me, diet_ge, ipcc_method) {
+validate_manure_inputs <- function(animal_short, dmi, diet_dig, diet_me, diet_ge) {
   # Character inputs
   if (!is.character(animal_short) || length(animal_short) == 0 || anyNA(animal_short)) {
     cli::cli_abort("{.arg animal_short} must be a non-empty character vector.")
-  }
-  if (!is.character(lps_short) || length(lps_short) == 0 || anyNA(lps_short)) {
-    cli::cli_abort("{.arg lps_short} must be a non-empty character vector.")
   }
 
   # Validate animal species
@@ -16,12 +13,6 @@ validate_manure_inputs <- function(animal_short, lps_short, dmi, diet_dig, diet_
     cli::cli_abort(
       "{.arg animal_short} must contain only values from: {cli::format_inline('{valid_animals}')}"
     )
-  }
-
-  # Validate ipcc_method
-  valid_methods <- c("2006", "2019")
-  if (!is.character(ipcc_method) || length(ipcc_method) != 1 || !ipcc_method %in% valid_methods) {
-    cli::cli_abort("{.arg ipcc_method} must be one of: {cli::format_inline('{valid_methods}')}")
   }
 
   # Numeric inputs

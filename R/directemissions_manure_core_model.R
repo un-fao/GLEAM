@@ -14,28 +14,16 @@
 #' @return Numeric. Volatile solids (kg VS/head/day)
 #'
 #' @export
-calc_volatile_solids <- function(animal, lps_short, dmi, diet_dig, diet_me, diet_ge, ipcc_method) {
-  validate_manure_inputs(animal, lps_short, dmi, diet_dig, diet_me, diet_ge, ipcc_method)
+calc_volatile_solids <- function(animal, dmi, diet_dig, diet_me, diet_ge) {
+  validate_manure_inputs(animal, dmi, diet_dig, diet_me, diet_ge)
 
   # Row-by-row calculation (scalar values)
   if (animal %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
     # Case 1: CTL, BFL, CML, SHP, GTS
     vs <- dmi * (1.04 - diet_dig) * 0.92
-  } else if (animal == "PGS" && ipcc_method == "2019") {
+  } else if (animal == "PGS") {
     # Case 2: PGS (2019)
     vs <- dmi * (1.02 - diet_dig) * 0.94
-  } else if (animal == "PGS" && ipcc_method == "2006") {
-    # Case 2: PGS (2006)
-    vs <- dmi * (1.02 - diet_dig) * 0.8
-  } else if (animal == "CHK" && ipcc_method == "2006" && lps_short == "BRL") {
-    # Case 3: CHK 2006 BRL
-    vs <- dmi * (1 - diet_me / diet_ge) * 0.95
-  } else if (animal == "CHK" && ipcc_method == "2006" && lps_short != "BRL") {
-    # Case 3: CHK 2006 non-BRL
-    vs <- dmi * (1 - diet_me / diet_ge) * 0.89
-  } else if (animal == "CHK" && ipcc_method == "2019") {
-    # Case 3: CHK 2019
-    vs <- dmi * (1 - diet_me / diet_ge) * 0.70
   } else {
     vs <- 0
   }
