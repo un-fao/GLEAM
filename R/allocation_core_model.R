@@ -141,7 +141,7 @@ calc_energy_allocation_fibre <- function(
     animal,
     fibre_energy_requirement,
     ratio_ne_to_me,
-    assessment_duration = 365
+    assessment_duration
 ) {
   validate_allocation_fibre_inputs(
     animal, fibre_energy_requirement, ratio_ne_to_me, assessment_duration
@@ -176,7 +176,7 @@ calc_energy_allocation_work <- function(
     animal,
     work_energy_requirement,
     ratio_ne_to_me,
-    assessment_duration = 365
+    assessment_duration
 ) {
   validate_allocation_work_inputs(
     animal, work_energy_requirement, ratio_ne_to_me, assessment_duration

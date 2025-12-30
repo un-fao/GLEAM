@@ -8,7 +8,7 @@ calc_energy_allocation_fibre(
   animal,
   fibre_energy_requirement,
   ratio_ne_to_me,
-  assessment_duration = 365
+  assessment_duration
 )
 }
 \arguments{
