@@ -1,4 +1,4 @@
-#' Run Herd Simulation (Internal)
+#' Run Herd Simulation
 #'
 #' Performs the full steady-state demographic simulation of herd cohorts across species,
 #' production systems, and countries. This includes modeling of fecundity, mortality, offtake,
