@@ -116,17 +116,19 @@ compute_meat_outputs <- function(
     slaughter_weight,
     carcass_dressing_percentage,
     bone_free_meat_fraction,
-    meat_protein
+    meat_protein,
+    assessment_duration
 ) {
   validate_meat_outputs_inputs(
     offtake_number = offtake_number,
     slaughter_weight = slaughter_weight,
     carcass_dressing_percentage = carcass_dressing_percentage,
     bone_free_meat_fraction = bone_free_meat_fraction,
-    meat_protein = meat_protein
+    meat_protein = meat_protein,
+    assessment_duration = assessment_duration
   )
 
-  meat_production_liveweight <- offtake_number * slaughter_weight
+  meat_production_liveweight <- offtake_number/365 * assessment_duration * slaughter_weight
   meat_production_carcassweight <- meat_production_liveweight * carcass_dressing_percentage
   meat_production_meat <- meat_production_carcassweight * bone_free_meat_fraction
   meat_production_protein <- meat_production_meat * meat_protein
