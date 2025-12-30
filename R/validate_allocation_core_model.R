@@ -62,7 +62,7 @@ validate_allocation_milk_inputs <- function(
 #' @param cohort_code Character scalar. Cohort identifier (e.g., "FA", "FS", "FJ", "MA", "MS", "MJ").
 #' @param slaughter_liveweight Numeric scalar. Slaughter liveweight (kg).
 #' @param birth_liveweight Numeric scalar. Birthweight (kg).
-#' @param meat_output_liveweight Numeric scalar. Liveweight meat output (kg).
+#' @param output_meat_production_liveweight Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).
 #'
 #' @noRd
 validate_allocation_meat_inputs <- function(
@@ -70,13 +70,13 @@ validate_allocation_meat_inputs <- function(
     cohort_code,
     slaughter_liveweight,
     birth_liveweight,
-    meat_output_liveweight
+    output_meat_production_liveweight
 ) {
   validate_scalar_character(animal, "animal")
   validate_scalar_character(cohort_code, "cohort_code")
   validate_scalar_numeric(slaughter_liveweight, "slaughter_liveweight")
   validate_scalar_numeric(birth_liveweight, "birth_liveweight")
-  validate_scalar_numeric(meat_output_liveweight, "meat_output_liveweight")
+  validate_scalar_numeric(output_meat_production_liveweight, "output_meat_production_liveweight")
 
   # Validate animal species
   # Note: Allocation module uses these specific species codes
@@ -103,8 +103,8 @@ validate_allocation_meat_inputs <- function(
   if (birth_liveweight < 0 || birth_liveweight > 200) {
     cli::cli_abort("{.arg birth_liveweight} must be between 0 and 200 kg.")
   }
-  if (meat_output_liveweight < 0) {
-    cli::cli_abort("{.arg meat_output_liveweight} must be non-negative.")
+  if (output_meat_production_liveweight < 0) {
+    cli::cli_abort("{.arg output_meat_production_liveweight} must be non-negative.")
   }
 }
 

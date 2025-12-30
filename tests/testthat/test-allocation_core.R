@@ -56,7 +56,7 @@ test_that("calc_energy_allocation_meat returns correct value for cattle female",
     cohort_code = "FA",
     slaughter_liveweight = 500,
     birth_liveweight = 40,
-    meat_output_liveweight = 100
+    output_meat_production_liveweight = 100
   )
 
   expect_type(result, "double")
@@ -74,7 +74,7 @@ test_that("calc_energy_allocation_meat returns correct value for cattle male", {
     cohort_code = "MA",
     slaughter_liveweight = 600,
     birth_liveweight = 45,
-    meat_output_liveweight = 150
+    output_meat_production_liveweight = 150
   )
 
   expect_type(result, "double")
@@ -89,7 +89,7 @@ test_that("calc_energy_allocation_meat returns correct value for camelids", {
     cohort_code = "FA",
     slaughter_liveweight = 450,
     birth_liveweight = 35,
-    meat_output_liveweight = 80
+    output_meat_production_liveweight = 80
   )
 
   expect_type(result, "double")
@@ -105,7 +105,7 @@ test_that("calc_energy_allocation_meat returns correct value for sheep female", 
     cohort_code = "FA",
     slaughter_liveweight = 60,
     birth_liveweight = 4,
-    meat_output_liveweight = 20
+    output_meat_production_liveweight = 20
   )
 
   expect_type(result, "double")
@@ -122,7 +122,7 @@ test_that("calc_energy_allocation_meat returns correct value for sheep male", {
     cohort_code = "MA",
     slaughter_liveweight = 70,
     birth_liveweight = 4.5,
-    meat_output_liveweight = 25
+    output_meat_production_liveweight = 25
   )
 
   expect_type(result, "double")
@@ -136,7 +136,7 @@ test_that("calc_energy_allocation_meat returns correct value for goats", {
     cohort_code = "FA",
     slaughter_liveweight = 50,
     birth_liveweight = 3.5,
-    meat_output_liveweight = 15
+    output_meat_production_liveweight = 15
   )
 
   expect_type(result, "double")
@@ -152,7 +152,7 @@ test_that("calc_energy_allocation_meat returns NA for pigs", {
     cohort_code = "FA",
     slaughter_liveweight = 150,
     birth_liveweight = 1.5,
-    meat_output_liveweight = 100
+    output_meat_production_liveweight = 100
   )
 
   expect_true(is.na(result))
@@ -165,7 +165,7 @@ test_that("calc_energy_allocation_meat validates animal species", {
       cohort_code = "FA",
       slaughter_liveweight = 500,
       birth_liveweight = 40,
-      meat_output_liveweight = 100
+      output_meat_production_liveweight = 100
     ),
     "must be one of"
   )
@@ -178,7 +178,7 @@ test_that("calc_energy_allocation_meat validates cohort codes", {
       cohort_code = "INVALID",
       slaughter_liveweight = 500,
       birth_liveweight = 40,
-      meat_output_liveweight = 100
+      output_meat_production_liveweight = 100
     ),
     "must be one of"
   )
@@ -191,7 +191,7 @@ test_that("calc_energy_allocation_meat validates weight bounds", {
       cohort_code = "FA",
       slaughter_liveweight = -10,
       birth_liveweight = 40,
-      meat_output_liveweight = 100
+      output_meat_production_liveweight = 100
     ),
     "must be between 0 and 2000"
   )
@@ -201,7 +201,7 @@ test_that("calc_energy_allocation_meat validates weight bounds", {
       cohort_code = "FA",
       slaughter_liveweight = 500,
       birth_liveweight = 300,
-      meat_output_liveweight = 100
+      output_meat_production_liveweight = 100
     ),
     "must be between 0 and 200"
   )

@@ -44,7 +44,7 @@ calc_energy_allocation_milk <- function(
 #' @param cohort_code Character scalar. Cohort identifier (e.g., "FA", "FS", "FJ", "MA", "MS", "MJ").
 #' @param slaughter_liveweight Numeric scalar. Slaughter liveweight (kg).
 #' @param birth_liveweight Numeric scalar. Birthweight (kg).
-#' @param meat_output_liveweight Numeric scalar. Liveweight meat output (kg).
+#' @param output_meat_production_liveweight Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).
 #'
 #' @return Numeric scalar. Energy requirements in megajoules.
 #' @export
@@ -53,7 +53,7 @@ calc_energy_allocation_meat <- function(
     cohort_code,
     slaughter_liveweight,
     birth_liveweight,
-    meat_output_liveweight
+    output_meat_production_liveweight
 ) {
   validate_allocation_meat_inputs(
     animal, cohort_code,
@@ -121,7 +121,7 @@ calc_energy_allocation_meat <- function(
   }
 
   # Multiply specific energy by meat output to get total energy allocation
-  energy_allocation_meat <- specific_energy_meat * meat_output_liveweight
+  energy_allocation_meat <- specific_energy_meat * output_meat_production_liveweight
 
   return(energy_allocation_meat)
 }
