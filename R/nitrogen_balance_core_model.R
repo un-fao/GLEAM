@@ -58,8 +58,8 @@ compute_nitrogen_retention <- function(
 
   if (animal %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
     tissue_n <- ifelse(animal %in% c("CTL", "BFL"), 0.0326, 0.026)
-    milk_n <- milk_protein / 6.38
-    fibre_n <- 0.0134
+    milk_n <- milk_protein / 6.25
+    fibre_n <- 0.134
 
     milk_comp <- if (!is.na(milk_yield) && cohort == "FA" && milk_yield > 0) milk_yield * milk_n else 0
     growth_comp <- if (!is.na(dwg) && dwg > 0) dwg * tissue_n else 0
