@@ -82,9 +82,25 @@
 #'     \item{`prob_growth`}{Daily probability of transitioning to the next age class}
 #'   }
 #'
+#' @examples
+#' \dontrun{
+#' # Load example input data from the package
+#' example_path <- system.file(
+#'   "extdata/example_herd_simulation_input.csv",
+#'   package = "gleam"
+#' )
+#' herd_data <- data.table::fread(example_path)
+#'
+#' # Run herd simulation
+#' results <- run_herd_simulation(herd_data)
+#'
+#' # View results
+#' print(results)
+#' }
+#'
 #' @export
 #'
-#' @importFrom data.table := .SD .I .N setkey setkeyv
+#' @importFrom data.table := .SD .I .N setkey setkeyv uniqueN
 run_herd_simulation <- function(
     herd_data,
     initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
@@ -165,7 +181,7 @@ run_herd_simulation <- function(
   )
   for (col in herd_level_cols) {
     inconsistent <- herd_data[
-      , list(n_unique = uniqueN(get(col))),
+      , list(n_unique = data.table::uniqueN(get(col))),
       by = herd_id
     ][n_unique > 1]
     if (nrow(inconsistent) > 0) {
