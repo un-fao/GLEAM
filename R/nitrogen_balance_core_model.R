@@ -208,7 +208,7 @@ compute_nitrogen_retention <- function(
 #' @return Numeric. Daily nitrogen excretion (kg N/head/day).
 #' 
 #' @references
-# IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.31A.
 #' 
 #' @export

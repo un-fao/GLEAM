@@ -12,24 +12,39 @@ calc_nitrogen_volatilization(
 )
 }
 \arguments{
-\item{n_excretion}{Numeric vector of nitrogen excretion (kg N/head/day)}
+\item{n_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day)}
 
-\item{fracgas_pasture}{Numeric vector of volatilization fraction for pasture (0-1)}
+\item{fracgas_pasture}{Numeric. Effective fraction of excreted nitrogen volatilized as NH₃ and NOₓ from manure deposited on pasture, already weighted by the share of manure deposited on pasture (mmspasture) (fraction).}
 
-\item{fracgas_burned}{Numeric vector of volatilization fraction for burned (0-1)}
+\item{fracgas_burned}{Numeric. Effective fraction of excreted nitrogen volatilized as NH₃ and NOₓ from manure burned for fuel, already weighted by the share of manure burned (mmsburned) (fraction).}
 
-\item{fracgas_other}{Numeric vector of volatilization fraction for other systems (0-1)}
+\item{fracgas_other}{Numeric. Effective fraction of excreted nitrogen volatilized as NH₃ and NOₓ from manure managed in non-pasture, non-burned manure management systems, already weighted by the shares of the corresponding systems (fraction).}
 }
 \value{
 A named list with:
 \describe{
-\item{n_vol_manure_pasture}{Nitrogen volatilized from pasture (kg N/head/day)}
-\item{n_vol_manure_burned}{Nitrogen volatilized from burned manure (kg N/head/day)}
-\item{n_vol_manure_other}{Nitrogen volatilized from other systems (kg N/head/day)}
-\item{n_vol_manure_all_noburn}{Total nitrogen volatilized excluding burned (kg N/head/day)}
+\item{n_vol_manure_pasture}{Numeric. Amount of manure nitrogen lost through volatilisation of NH₃ and NOₓ from manure deposited on pasture (kg N/head/day)}
+\item{n_vol_manure_burned}{Numeric. Amount of manure nitrogen lost through volatilisation of NH₃ and NOₓ from manure burned for fuel (kg N/head/day)}
+\item{n_vol_manure_other}{Numeric. Amount of manure nitrogen lost through volatilisation of NH₃ and NOₓ from manure managed in all other systems, excluding losses from manure deposited on pasture and burned for fuel (kg N/head/day)}
+\item{n_vol_manure_all_noburn}{Numeric. Amount of manure nitrogen lost through volatilisation of NH₃ and NOₓ from manure managed in all other systems and deposited on pasture, excluding losses from manure burned for fuel (kg N/head/day)}
 }
 }
 \description{
-Calculates nitrogen lost via volatilization from manure management systems
-using nitrogen excretion and volatilization fractions.
+Computes nitrogen lost through volatilization as NH3 and NOx from manure
+management pathways. The calculation follows the IPCC structure
+(Eq. 10.26), but is expressed on a \strong{daily} basis because \code{n_excretion}
+is provided in kg N/head/day.
+}
+\details{
+This function expects volatilization fractions
+(\code{fracgas_pasture}, \code{fracgas_burned}, \code{fracgas_other}) to be provided as
+\strong{effective (already weighted)} fractions, i.e. each fraction has already
+been multiplied by the corresponding manure management system share (mms).
+}
+\references{
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management. Equation 10.26.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management. Equation 10.26.
 }

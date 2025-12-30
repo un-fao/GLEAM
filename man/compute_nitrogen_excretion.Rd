@@ -37,5 +37,6 @@ nitrous oxide (N2O) emissions from manure management and agricultural soils.
 The approach follows the Tier 2 IPCC guidelines.
 }
 \references{
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.31A.
 }

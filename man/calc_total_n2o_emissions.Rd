@@ -19,14 +19,15 @@ n2o_leach_manure_pasture, n2o_leach_manure_burned, n2o_leach_manure_other}
 \value{
 A named list with:
 \describe{
-\item{indirect_n2o_manure_pasture}{Indirect N2O emissions from pasture (kg N2O/head/day)}
-\item{indirect_n2o_manure_burned}{Indirect N2O emissions from burned manure (kg N2O/head/day)}
-\item{indirect_n2o_manure_other}{Indirect N2O emissions from other systems (kg N2O/head/day)}
-\item{total_n2o_manure_pasture}{Total N2O emissions from pasture (kg N2O/head/day)}
-\item{total_n2o_manure_burned}{Total N2O emissions from burned manure (kg N2O/head/day)}
-\item{total_n2o_manure_other}{Total N2O emissions from other systems (kg N2O/head/day)}
+\item{indirect_n2o_manure_pasture}{Numeric. Total indirect nitrous oxide (emissions originating from manure deposited on pasture, including emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
+\item{indirect_n2o_manure_burned}{Numeric. Total indirect nitrous oxide emissions originating from manure burned for fuel, including emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
+\item{indirect_n2o_manure_other}{Numeric. Total indirect nitrous oxide emissions originating from manure managed in all other manure management systems, excluding manure deposited on pasture and manure burned for fuel, including emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen}
+\item{total_n2o_manure_pasture}{Numeric. Total nitrous oxide emissions from manure deposited on pasture, including direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N₂O/head/day).}
+\item{total_n2o_manure_burned}{Numeric. Total nitrous oxide emissions from manure burned for fuel, including direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N₂O/head/day).}
+\item{total_n2o_manure_other}{Numeric. Total nitrous oxide emissions from manure managed in all other manure management systems, excluding manure deposited on pasture and manure burned for fuel, including direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N₂O/head/day).}
 }
 }
 \description{
-Calculates total nitrous oxide emissions (direct + indirect) from manure management systems.
+The function aggregates \strong{direct} and \strong{indirect} nitrous oxide emissions attributable to
+manure management, expressed on a \strong{head/day} basis.
 }
