@@ -9,7 +9,7 @@ calc_energy_allocation_meat(
   cohort_code,
   slaughter_liveweight,
   birth_liveweight,
-  meat_output_liveweight
+  output_meat_production_liveweight
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ calc_energy_allocation_meat(
 
 \item{birth_liveweight}{Numeric scalar. Birthweight (kg).}
 
-\item{meat_output_liveweight}{Numeric scalar. Liveweight meat output (kg).}
+\item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).}
 }
 \value{
 Numeric scalar. Energy requirements in megajoules.

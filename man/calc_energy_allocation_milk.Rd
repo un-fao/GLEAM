@@ -12,7 +12,7 @@ calc_energy_allocation_milk(
 )
 }
 \arguments{
-\item{milk_fpcm_output}{Numeric scalar. Fat- and protein-corrected milk production (kg).}
+\item{milk_fpcm_output}{Numeric scalar. Total Fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/assessment period). Default fat and protein content=0.04 and 0.033.}
 
 \item{standard_protein}{Numeric scalar. Reference protein content (g per 100 g milk).}
 

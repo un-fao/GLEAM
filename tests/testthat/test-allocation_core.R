@@ -268,7 +268,8 @@ test_that("calc_energy_allocation_fibre uses default assessment_duration", {
   result <- calc_energy_allocation_fibre(
     animal = "SHP",
     fibre_energy_requirement = 5,
-    ratio_ne_to_me = 0.43
+    ratio_ne_to_me = 0.43,
+    assessment_duration = 365
   )
 
   expect_equal(result, 5 * 365)  # Default is 365 days
@@ -322,7 +323,8 @@ test_that("calc_energy_allocation_work uses default assessment_duration", {
   result <- calc_energy_allocation_work(
     animal = "CTL",
     work_energy_requirement = 8,
-    ratio_ne_to_me = 0.43
+    ratio_ne_to_me = 0.43,
+    assessment_duration = 365
   )
 
   expect_equal(result, 8 * 365)  # Default is 365 days

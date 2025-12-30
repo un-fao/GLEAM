@@ -287,7 +287,8 @@ test_that("compute_meat_outputs returns expected output structure", {
     slaughter_weight = 400,
     carcass_dressing_percentage = 0.55,
     bone_free_meat_fraction = 0.75,
-    meat_protein = 0.20
+    meat_protein = 0.20,
+    assessment_duration = 365
   )
 
   expect_type(result, "list")
@@ -305,10 +306,11 @@ test_that("compute_meat_outputs calculates liveweight correctly", {
     slaughter_weight = 300,
     carcass_dressing_percentage = 0.60,
     bone_free_meat_fraction = 0.80,
-    meat_protein = 0.22
+    meat_protein = 0.22,
+    assessment_duration = 200
   )
 
-  expected_liveweight <- 50 * 300
+  expected_liveweight <- 50/365 * 200 * 300
   expect_equal(result$output_meat_production_liveweight, expected_liveweight)
 })
 
@@ -318,10 +320,11 @@ test_that("compute_meat_outputs calculates carcass weight correctly", {
     slaughter_weight = 450,
     carcass_dressing_percentage = 0.58,
     bone_free_meat_fraction = 0.78,
-    meat_protein = 0.21
+    meat_protein = 0.21,
+    assessment_duration = 200
   )
 
-  expected_liveweight <- 25 * 450
+  expected_liveweight <- 25/365 * 200 * 450
   expected_carcass <- expected_liveweight * 0.58
   expect_equal(result$output_meat_production_carcassweight, expected_carcass)
 })
@@ -332,10 +335,11 @@ test_that("compute_meat_outputs calculates boneless meat correctly", {
     slaughter_weight = 350,
     carcass_dressing_percentage = 0.55,
     bone_free_meat_fraction = 0.70,
-    meat_protein = 0.20
+    meat_protein = 0.20,
+    assessment_duration = 200
   )
 
-  expected_liveweight <- 30 * 350
+  expected_liveweight <- 30/365 * 200 * 350
   expected_carcass <- expected_liveweight * 0.55
   expected_meat <- expected_carcass * 0.70
   expect_equal(result$output_meat_production_meat, expected_meat)
@@ -347,10 +351,11 @@ test_that("compute_meat_outputs calculates meat protein correctly", {
     slaughter_weight = 400,
     carcass_dressing_percentage = 0.56,
     bone_free_meat_fraction = 0.75,
-    meat_protein = 0.23
+    meat_protein = 0.23,
+    assessment_duration = 200
   )
 
-  expected_liveweight <- 20 * 400
+  expected_liveweight <- 20/365 * 200 * 400
   expected_carcass <- expected_liveweight * 0.56
   expected_meat <- expected_carcass * 0.75
   expected_protein <- expected_meat * 0.23
@@ -363,7 +368,8 @@ test_that("compute_meat_outputs handles zero offtake", {
     slaughter_weight = 400,
     carcass_dressing_percentage = 0.55,
     bone_free_meat_fraction = 0.75,
-    meat_protein = 0.20
+    meat_protein = 0.20,
+    assessment_duration = 200
   )
 
   expect_equal(result$output_meat_production_liveweight, 0)
@@ -378,7 +384,8 @@ test_that("compute_meat_outputs handles zero slaughter weight", {
     slaughter_weight = 0,
     carcass_dressing_percentage = 0.55,
     bone_free_meat_fraction = 0.75,
-    meat_protein = 0.20
+    meat_protein = 0.20,
+    assessment_duration = 200
   )
 
   expect_equal(result$output_meat_production_liveweight, 0)
@@ -393,7 +400,8 @@ test_that("compute_meat_outputs verifies sequential calculation chain", {
     slaughter_weight = 300,
     carcass_dressing_percentage = 0.50,
     bone_free_meat_fraction = 0.80,
-    meat_protein = 0.25
+    meat_protein = 0.25,
+    assessment_duration = 200
   )
 
   # Verify the chain: liveweight -> carcass -> meat -> protein
@@ -412,7 +420,8 @@ test_that("compute_meat_outputs handles validation errors", {
     compute_meat_outputs(
       offtake_number = -10, slaughter_weight = 400,
       carcass_dressing_percentage = 0.55, bone_free_meat_fraction = 0.75,
-      meat_protein = 0.20
+      meat_protein = 0.20,
+      assessment_duration = 200
     ),
     "offtake_number"
   )
@@ -421,7 +430,8 @@ test_that("compute_meat_outputs handles validation errors", {
     compute_meat_outputs(
       offtake_number = 10, slaughter_weight = -400,
       carcass_dressing_percentage = 0.55, bone_free_meat_fraction = 0.75,
-      meat_protein = 0.20
+      meat_protein = 0.20,
+      assessment_duration = 200
     ),
     "slaughter_weight"
   )
@@ -430,7 +440,8 @@ test_that("compute_meat_outputs handles validation errors", {
     compute_meat_outputs(
       offtake_number = 10, slaughter_weight = 400,
       carcass_dressing_percentage = 1.5, bone_free_meat_fraction = 0.75,
-      meat_protein = 0.20
+      meat_protein = 0.20,
+      assessment_duration = 200
     ),
     "carcass_dressing_percentage"
   )
@@ -439,7 +450,8 @@ test_that("compute_meat_outputs handles validation errors", {
     compute_meat_outputs(
       offtake_number = 10, slaughter_weight = 400,
       carcass_dressing_percentage = 0.55, bone_free_meat_fraction = -0.1,
-      meat_protein = 0.20
+      meat_protein = 0.20,
+      assessment_duration = 200
     ),
     "bone_free_meat_fraction"
   )
@@ -448,7 +460,8 @@ test_that("compute_meat_outputs handles validation errors", {
     compute_meat_outputs(
       offtake_number = 10, slaughter_weight = 400,
       carcass_dressing_percentage = 0.55, bone_free_meat_fraction = 0.75,
-      meat_protein = 1.5
+      meat_protein = 1.5,
+      assessment_duration = 200
     ),
     "meat_protein"
   )

@@ -18,7 +18,7 @@ calc_energy_allocation_work(
 
 \item{ratio_ne_to_me}{Numeric scalar. Net-to-metabolizable energy conversion ratio (used for camelids).}
 
-\item{assessment_duration}{Numeric scalar. Assessment duration (days).}
+\item{assessment_duration}{Numeric. Length of the assessment period (days)}
 }
 \value{
 Numeric scalar. Energy requirements in megajoules.

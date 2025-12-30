@@ -13,7 +13,7 @@
 #' @param standard_fat Numeric scalar for reference milk fat content (g per 100 g milk).
 #' @param standard_lactose Numeric scalar for reference milk lactose content (g per 100 g milk).
 #' @param ratio_ne_me_camelids Numeric scalar for the net-to-metabolizable energy conversion for camelids.
-#' @param assessment_duration_days Numeric scalar giving the assessment period in days.
+#' @param assessment_duration Numeric scalar. Length of the assessment period (days).
 #'
 #' @return A named list of three `data.table` objects:
 #'   * `cohort_allocation_inputs`: Cohort-level inputs to estimate allocation shares at herd-level.
@@ -100,7 +100,7 @@ run_allocation <- function(
     animal = Animal_short,
     fibre_energy_requirement = nefibre,
     ratio_ne_to_me = ratio_ne_me_camelids,
-    assessment_duration = assessment_duration_days
+    assessment_duration = assessment_duration
   ), by = .I]
 
   # Work energy allocation: applies camelid conversion factor when needed
@@ -108,7 +108,7 @@ run_allocation <- function(
     animal = Animal_short,
     work_energy_requirement = nework,
     ratio_ne_to_me = ratio_ne_me_camelids,
-    assessment_duration = assessment_duration_days
+    assessment_duration = assessment_duration
   ), by = .I]
 
   # Eggs energy allocation: placeholder (not currently implemented)

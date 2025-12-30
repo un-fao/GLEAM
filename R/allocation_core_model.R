@@ -3,7 +3,7 @@
 #' Converts fat- and protein-corrected milk output into the megajoule demand used in the allocation workflow.
 #' The formula calculates energy density based on standard milk composition and multiplies by production.
 #'
-#' @param milk_fpcm_output Numeric scalar. Fat- and protein-corrected milk production (kg).
+#' @param milk_fpcm_output Numeric scalar. Total Fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/assessment period). Default fat and protein content=0.04 and 0.033.
 #' @param standard_protein Numeric scalar. Reference protein content (g per 100 g milk).
 #' @param standard_fat Numeric scalar. Reference fat content (g per 100 g milk).
 #' @param standard_lactose Numeric scalar. Reference lactose content (g per 100 g milk).
@@ -57,7 +57,7 @@ calc_energy_allocation_meat <- function(
 ) {
   validate_allocation_meat_inputs(
     animal, cohort_code,
-    slaughter_liveweight, birth_liveweight, meat_output_liveweight
+    slaughter_liveweight, birth_liveweight, output_meat_production_liveweight
   )
 
   # Default fallback
@@ -133,7 +133,7 @@ calc_energy_allocation_meat <- function(
 #' @param animal Character scalar. Species code (e.g., "GTS", "SHP", "CML").
 #' @param fibre_energy_requirement Numeric scalar. Fibre energy demand (MJ per head per day).
 #' @param ratio_ne_to_me Numeric scalar. Net-to-metabolizable energy conversion ratio (used for camelids).
-#' @param assessment_duration Numeric scalar. Assessment duration (days).
+#' @param assessment_duration Numeric. Length of the assessment period (days)
 #'
 #' @return Numeric scalar. Energy requirements in megajoules.
 #' @export
@@ -168,7 +168,7 @@ calc_energy_allocation_fibre <- function(
 #' @param animal Character scalar. Species code (e.g., "CML" for camelids).
 #' @param work_energy_requirement Numeric scalar. Work energy demand (MJ per head per day).
 #' @param ratio_ne_to_me Numeric scalar. Net-to-metabolizable energy conversion ratio (used for camelids).
-#' @param assessment_duration Numeric scalar. Assessment duration (days).
+#' @param assessment_duration Numeric. Length of the assessment period (days)
 #'
 #' @return Numeric scalar. Energy requirements in megajoules.
 #' @export
