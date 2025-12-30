@@ -111,3 +111,20 @@ must have exactly 6 rows, one for each cohort: FJ, FS, FA, MJ, MS, MA.
 }
 }
 }
+\examples{
+\dontrun{
+# Load example input data from the package
+example_path <- system.file(
+  "extdata/example_herd_simulation_input.csv",
+  package = "gleam"
+)
+herd_data <- data.table::fread(example_path)
+
+# Run herd simulation
+results <- run_herd_simulation(herd_data)
+
+# View results
+print(results)
+}
+
+}
