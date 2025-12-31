@@ -513,7 +513,7 @@ calc_rem_maintenance <- function(
     # Polynomial fit from GLEAM
     ret <- 1.123 - (0.004092 * (diet_dig * 100)) + (0.00001126 * (diet_dig * 100)^2) - (25.4 / (diet_dig * 100))
   } else if (animal %in% c("PGS", "CHK", "CML")) {
-    ret <- NA # Not applicable
+    ret <- NA_real_ # Not applicable
   }
   return(ret)
 }
@@ -538,7 +538,7 @@ calc_reg_growth <- function(
     # Polynomial fit
     ret <- 1.164 - (0.005160 * (diet_dig * 100)) + (0.00001308 * (diet_dig * 100)^2) - (37.4 / (diet_dig * 100))
   } else if (animal %in% c("PGS", "CHK", "CML")) {
-    ret <- NA # Not applicable
+    ret <- NA_real_ # Not applicable
   }
   return(ret)
 }
