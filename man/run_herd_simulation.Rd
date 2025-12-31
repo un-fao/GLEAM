@@ -13,9 +13,9 @@ run_herd_simulation(
 )
 }
 \arguments{
-\item{herd_data}{A \code{data.table} in long format (one row per cohort) with mandatory columns:
+\item{herd_data}{A \code{data.table} with mandatory columns:
 \describe{
-\item{\code{herd_id}}{Unique identifier for each herd (mandatory). All cohorts belonging to
+\item{\code{herd_id}}{Unique identifier for each herd. All cohorts belonging to
 the same herd must share the same \code{herd_id}.}
 \item{\code{cohort}}{Cohort code. Must be one of: "FJ", "FS", "FA", "MJ", "MS", "MA".
 Each \code{herd_id} must have exactly one row for each of these 6 cohorts.}
@@ -54,7 +54,7 @@ reached. Defaults to \code{1e-9}.}
 Defaults to \code{TRUE}.}
 }
 \value{
-A \code{data.table} in long format (one row per cohort) with all original input
+A \code{data.table} with all original input
 columns preserved, plus the following simulation results appended:
 \describe{
 \item{\code{share}}{Proportion of total population in this cohort at steady-state}
@@ -94,7 +94,7 @@ structure simulation when required. The simulation process follows these steps:
 
 \subsection{Input Format}{
 
-The input must be in long format with one row per cohort. Each herd (identified by \code{herd_id})
+The input must be a table. Each herd (identified by \code{herd_id})
 must have exactly 6 rows, one for each cohort: FJ, FS, FA, MJ, MS, MA.
 \itemize{
 \item \strong{FJ}: Female Juvenile
@@ -110,7 +110,7 @@ must have exactly 6 rows, one for each cohort: FJ, FS, FA, MJ, MS, MA.
 \dontrun{
 # Load example input data from the package
 example_path <- system.file(
-  "extdata/example_herd_simulation_input.csv",
+  "extdata/example_herd_data.csv",
   package = "gleam"
 )
 herd_data <- data.table::fread(example_path)
