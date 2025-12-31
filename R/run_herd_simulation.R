@@ -19,7 +19,7 @@
 #'
 #' ## Input Format
 #'
-#' The input must be in long format with one row per cohort. Each herd (identified by `herd_id`)
+#' The input must be a table. Each herd (identified by `herd_id`)
 #' must have exactly 6 rows, one for each cohort: FJ, FS, FA, MJ, MS, MA.
 #'
 #' - **FJ**: Female Juvenile
@@ -29,9 +29,9 @@
 #' - **MS**: Male Subadult
 #' - **MA**: Male Adult
 #'
-#' @param herd_data A `data.table` in long format (one row per cohort) with mandatory columns:
+#' @param herd_data A `data.table` with mandatory columns:
 #'   \describe{
-#'     \item{`herd_id`}{Unique identifier for each herd (mandatory). All cohorts belonging to
+#'     \item{`herd_id`}{Unique identifier for each herd. All cohorts belonging to
 #'       the same herd must share the same `herd_id`.}
 #'     \item{`cohort`}{Cohort code. Must be one of: "FJ", "FS", "FA", "MJ", "MS", "MA".
 #'       Each `herd_id` must have exactly one row for each of these 6 cohorts.}
@@ -65,7 +65,7 @@
 #' @param show_indicator Logical. Whether to display progress indicators during simulation.
 #'   Defaults to `TRUE`.
 #'
-#' @return A `data.table` in long format (one row per cohort) with all original input
+#' @return A `data.table` with all original input
 #'   columns preserved, plus the following simulation results appended:
 #'   \describe{
 #'     \item{`share`}{Proportion of total population in this cohort at steady-state}
@@ -86,7 +86,7 @@
 #' \dontrun{
 #' # Load example input data from the package
 #' example_path <- system.file(
-#'   "extdata/example_herd_simulation_input.csv",
+#'   "extdata/example_herd_data.csv",
 #'   package = "gleam"
 #' )
 #' herd_data <- data.table::fread(example_path)
@@ -116,22 +116,24 @@ run_herd_simulation <- function(
     cli::cli_abort("{.arg herd_data} must be a data.table.")
   }
 
-  # Check for empty input
-  if (nrow(herd_data) == 0) {
-    cli::cli_abort("{.arg herd_data} must contain at least one row.")
+  # Check for empty input and row count
+  if (nrow(herd_data) == 0 || nrow(herd_data) %% 6 != 0) {
+    cli::cli_abort(
+      "{.arg herd_data} ust contain at least one row and a number rows divisible by 6."
+    )
   }
 
   # Define required columns for validation
   required_cols <- c(
-    "herd_id",           # Unique identifier for each herd
-    "cohort",            # Cohort code (FJ, FS, FA, MJ, MS, MA)
-    "duration",          # Duration of cohort stage in days
-    "offtake_rate",      # Annual offtake rate
-    "mort_rate",         # Annual mortality rate
-    "parturition_rate",  # Herd-level: annual parturition rate
-    "litsize",           # Herd-level: average litter size
+    "herd_id", # Unique identifier for each herd
+    "cohort", # Cohort code (FJ, FS, FA, MJ, MS, MA)
+    "duration", # Duration of cohort stage in days
+    "offtake_rate", # Annual offtake rate
+    "mort_rate", # Annual mortality rate
+    "parturition_rate", # Herd-level: annual parturition rate
+    "litsize", # Herd-level: average litter size
     "female_birth_fraction", # Herd-level: proportion of female births
-    "size_total"         # Herd-level: total population size
+    "size_total" # Herd-level: total population size
   )
 
   # Check for missing required columns
@@ -219,7 +221,6 @@ run_herd_simulation <- function(
 
     # Extract data for this herd
     # Get all rows belonging to this herd (should be exactly 6 rows)
-    # Using keyed lookup for efficiency (key was set earlier)
     herd_rows <- result[herd_id == current_herd_id]
 
     # Extract herd-level parameters (same for all cohorts in a herd)
@@ -227,7 +228,6 @@ run_herd_simulation <- function(
 
     # Calculate fecundity rates (herd-level)
     # Fecundity rates represent the daily number of births per adult female
-
     fecundity_result <- compute_fecundity_rates(
       parturition_rate = herd_params$parturition_rate,
       litsize = herd_params$litsize,
@@ -252,14 +252,6 @@ run_herd_simulation <- function(
     herd_rows_indexed <- cohort_lookup[herd_rows, on = "cohort"]
     herd_rows_ordered <- herd_rows_indexed[order(index)]
 
-    # Safety check: ensure we have all 6 cohorts
-    if (nrow(herd_rows_ordered) != 6) {
-      cli::cli_abort(
-        "Internal error: Expected 6 cohorts for herd_id {.val {current_herd_id}}, ",
-        "but found {nrow(herd_rows_ordered)}. This should not happen after validation."
-      )
-    }
-
     # Build vectors in correct order and name them
     duration_vec <- herd_rows_ordered$duration
     offtake_rate_vec <- herd_rows_ordered$offtake_rate
@@ -268,7 +260,6 @@ run_herd_simulation <- function(
 
     # Calculate transition probabilities
     # Converts annual rates to daily probabilities for death, offtake, survival, and growth
-
     transition_result <- compute_transition_probabilities(
       duration = duration_vec,
       offtake_rate = offtake_rate_vec,
@@ -277,7 +268,6 @@ run_herd_simulation <- function(
 
     # Simulate steady-state population structure
     # Runs iterative simulation until population growth rates stabilize
-
     structure_result <- simulate_steady_state_structure(
       initial_structure = initial_structure,
       max_years = max_years,
@@ -291,7 +281,6 @@ run_herd_simulation <- function(
 
     # Project one year of population dynamics
     # Simulates a full year (366 days) under steady-state conditions
-
     popsize_result <- project_population_size(
       size_total = herd_params$size_total,
       fem_fec = fem_fec,
@@ -305,7 +294,6 @@ run_herd_simulation <- function(
     )
 
     # Calculate offtake summary statistics
-
     offtake_result <- summarise_offtake(
       size = popsize_result$size,
       size_end = popsize_result$size_end,
