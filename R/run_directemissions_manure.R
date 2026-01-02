@@ -106,12 +106,10 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   gleam_data[, paste0("vs", ipcc_method) :=
                calc_volatile_solids(
                  animal = Animal_short,
-                 lps_short = LPS_short,
                  dmi = dmi,
                  diet_dig = diet_dig,
                  diet_me = diet_me,
-                 diet_ge = diet_ge,
-                 ipcc_method = ipcc_method
+                 diet_ge = diet_ge
                ),
              by = .I
   ]

@@ -19,33 +19,119 @@ compute_nitrogen_retention(
 )
 }
 \arguments{
-\item{animal}{Character. Species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{cohort}{Character. Cohort code (e.g., "FJ", "MJ", "FS", "MS", "FA", "MA").}
+\item{cohort}{"Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 
-\item{milk_protein}{Numeric. Milk protein content (fraction), used to derive milk nitrogen.}
+\item{milk_protein}{Numeric. Milk protein fraction (kg protein / kg milk).}
 
-\item{milk_yield}{Numeric. Milk yield (kg/head/day).}
+\item{milk_yield}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destinated to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
 
-\item{dwg}{Numeric. Daily weight gain (kg/head/day).}
+\item{dwg}{Numeric. Average live weight of the cohort over the cohort stage (kg/head/day).}
 
-\item{fibre_prod}{Numeric. Production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
+\item{fibre_prod}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
 
-\item{litsize}{Numeric. Litter size (mean number of offspring per parturition).}
+\item{litsize}{Numeric. Average number of offspring born per parturition (#). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
-\item{parturition_rate}{Numeric. Annual parturition rate of adult females (parturitions/head/year).}
+\item{parturition_rate}{Numeric. Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.}
 
-\item{wkg}{Numeric. Weaning weight (kg).}
+\item{wkg}{Numeric. Live weight of the animal at weaning (kg)}
 
-\item{ckg}{Numeric. Birth weight (kg).}
+\item{ckg}{Numeric. Live weight of the animal at birth (kg).}
 
-\item{afc}{Numeric. Age at first parturition (years).}
+\item{afc}{Numeric. Age at first parturition for female breeding animals (years)}
 }
 \value{
-Numeric. Daily nitrogen retention (kg N/head/day).
+Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)
 }
 \description{
-Calculates nitrogen retention by species and cohort. Retention includes nitrogen
-retained in milk, growth, and fibre (for ruminants only), and in growth and reproductive processes (for pigs only).
-Chickens are not implemented yet and return \code{NA}.
+Calculates daily nitrogen retention per animal by species and cohort.
+Nitrogen retention represents the portion of consumed nitrogen that is
+incorporated into animal products or body tissues.
+The approach follows the Tier 2 IPCC guidelines (IPCC 2006, 2019).
+}
+\details{
+Species-specific calculations are performed.
+\subsection{Ruminants and camelids (CTL, BFL, SHP, GTS, CML)}{
+
+For ruminants and camelids, nitrogen retained in products and tissues is
+computed consistent with the process described in the Technical paper
+from MPI (Ministry for Primary Industries (MPI), 2025).
+
+Nitrogen retention is calculated as the sum of:
+\itemize{
+\item nitrogen secreted in milk,
+\item nitrogen retained in liveweight gain (tissue),
+\item nitrogen retained in fibre (for fibre-producing species).
+}
+
+Coefficients for nitrogen content of deposited tissue, fibre, and milk are
+derived from Chapter 5 (Nitrogen excretion) of the MPI inventory methodology.
+
+The following constants are used:
+\itemize{
+\item \strong{Tissue nitrogen content (\code{tissue_n})}:
+\itemize{
+\item Cattle (\code{CTL}, \code{BFL}): \strong{0.0326 kg N per kg live weight}
+\item Sheep (\code{SHP}), goats (\code{GTS}) and camelids (\code{CML}):
+\strong{0.026 kg N per kg live weight}
+}
+\item \strong{Fibre nitrogen content (\code{fibre_n})}:
+\strong{0.134 kg N per kg fibre}
+\item \strong{Milk nitrogen content}:
+Milk nitrogen is derived from milk protein using a protein-to-nitrogen
+conversion factor of \strong{6.25}
+}
+}
+
+\subsection{Pigs (PGS)}{
+
+For pigs, nitrogen retention is calculated following the IPCC 2019 equations
+for swine (Equations 10.33A and 10.33B).
+
+Nitrogen retention includes nitrogen retained in:
+\itemize{
+\item body growth,
+\item reproductive outputs (conceptus and weaned offspring).
+}
+
+Calculations are expressed on a daily basis. In this implementation:
+\itemize{
+\item \code{0.025} represents the nitrogen content of liveweight gain
+(kg N per kg gain),
+\item \code{0.98} is the protein digestibility fraction,
+\item breeding cohorts include an annual reproductive component that is
+converted to a daily rate.
+}
+}
+}
+\references{
+Ministry for Primary Industries (MPI). (2025).
+\emph{Detailed methodologies for agricultural greenhouse gas emission calculation:
+Methodology for calculation of New Zealand’s agricultural greenhouse gas emissions}
+(Version 11). MPI Technical Paper, Wellington, New Zealand. Chapter 5.
+
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management. Equation 10.33A, 10.33B.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management. Equation 10.33.
 }

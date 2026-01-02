@@ -12,24 +12,39 @@ calc_nitrogen_leaching(
 )
 }
 \arguments{
-\item{n_excretion}{Numeric vector of nitrogen excretion (kg N/head/day)}
+\item{n_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day)}
 
-\item{fracleach_pasture}{Numeric vector of leaching fraction for pasture (0-1)}
+\item{fracleach_pasture}{Numeric. Effective fraction of excreted nitrogen lost through leaching and runoff from manure deposited on pasture, already weighted by the share of manure deposited on pasture (mmspasture) (fraction).}
 
-\item{fracleach_burned}{Numeric vector of leaching fraction for burned (0-1)}
+\item{fracleach_burned}{Numeric. Effective fraction of excreted nitrogen lost through leaching and runoff from manure burned for fuel, already weighted by the share of manure burned (mmsburned) (fraction).}
 
-\item{fracleach_other}{Numeric vector of leaching fraction for other systems (0-1)}
+\item{fracleach_other}{Numeric. Effective fraction of excreted nitrogen lost through leaching and runoff from manure managed in non-pasture, non-burned manure management systems, already weighted by the shares of the corresponding manure management systems (e.g. solid storage, drylot, liquid/slurry) (fraction).}
 }
 \value{
 A named list with:
 \describe{
-\item{n_leach_manure_pasture}{Nitrogen leached from pasture (kg N/head/day)}
-\item{n_leach_manure_burned}{Nitrogen leached from burned manure (kg N/head/day)}
-\item{n_leach_manure_other}{Nitrogen leached from other systems (kg N/head/day)}
-\item{n_leach_manure_all_noburn}{Total nitrogen leached excluding burned (kg N/head/day)}
+\item{n_leach_manure_pasture}{Numeric. Amount of manure nitrogen lost through leaching and runoff from manure deposited on pasture (kg N/head/day).}
+\item{n_leach_manure_burned}{Numeric. Amount of manure nitrogen lost through leaching and runoff from manure burned for fuel (kg N/head/day).}
+\item{n_leach_manure_other}{Numeric. Amount of manure nitrogen lost through leaching and runoff from manure managed in all other systems, excluding losses from manure deposited on pasture and manure burned for fuel (kg N/head/day).}
+\item{n_leach_manure_all_noburn}{Numeric. Amount of manure nitrogen lost through leaching and runoff from manure managed in all other systems and deposited on pasture, excluding losses from manure burned for fuel (kg N/head/day).}
 }
 }
 \description{
-Calculates nitrogen lost via leaching from manure management systems
-using nitrogen excretion and leaching fractions.
+Calculates the amount of manure nitrogen lost via \strong{leaching and runoff}
+from manure management systems (kg N/head/day). This follows the IPCC
+structure of Eq. 10.27, but expressed on a \strong{daily} basis because
+\code{n_excretion} is provided in kg N/head/day.
+}
+\details{
+The function assumes leaching/runoff fractions - (\code{fracleach_pasture}, \code{fracleach_burned}, \code{fracleach_other}) -
+are provided as \strong{effective
+weighted fractions}, i.e. they have already been multiplied by the
+corresponding manure management system shares (mms fractions).
+}
+\references{
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management. Equation 10.27.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management. Equation 10.27.
 }

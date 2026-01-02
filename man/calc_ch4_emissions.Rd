@@ -15,30 +15,44 @@ calc_ch4_emissions(
 )
 }
 \arguments{
-\item{vs}{Numeric vector of volatile solids (kg VS/head/day)}
+\item{vs}{Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
 
-\item{mcf_pasture}{Numeric vector of methane conversion factor for pasture (dimensionless)}
+\item{mcf_pasture}{Numeric. Effective methane conversion factor for manure deposited on pasture (mcfpasture), expressed in percent (\%), and already weighted by the share of manure deposited on pasture (mmspasture) (percentage)}
 
-\item{mcf_burned}{Numeric vector of methane conversion factor for burned (dimensionless)}
+\item{mcf_burned}{Numeric. Effective methane conversion factor for manure burned for fuel (mcfburned), expressed in percent (\%), and already weighted by the share of manure burned for fuel (mmsburned) (percentage)}
 
-\item{mcf_other}{Numeric vector of methane conversion factor for other systems (dimensionless)}
+\item{mcf_other}{Numeric. Effective methane conversion factor for manure managed in non-pasture, non-burned manure management systems, expressed in percent (\%), and already weighted by the share of each corresponding manure management system (e.g., mmsolid, mmsliquid...etc.) (percentage)}
 
-\item{b0_mms_all}{Numeric vector of maximum methane producing capacity for all systems (m³ CH4/kg VS)}
+\item{b0_mms_all}{Numeric. Maximum methane producing capacity for all systems (m³ CH4/kg VS). The value should is region- and species-specific. Default can be selected from Table 10.16 (IPCC, 2019) or from Tables 10A-4 to 10A-9 (IPCC, 2006)}
 
-\item{b0_mms_pasture}{Numeric vector of maximum methane producing capacity for pasture (m³ CH4/kg VS)}
+\item{b0_mms_pasture}{Numeric. Maximum methane producing capacity for manure deposited on pasture (m³ CH4/kg VS). Default can be selected from Table 10.16 (IPCC, 2019). For IPCC 2006 method, it is assumed to be equal to b0_mms_all.}
 
-\item{ratio_m3CH4_kgCH4}{Numeric. Conversion factor from m³ CH4 to kg CH4. Defaults to 0.67.}
+\item{ratio_m3CH4_kgCH4}{Numeric. Conversion factor from m³ CH4 to kg CH4. Default to 0.67.}
 }
 \value{
 A named list with:
 \describe{
-\item{ch4_manure_pasture}{CH4 emissions from pasture (kg CH4/head/day)}
-\item{ch4_manure_burned}{CH4 emissions from burned manure (kg CH4/head/day)}
-\item{ch4_manure_other}{CH4 emissions from other systems (kg CH4/head/day)}
-\item{ch4_manure_all_noburn}{Total CH4 emissions excluding burned (kg CH4/head/day)}
+\item{ch4_manure_pasture}{Numeric. Methane emissions from manure deposited on pasture (kg CH4/head/day))}
+\item{ch4_manure_burned}{Numeric. Methane emissions from manure burned for fuel (kg CH4/head/day)}
+\item{ch4_manure_other}{Numeric. Methane emissions from manure managed in all other manure management systems, excluding emissions from manure deposired on pasture and burned (kg CH4/head/day)}
+\item{ch4_manure_all_noburn}{Numeric. Methane emissions from manure managed in all other manure management systems and deposited on pasture, excluding emissions from burned manure (kg CH4/head/day)}
 }
 }
 \description{
-Calculates methane emissions from manure management systems using volatile solids,
-methane conversion factors, and maximum methane producing capacity (B0).
+Calculates \strong{methane (CH4) emissions} attributable to manure management pathways using
+the IPCC Tier 2 framework. The computation follows the structure of IPCC
+Eq. 10.23 (CH\eqn{_4} emission factor from manure management), but expressed on
+a daily basis because \code{vs} is provided as kg VS/head/day.
+}
+\details{
+This function expects that methane conversion factors
+(\code{mcf_pasture}, \code{mcf_burned}, \code{mcf_other}) are provided as
+\strong{weighted fractions}, i.e. they have already been multiplied by the relative manure management system shares (mms)
+}
+\references{
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management. Equation 10.23.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management. Equation 10.23.
 }
