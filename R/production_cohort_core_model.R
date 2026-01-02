@@ -129,7 +129,7 @@ compute_meat_outputs <- function(
     assessment_duration = assessment_duration
   )
 
-  meat_production_liveweight <- offtake_number/365 * assessment_duration * slaughter_weight
+  meat_production_liveweight <- offtake_number / 365 * assessment_duration * slaughter_weight
   meat_production_carcassweight <- meat_production_liveweight * carcass_dressing_percentage
   meat_production_meat <- meat_production_carcassweight * bone_free_meat_fraction
   meat_production_protein <- meat_production_meat * meat_protein
