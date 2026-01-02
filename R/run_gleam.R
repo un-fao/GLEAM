@@ -592,7 +592,7 @@ run_gleam <- function(
             "energy_allocation_work", "energy_allocation_eggs") %in% names(data))) {
     allocation_herd <- aggregate_cohort_to_herd(
       data_cohort = data,
-      id_cols = c("ADM0_CODE", "HerdType_short", "Animal_short", "LPS_short"),
+      id_cols = c("herd_id", "Animal_short", "LPS_short"),
       vars_to_sum = c("energy_allocation_meat",
                       "energy_allocation_milk",
                       "energy_allocation_fibre",
@@ -622,7 +622,7 @@ run_gleam <- function(
     # Reshape to long format
     allocation_herd_long <- data.table::melt(
       allocation_herd,
-      id.vars = c("ADM0_CODE", "HerdType_short", "Animal_short", "LPS_short"),
+      id.vars = c("herd_id", "Animal_short", "LPS_short"),
       measure.vars = c("allocation_share_meat",
                        "allocation_share_milk",
                        "allocation_share_fibre",
@@ -696,3 +696,4 @@ run_gleam <- function(
     )
   }
 }
+

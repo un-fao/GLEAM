@@ -85,7 +85,7 @@ run_aggregation <- function(
 
   # Validate required grouping columns
   required_group_cols <- c(
-    "ADM0_CODE", "HerdType_short", "Animal_short", "LPS_short",
+    "Animal_short", "LPS_short",
     "cohort", "assessment_duration", "size"
   )
   miss_group <- setdiff(required_group_cols, names(data_cohort))
@@ -135,8 +135,7 @@ run_aggregation <- function(
   data_cohort_long <- data.table::melt(
     data_cohort,
     id.vars = c(
-      "ADM0_CODE",
-      "HerdType_short",
+      "herd_id",
       "Animal_short",
       "LPS_short",
       "cohort",
@@ -177,8 +176,7 @@ run_aggregation <- function(
   data_herd_long <- aggregate_cohort_to_herd(
     data_cohort = data_cohort_long,
     id_cols = c(
-      "ADM0_CODE",
-      "HerdType_short",
+      "herd_id",
       "Animal_short",
       "LPS_short",
       "variable_type",
@@ -193,7 +191,7 @@ run_aggregation <- function(
   data_herd_long_allocation <- merge(
     data_herd_long[variable_type == "Emissions", ],
     allocation_herd_long,
-    by = c("ADM0_CODE", "HerdType_short", "Animal_short", "LPS_short", "variable_name"),
+    by = c("herd_id", "Animal_short", "LPS_short", "variable_name"),
     all = TRUE
   )
 
@@ -227,7 +225,7 @@ run_aggregation <- function(
   subset_allocatedco2e <- data_herd_long_allocation[
     variable_type == "Emissions",
     .(
-      ADM0_CODE, HerdType_short, Animal_short, LPS_short,
+      herd_id, Animal_short, LPS_short,
       variable_name, gas, variable_type, commodity_name,
       allocation_share, commodity_type, value_total = value_allocated_co2e,
       allocation_type, gwp
@@ -339,7 +337,7 @@ run_aggregation <- function(
 
   # --- Step 14: Variables order ----------------------------------------------
   variable_order <- c(
-    "ADM0_CODE",
+    "herd_id",
     "HerdType_short",
     "Animal_short",
     "LPS_short",
