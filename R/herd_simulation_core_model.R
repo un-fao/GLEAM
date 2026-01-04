@@ -50,6 +50,10 @@ compute_fecundity_rates <- function(parturition_rate, litsize, fem_birth_fractio
 compute_transition_probabilities <- function(duration, offtake_rate, mort_rate) {
   validate_transition_inputs(duration, offtake_rate, mort_rate)
 
+  # Define cohort names for clarity
+  six_cohort_names <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  ten_cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
+
   # Prevent 0/0 in downstream hazard math by ensuring each cohort has at least
   # one non-zero rate. We choose to bump mort_rate, leaving offtake_rate at 0.
   EPSILON <- 1e-12
@@ -65,24 +69,27 @@ compute_transition_probabilities <- function(duration, offtake_rate, mort_rate) 
   hazard_death <- ifelse(
     duration < 365, -log(1 - mort_rate) / duration, -log(1 - mort_rate) / 365
   )
+  names(hazard_death) <- names(duration)
 
   # Adjusted duration: keep original if <365, otherwise cap at 365
   duration_max365 <- ifelse(duration < 365, duration, 365)
+  names(duration_max365) <- names(duration)
 
-  # Initialize offtake hazard rate (hazard_offtake)
-  hazard_offtake <- NA
+  # Initialize offtake hazard rate (hazard_offtake) with names
+  hazard_offtake <- numeric(6)
+  names(hazard_offtake) <- names(duration)
 
   # Estimate hazard_offtake using Newton-Raphson method for each class
-  for (class in 1:6) {
-    hazard_death_adj <- hazard_death[class] * duration_max365[class]
+  for (cohort_name in six_cohort_names) {
+    hazard_death_adj <- hazard_death[[cohort_name]] * duration_max365[[cohort_name]]
 
     for (t in 1:15) {
       class_hazard_offtake <- ifelse(
-        t == 1, offtake_rate[class], class_hazard_offtake - (class_f / class_deriv)
+        t == 1, offtake_rate[[cohort_name]], class_hazard_offtake - (class_f / class_deriv)
       )
 
       class_f <- (class_hazard_offtake / (hazard_death_adj + class_hazard_offtake)) *
-        (1 - exp(-hazard_death_adj - class_hazard_offtake)) - offtake_rate[class]
+        (1 - exp(-hazard_death_adj - class_hazard_offtake)) - offtake_rate[[cohort_name]]
 
       class_deriv <- (
         hazard_death_adj * (1 - exp(-hazard_death_adj - class_hazard_offtake)) +
@@ -91,28 +98,64 @@ compute_transition_probabilities <- function(duration, offtake_rate, mort_rate) 
       ) / (hazard_death_adj + class_hazard_offtake)^2
     }
 
-    hazard_offtake[class] <- class_hazard_offtake / duration_max365[class]
+    hazard_offtake[[cohort_name]] <- class_hazard_offtake / duration_max365[[cohort_name]]
   }
 
   # --- Part 2: Extend to 10 cohorts (6 sex-age classes + 2 birth + 2 culling) ---
 
-  # Extend hazard_death and hazard_offtake for 10 cohorts: copy juvenile/adult rates to birth/culling cohorts
-  hazard_death_all <- hazard_death[c(1, 1:3, 3, 4, 4:6, 6)]
-  hazard_offtake_all <- hazard_offtake[c(1, 1:3, 3, 4, 4:6, 6)]
+  # Extend hazard_death and hazard_offtake for 10 cohorts using named access
+  # Mapping: FB/MB use juvenile rates (FJ/MJ), FC/MC use adult rates (FA/MA)
+  hazard_death_all <- c(
+    FB = hazard_death[["FJ"]],
+    FJ = hazard_death[["FJ"]],
+    FS = hazard_death[["FS"]],
+    FA = hazard_death[["FA"]],
+    FC = hazard_death[["FA"]],
+    MB = hazard_death[["MJ"]],
+    MJ = hazard_death[["MJ"]],
+    MS = hazard_death[["MS"]],
+    MA = hazard_death[["MA"]],
+    MC = hazard_death[["MA"]]
+  )
+
+  hazard_offtake_all <- c(
+    FB = hazard_offtake[["FJ"]],
+    FJ = hazard_offtake[["FJ"]],
+    FS = hazard_offtake[["FS"]],
+    FA = hazard_offtake[["FA"]],
+    FC = hazard_offtake[["FA"]],
+    MB = hazard_offtake[["MJ"]],
+    MJ = hazard_offtake[["MJ"]],
+    MS = hazard_offtake[["MS"]],
+    MA = hazard_offtake[["MA"]],
+    MC = hazard_offtake[["MA"]]
+  )
 
   # Extend duration: assign 1 day to birth/culling cohorts; subtract 1 day where split
-  duration_all <- c(1, duration[1] - 1, duration[c(2:3)], 1, 1,
-                    duration[4] - 1, duration[c(5:6)], 1)
+  duration_all <- c(
+    FB = 1,
+    FJ = duration[["FJ"]] - 1,
+    FS = duration[["FS"]],
+    FA = duration[["FA"]],
+    FC = 1,
+    MB = 1,
+    MJ = duration[["MJ"]] - 1,
+    MS = duration[["MS"]],
+    MA = duration[["MA"]],
+    MC = 1
+  )
 
   # Daily probability of death (prob_death)
   prob_death <- (hazard_death_all / (hazard_death_all + hazard_offtake_all)) *
     (1 - exp(-(hazard_death_all + hazard_offtake_all)))
-  prob_death[c(5, 10)] <- 0  # Culling cohorts cannot die again
+  prob_death[["FC"]] <- 0  # Culling cohorts cannot die again
+  prob_death[["MC"]] <- 0
 
   # Daily probability of offtake (prob_offtake)
   prob_offtake <- (hazard_offtake_all / (hazard_death_all + hazard_offtake_all)) *
     (1 - exp(-(hazard_death_all + hazard_offtake_all)))
-  prob_offtake[c(5, 10)] <- 1  # Culling cohorts are entirely offtaken
+  prob_offtake[["FC"]] <- 1  # Culling cohorts are entirely offtaken
+  prob_offtake[["MC"]] <- 1
 
   # Daily survival probability (prob_survival)
   prob_survival <- 1 - prob_death - prob_offtake
@@ -121,10 +164,6 @@ compute_transition_probabilities <- function(duration, offtake_rate, mort_rate) 
   prob_growth <- (prob_survival^(duration_all - 1) - prob_survival^duration_all) / (1 - prob_survival^duration_all)
 
   # --- Prepare and return results ---
-
-  names(prob_death) <- names(prob_offtake) <- names(prob_survival) <- names(prob_growth) <-
-    c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
-  names(hazard_death) <- names(hazard_offtake) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
   return(
     list(

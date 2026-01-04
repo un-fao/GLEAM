@@ -5,7 +5,8 @@
 \title{Run Herd Simulation}
 \usage{
 run_herd_simulation(
-  herd_data,
+  cohort_data,
+  herd_level_data,
   initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
   max_years = 100,
   lambda_threshold = 1e-09,
@@ -13,9 +14,9 @@ run_herd_simulation(
 )
 }
 \arguments{
-\item{herd_data}{A \code{data.table} in long format (one row per cohort) with mandatory columns:
+\item{cohort_data}{A \code{data.table} with mandatory columns:
 \describe{
-\item{\code{herd_id}}{Unique identifier for each herd (mandatory). All cohorts belonging to
+\item{\code{herd_id}}{Unique identifier for each herd. All cohorts belonging to
 the same herd must share the same \code{herd_id}.}
 \item{\code{cohort}}{Cohort code. Must be one of: "FJ", "FS", "FA", "MJ", "MS", "MA".
 Each \code{herd_id} must have exactly one row for each of these 6 cohorts.}
@@ -25,14 +26,15 @@ spends in this particular life stage.}
 This represents the fraction of animals removed from the herd (e.g., for slaughter).}
 \item{\code{mort_rate}}{Annual mortality rate for the cohort (proportion dying per year).
 This represents natural mortality, excluding offtake.}
-}
-Additional required columns for herd-level parameters (these should be identical across
-all cohorts for a given \code{herd_id}):
-\itemize{
-\item \code{parturition_rate} - Annual parturition rate (births per adult female per year)
-\item \code{litsize} - Average litter size (offspring per parturition)
-\item \code{female_birth_fraction} - Proportion of births that are female (0-1)
-\item \code{size_total} - Total population size for the herd
+}}
+
+\item{herd_level_data}{A \code{data.table} with one row per herd and mandatory columns:
+\describe{
+\item{\code{herd_id}}{Unique identifier for each herd. Must match \code{herd_id} values in \code{cohort_data}.}
+\item{\code{parturition_rate}}{Annual parturition rate (births per adult female per year)}
+\item{\code{litsize}}{Average litter size (offspring per parturition)}
+\item{\code{female_birth_fraction}}{Proportion of births that are female (0-1)}
+\item{\code{size_total}}{Total population size for the herd}
 }}
 
 \item{initial_structure}{A named numeric vector of initial population values used to
@@ -54,21 +56,30 @@ reached. Defaults to \code{1e-9}.}
 Defaults to \code{TRUE}.}
 }
 \value{
-A \code{data.table} in long format (one row per cohort) with all original input
-columns preserved, plus the following simulation results appended:
+A named list with two elements:
 \describe{
-\item{\code{share}}{Proportion of total population in this cohort at steady-state}
-\item{\code{growth_rate_pop}}{Annual population growth rate at steady-state}
-\item{\code{size}}{Population size in this cohort at the start of the year}
-\item{\code{size_end}}{Population size in this cohort at the end of the year}
-\item{\code{size_avg}}{Average population size in this cohort over the year}
-\item{\code{offtake_number}}{Total number of animals removed via offtake from this cohort}
-\item{\code{offtake_share}}{Offtake rate relative to starting population size}
-\item{\code{offtake_share_avg}}{Offtake rate relative to average population size}
-\item{\code{prob_death}}{Daily probability of death for this cohort}
-\item{\code{prob_offtake}}{Daily probability of offtake for this cohort}
-\item{\code{prob_survival}}{Daily probability of survival (neither death nor offtake)}
-\item{\code{prob_growth}}{Daily probability of transitioning to the next age class}
+\item{\code{cohort_results}}{A \code{data.table} with one row per cohort containing all original
+\code{cohort_data} columns plus the following simulation results:
+\itemize{
+\item \code{share} - Proportion of total population in this cohort at steady-state
+\item \code{size} - Population size in this cohort at the start of the year
+\item \code{size_end} - Population size in this cohort at the end of the year
+\item \code{size_avg} - Average population size in this cohort over the year
+\item \code{offtake_number} - Total number of animals removed via offtake from this cohort
+\item \code{offtake_share} - Offtake rate relative to starting population size
+\item \code{offtake_share_avg} - Offtake rate relative to average population size
+\item \code{prob_death} - Daily probability of death for this cohort
+\item \code{prob_offtake} - Daily probability of offtake for this cohort
+\item \code{prob_survival} - Daily probability of survival (neither death nor offtake)
+\item \code{prob_growth} - Daily probability of transitioning to the next age class
+}
+}
+\item{\code{herd_results}}{A \code{data.table} with one row per herd containing all original
+\code{herd_level_data} columns plus the following herd-level simulation results:
+\itemize{
+\item \code{growth_rate_pop} - Annual population growth rate at steady-state
+}
+}
 }
 }
 \description{
@@ -79,7 +90,7 @@ cohort transitions, population structure, and final population sizes.
 \details{
 \subsection{Overview}{
 
-This function accepts a long-format table with one row per cohort and performs herd
+This function accepts separate tables for herd-level and cohort-level data and performs herd
 structure simulation when required. The simulation process follows these steps:
 \enumerate{
 \item \strong{Input Validation}: Ensures data integrity and required columns
@@ -88,14 +99,19 @@ structure simulation when required. The simulation process follows these steps:
 \item \strong{Steady-State Simulation}: Simulates population dynamics until convergence
 \item \strong{Population Projection}: Projects one year of population dynamics
 \item \strong{Offtake Summary}: Calculates offtake statistics
-\item \strong{Result Mapping}: Maps simulation results back to long-format rows
+\item \strong{Result Mapping}: Maps simulation results back to separate result tables
 }
 }
 
 \subsection{Input Format}{
 
-The input must be in long format with one row per cohort. Each herd (identified by \code{herd_id})
-must have exactly 6 rows, one for each cohort: FJ, FS, FA, MJ, MS, MA.
+The function requires two separate input tables:
+\itemize{
+\item \strong{\code{cohort_data}}: One row per cohort (6 rows per herd: FJ, FS, FA, MJ, MS, MA)
+\item \strong{\code{herd_level_data}}: One row per herd with herd-level parameters
+}
+
+Each herd (identified by \code{herd_id}) must have exactly 6 rows in \code{cohort_data}, one for each cohort:
 \itemize{
 \item \strong{FJ}: Female Juvenile
 \item \strong{FS}: Female Subadult
@@ -109,17 +125,23 @@ must have exactly 6 rows, one for each cohort: FJ, FS, FA, MJ, MS, MA.
 \examples{
 \dontrun{
 # Load example input data from the package
-example_path <- system.file(
-  "extdata/example_herd_simulation_input.csv",
+cohort_path <- system.file(
+  "extdata/example_cohort_data.csv",
   package = "gleam"
 )
-herd_data <- data.table::fread(example_path)
+herd_level_path <- system.file(
+  "extdata/example_herd_level_data.csv",
+  package = "gleam"
+)
+cohort_data <- data.table::fread(cohort_path)
+herd_level_data <- data.table::fread(herd_level_path)
 
 # Run herd simulation
-results <- run_herd_simulation(herd_data)
+results <- run_herd_simulation(cohort_data, herd_level_data)
 
-# View results
-print(results)
+# Access results
+print(results$cohort_results)
+print(results$herd_results)
 }
 
 }
