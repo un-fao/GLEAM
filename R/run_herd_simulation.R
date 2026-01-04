@@ -147,8 +147,7 @@ run_herd_simulation <- function(
   invalid_cohorts <- setdiff(unique(herd_data$cohort), valid_cohorts)
   if (length(invalid_cohorts) > 0) {
     cli::cli_abort(
-      "Invalid cohort values: {.val {invalid_cohorts}}. ",
-      "Must be one of: {.val {valid_cohorts}}"
+      "Invalid cohort values: {.val {invalid_cohorts}}. Must be one of: {.val {valid_cohorts}}"
     )
   }
 
@@ -158,8 +157,8 @@ run_herd_simulation <- function(
   herds_with_wrong_count <- cohort_counts[N != 6]
   if (nrow(herds_with_wrong_count) > 0) {
     cli::cli_abort(
-      "Each herd_id must have exactly 6 rows (one per cohort). ",
-      "Found incorrect counts for herd_ids: {.val {herds_with_wrong_count$herd_id}}"
+      "Each herd_id must have exactly 6 rows (one per cohort).
+      Found incorrect counts for herd_ids: {.val {herds_with_wrong_count$herd_id}}"
     )
   }
 
@@ -171,8 +170,8 @@ run_herd_simulation <- function(
   incomplete_herds <- herd_cohort_completeness[has_all_cohorts == FALSE, herd_id]
   if (length(incomplete_herds) > 0) {
     cli::cli_abort(
-      "Each herd_id must have exactly one row for each of the 6 cohorts. ",
-      "Incomplete herds: {.val {incomplete_herds}}"
+      "Each herd_id must have exactly one row for each of the 6 cohorts.
+      Incomplete herds: {.val {incomplete_herds}}"
     )
   }
 
@@ -188,8 +187,8 @@ run_herd_simulation <- function(
     ][n_unique > 1]
     if (nrow(inconsistent) > 0) {
       cli::cli_warn(
-        "Herd-level parameter {.field {col}} differs across cohorts for herds: ",
-        "{.val {inconsistent$herd_id}}. Using first value for each herd."
+        "Herd-level parameter {.field {col}} differs across cohorts for herds:
+        {.val {inconsistent$herd_id}}. Using first value for each herd."
       )
     }
   }
