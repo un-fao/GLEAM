@@ -47,7 +47,7 @@ run_allocation <- function(
     standard_fat = 0.04,
     standard_lactose = 0.048,
     ratio_ne_me_camelids = 0.43,
-    assessment_duration = assessment_duration
+    assessment_duration = 365
 ) {
   # --- Input validation
   # Validate that input is a data.frame with at least one row
