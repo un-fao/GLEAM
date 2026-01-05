@@ -7,8 +7,6 @@
 run_gleam(
   data,
   has_herd = FALSE,
-  lactose_lookup = NULL,
-  standard_lactose = 0.048,
   gwp = "AR6",
   allocation_type = "biophysical-energy",
   assessment_duration = 365,
@@ -25,12 +23,6 @@ required input columns. Must include \code{herd_id} column for herd identificati
 \item{has_herd}{Logical. If \code{FALSE}, runs herd simulation to compute herd structure.
 If \code{TRUE}, assumes herd structure (size, share, etc.) is already provided in input.
 Defaults to \code{FALSE}.}
-
-\item{lactose_lookup}{Optional \code{data.table} mapping \code{Animal_short} to lactose percentage
-values in column \code{Value}. If not provided, uses standard lactose value (0.048).}
-
-\item{standard_lactose}{Numeric. Reference lactose fraction used for FPCM calculations
-when lactose_lookup is not provided. Defaults to \code{0.048}.}
 
 \item{gwp}{Character. Global Warming Potential-100 conversion factors to use.
 Must be one of: "AR6" (default), "AR5_excluding_carbon_feedback",
