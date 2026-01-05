@@ -321,12 +321,10 @@ run_gleam <- function(
   if (all(c("Animal_short", "LPS_short", "dmi", "diet_dig", "diet_me", "diet_ge", "ipcc_method") %in% names(data))) {
     data[, vs := calc_volatile_solids(
       animal = Animal_short,
-      lps_short = LPS_short,
       dmi = dmi,
       diet_dig = diet_dig,
       diet_me = diet_me,
-      diet_ge = diet_ge,
-      ipcc_method = ipcc_method
+      diet_ge = diet_ge
     ), by = .I]
   }
 
