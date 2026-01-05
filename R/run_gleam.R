@@ -42,23 +42,11 @@
 #' @param has_herd Logical. If `FALSE`, runs herd simulation to compute herd structure.
 #'   If `TRUE`, assumes herd structure (size, share, etc.) is already provided in input.
 #'   Defaults to `FALSE`.
-#' @param lactose_lookup Optional `data.table` mapping `Animal_short` to lactose percentage
-#'   values in column `Value`. If not provided, uses standard lactose value (0.048).
-#' @param standard_lactose Numeric. Reference lactose fraction used for FPCM calculations
-#'   when lactose_lookup is not provided. Defaults to `0.048`.
 #' @param gwp Character. Global Warming Potential-100 conversion factors to use.
 #'   Must be one of: "AR6" (default), "AR5_excluding_carbon_feedback",
 #'   "AR5_including_carbon_feedback", "AR4".
 #' @param allocation_type Character. Allocation methodology. Defaults to "biophysical-energy".
 #' @param assessment_duration Numeric. Assessment period in days. Defaults to `365`.
-#' @param initial_structure Named numeric vector. Initial population structure for herd
-#'   simulation bootstrap. Only used if `has_herd = TRUE`.
-#' @param max_years Integer. Maximum simulation years for herd simulation. Only used if
-#'   `has_herd = TRUE`. Defaults to `100`.
-#' @param lambda_threshold Numeric. Convergence threshold for herd simulation. Only used
-#'   if `has_herd = TRUE`. Defaults to `1e-9`.
-#' @param show_indicator Logical. Whether to show progress indicators during herd simulation.
-#'   Only used if `has_herd = TRUE`. Defaults to `TRUE`.
 #'
 #' @return A named list containing:
 #' \describe{
@@ -82,15 +70,9 @@
 run_gleam <- function(
     data,
     has_herd = FALSE,
-    lactose_lookup = NULL,
-    standard_lactose = 0.048,
     gwp = "AR6",
     allocation_type = "biophysical-energy",
-    assessment_duration = 365,
-    initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
-    max_years = 100,
-    lambda_threshold = 1e-9,
-    show_indicator = FALSE
+    assessment_duration = 365
 ) {
   # Convert to data.table if needed
   if (!data.table::is.data.table(data)) {
@@ -101,10 +83,10 @@ run_gleam <- function(
   if (has_herd == FALSE) {
     data <- run_herd_simulation(
       herd_data = data,
-      initial_structure = initial_structure,
-      max_years = max_years,
-      lambda_threshold = lambda_threshold,
-      show_indicator = show_indicator
+      initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
+      max_years = 100,
+      lambda_threshold = 1e-9,
+      show_indicator = FALSE
     )
   }
 
@@ -477,24 +459,12 @@ run_gleam <- function(
     data[, total_n2o_manure_other := total_n2o_result$total_n2o_manure_other]
   }
 
-  # --- Module 7: Production ----------------------------------------------------
-  # Handle lactose lookup
-  if (!is.null(lactose_lookup) && data.table::is.data.table(lactose_lookup)) {
-    lactose_lookup_fraction <- data.table::copy(lactose_lookup)
-    lactose_lookup_fraction[, Value := Value / 100]
-    data <- merge(
-      data,
-      lactose_lookup_fraction[, .(Animal_short, lactose = Value)],
-      by = "Animal_short",
-      all.x = TRUE
-    )
-    data[is.na(lactose), lactose := standard_lactose]
-  } else {
-    data[, lactose := standard_lactose]
-  }
+  # --- Module 7: Production ---------------------------------------------------
 
   # Milk production outputs
-  if (all(c("milk_yield", "size", "milking_fraction", "milk_protein", "milk_fat", "lactose") %in% names(data))) {
+  if (all(c(
+    "milk_yield", "size", "milking_fraction", "milk_protein", "milk_fat", "lactose"
+  ) %in% names(data))) {
     milk_output_cols <- c(
       "output_milk_mass_production",
       "output_milk_protein_production",
@@ -510,7 +480,7 @@ run_gleam <- function(
       lactose = lactose,
       standard_protein = 0.033,
       standard_fat = 0.04,
-      standard_lactose = standard_lactose
+      standard_lactose = 0.048
     ), by = .I]
   }
 
@@ -553,7 +523,7 @@ run_gleam <- function(
       milk_fpcm_output = output_milk_fpcm_production,
       standard_protein = 0.033,
       standard_fat = 0.04,
-      standard_lactose = standard_lactose
+      standard_lactose = 0.048
     ), by = .I]
   }
 
