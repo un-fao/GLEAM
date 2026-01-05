@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_herd_simulation.R
 \name{run_herd_simulation}
 \alias{run_herd_simulation}
-\title{Run Herd Simulation (Internal)}
+\title{Run Herd Simulation}
 \usage{
 run_herd_simulation(
   herd_data,
@@ -13,27 +13,62 @@ run_herd_simulation(
 )
 }
 \arguments{
-\item{herd_data}{A \code{data.table} containing herd-level input parameters per country/animal/LPS.
-It must include cohort durations, offtake and mortality rates, fecundity inputs,
-liveweights, and classification columns (e.g., \code{Animal}, \code{LPS}, \code{HerdType}, etc.).}
+\item{herd_data}{A \code{data.table} in long format (one row per cohort) with mandatory columns:
+\describe{
+\item{\code{herd_id}}{Unique identifier for each herd (mandatory). All cohorts belonging to
+the same herd must share the same \code{herd_id}.}
+\item{\code{cohort}}{Cohort code. Must be one of: "FJ", "FS", "FA", "MJ", "MS", "MA".
+Each \code{herd_id} must have exactly one row for each of these 6 cohorts.}
+\item{\code{duration}}{Duration of the cohort stage in days. This is the time an animal
+spends in this particular life stage.}
+\item{\code{offtake_rate}}{Annual offtake rate for the cohort (proportion removed per year).
+This represents the fraction of animals removed from the herd (e.g., for slaughter).}
+\item{\code{mort_rate}}{Annual mortality rate for the cohort (proportion dying per year).
+This represents natural mortality, excluding offtake.}
+}
+Additional required columns for herd-level parameters (these should be identical across
+all cohorts for a given \code{herd_id}):
+\itemize{
+\item \code{parturition_rate} - Annual parturition rate (births per adult female per year)
+\item \code{litsize} - Average litter size (offspring per parturition)
+\item \code{female_birth_fraction} - Proportion of births that are female (0-1)
+\item \code{size_total} - Total population size for the herd
+}}
 
-\item{initial_structure}{A numeric vector of initial values used to simulate population dynamics for the
-6 sex-age classes (FJ, FS, FA, MJ, MS, MA). Defaults to \code{c(100, 50, 30, 100, 50, 30)}.}
+\item{initial_structure}{A named numeric vector of initial population values used to
+bootstrap the steady-state simulation. Must be named with cohort codes:
+\code{c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30)}. These values are used
+as starting points for the iterative simulation and do not affect the final steady-state
+results (only convergence speed).}
 
-\item{max_years}{Integer. Maximum number of simulation years to run when seeking a steady-state
-population structure. Defaults to \code{100}.}
+\item{max_years}{Integer. Maximum number of simulation years to run when seeking a
+steady-state population structure. The simulation will stop earlier if convergence
+is detected. Defaults to \code{100}.}
 
-\item{lambda_threshold}{Numeric. Tolerance threshold for detecting convergence in growth rate (\code{lambda})
-changes across cohorts. Defaults to \code{1e-9}.}
+\item{lambda_threshold}{Numeric. Tolerance threshold for detecting convergence in
+population growth rate. When the change in growth rate (lambda) across consecutive
+time steps falls below this threshold for all cohorts, steady-state is considered
+reached. Defaults to \code{1e-9}.}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during simulation.
+Defaults to \code{TRUE}.}
 }
 \value{
-A \code{data.table} in long format (per cohort) with appended simulation results,
-including:
-\itemize{
-\item population structure and sizes
-\item offtake numbers
-\item transition probabilities
-\item cohort-level liveweights and weight gain
+A \code{data.table} in long format (one row per cohort) with all original input
+columns preserved, plus the following simulation results appended:
+\describe{
+\item{\code{share}}{Proportion of total population in this cohort at steady-state}
+\item{\code{growth_rate_pop}}{Annual population growth rate at steady-state}
+\item{\code{size}}{Population size in this cohort at the start of the year}
+\item{\code{size_end}}{Population size in this cohort at the end of the year}
+\item{\code{size_avg}}{Average population size in this cohort over the year}
+\item{\code{offtake_number}}{Total number of animals removed via offtake from this cohort}
+\item{\code{offtake_share}}{Offtake rate relative to starting population size}
+\item{\code{offtake_share_avg}}{Offtake rate relative to average population size}
+\item{\code{prob_death}}{Daily probability of death for this cohort}
+\item{\code{prob_offtake}}{Daily probability of offtake for this cohort}
+\item{\code{prob_survival}}{Daily probability of survival (neither death nor offtake)}
+\item{\code{prob_growth}}{Daily probability of transitioning to the next age class}
 }
 }
 \description{
@@ -42,22 +77,37 @@ production systems, and countries. This includes modeling of fecundity, mortalit
 cohort transitions, population structure, and final population sizes.
 }
 \details{
-In addition to demographic simulation, this function reshapes cohort-level variables from wide
-to long format and back, and calculates key animal weights (initial, final, slaughter, average),
-as well as daily weight gain (DWG). It also fills in weaning weights for non-pig animals
-based on FS cohorts.
+\subsection{Overview}{
 
+<<<<<<< HEAD
 Input data must be preloaded. If using example data from the package (located in \code{inst/extdata}),
 load it using \code{\link[=system.file]{system.file()}} and \code{\link[data.table:fread]{data.table::fread()}} as shown in the examples.
+=======
+This function accepts a long-format table with one row per cohort and performs herd
+structure simulation when required. The simulation process follows these steps:
+\enumerate{
+\item \strong{Input Validation}: Ensures data integrity and required columns
+\item \strong{Fecundity Calculation}: Computes daily birth rates for males and females
+\item \strong{Transition Probabilities}: Calculates daily probabilities for death, offtake, survival, and growth
+\item \strong{Steady-State Simulation}: Simulates population dynamics until convergence
+\item \strong{Population Projection}: Projects one year of population dynamics
+\item \strong{Offtake Summary}: Calculates offtake statistics
+\item \strong{Result Mapping}: Maps simulation results back to long-format rows
+}
+}
+>>>>>>> 8112ac3 (Update namespace)
 
-This function is intended for internal use.
+\subsection{Input Format}{
+
+The input must be in long format with one row per cohort. Each herd (identified by \code{herd_id})
+must have exactly 6 rows, one for each cohort: FJ, FS, FA, MJ, MS, MA.
+\itemize{
+\item \strong{FJ}: Female Juvenile
+\item \strong{FS}: Female Subadult
+\item \strong{FA}: Female Adult
+\item \strong{MJ}: Male Juvenile
+\item \strong{MS}: Male Subadult
+\item \strong{MA}: Male Adult
 }
-\examples{
-\dontrun{
-# Load example input from the package and run the simulation
-input_path <- system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
-herd_data <- data.table::fread(input_path)[1:20, ]
-sim_results <- run_herd_simulation(herd_data)
 }
 }
-\keyword{internal}
