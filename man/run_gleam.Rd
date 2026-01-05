@@ -9,11 +9,7 @@ run_gleam(
   has_herd = FALSE,
   gwp = "AR6",
   allocation_type = "biophysical-energy",
-  assessment_duration = 365,
-  initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
-  max_years = 100,
-  lambda_threshold = 1e-09,
-  show_indicator = FALSE
+  assessment_duration = 365
 )
 }
 \arguments{
@@ -31,18 +27,6 @@ Must be one of: "AR6" (default), "AR5_excluding_carbon_feedback",
 \item{allocation_type}{Character. Allocation methodology. Defaults to "biophysical-energy".}
 
 \item{assessment_duration}{Numeric. Assessment period in days. Defaults to \code{365}.}
-
-\item{initial_structure}{Named numeric vector. Initial population structure for herd
-simulation bootstrap. Only used if \code{has_herd = TRUE}.}
-
-\item{max_years}{Integer. Maximum simulation years for herd simulation. Only used if
-\code{has_herd = TRUE}. Defaults to \code{100}.}
-
-\item{lambda_threshold}{Numeric. Convergence threshold for herd simulation. Only used
-if \code{has_herd = TRUE}. Defaults to \code{1e-9}.}
-
-\item{show_indicator}{Logical. Whether to show progress indicators during herd simulation.
-Only used if \code{has_herd = TRUE}. Defaults to \code{TRUE}.}
 }
 \value{
 A named list containing:

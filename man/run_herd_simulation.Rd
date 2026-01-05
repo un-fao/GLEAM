@@ -79,13 +79,6 @@ cohort transitions, population structure, and final population sizes.
 \details{
 \subsection{Overview}{
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Input data must be preloaded. If using example data from the package (located in \code{inst/extdata}),
-load it using \code{\link[=system.file]{system.file()}} and \code{\link[data.table:fread]{data.table::fread()}} as shown in the examples.
-=======
-=======
->>>>>>> 2578796 (Update documentation)
 This function accepts a long-format table with one row per cohort and performs herd
 structure simulation when required. The simulation process follows these steps:
 \enumerate{
@@ -98,10 +91,6 @@ structure simulation when required. The simulation process follows these steps:
 \item \strong{Result Mapping}: Maps simulation results back to long-format rows
 }
 }
-<<<<<<< HEAD
->>>>>>> 8112ac3 (Update namespace)
-=======
->>>>>>> 2578796 (Update documentation)
 
 \subsection{Input Format}{
 
