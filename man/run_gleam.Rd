@@ -15,7 +15,7 @@ run_gleam(
   initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
   max_years = 100,
   lambda_threshold = 1e-09,
-  show_indicator = TRUE
+  show_indicator = FALSE
 )
 }
 \arguments{
