@@ -7,6 +7,8 @@
 #'
 #' @param data A `data.table` in long format (one row per cohort) with mandatory columns:
 #'   \describe{
+#'     \item{`herd_id`}{Unique identifier for each herd. All cohorts belonging to
+#'       the same herd must share the same `herd_id`.}
 #'     \item{`cohort`}{Cohort code (e.g., "FJ", "FS", "FA", "MJ", "MS", "MA"). Required for
 #'       determining which weight calculation logic to apply.}
 #'     \item{`duration`}{Duration of the cohort stage (in days).}
@@ -33,6 +35,7 @@
 #'     \item{`slaughter_weight`}{Slaughter live weight.}
 #'     \item{`average_weight`}{Average live weight over the stage.}
 #'     \item{`final_weight`}{Final live weight after accounting for survivors and offtaken animals.}
+#'     \item{`adult_weight`}{Numeric. Adult weight that could be reached by the animal (kg).}
 #'     \item{`dwg`}{Daily weight gain (kg/day).}
 #'   }
 #'
@@ -92,6 +95,17 @@ run_weights_calculations <- function(data) {
          ),
        by = .I
   ]
+  
+  # Create a new variable (adult_weight)
+  data[, adult_weight := data.table::fifelse(
+    cohort %in% c("FA", "FS", "FJ"),
+    average_weight[cohort == "FA"][1],   # female adult ref for this group
+    data.table::fifelse(
+      cohort %in% c("MA", "MS", "MJ"),
+      average_weight[cohort == "MA"][1], # male adult ref for this group
+      NA_real_
+    )
+  ), by = .(herd_id, Animal_short)]
 
   # Calculate daily weight gain
   data[, dwg := calc_daily_weight_gain(

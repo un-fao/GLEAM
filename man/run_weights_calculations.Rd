@@ -9,6 +9,8 @@ run_weights_calculations(data)
 \arguments{
 \item{data}{A \code{data.table} in long format (one row per cohort) with mandatory columns:
 \describe{
+\item{\code{herd_id}}{Unique identifier for each herd. All cohorts belonging to
+the same herd must share the same \code{herd_id}.}
 \item{\code{cohort}}{Cohort code (e.g., "FJ", "FS", "FA", "MJ", "MS", "MA"). Required for
 determining which weight calculation logic to apply.}
 \item{\code{duration}}{Duration of the cohort stage (in days).}
@@ -36,6 +38,7 @@ weight-related columns appended:
 \item{\code{slaughter_weight}}{Slaughter live weight.}
 \item{\code{average_weight}}{Average live weight over the stage.}
 \item{\code{final_weight}}{Final live weight after accounting for survivors and offtaken animals.}
+\item{\code{adult_weight}}{Numeric. Adult weight that could be reached by the animal (kg).}
 \item{\code{dwg}}{Daily weight gain (kg/day).}
 }
 }
