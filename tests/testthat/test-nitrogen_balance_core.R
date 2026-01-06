@@ -29,7 +29,7 @@ test_that("retention for cattle: milk + growth add up correctly", {
     dwg = 0, fibre_prod = 0,
     litsize = 1, parturition_rate = 1
   )
-  expect_equal(base - none, 20 * (32/6.38), tolerance = 1e-12)
+  expect_equal(base - none, 20 * (32/6.25), tolerance = 1e-12)
   expect_gt(base, 0)
 })
 
@@ -47,7 +47,7 @@ test_that("retention for goats includes fibre component", {
     dwg = 0, fibre_prod = 10,
     litsize = 1, parturition_rate = 1
   )
-  expect_equal(with_fibre - base, (10/365) * 0.0134, tolerance = 1e-12)
+  expect_equal(with_fibre - base, (10/365) * 0.134, tolerance = 1e-12)
 })
 
 # ---- test compute_nitrogen_retention (sheep) ----

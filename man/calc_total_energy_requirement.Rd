@@ -22,37 +22,120 @@ calc_total_energy_requirement(
 )
 }
 \arguments{
-\item{animal}{Character. Species code.}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{cohort}{Character. Cohort code.}
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 
-\item{nemain}{Numeric. Net energy for maintenance.}
+\item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{neact}{Numeric. Net energy for activity.}
+\item{neact}{Numeric. Energy required for activity, defined as the amount of energy needed to obtain food, water and shelter (example stall, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{nelact}{Numeric. Net energy for lactation.}
+\item{nelact}{Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{nework}{Numeric. Net energy for work.}
+\item{nework}{Numeric. Energy required for work, used to estimate the energy required for draft power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{nepreg}{Numeric. Net energy for pregnancy.}
+\item{nepreg}{Numeric. Energy required for pregnancy for pregnant adult females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{rem}{Numeric. REM value.}
+\item{rem}{Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)}
 
-\item{negrow}{Numeric. Net energy for growth.}
+\item{negrow}{Numeric. Energy required for growth (i.e., weight gain). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{nefibre}{Numeric. Net energy for fibre production.}
+\item{nefibre}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
 \item{neegg}{Numeric. Net energy for egg production.}
 
-\item{reg}{Numeric. REG value.}
+\item{reg}{Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)}
 
-\item{diet_dig}{Numeric. Diet digestibility (fraction).}
+\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
 
-\item{afc}{Numeric. Age at first calving (for SHP, GTS).}
+\item{afc}{Numeric. Age at first parturition for female breeding animals (years)}
 }
 \value{
-Numeric. Total energy requirement (MJ/head/day).
+Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS
+this is expressed as \strong{gross energy intake requirement (GE)}. For CML and PGS
+the function returns the summed daily metabolizable energy requirement.
 }
 \description{
-Computes the total energy requirement (MJ/head/day).
+Computes the \strong{total daily energy requirement} (MJ/head/day) by summing
+relevant energy partitions (maintenance, activity, lactation, work, pregnancy,
+growth, fibre, egg production).
+}
+\details{
+The total energy requirement is computed differently depending on whether
+species energy requirements are expressed as \strong{net energy (NE)} or
+\strong{metabolizable energy (ME)}.
+
+\itemize{
+
+\item \strong{Energy requirements expressed as net energy
+(CTL, BFL, SHP, GTS)}:
+
+For these species, the calculation follows the IPCC Tier 2 structure
+(Equation 10.16). Net energy requirements are converted to gross energy (GE)
+intake using efficiency ratios for maintenance-type (\eqn{REM}) and
+growth-type (\eqn{REG}) functions, and diet digestibility
+(\eqn{diet\_dig = DE/GE}).
+
+\itemize{
+\item \strong{Cattle and buffalo (CTL, BFL)}:
+\deqn{
+      energy\_total =
+      \frac{\left(\frac{nemain + neact + nelact + nework + nepreg}{rem}\right)
+      + \left(\frac{negrow}{reg}\right)}{diet\_dig}
+    }
+
+\item \strong{Sheep and goats (SHP, GTS)}:
+Fibre production is treated as a growth-type requirement:
+\deqn{
+      energy\_total =
+      \frac{\left(\frac{nemain + neact + nelact + nepreg}{rem}\right)
+      + \left(\frac{negrow + nefibre}{reg}\right)}{diet\_dig}
+    }
+}
+
+\item \strong{Energy requirements expressed as metabolizable energy
+(CML, PGS)}:
+
+For these species, total energy requirement is calculated as the
+\strong{direct sum} of the relevant daily energy components.
+
+\itemize{
+\item \strong{Camels (CML)}:
+\deqn{
+      energy\_total =
+      nemain + neact + nelact + nework + nefibre + nepreg + negrow
+    }
+
+\item \strong{Pigs (PGS)}:
+\deqn{
+      energy\_total =
+      nemain + neact + nelact + nepreg + negrow
+    }
+}
+}
+}
+\references{
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.16.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.16.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/energy_requirements_core_model.R
 \name{calc_net_energy_activity}
 \alias{calc_net_energy_activity}
-\title{Calculate Net Energy for Activity}
+\title{Calculate Energy for Activity}
 \usage{
 calc_net_energy_activity(
   animal,
@@ -14,21 +14,72 @@ calc_net_energy_activity(
 )
 }
 \arguments{
-\item{animal}{Character. Species code.}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{cohort}{Character. Cohort code.}
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 
-\item{nemain}{Numeric. Net energy for maintenance.}
+\item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{average_weight}{Numeric. Average live weight (kg).}
+\item{average_weight}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
 
-\item{activity_fraction}{Numeric. Fraction of time under low-activity conditions.}
+\item{activity_fraction}{Numeric. Proportion of the assessment period during which the animal performs low-intensity movement typical of stall-feeding or near-field grazing, characterized by minimal walking distances and flat terrain  (fraction).}
 
-\item{high_activity_fraction}{Numeric. Fraction of time under high-activity conditions.}
+\item{high_activity_fraction}{Numeric. Proportion of the assessment period during which the animal engages in sustained locomotion associated with herding or long-distance grazing, typically involving extended walking distances and/or uneven or hilly terrain (fraction).}
 }
 \value{
-Numeric. Net energy for activity (MJ/head/day).
+Numeric. Energy required for activity, defined as the amount of energy needed to obtain food, water and
+shelter (example stall, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable
+energy for CML and PGS (MJ/head/day).
 }
 \description{
-Computes net energy required for activity (MJ/head/day).
+Computes the \strong{energy requirement for activity} (MJ/head/day).
+This approach follows the IPCC Tier 2 energy partitioning method and applies
+the following general equation:
+energy_activity = cact * energy_maintenance
+(except for sheep: cact * average_weight)
+where cact is an activity coefficient reflecting the animal’s feeding
+and management situation. (MJ d^-1 kg^-1).
+}
+\details{
+The activity coefficient \code{cact} reflects the animal’s feeding and management conditions.
+For CTL, BFL, SHP, and GTS, \code{cact} is calculated as a \strong{weighted average} of the different activity levels over the assessment period.
+Reference coefficients are derived from NRC (1996) and AFRC (1993) for CTL, BFL, SHP, and GTS; NRC (1998) for PGS; and Wardeh (2004) for camels.
+}
+\references{
+NRC (1998). \emph{Nutrient Requirements of Swine},
+10th Revised Edition. National Academies Press, Washington, DC.
+
+NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
+7th Revised Edition. National Academies Press, Washington, DC.
+
+AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+CAB International, Wallingford, UK.
+
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.4; Table 10.5.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.4; Table 10.5.
+
+Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
+Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 }

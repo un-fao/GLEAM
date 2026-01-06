@@ -2,20 +2,116 @@
 % Please edit documentation in R/energy_requirements_core_model.R
 \name{calc_net_energy_fibre}
 \alias{calc_net_energy_fibre}
-\title{Calculate Net Energy for Fibre Production}
+\title{Calculate Energy for Fibre Production}
 \usage{
 calc_net_energy_fibre(animal, cohort, fibre_prod)
 }
 \arguments{
-\item{animal}{Character. Species code.}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{cohort}{Character. Cohort code.}
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 
-\item{fibre_prod}{Numeric. Fibre production (kg/year).}
+\item{fibre_prod}{Numeric. Annual fibre production yield (kg/head/year).}
 }
 \value{
-Numeric. Net energy for fibre production (MJ/head/day).
+Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
-Computes net energy required for fibre production (MJ/head/day).
+Computes the \strong{energy requirement for fibre production} (MJ/head/day),
+defined as the energy needed to produce animal fibres such as wool or hair.
+This component follows the IPCC Tier 2 partitioning approach and is applied
+only to fibre-producing species and relevant cohorts, which are assumed by the model to be = ("FA", "FS", "MA", "MS").
+}
+\details{
+\itemize{
+
+\item\strong{SHP and GTS} - (AFRC 1995); IPCC (2006, 2019):
+
+For sheep and goats, fibre production energy is calculated assuming a fixed
+net energy cost of \eqn{24} MJ per kilogram of fibre produced. Annual fibre
+production is converted to a daily requirement as:
+
+\deqn{
+energy\_fibre =
+\frac{24 \times fibre\_prod}{365}
+}
+
+where:
+\itemize{
+\item \eqn{fibre\_prod} is annual fibre production
+(kg head\eqn{^{-1}} year\eqn{^{-1}}),
+\item \eqn{24} is the net energy requirement per kilogram of fibre
+(MJ kg fibre\eqn{^{-1}}).
+}
+
+\item\strong{CML} - (AFRC, 1998; Cannas et al, 2007):
+
+For camels, energy requirements for fibre production are first calculated on
+a \strong{net energy (NE)} basis and then converted to \strong{metabolizable energy (ME)}
+using a net-to-metabolizable energy efficiency coefficient.
+
+Fibre energy requirements are calculated as:
+
+\deqn{
+energy\_fibre =
+\frac{24}{0.43}
+\times
+\frac{fibre\_prod}{365}
+}
+
+where:
+\itemize{
+\item \eqn{24} is the net energy requirement per kilogram of fibre
+(MJ kg fibre\eqn{^{-1}}),
+\item \eqn{0.43} is the efficiency of conversion from metabolizable energy
+to net energy for fibre production (dimensionless fraction),
+\item \code{fibre_prod} is the annual fibre production per animal
+(kg head\eqn{^{-1}} year\eqn{^{-1}}),
+\item division by \eqn{365} converts annual fibre production to a
+daily basis.
+}
+
+The efficiency coefficient of 0.43 is adopted by analogy with goats, assuming
+a dietary metabolizability of approximately 0.55, following AFRC guidance and
+subsequent synthesis by Cannas et al. (2007).
+
+\item\strong{Other species}
+Fibre production energy is assumed to be zero for cattle, buffalo, pigs, and
+poultry.
+}
+}
+\references{
+AFRC (1998) \emph{The Nutrition of Goats. Wallingford: CAB International}.
+Animut G., Puchala R., Goetsch A.L., Patra A.K., Sahlu T., Varel V.H., Wells J.
+
+AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+CAB International, Wallingford, UK.
+
+Cannas, A., Atzori, A. S., Boe, F., & Teixeira, I. (2007).
+\emph{Energy and protein requirements of goats}.
+In: Dairy sheep nutrition (pp. 31-49). CAB International, Wallingford, UK.
+
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.12.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.12.
 }

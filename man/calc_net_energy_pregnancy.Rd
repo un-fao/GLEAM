@@ -2,7 +2,7 @@
 % Please edit documentation in R/energy_requirements_core_model.R
 \name{calc_net_energy_pregnancy}
 \alias{calc_net_energy_pregnancy}
-\title{Calculate Net Energy for Pregnancy}
+\title{Calculate Energy for Pregnancy}
 \usage{
 calc_net_energy_pregnancy(
   animal,
@@ -16,25 +16,119 @@ calc_net_energy_pregnancy(
 )
 }
 \arguments{
-\item{animal}{Character. Species code.}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{cohort}{Character. Cohort code.}
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 
-\item{nemain}{Numeric. Net energy for maintenance.}
+\item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{parturition_rate}{Numeric. Parturition rate.}
+\item{parturition_rate}{Numeric. Numeric. Average annual number of parturitions per female animal (fraction).
+At herd level, calculated as offspring delivered divided by the number of adult females.}
 
-\item{litsize}{Numeric. Litter size (for SHP, GTS, PGS).}
+\item{litsize}{Numeric. Average number of offspring born per parturition (#). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
-\item{gest}{Numeric. Number of days gestating during the assessment period (for all species).}
+\item{gest}{Numeric. Duration of pregnancy period (days).}
 
-\item{duration}{Numeric. Duration in days.}
+\item{duration}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 
-\item{offtake_rate}{Numeric. Offtake rate by cohort.}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 }
 \value{
-Numeric. Net energy for pregnancy (MJ/head/day).
+Numeric. Energy required for pregnancy for pregnant adult females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
-Computes net energy required for pregnancy (MJ/head/day).
+Computes the \strong{energy requirement for pregnancy} (MJ/head/day) for pregnant
+females. This approach follows the IPCC Tier 2 partitioning framework, where
+pregnancy energy is expressed as a fraction of the energy required for
+maintenance and is applied only to \strong{female cohorts}.
+}
+\details{
+Pregnancy energy is applied only to female cohorts and is scaled according to
+reproductive exposure during the cohort stage:
+\itemize{
+\item For adult females (\code{FA}), pregnancy energy is proportional to
+\code{parturition_rate}.
+\item For replacement females (\code{FS}), pregnancy energy is applied only
+to the fraction of animals that remain in the cohort, using
+\code{(1 - offtake_rate)}, and is scaled to the time pregnant within the
+cohort using \code{gest / duration}.
+}
+
+Specifics by species:
+
+\itemize{
+\item
+\strong{CTL and BFL} — IPCC (2006, 2019).
+Pregnancy is approximated as 10\\% of maintenance energy averaged over the year:
+\itemize{
+\item \code{FA}:
+\deqn{energy\_pregnancy = 0.10 \times nemain \times parturition\_rate}
+\item \code{FS}:
+\deqn{energy\_pregnancy = 0.10 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
+}
+
+\strong{CML} — (Wardeh, 2004)
+\itemize{
+\item \code{FA}:
+\deqn{energy\_pregnancy = 0.12 \times nemain \times parturition\_rate}
+\item \code{FS}:
+\deqn{energy\_pregnancy = 0.12 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
+}
+
+\strong{SHP and GTS} — IPCC (2006, 2019).
+Pregnancy is calculated as a litter-size dependent fraction of maintenance:
+\deqn{energy\_pregnancy = cpreg(litsize) \times nemain \times parturition\_rate}
+where \eqn{cpreg} is defined as:
+\itemize{
+\item If \eqn{1 \le litsize \le 2}:
+\deqn{cpreg = 0.077 \times (2 - litsize) + 0.126 \times (litsize - 1)}
+\item If \eqn{litsize > 2}: \deqn{cpreg = 0.150}
+}
+For replacement females (\code{FS}), the implementation applies the single-birth
+coefficient scaled by pregnancy exposure:
+\deqn{energy\_pregnancy = 0.077 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
+
+\strong{PGS} — (NRC, 1998):
+Pregnancy energy is implemented as a litter-based daily requirement using a
+gestation coefficient (\eqn{cgest}, MJ piglet\eqn{^{-1}}):
+\itemize{
+\item \code{FA}:
+\deqn{energy\_pregnancy = cgest \times litsize \times parturition\_rate}
+\item \code{FS}:
+\deqn{energy\_pregnancy = cgest \times litsize \times parturition\_rate \times (gest/duration) \times (1-offtake\_rate)}
+}
+with default \eqn{cgest = 0.14985} MJ piglet\eqn{^{-1}}.
+}
+}
+\references{
+NRC (1998). \emph{Nutrient Requirements of Swine},
+10th Revised Edition. National Academies Press, Washington, DC.
+
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.13; Table 10.7.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.13; Table 10.7.
+
+Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
+Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 }

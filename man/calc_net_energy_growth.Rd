@@ -2,7 +2,7 @@
 % Please edit documentation in R/energy_requirements_core_model.R
 \name{calc_net_energy_growth}
 \alias{calc_net_energy_growth}
-\title{Calculate Net Energy for Growth}
+\title{Calculate Energy for Growth}
 \usage{
 calc_net_energy_growth(
   animal,
@@ -17,27 +17,128 @@ calc_net_energy_growth(
 )
 }
 \arguments{
-\item{animal}{Character. Species code.}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{cohort}{Character. Cohort code.}
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 
-\item{average_weight}{Numeric. Average live weight (kg).}
+\item{average_weight}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
 
-\item{final_weight}{Numeric. Final live weight (kg).}
+\item{final_weight}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
 
-\item{initial_weight}{Numeric. Initial live weight (kg).}
+\item{initial_weight}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 
-\item{adult_weight}{Numeric. Adult weight that could be reached by the animal (kg).}
+\item{adult_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 
-\item{dwg}{Numeric. Daily weight gain (kg/day).}
+\item{dwg}{Numeric. Average live weight of the cohort over the cohort stage (kg/head/day).}
 
-\item{offtake_rate}{Numeric. Offtake rate by cohort.}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 
-\item{duration}{Numeric. Duration in days.}
+\item{duration}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 }
 \value{
-Numeric. Net energy for growth (MJ/head/day).
+Numeric. Energy required for growth (i.e., weight gain). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
-Computes net energy required for growth (MJ/head/day).
+Computes the \strong{energy requirement for growth} (MJ/head/day), defined as the energy needed for body weight gain.
+This approach follows the IPCC Tier 2 partitioning method and applies species-specific equations for growth energy requirements.
+}
+\details{
+Energy for growth represents the energy required for tissue accretion associated with live weight gain.
+Species-specific formulations follow IPCC Tier 2 guidelines.
+
+\itemize{
+
+\item\strong{CTL and BFL} — NRC (1996); IPCC (2006, 2019).
+
+The equation uses a growth coefficient (\eqn{cgro}) that differs between
+castrated and intact males. For male cohorts, the code calculates
+\eqn{cgro} as a \strong{weighted average} using \code{offtake_rate}, assuming that
+animals removed from the herd are castrated and animals remaining in the
+cohort are intact.
+
+\item\strong{SHP and GTS} — Gibbs et al. (2002); AFRC (1993, 1995); IPCC (2006, 2019).
+
+For sheep, the coefficients \eqn{a} and \eqn{b} (MJ kg\eqn{^{-1}}) differ
+between castrated and intact males. The code calculates a \strong{weighted average}
+using \code{offtake_rate}, assuming that offtaken animals are castrated.
+
+\item\strong{CML} — Al-Jassim (2019).
+
+Growth energy is represented using a simplified linear relationship with
+daily weight gain.
+
+\item\strong{PGS} — NRC (1998)
+
+For pigs, growth is assumed to consist exclusively of \strong{protein tissue}
+and \strong{fat tissue}, and growth energy requirements are expressed as
+\strong{metabolizable energy (ME)}.
+
+A growth energy coefficient (\eqn{cgro}, MJ kg\eqn{^{-1}} LW) is calculated as:
+
+\eqn{
+cgro =
+\mathrm{prot\_tissue\_frac} \times \mathrm{meat\_protein} \times \mathrm{meat\_protein\_energy}
++ (1 - \mathrm{prot\_tissue\_frac}) \times \mathrm{fat\_adipose\_tissue\_frac} \times \mathrm{meat\_fat\_energy}
+}
+
+Total metabolizable energy required for growth is then:
+
+\eqn{ME_{growth} = DWG \times cgro}
+
+where:
+\itemize{
+\item \eqn{cgro} is the growth energy coefficient
+(MJ kg\eqn{^{-1}} live weight),
+\item \code{prot_tissue_frac = 0.65} is the fraction of protein tissue in daily weight gain,
+\item \code{meat_protein = 0.23} is the fraction of protein in protein tissue,
+\item \code{meat_protein_energy = 54.0} is the metabolizable energy cost of protein deposition
+(MJ kg protein\eqn{^{-1}}),
+\item \code{fat_adipose_tissue_frac = 0.90} is the fraction of fat in adipose tissue,
+\item \code{meat_fat_energy = 52.3} is the metabolizable energy cost of fat deposition
+(MJ kg fat\eqn{^{-1}}).
+}
+}
+}
+\references{
+Al-Jassim, R. (2019). \emph{Metabolisable energy and protein requirements of the Arabian camel (Camelus dromedarius)}.
+Journal of Camelid Science (12) 33-45
+
+NRC (1998). \emph{Nutrient Requirements of Swine},
+10th Revised Edition. National Academies Press, Washington, DC.
+
+NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
+7th Revised Edition. National Academies Press, Washington, DC.
+
+AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+CAB International, Wallingford, UK.
+
+AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+CAB International, Wallingford, UK.
+
+Gibbs, M.J., Conneely, D., Johnson, D., Lassey, K.R. and Ulyatt, M.J. (2002).
+\emph{CH4 emissions from enteric fermentation}. In: Background Papers: IPCC Expert Meetings on Good Practice Guidance and Uncertainty Management in National Greenhouse Gas Inventories, p 297–320. IPCC-NGGIP, Institute for Global Environmental Strategies (IGES), Hayama, Kanagawa, Japan.
+
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
 }

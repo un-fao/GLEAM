@@ -99,7 +99,7 @@ test_that("calc_net_energy_activity returns correct values for buffalo", {
   nemain <- 18.0
   result <- calc_net_energy_activity(
     animal = "BFL", cohort = "FA",
-    nemain = nemain, average_weight = 600, 
+    nemain = nemain, average_weight = 600,
     activity_fraction = 0.5, high_activity_fraction = 0.2
   )
   cact <- (0.17 * 0.5) + (0.36 * 0.2)
@@ -110,7 +110,7 @@ test_that("calc_net_energy_activity returns correct values for buffalo", {
 test_that("calc_net_energy_activity handles sheep complexity", {
   result <- calc_net_energy_activity(
     animal = "SHP", cohort = "MS",
-    nemain = 8.0, average_weight = 45, 
+    nemain = 8.0, average_weight = 45,
     activity_fraction = 0.5, high_activity_fraction = 0.2
   )
   cact <- (0.0107 * 0.5) +  (0.024 * 0.2)
@@ -144,7 +144,7 @@ test_that("calc_net_energy_activity handles different species", {
     nemain = 10.0, average_weight = 150,
     activity_fraction = 0.5, high_activity_fraction = 0.3
   )
-  expected <- 0.125 * 0.5 * 10.0
+  expected <- 0.125 * (0.5 + 0.3) * 10.0
   expect_equal(result, expected)
 
   # Test goats
@@ -225,9 +225,9 @@ test_that("calc_net_energy_lactation returns correct values for cattle", {
     animal = "CTL", cohort = "FA",
     milking_fraction = 0.8, milk_yield = 20, milk_fat = 0.04,
     idle = 0, gest = 0, litsize = 1, dr1 = 0, ckg = 35, wkg = 90,
-    lact = 0, parturition_rate = 0.8, lambing_interval = 365, assessment_duration=365
+    lact = 0, parturition_rate = 0.8, lambing_interval = 365, assessment_duration = 365
   )
-  expected <- (20 + (0.8 * 5 * (90 - 35)) / 365) * (0.04 * 100 * 0.40 + 1.47) * 0.8
+  expected <- ((20 * 0.8) + (0.8 * 5 * (90 - 35)) / 365) * (0.04 * 100 * 0.40 + 1.47)
   expect_equal(result, expected)
 })
 
@@ -236,9 +236,9 @@ test_that("calc_net_energy_lactation handles sheep with litter size", {
     animal = "SHP", cohort = "FA",
     milking_fraction = 0.9, milk_yield = 1.5, milk_fat = 0.06,
     idle = 0, gest = 0, litsize = 1.5, dr1 = 0, ckg = 4, wkg = 18,
-    lact = 0, parturition_rate = 1.2, lambing_interval = 365, assessment_duration=365
+    lact = 0, parturition_rate = 1.2, lambing_interval = 365, assessment_duration = 365
   )
-  expected <- (1.5 + (1.5 * (365 * 1.2 / 365) * 5 * (18 - 4)) / 365) * 4.6 * 0.9
+  expected <- ((1.5 * 0.9) + (1.5 * (365 * 1.2 / 365) * 5 * (18 - 4)) / 365) * 4.6
   expect_equal(result, expected)
 })
 
@@ -247,7 +247,7 @@ test_that("calc_net_energy_lactation handles pigs", {
     animal = "PGS", cohort = "FA",
     milking_fraction = 0, milk_yield = 0, milk_fat = 0,
     idle = 0.2, gest = 0.3, litsize = 10, dr1 = 0.1, ckg = 1.5, wkg = 8,
-    lact = 0.5, parturition_rate = 2.2, lambing_interval = 365, assessment_duration=365
+    lact = 0.5, parturition_rate = 2.2, lambing_interval = 365, assessment_duration = 365
   )
   cadj <- 0.5 / (0.2 + 0.3 + 0.5)
   expected <- 10 * (1 - 0.5 * 0.1) * ((0.02059 * (8 - 1.5) * 1000 / 0.5) - (0.3766 / 0.67)) * cadj
@@ -336,7 +336,7 @@ test_that("calc_net_energy_pregnancy returns correct values for cattle", {
     nemain = 12.0, parturition_rate = 0.8,
     litsize = 1, gest = 283, duration = 730, offtake_rate = 0.2
   )
-  expected <- (12.0 * 0.1) * (283 / 730) * (1-0.2)
+  expected <- (12.0 * 0.1) * (283 / 730) * (1 - 0.2)
   expect_equal(result, expected)
 })
 
@@ -344,7 +344,7 @@ test_that("calc_net_energy_pregnancy handles sheep with litter size effects", {
   # Test with litter size 1.5
   result <- calc_net_energy_pregnancy(
     animal = "SHP", cohort = "FA",
-    nemain = 8.0, parturition_rate = 1.2, litsize = 1.5, 
+    nemain = 8.0, parturition_rate = 1.2, litsize = 1.5,
     gest = 152, duration = 365, offtake_rate = 0.1
   )
   cpreg <- (0.077 * 0.5 + 0.126 * 0.5)
