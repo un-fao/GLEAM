@@ -4,15 +4,12 @@
 \alias{run_production_cohort}
 \title{Run Production Cohort (Internal)}
 \usage{
-run_production_cohort(data, lactose_lookup, assessment_duration = 365)
+run_production_cohort(data, assessment_duration = 365)
 }
 \arguments{
 \item{data}{data.table. Cohort-level production inputs (per country/animal/LPS) containing milk
 yields, fibre production, slaughter characteristics, and classifier columns such as
 \code{animal}, \code{LPS_short}, and \code{HerdType_short}.}
-
-\item{lactose_lookup}{data.table. Lookup table mapping \code{Animal_short} to lactose percentage values
-in column \code{Value}.}
 
 \item{assessment_duration}{Numeric. Number of assessment days used to annualise production outputs.
 Defaults to \code{365}.}
@@ -37,10 +34,8 @@ be accessed via \code{\link[=system.file]{system.file()}} together with \code{\l
 \dontrun{
 input_path <- system.file("extdata/GLEAM_input_production.csv", package = "gleam")
 data <- data.table::fread(input_path)
-lactose_lookup <- data.table::fread(
-  system.file("extdata/GLEAM_MilkDefault_LactoseContent.csv", package = "gleam")
-)
-run_production_cohort(data, lactose_lookup)
+
+run_production_cohort(data)
 }
 
 }
