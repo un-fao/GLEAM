@@ -225,7 +225,7 @@ test_that("calc_net_energy_lactation returns correct values for cattle", {
     animal = "CTL", cohort = "FA",
     milking_fraction = 0.8, milk_yield = 20, milk_fat = 0.04,
     idle = 0, gest = 0, litsize = 1, dr1 = 0, ckg = 35, wkg = 90,
-    lact = 0, parturition_rate = 0.8, lambing_interval = 400, weaning_age = 365
+    lact = 0, parturition_rate = 0.8
   )
   
   expected <- ((20 * 0.8) + (0.8 * 5 * (90 - 35) / 365)) * (0.04 * 100 * 0.40 + 1.47)
@@ -237,9 +237,9 @@ test_that("calc_net_energy_lactation handles sheep with litter size", {
     animal = "SHP", cohort = "FA",
     milking_fraction = 0.9, milk_yield = 1.5, milk_fat = 0.06,
     idle = 0, gest = 0, litsize = 1.5, dr1 = 0, ckg = 4, wkg = 18,
-    lact = 0, parturition_rate = 1.2, lambing_interval = 400, weaning_age = 365
+    lact = 0, parturition_rate = 1.2
   )
-  expected <- ((1.5 * 0.9) + (1.5 * (1.2 / 400) * 5 * (18 - 4) / 365)) * 4.6
+  expected <- ((1.5 * 0.9) + (1.5 * 1.2 * 5 * (18 - 4) / 365)) * 4.6
   expect_equal(result, expected)
 })
 
@@ -248,7 +248,7 @@ test_that("calc_net_energy_lactation handles pigs", {
     animal = "PGS", cohort = "FA",
     milking_fraction = 0, milk_yield = 0, milk_fat = 0,
     idle = 0.2, gest = 0.3, litsize = 10, dr1 = 0.1, ckg = 1.5, wkg = 8,
-    lact = 0.5, parturition_rate = 2.2, lambing_interval = 400, weaning_age = 365
+    lact = 0.5, parturition_rate = 2.2
   )
   cadj <- 0.5 / (0.2 + 0.3 + 0.5)
   expected <- 10 * (1 - 0.5 * 0.1) * ((0.02059 * (8 - 1.5) * 1000 / 0.5) - (0.3766 / 0.67)) * cadj
