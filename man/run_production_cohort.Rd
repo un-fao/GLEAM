@@ -4,12 +4,7 @@
 \alias{run_production_cohort}
 \title{Run Production Cohort (Internal)}
 \usage{
-run_production_cohort(
-  data,
-  lactose_lookup,
-  assessment_duration = 365,
-  standard_lactose = 0.048
-)
+run_production_cohort(data, lactose_lookup, assessment_duration = 365)
 }
 \arguments{
 \item{data}{data.table. Cohort-level production inputs (per country/animal/LPS) containing milk

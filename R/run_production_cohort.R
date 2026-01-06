@@ -36,8 +36,7 @@
 run_production_cohort <- function(
     data,
     lactose_lookup,
-    assessment_duration = 365,
-    standard_lactose = 0.048
+    assessment_duration = 365
 ) {
   # --- Step 1: Validate inputs -------------------------------------------------
   if (!inherits(data, "data.frame") || nrow(data) == 0) {
@@ -100,7 +99,7 @@ run_production_cohort <- function(
     lactose = lactose,
     standard_protein = 0.033,
     standard_fat = 0.04,
-    standard_lactose = standard_lactose
+    standard_lactose = 0.048
   ),
   by = .I
   ]
