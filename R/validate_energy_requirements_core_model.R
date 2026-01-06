@@ -254,6 +254,8 @@ validate_pregnancy_inputs <- function(
     parturition_rate,
     litsize,
     gest,
+    idle,
+    lact,
     duration,
     offtake_rate
 ) {
@@ -274,7 +276,11 @@ validate_pregnancy_inputs <- function(
   if (animal == "PGS") {
     if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")
     if (!is.na(gest)) validate_scalar_numeric(gest, "gest")
+    if (!is.na(gest)) validate_scalar_numeric(idle, "idle")
+    if (!is.na(gest)) validate_scalar_numeric(lact, "lact")
   }
+  
+  
 
   if (animal %in% c("SHP", "GTS")) {
     if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")

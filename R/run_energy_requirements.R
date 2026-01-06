@@ -129,6 +129,8 @@ run_energy_requirements <- function(data) {
     parturition_rate = parturition_rate,
     litsize = litsize,
     gest = gest,
+    idle = idle,
+    lact = lact,
     duration = duration,
     offtake_rate = offtake_rate
   ), by = .I]
