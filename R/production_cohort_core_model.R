@@ -48,11 +48,8 @@ compute_milk_outputs <- function(
   # Energy content of standard milk (Mcal/kg) - IDF 2022 formula
   energy_standard <- (0.0929 * standard_fat + 0.0547 * standard_protein + 0.0395 * standard_lactose)
 
-  # Legacy spreadsheets computed the animal-specific lactose but retained the standard
-  # lactose value in the subsequent energy calculation to remain consistent with IDF guidance.
-
-  # Energy content of actual milk (legacy used standard_lactose here)
-  energy_milk <- (0.0929 * milk_fat + 0.0547 * milk_protein + 0.0395 * standard_lactose)
+  # Energy content of actual milk
+  energy_milk <- (0.0929 * milk_fat + 0.0547 * milk_protein + 0.0395 * lactose)
 
   # Milk production (kg/head/year)
   milk_production <- milk_yield * assessment_duration * size * milking_fraction
