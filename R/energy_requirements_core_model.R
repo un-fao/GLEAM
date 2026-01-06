@@ -471,10 +471,9 @@ calc_net_energy_growth <- function(
     }
     ret <- ((final_weight - initial_weight) * (a + 0.5 * b * (initial_weight + final_weight))) / duration
   } else if (animal == "PGS") {
-    prot_tissue_frac <- 0.65 # Protein tissue fraction
-    fat_adipose_tissue_frac <- 0.9 # Fat in adipose tissue fraction
+    prot_tissue_frac <- 0.65 
     if (cohort %in% c("FS", "FJ", "MS", "MJ")) {
-      cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * fat_adipose_tissue_frac * 52.3)
+      cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * 0.9 * 52.3)
       ret <- dwg * cgro
     } else {
       ret <- 0
