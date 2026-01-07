@@ -54,14 +54,14 @@ run_weights_calculations <- function(data) {
     "duration",
     "Animal_short",
     "offtake_rate",
-    "AFKG",             # Adult female weight
-    "AMKG",             # Adult male weight
-    "ckg",              # Birth weight
-    "MFSKG",            # Slaughter weight female
-    "MMSKG",            # Slaughter weight male
-    "wkg",              # Weaning weight (must be provided in input data)
-    "afc",              # Age at first calving
-    "WA"                # Animal age at current stage
+    "AFKG", # Adult female weight
+    "AMKG", # Adult male weight
+    "ckg", # Birth weight
+    "MFSKG", # Slaughter weight female
+    "MMSKG", # Slaughter weight male
+    "wkg", # Weaning weight (must be provided in input data)
+    "afc", # Age at first calving
+    "WA" # Animal age at current stage
   )
   missing_cols <- setdiff(required_cols, names(data))
   if (length(missing_cols) > 0) {
@@ -69,20 +69,21 @@ run_weights_calculations <- function(data) {
   }
 
   # Calculate initial, potential final, and slaughter weights
-  data[, c("initial_weight", "potential_final_weight", "slaughter_weight") :=
-         calc_cohort_weights(
-           animal = Animal_short,
-           cohort = cohort,
-           adult_fem_weight = AFKG,
-           adult_mal_weight = AMKG,
-           birth_weight = ckg,
-           slaughter_weight_fem = MFSKG,
-           slaughter_weight_mal = MMSKG,
-           weaning_weight = wkg,
-           age_first_calving = afc,
-           animal_age = WA
-         ),
-       by = .I
+  data[, c(
+    "initial_weight", "potential_final_weight", "slaughter_weight"
+  ) := calc_cohort_weights(
+    animal = Animal_short,
+    cohort = cohort,
+    adult_fem_weight = AFKG,
+    adult_mal_weight = AMKG,
+    birth_weight = ckg,
+    slaughter_weight_fem = MFSKG,
+    slaughter_weight_mal = MMSKG,
+    weaning_weight = wkg,
+    age_first_calving = afc,
+    animal_age = WA
+  ),
+  by = .I
   ]
 
   # Calculate average and final weights
@@ -95,11 +96,11 @@ run_weights_calculations <- function(data) {
          ),
        by = .I
   ]
-  
+
   # Create a new variable (adult_weight)
   data[, adult_weight := data.table::fifelse(
     cohort %in% c("FA", "FS", "FJ"),
-    average_weight[cohort == "FA"][1],   # female adult ref for this group
+    average_weight[cohort == "FA"][1], # female adult ref for this group
     data.table::fifelse(
       cohort %in% c("MA", "MS", "MJ"),
       average_weight[cohort == "MA"][1], # male adult ref for this group
