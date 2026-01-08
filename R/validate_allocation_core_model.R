@@ -70,13 +70,16 @@ validate_allocation_meat_inputs <- function(
     cohort_code,
     slaughter_liveweight,
     birth_liveweight,
-    output_meat_production_liveweight
+    output_meat_production_liveweight,
+    ratio_ne_to_me
 ) {
   validate_scalar_character(animal, "animal")
   validate_scalar_character(cohort_code, "cohort_code")
   validate_scalar_numeric(slaughter_liveweight, "slaughter_liveweight")
   validate_scalar_numeric(birth_liveweight, "birth_liveweight")
   validate_scalar_numeric(output_meat_production_liveweight, "output_meat_production_liveweight")
+  validate_scalar_numeric(ratio_ne_to_me, "ratio_ne_to_me")
+  
 
   # Validate animal species
   # Note: Allocation module uses these specific species codes
@@ -99,6 +102,9 @@ validate_allocation_meat_inputs <- function(
   # Basic bounds: weights should be non-negative and reasonable
   if (slaughter_liveweight < 0 || slaughter_liveweight > 2000) {
     cli::cli_abort("{.arg slaughter_liveweight} must be between 0 and 2000 kg.")
+  }
+  if (ratio_ne_to_me < 0 || ratio_ne_to_me > 1) {
+    cli::cli_abort("{.arg ratio_ne_to_me} must be between 0 and 1.")
   }
   if (birth_liveweight < 0 || birth_liveweight > 200) {
     cli::cli_abort("{.arg birth_liveweight} must be between 0 and 200 kg.")

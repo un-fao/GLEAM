@@ -92,7 +92,8 @@ run_allocation <- function(
     cohort_code = cohort,
     slaughter_liveweight = slaughterLW,
     birth_liveweight = ckg,
-    output_meat_production_liveweight = output_meat_production_liveweight
+    output_meat_production_liveweight = output_meat_production_liveweight,
+    ratio_ne_to_me = ratio_ne_me_camelids
   ), by = .I]
 
   # Fibre energy allocation: applies camelid conversion factor when needed

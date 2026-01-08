@@ -2,12 +2,12 @@
 #'
 #' Converts fat- and protein-corrected milk output into the megajoule demand used in the allocation workflow.
 #' The formula calculates energy density based on standard milk composition and multiplies by production.
-#'
+#' 
 #' @param milk_fpcm_output Numeric scalar. Total Fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/assessment period). Default fat and protein content=0.04 and 0.033.
 #' @param standard_protein Numeric scalar. Reference protein content (g per 100 g milk).
 #' @param standard_fat Numeric scalar. Reference fat content (g per 100 g milk).
 #' @param standard_lactose Numeric scalar. Reference lactose content (g per 100 g milk).
-#'
+#' 
 #' @return Numeric scalar. Energy requirements in megajoules.
 #' @export
 calc_energy_allocation_milk <- function(
@@ -36,7 +36,7 @@ calc_energy_allocation_milk <- function(
 }
 
 #' Meat Energy Requirement for Allocation
-#'
+#' 
 #' Applies species- and cohort-specific equations to compute the megajoules required to produce meat output.
 #' The calculation follows species-specific formulas to determine energy per kg liveweight, then multiplies by output.
 #'
@@ -45,7 +45,7 @@ calc_energy_allocation_milk <- function(
 #' @param slaughter_liveweight Numeric scalar. Slaughter liveweight (kg).
 #' @param birth_liveweight Numeric scalar. Birthweight (kg).
 #' @param output_meat_production_liveweight Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).
-#'
+#' 
 #' @return Numeric scalar. Energy requirements in megajoules.
 #' @export
 calc_energy_allocation_meat <- function(
@@ -53,11 +53,12 @@ calc_energy_allocation_meat <- function(
     cohort_code,
     slaughter_liveweight,
     birth_liveweight,
-    output_meat_production_liveweight
+    output_meat_production_liveweight,
+    ratio_ne_to_me
 ) {
   validate_allocation_meat_inputs(
     animal, cohort_code,
-    slaughter_liveweight, birth_liveweight, output_meat_production_liveweight
+    slaughter_liveweight, birth_liveweight, output_meat_production_liveweight, ratio_ne_to_me
   )
 
   # Default fallback
@@ -84,8 +85,8 @@ calc_energy_allocation_meat <- function(
     }
 
   } else if (animal == "CML") {
-    # Camelids: simple linear formula
-    specific_energy_meat <- (41.8 * (slaughter_liveweight - birth_liveweight)) / slaughter_liveweight
+    
+    specific_energy_meat <- (41.8 * ratio_ne_to_me * (slaughter_liveweight - birth_liveweight)) / slaughter_liveweight
 
   } else if (animal == "SHP") {
     # Sheep: coefficients vary by cohort (female vs male)
@@ -134,7 +135,7 @@ calc_energy_allocation_meat <- function(
 #' @param fibre_energy_requirement Numeric scalar. Fibre energy demand (MJ per head per day).
 #' @param ratio_ne_to_me Numeric scalar. Net-to-metabolizable energy conversion ratio (used for camelids).
 #' @param assessment_duration Numeric. Length of the assessment period (days)
-#'
+#' 
 #' @return Numeric scalar. Energy requirements in megajoules.
 #' @export
 calc_energy_allocation_fibre <- function(
@@ -164,12 +165,12 @@ calc_energy_allocation_fibre <- function(
 #' Work Energy Requirement for Allocation
 #'
 #' Estimates energy expenditure on animal work for the assessment duration, adjusting camelid values when required.
-#'
+#' 
 #' @param animal Character scalar. Species code (e.g., "CML" for camelids).
 #' @param work_energy_requirement Numeric scalar. Work energy demand (MJ per head per day).
 #' @param ratio_ne_to_me Numeric scalar. Net-to-metabolizable energy conversion ratio (used for camelids).
 #' @param assessment_duration Numeric. Length of the assessment period (days)
-#'
+#' 
 #' @return Numeric scalar. Energy requirements in megajoules.
 #' @export
 calc_energy_allocation_work <- function(
@@ -229,7 +230,7 @@ aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) 
 #'
 #' Computes allocation shares of energy required for meat, milk, fibre, work, and eggs
 #' based on total energy demand per output. 
-#'
+#' 
 #' @param animal Character vector of animal species codes (e.g., "CTL", "SHP", "PGS").
 #' @param energy_meat Numeric vector: Herd-level energy requirement for meat production (MJ).
 #' @param energy_milk Numeric vector: Herd-level energy requirement for milk production (MJ).
