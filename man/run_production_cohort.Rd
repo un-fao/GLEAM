@@ -7,7 +7,7 @@
 run_production_cohort(
   data,
   lactose_lookup,
-  assessment_duration = assessment_duration,
+  assessment_duration = 365,
   standard_lactose = 0.048
 )
 }

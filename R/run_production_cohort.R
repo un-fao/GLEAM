@@ -126,7 +126,7 @@ run_production_cohort <- function(
   )
 
   data[ , (meat_output_cols) := compute_meat_outputs(
-    offtake_number = offtake_number,
+    offtake_number_assessment = offtake_number_assessment,
     slaughter_weight = slaughter_weight,
     carcass_dressing_percentage = carcass_dressing_percentage,
     bone_free_meat_fraction = bone_free_meat_fraction,
