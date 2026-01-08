@@ -99,12 +99,11 @@ compute_fibre_output <- function(
 #' Produces liveweight, carcass weight, boneless meat, and meat protein using the
 #' sequential multipliers from the legacy implementation.
 #'
-#' @param offtake_number Numeric. Number of animals removed via offtake (head/year).
+#' @param offtake_number_assessment Numeric. Number of animals removed via offtake (head/year).
 #' @param slaughter_weight Numeric. Live weight at slaughter (kg).
 #' @param carcass_dressing_percentage Numeric. Dressing percentage applied to live weight (fraction).
 #' @param bone_free_meat_fraction Numeric. Share of carcass that becomes boneless meat (fraction).
 #' @param meat_protein Numeric. Protein fraction of boneless meat (kg protein per kg meat).
-#' @param assessment_duration Numeric. Length of the assessment period (days)
 #'
 #' @return Named list containing:
 #'   \item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).}
@@ -113,7 +112,7 @@ compute_fibre_output <- function(
 #'   \item{output_meat_production_protein}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/year).}
 #' @export
 compute_meat_outputs <- function(
-    offtake_number,
+    offtake_number_assessment,
     slaughter_weight,
     carcass_dressing_percentage,
     bone_free_meat_fraction,
@@ -121,7 +120,7 @@ compute_meat_outputs <- function(
     assessment_duration
 ) {
   validate_meat_outputs_inputs(
-    offtake_number = offtake_number,
+    offtake_number_assessment = offtake_number_assessment,
     slaughter_weight = slaughter_weight,
     carcass_dressing_percentage = carcass_dressing_percentage,
     bone_free_meat_fraction = bone_free_meat_fraction,
@@ -129,7 +128,7 @@ compute_meat_outputs <- function(
     assessment_duration = assessment_duration
   )
 
-  meat_production_liveweight <- offtake_number / 365 * assessment_duration * slaughter_weight
+  meat_production_liveweight <- offtake_number_assessment * slaughter_weight
   meat_production_carcassweight <- meat_production_liveweight * carcass_dressing_percentage
   meat_production_meat <- meat_production_carcassweight * bone_free_meat_fraction
   meat_production_protein <- meat_production_meat * meat_protein

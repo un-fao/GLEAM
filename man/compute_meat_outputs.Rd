@@ -5,7 +5,7 @@
 \title{Compute Meat Production Outputs}
 \usage{
 compute_meat_outputs(
-  offtake_number,
+  offtake_number_assessment,
   slaughter_weight,
   carcass_dressing_percentage,
   bone_free_meat_fraction,
@@ -14,7 +14,7 @@ compute_meat_outputs(
 )
 }
 \arguments{
-\item{offtake_number}{Numeric. Number of animals removed via offtake (head/year).}
+\item{offtake_number_assessment}{Numeric. Number of animals removed via offtake (head/year).}
 
 \item{slaughter_weight}{Numeric. Live weight at slaughter (kg).}
 
@@ -23,8 +23,6 @@ compute_meat_outputs(
 \item{bone_free_meat_fraction}{Numeric. Share of carcass that becomes boneless meat (fraction).}
 
 \item{meat_protein}{Numeric. Protein fraction of boneless meat (kg protein per kg meat).}
-
-\item{assessment_duration}{Numeric. Length of the assessment period (days)}
 }
 \value{
 Named list containing:
