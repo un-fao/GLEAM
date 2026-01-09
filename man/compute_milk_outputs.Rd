@@ -62,5 +62,5 @@ FPCM is calculated using Equation 10 of the International Dairy Federation
 International Dairy Federation (IDF). 2022.
 \emph{The IDF Global Carbon Footprint Standard for the Dairy Sector}.
 Bulletin of the IDF No. 520/2022.
-International Dairy Federation (ed.), Brussels, Belgium.#'#'
+International Dairy Federation (ed.), Brussels, Belgium.
 }
