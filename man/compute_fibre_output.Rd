@@ -9,12 +9,12 @@ compute_fibre_output(fibre_prod, assessment_duration, size)
 \arguments{
 \item{fibre_prod}{Numeric. Fibre yield per head per year (kg/head/year).}
 
-\item{assessment_duration}{Numeric. Number of assessment days used to annualise fibre output.}
+\item{assessment_duration}{Numeric. Length of the assessment period (days)}
 
 \item{size}{Numeric. Herd size (heads) for the cohort.}
 }
 \value{
-Numeric. Fibre production per cohort (kg/year).
+Numeric. Total fibre produced over the assessment period  by cohort (kg /cohort/assessment period).
 }
 \description{
 Compute Fibre Production

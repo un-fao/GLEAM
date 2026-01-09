@@ -13,8 +13,7 @@
 #'   `animal`, `LPS_short`, and `HerdType_short`.
 #' @param lactose_lookup data.table. Lookup table mapping `Animal_short` to lactose percentage values
 #'   in column `Value`.
-#' @param assessment_duration Numeric. Number of assessment days used to annualise production outputs.
-#'   Defaults to `365`.
+#' @param assessment_duration Numeric. Length of the assessment period (days)
 #' @param standard_lactose Numeric. Reference lactose fraction used for FPCM energy calculations.
 #'   Defaults to `0.048` (reflecting IDF 2022 guidance).
 #'
@@ -127,7 +126,7 @@ run_production_cohort <- function(
   )
 
   data[ , (meat_output_cols) := compute_meat_outputs(
-    offtake_number = offtake_number,
+    offtake_number_assessment = offtake_number_assessment,
     slaughter_weight = slaughter_weight,
     carcass_dressing_percentage = carcass_dressing_percentage,
     bone_free_meat_fraction = bone_free_meat_fraction,

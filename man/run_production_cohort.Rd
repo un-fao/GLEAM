@@ -19,8 +19,7 @@ yields, fibre production, slaughter characteristics, and classifier columns such
 \item{lactose_lookup}{data.table. Lookup table mapping \code{Animal_short} to lactose percentage values
 in column \code{Value}.}
 
-\item{assessment_duration}{Numeric. Number of assessment days used to annualise production outputs.
-Defaults to \code{365}.}
+\item{assessment_duration}{Numeric. Length of the assessment period (days)}
 
 \item{standard_lactose}{Numeric. Reference lactose fraction used for FPCM energy calculations.
 Defaults to \code{0.048} (reflecting IDF 2022 guidance).}
