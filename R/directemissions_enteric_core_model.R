@@ -3,7 +3,7 @@
 #' Calculates the methane conversion factor (YM, % of dietary gross energy in feed converted to methane)
 #' for a given species and cohort based on diet digestibility. Implements species- and cohort-specific
 #' rules consistent with the GLEAM methodology and with IPCC Tier 2 approach.
-#' 
+#'
 #'
 #' @param animal Character. Species code  (e.g., `PGS`, `CML`, `CTL`, `BFL`, `SHP`, `GTS`). 
 #' @param cohort Character. Cohort code (e.g., `FA`, `FS`, `FJ`, `MA`, `MS`,`MJ`).
@@ -77,12 +77,13 @@ compute_daily_enteric_emissions <- function(
     animal,
     cohort,
     ym,
+    ch4_mitigation_factor,
     diet_ge,
     dmi
 ) {
   validate_enteric_emission_inputs(animal, cohort, ym, diet_ge, dmi)
   if (animal %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
-    ret <- diet_ge * dmi * (ym / 100) / 55.65
+    ret <- diet_ge * dmi * (ym / 100) * ch4_mitigation_factor / 55.65
   } else if (animal == "CHK") {
     ret <- NA_real_
   }

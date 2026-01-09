@@ -10,13 +10,13 @@
 #' - `ym`: Methane conversion factor (% of gross energy intake converted to CH4).
 #' - `ch4_enteric`: Daily enteric methane emissions (kg CH4/head/day).
 #'
-#' Input data must at minimum include the following columns:
+#' Input data must at minimum include the following columns:  
 #' - `Animal_short`: Character. Species code  (e.g., `PGS`, `CML`, `CTL`, `BFL`, `SHP`, `GTS`). 
 #' - `cohort`: Character. Cohort code (e.g., `FA`, `FS`, `FJ`, `MA`, `MS`,`MJ`).
 #' - `diet_dig`: Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
 #' - `diet_ge`: Numeric. Average gross energy content of the diet (MJ/kg DM).
 #' - `dmi`: Numeric. Daily dry matter intake of feed (kg DM/head/day).
-#'
+#' 
 #' @param data A `data.table` with cohort-level nutritional and demographic inputs.
 #'
 #' @return The same `data.table` with new columns `ym` and `ch4_enteric`.
@@ -65,6 +65,7 @@ run_directemissions_enteric <- function(data) {
     animal = Animal_short,
     cohort = cohort,
     ym = ym,
+    ch4_mitigation_factor = 1,
     diet_ge = diet_ge,
     dmi = dmi
   ), by = seq_len(nrow(data))]
