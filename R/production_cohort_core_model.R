@@ -1,25 +1,40 @@
 #' Compute Milk Production Outputs
 #'
-#' Returns milk mass, protein, and FPCM using the IDF energy formulation while preserving
-#' the legacy treatment of standard lactose.
+#' Computes total milk production for a producing cohort over the assessment
+#' period and returns multiple production metrics: total milk mass,
+#' milk protein, and fat-protein-corrected milk (FPCM).
+#' All outputs are expressed in kg per cohort per assessment period.
 #'
-#' @param milk_yield Numeric. Milk yield per head per day (kg/day).
-#' @param assessment_duration Numeric. Length of the assessment period (days)
-#' @param size Numeric. Herd cohort size (heads).
-#' @param milking_fraction Numeric. Share of the cohort that is milking during the assessment window.
-#' @param milk_protein Numeric. Milk protein fraction (kg protein per kg milk).
-#' @param milk_fat Numeric. Milk fat fraction (kg fat per kg milk).
-#' @param lactose Numeric. Lactose fraction (kg lactose per kg milk). Note: Legacy implementation
-#'   computed animal-specific lactose but used standard_lactose in the energy calculation.
-#' @param standard_protein Numeric. Reference protein fraction used for FPCM energy.
-#' @param standard_fat Numeric. Reference fat fraction used for FPCM energy.
-#' @param standard_lactose Numeric. Reference lactose fraction used for FPCM energy.
+#' FPCM is calculated using Equation 10 of the International Dairy Federation
+#' (IDF) Global Carbon Footprint Standard for the Dairy Sector (IDF, 2022).
+#'
+#' @param milk_yield Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day). 
+#' This value can be calculated by dividing the total milk destinated to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.
+#' @param assessment_duration Numeric. Length of the assessment period (days).
+#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
+#' @param milking_fraction Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
+#' @param milk_protein Numeric. Milk protein fraction (kg protein/kg milk).
+#' @param milk_fat Numeric. Milk fat fraction (kg fat/kg milk).
+#' @param lactose Numeric. Milk lactose fraction (kg lactose/kg milk).
+#' @param standard_protein Numeric. Standard protein content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Default used=0.033.
+#' @param standard_fat Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg fat/kg milk). Default used=0.04.
+#' @param standard_lactose Numeric. Standard lactose content of milk, used to calculate Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk). Default used=0.048.
 #'
 #' @return Named list containing:
 #'   \item{output_milk_mass_production}{Numeric. Total milk production produced over the assessment period (kg/herd/assessment period).}
 #'   \item{output_milk_protein_production}{Numeric. Total milk protein production produced over the assessment period (kg protein/herd/assessment period).}
-#'   \item{output_milk_fpcm_production}{Numeric. Total Fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/herd/assessment period). Default fat and protein content=0.04 and 0.033.}
+#'   \item{output_milk_fpcm_production}{Numeric. Total Fat-protein-corrected milk (FPCM) produced over the assessment period (kg/herd/assessment period). Default fat and protein content=0.04 and 0.033.}
+#'   
+#' Non-zero milk outputs are only expected for adult female cohorts. All other
+#' cohorts should return zero milk production through upstream parameterisation.
+#' 
+#' @references
+#' International Dairy Federation (IDF). 2022.
+#' *The IDF Global Carbon Footprint Standard for the Dairy Sector*.
+#' Bulletin of the IDF No. 520/2022.
+#' International Dairy Federation (ed.), Brussels, Belgium. 
 #' @export
+
 compute_milk_outputs <- function(
     milk_yield,
     assessment_duration,
@@ -69,12 +84,20 @@ compute_milk_outputs <- function(
 }
 
 #' Compute Fibre Production
+#' 
+#' Computes fibre production for producing cohorts by scaling per-animal
+#' fibre yield to the assessment period and cohort size.
+#' The output is expressed in kg per cohort per assessment period.
 #'
-#' @param fibre_prod Numeric. Fibre yield per head per year (kg/head/year).
-#' @param assessment_duration Numeric. Length of the assessment period (days)
-#' @param size Numeric. Herd size (heads) for the cohort.
+#' @param fibre_prod Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
+#' @param assessment_duration Numeric. Length of the assessment period (days).
+#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
 #'
-#' @return Numeric. Total fibre produced over the assessment period  by cohort (kg /cohort/assessment period).
+#' @return Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).
+#' 
+#' Cohorts that do not produce fibre should return zero output through
+#' upstream parameterisation.
+#' 
 #' @export
 compute_fibre_output <- function(
     fibre_prod,
@@ -93,20 +116,29 @@ compute_fibre_output <- function(
 
 #' Compute Meat Production Outputs
 #'
-#' Produces liveweight, carcass weight, boneless meat, and meat protein using the
-#' sequential multipliers from the legacy implementation.
+#' Computes meat production outputs at the animal cohort level based on
+#' the number of animals removed from the herd during the assessment
+#' period.
+#' The function returns multiple meat production metrics, including total meat production 
+#' expressed in live weight, carcass weight, boneless meat, and meat protein.
+#' All outputs are expressed in kg per cohort per assessment period.
 #'
-#' @param offtake_number_assessment Numeric. Number of animals removed via offtake (head/year).
-#' @param slaughter_weight Numeric. Live weight at slaughter (kg).
-#' @param carcass_dressing_percentage Numeric. Dressing percentage applied to live weight (fraction).
-#' @param bone_free_meat_fraction Numeric. Share of carcass that becomes boneless meat (fraction).
-#' @param meat_protein Numeric. Protein fraction of boneless meat (kg protein per kg meat).
+#' @param offtake_number_assessment Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA) (heads/year)
+#' @param slaughter_weight Numeric. Live weight at slaughter for animals removed from the cohort (kg).
+#' @param carcass_dressing_percentage Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).
+#' @param bone_free_meat_fraction Numeric. Ratio of bone-free-meat to carcass weight (fraction).
+#' @param meat_protein Numeric. Protein content of bone-free-meat (fraction).
 #'
 #' @return Named list containing:
 #'   \item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).}
-#'   \item{output_meat_production_carcassweight}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort, (kg/cohort/year).}
-#'   \item{output_meat_production_meat}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort, (kg/cohort/year)}
-#'   \item{output_meat_production_protein}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/year).}
+#'   \item{output_meat_production_carcassweight}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
+#'   \item{output_meat_production_meat}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg/cohort/assessment period)}
+#'   \item{output_meat_production_protein}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/assessment period).}
+#'   
+#' Cohorts with no offtake during the assessment period should return
+#' zero outputs through upstream parameterisation (e.g. `offtake_number = 0`).
+#' 
+#' 
 #' @export
 compute_meat_outputs <- function(
     offtake_number_assessment,
