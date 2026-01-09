@@ -10,7 +10,8 @@ run_herd_simulation(
   initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
   max_years = 100,
   lambda_threshold = 1e-09,
-  show_indicator = TRUE
+  show_indicator = TRUE,
+  assessment_duration = 365
 )
 }
 \arguments{
@@ -54,6 +55,8 @@ reached. Defaults to \code{1e-9}.}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during simulation.
 Defaults to \code{TRUE}.}
+
+\item{assessment_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
 A named list with two elements:
@@ -137,7 +140,9 @@ cohort_data <- data.table::fread(cohort_path)
 herd_level_data <- data.table::fread(herd_level_path)
 
 # Run herd simulation
-results <- run_herd_simulation(cohort_data, herd_level_data)
+results <- run_herd_simulation(
+cohort_data = cohort_data, herd_level_data = herd_level_data, assessment_duration = 200
+)
 
 # Access results
 print(results$cohort_results)

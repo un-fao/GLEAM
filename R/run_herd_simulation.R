@@ -68,6 +68,7 @@
 #'   reached. Defaults to `1e-9`.
 #' @param show_indicator Logical. Whether to display progress indicators during simulation.
 #'   Defaults to `TRUE`.
+#'@param assessment_duration Numeric. Length of the assessment period (days).
 #'
 #' @return A named list with two elements:
 #'   \describe{
@@ -110,7 +111,9 @@
 #' herd_level_data <- data.table::fread(herd_level_path)
 #'
 #' # Run herd simulation
-#' results <- run_herd_simulation(cohort_data, herd_level_data)
+#' results <- run_herd_simulation(
+#' cohort_data = cohort_data, herd_level_data = herd_level_data, assessment_duration = 200
+#' )
 #'
 #' # Access results
 #' print(results$cohort_results)
@@ -126,7 +129,8 @@ run_herd_simulation <- function(
     initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
     max_years = 100,
     lambda_threshold = 1e-9,
-    show_indicator = TRUE
+    show_indicator = TRUE,
+    assessment_duration = 365
 ) {
 
   # --- Step 1: Validate Inputs -----------------------------------------------
@@ -224,7 +228,8 @@ run_herd_simulation <- function(
       size = popsize_result$size,
       size_end = popsize_result$size_end,
       size_avg = popsize_result$size_avg,
-      offtake = popsize_result$offtake
+      offtake = popsize_result$offtake,
+      assessment_duration = assessment_duration
     )
 
     # Map simulation results back to cohort-level results
@@ -238,6 +243,7 @@ run_herd_simulation <- function(
           size_end = popsize_result$size_end[cohort_name],
           size_avg = popsize_result$size_avg[cohort_name],
           offtake_number = offtake_result$offtake_number[cohort_name],
+          offtake_number_assessment = offtake_result$offtake_number_assessment[cohort_name],
           offtake_share = offtake_result$offtake_share[cohort_name],
           offtake_share_avg = offtake_result$offtake_share_avg[cohort_name],
           prob_death = transition_result$prob_death[cohort_name],

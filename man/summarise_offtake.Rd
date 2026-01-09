@@ -4,7 +4,7 @@
 \alias{summarise_offtake}
 \title{Summarise Offtake and Stock Variation for a Steady-State Year}
 \usage{
-summarise_offtake(size, size_end, size_avg, offtake)
+summarise_offtake(size, size_end, size_avg, offtake, assessment_duration)
 }
 \arguments{
 \item{size}{Numeric vector of length 6. Population at start of year.}

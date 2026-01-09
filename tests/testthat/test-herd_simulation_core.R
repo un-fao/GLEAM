@@ -110,11 +110,12 @@ test_that("summarise_offtake returns all expected components", {
     size = setNames(rep(100, 6), share_cohorts),
     size_end = setNames(rep(105, 6), share_cohorts),
     size_avg = setNames(rep(102, 6), share_cohorts),
-    offtake = setNames(rep(0.01, 10), cohorts)
+    offtake = setNames(rep(0.01, 10), cohorts),
+    assessment_duration = 200
   )
 
   expect_named(res, c(
-    "stock_variation", "offtake_number", "offtake_share", "offtake_share_avg",
+    "stock_variation", "offtake_number", "offtake_number_assessment", "offtake_share", "offtake_share_avg",
     "offtake_sv_number", "offtake_sv_share", "offtake_sv_share_avg"
   ))
   expect_length(res$offtake_number, 6)
