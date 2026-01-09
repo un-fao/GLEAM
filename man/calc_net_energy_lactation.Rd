@@ -17,9 +17,7 @@ calc_net_energy_lactation(
   ckg,
   wkg,
   lact,
-  parturition_rate,
-  lambing_interval,
-  assessment_duration
+  parturition_rate
 )
 }
 \arguments{
@@ -66,11 +64,7 @@ This value can be calculated as the total number of offspring born divided by th
 
 \item{lact}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).}
 
-\item{parturition_rate}{Numeric. Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.}
-
-\item{lambing_interval}{Numeric. Average time interval between two successive births (days)}
-
-\item{assessment_duration}{Numeric. Length of the assessment period (days)}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
 }
 \value{
 Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
@@ -88,29 +82,31 @@ IPCC Tier 2 guidelines, lactation energy is calculated as a function of the
 \strong{quantity of milk produced} and a \strong{species-specific energy cost per unit
 of milk}.
 
-\itemize{\strong{For CTL, BFL, CML, SHP and GTS}:
+\strong{For CTL, BFL, CML, SHP and GTS}:
+
 Total milk production includes:
 \itemize{
 \item milk extracted for human consumption (\code{milk_yield})
-\item milk consumed directly by offspring (\code{milk_from_offspring})
-when milk yield is not directly observed (e.g., suckling systems).
+\item milk consumed directly by offspring (\code{milk_for_offspring})
 }
 
 Lactation energy requirements are applied \strong{only to adult females} and are
-scaled by the proportion of animals that are lactating within the cohort
-(\code{milking_fraction}).
+scaled by the proportion of milked (\code{milking_fraction}) or lactating
+(\code{parturition_rate}) animals within the cohort.
 
 In general form, lactation energy is computed as:
 
 \deqn{
 energy\_lactation =
-(milk\_yield + milk\_from\_offspring)
+(milk\_yield \times milking\_fraction + milk\_for\_offspring)
 \times energy\_milk
-\times milking\_fraction
+
 }
 
-where \code{energy_milk} is a species-specific coefficient representing the
-net energy cost of producing one kilogram of milk (MJ kg\eqn{^{-1}}).
+where:
+
+\code{energy_milk} is a species-specific coefficient representing the
+net energy cost of producing one kilogram of milk (MJ kg\eqn{^{-1}})
 
 Species-specific values of \code{energy_milk} are:
 \itemize{
@@ -121,32 +117,23 @@ Species-specific values of \code{energy_milk} are:
 \item \code{GTS}: 3.0 (AFRC, 1998).
 }
 
-When milk yield is not directly observed the amount of milk required to rear offspring
-is aproximated at \strong{5 kilograms of milk per
-kilogram of live-weight gain to weaning}:
+\code{milk_for_offspring} is the daily amount of milk required to rear offspring across the year (kg day\eqn{^{-1}}).
+It is calculated assuming that \strong{5 kg of milk are required for each kilogram of live-weight gain up to weaning}, using the equation below.
 
 \deqn{
-milk\_from\_offspring =
+milk\_for\_offspring =
 \frac{parturition\_rate \times 5 \times (wkg - ckg)}
-{assessment\_duration} \code(AFRC, 1990)
-}
-}
-
-\itemize{\strong{For PGS} — NRC (1998).
-
-For pigs, lactation energy is implemented as a \strong{per-litter energy requirement}
-adjusted to the fraction of the reproductive cycle spent in lactation.
-
-The adjustment factor is defined as:
-
-\deqn{
-cadj = \frac{lact}{idle + gest + lact}
+{365} \code(AFRC, 1990)
 }
 
-where \eqn{lact}, \eqn{idle}, and \eqn{gest} represent the durations (days)
-of lactation, non-productive (idle), and gestation phases, respectively.
+For \code{SHP} and \code{GTS}, \code{milk_for_offspring} also accounts for
+the average number of offspring per birth by multiplying by \code{litsize}.
 
-Lactation energy per sow per day is calculated as:
+\strong{For PGS} — NRC (1998):
+
+For pigs, lactation energy accounts only for the milk consumed directly by offspring (\code{milk_for_offspring})
+adjusted by the fraction of the reproductive cycle spent in lactation (\code{cadj}),
+and is calculated as follows:
 
 \deqn{
 energy\_lactation =
@@ -169,8 +156,12 @@ energy (\eqn{C_{conv}}, fraction),
 \item \code{litsize} is litter size,
 \item \code{dr1} is the proportion of stillborn piglets,
 \item \eqn{wkg} and \eqn{ckg} are live weights at weaning and at birth,
-respectively (kg).
-}
+respectively (kg),
+\item \eqn{cadj} is the fraction of the reproductive cycle spent in lactation calculated as
+
+\deqn{
+   cadj = \frac{lact}{idle + gest + lact}
+   }
 }
 }
 \references{

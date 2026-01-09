@@ -102,9 +102,7 @@ run_energy_requirements <- function(data) {
     ckg = ckg,
     wkg = wkg,
     lact = lact,
-    parturition_rate = parturition_rate,
-    lambing_interval = lambing_interval,
-    assessment_duration = 365
+    parturition_rate = parturition_rate
   ), by = .I]
 
   # 5. Work energy (MJ/day)
@@ -131,6 +129,8 @@ run_energy_requirements <- function(data) {
     parturition_rate = parturition_rate,
     litsize = litsize,
     gest = gest,
+    idle = idle,
+    lact = lact,
     duration = duration,
     offtake_rate = offtake_rate
   ), by = .I]

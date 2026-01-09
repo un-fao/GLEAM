@@ -43,6 +43,7 @@ validate_enteric_emission_inputs <- function(
     animal,
     cohort,
     ym,
+    ch4_mitigation_factor,
     diet_ge,
     dmi
 ) {
@@ -57,10 +58,15 @@ validate_enteric_emission_inputs <- function(
   validate_scalar_numeric(ym, "ym")
   validate_scalar_numeric(diet_ge, "diet_ge")
   validate_scalar_numeric(dmi, "dmi")
+  validate_scalar_numeric(ch4_mitigation_factor, "ch4_mitigation_factor")
+
 
   # Minimal, generic bounds
   if (ym < 0) {
     cli::cli_abort("{.arg ym} must be a non-negative percentage.")
+  }
+  if (ch4_mitigation_factor < 0 || ch4_mitigation_factor > 1) {
+    cli::cli_abort("{.arg ch4_mitigation_factor} must be between 0 and 1.")
   }
   if (diet_ge <= 0) {
     cli::cli_abort("{.arg diet_ge} must be strictly positive (MJ/kg DM).")

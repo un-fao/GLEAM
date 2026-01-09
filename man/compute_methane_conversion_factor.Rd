@@ -2,24 +2,63 @@
 % Please edit documentation in R/directemissions_enteric_core_model.R
 \name{compute_methane_conversion_factor}
 \alias{compute_methane_conversion_factor}
-\title{Compute Methane Conversion Factor (YM)}
+\title{Compute Methane Conversion Factor (ym)}
 \usage{
 compute_methane_conversion_factor(animal, cohort, diet_dig)
 }
 \arguments{
-\item{animal}{Character. Species code  (e.g., \code{PGS}, \code{CML}, \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}).}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{cohort}{Character. Cohort code (e.g., \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS},\code{MJ}).}
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 
 \item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
 }
 \value{
-Numeric scalar. Methane conversion factor (YM), representing the share of  gross energy of the feed ration that is converted to CH₄.
+Numeric. Methane conversion factor (ym), representing the share of gross energy of the feed ration that is converted to CH₄ (percentage)
 }
 \description{
-Calculates the methane conversion factor (YM, \% of dietary gross energy in feed converted to methane)
+Calculates the methane conversion factor (ym, \% of dietary gross energy in feed converted to methane)
 for a given species and cohort based on diet digestibility. Implements species- and cohort-specific
-rules consistent with the GLEAM methodology and with IPCC Tier 2 approach.
+rules consistent with IPCC Tier 2 approach.
+}
+\details{
+ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013).
+
+\itemize{
+\item \strong{For \code{CTL} and \code{BFL}:}
+\deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
+
+\item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
+\itemize{
+\item \code{JF} and \code{JM} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_dig \times 100)}
+\item Other cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
+}
+
+\item \strong{For \code{PGS}:}
+ym is assigned fixed values by cohort:
+\itemize{
+\item \code{FA} and \code{MA} cohorts: \deqn{ym = 1.01}
+\item Other cohorts: \deqn{ym = 0.39}
+}
+}
 }
 \references{
 Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,

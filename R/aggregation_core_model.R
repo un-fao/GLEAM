@@ -13,7 +13,8 @@
 #' @param value Numeric vector. Variable value expressed in:
 #'   - kg (unit)/head/day for non-production variables
 #'   - kg/cohort/assessment duration for production variables
-#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
+#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the
+#'  start of the year (# heads). (cohorts = FJ, FS, FA, MJ, MS, MA)
 #' @param assessment_duration Numeric. Length of the assessment period (days)
 #' @param variable_type Character vector. Variable group classification:
 #'   - `"Production"`: Production outputs (already at cohort level)
