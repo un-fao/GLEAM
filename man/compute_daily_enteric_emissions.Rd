@@ -4,30 +4,63 @@
 \alias{compute_daily_enteric_emissions}
 \title{Compute Daily Enteric Methane Emissions}
 \usage{
-compute_daily_enteric_emissions(animal, cohort, ym, diet_ge, dmi)
+compute_daily_enteric_emissions(
+  animal,
+  cohort,
+  ym,
+  ch4_mitigation_factor,
+  diet_ge,
+  dmi
+)
 }
 \arguments{
-\item{animal}{Character. Species code  (e.g., \code{PGS}, \code{CML}, \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}).}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{cohort}{Character. Cohort code (e.g., \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS},\code{MJ}).}
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 
-\item{ym}{Numeric. Methane conversion factor (YM), representing the share of  gross energy of the feed ration that is converted to CH₄.}
+\item{ym}{Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).}
+
+\item{ch4_mitigation_factor}{Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
+multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10\% reduction). Default = 1.}
 
 \item{diet_ge}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 
-\item{dmi}{Numeric. Daily dry matter intake of feed (kg DM/head/day).}
+\item{dmi}{Numeric. Average daily dry matter intake of feed (kg dry matter/head/day).}
 }
 \value{
-Numeric scalar. Daily enteric methane emissions (kg CH₄/head/day).
+Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
 }
 \description{
 Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross energy intake,
-methane conversion factor (YM), and dry matter intake (DMI). The formula assumes:
+methane conversion factor (ym), and dry matter intake (dmi).
 }
 \details{
-\deqn{CH₄ = diet\_ge × dmi × (ym / 100) / 55.65}
+The formula used to estimate daily enteric methane emissions is:
 
-where 55.65 MJ/kg is the energy content of methane. Returns \code{NA} for chickens.
+\deqn{CH_4 = \frac{diet\_ge \times dmi \times \frac{ym}{100}}{55.65}}
+
+where 55.65 MJ/kg is the energy content of methane and YM is expressed
+as a percentage of gross energy intake.
+
+The function returns \code{NA} for chickens.
 }
 \references{
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
