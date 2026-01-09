@@ -1,15 +1,56 @@
-#' Compute Methane Conversion Factor (YM)
+#' Compute Methane Conversion Factor (ym)
 #'
-#' Calculates the methane conversion factor (YM, % of dietary gross energy in feed converted to methane)
+#' Calculates the methane conversion factor (ym, % of dietary gross energy in feed converted to methane)
 #' for a given species and cohort based on diet digestibility. Implements species- and cohort-specific
-#' rules consistent with the GLEAM methodology and with IPCC Tier 2 approach.
+#' rules consistent with IPCC Tier 2 approach.
+#' 
 #'
-#'
-#' @param animal Character. Species code  (e.g., `PGS`, `CML`, `CTL`, `BFL`, `SHP`, `GTS`). 
-#' @param cohort Character. Cohort code (e.g., `FA`, `FS`, `FJ`, `MA`, `MS`,`MJ`).
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#'   
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
 #' @param diet_dig Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
 #'
-#' @return Numeric scalar. Methane conversion factor (YM), representing the share of  gross energy of the feed ration that is converted to CH₄.
+#' @return Numeric. Methane conversion factor (ym), representing the share of gross energy of the feed ration that is converted to CH₄ (percentage)
+#'
+#'@details
+#' ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013).
+#'
+#' \itemize{
+#'   \item \strong{For \code{CTL} and \code{BFL}:}
+#'     \deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
+#'
+#'   \item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
+#'     \itemize{
+#'       \item \code{JF} and \code{JM} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_dig \times 100)}
+#'       \item Other cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
+#'     }
+#'
+#'   \item \strong{For \code{PGS}:}
+#'     ym is assigned fixed values by cohort:
+#'     \itemize{
+#'       \item \code{FA} and \code{MA} cohorts: \deqn{ym = 1.01}
+#'       \item Other cohorts: \deqn{ym = 0.39}
+#'     }
+#' }
+#'
 #'
 #' @references
 #' Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
@@ -49,20 +90,46 @@ compute_methane_conversion_factor <- function(
 #' Compute Daily Enteric Methane Emissions
 #'
 #' Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross energy intake,
-#' methane conversion factor (YM), and dry matter intake (DMI). The formula assumes:
-#'
-#' \deqn{CH₄ = diet\_ge × dmi × (ym / 100) / 55.65}
-#'
-#' where 55.65 MJ/kg is the energy content of methane. Returns `NA` for chickens.
-#'
-#' @param animal Character. Species code  (e.g., `PGS`, `CML`, `CTL`, `BFL`, `SHP`, `GTS`). 
-#' @param cohort Character. Cohort code (e.g., `FA`, `FS`, `FJ`, `MA`, `MS`,`MJ`).
-#' @param ym Numeric. Methane conversion factor (YM), representing the share of  gross energy of the feed ration that is converted to CH₄.
+#' methane conversion factor (ym), and dry matter intake (dmi). 
+#' 
+#' @param animal Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
+#'   
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
+#' @param ym Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).
+#' @param ch4_mitigation_factor Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
+#' multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10% reduction). Default = 1.
 #' @param diet_ge Numeric. Average gross energy content of the diet (MJ/kg DM).
-#' @param dmi Numeric. Daily dry matter intake of feed (kg DM/head/day).
+#' @param dmi Numeric. Average daily dry matter intake of feed (kg dry matter/head/day).
 #'
-#' @return Numeric scalar. Daily enteric methane emissions (kg CH₄/head/day).
+#' @return Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
 #'
+#'@details
+#' The formula used to estimate daily enteric methane emissions is:
+#'
+#' \deqn{CH_4 = \frac{diet\_ge \times dmi \times \frac{ym}{100}}{55.65}}
+#'
+#' where 55.65 MJ/kg is the energy content of methane and YM is expressed
+#' as a percentage of gross energy intake.
+#'
+#' The function returns `NA` for chickens.
 #'
 #' @references
 #' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
@@ -81,7 +148,7 @@ compute_daily_enteric_emissions <- function(
     diet_ge,
     dmi
 ) {
-  validate_enteric_emission_inputs(animal, cohort, ym, diet_ge, dmi)
+  validate_enteric_emission_inputs(animal, cohort, ym, ch4_mitigation_factor, diet_ge, dmi)
   if (animal %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
     ret <- diet_ge * dmi * (ym / 100) * ch4_mitigation_factor / 55.65
   } else if (animal == "CHK") {
