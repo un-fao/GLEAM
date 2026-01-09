@@ -650,7 +650,7 @@ run_gleam <- function(
     data[, energy_allocation_fibre := calc_energy_allocation_fibre(
       animal = Animal_short,
       fibre_energy_requirement = nefibre,
-      ratio_ne_to_me = 0.43,  # ratio_ne_me_camelids default
+      ratio_ne_to_me = 0.43,
       assessment_duration = assessment_duration
     ), by = .I]
   }
