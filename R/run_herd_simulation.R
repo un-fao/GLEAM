@@ -111,7 +111,9 @@
 #' herd_level_data <- data.table::fread(herd_level_path)
 #'
 #' # Run herd simulation
-#' results <- run_herd_simulation(cohort_data, herd_level_data, assessment_duration=200)
+#' results <- run_herd_simulation(
+#' cohort_data = cohort_data, herd_level_data = herd_level_data, assessment_duration = 200
+#' )
 #'
 #' # Access results
 #' print(results$cohort_results)
@@ -128,7 +130,7 @@ run_herd_simulation <- function(
     max_years = 100,
     lambda_threshold = 1e-9,
     show_indicator = TRUE,
-    assessment_duration
+    assessment_duration = 365
 ) {
 
   # --- Step 1: Validate Inputs -----------------------------------------------
