@@ -11,10 +11,7 @@
 #' @param data data.table. Cohort-level production inputs (per country/animal/LPS) containing milk
 #'   yields, fibre production, slaughter characteristics, and classifier columns such as
 #'   `animal`, `LPS_short`, and `HerdType_short`.
-#' @param assessment_duration Numeric. Number of assessment days used to annualise production outputs.
-#'   Defaults to `365`.
-#' @param standard_lactose Numeric. Reference lactose fraction used for FPCM energy calculations.
-#'   Defaults to `0.048` (reflecting IDF 2022 guidance).
+#' @param assessment_duration Numeric. Length of the assessment period (days).
 #'
 #' @return data.table. The input data with appended milk, fibre, and meat production columns.
 #'
@@ -96,7 +93,7 @@ run_production_cohort <- function(
   )
 
   data[ , (meat_output_cols) := compute_meat_outputs(
-    offtake_number = offtake_number,
+    offtake_number_assessment = offtake_number_assessment,
     slaughter_weight = slaughter_weight,
     carcass_dressing_percentage = carcass_dressing_percentage,
     bone_free_meat_fraction = bone_free_meat_fraction,

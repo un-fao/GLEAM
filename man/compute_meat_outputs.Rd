@@ -5,15 +5,16 @@
 \title{Compute Meat Production Outputs}
 \usage{
 compute_meat_outputs(
-  offtake_number,
+  offtake_number_assessment,
   slaughter_weight,
   carcass_dressing_percentage,
   bone_free_meat_fraction,
-  meat_protein
+  meat_protein,
+  assessment_duration
 )
 }
 \arguments{
-\item{offtake_number}{Numeric. Number of animals removed via offtake (head/year).}
+\item{offtake_number_assessment}{Numeric. Number of animals removed via offtake (head/year).}
 
 \item{slaughter_weight}{Numeric. Live weight at slaughter (kg).}
 
@@ -25,10 +26,10 @@ compute_meat_outputs(
 }
 \value{
 Named list containing:
-\item{output_meat_production_liveweight}{Numeric. Meat production as live weight (kg/year).}
-\item{output_meat_production_carcassweight}{Numeric. Meat production as carcass weight (kg/year).}
-\item{output_meat_production_meat}{Numeric. Boneless meat production (kg/year).}
-\item{output_meat_production_protein}{Numeric. Meat protein production (kg protein/year).}
+\item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).}
+\item{output_meat_production_carcassweight}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort, (kg/cohort/year).}
+\item{output_meat_production_meat}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort, (kg/cohort/year)}
+\item{output_meat_production_protein}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/year).}
 }
 \description{
 Produces liveweight, carcass weight, boneless meat, and meat protein using the

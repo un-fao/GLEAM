@@ -4,7 +4,7 @@
 #' the legacy treatment of standard lactose.
 #'
 #' @param milk_yield Numeric. Milk yield per head per day (kg/day).
-#' @param assessment_duration Numeric. Number of assessment days in the year used to annualise outputs.
+#' @param assessment_duration Numeric. Length of the assessment period (days)
 #' @param size Numeric. Herd cohort size (heads).
 #' @param milking_fraction Numeric. Share of the cohort that is milking during the assessment window.
 #' @param milk_protein Numeric. Milk protein fraction (kg protein per kg milk).
@@ -16,9 +16,9 @@
 #' @param standard_lactose Numeric. Reference lactose fraction used for FPCM energy.
 #'
 #' @return Named list containing:
-#'   \item{output_milk_mass_production}{Numeric. Milk production (kg/year).}
-#'   \item{output_milk_protein_production}{Numeric. Milk protein production (kg protein/year).}
-#'   \item{output_milk_fpcm_production}{Numeric. Fat-protein-corrected milk production (kg FPCM/year).}
+#'   \item{output_milk_mass_production}{Numeric. Total milk production produced over the assessment period (kg/herd/assessment period).}
+#'   \item{output_milk_protein_production}{Numeric. Total milk protein production produced over the assessment period (kg protein/herd/assessment period).}
+#'   \item{output_milk_fpcm_production}{Numeric. Total Fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/herd/assessment period). Default fat and protein content=0.04 and 0.033.}
 #' @export
 compute_milk_outputs <- function(
     milk_yield,
@@ -71,10 +71,10 @@ compute_milk_outputs <- function(
 #' Compute Fibre Production
 #'
 #' @param fibre_prod Numeric. Fibre yield per head per year (kg/head/year).
-#' @param assessment_duration Numeric. Number of assessment days used to annualise fibre output.
+#' @param assessment_duration Numeric. Length of the assessment period (days)
 #' @param size Numeric. Herd size (heads) for the cohort.
 #'
-#' @return Numeric. Fibre production per cohort (kg/year).
+#' @return Numeric. Total fibre produced over the assessment period  by cohort (kg /cohort/assessment period).
 #' @export
 compute_fibre_output <- function(
     fibre_prod,
@@ -96,34 +96,36 @@ compute_fibre_output <- function(
 #' Produces liveweight, carcass weight, boneless meat, and meat protein using the
 #' sequential multipliers from the legacy implementation.
 #'
-#' @param offtake_number Numeric. Number of animals removed via offtake (head/year).
+#' @param offtake_number_assessment Numeric. Number of animals removed via offtake (head/year).
 #' @param slaughter_weight Numeric. Live weight at slaughter (kg).
 #' @param carcass_dressing_percentage Numeric. Dressing percentage applied to live weight (fraction).
 #' @param bone_free_meat_fraction Numeric. Share of carcass that becomes boneless meat (fraction).
 #' @param meat_protein Numeric. Protein fraction of boneless meat (kg protein per kg meat).
 #'
 #' @return Named list containing:
-#'   \item{output_meat_production_liveweight}{Numeric. Meat production as live weight (kg/year).}
-#'   \item{output_meat_production_carcassweight}{Numeric. Meat production as carcass weight (kg/year).}
-#'   \item{output_meat_production_meat}{Numeric. Boneless meat production (kg/year).}
-#'   \item{output_meat_production_protein}{Numeric. Meat protein production (kg protein/year).}
+#'   \item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).}
+#'   \item{output_meat_production_carcassweight}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort, (kg/cohort/year).}
+#'   \item{output_meat_production_meat}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort, (kg/cohort/year)}
+#'   \item{output_meat_production_protein}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/year).}
 #' @export
 compute_meat_outputs <- function(
-    offtake_number,
+    offtake_number_assessment,
     slaughter_weight,
     carcass_dressing_percentage,
     bone_free_meat_fraction,
-    meat_protein
+    meat_protein,
+    assessment_duration
 ) {
   validate_meat_outputs_inputs(
-    offtake_number = offtake_number,
+    offtake_number_assessment = offtake_number_assessment,
     slaughter_weight = slaughter_weight,
     carcass_dressing_percentage = carcass_dressing_percentage,
     bone_free_meat_fraction = bone_free_meat_fraction,
-    meat_protein = meat_protein
+    meat_protein = meat_protein,
+    assessment_duration = assessment_duration
   )
 
-  meat_production_liveweight <- offtake_number * slaughter_weight
+  meat_production_liveweight <- offtake_number_assessment * slaughter_weight
   meat_production_carcassweight <- meat_production_liveweight * carcass_dressing_percentage
   meat_production_meat <- meat_production_carcassweight * bone_free_meat_fraction
   meat_production_protein <- meat_production_meat * meat_protein

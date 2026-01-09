@@ -7,18 +7,18 @@
 aggregate_cohort_to_herd(data_cohort, id_cols, vars_to_sum, cohort)
 }
 \arguments{
-\item{id_cols}{Character vector of ID variables (e.g., Animal_short, LPS_short, HerdType_short).@Yassine: this should be revised. Record_id should be used.}
+\item{id_cols}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 
-\item{vars_to_sum}{Character vector of column names to be summed during aggregation.}
+\item{vars_to_sum}{Character vector. Names of numeric cohort-level variables to be summed across cohorts to produce herd-level totals (e.g., energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre, energy_allocation_work, energy_allocation_eggs)}
 
-\item{cohort}{Character. Cohort code (e.g., "FJ", "MJ", "FS", "MS", "FA", "MA").}
+\item{cohort}{Character. Name of the column identifying the sex–age cohort (e.g. FJ, FA, MJ, etc.).}
 
-\item{data}{A \code{data.table} containing cohort-level data.}
+\item{data}{A \code{data.table} at cohort-level containing energy allocation variables and herd identifiers. Each row corresponds to a single sex–age cohort within a herd.}
 }
 \value{
-A \code{data.table} with summed values at the herd level.
+A \code{data.table} at herd scale, in which selected cohort-level variables have been summed across all cohorts belonging to the same herd, as defined by id_herd.
 }
 \description{
 This function aggregates a dataset from cohort level to herd level by summing
-specified variables over the defined ID columns.
+specified variables over the defined 'id' columns.
 }

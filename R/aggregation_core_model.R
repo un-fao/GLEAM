@@ -14,7 +14,7 @@
 #'   - kg (unit)/head/day for non-production variables
 #'   - kg/cohort/assessment duration for production variables
 #' @param size Numeric vector. Number of heads in the specific cohort.
-#' @param assessment_duration Numeric vector. Duration of the assessment (days).
+#' @param assessment_duration Numeric. Length of the assessment period (days)
 #' @param variable_type Character vector. Variable group classification:
 #'   - `"Production"`: Production outputs (already at cohort level)
 #'   - `"Emissions"`, `"Feed"`, `"NitrogenBalance"`: Per-head-per-day values

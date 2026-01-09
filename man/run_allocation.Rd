@@ -12,7 +12,7 @@ run_allocation(
   standard_fat = 0.04,
   standard_lactose = 0.048,
   ratio_ne_me_camelids = 0.43,
-  assessment_duration_days = 365
+  assessment_duration = 365
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ run_allocation(
 
 \item{ratio_ne_me_camelids}{Numeric scalar for the net-to-metabolizable energy conversion for camelids.}
 
-\item{assessment_duration_days}{Numeric scalar giving the assessment period in days.}
+\item{assessment_duration}{Numeric scalar. Length of the assessment period (days).}
 }
 \value{
 A named list of three \code{data.table} objects:

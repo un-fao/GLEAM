@@ -471,10 +471,9 @@ calc_net_energy_growth <- function(
     }
     ret <- ((final_weight - initial_weight) * (a + 0.5 * b * (initial_weight + final_weight))) / duration
   } else if (animal == "PGS") {
-    prot_tissue_frac <- 0.65 # Protein tissue fraction
-    fat_adipose_tissue_frac <- 0.9 # Fat in adipose tissue fraction
+    prot_tissue_frac <- 0.65 
     if (cohort %in% c("FS", "FJ", "MS", "MJ")) {
-      cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * fat_adipose_tissue_frac * 52.3)
+      cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * 0.9 * 52.3)
       ret <- dwg * cgro
     } else {
       ret <- 0
@@ -524,9 +523,7 @@ calc_net_energy_growth <- function(
 #' @param ckg Numeric. Live body weight of the animal at birth (kg).
 #' @param wkg Numeric. Live body weight of the animal at weaning (kg).
 #' @param lact Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).
-#' @param parturition_rate Numeric. Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.
-#' @param lambing_interval Numeric. Average time interval between two successive births (days)
-#' @param assessment_duration Numeric. Length of the assessment period (days)
+#' @param parturition_rate Numeric. Average annual number of parturitions per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.
 #'
 #' @return Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #'
@@ -539,30 +536,33 @@ calc_net_energy_growth <- function(
 #' **quantity of milk produced** and a **species-specific energy cost per unit
 #' of milk**.
 #'
-#'\itemize{\strong{For CTL, BFL, CML, SHP and GTS}:
+#'\strong{For CTL, BFL, CML, SHP and GTS}:
+#'
 #' Total milk production includes:
 #' \itemize{
 #'   \item milk extracted for human consumption (\code{milk_yield})
-#'   \item milk consumed directly by offspring (\code{milk_from_offspring})
-#'     when milk yield is not directly observed (e.g., suckling systems).
+#'   \item milk consumed directly by offspring (\code{milk_for_offspring})
 #' }
 #'
 #' Lactation energy requirements are applied **only to adult females** and are
-#' scaled by the proportion of animals that are lactating within the cohort
-#' (\code{milking_fraction}).
+#' scaled by the proportion of milked (\code{milking_fraction}) or lactating 
+#' (\code{parturition_rate}) animals within the cohort.
+#' 
 #'
 #' In general form, lactation energy is computed as:
 #'
 #' \deqn{
 #' energy\_lactation =
-#' (milk\_yield + milk\_from\_offspring)
+#' (milk\_yield \times milking\_fraction + milk\_for\_offspring)
 #' \times energy\_milk
-#' \times milking\_fraction
+#' 
 #' }
 #'
-#' where \code{energy_milk} is a species-specific coefficient representing the
-#' net energy cost of producing one kilogram of milk (MJ kg\eqn{^{-1}}).
-#'
+#' where: 
+#' 
+#' \code{energy_milk} is a species-specific coefficient representing the
+#' net energy cost of producing one kilogram of milk (MJ kg\eqn{^{-1}})
+#' 
 #' Species-specific values of \code{energy_milk} are:
 #' \itemize{
 #'   \item \code{CTL}, \code{BFL}: estimated as a function of milk fat content,
@@ -570,35 +570,28 @@ calc_net_energy_growth <- function(
 #'   \item \code{CML}: 4.063 (Wardeh, 2004),
 #'   \item \code{SHP}: 4.6 (AFRC, 1993; AFRC, 1995),
 #'   \item \code{GTS}: 3.0 (AFRC, 1998).
-#' }
-#'
-#' When milk yield is not directly observed the amount of milk required to rear offspring
-#' is aproximated at **5 kilograms of milk per
-#' kilogram of live-weight gain to weaning**:
-#'
+#'   }
+#' 
+#' \code{milk_for_offspring} is the daily amount of milk required to rear offspring across the year (kg day\eqn{^{-1}}).
+#' It is calculated assuming that **5 kg of milk are required for each kilogram of live-weight gain up to weaning**, using the equation below.
+#' 
 #' \deqn{
-#' milk\_from\_offspring =
+#' milk\_for\_offspring =
 #' \frac{parturition\_rate \times 5 \times (wkg - ckg)}
-#' {assessment\_duration} \code(AFRC, 1990)
+#' {365} \code(AFRC, 1990)
 #' }
-#' }
+
+#' 
+#' For \code{SHP} and \code{GTS}, \code{milk_for_offspring} also accounts for
+#' the average number of offspring per birth by multiplying by \code{litsize}.
+#' 
 #'
-#' \itemize{\strong{For PGS} — NRC (1998).
+#' \strong{For PGS} — NRC (1998):
 #'
-#' For pigs, lactation energy is implemented as a **per-litter energy requirement**
-#' adjusted to the fraction of the reproductive cycle spent in lactation.
-#'
-#' The adjustment factor is defined as:
-#'
-#' \deqn{
-#' cadj = \frac{lact}{idle + gest + lact}
-#' }
-#'
-#' where \eqn{lact}, \eqn{idle}, and \eqn{gest} represent the durations (days)
-#' of lactation, non-productive (idle), and gestation phases, respectively.
-#'
-#' Lactation energy per sow per day is calculated as:
-#'
+#' For pigs, lactation energy accounts only for the milk consumed directly by offspring (\code{milk_for_offspring})
+#' adjusted by the fraction of the reproductive cycle spent in lactation (\code{cadj}),
+#' and is calculated as follows:
+#' 
 #' \deqn{
 #' energy\_lactation =
 #' litsize \times (1 - 0.5 \times dr1)
@@ -608,7 +601,7 @@ calc_net_energy_growth <- function(
 #' \right)
 #' \times cadj
 #' }
-#'
+#' 
 #' where:
 #' \itemize{
 #'   \item \eqn{0.02059} is the coefficient for lactation energy requirement
@@ -620,8 +613,12 @@ calc_net_energy_growth <- function(
 #'   \item \code{litsize} is litter size,
 #'   \item \code{dr1} is the proportion of stillborn piglets,
 #'   \item \eqn{wkg} and \eqn{ckg} are live weights at weaning and at birth,
-#'     respectively (kg).
-#' }
+#'     respectively (kg),
+#'    \item \eqn{cadj} is the fraction of the reproductive cycle spent in lactation calculated as
+#'    
+#'    \deqn{
+#'    cadj = \frac{lact}{idle + gest + lact}
+#'    }
 #' }
 #'
 #' @references
@@ -670,41 +667,39 @@ calc_net_energy_lactation <- function(
     ckg,
     wkg,
     lact,
-    parturition_rate,
-    lambing_interval,
-    assessment_duration
+    parturition_rate
 ) {
   # Validate inputs
   validate_lactation_inputs(
     animal, cohort, milking_fraction, milk_yield, milk_fat,
     idle, gest, litsize, dr1, ckg, wkg, lact,
-    parturition_rate, lambing_interval, assessment_duration
+    parturition_rate
   )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
-      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) *
+      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg) / 365)) *
         (milk_fat * 100 * 0.40 + 1.47)
     } else {
       ret <- 0
     }
   } else if (animal %in% c("CML")) {
     if (cohort == "FA") {
-      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg)) / assessment_duration) * 4.063
+      ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg) / 365)) * 4.063
     } else {
       ret <- 0
     }
   } else if (animal %in% c("SHP")) {
     if (cohort == "FA") {
       # Includes effect of litter size and lambing interval
-      ret <- ((milk_yield * milking_fraction)  + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
-                                                    (wkg - ckg)) / assessment_duration) * 4.6
+      ret <- ((milk_yield * milking_fraction)  + (litsize * parturition_rate * 5 *
+                                                    (wkg - ckg) / 365)) * 4.6
     } else {
       ret <- 0
     }
   } else if (animal %in% c("GTS")) {
     if (cohort == "FA") {
-      ret <- ((milk_yield * milking_fraction)  + (litsize * (assessment_duration * parturition_rate / lambing_interval) * 5 *
-                                                    (wkg - ckg)) / assessment_duration) * 3
+      ret <- ((milk_yield * milking_fraction)  + (litsize * parturition_rate * 5 *
+                                                    (wkg - ckg) / 365)) * 3
     } else {
       ret <- 0
     }
@@ -1016,9 +1011,8 @@ calc_net_energy_fibre <- function(
 #' Calculate Energy for Pregnancy
 #'
 #' Computes the **energy requirement for pregnancy** (MJ/head/day) for pregnant
-#' females. This approach follows the IPCC Tier 2 partitioning framework, where
-#' pregnancy energy is expressed as a fraction of the energy required for
-#' maintenance and is applied only to **female cohorts**.
+#' females. This approach follows the IPCC Tier 2 partitioning framework and is applied
+#' only to **female cohorts**.
 #'
 #' @param animal Character. Code identifying the livestock species.
 #'   Supported values include:
@@ -1041,71 +1035,108 @@ calc_net_energy_fibre <- function(
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
 #' @param nemain Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#' @param parturition_rate Numeric. Numeric. Average annual number of parturitions per female animal (fraction).
-#' At herd level, calculated as offspring delivered divided by the number of adult females.
+#' @param parturition_rate Numeric. Average annual number of parturitions per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.
 #' @param litsize Numeric. Average number of offspring born per parturition (#). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
 #' @param gest Numeric. Duration of pregnancy period (days).
+#' @param idle Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days).
+#' @param lact Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).
 #' @param duration Numeric. Amount of time that each animal spends in a specific cohort (days).
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
 #'
 #' @return Numeric. Energy required for pregnancy for pregnant adult females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #'
-#'@details
-#' Pregnancy energy is applied only to female cohorts and is scaled according to
-#' reproductive exposure during the cohort stage:
-#' \itemize{
-#'   \item For adult females (\code{FA}), pregnancy energy is proportional to
-#'     \code{parturition_rate}.
-#'   \item For replacement females (\code{FS}), pregnancy energy is applied only
-#'     to the fraction of animals that remain in the cohort, using
-#'     \code{(1 - offtake_rate)}, and is scaled to the time pregnant within the
-#'     cohort using \code{gest / duration}.
-#' }
+#' @details
+#' Pregnancy energy is calculated **only for female cohorts**
+#' (i.e., \code{FA} and \code{FS}) and represents the additional
+#' energy required to support gestation.
+#' 
+#' For \code{FA}, pregnancy energy requirements are adjusted to account
+#' for the proportion of time animals spend in gestation.
 #'
-#'Specifics by species:
+#' For \code{FS}, only a fraction of animals is assumed to be of reproductive age;
+#' pregnancy energy requirements are therefore scaled accordingly.
+#'
 #'
 #' \itemize{
-#'   \item
-#'   \strong{CTL and BFL} — IPCC (2006, 2019).
-#'   Pregnancy is approximated as 10\% of maintenance energy averaged over the year:
+#'   \item For \strong{CTL and BFL} — IPCC (2006, 2019):
+#'   
+#'   Pregnancy energy is approximated as 10% of maintenance energy.
 #'   \itemize{
-#'   \item \code{FA}:
-#'     \deqn{energy\_pregnancy = 0.10 \times nemain \times parturition\_rate}
-#'   \item \code{FS}:
-#'     \deqn{energy\_pregnancy = 0.10 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
-#' }
+#'     \item \code{FA}:
+#'       \deqn{
+#'       energy\_pregnancy =
+#'       0.10 \times nemain \times parturition\_rate \times \frac{gest}{365}
+#'       }
+#'     \item \code{FS}:
+#'       \deqn{
+#'       energy\_pregnancy =
+#'       0.10 \times nemain \times \frac{gest}{duration}
+#'       \times (1 - offtake\_rate)
+#'       }
+#'   }
 #'
-#' \strong{CML} — (Wardeh, 2004)
-#' \itemize{
-#'   \item \code{FA}:
-#'     \deqn{energy\_pregnancy = 0.12 \times nemain \times parturition\_rate}
-#'   \item \code{FS}:
-#'     \deqn{energy\_pregnancy = 0.12 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
-#' }
+#'   \item For \strong{CML} — Wardeh (2004):
+#'   
+#'   Pregnancy energy is estimated as 12% of maintenance energy.
+#'   \itemize{
+#'     \item \code{FA}:
+#'       \deqn{
+#'       energy\_pregnancy =
+#'       0.12 \times nemain \times parturition\_rate
+#'       }
+#'     \item \code{FS}:
+#'       \deqn{
+#'       energy\_pregnancy =
+#'       0.12 \times nemain \times \frac{gest}{duration}
+#'       \times (1 - offtake\_rate)
+#'       }
+#'   }
 #'
-#' \strong{SHP and GTS} — IPCC (2006, 2019).
-#' Pregnancy is calculated as a litter-size dependent fraction of maintenance:
-#' \deqn{energy\_pregnancy = cpreg(litsize) \times nemain \times parturition\_rate}
-#' where \eqn{cpreg} is defined as:
-#' \itemize{
-#'   \item If \eqn{1 \le litsize \le 2}:
-#'     \deqn{cpreg = 0.077 \times (2 - litsize) + 0.126 \times (litsize - 1)}
-#'   \item If \eqn{litsize > 2}: \deqn{cpreg = 0.150}
-#' }
-#' For replacement females (\code{FS}), the implementation applies the single-birth
-#' coefficient scaled by pregnancy exposure:
-#' \deqn{energy\_pregnancy = 0.077 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
+#'   \item For \strong{SHP and GTS} — IPCC (2006, 2019):
+#'   
+#'   Pregnancy energy is calculated as a litter-size–dependent fraction
+#'   of maintenance energy.
+#'   \itemize{
+#'     \item \code{FA}:
+#'       \deqn{
+#'       energy\_pregnancy =
+#'       nemain \times cpreg \times parturition\_rate \times \frac{gest}{365}
+#'       }
+#'       where \eqn{cpreg} is defined as:
+#'       \itemize{
+#'         \item If \eqn{1 \le litsize \le 2}:
+#'           \deqn{
+#'           cpreg = 0.077 \times (2 - litsize) + 0.126 \times (litsize - 1)
+#'           }
+#'         \item If \eqn{litsize > 2}:
+#'           \deqn{cpreg = 0.150}
+#'       }
+#'     \item \code{FS} - 
+#'       Pregnancy energy is calculated using the single-birth coefficient
+#'       and scaled to the proportion of reproductive individuals in the cohort.
+#'       \deqn{
+#'       energy\_pregnancy =
+#'       0.077 \times nemain \times \frac{gest}{duration}
+#'       \times (1 - offtake\_rate)
+#'       }
+#'   }
 #'
-#' \strong{PGS} — (NRC, 1998):
-#' Pregnancy energy is implemented as a litter-based daily requirement using a
-#' gestation coefficient (\eqn{cgest}, MJ piglet\eqn{^{-1}}):
-#' \itemize{
-#'   \item \code{FA}:
-#'     \deqn{energy\_pregnancy = cgest \times litsize \times parturition\_rate}
-#'   \item \code{FS}:
-#'     \deqn{energy\_pregnancy = cgest \times litsize \times parturition\_rate \times (gest/duration) \times (1-offtake\_rate)}
-#' }
-#' with default \eqn{cgest = 0.14985} MJ piglet\eqn{^{-1}}.
+#'   \item For \strong{PGS} — NRC (1998):
+#'   
+#'   \itemize{
+#'     \item \code{FA}:
+#'       \deqn{
+#'       energy\_pregnancy = cgest \times litsize \times \frac{gest}{lact + gest + idle}
+#'       }
+#'     \item \code{FS}:
+#'       \deqn{
+#'       energy\_pregnancy =
+#'       cgest \times litsize \times \frac{gest}{duration}
+#'       \times (1 - offtake\_rate)
+#'       }
+#'   The default value for the gestation coefficient is
+#'   \eqn{cgest = 0.14985} MJ piglet\eqn{^{-1}}.
+#'   }
 #' }
 #'
 #' @references
@@ -1131,6 +1162,8 @@ calc_net_energy_pregnancy <- function(
     parturition_rate,
     litsize,
     gest,
+    idle,
+    lact,
     duration,
     offtake_rate
 ) {
@@ -1147,11 +1180,11 @@ calc_net_energy_pregnancy <- function(
   # Validate inputs
   validate_pregnancy_inputs(
     animal, cohort, nemain, parturition_rate,
-    litsize, gest, duration, offtake_rate
+    litsize, gest, idle, lact, duration, offtake_rate
   )
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
-      ret <- (nemain * 0.1 * parturition_rate)
+      ret <- (nemain * 0.1 * parturition_rate * gest / 365)
     } else if (cohort == "FS") {
       ret <- (nemain * 0.1) * (gest/duration) * (1 - offtake_rate)
     } else {
@@ -1174,21 +1207,21 @@ calc_net_energy_pregnancy <- function(
       } else if (litsize > 2) {
         cpreg <- 0.150
       }
-      ret <- nemain * cpreg * parturition_rate
+      ret <- nemain * cpreg * parturition_rate * gest / 365
     } else if (cohort == "FS") {
-      # 5 months pregnancy assumed
       ret <- nemain * 0.077 * (gest/duration) * (1 - offtake_rate)
     } else {
       ret <- 0
     }
   } else if (animal == "PGS") {
-    cgest <- 0.14985 # GLEAM coefficient for pigs
+    cgest <- 0.14985 
+    
     if (cohort == "FA") {
-      ret <- cgest * litsize * parturition_rate
+      ret <- cgest * litsize * gest / (idle + gest + lact)
 
     } else if (cohort == "FS") {
 
-      ret <- cgest * litsize * (gest / duration) * parturition_rate * (1 - offtake_rate)
+      ret <- cgest * litsize * (gest / duration) * (1 - offtake_rate)
 
     } else {
       ret <- 0

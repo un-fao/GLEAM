@@ -12,18 +12,68 @@ calc_energy_allocation_milk(
 )
 }
 \arguments{
-\item{milk_fpcm_output}{Numeric scalar. Fat- and protein-corrected milk production (kg).}
+\item{milk_fpcm_output}{Numeric scalar. Total fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/assessment period).
 
-\item{standard_protein}{Numeric scalar. Reference protein content (g per 100 g milk).}
+Default fat and protein content=0.04 and 0.033.}
 
-\item{standard_fat}{Numeric scalar. Reference fat content (g per 100 g milk).}
+\item{standard_protein}{Numeric. Standard protein content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg protein/kg milk).
 
-\item{standard_lactose}{Numeric scalar. Reference lactose content (g per 100 g milk).}
+Default used=0.033.}
+
+\item{standard_fat}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg fat/kg milk).
+
+Default used=0.04.}
+
+\item{standard_lactose}{Numeric. Standard lactose content of milk, used to calculate Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk).
+
+Default used=0.048.}
 }
 \value{
-Numeric scalar. Energy requirements in megajoules.
+Numeric scalar. Energy required to produce total milk output by cohort (MJ/cohort/assessment period).
+
+Non-zero values are applicable only to milk-producing species and cohorts (species=CTL, BFL, CML, SHP, GTS; cohorts=AF).
+All other species–cohort combinations are assigned a value of 0.
 }
 \description{
-Converts fat- and protein-corrected milk output into the megajoule demand used in the allocation workflow.
-The formula calculates energy density based on standard milk composition and multiplies by production.
+Calculates the net energy demand (MJ) required to produce total fat-protein-corrected milk (FPCM) over the assessment period.
+}
+\details{
+This function provides the milk-related energy term used in a biophysical
+allocation framework to apportion emissions between milk and other co-products
+in multifunctional livestock production systems.
+
+The approach implements the IDF (2022) standard, adapted from Thoma and Nemecek (2020), and is consistent with
+FAO LEAP livestock LCA guidelines (FAO, 2016a, 2016b, 2016c) and with ISO 14044:2006 (Section 4.3.4.2, Step 2).
+
+In accordance with ISO 14044:2006 (Section 4.3.4.2, Step 2), known processing or
+biophysical relationships may be used to assign shared inputs and outputs of a
+single production unit to individual products or sub-units. In livestock systems,
+this includes apportioning shared feed and energy use according to physiological
+energy requirements (e.g., net energy for lactation, growth..etc.). If the
+resulting process remains multifunctional, these energy terms may subsequently
+be used to derive allocation factors among co-products.
+}
+\references{
+ISO. 2006. Environmental management — Life cycle assessment — Requirements and
+guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
+
+IDF. 2022. The IDF Global Carbon Footprint Standard for the Dairy Sector.
+Bulletin of the IDF No. 520/2022. International Dairy Federation, Brussels.
+
+Thoma, G., and T. Nemecek. 2020. Allocation between milk and meat in dairy LCA:
+Critical discussion of the IDF’s standard methodology. Proceedings of the
+12th International Conference on Life Cycle Assessment of Food (LCAFood 2020),
+pp. 83–89, 13–16 October, Berlin, Germany.
+
+FAO. 2016a. Environmental performance of large ruminant supply chains:
+Guidelines for assessment. Livestock Environmental Assessment and Performance
+(LEAP) Partnership. FAO, Rome, Italy.
+
+FAO. 2016b. Greenhouse gas emissions and fossil energy use from small ruminant
+supply chains: Guidelines for assessment. Livestock Environmental Assessment
+and Performance (LEAP) Partnership. FAO, Rome, Italy.
+
+FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
+chains: Guidelines for assessment. Livestock Environmental Assessment and
+Performance (LEAP) Partnership. FAO, Rome, Italy.
 }

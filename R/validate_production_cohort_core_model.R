@@ -89,22 +89,23 @@ validate_fibre_output_inputs <- function(
 #'
 #' @noRd
 validate_meat_outputs_inputs <- function(
-    offtake_number,
+    offtake_number_assessment,
     slaughter_weight,
     carcass_dressing_percentage,
     bone_free_meat_fraction,
-    meat_protein
+    meat_protein,
+    assessment_duration
 ) {
   # Scalar numeric inputs
-  validate_scalar_numeric(offtake_number, "offtake_number")
+  validate_scalar_numeric(offtake_number_assessment, "offtake_number_assessment")
   validate_scalar_numeric(slaughter_weight, "slaughter_weight")
   validate_scalar_numeric(carcass_dressing_percentage, "carcass_dressing_percentage")
   validate_scalar_numeric(bone_free_meat_fraction, "bone_free_meat_fraction")
   validate_scalar_numeric(meat_protein, "meat_protein")
 
   # Non-negative checks
-  if (offtake_number < 0) {
-    cli::cli_abort("{.arg offtake_number} must be non-negative.")
+  if (offtake_number_assessment < 0) {
+    cli::cli_abort("{.arg offtake_number_assessment} must be non-negative.")
   }
   if (slaughter_weight < 0) {
     cli::cli_abort("{.arg slaughter_weight} must be non-negative.")

@@ -11,11 +11,7 @@ run_production_cohort(data, assessment_duration = 365)
 yields, fibre production, slaughter characteristics, and classifier columns such as
 \code{animal}, \code{LPS_short}, and \code{HerdType_short}.}
 
-\item{assessment_duration}{Numeric. Number of assessment days used to annualise production outputs.
-Defaults to \code{365}.}
-
-\item{standard_lactose}{Numeric. Reference lactose fraction used for FPCM energy calculations.
-Defaults to \code{0.048} (reflecting IDF 2022 guidance).}
+\item{assessment_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
 data.table. The input data with appended milk, fibre, and meat production columns.

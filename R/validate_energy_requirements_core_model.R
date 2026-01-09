@@ -160,9 +160,7 @@ validate_lactation_inputs <- function(
     ckg,
     wkg,
     lact,
-    parturition_rate,
-    lambing_interval,
-    assessment_duration
+    parturition_rate
 ) {
   validate_animal_species(animal)
   validate_cohort_code(cohort)
@@ -170,8 +168,6 @@ validate_lactation_inputs <- function(
   validate_scalar_numeric(milk_yield, "milk_yield")
   validate_scalar_numeric(milk_fat, "milk_fat")
   validate_positive_numeric(parturition_rate, "parturition_rate")
-  validate_positive_numeric(parturition_rate, "assessment_duration")
-  
   validate_fraction(milking_fraction, "milking_fraction")
   validate_fraction(milk_fat, "milk_fat")
 
@@ -197,13 +193,6 @@ validate_lactation_inputs <- function(
     if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")
     if (!is.na(ckg)) validate_positive_numeric(ckg, "ckg")
     if (!is.na(wkg)) validate_positive_numeric(wkg, "wkg")
-    if (!is.na(lambing_interval)) validate_positive_numeric(lambing_interval, "lambing_interval")
-    
-    if (lambing_interval < 200) {
-      cli::cli_warn(
-        "{.field lambing_interval} is below 200 days. This may indicate an unrealistic input."
-      )
-    }
     
     }
 
@@ -265,6 +254,8 @@ validate_pregnancy_inputs <- function(
     parturition_rate,
     litsize,
     gest,
+    idle,
+    lact,
     duration,
     offtake_rate
 ) {
@@ -285,7 +276,11 @@ validate_pregnancy_inputs <- function(
   if (animal == "PGS") {
     if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")
     if (!is.na(gest)) validate_scalar_numeric(gest, "gest")
+    if (!is.na(gest)) validate_scalar_numeric(idle, "idle")
+    if (!is.na(gest)) validate_scalar_numeric(lact, "lact")
   }
+  
+  
 
   if (animal %in% c("SHP", "GTS")) {
     if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")

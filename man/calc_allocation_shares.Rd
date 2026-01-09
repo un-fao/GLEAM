@@ -14,29 +14,92 @@ calc_allocation_shares(
 )
 }
 \arguments{
-\item{animal}{Character vector of animal species codes (e.g., "CTL", "SHP", "PGS").}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{energy_meat}{Numeric vector: Herd-level energy requirement for meat production (MJ).}
+\item{energy_meat}{Numeric. Energy required for total meat output by herd during
+the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/herd/assessment period).}
 
-\item{energy_milk}{Numeric vector: Herd-level energy requirement for milk production (MJ).}
+\item{energy_milk}{Numeric. Energy required to produce total milk output by herd (MJ/herd/assessment period).}
 
-\item{energy_fibre}{Numeric vector: Herd-level energy requirement for fibre production (MJ).}
+\item{energy_fibre}{Numeric. Energy required to produce all fibre output by herd (MJ/herd/assessment period).}
 
-\item{energy_work}{Numeric vector: Herd-level energy requirement for work (MJ).}
+\item{energy_work}{Numeric vector. Energy required to provide all draught power (traction/work) by herd (MJ/herd/assessment period)}
 
-\item{energy_eggs}{Numeric vector: Herd-level energy requirement for eggs (MJ).}
+\item{energy_eggs}{Numeric vector: Energy required to produce eggs by the herd during the assessment period (MJ/herd/assessment period).}
 }
 \value{
 A named list of numeric vectors with same length as input, containing:
 \describe{
-\item{allocation_share_meat}{Proportion of total energy allocated to meat}
-\item{allocation_share_milk}{... to milk}
-\item{allocation_share_fibre}{... to fibre}
-\item{allocation_share_work}{... to work}
-\item{allocation_share_eggs}{... to eggs}
+\item{allocation_share_meat}{Numeric. Allocation share assigned to meat (fraction).}
+\item{allocation_share_milk}{Numeric. Allocation share assigned to milk (fraction).}
+\item{allocation_share_fibre}{Numeric. Allocation share assigned to fibre (fraction).}
+\item{allocation_share_work}{Numeric. Allocation share assigned to work (fraction).}
+\item{allocation_share_eggs}{Numeric. Allocation share assigned to eggs (fraction).}
 }
 }
 \description{
-Computes allocation shares of energy required for meat, milk, fibre, work, and eggs
-based on total energy demand per output.
+Calculates biophysical allocation fractions for commodities (meat, milk, fibre, work,
+eggs) based on their total energy requirements.
+}
+\details{
+These fractions represent the proportions of total environmental burdens (e.g., GHG
+emissions) that will be allocated to each commodity in subsequent steps of the
+assessment.
+
+The biophysical approach follows the IDF Global Carbon Footprint Standard for the
+Dairy Sector (IDF, 2022), adapted from Thoma and Nemecek (2020), and is consistent
+with FAO LEAP livestock LCA guidelines (FAO, 2016a, 2016b, 2016c). It aligns with
+ISO 14044:2006 (Section 4.3.4.2, Step 2) by using underlying physical (energy-based)
+relationships to assign shared inputs and outputs in multifunctional livestock
+production systems.
+
+In accordance with ISO 14044:2006 (Section 4.3.4.2, Step 2), known processing or
+biophysical relationships may be used to assign shared inputs and outputs of a
+single production unit to individual products or sub-units. In livestock systems,
+this includes apportioning shared feed and energy use according to physiological
+energy requirements (e.g., net energy for lactation, growth..etc.). If the
+resulting process remains multifunctional, these energy terms may subsequently
+be used to derive allocation factors among co-products.
+
+This function calculates biophysical allocation
+fractions for commodities (meat, milk, fibre, work, eggs) for all species.
+
+\strong{Pig systems (\code{PGS}).} For pigs, allocation is not based on energy
+partitioning because pig production is treated as functionally single-output
+(edible meat). Consequently, 100\% of the allocation is assigned to the meat
+commodity (meat share = 1; all other commodity shares = 0), independent of the
+energy inputs.
+}
+\references{
+ISO. 2006. Environmental management — Life cycle assessment — Requirements and
+guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
+
+IDF. 2022. The IDF Global Carbon Footprint Standard for the Dairy Sector.
+Bulletin of the IDF No. 520/2022. International Dairy Federation, Brussels.
+
+Thoma, G., and T. Nemecek. 2020. Allocation between milk and meat in dairy LCA:
+Critical discussion of the IDF’s standard methodology. Proceedings of the
+12th International Conference on Life Cycle Assessment of Food (LCAFood 2020),
+pp. 83–89, 13–16 October, Berlin, Germany.
+
+FAO. 2016a. Environmental performance of large ruminant supply chains:
+Guidelines for assessment. Livestock Environmental Assessment and Performance
+(LEAP) Partnership. FAO, Rome, Italy.
+
+FAO. 2016b. Greenhouse gas emissions and fossil energy use from small ruminant
+supply chains: Guidelines for assessment. Livestock Environmental Assessment
+and Performance (LEAP) Partnership. FAO, Rome, Italy.
+
+FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
+chains: Guidelines for assessment. Livestock Environmental Assessment and
+Performance (LEAP) Partnership. FAO, Rome, Italy.
 }

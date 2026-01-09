@@ -20,7 +20,7 @@ compute_milk_outputs(
 \arguments{
 \item{milk_yield}{Numeric. Milk yield per head per day (kg/day).}
 
-\item{assessment_duration}{Numeric. Number of assessment days in the year used to annualise outputs.}
+\item{assessment_duration}{Numeric. Length of the assessment period (days)}
 
 \item{size}{Numeric. Herd cohort size (heads).}
 
@@ -41,9 +41,9 @@ computed animal-specific lactose but used standard_lactose in the energy calcula
 }
 \value{
 Named list containing:
-\item{output_milk_mass_production}{Numeric. Milk production (kg/year).}
-\item{output_milk_protein_production}{Numeric. Milk protein production (kg protein/year).}
-\item{output_milk_fpcm_production}{Numeric. Fat-protein-corrected milk production (kg FPCM/year).}
+\item{output_milk_mass_production}{Numeric. Total milk production produced over the assessment period (kg/herd/assessment period).}
+\item{output_milk_protein_production}{Numeric. Total milk protein production produced over the assessment period (kg protein/herd/assessment period).}
+\item{output_milk_fpcm_production}{Numeric. Total Fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/herd/assessment period). Default fat and protein content=0.04 and 0.033.}
 }
 \description{
 Returns milk mass, protein, and FPCM using the IDF energy formulation while preserving
