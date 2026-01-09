@@ -57,8 +57,7 @@ The formula used to estimate daily enteric methane emissions is:
 
 \deqn{CH_4 = \frac{diet\_ge \times dmi \times \frac{ym}{100}}{55.65}}
 
-where 55.65 MJ/kg is the energy content of methane and YM is expressed
-as a percentage of gross energy intake.
+where 55.65 MJ/kg is the energy content of methane.
 
 The function returns \code{NA} for chickens.
 }
