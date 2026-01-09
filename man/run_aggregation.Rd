@@ -99,7 +99,6 @@ with \code{allocation_share = 1}.
 \item \strong{Convert to CO₂e.} Allocated CH₄ and N₂O emissions are converted to CO₂e using
 the selected GWP-100 option. Results are stored as \code{value_total} with \code{unit = "kg co2eq"}.
 }
-}
 \references{
 IPCC (2021). \emph{Climate Change 2021: The Physical Science Basis}.
 Contribution of Working Group I to the Sixth Assessment Report of the
