@@ -13,9 +13,10 @@ calc_totals_by_cohort(value, size, assessment_duration, variable_type)
 \item kg/cohort/assessment duration for production variables
 }}
 
-\item{size}{Numeric vector. Number of heads in the specific cohort.}
+\item{size}{Numeric. Population size in each of the 6 sex–age cohorts at the
+start of the year (# heads). (cohorts = FJ, FS, FA, MJ, MS, MA)}
 
-\item{assessment_duration}{Numeric vector. Duration of the assessment (days).}
+\item{assessment_duration}{Numeric. Length of the assessment period (days)}
 
 \item{variable_type}{Character vector. Variable group classification:
 \itemize{

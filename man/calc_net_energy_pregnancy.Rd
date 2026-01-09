@@ -11,6 +11,8 @@ calc_net_energy_pregnancy(
   parturition_rate,
   litsize,
   gest,
+  idle,
+  lact,
   duration,
   offtake_rate
 )
@@ -40,12 +42,15 @@ production stage of the animals. Supported values include:
 
 \item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{parturition_rate}{Numeric. Numeric. Average annual number of parturitions per female animal (fraction).
-At herd level, calculated as offspring delivered divided by the number of adult females.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
 
 \item{litsize}{Numeric. Average number of offspring born per parturition (#). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
 \item{gest}{Numeric. Duration of pregnancy period (days).}
+
+\item{idle}{Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days).}
+
+\item{lact}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).}
 
 \item{duration}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 
@@ -56,66 +61,100 @@ Numeric. Energy required for pregnancy for pregnant adult females (MJ/head/day).
 }
 \description{
 Computes the \strong{energy requirement for pregnancy} (MJ/head/day) for pregnant
-females. This approach follows the IPCC Tier 2 partitioning framework, where
-pregnancy energy is expressed as a fraction of the energy required for
-maintenance and is applied only to \strong{female cohorts}.
+females. This approach follows the IPCC Tier 2 partitioning framework and is applied
+only to \strong{female cohorts}.
 }
 \details{
-Pregnancy energy is applied only to female cohorts and is scaled according to
-reproductive exposure during the cohort stage:
-\itemize{
-\item For adult females (\code{FA}), pregnancy energy is proportional to
-\code{parturition_rate}.
-\item For replacement females (\code{FS}), pregnancy energy is applied only
-to the fraction of animals that remain in the cohort, using
-\code{(1 - offtake_rate)}, and is scaled to the time pregnant within the
-cohort using \code{gest / duration}.
-}
+Pregnancy energy is calculated \strong{only for female cohorts}
+(i.e., \code{FA} and \code{FS}) and represents the additional
+energy required to support gestation.
 
-Specifics by species:
+For \code{FA}, pregnancy energy requirements are adjusted to account
+for the proportion of time animals spend in gestation.
+
+For \code{FS}, only a fraction of animals is assumed to be of reproductive age;
+pregnancy energy requirements are therefore scaled accordingly.
 
 \itemize{
-\item
-\strong{CTL and BFL} — IPCC (2006, 2019).
-Pregnancy is approximated as 10\\% of maintenance energy averaged over the year:
+\item For \strong{CTL and BFL} — IPCC (2006, 2019):
+
+Pregnancy energy is approximated as 10\% of maintenance energy.
 \itemize{
 \item \code{FA}:
-\deqn{energy\_pregnancy = 0.10 \times nemain \times parturition\_rate}
+\deqn{
+      energy\_pregnancy =
+      0.10 \times nemain \times parturition\_rate \times \frac{gest}{365}
+      }
 \item \code{FS}:
-\deqn{energy\_pregnancy = 0.10 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
+\deqn{
+      energy\_pregnancy =
+      0.10 \times nemain \times \frac{gest}{duration}
+      \times (1 - offtake\_rate)
+      }
 }
 
-\strong{CML} — (Wardeh, 2004)
+\item For \strong{CML} — Wardeh (2004):
+
+Pregnancy energy is estimated as 12\% of maintenance energy.
 \itemize{
 \item \code{FA}:
-\deqn{energy\_pregnancy = 0.12 \times nemain \times parturition\_rate}
+\deqn{
+      energy\_pregnancy =
+      0.12 \times nemain \times parturition\_rate
+      }
 \item \code{FS}:
-\deqn{energy\_pregnancy = 0.12 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
+\deqn{
+      energy\_pregnancy =
+      0.12 \times nemain \times \frac{gest}{duration}
+      \times (1 - offtake\_rate)
+      }
 }
 
-\strong{SHP and GTS} — IPCC (2006, 2019).
-Pregnancy is calculated as a litter-size dependent fraction of maintenance:
-\deqn{energy\_pregnancy = cpreg(litsize) \times nemain \times parturition\_rate}
+\item For \strong{SHP and GTS} — IPCC (2006, 2019):
+
+Pregnancy energy is calculated as a litter-size–dependent fraction
+of maintenance energy.
+\itemize{
+\item \code{FA}:
+\deqn{
+      energy\_pregnancy =
+      nemain \times cpreg \times parturition\_rate \times \frac{gest}{365}
+      }
 where \eqn{cpreg} is defined as:
 \itemize{
 \item If \eqn{1 \le litsize \le 2}:
-\deqn{cpreg = 0.077 \times (2 - litsize) + 0.126 \times (litsize - 1)}
-\item If \eqn{litsize > 2}: \deqn{cpreg = 0.150}
+\deqn{
+          cpreg = 0.077 \times (2 - litsize) + 0.126 \times (litsize - 1)
+          }
+\item If \eqn{litsize > 2}:
+\deqn{cpreg = 0.150}
 }
-For replacement females (\code{FS}), the implementation applies the single-birth
-coefficient scaled by pregnancy exposure:
-\deqn{energy\_pregnancy = 0.077 \times nemain \times (gest/duration) \times (1-offtake\_rate)}
+\item \code{FS} -
+Pregnancy energy is calculated using the single-birth coefficient
+and scaled to the proportion of reproductive individuals in the cohort.
+\deqn{
+      energy\_pregnancy =
+      0.077 \times nemain \times \frac{gest}{duration}
+      \times (1 - offtake\_rate)
+      }
+}
 
-\strong{PGS} — (NRC, 1998):
-Pregnancy energy is implemented as a litter-based daily requirement using a
-gestation coefficient (\eqn{cgest}, MJ piglet\eqn{^{-1}}):
+\item For \strong{PGS} — NRC (1998):
+
 \itemize{
 \item \code{FA}:
-\deqn{energy\_pregnancy = cgest \times litsize \times parturition\_rate}
+\deqn{
+      energy\_pregnancy = cgest \times litsize \times \frac{gest}{lact + gest + idle}
+      }
 \item \code{FS}:
-\deqn{energy\_pregnancy = cgest \times litsize \times parturition\_rate \times (gest/duration) \times (1-offtake\_rate)}
+\deqn{
+      energy\_pregnancy =
+      cgest \times litsize \times \frac{gest}{duration}
+      \times (1 - offtake\_rate)
+      }
+The default value for the gestation coefficient is
+\eqn{cgest = 0.14985} MJ piglet\eqn{^{-1}}.
 }
-with default \eqn{cgest = 0.14985} MJ piglet\eqn{^{-1}}.
 }
 }
 \references{
