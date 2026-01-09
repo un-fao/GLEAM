@@ -18,34 +18,49 @@ compute_milk_outputs(
 )
 }
 \arguments{
-\item{milk_yield}{Numeric. Milk yield per head per day (kg/day).}
+\item{milk_yield}{Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day).
+This value can be calculated by dividing the total milk destinated to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
 
-\item{assessment_duration}{Numeric. Length of the assessment period (days)}
+\item{assessment_duration}{Numeric. Length of the assessment period (days).}
 
-\item{size}{Numeric. Herd cohort size (heads).}
+\item{size}{Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)}
 
-\item{milking_fraction}{Numeric. Share of the cohort that is milking during the assessment window.}
+\item{milking_fraction}{Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).}
 
-\item{milk_protein}{Numeric. Milk protein fraction (kg protein per kg milk).}
+\item{milk_protein}{Numeric. Milk protein fraction (kg protein/kg milk).}
 
-\item{milk_fat}{Numeric. Milk fat fraction (kg fat per kg milk).}
+\item{milk_fat}{Numeric. Milk fat fraction (kg fat/kg milk).}
 
-\item{lactose}{Numeric. Lactose fraction (kg lactose per kg milk). Note: Legacy implementation
-computed animal-specific lactose but used standard_lactose in the energy calculation.}
+\item{lactose}{Numeric. Milk lactose fraction (kg lactose/kg milk).}
 
-\item{standard_protein}{Numeric. Reference protein fraction used for FPCM energy.}
+\item{standard_protein}{Numeric. Standard protein content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Default used=0.033.}
 
-\item{standard_fat}{Numeric. Reference fat fraction used for FPCM energy.}
+\item{standard_fat}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg fat/kg milk). Default used=0.04.}
 
-\item{standard_lactose}{Numeric. Reference lactose fraction used for FPCM energy.}
+\item{standard_lactose}{Numeric. Standard lactose content of milk, used to calculate Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk). Default used=0.048.}
 }
 \value{
 Named list containing:
 \item{output_milk_mass_production}{Numeric. Total milk production produced over the assessment period (kg/herd/assessment period).}
 \item{output_milk_protein_production}{Numeric. Total milk protein production produced over the assessment period (kg protein/herd/assessment period).}
-\item{output_milk_fpcm_production}{Numeric. Total Fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/herd/assessment period). Default fat and protein content=0.04 and 0.033.}
+\item{output_milk_fpcm_production}{Numeric. Total Fat-protein-corrected milk (FPCM) produced over the assessment period (kg/herd/assessment period). Default fat and protein content=0.04 and 0.033.}
+
+Non-zero milk outputs are only expected for adult female cohorts. All other
+cohorts should return zero milk production through upstream parameterisation.
 }
 \description{
-Returns milk mass, protein, and FPCM using the IDF energy formulation while preserving
-the legacy treatment of standard lactose.
+Computes total milk production for a producing cohort over the assessment
+period and returns multiple production metrics: total milk mass,
+milk protein, and fat-protein-corrected milk (FPCM).
+All outputs are expressed in kg per cohort per assessment period.
+}
+\details{
+FPCM is calculated using Equation 10 of the International Dairy Federation
+(IDF) Global Carbon Footprint Standard for the Dairy Sector (IDF, 2022).
+}
+\references{
+International Dairy Federation (IDF). 2022.
+\emph{The IDF Global Carbon Footprint Standard for the Dairy Sector}.
+Bulletin of the IDF No. 520/2022.
+International Dairy Federation (ed.), Brussels, Belgium.#'#'
 }

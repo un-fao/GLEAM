@@ -8,12 +8,63 @@
 #' Input data must be loaded beforehand. Package examples live under `inst/extdata` and can
 #' be accessed via [system.file()] together with [data.table::fread()].
 #'
-#' @param data data.table. Cohort-level production inputs (per country/animal/LPS) containing milk
-#'   yields, fibre production, slaughter characteristics, and classifier columns such as
-#'   `animal`, `LPS_short`, and `HerdType_short`.
+#' @param data data.table. Cohort-level production inputs (per country/animal/LPS) containing:
+#' 
+#' - `size`: Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
+#' 
+#' #' **Milk production**
+#' - `milk_yield`: Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). 
+#' - `milking_fraction`: Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
+#' - `milk_protein`: Numeric. Milk protein fraction (kg protein/kg milk).
+#' - `milk_fat`: Numeric. Milk fat fraction (kg fat/kg milk).
+#' - `lactose`: Numeric. Milk lactose fraction (kg lactose/kg milk). 
+#'
+#' **Fibre production**
+#' - `fibre_prod`: Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
+#'
+#' **Meat production**
+#' - `offtake_number_assessment`: Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA) (heads/year)
+#' - `slaughter_weight`: Numeric. Live weight at slaughter for animals removed from the cohort (kg).
+#' - `carcass_dressing_percentage`: Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).
+#' - `bone_free_meat_fraction`: Numeric. Ratio of bone-free-meat to carcass weight (fraction).
+#' - `meat_protein`: Numeric. Protein content of bone-free-meat (fraction).
+#' 
 #' @param assessment_duration Numeric. Length of the assessment period (days).
 #'
-#' @return data.table. The input data with appended milk, fibre, and meat production columns.
+#' @return data.table.  The input data with the following columns appended:
+#'
+#' **Milk production outputs**
+#' - `output_milk_mass_production`  
+#'   Total milk produced over the assessment period (kg milk / cohort / assessment period).
+#'
+#' - `output_milk_protein_production`  
+#'   Total milk protein produced over the assessment period  (kg protein / cohort / assessment period).
+#'
+#' - `output_milk_fpcm_production`  
+#'   Total fat-protein-corrected milk (FPCM) produced over the assessment period, calculated using IDF (2022) energy-based correction with standard composition  
+#'   (kg FPCM / cohort / assessment period).
+#'
+#' **Fibre production outputs**
+#' - `output_fibre_production`  
+#'   Total fibre produced over the assessment period  
+#'   (kg fibre / cohort / assessment period).
+#'
+#' **Meat production outputs**
+#' - `output_meat_production_liveweight`  
+#'   Total meat produced expressed as live weight removed via offtake  
+#'   (kg live weight / cohort / assessment period).
+#'
+#' - `output_meat_production_carcassweight`  
+#'   Total carcass weight produced after dressing  
+#'   (kg carcass weight / cohort / assessment period).
+#'
+#' - `output_meat_production_meat`  
+#'   Total bone-free meat produced  
+#'   (kg meat / cohort / assessment period).
+#'
+#' - `output_meat_production_protein`  
+#'   Total meat protein produced  
+#'   (kg protein / cohort / assessment period).
 #'
 #' @examples
 #' \dontrun{
@@ -37,7 +88,7 @@ run_production_cohort <- function(
 
   required_data <- unique(c(
     "Animal_short", "cohort", "milk_yield", "size", "milking_fraction",
-    "milk_protein", "milk_fat", "fibre_prod", "offtake_number",
+    "milk_protein", "milk_fat", "fibre_prod", "offtake_number_assessment",
     "slaughter_weight", "carcass_dressing_percentage",
     "bone_free_meat_fraction", "meat_protein"
   ))
