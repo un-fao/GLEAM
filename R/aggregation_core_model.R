@@ -13,7 +13,8 @@
 #' @param value Numeric vector. Variable value expressed in:
 #'   - kg (unit)/head/day for non-production variables
 #'   - kg/cohort/assessment duration for production variables
-#' @param size Numeric vector. Number of heads in the specific cohort.
+#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the
+#'  start of the year (# heads). (cohorts = FJ, FS, FA, MJ, MS, MA)
 #' @param assessment_duration Numeric. Length of the assessment period (days)
 #' @param variable_type Character vector. Variable group classification:
 #'   - `"Production"`: Production outputs (already at cohort level)
@@ -94,18 +95,16 @@ calc_allocated_emissions <- function(
 #'   - `"CO2"`: Carbon dioxide (GWP = 1)
 #' @param value_allocated Numeric vector. Emission values expressed in kg of gas
 #'   (e.g., kg CH4, kg N2O, or kg CO2). Must be the same length as `gas`.
-#' @param gwp Character scalar. IPCC assessment report version to use for
-#'   100-year Global Warming Potential factors. Default is `"AR6"`.
-#'   Supported options:
-#'   \describe{
-#'     \item{`"AR6"`}{CH4 = 27, N2O = 273, CO2 = 1. Source: IPCC 2021 -
-#'       Chapter 7 - Table 7.15.}
-#'     \item{`"AR5_excluding_carbon_feedback"`}{CH4 = 28, N2O = 265, CO2 = 1.
-#'       Source: IPCC 2013 - Chapter 8 - Table 8.A.1, excluding carbon feedback.}
-#'     \item{`"AR5_including_carbon_feedback"`}{CH4 = 34, N2O = 298, CO2 = 1.
-#'       Source: IPCC 2013 - Chapter 8 - Table 8.7, including carbon feedback.}
-#'     \item{`"AR4"`}{CH4 = 25, N2O = 298, CO2 = 1. Source: IPCC 2007 -
-#'       Chapter TS.2 - Table 2.14.}
+#' @param gwp Character scalar specifying the 100-year Global Warming Potential
+#'   (GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
+#'   Must be one of:
+#'   \itemize{
+#'     \item \code{"AR6"} (default): IPCC Sixth Assessment Report — CH₄ = 27, N₂O = 273
+#'     \item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment Report
+#'       (excluding climate–carbon feedbacks) — CH₄ = 28, N₂O = 265
+#'     \item \code{"AR5_including_carbon_feedback"}: IPCC Fifth Assessment Report
+#'       (including climate–carbon feedbacks) — CH₄ = 34, N₂O = 298
+#'     \item \code{"AR4"}: IPCC Fourth Assessment Report — CH₄ = 25, N₂O = 298
 #'   }
 #'
 #' @return A named list with two numeric vectors of the same length as input:

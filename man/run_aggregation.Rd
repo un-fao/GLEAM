@@ -16,40 +16,43 @@ calculated variables. Must include:
 \item{\strong{Emissions}:}{\code{ch4_enteric}, \verb{ch4_manure_*}, \verb{direct_n2o_manure_*},
 \verb{indirect_n2o_manure_*}}
 }
-Required grouping columns: \code{ADM0_CODE}, \code{HerdType_short}, \code{Animal_short},
-\code{LPS_short}, \code{cohort}, \code{assessment_duration}, \code{size}.}
+Required grouping columns: \code{herd_id}, \code{Animal_short},
+\code{cohort}, \code{assessment_duration}, \code{size}.}
 
 \item{allocation_herd_long}{A \code{data.table} in long format, typically the
 output of \code{\link[=run_allocation]{run_allocation()}}. Must include columns:
 \describe{
-\item{\strong{Grouping}:}{\code{ADM0_CODE}, \code{Animal_short}, \code{LPS_short}, \code{HerdType_short}}
+\item{\strong{Grouping}:}{\code{herd_id}, \code{Animal_short}}
 \item{\strong{Allocation}:}{\code{commodity_name} (e.g., "Meat", "Milk", "Fibre"),
 \code{allocation_share} (numeric, 0-1), \code{allocation_type} (character)}
 \item{\strong{Emission source}:}{\code{variable_name} (emission variable names)}
 }}
 
-\item{gwp}{Character scalar. Global Warming Potential-100 conversion factors
-to use. Must be one of:
+\item{gwp}{Character scalar specifying the 100-year Global Warming Potential
+(GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
+Must be one of:
 \itemize{
-\item \code{"AR6"} (default) — IPCC Sixth Assessment Report: CH₄ = 27, N₂O = 273
-\item \code{"AR5_excluding_carbon_feedback"} — IPCC AR5 (excl. feedbacks): CH₄ = 28, N₂O = 265
-\item \code{"AR5_including_carbon_feedback"} — IPCC AR5 (incl. feedbacks): CH₄ = 34, N₂O = 298
-\item \code{"AR4"} — IPCC Fourth Assessment Report: CH₄ = 25, N₂O = 298
+\item \code{"AR6"} (default): IPCC Sixth Assessment Report — CH₄ = 27, N₂O = 273
+\item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment Report
+(excluding climate–carbon feedbacks) — CH₄ = 28, N₂O = 265
+\item \code{"AR5_including_carbon_feedback"}: IPCC Fifth Assessment Report
+(including climate–carbon feedbacks) — CH₄ = 34, N₂O = 298
+\item \code{"AR4"}: IPCC Fourth Assessment Report — CH₄ = 25, N₂O = 298
 }}
 }
 \value{
 A named list containing:
 \describe{
-\item{\code{data_cohort}}{The original cohort-level data (unchanged).}
+\item{\code{data_cohort}}{The raw cohort-level input data and results.}
 \item{\code{results_herd}}{A \code{data.table} in long format with:
 \itemize{
-\item Allocated emissions (both as kg gas and kg CO2eq)
+\item Allocated emissions (already converted in kgCO2eq)
 \item Production variables (milk, meat, fibre)
 \item Feed and nitrogen balance variables
 \item Standardized variable names and units
 \item Commodity classifications and allocation metadata
 }
-Columns include: \code{ADM0_CODE}, \code{HerdType_short}, \code{Animal_short}, \code{LPS_short},
+Columns include: \code{herd_id}, \code{Animal_short},
 \code{cohort} (set to "ALL"), \code{variable_type}, \code{variable_name}, \code{unit}, \code{gas},
 \code{gwp}, \code{allocation_type}, \code{allocation_share}, \code{commodity_type}, \code{commodity_name},
 \code{value_total}.
@@ -57,16 +60,18 @@ Columns include: \code{ADM0_CODE}, \code{HerdType_short}, \code{Animal_short}, \
 }
 }
 \description{
-Processes and consolidates livestock emissions, nutrient, and production data
-from cohort-level inputs to herd-level outputs. It aggregates values,
-applies allocation shares to emissions by commodity, and converts emissions
-to CO2-equivalent values based on the selected Global Warming Potential (GWP).
+This function represents the final step of the Global Livestock Environmental
+Assessment Model (GLEAM) computational pipeline.
+It consolidates cohort-level outputs into standardized herd-level totals for reporting.
+The function (i) scales per-head-per-day variables to cohort totals over the assessment
+period, (ii) aggregates cohorts to herd level, (iii) allocates emissions to commodities
+using allocation shares, and (iv) converts CH₄ and N₂O emissions to CO₂-equivalents using
+a selected GWP-100 option.
 }
 \details{
-This is the final step in the GLEAM workflow, combining all calculated
-variables (emissions, production, feed, nitrogen balance) into a standardized
-herd-level output format suitable for reporting and analysis.
-\subsection{Workflow}{
+#' @details
+
+#' ## Workflow
 \enumerate{
 \item \strong{Reshape to long format}: Convert cohort-level data from wide to long format
 \item \strong{Classify variables}: Group variables into Emissions, Production, Feed, NitrogenBalance
@@ -77,5 +82,33 @@ herd-level output format suitable for reporting and analysis.
 \item \strong{Convert to CO2eq}: Apply GWP factors to convert CH4 and N2O to CO2-equivalents
 \item \strong{Standardize output}: Rename variables, assign units, and format final results
 }
+
+The aggregation function follows these steps:
+\enumerate{
+\item \strong{Reshape to long format.} Cohort-level variables are converted from wide to long
+format using \code{data.table::melt()}.
+\item \strong{Classify variables.} Each variable is grouped into categories.
+\item \strong{Scale to totals.} Variables expressed per head per day are converted to cohort totals
+over the assessment period using cohort size (\code{size}) and \code{assessment_duration}.
+\item \strong{Aggregate to herd level.} Cohort totals are summed to herd totals within each
+\code{herd_id × Animal_short} group.
+\item \strong{Allocate emissions only.} Emission totals are merged with
+\code{allocation_herd_long} and multiplied by \code{allocation_share} to obtain
+commodity-specific emissions. Non-emission variables are assigned to commodity \code{"ALL"}
+with \code{allocation_share = 1}.
+\item \strong{Convert to CO₂e.} Allocated CH₄ and N₂O emissions are converted to CO₂e using
+the selected GWP-100 option. Results are stored as \code{value_total} with \code{unit = "kg co2eq"}.
 }
+\references{
+IPCC (2021). \emph{Climate Change 2021: The Physical Science Basis}.
+Contribution of Working Group I to the Sixth Assessment Report of the
+Intergovernmental Panel on Climate Change. Cambridge University Press.
+
+IPCC (2013). \emph{Climate Change 2013: The Physical Science Basis}.
+Contribution of Working Group I to the Fifth Assessment Report of the
+Intergovernmental Panel on Climate Change. Cambridge University Press.
+
+IPCC (2007). \emph{Climate Change 2007: The Physical Science Basis}.
+Contribution of Working Group I to the Fourth Assessment Report of the
+Intergovernmental Panel on Climate Change. Cambridge University Press.
 }
