@@ -3,9 +3,8 @@
 #' This function takes herd- and cohort-level demographic inputs and estimates a steady-state
 #' sex–age herd structure compatible with downstream calculations in the Global Livestock
 #' Environmental Assessment Model (GLEAM). In addition to cohort population sizes, it derives
-#' population growth rates, and offtake numbers. 
-#' 
-#' 
+#' population growth rates, and offtake numbers.
+#'
 #' @details
 #' The function operates under a \strong{steady-state assumption}: demographic parameters
 #' are constant over time, so the population converges to a stable cohort composition and
@@ -19,8 +18,7 @@
 #' Conceptually, this corresponds to the steady-state demographic approach implemented in
 #' Dynmod \emph{STEADY1} (Lesnoff, 2013), adapted here to a daily time-step formulation within
 #' an R workflow and fully integrated into the GLEAM computational pipeline.
-#' 
-#'  
+#'
 #' ## Model structure
 #'
 #' The population is divided by sex (female/male) and age class (juvenile/subadult/adult),
@@ -80,7 +78,6 @@
 #'         \code{prob_growth})
 #' }
 #'
-#'
 #' @references
 #' Lesnoff, M. (2013). \emph{DYNMOD: A spreadsheet interface for demographic projections of tropical
 #' livestock populations, User’s manual}. CIRAD, Montpellier, France.
@@ -132,8 +129,8 @@
 #'       `cohort_data` columns plus the following simulation results:
 #'       \itemize{
 #'         \item `share` - Numeric. Final steady-state share of the 6 grouped sex-age classes  (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (fraction). Shares should sum to 1.
-#'         \item `size` - Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads). 
-#'         \item `size_end` - Numeric. Population size in each of the 6 sex–age cohorts at the end of the year, projected using the steady-state growth rate (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads). 
+#'         \item `size` - Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads).
+#'         \item `size_end` - Numeric. Population size in each of the 6 sex–age cohorts at the end of the year, projected using the steady-state growth rate (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads).
 #'         \item `size_avg` - Numeric. Average population size in each of the 6 sex–age cohorts over the year (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads). Estimated from cohort_stock_start and cohort_stock_end_projected.
 #'         \item `offtake_number` - Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (heads/year)
 #'         \item `offtake_number_assessment` - "Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (heads/year)
@@ -186,7 +183,6 @@ run_herd_simulation <- function(
 ) {
 
   # --- Step 1: Validate Inputs -----------------------------------------------
-
   validate_herd_simulation_inputs(cohort_data, herd_level_data)
 
   # Show progress indicator if requested
@@ -195,7 +191,6 @@ run_herd_simulation <- function(
   }
 
   # --- Step 2: Prepare Data for Processing ------------------------------------
-
   # Create working copies
   cohort_result <- data.table::copy(cohort_data)
   herd_result <- data.table::copy(herd_level_data)
@@ -290,17 +285,11 @@ run_herd_simulation <- function(
       cohort_result[
         herd_id == current_herd_id & cohort == cohort_name,
         `:=`(
-          share = structure_result$share[cohort_name],
           size = popsize_result$size[cohort_name],
           size_end = popsize_result$size_end[cohort_name],
           size_avg = popsize_result$size_avg[cohort_name],
           offtake_number = offtake_result$offtake_number[cohort_name],
           offtake_number_assessment = offtake_result$offtake_number_assessment[cohort_name],
-          offtake_share = offtake_result$offtake_share[cohort_name],
-          offtake_share_avg = offtake_result$offtake_share_avg[cohort_name],
-          prob_death = transition_result$prob_death[cohort_name],
-          prob_offtake = transition_result$prob_offtake[cohort_name],
-          prob_survival = transition_result$prob_survival[cohort_name],
           prob_growth = transition_result$prob_growth[cohort_name]
         )
       ]
