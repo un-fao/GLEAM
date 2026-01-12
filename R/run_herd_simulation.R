@@ -1,58 +1,114 @@
 #' Run Herd Simulation
 #'
-#' Performs the full steady-state demographic simulation of herd cohorts across species,
-#' production systems, and countries. This includes modeling of fecundity, mortality, offtake,
-#' cohort transitions, population structure, and final population sizes.
+#' This function takes herd- and cohort-level demographic inputs and estimates a steady-state
+#' sex–age herd structure compatible with downstream calculations in the Global Livestock
+#' Environmental Assessment Model (GLEAM). In addition to cohort population sizes, it derives
+#' population growth rates, and offtake numbers. 
+#' 
+#' 
+#' @details
+#' The function operates under a \strong{steady-state assumption}: demographic parameters
+#' are constant over time, so the population converges to a stable cohort composition and
+#' a constant annual growth rate (\eqn{\lambda}). Once this regime is reached, the model
+#' computes cohort population sizes (start/end/average), cohort shares, and offtake totals.
 #'
-#' ## Overview
+#' A key feature of this implementation is that it applies demography at a \strong{daily}
+#' resolution. Annual mortality and offtake inputs are converted into daily hazards and
+#' daily transition probabilities under competing risks (death vs. offtake vs. survival).
 #'
-#' This function accepts separate tables for herd-level and cohort-level data and performs herd
-#' structure simulation when required. The simulation process follows these steps:
+#' Conceptually, this corresponds to the steady-state demographic approach implemented in
+#' Dynmod \emph{STEADY1} (Lesnoff, 2013), adapted here to a daily time-step formulation within
+#' an R workflow and fully integrated into the GLEAM computational pipeline.
+#' 
+#'  
+#' ## Model structure
 #'
-#' 1. **Input Validation**: Ensures data integrity and required columns
-#' 2. **Fecundity Calculation**: Computes daily birth rates for males and females
-#' 3. **Transition Probabilities**: Calculates daily probabilities for death, offtake, survival, and growth
-#' 4. **Steady-State Simulation**: Simulates population dynamics until convergence
-#' 5. **Population Projection**: Projects one year of population dynamics
-#' 6. **Offtake Summary**: Calculates offtake statistics
-#' 7. **Result Mapping**: Maps simulation results back to separate result tables
+#' The population is divided by sex (female/male) and age class (juvenile/subadult/adult),
+#' represented by six cohorts:
+#' \itemize{
+#'   \item \code{FJ}, \code{FS}, \code{FA} (female juvenile, subadult, adult)
+#'   \item \code{MJ}, \code{MS}, \code{MA} (male juvenile, subadult, adult)
+#' }
 #'
-#' ## Input Format
+#' Only adult females (\code{FA}) contribute to reproduction. Births are distributed between
+#' females and males using \code{female_birth_fraction}. Reproduction is assumed to be
+#' distributed over time (no birth pulse).
 #'
-#' The function requires two separate input tables:
+#' ## Dynamics and parameters
 #'
-#' - **`cohort_data`**: One row per cohort (6 rows per herd: FJ, FS, FA, MJ, MS, MA)
-#' - **`herd_level_data`**: One row per herd with herd-level parameters
+#' Herd dynamics result from:
+#' \itemize{
+#'   \item births (driven by \code{parturition_rate} and \code{litsize})
+#'   \item natural deaths (driven by \code{mort_rate})
+#'   \item removals by offtake (driven by \code{offtake_rate})
+#'   \item cohort aging / growth transitions (driven by \code{duration})
+#' }
 #'
-#' Each herd (identified by `herd_id`) must have exactly 6 rows in `cohort_data`, one for each cohort:
+#' As in Dynmod, \code{offtake_rate} is interpreted as a \emph{net removal rate} for the cohort
+#' (e.g. slaughter), while \code{mort_rate} represents
+#' natural mortality excluding offtake.
 #'
-#' - **FJ**: Female Juvenile
-#' - **FS**: Female Subadult
-#' - **FA**: Female Adult
-#' - **MJ**: Male Juvenile
-#' - **MS**: Male Subadult
-#' - **MA**: Male Adult
+#' ## Competing risks and conversion to daily probabilities
+#'
+#' Mortality and offtake are treated as **competing risks** within each cohort: at any time an
+#' animal can survive, die, or be offtaken. Annual inputs are converted to daily hazards and then
+#' daily probabilities to avoid bias from interference between processes.
+#'
+#' Internally, the model:
+#' \enumerate{
+#'   \item Converts annual mortality (\code{mort_rate}) into a daily mortality hazard.
+#'   \item Solves for the daily offtake hazard such that the implied offtake probability matches
+#'   \code{offtake_rate} under competing risks.
+#'   \item Computes daily probabilities of death, offtake, and survival from the hazards.
+#' }
+#'
+#' ## Steady state
+#'
+#' Under constant parameters, the cohort structure converges to a stable composition and a
+#' stable population growth rate (\eqn{\lambda}). This function seeks that steady state by
+#' iterating the demographic system starting from \code{initial_structure} until changes in
+#' \eqn{\lambda} fall below \code{lambda_threshold}, or until \code{max_years} is reached.
+#'
+#' Once steady state is reached, the model projects cohort sizes over the assessment period and
+#' returns:
+#' \itemize{
+#'   \item cohort shares (\code{share})
+#'   \item cohort sizes at start/end/average (\code{size}, \code{size_end}, \code{size_avg})
+#'   \item cohort offtake totals (\code{offtake_number}) and assessment-scaled totals
+#'         (\code{offtake_number_assessment})
+#'   \item daily transition probabilities (\code{prob_death}, \code{prob_offtake}, \code{prob_survival},
+#'         \code{prob_growth})
+#' }
+#'
+#'
+#' @references
+#' Lesnoff, M. (2013). \emph{DYNMOD: A spreadsheet interface for demographic projections of tropical
+#' livestock populations, User’s manual}. CIRAD, Montpellier, France.
 #'
 #' @param cohort_data A `data.table` with mandatory columns:
 #'   \describe{
-#'     \item{`herd_id`}{Unique identifier for each herd. All cohorts belonging to
-#'       the same herd must share the same `herd_id`.}
-#'     \item{`cohort`}{Cohort code. Must be one of: "FJ", "FS", "FA", "MJ", "MS", "MA".
-#'       Each `herd_id` must have exactly one row for each of these 6 cohorts.}
-#'     \item{`duration`}{Duration of the cohort stage in days. This is the time an animal
-#'       spends in this particular life stage.}
-#'     \item{`offtake_rate`}{Annual offtake rate for the cohort (proportion removed per year).
-#'       This represents the fraction of animals removed from the herd (e.g., for slaughter).}
-#'     \item{`mort_rate`}{Annual mortality rate for the cohort (proportion dying per year).
-#'       This represents natural mortality, excluding offtake.}
+#'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'     \item{`cohort`}{"Character scalar. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     }
+#'       }
+#'     \item{`duration`}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+#'     \item{`offtake_rate`}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
+#'     \item{`mort_rate`}{Numeric. Fraction of deaths in a herd over a year for each sex-age class (fraction).}
 #'   }
 #' @param herd_level_data A `data.table` with one row per herd and mandatory columns:
 #'   \describe{
-#'     \item{`herd_id`}{Unique identifier for each herd. Must match `herd_id` values in `cohort_data`.}
-#'     \item{`parturition_rate`}{Annual parturition rate (births per adult female per year)}
-#'     \item{`litsize`}{Average litter size (offspring per parturition)}
-#'     \item{`female_birth_fraction`}{Proportion of births that are female (0-1)}
-#'     \item{`size_total`}{Total population size for the herd}
+#'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd. Must match `herd_id` values in `cohort_data`.}
+#'     \item{`parturition_rate`}{Numeric. Average annual number of parturitions per female animal (# parturitions/reproductive female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+#'     \item{`litsize`}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+#'     \item{`female_birth_fraction`}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
+#'     \item{`size_total`}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
 #'   }
 #' @param initial_structure A named numeric vector of initial population values used to
 #'   bootstrap the steady-state simulation. Must be named with cohort codes:
@@ -75,23 +131,19 @@
 #'     \item{`cohort_results`}{A `data.table` with one row per cohort containing all original
 #'       `cohort_data` columns plus the following simulation results:
 #'       \itemize{
-#'         \item `share` - Proportion of total population in this cohort at steady-state
-#'         \item `size` - Population size in this cohort at the start of the year
-#'         \item `size_end` - Population size in this cohort at the end of the year
-#'         \item `size_avg` - Average population size in this cohort over the year
-#'         \item `offtake_number` - Total number of animals removed via offtake from this cohort
-#'         \item `offtake_share` - Offtake rate relative to starting population size
-#'         \item `offtake_share_avg` - Offtake rate relative to average population size
-#'         \item `prob_death` - Daily probability of death for this cohort
-#'         \item `prob_offtake` - Daily probability of offtake for this cohort
-#'         \item `prob_survival` - Daily probability of survival (neither death nor offtake)
-#'         \item `prob_growth` - Daily probability of transitioning to the next age class
+#'         \item `share` - Numeric. Final steady-state share of the 6 grouped sex-age classes  (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (fraction). Shares should sum to 1.
+#'         \item `size` - Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads). 
+#'         \item `size_end` - Numeric. Population size in each of the 6 sex–age cohorts at the end of the year, projected using the steady-state growth rate (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads). 
+#'         \item `size_avg` - Numeric. Average population size in each of the 6 sex–age cohorts over the year (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads). Estimated from cohort_stock_start and cohort_stock_end_projected.
+#'         \item `offtake_number` - Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (heads/year)
+#'         \item `offtake_number_assessment` - "Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (heads/year)
+#'         \item `prob_growth` - Numeric. Probability of growing into the next age class for 6 cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (fraction).
 #'       }
 #'     }
 #'     \item{`herd_results`}{A `data.table` with one row per herd containing all original
 #'       `herd_level_data` columns plus the following herd-level simulation results:
 #'       \itemize{
-#'         \item `growth_rate_pop` - Annual population growth rate at steady-state
+#'         \item `growth_rate_pop` - Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).
 #'       }
 #'     }
 #'   }
