@@ -175,12 +175,24 @@ Modules are executed only if the required input columns are present. If the inpu
 are missing, that module is skipped and downstream variables depending on it may not be produced.
 }
 \examples{
+
+Use case 1 - Herd structure estimated by the pipeline
 \dontrun{
-# Load example data and run GLEAM pipeline
+# Load example data and run GLEAM pipeline (no herd structure)
 data <- data.table::fread(
-  system.file("extdata/example_run_gleam_ipcc2006.csv", package = "gleam")
+  system.file("extdata/example_run_gleam_ipcc2006_run_herd.csv", package = "gleam")
 )
 result <- run_gleam(data, has_herd = FALSE)
 }
+
+Use case 2 - Herd structure provided as input
+\dontrun{
+# Load example data and run GLEAM pipeline (herd structure provided)
+data <- data.table::fread(
+  system.file("extdata/example_run_gleam_ipcc2006_with_herd.csv", package = "gleam")
+)
+result <- run_gleam(data, has_herd = TRUE)
+}
+
 
 }

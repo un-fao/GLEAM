@@ -157,13 +157,25 @@
 #' }
 #'
 #' @examples
+#' 
+#' Use case 1 - Herd structure estimated by the pipeline
 #' \dontrun{
-#' # Load example data and run GLEAM pipeline
+#' # Load example data and run GLEAM pipeline (no herd structure)
 #' data <- data.table::fread(
-#'   system.file("extdata/example_run_gleam_ipcc2006.csv", package = "gleam")
+#'   system.file("extdata/example_run_gleam_ipcc2006_run_herd.csv", package = "gleam")
 #' )
 #' result <- run_gleam(data, has_herd = FALSE)
 #' }
+#' 
+#' Use case 2 - Herd structure provided as input
+#' \dontrun{
+#' # Load example data and run GLEAM pipeline (herd structure provided)
+#' data <- data.table::fread(
+#'   system.file("extdata/example_run_gleam_ipcc2006_with_herd.csv", package = "gleam")
+#' )
+#' result <- run_gleam(data, has_herd = TRUE)
+#' }
+#' 
 #'
 #' @export
 #'
@@ -279,9 +291,7 @@ run_gleam <- function(
       ckg = ckg,
       wkg = wkg,
       lact = lact,
-      parturition_rate = parturition_rate,
-      lambing_interval = lambing_interval,
-      assessment_duration = assessment_duration
+      parturition_rate = parturition_rate
     ), by = .I]
   }
 
@@ -314,6 +324,8 @@ run_gleam <- function(
       parturition_rate = parturition_rate,
       litsize = litsize,
       gest = gest,
+      idle = idle,
+      lact = lact,
       duration = duration,
       offtake_rate = offtake_rate
     ), by = .I]
@@ -376,6 +388,7 @@ run_gleam <- function(
       animal = Animal_short,
       cohort = cohort,
       ym = ym,
+      ch4_mitigation_factor = 1,
       diet_ge = diet_ge,
       dmi = dmi
     ), by = .I]
@@ -610,10 +623,6 @@ run_gleam <- function(
     ), by = .I]
   }
 
-  # Clean up temporary lactose column
-  if ("lactose" %in% names(data)) {
-    data[, lactose := NULL]
-  }
 
   # --- Module 8: Allocation ---------------------------------------------------
   # Calculate cohort-level energy allocations
@@ -632,7 +641,8 @@ run_gleam <- function(
       cohort_code = cohort,
       slaughter_liveweight = slaughter_weight,
       birth_liveweight = ckg,
-      meat_output_liveweight = output_meat_production_liveweight
+      output_meat_production_liveweight = output_meat_production_liveweight,
+      ratio_ne_to_me = 0.43
     ), by = .I]
   }
 
