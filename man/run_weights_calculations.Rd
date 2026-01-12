@@ -9,37 +9,53 @@ run_weights_calculations(data)
 \arguments{
 \item{data}{A \code{data.table} in long format (one row per cohort) with mandatory columns:
 \describe{
-\item{\code{herd_id}}{Unique identifier for each herd. All cohorts belonging to
-the same herd must share the same \code{herd_id}.}
-\item{\code{cohort}}{Cohort code (e.g., "FJ", "FS", "FA", "MJ", "MS", "MA"). Required for
-determining which weight calculation logic to apply.}
-\item{\code{duration}}{Duration of the cohort stage (in days).}
-\item{\code{Animal_short}}{Animal species code (e.g., "PGS", "CML", "CTL", "BFL", "SHP", "GTS").}
-\item{\code{offtake_rate}}{Offtake rate for the cohort.}
+\item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{\code{cohort}}{Character scalar. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
+\item{\code{duration}}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{\code{Animal_short}} {Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
+\item{\code{offtake_rate}}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 }
 Additional required columns for weight calculations:
 \itemize{
-\item \code{AFKG} - Adult female weight (kg)
-\item \code{AMKG} - Adult male weight (kg)
-\item \code{ckg} - Birth weight (kg)
-\item \code{MFSKG} - Slaughter weight female (kg)
-\item \code{MMSKG} - Slaughter weight male (kg)
-\item \code{wkg} - Weaning weight (kg)
-\item \code{afc} - Age at first calving (days)
-\item \code{WA} - Animal age at current stage (days)
+\item \code{AFKG} - Numeric. Live weight of adult females (kg)
+\item \code{AMKG} - Numeric. Live weight of adult males (kg)
+\item \code{ckg} - Numeric. Live weight of the animal at birth (kg).
+\item \code{MFSKG} - Numeric. Slaughter weight of female sub-adult animals (kg).
+\item \code{MMSKG} - Numeric. Slaughter weight of male sub-adult animals (kg).
+\item \code{wkg} - Numeric. Live weight of the animal at weaning (kg)
+\item \code{afc} - Numeric. Age at first parturition for female breeding animals (years)
+\item \code{WA} - Numeric. Average age of the juvenile animals at weaning (days)
 }}
 }
 \value{
 A \code{data.table} with the same structure as input, with the following
 weight-related columns appended:
 \describe{
-\item{\code{initial_weight}}{Initial live weight at the start of the cohort stage.}
-\item{\code{potential_final_weight}}{Potential final live weight if no offtake occurs.}
-\item{\code{slaughter_weight}}{Slaughter live weight.}
-\item{\code{average_weight}}{Average live weight over the stage.}
-\item{\code{final_weight}}{Final live weight after accounting for survivors and offtaken animals.}
-\item{\code{adult_weight}}{Numeric. Adult weight that could be reached by the animal (kg).}
-\item{\code{dwg}}{Daily weight gain (kg/day).}
+\item{\code{initial_weight}}{Numeric. Live weight at the beginning of the cohort stage (kg).}
+\item{\code{potential_final_weight}}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
+\item{\code{slaughter_weight}}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{\code{average_weight}}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
+\item{\code{final_weight}}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
+\item{\code{adult_weight}}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+\item{\code{dwg}}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 }
 }
 \description{

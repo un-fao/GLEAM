@@ -12,22 +12,34 @@ calc_avg_weights(
 )
 }
 \arguments{
-\item{initial_weight}{Numeric. Initial live weight at the start of the cohort stage.}
+\item{initial_weight}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 
-\item{potential_final_weight}{Numeric. Potential final live weight if no offtake occurs.}
+\item{potential_final_weight}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
 
-\item{slaughter_weight}{Numeric. Live weight at slaughter.}
+\item{slaughter_weight}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 
-\item{offtake_rate}{Numeric. Proportion of individuals removed via offtake during the stage.}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 }
 \value{
 A named list with:
 \describe{
-\item{average_weight}{Average live weight over the stage (accounts for offtake and survivors).}
-\item{final_weight}{Final live weight after accounting for both survivors and offtaken animals.}
+\item{average_weight}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
+\item{final_weight}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
 }
 }
 \description{
-Computes the average and final live weight (LW) of a cohort based on initial weight,
+Computes the average and final live weight of a cohort based on initial weight,
 potential final weight, slaughter weight, and the offtake rate.
+}
+\details{
+The calculation of \code{average_weight} and \code{final_weight} is performed considering that
+a fraction of animals is removed (offtake) during the cohort stage, while the
+remaining animals reach the potential final live weight.
+
+The final live weight is computed as:
+\deqn{final\_weight = (1 - offtake\_rate) \times potential\_final\_weight +
+      offtake\_rate \times slaughter\_weight}
+
+The average live weight over the stage is approximated as:
+\deqn{average\_weight = (initial\_weight + final\_weight)/2}
 }
