@@ -8,21 +8,85 @@ calc_energy_allocation_work(
   animal,
   work_energy_requirement,
   ratio_ne_to_me,
-  assessment_duration = 365
+  assessment_duration
 )
 }
 \arguments{
-\item{animal}{Character scalar. Species code (e.g., "CML" for camelids).}
+\item{animal}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 
-\item{work_energy_requirement}{Numeric scalar. Work energy demand (MJ per head per day).}
+\item{work_energy_requirement}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{ratio_ne_to_me}{Numeric scalar. Net-to-metabolizable energy conversion ratio (used for camelids).}
+\item{ratio_ne_to_me}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.}
 
-\item{assessment_duration}{Numeric scalar. Assessment duration (days).}
+\item{assessment_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
-Numeric scalar. Energy requirements in megajoules.
+Numeric scalar. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).
+
+Non-zero values are expected only for fiber-producing species (CTL, BFL CML) and assumed cohorts ("MA").'
 }
 \description{
-Estimates energy expenditure on animal work for the assessment duration, adjusting camelid values when required.
+Calculates the net energy demand (MJ) associated with animal work over the
+assessment period for animals involved in draught power generation.
+}
+\details{
+This function provides the work-related energy term used in a biophysical
+allocation framework to apportion emissions between milk and other co-products
+in multifunctional livestock production systems.
+
+The approach implements the IDF (2022) standard, adapted from Thoma and Nemecek (2020), and is consistent with
+FAO LEAP livestock LCA guidelines (FAO, 2016a, 2016b, 2016c) and with ISO 14044:2006 (Section 4.3.4.2, Step 2).
+
+In accordance with ISO 14044:2006 (Section 4.3.4.2, Step 2), known processing or
+biophysical relationships may be used to assign shared inputs and outputs of a
+single production unit to individual products or sub-units. In livestock systems,
+this includes apportioning shared feed and energy use according to physiological
+energy requirements (e.g., net energy for lactation, growth..etc.). If the
+resulting process remains multifunctional, these energy terms may subsequently
+be used to derive allocation factors among co-products.
+
+Total work-related energy is computed for species (\code{CTL}, \code{BFL}, \code{CML})
+and cohorts (\code{MA}) assumed to be potentially involved in draught power generation, and
+is calculated as follows:
+
+\itemize{
+\item \code{energy_allocation_work = work_energy_requirement * assessment_duration}
+}
+
+where \code{work_energy_requirement} represents the daily energy requirement for
+animal work (MJ/head/day) and is obtained from
+\code{\link[gleam]{calc_net_energy_work}}.
+}
+\references{
+ISO. 2006. Environmental management — Life cycle assessment — Requirements and
+guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
+
+IDF. 2022. The IDF Global Carbon Footprint Standard for the Dairy Sector.
+Bulletin of the IDF No. 520/2022. International Dairy Federation, Brussels.
+
+Thoma, G., and T. Nemecek. 2020. Allocation between milk and meat in dairy LCA:
+Critical discussion of the IDF’s standard methodology. Proceedings of the
+12th International Conference on Life Cycle Assessment of Food (LCAFood 2020),
+pp. 83–89, 13–16 October, Berlin, Germany.
+
+FAO. 2016a. Environmental performance of large ruminant supply chains:
+Guidelines for assessment. Livestock Environmental Assessment and Performance
+(LEAP) Partnership. FAO, Rome, Italy.
+
+FAO. 2016b. Greenhouse gas emissions and fossil energy use from small ruminant
+supply chains: Guidelines for assessment. Livestock Environmental Assessment
+and Performance (LEAP) Partnership. FAO, Rome, Italy.
+
+FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
+chains: Guidelines for assessment. Livestock Environmental Assessment and
+Performance (LEAP) Partnership. FAO, Rome, Italy.
 }

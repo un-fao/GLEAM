@@ -1,15 +1,16 @@
 #' Aggregation Pipeline: Final Herd-Level Results
 #'
-#' Processes and consolidates livestock emissions, nutrient, and production data
-#' from cohort-level inputs to herd-level outputs. It aggregates values,
-#' applies allocation shares to emissions by commodity, and converts emissions
-#' to CO2-equivalent values based on the selected Global Warming Potential (GWP).
+#' This function represents the final step of the Global Livestock Environmental
+#' Assessment Model (GLEAM) computational pipeline. 
+#' It consolidates cohort-level outputs into standardized herd-level totals for reporting.
+#' The function (i) scales per-head-per-day variables to cohort totals over the assessment
+#' period, (ii) aggregates cohorts to herd level, (iii) allocates emissions to commodities
+#' using allocation shares, and (iv) converts CH₄ and N₂O emissions to CO₂-equivalents using
+#' a selected GWP-100 option.
 #'
-#' This is the final step in the GLEAM workflow, combining all calculated
-#' variables (emissions, production, feed, nitrogen balance) into a standardized
-#' herd-level output format suitable for reporting and analysis.
+#'#' @details
 #'
-#' ## Workflow
+#'#' ## Workflow
 #'
 #' 1. **Reshape to long format**: Convert cohort-level data from wide to long format
 #' 2. **Classify variables**: Group variables into Emissions, Production, Feed, NitrogenBalance
@@ -20,6 +21,26 @@
 #' 7. **Convert to CO2eq**: Apply GWP factors to convert CH4 and N2O to CO2-equivalents
 #' 8. **Standardize output**: Rename variables, assign units, and format final results
 #'
+#'
+#' The aggregation function follows these steps:
+#' \enumerate{
+#'   \item \strong{Reshape to long format.} Cohort-level variables are converted from wide to long
+#'     format using \code{data.table::melt()}.
+#'   \item \strong{Classify variables.} Each variable is grouped into categories.
+#'   \item \strong{Scale to totals.} Variables expressed per head per day are converted to cohort totals
+#'     over the assessment period using cohort size (\code{size}) and \code{assessment_duration}.
+#'   \item \strong{Aggregate to herd level.} Cohort totals are summed to herd totals within each
+#'     \code{herd_id × Animal_short} group.
+#'   \item \strong{Allocate emissions only.} Emission totals are merged with
+#'     \code{allocation_herd_long} and multiplied by \code{allocation_share} to obtain
+#'     commodity-specific emissions. Non-emission variables are assigned to commodity \code{"ALL"}
+#'     with \code{allocation_share = 1}.
+#'   \item \strong{Convert to CO₂e.} Allocated CH₄ and N₂O emissions are converted to CO₂e using
+#'     the selected GWP-100 option. Results are stored as \code{value_total} with \code{unit = "kg co2eq"}.
+#' }
+#'
+#'
+#'
 #' @param data_cohort A `data.table` containing cohort-level data with all
 #'   calculated variables. Must include:
 #'   \describe{
@@ -29,37 +50,41 @@
 #'     \item{**Emissions**:}{`ch4_enteric`, `ch4_manure_*`, `direct_n2o_manure_*`,
 #'       `indirect_n2o_manure_*`}
 #'   }
-#'   Required grouping columns: `ADM0_CODE`, `HerdType_short`, `Animal_short`,
-#'   `LPS_short`, `cohort`, `assessment_duration`, `size`.
+#'   Required grouping columns: `herd_id`, `Animal_short`,
+#'    `cohort`, `assessment_duration`, `size`.
+#'    
 #' @param allocation_herd_long A `data.table` in long format, typically the
 #'   output of [run_allocation()]. Must include columns:
 #'   \describe{
-#'     \item{**Grouping**:}{`ADM0_CODE`, `Animal_short`, `LPS_short`, `HerdType_short`}
+#'     \item{**Grouping**:}{`herd_id`, `Animal_short`}
 #'     \item{**Allocation**:}{`commodity_name` (e.g., "Meat", "Milk", "Fibre"),
 #'       `allocation_share` (numeric, 0-1), `allocation_type` (character)}
 #'     \item{**Emission source**:}{`variable_name` (emission variable names)}
 #'   }
-#' @param gwp Character scalar. Global Warming Potential-100 conversion factors
-#'   to use. Must be one of:
+#' @param gwp Character scalar specifying the 100-year Global Warming Potential
+#'   (GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
+#'   Must be one of:
 #'   \itemize{
-#'     \item `"AR6"` (default) — IPCC Sixth Assessment Report: CH₄ = 27, N₂O = 273
-#'     \item `"AR5_excluding_carbon_feedback"` — IPCC AR5 (excl. feedbacks): CH₄ = 28, N₂O = 265
-#'     \item `"AR5_including_carbon_feedback"` — IPCC AR5 (incl. feedbacks): CH₄ = 34, N₂O = 298
-#'     \item `"AR4"` — IPCC Fourth Assessment Report: CH₄ = 25, N₂O = 298
+#'     \item \code{"AR6"} (default): IPCC Sixth Assessment Report — CH₄ = 27, N₂O = 273
+#'     \item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment Report
+#'       (excluding climate–carbon feedbacks) — CH₄ = 28, N₂O = 265
+#'     \item \code{"AR5_including_carbon_feedback"}: IPCC Fifth Assessment Report
+#'       (including climate–carbon feedbacks) — CH₄ = 34, N₂O = 298
+#'     \item \code{"AR4"}: IPCC Fourth Assessment Report — CH₄ = 25, N₂O = 298
 #'   }
 #'
 #' @return A named list containing:
 #' \describe{
-#'   \item{`data_cohort`}{The original cohort-level data (unchanged).}
+#'   \item{`data_cohort`}{The raw cohort-level input data and results.}
 #'   \item{`results_herd`}{A `data.table` in long format with:
 #'     \itemize{
-#'       \item Allocated emissions (both as kg gas and kg CO2eq)
+#'       \item Allocated emissions (already converted in kgCO2eq)
 #'       \item Production variables (milk, meat, fibre)
 #'       \item Feed and nitrogen balance variables
 #'       \item Standardized variable names and units
 #'       \item Commodity classifications and allocation metadata
 #'     }
-#'     Columns include: `ADM0_CODE`, `HerdType_short`, `Animal_short`, `LPS_short`,
+#'     Columns include: `herd_id`, `Animal_short`,
 #'     `cohort` (set to "ALL"), `variable_type`, `variable_name`, `unit`, `gas`,
 #'     `gwp`, `allocation_type`, `allocation_share`, `commodity_type`, `commodity_name`,
 #'     `value_total`.
@@ -67,6 +92,20 @@
 #' }
 #'
 #' @export
+#'
+#'@references
+#' IPCC (2021). *Climate Change 2021: The Physical Science Basis*.
+#' Contribution of Working Group I to the Sixth Assessment Report of the
+#' Intergovernmental Panel on Climate Change. Cambridge University Press.
+#'
+#' IPCC (2013). *Climate Change 2013: The Physical Science Basis*.
+#' Contribution of Working Group I to the Fifth Assessment Report of the
+#' Intergovernmental Panel on Climate Change. Cambridge University Press.
+#'
+#' IPCC (2007). *Climate Change 2007: The Physical Science Basis*.
+#' Contribution of Working Group I to the Fourth Assessment Report of the
+#' Intergovernmental Panel on Climate Change. Cambridge University Press.
+#'
 #'
 #' @importFrom data.table := .I melt fcase setcolorder rbindlist
 run_aggregation <- function(
@@ -85,7 +124,7 @@ run_aggregation <- function(
 
   # Validate required grouping columns
   required_group_cols <- c(
-    "ADM0_CODE", "HerdType_short", "Animal_short", "LPS_short",
+    "herd_id", "Animal_short",
     "cohort", "assessment_duration", "size"
   )
   miss_group <- setdiff(required_group_cols, names(data_cohort))
@@ -134,10 +173,8 @@ run_aggregation <- function(
   data_cohort_long <- data.table::melt(
     data_cohort,
     id.vars = c(
-      "ADM0_CODE",
-      "HerdType_short",
+      "herd_id",
       "Animal_short",
-      "LPS_short",
       "cohort",
       "assessment_duration",
       "size"
@@ -176,10 +213,8 @@ run_aggregation <- function(
   data_herd_long <- aggregate_cohort_to_herd(
     data_cohort = data_cohort_long,
     id_cols = c(
-      "ADM0_CODE",
-      "HerdType_short",
+      "herd_id",
       "Animal_short",
-      "LPS_short",
       "variable_type",
       "variable_name"
     ),
@@ -192,7 +227,7 @@ run_aggregation <- function(
   data_herd_long_allocation <- merge(
     data_herd_long[variable_type == "Emissions", ],
     allocation_herd_long,
-    by = c("ADM0_CODE", "HerdType_short", "Animal_short", "LPS_short", "variable_name"),
+    by = c("herd_id", "Animal_short", "variable_name"),
     all = TRUE
   )
 
@@ -226,7 +261,7 @@ run_aggregation <- function(
   subset_allocatedco2e <- data_herd_long_allocation[
     variable_type == "Emissions",
     .(
-      ADM0_CODE, HerdType_short, Animal_short, LPS_short,
+      herd_id, Animal_short,
       variable_name, gas, variable_type, commodity_name,
       allocation_share, commodity_type, value_total = value_allocated_co2e,
       allocation_type, gwp
@@ -338,10 +373,8 @@ run_aggregation <- function(
 
   # --- Step 14: Variables order ----------------------------------------------
   variable_order <- c(
-    "ADM0_CODE",
-    "HerdType_short",
+    "herd_id",
     "Animal_short",
-    "LPS_short",
     "cohort",
     "variable_type",
     "variable_name",

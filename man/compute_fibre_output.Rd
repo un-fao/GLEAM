@@ -7,15 +7,20 @@
 compute_fibre_output(fibre_prod, assessment_duration, size)
 }
 \arguments{
-\item{fibre_prod}{Numeric. Fibre yield per head per year (kg/head/year).}
+\item{fibre_prod}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
 
-\item{assessment_duration}{Numeric. Number of assessment days used to annualise fibre output.}
+\item{assessment_duration}{Numeric. Length of the assessment period (days).}
 
-\item{size}{Numeric. Herd size (heads) for the cohort.}
+\item{size}{Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)}
 }
 \value{
-Numeric. Fibre production per cohort (kg/year).
+Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).
+
+Cohorts that do not produce fibre should return zero output through
+upstream parameterisation.
 }
 \description{
-Compute Fibre Production
+Computes fibre production for producing cohorts by scaling per-animal
+fibre yield to the assessment period and cohort size.
+The output is expressed in kg per cohort per assessment period.
 }

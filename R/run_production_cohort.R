@@ -8,26 +8,70 @@
 #' Input data must be loaded beforehand. Package examples live under `inst/extdata` and can
 #' be accessed via [system.file()] together with [data.table::fread()].
 #'
-#' @param data data.table. Cohort-level production inputs (per country/animal/LPS) containing milk
-#'   yields, fibre production, slaughter characteristics, and classifier columns such as
-#'   `animal`, `LPS_short`, and `HerdType_short`.
-#' @param lactose_lookup data.table. Lookup table mapping `Animal_short` to lactose percentage values
-#'   in column `Value`.
-#' @param assessment_duration Numeric. Number of assessment days used to annualise production outputs.
-#'   Defaults to `365`.
-#' @param standard_lactose Numeric. Reference lactose fraction used for FPCM energy calculations.
-#'   Defaults to `0.048` (reflecting IDF 2022 guidance).
+#' @param data data.table. Cohort-level production inputs (per country/animal/LPS) containing:
+#' 
+#' - `size`: Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
+#' 
+#' #' **Milk production**
+#' - `milk_yield`: Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). 
+#' - `milking_fraction`: Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
+#' - `milk_protein`: Numeric. Milk protein fraction (kg protein/kg milk).
+#' - `milk_fat`: Numeric. Milk fat fraction (kg fat/kg milk).
+#' - `lactose`: Numeric. Milk lactose fraction (kg lactose/kg milk). 
 #'
-#' @return data.table. The input data with appended milk, fibre, and meat production columns.
+#' **Fibre production**
+#' - `fibre_prod`: Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
+#'
+#' **Meat production**
+#' - `offtake_number_assessment`: Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA) (heads/year)
+#' - `slaughter_weight`: Numeric. Live weight at slaughter for animals removed from the cohort (kg).
+#' - `carcass_dressing_percentage`: Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).
+#' - `bone_free_meat_fraction`: Numeric. Ratio of bone-free-meat to carcass weight (fraction).
+#' - `meat_protein`: Numeric. Protein content of bone-free-meat (fraction).
+#' 
+#' @param assessment_duration Numeric. Length of the assessment period (days).
+#'
+#' @return data.table.  The input data with the following columns appended:
+#'
+#' **Milk production outputs**
+#' - `output_milk_mass_production`  
+#'   Total milk produced over the assessment period (kg milk / cohort / assessment period).
+#'
+#' - `output_milk_protein_production`  
+#'   Total milk protein produced over the assessment period  (kg protein / cohort / assessment period).
+#'
+#' - `output_milk_fpcm_production`  
+#'   Total fat-protein-corrected milk (FPCM) produced over the assessment period, calculated using IDF (2022) energy-based correction with standard composition  
+#'   (kg FPCM / cohort / assessment period).
+#'
+#' **Fibre production outputs**
+#' - `output_fibre_production`  
+#'   Total fibre produced over the assessment period  
+#'   (kg fibre / cohort / assessment period).
+#'
+#' **Meat production outputs**
+#' - `output_meat_production_liveweight`  
+#'   Total meat produced expressed as live weight removed via offtake  
+#'   (kg live weight / cohort / assessment period).
+#'
+#' - `output_meat_production_carcassweight`  
+#'   Total carcass weight produced after dressing  
+#'   (kg carcass weight / cohort / assessment period).
+#'
+#' - `output_meat_production_meat`  
+#'   Total bone-free meat produced  
+#'   (kg meat / cohort / assessment period).
+#'
+#' - `output_meat_production_protein`  
+#'   Total meat protein produced  
+#'   (kg protein / cohort / assessment period).
 #'
 #' @examples
 #' \dontrun{
 #' input_path <- system.file("extdata/GLEAM_input_production.csv", package = "gleam")
 #' data <- data.table::fread(input_path)
-#' lactose_lookup <- data.table::fread(
-#'   system.file("extdata/GLEAM_MilkDefault_LactoseContent.csv", package = "gleam")
-#' )
-#' run_production_cohort(data, lactose_lookup)
+#'
+#' run_production_cohort(data)
 #' }
 #'
 #' @keywords internal
@@ -35,22 +79,16 @@
 #' @importFrom data.table := .I
 run_production_cohort <- function(
     data,
-    lactose_lookup,
-    assessment_duration = 365,
-    standard_lactose = 0.048
+    assessment_duration = 365
 ) {
   # --- Step 1: Validate inputs -------------------------------------------------
   if (!inherits(data, "data.frame") || nrow(data) == 0) {
     cli::cli_abort("Input must be a non-empty data.frame or data.table.")
   }
 
-  if (!data.table::is.data.table(lactose_lookup) || nrow(lactose_lookup) == 0) {
-    cli::cli_abort("{.arg lactose_lookup} must be a non-empty data.table.")
-  }
-
   required_data <- unique(c(
     "Animal_short", "cohort", "milk_yield", "size", "milking_fraction",
-    "milk_protein", "milk_fat", "fibre_prod", "offtake_number",
+    "milk_protein", "milk_fat", "fibre_prod", "offtake_number_assessment",
     "slaughter_weight", "carcass_dressing_percentage",
     "bone_free_meat_fraction", "meat_protein"
   ))
@@ -59,27 +97,8 @@ run_production_cohort <- function(
     cli::cli_abort("Missing required columns in {.arg data}: {miss_data}.")
   }
 
-  if (!"Animal_short" %in% names(lactose_lookup) || !"Value" %in% names(lactose_lookup)) {
-    cli::cli_abort("{.arg lactose_lookup} must contain columns {.field Animal_short} and {.field Value}.")
-  }
 
   validate_scalar_numeric(assessment_duration, "assessment_duration")
-  validate_scalar_numeric(standard_lactose, "standard_lactose")
-
-  # --- Step 1.5: Lookup lactose content for each animal ------------------------
-  # Merge lactose lookup table (convert percentage to fraction)
-  lactose_lookup_fraction <- lactose_lookup
-  lactose_lookup_fraction[, Value := Value / 100]
-
-  data <- merge(
-    data,
-    lactose_lookup_fraction[, .(Animal_short, lactose = Value)],
-    by = "Animal_short",
-    all.x = TRUE
-  )
-
-  # Fill missing values with standard lactose
-  data[is.na(lactose), lactose := standard_lactose]
 
   # --- Step 2: Compute milk production outputs --------------------------------
   milk_output_cols <- c(
@@ -100,13 +119,11 @@ run_production_cohort <- function(
     lactose = lactose,
     standard_protein = 0.033,
     standard_fat = 0.04,
-    standard_lactose = standard_lactose
+    standard_lactose = 0.048
   ),
   by = .I
   ]
 
-  # Clean up temporary lactose column
-  data[, lactose := NULL]
 
   # --- Step 3: Aggregate fibre production ------------------------------------
   # The downstream energy requirements module expects annual fibre tonnage at the cohort level.
@@ -127,7 +144,7 @@ run_production_cohort <- function(
   )
 
   data[ , (meat_output_cols) := compute_meat_outputs(
-    offtake_number = offtake_number,
+    offtake_number_assessment = offtake_number_assessment,
     slaughter_weight = slaughter_weight,
     carcass_dressing_percentage = carcass_dressing_percentage,
     bone_free_meat_fraction = bone_free_meat_fraction,

@@ -225,9 +225,10 @@ test_that("calc_net_energy_lactation returns correct values for cattle", {
     animal = "CTL", cohort = "FA",
     milking_fraction = 0.8, milk_yield = 20, milk_fat = 0.04,
     idle = 0, gest = 0, litsize = 1, dr1 = 0, ckg = 35, wkg = 90,
-    lact = 0, parturition_rate = 0.8, lambing_interval = 365, assessment_duration = 365
+    lact = 0, parturition_rate = 0.8
   )
-  expected <- ((20 * 0.8) + (0.8 * 5 * (90 - 35)) / 365) * (0.04 * 100 * 0.40 + 1.47)
+  
+  expected <- ((20 * 0.8) + (0.8 * 5 * (90 - 35) / 365)) * (0.04 * 100 * 0.40 + 1.47)
   expect_equal(result, expected)
 })
 
@@ -236,9 +237,9 @@ test_that("calc_net_energy_lactation handles sheep with litter size", {
     animal = "SHP", cohort = "FA",
     milking_fraction = 0.9, milk_yield = 1.5, milk_fat = 0.06,
     idle = 0, gest = 0, litsize = 1.5, dr1 = 0, ckg = 4, wkg = 18,
-    lact = 0, parturition_rate = 1.2, lambing_interval = 365, assessment_duration = 365
+    lact = 0, parturition_rate = 1.2
   )
-  expected <- ((1.5 * 0.9) + (1.5 * (365 * 1.2 / 365) * 5 * (18 - 4)) / 365) * 4.6
+  expected <- ((1.5 * 0.9) + (1.5 * 1.2 * 5 * (18 - 4) / 365)) * 4.6
   expect_equal(result, expected)
 })
 
@@ -247,7 +248,7 @@ test_that("calc_net_energy_lactation handles pigs", {
     animal = "PGS", cohort = "FA",
     milking_fraction = 0, milk_yield = 0, milk_fat = 0,
     idle = 0.2, gest = 0.3, litsize = 10, dr1 = 0.1, ckg = 1.5, wkg = 8,
-    lact = 0.5, parturition_rate = 2.2, lambing_interval = 365, assessment_duration = 365
+    lact = 0.5, parturition_rate = 2.2
   )
   cadj <- 0.5 / (0.2 + 0.3 + 0.5)
   expected <- 10 * (1 - 0.5 * 0.1) * ((0.02059 * (8 - 1.5) * 1000 / 0.5) - (0.3766 / 0.67)) * cadj
@@ -325,16 +326,20 @@ test_that("calc_net_energy_pregnancy returns correct values for cattle", {
   result <- calc_net_energy_pregnancy(
     animal = "CTL", cohort = "FA",
     nemain = 15.0, parturition_rate = 0.8,
-   litsize = 1, gest = 283,  duration = 365, offtake_rate = 0.2
+   litsize = 1, gest = 283,  
+   idle = 10, lact = 30,
+   duration = 730, offtake_rate = 0.2
   )
-  expected <- 15.0 * 0.1 * 0.8
+  expected <- 15.0 * 0.1 * 0.8 * 283 / 365
   expect_equal(result, expected)
 
   # Test subadult female
   result <- calc_net_energy_pregnancy(
     animal = "CTL", cohort = "FS",
     nemain = 12.0, parturition_rate = 0.8,
-    litsize = 1, gest = 283, duration = 730, offtake_rate = 0.2
+    litsize = 1, gest = 283, 
+    idle = 10, lact = 30,
+    duration = 730, offtake_rate = 0.2
   )
   expected <- (12.0 * 0.1) * (283 / 730) * (1 - 0.2)
   expect_equal(result, expected)
@@ -344,20 +349,24 @@ test_that("calc_net_energy_pregnancy handles sheep with litter size effects", {
   # Test with litter size 1.5
   result <- calc_net_energy_pregnancy(
     animal = "SHP", cohort = "FA",
-    nemain = 8.0, parturition_rate = 1.2, litsize = 1.5,
-    gest = 152, duration = 365, offtake_rate = 0.1
+    nemain = 8.0, parturition_rate = 1.2, 
+    litsize = 1.5, gest = 152, 
+    idle = 10, lact = 30,
+    duration = 700, offtake_rate = 0.1
   )
   cpreg <- (0.077 * 0.5 + 0.126 * 0.5)
-  expected <- 8.0 * cpreg * 1.2
+  expected <- 8.0 * cpreg * 1.2 * 152 / 365
   expect_equal(result, expected)
 
   # Test with litter size > 2
   result <- calc_net_energy_pregnancy(
     animal = "SHP", cohort = "FA",
     nemain = 8.0, parturition_rate = 1.2,
-    litsize = 2.5, gest = 152, duration = 365, offtake_rate = 0.1
+    litsize = 2.5, gest = 152, 
+    idle = 10, lact = 30,
+    duration = 365, offtake_rate = 0.1
   )
-  expected <- 8.0 * 0.150 * 1.2
+  expected <- 8.0 * 0.150 * 1.2 * 152 / 365
   expect_equal(result, expected)
 })
 
@@ -365,9 +374,11 @@ test_that("calc_net_energy_pregnancy handles pigs", {
   result <- calc_net_energy_pregnancy(
     animal = "PGS", cohort = "FA",
     nemain = 12.0, parturition_rate = 2.2,
-    litsize = 10, gest = 115, duration = 365, offtake_rate = 0.1
+    litsize = 10, gest = 115, 
+    idle = 10, lact = 30,
+    duration = 365, offtake_rate = 0.1
   )
-  expected <- 0.14985 * 10 * 2.2
+  expected <- 0.14985 * 10 * 115 / (10 + 115 + 30)
   expect_equal(result, expected)
 })
 
