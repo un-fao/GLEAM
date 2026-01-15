@@ -5,7 +5,7 @@
 \title{Run Herd Simulation}
 \usage{
 run_herd_simulation(
-  cohort_data,
+  cohort_level_data,
   herd_level_data,
   initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
   max_years = 100,
@@ -15,7 +15,7 @@ run_herd_simulation(
 )
 }
 \arguments{
-\item{cohort_data}{A \code{data.table} with mandatory columns:
+\item{cohort_level_data}{A \code{data.table} with mandatory columns:
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 \item{\code{cohort}}{"Character scalar. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
@@ -35,7 +35,7 @@ run_herd_simulation(
 
 \item{herd_level_data}{A \code{data.table} with one row per herd and mandatory columns:
 \describe{
-\item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd. Must match \code{herd_id} values in \code{cohort_data}.}
+\item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd. Must match \code{herd_id} values in \code{cohort_level_data}.}
 \item{\code{parturition_rate}}{Numeric. Average annual number of parturitions per female animal (# parturitions/reproductive female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
 \item{\code{litsize}}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 \item{\code{female_birth_fraction}}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
@@ -65,8 +65,8 @@ Defaults to \code{TRUE}.}
 \value{
 A named list with two elements:
 \describe{
-\item{\code{cohort_results}}{A \code{data.table} with one row per cohort containing all original
-\code{cohort_data} columns plus the following simulation results:
+\item{\code{cohort_level_results}}{A \code{data.table} with one row per cohort containing all original
+\code{cohort_level_data} columns plus the following simulation results:
 \itemize{
 \item \code{share} - Numeric. Final steady-state share of the 6 grouped sex-age classes  (cohorts = (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})) (fraction). Shares should sum to 1.
 \item \code{size} - Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (cohorts = (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})) (# heads).
@@ -77,7 +77,7 @@ A named list with two elements:
 \item \code{prob_growth} - Numeric. Probability of growing into the next age class for 6 cohorts (cohorts = (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})) (fraction).
 }
 }
-\item{\code{herd_results}}{A \code{data.table} with one row per herd containing all original
+\item{\code{herd_level_results}}{A \code{data.table} with one row per herd containing all original
 \code{herd_level_data} columns plus the following herd-level simulation results:
 \itemize{
 \item \code{growth_rate_pop} - Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).
@@ -171,24 +171,24 @@ returns:
 \dontrun{
 # Load example input data from the package
 cohort_path <- system.file(
-  "extdata/example_cohort_data.csv",
+  "extdata/examples/example_cohort_level_data.csv",
   package = "gleam"
 )
 herd_level_path <- system.file(
-  "extdata/example_herd_level_data.csv",
+  "extdata/examples/example_herd_level_data.csv",
   package = "gleam"
 )
-cohort_data <- data.table::fread(cohort_path)
+cohort_level_data <- data.table::fread(cohort_path)
 herd_level_data <- data.table::fread(herd_level_path)
 
 # Run herd simulation
 results <- run_herd_simulation(
-cohort_data = cohort_data, herd_level_data = herd_level_data, assessment_duration = 200
+cohort_level_data = cohort_level_data, herd_level_data = herd_level_data, assessment_duration = 200
 )
 
 # Access results
-print(results$cohort_results)
-print(results$herd_results)
+print(results$cohort_level_results)
+print(results$herd_level_results)
 }
 
 }

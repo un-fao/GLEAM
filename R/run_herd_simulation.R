@@ -82,7 +82,7 @@
 #' Lesnoff, M. (2013). \emph{DYNMOD: A spreadsheet interface for demographic projections of tropical
 #' livestock populations, User’s manual}. CIRAD, Montpellier, France.
 #'
-#' @param cohort_data A `data.table` with mandatory columns:
+#' @param cohort_level_data A `data.table` with mandatory columns:
 #'   \describe{
 #'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 #'     \item{`cohort`}{"Character scalar. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
@@ -101,7 +101,7 @@
 #'   }
 #' @param herd_level_data A `data.table` with one row per herd and mandatory columns:
 #'   \describe{
-#'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd. Must match `herd_id` values in `cohort_data`.}
+#'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd. Must match `herd_id` values in `cohort_level_data`.}
 #'     \item{`parturition_rate`}{Numeric. Average annual number of parturitions per female animal (# parturitions/reproductive female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
 #'     \item{`litsize`}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 #'     \item{`female_birth_fraction`}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
@@ -125,8 +125,8 @@
 #'
 #' @return A named list with two elements:
 #'   \describe{
-#'     \item{`cohort_results`}{A `data.table` with one row per cohort containing all original
-#'       `cohort_data` columns plus the following simulation results:
+#'     \item{`cohort_level_results`}{A `data.table` with one row per cohort containing all original
+#'       `cohort_level_data` columns plus the following simulation results:
 #'       \itemize{
 #'         \item `share` - Numeric. Final steady-state share of the 6 grouped sex-age classes  (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (fraction). Shares should sum to 1.
 #'         \item `size` - Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads).
@@ -137,7 +137,7 @@
 #'         \item `prob_growth` - Numeric. Probability of growing into the next age class for 6 cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (fraction).
 #'       }
 #'     }
-#'     \item{`herd_results`}{A `data.table` with one row per herd containing all original
+#'     \item{`herd_level_results`}{A `data.table` with one row per herd containing all original
 #'       `herd_level_data` columns plus the following herd-level simulation results:
 #'       \itemize{
 #'         \item `growth_rate_pop` - Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).
@@ -149,31 +149,31 @@
 #' \dontrun{
 #' # Load example input data from the package
 #' cohort_path <- system.file(
-#'   "extdata/example_cohort_data.csv",
+#'   "extdata/examples/example_cohort_level_data.csv",
 #'   package = "gleam"
 #' )
 #' herd_level_path <- system.file(
-#'   "extdata/example_herd_level_data.csv",
+#'   "extdata/examples/example_herd_level_data.csv",
 #'   package = "gleam"
 #' )
-#' cohort_data <- data.table::fread(cohort_path)
+#' cohort_level_data <- data.table::fread(cohort_path)
 #' herd_level_data <- data.table::fread(herd_level_path)
 #'
 #' # Run herd simulation
 #' results <- run_herd_simulation(
-#' cohort_data = cohort_data, herd_level_data = herd_level_data, assessment_duration = 200
+#' cohort_level_data = cohort_level_data, herd_level_data = herd_level_data, assessment_duration = 200
 #' )
 #'
 #' # Access results
-#' print(results$cohort_results)
-#' print(results$herd_results)
+#' print(results$cohort_level_results)
+#' print(results$herd_level_results)
 #' }
 #'
 #' @export
 #'
 #' @importFrom data.table := .SD .I .N setkey setkeyv uniqueN
 run_herd_simulation <- function(
-    cohort_data,
+    cohort_level_data,
     herd_level_data,
     initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
     max_years = 100,
@@ -183,7 +183,7 @@ run_herd_simulation <- function(
 ) {
 
   # --- Step 1: Validate Inputs -----------------------------------------------
-  validate_herd_simulation_inputs(cohort_data, herd_level_data)
+  validate_herd_simulation_inputs(cohort_level_data, herd_level_data)
 
   # Show progress indicator if requested
   if (show_indicator) {
@@ -192,16 +192,16 @@ run_herd_simulation <- function(
 
   # --- Step 2: Prepare Data for Processing ------------------------------------
   # Create working copies
-  cohort_result <- data.table::copy(cohort_data)
-  herd_result <- data.table::copy(herd_level_data)
+  cohort_level_results <- data.table::copy(cohort_level_data)
+  herd_level_results <- data.table::copy(herd_level_data)
 
   # Set keys for fast lookups
-  data.table::setkey(cohort_result, herd_id, cohort)
-  data.table::setkey(herd_result, herd_id)
+  data.table::setkey(cohort_level_results, herd_id, cohort)
+  data.table::setkey(herd_level_results, herd_id)
   data.table::setkey(herd_level_data, herd_id)
 
   # Get unique herd IDs to process
-  unique_herd_ids <- unique(cohort_result$herd_id)
+  unique_herd_ids <- unique(cohort_level_results$herd_id)
 
   # Define valid cohort names (used for result mapping loop)
   cohort_order <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
@@ -213,7 +213,7 @@ run_herd_simulation <- function(
     herd_params <- herd_level_data[herd_id == current_herd_id]
 
     # Lookup cohort-level data for this herd (should be exactly 6 rows)
-    cohort_rows <- cohort_result[herd_id == current_herd_id]
+    cohort_rows <- cohort_level_results[herd_id == current_herd_id]
 
     # Calculate fecundity rates (herd-level)
     # Fecundity rates represent the daily number of births per adult female
@@ -282,7 +282,7 @@ run_herd_simulation <- function(
     # Map simulation results back to cohort-level results
     # Assign values from named vectors to the appropriate cohort rows
     for (cohort_name in cohort_order) {
-      cohort_result[
+      cohort_level_results[
         herd_id == current_herd_id & cohort == cohort_name,
         `:=`(
           size = popsize_result$size[cohort_name],
@@ -296,7 +296,7 @@ run_herd_simulation <- function(
     }
 
     # Map herd-level results
-    herd_result[
+    herd_level_results[
       herd_id == current_herd_id,
       `:=`(growth_rate_pop = structure_result$growth_rate_pop)
     ]
@@ -312,8 +312,8 @@ run_herd_simulation <- function(
   # Return separate result tables
   return(
     list(
-      cohort_results = cohort_result,
-      herd_results = herd_result
+      cohort_level_results = cohort_level_results,
+      herd_level_results = herd_level_results
     )
   )
 }
