@@ -183,7 +183,9 @@ herd_level_data <- data.table::fread(herd_level_path)
 
 # Run herd simulation
 results <- run_herd_simulation(
-cohort_level_data = cohort_level_data, herd_level_data = herd_level_data, assessment_duration = 200
+  cohort_level_data = cohort_level_data,
+  herd_level_data = herd_level_data,
+  assessment_duration = 200
 )
 
 # Access results
