@@ -225,12 +225,13 @@ test_that("calc_energy_allocation_fibre returns correct value for sheep", {
     animal = "SHP",
     fibre_energy_requirement = 5,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365
+    assessment_duration = 365,
+    size = 100
   )
 
   expect_type(result, "double")
   expect_length(result, 1)
-  expect_equal(result, 5 * 365)  # Direct calculation for sheep
+  expect_equal(result, 5 * 365 * 100)  # Direct calculation for sheep
 })
 
 test_that("calc_energy_allocation_fibre returns correct value for goats", {
@@ -238,10 +239,11 @@ test_that("calc_energy_allocation_fibre returns correct value for goats", {
     animal = "GTS",
     fibre_energy_requirement = 4,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365
+    assessment_duration = 365,
+    size = 100
   )
 
-  expect_equal(result, 4 * 365)  # Direct calculation for goats
+  expect_equal(result, 4 * 365 * 100)  # Direct calculation for goats
 })
 
 test_that("calc_energy_allocation_fibre returns correct value for camelids", {
@@ -249,12 +251,13 @@ test_that("calc_energy_allocation_fibre returns correct value for camelids", {
     animal = "CML",
     fibre_energy_requirement = 6,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365
+    assessment_duration = 365,
+    size = 100
   )
 
   expect_type(result, "double")
   # For camelids: fibre_energy * ratio_ne_to_me * assessment_duration
-  expect_equal(result, 6 * 0.43 * 365)
+  expect_equal(result, 6 * 0.43 * 365 * 100)
 })
 
 test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
@@ -262,7 +265,8 @@ test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
     animal = "CTL",
     fibre_energy_requirement = 10,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365
+    assessment_duration = 365,
+    size = 100
   )
   expect_equal(result_cattle, 0)
 
@@ -270,7 +274,8 @@ test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
     animal = "PGS",
     fibre_energy_requirement = 10,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365
+    assessment_duration = 365,
+    size = 100
   )
   expect_equal(result_pigs, 0)
 })
@@ -280,23 +285,24 @@ test_that("calc_energy_allocation_fibre uses default assessment_duration", {
     animal = "SHP",
     fibre_energy_requirement = 5,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365
+    assessment_duration = 365,
+    size = 100
   )
 
-  expect_equal(result, 5 * 365)  # Default is 365 days
+  expect_equal(result, 5 * 365 * 100)  # Default is 365 days
 })
 
 test_that("calc_energy_allocation_fibre validates inputs", {
   expect_error(
-    calc_energy_allocation_fibre(animal = "INVALID", fibre_energy_requirement = 5, ratio_ne_to_me = 0.43, assessment_duration = 365),
+    calc_energy_allocation_fibre(animal = "INVALID", fibre_energy_requirement = 5, ratio_ne_to_me = 0.43, assessment_duration = 365, size = 100),
     "must be one of"
   )
   expect_error(
-    calc_energy_allocation_fibre(animal = "SHP", fibre_energy_requirement = -5, ratio_ne_to_me = 0.43, assessment_duration = 365),
+    calc_energy_allocation_fibre(animal = "SHP", fibre_energy_requirement = -5, ratio_ne_to_me = 0.43, assessment_duration = 365, size = 100),
     "must be non-negative"
   )
   expect_error(
-    calc_energy_allocation_fibre(animal = "SHP", fibre_energy_requirement = 5, ratio_ne_to_me = 1.5, assessment_duration = 365),
+    calc_energy_allocation_fibre(animal = "SHP", fibre_energy_requirement = 5, ratio_ne_to_me = 1.5, assessment_duration = 365, size = 100),
     "must be between 0 and 1"
   )
 })
@@ -308,13 +314,14 @@ test_that("calc_energy_allocation_work returns correct value for camelids", {
     animal = "CML",
     work_energy_requirement = 10,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365
+    assessment_duration = 365,
+    size = 100
   )
 
   expect_type(result, "double")
   expect_length(result, 1)
   # For camelids: work_energy * ratio_ne_to_me * assessment_duration
-  expect_equal(result, 10 * 0.43 * 365)
+  expect_equal(result, 10 * 0.43 * 365 * 100)
 })
 
 test_that("calc_energy_allocation_work returns correct value for non-camelids", {
@@ -322,12 +329,13 @@ test_that("calc_energy_allocation_work returns correct value for non-camelids", 
     animal = "CTL",
     work_energy_requirement = 8,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365
+    assessment_duration = 365,
+    size = 100
   )
 
   expect_type(result, "double")
   # For non-camelids: work_energy * assessment_duration (ratio not applied)
-  expect_equal(result, 8 * 365)
+  expect_equal(result, 8 * 365 * 100)
 })
 
 test_that("calc_energy_allocation_work uses default assessment_duration", {
@@ -335,10 +343,11 @@ test_that("calc_energy_allocation_work uses default assessment_duration", {
     animal = "CTL",
     work_energy_requirement = 8,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365
+    assessment_duration = 365,
+    size = 100
   )
 
-  expect_equal(result, 8 * 365)  # Default is 365 days
+  expect_equal(result, 8 * 365 * 100)  # Default is 365 days
 })
 
 test_that("calc_energy_allocation_work handles zero energy requirement", {
@@ -346,7 +355,8 @@ test_that("calc_energy_allocation_work handles zero energy requirement", {
     animal = "CTL",
     work_energy_requirement = 0,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365
+    assessment_duration = 365,
+    size = 100
   )
 
   expect_equal(result, 0)
@@ -354,19 +364,19 @@ test_that("calc_energy_allocation_work handles zero energy requirement", {
 
 test_that("calc_energy_allocation_work validates inputs", {
   expect_error(
-    calc_energy_allocation_work(animal = "INVALID", work_energy_requirement = 10, ratio_ne_to_me = 0.43, assessment_duration = 365),
+    calc_energy_allocation_work(animal = "INVALID", work_energy_requirement = 10, ratio_ne_to_me = 0.43, assessment_duration = 365, size = 100),
     "must be one of"
   )
   expect_error(
-    calc_energy_allocation_work(animal = "CML", work_energy_requirement = -5, ratio_ne_to_me = 0.43, assessment_duration = 365),
+    calc_energy_allocation_work(animal = "CML", work_energy_requirement = -5, ratio_ne_to_me = 0.43, assessment_duration = 365, size = 100),
     "must be non-negative"
   )
   expect_error(
-    calc_energy_allocation_work(animal = "CML", work_energy_requirement = 10, ratio_ne_to_me = -0.1, assessment_duration = 365),
+    calc_energy_allocation_work(animal = "CML", work_energy_requirement = 10, ratio_ne_to_me = -0.1, assessment_duration = 365, size = 100),
     "must be between 0 and 1"
   )
   expect_error(
-    calc_energy_allocation_work(animal = "CML", work_energy_requirement = 10, ratio_ne_to_me = 0.43, assessment_duration = 5000),
+    calc_energy_allocation_work(animal = "CML", work_energy_requirement = 10, ratio_ne_to_me = 0.43, assessment_duration = 5000, size = 100),
     "must be between 0 and 3650"
   )
 })

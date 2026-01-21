@@ -141,12 +141,14 @@ validate_allocation_fibre_inputs <- function(
     animal,
     fibre_energy_requirement,
     ratio_ne_to_me,
-    assessment_duration
+    assessment_duration,
+    size
 ) {
   validate_scalar_character(animal, "animal")
   validate_scalar_numeric(fibre_energy_requirement, "fibre_energy_requirement")
   validate_scalar_numeric(ratio_ne_to_me, "ratio_ne_to_me")
   validate_scalar_numeric(assessment_duration, "assessment_duration")
+  validate_scalar_numeric(size, "size")
 
   # Validate animal species
   # Note: Allocation module uses these specific species codes
@@ -197,12 +199,16 @@ validate_allocation_work_inputs <- function(
     animal,
     work_energy_requirement,
     ratio_ne_to_me,
-    assessment_duration
+    assessment_duration,
+    size
+    
 ) {
   validate_scalar_character(animal, "animal")
   validate_scalar_numeric(work_energy_requirement, "work_energy_requirement")
   validate_scalar_numeric(ratio_ne_to_me, "ratio_ne_to_me")
   validate_scalar_numeric(assessment_duration, "assessment_duration")
+  validate_scalar_numeric(size, "size")
+  
 
   # Validate animal species
   # Note: Allocation module uses these specific species codes

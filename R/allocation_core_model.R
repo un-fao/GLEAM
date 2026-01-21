@@ -371,18 +371,19 @@ calc_energy_allocation_fibre <- function(
     animal,
     fibre_energy_requirement,
     ratio_ne_to_me,
-    assessment_duration
+    assessment_duration,
+    size
 ) {
   validate_allocation_fibre_inputs(
-    animal, fibre_energy_requirement, ratio_ne_to_me, assessment_duration
+    animal, fibre_energy_requirement, ratio_ne_to_me, assessment_duration, size
   )
 
   if (animal %in% c("GTS", "SHP")) {
     # Sheep and goats: direct NE calculation
-    energy_allocation_fibre <- fibre_energy_requirement * assessment_duration
+    energy_allocation_fibre <- fibre_energy_requirement * assessment_duration * size
   } else if (animal == "CML") {
     # Camelids: convert ME to NE using ratio
-    energy_allocation_fibre <- fibre_energy_requirement * ratio_ne_to_me * assessment_duration
+    energy_allocation_fibre <- fibre_energy_requirement * ratio_ne_to_me * assessment_duration * size
   } else {
     # Other species: no fibre production
     energy_allocation_fibre <- 0
@@ -472,18 +473,19 @@ calc_energy_allocation_work <- function(
     animal,
     work_energy_requirement,
     ratio_ne_to_me,
-    assessment_duration
+    assessment_duration,
+    size
 ) {
   validate_allocation_work_inputs(
-    animal, work_energy_requirement, ratio_ne_to_me, assessment_duration
+    animal, work_energy_requirement, ratio_ne_to_me, assessment_duration, size
   )
 
   if (animal == "CML") {
     # Camelids: convert ME to NE using ratio
-    energy_allocation_work <- work_energy_requirement * ratio_ne_to_me * assessment_duration
+    energy_allocation_work <- work_energy_requirement * ratio_ne_to_me * assessment_duration * size
   } else {
     # Other species: direct calculation
-    energy_allocation_work <- work_energy_requirement * assessment_duration
+    energy_allocation_work <- work_energy_requirement * assessment_duration * size
   }
 
   return(energy_allocation_work)
