@@ -165,8 +165,7 @@ run_aggregation <- function(
   available_vars <- intersect(all_vars, names(data_cohort))
   if (length(available_vars) == 0) {
     cli::cli_abort(
-      "No recognized variables found in {.arg data_cohort}. ",
-      "Expected variables include: {.val {all_vars}}"
+      "No recognized variables found in {.arg data_cohort}. Expected variables include: {.val {all_vars}}"
     )
   }
 

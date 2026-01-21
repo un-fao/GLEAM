@@ -17,6 +17,7 @@ utils::globalVariables(c(
   "COUNTRY", "HerdType_short", "LPS_short", "MFSKG", "MMSKG", "WA", "afc", "ckg",
   "cohort", "duration", "duration.FA", "duration.FJ", "duration.FS", "duration.MA",
   "duration.MJ", "duration.MS", "dwg", "female_birth_fraction", "fem_fec",
+  "herd_id", "has_all_cohorts", "n_unique", "index", "N",  # Variables used in run_herd_simulation
   "prob_growth.FA", "prob_growth.FB", "prob_growth.FC", "prob_growth.FJ", "prob_growth.FS",
   "prob_growth.MA", "prob_growth.MB", "prob_growth.MC", "prob_growth.MJ", "prob_growth.MS",
   "growth_rate_pop", "initial_weight", "litsize", "mal_fec", "mort_rate.FA",
@@ -80,6 +81,7 @@ utils::globalVariables(c(
   "energy_allocation_fibre", "energy_allocation_work", "energy_allocation_eggs",
   "total_allocation_energy", "allocation_share_meat", "allocation_share_milk",
   "allocation_share_work", "allocation_share_fibre", "allocation_share_eggs",
+  "allocation_share_other", "allocation_herd_long_all",  # Variables used in run_allocation
   "commodity_name", "commodity_type", "V1"
 ))
 
@@ -89,7 +91,8 @@ utils::globalVariables(c(
   "final_weight", "gest", "getot", "idle", "lact", "lambing_interval",
   "milk_fat", "milk_yield", "milking_fraction", "high_activity_fraction", "neact",
   "neegg", "nefibre", "negrow", "nelact", "nemain", "nepreg",
-  "nework", "activity_fraction", "reg", "rem", "work_hours"
+  "nework", "activity_fraction", "reg", "rem", "work_hours",
+  "adult_weight"  # Variable used in run_energy_requirements
 ))
 
 utils::globalVariables(c(
@@ -106,7 +109,8 @@ utils::globalVariables(c(
   # Columns used in run_aggregation
   "value", "value_total", "value_allocated", "value_allocated_co2e", "gwp_factor",
   "variable_type", "variable_name", "unit", "gas", "allocation_share",
-  "allocation_type", "commodity_name", "commodity_type"
+  "allocation_type", "commodity_name", "commodity_type",
+  "assessment_duration"  # Variable used in run_aggregation
 ))
 
 # Add species abbreviations
