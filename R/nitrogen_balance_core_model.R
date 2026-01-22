@@ -65,6 +65,7 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #' Species-specific calculations are performed.
 #'
 #' \strong{For CTL, BFL, SHP, GTS and CML}
+#' 
 #' Nitrogen retained in products and tissues is
 #' computed consistent with the process described in the Technical paper
 #' from MPI (Ministry for Primary Industries (MPI), 2025).
@@ -95,6 +96,7 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #' }
 #'
 #' \strong{For PGS}
+#' 
 #' Nitrogen retention is calculated following the IPCC 2019 equations
 #' for swine (Equations 10.33A and 10.33B).
 #'
@@ -189,7 +191,7 @@ compute_nitrogen_retention <- function(
 #' Nitrogen excretion represents the fraction of consumed nitrogen that is not
 #' retained in animal products or body tissues and is therefore excreted in urine
 #' and dung. This quantity forms the basis for subsequent calculations of
-#' nitrous oxide \eqn{(N_2O)} emissions from manure management and agricultural soils.
+#' nitrous oxide \code{N₂O} emissions from manure management and agricultural soils.
 #' The approach follows the IPCC 2019 guidelines.
 #'
 #' @param animal Character. Code identifying the livestock species.
