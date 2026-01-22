@@ -90,7 +90,7 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #'     }
 #'   \item \strong{Fibre nitrogen content (\code{fibre_n})}:
 #'   \strong{0.134 kg N per kg fibre}
-#'   \item \strong{Milk nitrogen content}:
+#'   \item \strong{Milk nitrogen content (\code{milk_n})}:
 #'   Milk nitrogen is derived from milk protein using a protein-to-nitrogen
 #'   conversion factor of \strong{6.25}
 #' }
