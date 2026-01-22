@@ -17,8 +17,7 @@ calc_total_energy_requirement(
   nefibre,
   neegg,
   reg,
-  diet_dig,
-  afc
+  diet_dig
 )
 }
 \arguments{
@@ -65,8 +64,6 @@ production stage of the animals. Supported values include:
 \item{reg}{Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)}
 
 \item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
-
-\item{afc}{Numeric. Age at first parturition for female breeding animals (years)}
 }
 \value{
 Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS
