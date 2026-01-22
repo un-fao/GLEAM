@@ -69,9 +69,7 @@ using allocation shares, and (iv) converts CH₄ and N₂O emissions to CO₂-eq
 a selected GWP-100 option.
 }
 \details{
-#' @details
-
-#' ## Workflow
+\subsection{Workflow}{
 \enumerate{
 \item \strong{Reshape to long format}: Convert cohort-level data from wide to long format
 \item \strong{Classify variables}: Group variables into Emissions, Production, Feed, NitrogenBalance
@@ -98,6 +96,8 @@ commodity-specific emissions. Non-emission variables are assigned to commodity \
 with \code{allocation_share = 1}.
 \item \strong{Convert to CO₂e.} Allocated CH₄ and N₂O emissions are converted to CO₂e using
 the selected GWP-100 option. Results are stored as \code{value_total} with \code{unit = "kg co2eq"}.
+}
+}
 }
 \references{
 IPCC (2021). \emph{Climate Change 2021: The Physical Science Basis}.

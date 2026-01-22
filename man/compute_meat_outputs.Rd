@@ -23,6 +23,8 @@ compute_meat_outputs(
 \item{bone_free_meat_fraction}{Numeric. Ratio of bone-free-meat to carcass weight (fraction).}
 
 \item{meat_protein}{Numeric. Protein content of bone-free-meat (fraction).}
+
+\item{assessment_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
 Named list containing:

@@ -77,7 +77,7 @@ energy required to produce the meat obtained during the assessment period.
 This is achieved by quantifying the physiological energy required for animals
 to grow from birth weight to slaughter weight for each species and cohort.
 
-Total energy required for meat production over the assessment period ((\code{specific_energy_meat}is then
+Total energy required for meat production over the assessment period (\code{specific_energy_meat}) is then
 calculated as:
 
 \itemize{
@@ -100,7 +100,7 @@ animals sold for meat during the assessment period, which is calculated with a s
 
 Growth energy is calculated using species- and
 cohort-specific biophysical relationships adapted from established growth
-energy formulations (further details in \code{\link{?gleam::calc_net_energy_growth}}).
+energy formulations (further details in \code{\link[gleam]{calc_net_energy_growth}}).
 
 \item \strong{For (\code{PGS})}:
 

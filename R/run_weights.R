@@ -19,7 +19,7 @@
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }}
 #'     \item{`duration`}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
-#'     \item{`Animal_short`} {Character. Code identifying the livestock species.
+#'     \item{`Animal_short`}{Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs

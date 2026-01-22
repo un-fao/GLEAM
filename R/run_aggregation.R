@@ -8,9 +8,9 @@
 #' using allocation shares, and (iv) converts CH₄ and N₂O emissions to CO₂-equivalents using
 #' a selected GWP-100 option.
 #'
-#'#' @details
+#' @details
 #'
-#'#' ## Workflow
+#' ## Workflow
 #'
 #' 1. **Reshape to long format**: Convert cohort-level data from wide to long format
 #' 2. **Classify variables**: Group variables into Emissions, Production, Feed, NitrogenBalance
@@ -93,7 +93,7 @@
 #'
 #' @export
 #'
-#'@references
+#' @references
 #' IPCC (2021). *Climate Change 2021: The Physical Science Basis*.
 #' Contribution of Working Group I to the Sixth Assessment Report of the
 #' Intergovernmental Panel on Climate Change. Cambridge University Press.

@@ -25,16 +25,16 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{energy_meat}{Numeric. Energy required for total meat output by herd during
+\item{energy_allocation_meat}{Numeric. Energy required for total meat output by herd during
 the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/herd/assessment period).}
 
-\item{energy_milk}{Numeric. Energy required to produce total milk output by herd (MJ/herd/assessment period).}
+\item{energy_allocation_milk}{Numeric. Energy required to produce total milk output by herd (MJ/herd/assessment period).}
 
-\item{energy_fibre}{Numeric. Energy required to produce all fibre output by herd (MJ/herd/assessment period).}
+\item{energy_allocation_fibre}{Numeric. Energy required to produce all fibre output by herd (MJ/herd/assessment period).}
 
-\item{energy_work}{Numeric vector. Energy required to provide all draught power (traction/work) by herd (MJ/herd/assessment period)}
+\item{energy_allocation_work}{Numeric vector. Energy required to provide all draught power (traction/work) by herd (MJ/herd/assessment period)}
 
-\item{energy_eggs}{Numeric vector: Energy required to produce eggs by the herd during the assessment period (MJ/herd/assessment period).}
+\item{energy_allocation_eggs}{Numeric vector: Energy required to produce eggs by the herd during the assessment period (MJ/herd/assessment period).}
 }
 \value{
 A named list of numeric vectors with same length as input, containing:

@@ -148,7 +148,8 @@ run_production_cohort <- function(
     slaughter_weight = slaughter_weight,
     carcass_dressing_percentage = carcass_dressing_percentage,
     bone_free_meat_fraction = bone_free_meat_fraction,
-    meat_protein = meat_protein
+    meat_protein = meat_protein,
+    assessment_duration = assessment_duration
   ),
   by = .I
   ]
