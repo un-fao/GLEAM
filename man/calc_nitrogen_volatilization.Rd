@@ -12,7 +12,7 @@ calc_nitrogen_volatilization(
 )
 }
 \arguments{
-\item{n_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day)}
+\item{n_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
 
 \item{fracgas_pasture}{Numeric. Effective fraction of excreted nitrogen volatilized as NH₃ and NOₓ from manure deposited on pasture, already weighted by the share of manure deposited on pasture (mmspasture) (fraction).}
 
@@ -30,7 +30,7 @@ A named list with:
 }
 }
 \description{
-Computes nitrogen lost through volatilization as NH3 and NOx from manure
+Computes nitrogen lost through volatilization as NH₃ and NOₓ from manure
 management pathways. The calculation follows the IPCC structure
 (Eq. 10.26), but is expressed on a \strong{daily} basis because \code{n_excretion}
 is provided in kg N/head/day.

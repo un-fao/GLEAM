@@ -20,7 +20,7 @@ Supported values include:
 
 \item{dmi}{Numeric. Daily dry matter intake of feed (kg DM/head/day).}
 
-\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
+\item{diet_dig}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 
 \item{diet_me}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
 
@@ -32,7 +32,7 @@ Numeric. Total volatile solids (VS) excreted per animal per day, representing th
 \description{
 Computes daily volatile solids (VS) excretion in manure (kg VS/head/day).
 VS represents the total organic material excreted (biodegradable + non-biodegradable)
-and is required to proceed with the estimate of methane emissions from manure maanagement.
+and is required to proceed with the estimate of methane emissions from manure management.
 }
 \details{
 The IPCC recommends estimating VS from feed intake and digestibility when
@@ -46,19 +46,24 @@ This package uses simplified algebraic forms by species/method that are consiste
 structure of Eq. 10.24 under fixed/default assumptions for \eqn{UE} and \eqn{ASH}, and with
 digestibility supplied directly as a fraction (\code{diet_dig}).
 
-\strong{Species/method branches}
+\strong{Calculation logic by species}
 \itemize{
-\item \strong{(\code{"CTL"}, \code{"BFL"}, \code{"CML"}, \code{"SHP"}, \code{"GTS"}):
-\code{vs = dmi * (1.04 - diet_dig) * 0.92}.
-The formula is a modification of the original IPCC equation. First, the average gross energy content of the ration is used instead
-of a fixed value of 18.45 MJ×kg DM-1. Thus, ge / diet_ge equals the daily intake, dmi.
-Second, it is assumed that Urinary energy is 4\% and the Ash content in feed is 8\%. Therefore, GE × (GE + UE) becomes 1.04 and 1 – ASH becomes 0.92
-}
-\item \strong{Swine} (\code{"PGS"}):
-\itemize{
-\item \code{vs = dmi * (1.02 - diet_dig) * 0.94}.
-It is assumed that urinary energy is 2\% and the ash content in feed is 6\% (based on IPCC, 2019). Therefore, GE × (GE + UE) becomes 1.02 and 1 – ASH becomes 0.94.
-}
+\item \strong{(\code{"CTL"}, \code{"BFL"}, \code{"CML"}, \code{"SHP"}, \code{"GTS"}) \cr
+\code{VS = dmi * (1.04 - diet_dig) * 0.92}} \cr
+This formula is a modification of the original IPCC Equation 10.24 to better
+account for variable diet quality. Instead of relying on the IPCC’s fixed
+default energy content of 18.45 MJ/kg DM, this implementation utilizes the
+user-provided average gross energy content of the ration (diet_ge) to derive
+daily intake (dmi = GE / diet_ge). This provides a more precise calculation when the specific
+energy content of the feed is known.
+Additionally, it is assumed that urinary energy is 4\% and the ash content in
+feed is 8\%. Therefore, GE × (GE + UE) becomes 1.04 and (1 – ASH) becomes 0.92.
+
+\item \strong{(\code{"PGS"}) \cr
+\code{VS = dmi * (1.02 - diet_dig) * 0.94}} \cr
+It is assumed that urinary energy is 2\% and the ash content in feed is 6\%
+(based on IPCC, 2019). Therefore, GE × (GE + UE) becomes 1.02 and (1 – ASH)
+becomes 0.94.
 }
 }
 \references{

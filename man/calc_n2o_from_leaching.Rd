@@ -21,7 +21,7 @@ calc_n2o_from_leaching(
 
 \item{ef5}{Numeric. Emission factor for indirect nitrous oxide emissions resulting from nitrogen leaching and runoff, expressed as kilograms of N₂O–N per kilogram of nitrogen leached or lost through runoff (kg N₂O–N / kg N leached and runoff).}
 
-\item{ration_N2ON_to_N2O}{Numeric. Conversion factor from kg N2O-N to kg N2O. Default to 44/28.}
+\item{ration_N2ON_to_N2O}{Numeric. Conversion factor from N₂O-N (kg N) to N₂O (kg), based on molecular weights, defaults to 44/28.}
 }
 \value{
 A named list with:
@@ -31,21 +31,21 @@ A named list with:
 \item{n2o_leach_manure_other}{Numeric. Indirect nitrous oxide emissions resulting from leaching and runoff of manure nitrogen originating from manure managed in all other systems, excluding manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
 \item{n2o_leach_manure_all_noburn}{Numeric. Indirect nitrous oxide emissions resulting from leaching and runoff of manure nitrogen originating from all non-burned manure management systems, including manure deposited on pasture (kg N₂O/head/day).}
 }
-
-#' @references
+}
+\description{
+Converts leached/runoff manure nitrogen losses (kg N/head/day) into indirect
+nitrous oxide (N\eqn{_2}O) emissions using the emission factor \code{ef5}
+(kg N₂O-N per kg N leached/runoff), consistent with the IPCC framework
+for indirect N₂O from leaching/runoff.
+}
+\details{
+The calculation is implemented on a \strong{daily basis} because volatilized nitrogen
+inputs are provided as kg N/head/day.
+}
+\references{
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.29.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.29.
-}
-\description{
-Converts leached/runoff manure nitrogen losses (kg N/head/day) into indirect
-nitrous oxide (N\eqn{_2}O) emissions using the emission factor \code{ef5}
-(kg N2O-N per kg N leached/runoff), consistent with the IPCC framework
-for indirect N2O from leaching/runoff.
-}
-\details{
-The calculation is implemented on a \strong{daily basis} because volatilized nitrogen
-inputs are provided as kg N/head/day.
 }

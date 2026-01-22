@@ -17,19 +17,19 @@ calc_n2o_from_volatilization(
 
 \item{n_vol_burned}{Numeric. Amount of manure nitrogen lost through volatilisation of NH₃ and NOₓ from manure burned for fuel (kg N/head/day).}
 
-\item{n_vol_other}{"Numeric. Amount of manure nitrogen lost through volatilisation of NH₃ and NOₓ from manure managed in all other systems, excluding losses from manure deposited on pasture and burned for fuel (kg N/head/day).}
+\item{n_vol_other}{Numeric. Amount of manure nitrogen lost through volatilisation of NH₃ and NOₓ from manure managed in all other systems, excluding losses from manure deposited on pasture and burned for fuel (kg N/head/day).}
 
-\item{ef4}{Numeric. Emission factor for indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilized nitrogen (NH₃–N and NOₓ–N) onto soils and water surfaces (kg N₂O–N / (kg NH₃–N + NOₓ–N)).}
+\item{ef4}{Numeric. Emission factor for indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilized nitrogen (NH₃–N and NOₓ–N) onto soils and water surfaces (kg N₂O–N / (kg NH₃–N + kg NOₓ–N)).}
 
-\item{ration_N2ON_to_N2O}{Numeric. Conversion factor from kg N2O-N to kg N2O. Default to 44/28}
+\item{ration_N2ON_to_N2O}{Numeric. Conversion factor from N₂O-N (kg N) to N₂O (kg), based on molecular weights, defaults to 44/28.}
 }
 \value{
 A named list with:
 \describe{
-\item{n2o_vol_manure_pasture}{Numeric. Indirect nitrous oxide emissions resulting from atmospheric deposition of volatilized nitrogen (NH₃ and NOₓ) originating from manure deposited on pasture (kg N2O/head/day)}
-\item{n2o_vol_manure_burned}{Numeric. Indirect nitrous oxide emissions resulting from atmospheric deposition of volatilized nitrogen (NH₃ and NOₓ) originating from manure burned for fuel (kg N2O/head/day)}
-\item{n2o_vol_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilized nitrogen (NH₃ and NOₓ) originating from manure managed in all other manure management systems, excluding manure deposited on pasture and manure burned for fuel (kg N2O/head/day)}
-\item{n2o_vol_manure_all_noburn}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilized nitrogen (NH₃ and NOₓ) originating from manure managed in all non-burned manure management systems, including manure deposited on pasture (kg N2O/head/day)}
+\item{n2o_vol_manure_pasture}{Numeric. Indirect nitrous oxide emissions resulting from atmospheric deposition of volatilized nitrogen (NH₃ and NOₓ) originating from manure deposited on pasture (kg N₂O/head/day)}
+\item{n2o_vol_manure_burned}{Numeric. Indirect nitrous oxide emissions resulting from atmospheric deposition of volatilized nitrogen (NH₃ and NOₓ) originating from manure burned for fuel (kg N₂O/head/day)}
+\item{n2o_vol_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilized nitrogen (NH₃ and NOₓ) originating from manure managed in all other manure management systems, excluding manure deposited on pasture and manure burned for fuel (kg N₂O/head/day)}
+\item{n2o_vol_manure_all_noburn}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilized nitrogen (NH₃ and NOₓ) originating from manure managed in all non-burned manure management systems, including manure deposited on pasture (kg N₂O/head/day)}
 }
 }
 \description{
