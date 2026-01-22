@@ -57,7 +57,7 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #' @param parturition_rate Numeric. Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.
 #' @param wkg Numeric. Live weight of the animal at weaning (kg)
 #' @param ckg Numeric. Live weight of the animal at birth (kg).
-#' @param afc Numeric. Age at first parturition for female breeding animals (years)
+#' @param afc Numeric. Age at first parturition for female breeding animals (days)
 #'
 #' @return Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)
 #' 
@@ -167,7 +167,7 @@ compute_nitrogen_retention <- function(
     } else if (cohort == "FS") {
       return(
         0.025 * dwg +
-          (1 / afc) * (
+          (365 / afc) * (
             (0.025 * litsize * parturition_rate * (wkg - ckg) / 0.98 +
                0.025 * litsize * parturition_rate * ckg) / 365
           )
