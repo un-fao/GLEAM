@@ -28,7 +28,7 @@
 #' @param average_weight Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).
 #' @param milking_fraction Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
-#' @param afc Numeric. Age at first parturition for female breeding animals (years)
+#' @param afc Numeric. Age at first parturition for female breeding animals (days)
 #'
 #' @return Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal
 #' in equilibrium such that body energy is neither gained nor lost.
@@ -76,7 +76,7 @@
 #'   \item \code{FJ}:
 #'     \eqn{cmain = 0.236}
 #'   \item \code{FS}:
-#'     \eqn{cmain = 0.236 \times (1/afc) + 0.217 \times ((afc - 1)/afc)}
+#'     \eqn{cmain = 0.236 \times (365/afc) + 0.217 \times ((afc - 365)/afc)}
 #'   \item \code{MA}:
 #'     \eqn{cmain = 0.217 \times offtake\_rate + (0.217 \times 1.15) \times (1 - offtake\_rate)}
 #'   \item \code{MJ}:
@@ -162,7 +162,7 @@ calc_net_energy_maintenance <- function(
       cmain <- 0.217
     } else if (cohort == "FS") {
       # Weighted by age at first calving (afc)
-      cmain <- (0.236 * (1 / afc)) + (0.217 * ((afc - 1) / afc))
+      cmain <- (0.236 * (365 / afc)) + (0.217 * ((afc - 365) / afc))
     } else if (cohort == "FJ") {
       cmain <- 0.236
     } else if (cohort == "MA") {
@@ -170,8 +170,8 @@ calc_net_energy_maintenance <- function(
       cmain <- 0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)
     } else if (cohort == "MS") {
       # Complex weighted average for subadult males
-      cmain <- ((0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)) * ((afc - 1) / afc) +
-                  (0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)) * (1 / afc))
+      cmain <- ((0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)) * ((afc - 365) / afc) +
+                  (0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)) * (365 / afc))
     } else if (cohort == "MJ") {
       cmain <- 0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)
     }
@@ -1364,7 +1364,6 @@ calc_reg_growth <- function(
 #' @param neegg Numeric. Net energy for egg production.
 #' @param reg Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)
 #' @param diet_dig Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
-#' @param afc Numeric. Age at first parturition for female breeding animals (years)
 #'
 #' @return Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS
 #'   this is expressed as **gross energy intake requirement (GE)**. For CML and PGS
@@ -1445,13 +1444,12 @@ calc_total_energy_requirement <- function(
     nefibre,
     neegg,
     reg,
-    diet_dig,
-    afc
+    diet_dig
 ) {
   # Validate inputs
   validate_total_energy_inputs(
     animal, cohort, nemain, neact, nelact, nework, nepreg,
-    rem, negrow, nefibre, neegg, reg, diet_dig, afc
+    rem, negrow, nefibre, neegg, reg, diet_dig
   )
   # Cattle, buffalo: sum maintenance, activity, lactation, work, pregnancy, growth
   if (animal %in% c("CTL", "BFL")) {
