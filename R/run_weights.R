@@ -125,7 +125,7 @@ run_weights_calculations <- function(data) {
   ), by = .(herd_id, Animal_short)]
 
   # Calculate daily weight gain
-  data[, dwg := calc_daily_weight_gain(
+  data[, daily_weight_gain := calc_daily_weight_gain(
     potential_final_weight = potential_final_weight,
     initial_weight = initial_weight,
     duration = duration
