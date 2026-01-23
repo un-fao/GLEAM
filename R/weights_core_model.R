@@ -29,8 +29,6 @@
 #' @param slaughter_weight_fem Numeric. Slaughter weight of female sub-adult animals (kg).
 #' @param slaughter_weight_mal Numeric. Slaughter weight of male sub-adult animals (kg).
 #' @param weaning_weight Numeric. Live weight of the animal at weaning (kg)
-#' @param age_first_calving Numeric. Age at first parturition for female breeding animals (years)
-#' @param animal_age Numeric. Average age of the juvenile animals at weaning (days)
 #'
 #' @return A named list with:
 #' \describe{
@@ -71,26 +69,18 @@
 #' 
 #' @export
 calc_cohort_weights <- function(
-    animal, cohort,
+    cohort,
     adult_fem_weight = NA_real_, adult_mal_weight = NA_real_,
     birth_weight = NA_real_, slaughter_weight_fem = NA_real_,
-    slaughter_weight_mal = NA_real_, weaning_weight = NA_real_,
-    age_first_calving = NA_real_, animal_age = NA_real_
+    slaughter_weight_mal = NA_real_, weaning_weight = NA_real_
 ) {
   validate_cohort_weight_inputs(
-    animal, cohort,
+    cohort,
     adult_fem_weight, adult_mal_weight,
     birth_weight,
     slaughter_weight_fem, slaughter_weight_mal,
-    weaning_weight,
-    age_first_calving,
-    animal_age
+    weaning_weight
   )
-
-  # Helper function for growing weight
-  grow_weight <- function(adult_weight) {
-    ((adult_weight - birth_weight) / age_first_calving) * animal_age + birth_weight
-  }
 
   # Defaults
   initial_weight <- potential_final_weight <- slaughter_weight <- NA_real_
@@ -98,23 +88,17 @@ calc_cohort_weights <- function(
   # Juvenile cohorts
   if (cohort %in% c("FJ", "MJ")) {
     initial_weight <- birth_weight
-    if (animal %in% c("PGS", "CML")) {
-      potential_final_weight <- slaughter_weight <- weaning_weight
-    } else {
-      adult_weight <- if (cohort == "FJ") adult_fem_weight else adult_mal_weight
-      potential_final_weight <- slaughter_weight <- grow_weight(adult_weight)
-    }
+    potential_final_weight <- slaughter_weight <- weaning_weight
+    adult_weight <- if (cohort == "FJ") adult_fem_weight else adult_mal_weight
+    
 
     # Subadult cohorts
   } else if (cohort %in% c("FS", "MS")) {
-    if (animal %in% c("PGS", "CML")) {
+
       initial_weight <- weaning_weight
-    } else {
       adult_weight <- if (cohort == "FS") adult_fem_weight else adult_mal_weight
-      initial_weight <- grow_weight(adult_weight)
-    }
-    potential_final_weight <- if (cohort == "FS") adult_fem_weight else adult_mal_weight
-    slaughter_weight <- if (cohort == "FS") slaughter_weight_fem else slaughter_weight_mal
+      potential_final_weight <- if (cohort == "FS") adult_fem_weight else adult_mal_weight
+      slaughter_weight <- if (cohort == "FS") slaughter_weight_fem else slaughter_weight_mal
 
     # Adult cohorts
   } else if (cohort == "FA") {

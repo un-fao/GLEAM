@@ -194,16 +194,13 @@ validate_offtake_summary_inputs <- function(
 #'
 #' @noRd
 validate_cohort_weight_inputs <- function(
-    animal, cohort,
+    cohort,
     adult_fem_weight, adult_mal_weight,
     birth_weight,
     slaughter_weight_fem, slaughter_weight_mal,
-    weaning_weight,
-    age_first_calving,
-    animal_age
+    weaning_weight
 ) {
   # Character inputs
-  validate_scalar_character(animal, "animal")
   validate_scalar_character(cohort, "cohort")
 
   # Numeric inputs (allow NA)
@@ -213,9 +210,7 @@ validate_cohort_weight_inputs <- function(
     birth_weight = birth_weight,
     slaughter_weight_fem = slaughter_weight_fem,
     slaughter_weight_mal = slaughter_weight_mal,
-    weaning_weight = weaning_weight,
-    age_first_calving = age_first_calving,
-    animal_age = animal_age
+    weaning_weight = weaning_weight
   )
 
   for (arg_name in names(args)) {
