@@ -16,26 +16,26 @@ calc_energy_allocation_milk(
 
 Default fat and protein content=0.04 and 0.033.}
 
-\item{standard_protein}{Numeric. Standard protein content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg protein/kg milk).
+\item{standard_protein}{Numeric. Standard protein content of milk, used to calculate fat-protein-corrected milk (FPCM), (kg protein/kg milk).
 
 Default used=0.033.}
 
-\item{standard_fat}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg fat/kg milk).
+\item{standard_fat}{Numeric. Standard fat content of milk, used to calculate fat-protein-corrected milk (FPCM), (kg fat/kg milk).
 
 Default used=0.04.}
 
-\item{standard_lactose}{Numeric. Standard lactose content of milk, used to calculate Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk).
+\item{standard_lactose}{Numeric. Standard lactose content of milk, used to calculate fat-protein-corrected milk (FPCM) , (kg lactose/kg milk).
 
 Default used=0.048.}
 }
 \value{
-Numeric scalar. Energy required to produce total milk output by cohort (MJ/cohort/assessment period).
+Numeric scalar. Energy required to produce total milk output over the assessment period (MJ/cohort/assessment period).
 
-Non-zero values are applicable only to milk-producing species and cohorts (species=CTL, BFL, CML, SHP, GTS; cohorts=AF).
-All other species–cohort combinations are assigned a value of 0.
+Non-zero values are applicable only to milk-producing species (CTL, BFL, CML, SHP, GTS) and adult female cohorts (FA).
+In the allocation workflow, non-milk-producing species or cohorts are assigned a value of 0 for this term.
 }
 \description{
-Calculates the net energy demand (MJ) required to produce total fat-protein-corrected milk (FPCM) over the assessment period.
+Calculates the net energy demand required to produce total fat-protein-corrected milk (FPCM) over a defined assessment period.
 }
 \details{
 This function provides the milk-related energy term used in a biophysical
@@ -49,9 +49,24 @@ In accordance with ISO 14044:2006 (Section 4.3.4.2, Step 2), known processing or
 biophysical relationships may be used to assign shared inputs and outputs of a
 single production unit to individual products or sub-units. In livestock systems,
 this includes apportioning shared feed and energy use according to physiological
-energy requirements (e.g., net energy for lactation, growth..etc.). If the
+energy requirements (e.g., net energy for lactation, growth, etc.). If the
 resulting process remains multifunctional, these energy terms may subsequently
 be used to derive allocation factors among co-products.
+
+The total energy required for milk production over the assessment period is calculated as:
+\code{energy_allocation_milk = energy_standard * milk_fpcm_output}
+
+where:
+
+\itemize{
+
+\item \code{energy_standard} is the energy content of standard milk,
+calculated internally based on standard fat, protein, and lactose contents
+following IDF (2022) (MJ/kg milk).
+
+\item \code{milk_fpcm_output} is the total fat- and protein-corrected milk
+(FPCM) produced over the assessment period (kg/assessment period).
+}
 }
 \references{
 ISO. 2006. Environmental management — Life cycle assessment — Requirements and

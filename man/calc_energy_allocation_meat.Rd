@@ -40,19 +40,19 @@ production stage of the animals. Supported values include:
 
 \item{birth_liveweight}{Numeric scalar. Live weight of the animal at birth (kg).}
 
-\item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).}
+\item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
 
 \item{ratio_ne_to_me}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.}
 }
 \value{
-Numeric scalar. Energy required by a given sex–age cohort for total meat output by cohort during
+Numeric scalar. Energy required by a given sex–age cohort for total meat output by cohort over
 the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period).
 
 Non-zero values are applicable to all species/cohorts where growth is modelled. For
 pigs (\code{PGS}), the function returns \code{NA} by design.
 }
 \description{
-Calculates the net energy demand (MJ) associated with meat production (expressed as
+Calculates the net energy demand associated with meat production (expressed as
 liveweight output) over the assessment period for a given species and cohort.
 }
 \details{
@@ -73,26 +73,23 @@ remains multifunctional after such assignment, the resulting energy terms
 may be used to derive allocation factors among co-products.
 
 The objective of this function is to estimate the net
-energy required to produce the meat obtained during the assessment period.
+energy required to produce meat, as live-weight growth of animal slaughtered during the assessment period.
 This is achieved by quantifying the physiological energy required for animals
 to grow from birth weight to slaughter weight for each species and cohort.
 
-Total energy required for meat production over the assessment period ((\code{specific_energy_meat}is then
+Total energy required for meat production over the assessment period is then
 calculated as:
 
-\itemize{
-\item \code{energy_allocation_meat = specific_energy_meat * output_meat_production_liveweight}
-}
+\code{energy_allocation_meat = specific_energy_meat * output_meat_production_liveweight}
 
 where
 
-\code{output_meat_production_liveweight} is the average
+\code{specific_energy_meat} is the average
 net energy required to produce one kilogram of liveweight gain, accounting
-for differences in growth efficiency, metabolic scaling, and sex-specific
-growth patterns (MJ/kg live weight)
+for differences in growth efficiency, reflecting species and cohort specific growth characteristics (MJ/kg live weight).
 
-\code{specific_energy_meat} is the total liveweight of
-animals sold for meat during the assessment period, which is calculated with a specie-specific approach:
+\code{output_meat_production_liveweight} is the total liveweight of
+animals sold for meat during the assessment period, which is calculated with a species-specific approach:
 
 \itemize{
 \item \strong{For (\code{CTL}, \code{BFL}, \code{CML},

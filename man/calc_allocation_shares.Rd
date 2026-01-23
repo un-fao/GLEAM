@@ -25,16 +25,15 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{energy_meat}{Numeric. Energy required for total meat output by herd during
-the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/herd/assessment period).}
+\item{energy_meat}{Numeric. Energy required by a given sex–age cohort for total meat output by cohort during the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period).}
 
-\item{energy_milk}{Numeric. Energy required to produce total milk output by herd (MJ/herd/assessment period).}
+\item{energy_milk}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment period). Non-zero values are applicable only to milk-producing species and cohorts (species=CTL, BFL, CML, SHP, GTS; cohorts=AF). All other species–cohort combinations are assigned a value of 0.}
 
-\item{energy_fibre}{Numeric. Energy required to produce all fibre output by herd (MJ/herd/assessment period).}
+\item{energy_fibre}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).}
 
-\item{energy_work}{Numeric vector. Energy required to provide all draught power (traction/work) by herd (MJ/herd/assessment period)}
+\item{energy_work}{Numeric vector. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).}
 
-\item{energy_eggs}{Numeric vector: Energy required to produce eggs by the herd during the assessment period (MJ/herd/assessment period).}
+\item{energy_eggs}{Numeric vector. Energy required to produce all eggs during the assessment period (MJ/cohort/assessment period).}
 }
 \value{
 A named list of numeric vectors with same length as input, containing:
