@@ -5,7 +5,7 @@
 \title{Project One Year of Steady-State Population Dynamics}
 \usage{
 project_population_size(
-  size_total,
+  size,
   fem_fec,
   mal_fec,
   prob_death,
@@ -13,11 +13,12 @@ project_population_size(
   prob_growth,
   growth_rate_pop,
   structure,
-  share
+  share,
+  prop_non_demo
 )
 }
 \arguments{
-\item{size_total}{Numeric. Total population size at the start of the year.}
+\item{size}{Numeric. Total demographic population size at the start of the year.}
 
 \item{fem_fec}{Numeric. Daily female births per adult female.}
 
@@ -39,15 +40,24 @@ Names must match those in \code{prob_death}.}
 
 \item{share}{Named numeric vector of length 6. Final population share in 6 grouped classes. Must be named:
 \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.}
+
+\item{prop_non_demo}{Named numeric vector. Fraction (0--1) of individuals diverted into the non-demographic
+stream at the moment they transition to the next age class. Must be named:
+\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.
+For example, \code{prop_non_demo["FJ"]} applies to individuals transitioning \code{FJ -> FS}, and
+\code{prop_non_demo["FA"]} applies to individuals transitioning \code{FA -> FC}.}
 }
 \value{
 A named list with:
 \describe{
-\item{size}{Size in 6 sex-age classes at the start of the year.}
-\item{size_end}{Size at year end (projected using growth rate).}
-\item{size_end_exact}{Size at year end (based on full simulation over 366 days).}
-\item{size_avg}{Average population size over the year.}
-\item{offtake}{Total offtake over the year per sex-age class.}
+\item{size}{Population size in 6 grouped sex-age classes at the start of the year. Names: \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.}
+\item{size_end}{Population size in 6 grouped classes at year end computed from \code{growth_rate_pop}.}
+\item{size_end_exact}{Population size at the end of the daily simulation (day 366) for 10 cohorts:
+\code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}, \code{MC}.}
+\item{size_avg}{Average population size over the year for the 6 grouped classes (\code{(size + size_end)/2}).}
+\item{size_non_demo}{Cumulative number of individuals diverted into the non-demographic stream over the year
+during demographic transitions (grouped by \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
+\item{offtake}{Total offtake over the year for 10 cohorts (same names as \code{prob_death}).}
 }
 }
 \description{

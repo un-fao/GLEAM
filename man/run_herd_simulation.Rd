@@ -40,6 +40,8 @@ run_herd_simulation(
 \item{\code{litsize}}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 \item{\code{female_birth_fraction}}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
 \item{\code{size_total}}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
+\item{\code{prop_non_demo_mal_juv}}{Numeric. Fraction of male juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
+\item{\code{prop_non_demo_fem_juv}}{Numeric. Fraction of female juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
 }}
 
 \item{initial_structure}{A named numeric vector of initial population values used to
@@ -159,7 +161,7 @@ Once steady state is reached, the model projects cohort sizes over the assessmen
 returns:
 \itemize{
 \item cohort shares (\code{share})
-\item cohort sizes at start/end/average (\code{size}, \code{size_end}, \code{size_avg})
+\item cohort sizes at average \code{size_stock})
 \item cohort offtake totals (\code{offtake_number}) and assessment-scaled totals
 (\code{offtake_number_assessment})
 \item daily transition probabilities (\code{prob_death}, \code{prob_offtake}, \code{prob_survival},

@@ -12,7 +12,8 @@ simulate_steady_state_structure(
   mal_fec,
   prob_death,
   prob_offtake,
-  prob_growth
+  prob_growth,
+  prop_non_demo
 )
 }
 \arguments{
@@ -37,14 +38,23 @@ Names must match those in \code{prob_death}.}
 
 \item{prob_growth}{Named numeric vector of length 10. Daily probability of transition
 to the next class for 10 cohorts. Names must match those in \code{prob_death}.}
+
+\item{prop_non_demo}{Named numeric vector. Fraction (0--1) of individuals \emph{diverted into the
+non-demographic stream at the moment they transition to the next age class}.
+Must be named with the transitioning demographic cohorts:
+\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.
+For example, \code{prop_non_demo["FJ"]} applies to individuals growing from \code{FJ -> FS};
+\code{prop_non_demo["FA"]} applies to individuals growing from \code{FA -> FC}.}
 }
 \value{
 A named list with:
 \describe{
-\item{days_steady}{Number of days until steady state is reached.}
-\item{structure}{Final share of each of the 8 sex-age cohorts.}
-\item{share}{Final share of 6 grouped sex-age classes.}
-\item{growth_rate_pop}{Annualized growth rate at steady state.}
+\item{days_steady}{Number of days simulated until steady state is reached (or until the loop ends).}
+\item{structure}{Final share of each of the 8 cohorts: \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}.}
+\item{share}{Final share of the 6 grouped classes (\code{FJ} includes \code{FB+FJ}; \code{MJ} includes \code{MB+MJ}).}
+\item{growth_rate_pop}{Annualized population growth rate at steady state.}
+\item{size_unscaled}{Final unscaled population sizes for the 6 grouped classes.}
+\item{size_total_demo}{Total demographic population size at the end of the simulation (sum of grouped classes).}
 }
 }
 \description{
