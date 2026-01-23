@@ -1,0 +1,9 @@
+herd_id,phase_id,cohort,duration_cycle_productive_phase_non_demo,mort_rate
+1,1,FN,30,0.1
+1,2,FN,50,0.1
+1,1,MN,30,0.1
+1,2,MN,50,0.1
+2,1,FN,20,0.1
+2,2,FN,0,0.1
+2,1,MN,20,0.1
+2,2,MN,0,0.1

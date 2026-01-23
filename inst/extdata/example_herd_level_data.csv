@@ -1,3 +1,3 @@
-herd_id,parturition_rate,litsize,female_birth_fraction,size_total
-1,1.893890076,1,0.5,3059840
-2,1.62047571615534,1,0.5,7363149.246
+herd_id,parturition_rate,litsize,female_birth_fraction,size_total,prop_non_demo_fem_juv,prop_non_demo_mal_juv,duration_rest_between_cycles
+1,1.893890076,1,0.5,3059840,0.1,0.1,20
+2,1.62047571615534,1,0.5,7363149.246,0.1,0.1,20
