@@ -16,7 +16,7 @@ aggregate_cohort_to_herd(data_cohort, id_cols, vars_to_sum, cohort)
 \item{data}{A \code{data.table} at cohort-level containing energy allocation variables and herd identifiers. Each row corresponds to a single sex–age cohort within a herd.}
 }
 \value{
-A \code{data.table} at herd scale, in which selected cohort-level variables have been summed across all cohorts belonging to the same herd, as defined by id_herd.
+A \code{data.table} at herd scale, in which selected cohort-level variables have been summed across all cohorts belonging to the same herd, as defined by id_cols.
 }
 \description{
 This function aggregates a dataset from cohort level to herd level by summing
