@@ -3,16 +3,6 @@
 #' Attributes and/or compute initial, potential final, and slaughter live weight for
 #' a given cohort and animal species
 #'
-#' @param animal Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
 #' @param cohort Character scalar. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \describe{
@@ -29,8 +19,6 @@
 #' @param slaughter_weight_fem Numeric. Slaughter weight of female sub-adult animals (kg).
 #' @param slaughter_weight_mal Numeric. Slaughter weight of male sub-adult animals (kg).
 #' @param weaning_weight Numeric. Live weight of the animal at weaning (kg)
-#' @param age_first_calving Numeric. Age at first parturition for female breeding animals (years)
-#' @param animal_age Numeric. Average age of the juvenile animals at weaning (days)
 #'
 #' @return A named list with:
 #' \describe{
@@ -38,7 +26,7 @@
 #'   \item{potential_final_weight}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
 #'   \item{slaughter_weight}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 #' }
-#' 
+#'
 #' @details
 #' The function attributes weights according to cohort and animal type:
 #'
@@ -67,30 +55,21 @@
 #'     \item \code{slaughter_weight} equals the adult weight for the cohort sex
 #'   }
 #' }
-#' 
-#' 
+#'
 #' @export
 calc_cohort_weights <- function(
-    animal, cohort,
+    cohort,
     adult_fem_weight = NA_real_, adult_mal_weight = NA_real_,
     birth_weight = NA_real_, slaughter_weight_fem = NA_real_,
-    slaughter_weight_mal = NA_real_, weaning_weight = NA_real_,
-    age_first_calving = NA_real_, animal_age = NA_real_
+    slaughter_weight_mal = NA_real_, weaning_weight = NA_real_
 ) {
   validate_cohort_weight_inputs(
-    animal, cohort,
+    cohort,
     adult_fem_weight, adult_mal_weight,
     birth_weight,
     slaughter_weight_fem, slaughter_weight_mal,
-    weaning_weight,
-    age_first_calving,
-    animal_age
+    weaning_weight
   )
-
-  # Helper function for growing weight
-  grow_weight <- function(adult_weight) {
-    ((adult_weight - birth_weight) / age_first_calving) * animal_age + birth_weight
-  }
 
   # Defaults
   initial_weight <- potential_final_weight <- slaughter_weight <- NA_real_
@@ -98,21 +77,14 @@ calc_cohort_weights <- function(
   # Juvenile cohorts
   if (cohort %in% c("FJ", "MJ")) {
     initial_weight <- birth_weight
-    if (animal %in% c("PGS", "CML")) {
-      potential_final_weight <- slaughter_weight <- weaning_weight
-    } else {
-      adult_weight <- if (cohort == "FJ") adult_fem_weight else adult_mal_weight
-      potential_final_weight <- slaughter_weight <- grow_weight(adult_weight)
-    }
+    potential_final_weight <- slaughter_weight <- weaning_weight
+    adult_weight <- if (cohort == "FJ") adult_fem_weight else adult_mal_weight
 
     # Subadult cohorts
   } else if (cohort %in% c("FS", "MS")) {
-    if (animal %in% c("PGS", "CML")) {
-      initial_weight <- weaning_weight
-    } else {
-      adult_weight <- if (cohort == "FS") adult_fem_weight else adult_mal_weight
-      initial_weight <- grow_weight(adult_weight)
-    }
+
+    initial_weight <- weaning_weight
+    adult_weight <- if (cohort == "FS") adult_fem_weight else adult_mal_weight
     potential_final_weight <- if (cohort == "FS") adult_fem_weight else adult_mal_weight
     slaughter_weight <- if (cohort == "FS") slaughter_weight_fem else slaughter_weight_mal
 
@@ -147,9 +119,9 @@ calc_cohort_weights <- function(
 #'   \item{average_weight}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
 #'   \item{final_weight}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
 #' }
-#' 
+#'
 #' @details
-#' The calculation of \code{average_weight} and \code{final_weight} is performed considering that 
+#' The calculation of \code{average_weight} and \code{final_weight} is performed considering that
 #' a fraction of animals is removed (offtake) during the cohort stage, while the
 #' remaining animals reach the potential final live weight.
 #'

@@ -5,30 +5,16 @@
 \title{Calculate Live Weights by Cohort and at different lifestage}
 \usage{
 calc_cohort_weights(
-  animal,
   cohort,
   adult_fem_weight = NA_real_,
   adult_mal_weight = NA_real_,
   birth_weight = NA_real_,
   slaughter_weight_fem = NA_real_,
   slaughter_weight_mal = NA_real_,
-  weaning_weight = NA_real_,
-  age_first_calving = NA_real_,
-  animal_age = NA_real_
+  weaning_weight = NA_real_
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
-Supported values include:
-\itemize{
-\item \code{PGS}: pigs
-\item \code{CML}: camels
-\item \code{CTL}: cattle
-\item \code{BFL}: buffalo
-\item \code{SHP}: sheep
-\item \code{GTS}: goats
-}}
-
 \item{cohort}{Character scalar. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \describe{
@@ -51,10 +37,6 @@ production stage of the animals. Supported values include:
 \item{slaughter_weight_mal}{Numeric. Slaughter weight of male sub-adult animals (kg).}
 
 \item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg)}
-
-\item{age_first_calving}{Numeric. Age at first parturition for female breeding animals (years)}
-
-\item{animal_age}{Numeric. Average age of the juvenile animals at weaning (days)}
 }
 \value{
 A named list with:
