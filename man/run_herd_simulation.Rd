@@ -171,11 +171,11 @@ returns:
 \dontrun{
 # Load example input data from the package
 cohort_path <- system.file(
-  "extdata/examples/example_cohort_level_data.csv",
+  "extdata/examples/herd_simulation_input_cohort_level_data.csv",
   package = "gleam"
 )
 herd_level_path <- system.file(
-  "extdata/examples/example_herd_level_data.csv",
+  "extdata/examples/herd_simulation_input_herd_level_data.csv",
   package = "gleam"
 )
 cohort_level_data <- data.table::fread(cohort_path)

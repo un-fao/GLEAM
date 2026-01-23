@@ -507,6 +507,7 @@ project_population_size <- function(
 #' @param size_end Numeric vector of length 6. Population at end of year.
 #' @param size_avg Numeric vector of length 6. Average population over the year.
 #' @param offtake Numeric vector of length 10. Offtake counts from 10 sex-age classes.
+#' @param assessment_duration Numeric. Length of the assessment period (days).
 #'
 #' @return A named list with:
 #' \describe{
@@ -520,8 +521,20 @@ project_population_size <- function(
 #' }
 #'
 #' @export
-summarise_offtake <- function(size, size_end, size_avg, offtake, assessment_duration) {
-  validate_offtake_summary_inputs(size, size_end, size_avg, offtake, assessment_duration)
+summarise_offtake <- function(
+    size,
+    size_end,
+    size_avg,
+    offtake,
+    assessment_duration
+) {
+  validate_offtake_summary_inputs(
+    size,
+    size_end,
+    size_avg,
+    offtake,
+    assessment_duration
+  )
 
   # Aggregate offtake: collapse 10 sex-age classes into 6
   offtake_number <- c(
@@ -547,15 +560,14 @@ summarise_offtake <- function(size, size_end, size_avg, offtake, assessment_dura
   offtake_sv_number <- stock_variation + offtake_number
   offtake_sv_share <- offtake_sv_number / size
   offtake_sv_share_avg <- offtake_sv_number / size_avg
-  
-  
+
   # Calculate the scaled offtake number by assessment_duration
   # If assessment_duration = 365 this variable will be equal to offtake_number
-  
+
   offtake_number_assessment <- offtake_number / 365 * assessment_duration
 
   # Assign names
-  names(stock_variation) <- names(offtake_number) <-names(offtake_number_assessment) <-
+  names(stock_variation) <- names(offtake_number) <- names(offtake_number_assessment) <-
     names(offtake_share) <- names(offtake_share_avg) <-
     names(offtake_sv_number) <- names(offtake_sv_share) <-
     names(offtake_sv_share_avg) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")

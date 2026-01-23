@@ -15,9 +15,9 @@
 utils::globalVariables(c(
   ".", "..cols_to_drop", "..final_cols", "ADM0_CODE", "AFKG", "AMKG", "Animal_short",
   "COUNTRY", "HerdType_short", "LPS_short", "MFSKG", "MMSKG", "WA", "afc", "ckg",
-  "cohort", "duration", "duration.FA", "duration.FJ", "duration.FS", "duration.MA",
-  "duration.MJ", "duration.MS", "dwg", "female_birth_fraction", "fem_fec",
-  "herd_id", "has_all_cohorts", "n_unique", "index", "N",  # Variables used in run_herd_simulation
+  "cohort", "count", "daily_weight_gain", "duration", "duration.FA", "duration.FJ", "duration.FS",
+  "duration.MA", "duration.MJ", "duration.MS", "dwg", "female_birth_fraction", "fem_fec",
+  "herd_id", "has_all_cohorts", "missing_cohorts", "n_unique", "index", "N",  # Variables used in run_herd_simulation
   "prob_growth.FA", "prob_growth.FB", "prob_growth.FC", "prob_growth.FJ", "prob_growth.FS",
   "prob_growth.MA", "prob_growth.MB", "prob_growth.MC", "prob_growth.MJ", "prob_growth.MS",
   "growth_rate_pop", "initial_weight", "litsize", "mal_fec", "mort_rate.FA",
@@ -37,7 +37,7 @@ utils::globalVariables(c(
   "size_end.FJ", "size_end.FS", "size_end.MA", "size_end.MJ", "size_end.MS",
   "size_total", "slaughter_weight", "structure.FA", "structure.FB", "structure.FJ",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
-  "variable", "wkg", "variable_name"
+  "variable", "wkg", "variable_name", "offtake_number_assessment"
 ))
 
 utils::globalVariables(c(

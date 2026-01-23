@@ -21,7 +21,7 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 \item{\code{duration}}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
-\item{\code{Animal_short}} {Character. Code identifying the livestock species.
+\item{\code{Animal_short}}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs

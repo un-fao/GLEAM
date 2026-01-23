@@ -19,7 +19,7 @@
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }}
 #'     \item{`duration`}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
-#'     \item{`Animal_short`} {Character. Code identifying the livestock species.
+#'     \item{`Animal_short`}{Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
@@ -125,7 +125,7 @@ run_weights_calculations <- function(data) {
   ), by = .(herd_id, Animal_short)]
 
   # Calculate daily weight gain
-  data[, dwg := calc_daily_weight_gain(
+  data[, daily_weight_gain := calc_daily_weight_gain(
     potential_final_weight = potential_final_weight,
     initial_weight = initial_weight,
     duration = duration
