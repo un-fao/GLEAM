@@ -55,6 +55,16 @@ calc_nondemo_cycle_geometry <- function(
     simulated_days
 ) {
   
+  if (duration_phase1_nondemographic <= 0) {
+    return(list(
+      number_full_cycles_non_demographic = 0,
+      partial_phase1_duration = 0,
+      partial_phase2_duration = 0,
+      total_cycle_starts_to_distribute = 0,
+      cycle_length = 0
+    ))
+  }
+  
   phase2_exists <- duration_phase2_nondemographic > 0
   
   # Compute the total length of one full cycle (days)

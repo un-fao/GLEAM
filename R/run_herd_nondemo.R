@@ -244,7 +244,9 @@ run_non_demographic_herd_simulation <- function(
         size_stock_unscaled = cohort_stock_avg_phase1,
         duration = geom$partial_phase1_duration,
         offtake_number_unscaled = off$offtake_number_phase1,
-        offtake_number_assessment_unscaled = off$offtake_assessment_phase1
+        offtake_number_assessment_unscaled = off$offtake_assessment_phase1,
+        number_full_cycles_non_demographic = geom$number_full_cycles_non_demographic,
+        total_cycle_starts_to_distribute = geom$total_cycle_starts_to_distribute
       )]
       
       # phase 2 row
@@ -253,7 +255,9 @@ run_non_demographic_herd_simulation <- function(
           size_stock_unscaled = cohort_stock_avg_phase2,
           duration = geom$partial_phase2_duration,
           offtake_number_unscaled = off$offtake_number_phase2,
-          offtake_number_assessment_unscaled = off$offtake_assessment_phase2
+          offtake_number_assessment_unscaled = off$offtake_assessment_phase2,
+          number_full_cycles_non_demographic = geom$number_full_cycles_non_demographic,
+          total_cycle_starts_to_distribute = geom$total_cycle_starts_to_distribute
         )]
       }
     }

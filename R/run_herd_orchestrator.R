@@ -287,12 +287,17 @@ run_herd_orchestrator <- function(
     cohort_out[tmp, size_for_rescaling := i.size_for_rescaling, on = .(herd_id)]
     cohort_out[herd_level_data, size_total := i.size_total, on = .(herd_id)]
     
+    cohort_out[, cohort_stock_annual_non_demographic := rescale_x_to_y(
+      x_scaled_variable  = cohort_stock_annual_non_demographic,
+      x_reference_from   = size_for_rescaling,
+      y_scaling_variable = size_total
+    )]
+    
     cohort_out[, size_stock := rescale_x_to_y(
       x_scaled_variable  = size_stock_unscaled,
       x_reference_from   = size_for_rescaling,
       y_scaling_variable = size_total
     )]
-    
     
     cohort_out[, offtake_number_assessment := rescale_x_to_y(
       x_scaled_variable  = offtake_number_assessment_unscaled,
