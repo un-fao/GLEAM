@@ -128,7 +128,6 @@ compute_fibre_output <- function(
 #' @param carcass_dressing_percentage Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).
 #' @param bone_free_meat_fraction Numeric. Ratio of bone-free-meat to carcass weight (fraction).
 #' @param meat_protein Numeric. Protein content of bone-free-meat (fraction).
-#' @param assessment_duration Numeric. Length of the assessment period (days).
 #'
 #' @return Named list containing:
 #'   \item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).}

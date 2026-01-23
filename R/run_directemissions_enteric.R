@@ -3,15 +3,15 @@
 #' Computes daily enteric methane emissions (kg CH₄/head/day) for each
 #' cohort record by applying species-, cohort- and diet- specific methane conversion factors (ym),
 #' using a Tier 2 approach (IPCC 2006, 2019)
-#' 
+#'
 #' This function is intended for internal workflows and does not perform any file I/O.
 #'
 #' It adds two columns:
 #' - `ym`: Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).
 #' - `ch4_enteric`: Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
 #'
-#' Input data must at minimum include the following columns:  
-#' @param animal Character. Code identifying the livestock species.
+#' Input data must at minimum include the following columns:
+#' param animal Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
@@ -21,8 +21,8 @@
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#'   
-#' @param cohort Character Sex- and age-specific cohort code describing the
+#'
+#' param cohort Character Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -35,7 +35,7 @@
 #' - `diet_dig`: Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
 #' - `diet_ge`: Numeric. Average gross energy content of the diet (MJ/kg DM).
 #' - `dmi`: Numeric. Daily dry matter intake of feed (kg DM/head/day).
-#' 
+#'
 #' Optional input data include:
 #' - `ch4_mitigation_factor`: Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
 #' multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10% reduction). Set to 1 by default.
@@ -43,10 +43,10 @@
 #' @param data A `data.table` with cohort-level nutritional and demographic inputs.
 #'
 #' @return The same `data.table` with new columns `ym` and `ch4_enteric`.
-#' 
+#'
 #' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
 #' Livestock and Manure Management, Equation 10.21.
-#' 
+#'
 #' IPCC. (2006). *2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
 #' Livestock and Manure Management, Equation 10.21.
 #'

@@ -93,8 +93,7 @@ validate_meat_outputs_inputs <- function(
     slaughter_weight,
     carcass_dressing_percentage,
     bone_free_meat_fraction,
-    meat_protein,
-    assessment_duration
+    meat_protein
 ) {
   # Scalar numeric inputs
   validate_scalar_numeric(offtake_number_assessment, "offtake_number_assessment")
@@ -102,7 +101,6 @@ validate_meat_outputs_inputs <- function(
   validate_scalar_numeric(carcass_dressing_percentage, "carcass_dressing_percentage")
   validate_scalar_numeric(bone_free_meat_fraction, "bone_free_meat_fraction")
   validate_scalar_numeric(meat_protein, "meat_protein")
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
 
   # Non-negative checks
   if (offtake_number_assessment < 0) {
@@ -121,8 +119,5 @@ validate_meat_outputs_inputs <- function(
   }
   if (meat_protein < 0 || meat_protein > 1) {
     cli::cli_abort("{.arg meat_protein} must be between 0 and 1 (fraction).")
-  }
-  if (assessment_duration <= 0) {
-    cli::cli_abort("{.arg assessment_duration} must be positive.")
   }
 }
