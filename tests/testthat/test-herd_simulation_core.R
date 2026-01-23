@@ -54,13 +54,19 @@ test_that("simulate_steady_state_structure converges and returns valid structure
     mal_fec = fec$mal_fec,
     prob_death = setNames(trans$prob_death, cohorts),
     prob_offtake = setNames(trans$prob_offtake, cohorts),
-    prob_growth = setNames(trans$prob_growth, cohorts)
+    prob_growth = setNames(trans$prob_growth, cohorts),
+    prop_non_demo = setNames(rep(0, 6), share_cohorts)
+
   )
 
-  expect_named(result, c("days_steady", "structure", "share", "growth_rate_pop"))
-  expect_true(result$days_steady <= 5 * 365)
+  expect_named(result, c(
+    "days_steady", "structure", "share", "growth_rate_pop",
+    "size_unscaled", "size_total_demo"
+  ))
+  expect_true(result$days_steady <= 5 * 365 + 1)
   expect_equal(sum(result$structure), 1, tolerance = 1e-6)
 })
+
 
 # ---- test project_population_size ----
 test_that("project_population_size runs and returns list with expected elements", {
@@ -85,11 +91,12 @@ test_that("project_population_size runs and returns list with expected elements"
     mal_fec = fec$mal_fec,
     prob_death = setNames(trans$prob_death, cohorts),
     prob_offtake = setNames(trans$prob_offtake, cohorts),
-    prob_growth = setNames(trans$prob_growth, cohorts)
+    prob_growth = setNames(trans$prob_growth, cohorts),
+    prop_non_demo = setNames(rep(0, 6), share_cohorts)
   )
 
   res <- project_population_size(
-    size_total = 1000,
+    size = 1000,
     fem_fec = fec$fem_fec,
     mal_fec = fec$mal_fec,
     prob_death = setNames(trans$prob_death, cohorts),
@@ -97,10 +104,11 @@ test_that("project_population_size runs and returns list with expected elements"
     prob_growth = setNames(trans$prob_growth, cohorts),
     growth_rate_pop = steady$growth_rate_pop,
     structure = steady$structure,
-    share = steady$share
+    share = steady$share,
+    prop_non_demo = setNames(rep(0, 6), share_cohorts)
   )
 
-  expect_named(res, c("size", "size_end", "size_end_exact", "size_avg", "offtake"))
+  expect_named(res, c("size", "size_end", "size_end_exact", "size_avg", "size_non_demo", "offtake"))
   expect_length(res$size, 6)
 })
 

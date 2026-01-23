@@ -131,7 +131,7 @@ validate_steady_state_inputs <- function(
 #'
 #' @noRd
 validate_population_size_inputs <- function(
-    size_total,
+    size,
     fem_fec,
     mal_fec,
     prob_death,
@@ -164,13 +164,13 @@ validate_population_size_inputs <- function(
   )
 
   # Scalar numeric inputs
-  validate_scalar_numeric(size_total, "size_total")
+  validate_scalar_numeric(size, "size")
   validate_scalar_numeric(fem_fec, "fem_fec")
   validate_scalar_numeric(mal_fec, "mal_fec")
   validate_scalar_numeric(growth_rate_pop, "growth_rate_pop")
 
   # Enforce configured bounds
-  validate_param_range(size_total)
+  validate_param_range(size)
 }
 
 #' Validate inputs for summarise_offtake

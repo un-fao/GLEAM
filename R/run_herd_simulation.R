@@ -71,7 +71,7 @@
 #' returns:
 #' \itemize{
 #'   \item cohort shares (\code{share})
-#'   \item cohort sizes at start/end/average (\code{size}, \code{size_end}, \code{size_avg})
+#'   \item cohort sizes at average \code{size_stock})
 #'   \item cohort offtake totals (\code{offtake_number}) and assessment-scaled totals
 #'         (\code{offtake_number_assessment})
 #'   \item daily transition probabilities (\code{prob_death}, \code{prob_offtake}, \code{prob_survival},
@@ -106,6 +106,8 @@
 #'     \item{`litsize`}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 #'     \item{`female_birth_fraction`}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
 #'     \item{`size_total`}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
+#'     \item{`prop_non_demo_mal_juv`}{Numeric. Fraction of male juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
+#'     \item{`prop_non_demo_fem_juv`}{Numeric. Fraction of female juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
 #'   }
 #' @param initial_structure A named numeric vector of initial population values used to
 #'   bootstrap the steady-state simulation. Must be named with cohort codes:
@@ -206,6 +208,7 @@ run_herd_simulation <- function(
   # Define valid cohort names (used for result mapping loop)
   cohort_order <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
+
   # --- Step 3: Process Each Herd ---------------------------------------------
   for (current_herd_id in unique_herd_ids) {
 
@@ -214,6 +217,17 @@ run_herd_simulation <- function(
 
     # Lookup cohort-level data for this herd (should be exactly 6 rows)
     cohort_rows <- cohort_result[herd_id == current_herd_id]
+    
+    # This vector is passed unchanged to the demographic core, which applies the
+    # diversion during juvenile → sub-adult transitions.
+    prop_non_demo_vec <- c(
+      FJ = herd_params$prop_non_demo_fem_juv,
+      FS = 0,
+      FA = 0,
+      MJ = herd_params$prop_non_demo_mal_juv,
+      MS = 0,
+      MA = 0
+    )
 
     # Calculate fecundity rates (herd-level)
     # Fecundity rates represent the daily number of births per adult female
@@ -242,6 +256,7 @@ run_herd_simulation <- function(
       offtake_rate = offtake_rate_vec,
       mort_rate = mort_rate_vec
     )
+    
 
     # Simulate steady-state population structure
     # Runs iterative simulation until population growth rates stabilize
@@ -253,13 +268,14 @@ run_herd_simulation <- function(
       mal_fec = mal_fec,
       prob_death = transition_result$prob_death,
       prob_offtake = transition_result$prob_offtake,
-      prob_growth = transition_result$prob_growth
+      prob_growth = transition_result$prob_growth,
+      prop_non_demo      = prop_non_demo_vec
     )
 
     # Project one year of population dynamics
     # Simulates a full year (366 days) under steady-state conditions
     popsize_result <- project_population_size(
-      size_total = herd_params$size_total,
+      size = structure_result$size_total_demo,
       fem_fec = fem_fec,
       mal_fec = mal_fec,
       prob_death = transition_result$prob_death,
@@ -267,7 +283,8 @@ run_herd_simulation <- function(
       prob_growth = transition_result$prob_growth,
       growth_rate_pop = structure_result$growth_rate_pop,
       structure = structure_result$structure,
-      share = structure_result$share
+      share = structure_result$share,
+      prop_non_demo = prop_non_demo_vec
     )
 
     # Calculate offtake summary statistics
@@ -285,11 +302,10 @@ run_herd_simulation <- function(
       cohort_result[
         herd_id == current_herd_id & cohort == cohort_name,
         `:=`(
-          size = popsize_result$size[cohort_name],
-          size_end = popsize_result$size_end[cohort_name],
-          size_avg = popsize_result$size_avg[cohort_name],
-          offtake_number = offtake_result$offtake_number[cohort_name],
-          offtake_number_assessment = offtake_result$offtake_number_assessment[cohort_name],
+          size_stock_unscaled = popsize_result$size_avg[cohort_name],
+          cohort_stock_annual_non_demographic = popsize_result$size_non_demo[cohort_name],
+          offtake_number_unscaled = offtake_result$offtake_number[cohort_name],
+          offtake_number_assessment_unscaled = offtake_result$offtake_number_assessment[cohort_name],
           prob_growth = transition_result$prob_growth[cohort_name]
         )
       ]
@@ -298,7 +314,8 @@ run_herd_simulation <- function(
     # Map herd-level results
     herd_result[
       herd_id == current_herd_id,
-      `:=`(growth_rate_pop = structure_result$growth_rate_pop)
+      `:=`(growth_rate_pop = structure_result$growth_rate_pop
+           )
     ]
 
   } # End of loop over herds
