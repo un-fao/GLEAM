@@ -7,11 +7,11 @@
 calc_daily_weight_gain(potential_final_weight, initial_weight, duration)
 }
 \arguments{
-\item{potential_final_weight}{Numeric. Potential final live weight.}
+\item{potential_final_weight}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
 
-\item{initial_weight}{Numeric. Initial live weight.}
+\item{initial_weight}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 
-\item{duration}{Numeric. Duration of the stage (in days).}
+\item{duration}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 }
 \value{
 Numeric. Daily weight gain (kg/day).

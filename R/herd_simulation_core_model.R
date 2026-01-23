@@ -620,15 +620,15 @@ calc_cohort_weights <- function(
 #' Computes the average and final live weight (LW) of a cohort based on initial weight,
 #' potential final weight, slaughter weight, and the offtake rate.
 #'
-#' @param initial_weight Numeric. Initial live weight at the start of the cohort stage.
-#' @param potential_final_weight Numeric. Potential final live weight if no offtake occurs.
-#' @param slaughter_weight Numeric. Live weight at slaughter.
-#' @param offtake_rate Numeric. Proportion of individuals removed via offtake during the stage.
+#' @param initial_weight Numeric. Live weight at the beginning of the cohort stage (kg).
+#' @param potential_final_weight Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)
+#' @param slaughter_weight Numeric. Live weight at slaughter for animals removed from the cohort (kg).
+#' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort, does not include natural deaths (fraction).
 #'
 #' @return A named list with:
 #' \describe{
-#'   \item{average_weight}{Average live weight over the stage (accounts for offtake and survivors).}
-#'   \item{final_weight}{Final live weight after accounting for both survivors and offtaken animals.}
+#'   \item{average_weight}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
+#'   \item{final_weight}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
 #' }
 #'
 #' @export
@@ -661,9 +661,9 @@ calc_avg_weights <- function(
 #' Computes average daily weight gain over a given duration based on the difference
 #' between potential final and initial live weights.
 #'
-#' @param potential_final_weight Numeric. Potential final live weight.
-#' @param initial_weight Numeric. Initial live weight.
-#' @param duration Numeric. Duration of the stage (in days).
+#' @param potential_final_weight Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)
+#' @param initial_weight Numeric. Live weight at the beginning of the cohort stage (kg).
+#' @param duration Numeric. Amount of time that each animal spends in a specific cohort (days).
 #'
 #' @return Numeric. Daily weight gain (kg/day).
 #'
