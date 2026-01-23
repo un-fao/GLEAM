@@ -16,11 +16,11 @@ test_that("compute_methane_conversion_factor validates inputs and computes YM", 
   expect_equal(compute_methane_conversion_factor("CTL", "FA", 1), 4.75)
 
   # Pigs: adult vs juvenile
-  expect_equal(compute_methane_conversion_factor("PGS", "AF", 0.65), 1.01)
+  expect_equal(compute_methane_conversion_factor("PGS", "FA", 0.65), 1.01)
   expect_equal(compute_methane_conversion_factor("PGS", "FJ", 0.65), 0.39)
 
   # Small ruminants/camels: juvenile/subadult vs adult
-  ym_juv <- compute_methane_conversion_factor("SHP", "JF", 0.65) # 7.75 rule
+  ym_juv <- compute_methane_conversion_factor("SHP", "FJ", 0.65) # 7.75 rule
   ym_adult <- compute_methane_conversion_factor("SHP", "FA", 0.65) # 9.75 rule
   expect_lt(ym_juv, ym_adult)
 
@@ -53,8 +53,8 @@ test_that("compute_daily_enteric_emissions validates inputs and returns expected
   expect_true(ch4 > 0)
 
   # Chickens: emissions NA
-  ym_ch <- compute_methane_conversion_factor("CHK", "AF", 0.7)
-  ch4_ch <- compute_daily_enteric_emissions("CHK", "AF", ym_ch, 1, 16, 0.1)
+  ym_ch <- compute_methane_conversion_factor("CHK", "FA", 0.7)
+  ch4_ch <- compute_daily_enteric_emissions("CHK", "FA", ym_ch, 1, 16, 0.1)
   expect_true(is.na(ch4_ch))
 
   # Zero inputs give zero emissions
