@@ -23,19 +23,19 @@ calc_ch4_emissions(
 
 \item{mcf_other}{Numeric. Effective methane conversion factor for manure managed in non-pasture, non-burned manure management systems, expressed in percent (\%), and weighted by the share of each corresponding manure management system (e.g., solid storage (mmsolid), liquid/slurry (mmsliquid)) (percentage).}
 
-\item{b0_mms_all}{Numeric. Maximum methane producing capacity for all systems (m³ CH4/kg VS). The values are region- and species-specific, and are taken from Table 10.16 (IPCC, 2019) or from Tables 10A-4 to 10A-9 (IPCC, 2006).}
+\item{b0_mms_all}{Numeric. Maximum methane producing capacity for all systems (m³ CH\eqn{_4}/kg VS). The values are region- and species-specific, and are taken from Table 10.16 (IPCC, 2019) or from Tables 10A-4 to 10A-9 (IPCC, 2006).}
 
-\item{b0_mms_pasture}{Numeric. Maximum methane producing capacity for manure deposited on pasture (m³ CH4/kg VS). Values are taken from Table 10.16 (IPCC, 2019). For IPCC 2006 method, it is assumed to be equal to b0_mms_all.}
+\item{b0_mms_pasture}{Numeric. Maximum methane producing capacity for manure deposited on pasture (m³ CH\eqn{_4}/kg VS). Values are taken from Table 10.16 (IPCC, 2019). For IPCC 2006 method, it is assumed to be equal to b0_mms_all.}
 
 \item{ratio_m3CH4_kgCH4}{Numeric. The conversion factor used to convert methane from a volumetric unit (m³) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m³ (at 20°C and 1 atm), which is the standard value defined in the IPCC 2006 and 2019 guidelines.}
 }
 \value{
 A named list with:
 \describe{
-\item{ch4_manure_pasture}{Numeric. Methane emissions from manure deposited on pasture (kg CH4/head/day)}
-\item{ch4_manure_burned}{Numeric. Methane emissions from manure burned for fuel (kg CH4/head/day)}
-\item{ch4_manure_other}{Numeric. Methane emissions from manure managed in all other manure management systems, excluding emissions from manure deposired on pasture and burned (kg CH4/head/day)}
-\item{ch4_manure_all_noburn}{Numeric. Methane emissions from manure managed in all other manure management systems and deposited on pasture, excluding emissions from burned manure (kg CH4/head/day)}
+\item{ch4_manure_pasture}{Numeric. Methane emissions from manure deposited on pasture (kg CH\eqn{_4}/head/day)}
+\item{ch4_manure_burned}{Numeric. Methane emissions from manure burned for fuel (kg CH\eqn{_4}/head/day)}
+\item{ch4_manure_other}{Numeric. Methane emissions from manure managed in all other manure management systems, excluding emissions from manure deposired on pasture and burned (kg CH\eqn{_4}/head/day)}
+\item{ch4_manure_all_noburn}{Numeric. Methane emissions from manure managed in all other manure management systems and deposited on pasture, excluding emissions from burned manure (kg CH\eqn{_4}/head/day)}
 }
 }
 \description{
