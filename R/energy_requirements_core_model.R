@@ -471,7 +471,7 @@ calc_net_energy_growth <- function(
     }
     ret <- ((final_weight - initial_weight) * (a + 0.5 * b * (initial_weight + final_weight))) / duration
   } else if (animal == "PGS") {
-    prot_tissue_frac <- 0.65 
+    prot_tissue_frac <- 0.65
     if (cohort %in% c("FS", "FJ", "MS", "MJ")) {
       cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * 0.9 * 52.3)
       ret <- dwg * cgro
@@ -545,9 +545,9 @@ calc_net_energy_growth <- function(
 #' }
 #'
 #' Lactation energy requirements are applied **only to adult females** and are
-#' scaled by the proportion of milked (\code{milking_fraction}) or lactating 
+#' scaled by the proportion of milked (\code{milking_fraction}) or lactating
 #' (\code{parturition_rate}) animals within the cohort.
-#' 
+#'
 #'
 #' In general form, lactation energy is computed as:
 #'
@@ -555,14 +555,14 @@ calc_net_energy_growth <- function(
 #' energy\_lactation =
 #' (milk\_yield \times milking\_fraction + milk\_for\_offspring)
 #' \times energy\_milk
-#' 
+#'
 #' }
 #'
-#' where: 
-#' 
+#' where:
+#'
 #' \code{energy_milk} is a species-specific coefficient representing the
 #' net energy cost of producing one kilogram of milk (MJ kg\eqn{^{-1}})
-#' 
+#'
 #' Species-specific values of \code{energy_milk} are:
 #' \itemize{
 #'   \item \code{CTL}, \code{BFL}: estimated as a function of milk fat content,
@@ -571,27 +571,27 @@ calc_net_energy_growth <- function(
 #'   \item \code{SHP}: 4.6 (AFRC, 1993; AFRC, 1995),
 #'   \item \code{GTS}: 3.0 (AFRC, 1998).
 #'   }
-#' 
+#'
 #' \code{milk_for_offspring} is the daily amount of milk required to rear offspring across the year (kg day\eqn{^{-1}}).
 #' It is calculated assuming that **5 kg of milk are required for each kilogram of live-weight gain up to weaning**, using the equation below.
-#' 
+#'
 #' \deqn{
 #' milk\_for\_offspring =
 #' \frac{parturition\_rate \times 5 \times (wkg - ckg)}
 #' {365} \code(AFRC, 1990)
 #' }
 
-#' 
+#'
 #' For \code{SHP} and \code{GTS}, \code{milk_for_offspring} also accounts for
 #' the average number of offspring per birth by multiplying by \code{litsize}.
-#' 
+#'
 #'
 #' \strong{For PGS} — NRC (1998):
 #'
 #' For pigs, lactation energy accounts only for the milk consumed directly by offspring (\code{milk_for_offspring})
 #' adjusted by the fraction of the reproductive cycle spent in lactation (\code{cadj}),
 #' and is calculated as follows:
-#' 
+#'
 #' \deqn{
 #' energy\_lactation =
 #' litsize \times (1 - 0.5 \times dr1)
@@ -601,7 +601,7 @@ calc_net_energy_growth <- function(
 #' \right)
 #' \times cadj
 #' }
-#' 
+#'
 #' where:
 #' \itemize{
 #'   \item \eqn{0.02059} is the coefficient for lactation energy requirement
@@ -615,7 +615,7 @@ calc_net_energy_growth <- function(
 #'   \item \eqn{wkg} and \eqn{ckg} are live weights at weaning and at birth,
 #'     respectively (kg),
 #'    \item \eqn{cadj} is the fraction of the reproductive cycle spent in lactation calculated as
-#'    
+#'
 #'    \deqn{
 #'    cadj = \frac{lact}{idle + gest + lact}
 #'    }
@@ -1049,7 +1049,7 @@ calc_net_energy_fibre <- function(
 #' Pregnancy energy is calculated **only for female cohorts**
 #' (i.e., \code{FA} and \code{FS}) and represents the additional
 #' energy required to support gestation.
-#' 
+#'
 #' For \code{FA}, pregnancy energy requirements are adjusted to account
 #' for the proportion of time animals spend in gestation.
 #'
@@ -1059,7 +1059,7 @@ calc_net_energy_fibre <- function(
 #'
 #' \itemize{
 #'   \item For \strong{CTL and BFL} — IPCC (2006, 2019):
-#'   
+#'
 #'   Pregnancy energy is approximated as 10% of maintenance energy.
 #'   \itemize{
 #'     \item \code{FA}:
@@ -1076,7 +1076,7 @@ calc_net_energy_fibre <- function(
 #'   }
 #'
 #'   \item For \strong{CML} — Wardeh (2004):
-#'   
+#'
 #'   Pregnancy energy is estimated as 12% of maintenance energy.
 #'   \itemize{
 #'     \item \code{FA}:
@@ -1093,7 +1093,7 @@ calc_net_energy_fibre <- function(
 #'   }
 #'
 #'   \item For \strong{SHP and GTS} — IPCC (2006, 2019):
-#'   
+#'
 #'   Pregnancy energy is calculated as a litter-size–dependent fraction
 #'   of maintenance energy.
 #'   \itemize{
@@ -1111,7 +1111,7 @@ calc_net_energy_fibre <- function(
 #'         \item If \eqn{litsize > 2}:
 #'           \deqn{cpreg = 0.150}
 #'       }
-#'     \item \code{FS} - 
+#'     \item \code{FS} -
 #'       Pregnancy energy is calculated using the single-birth coefficient
 #'       and scaled to the proportion of reproductive individuals in the cohort.
 #'       \deqn{
@@ -1122,7 +1122,7 @@ calc_net_energy_fibre <- function(
 #'   }
 #'
 #'   \item For \strong{PGS} — NRC (1998):
-#'   
+#'
 #'   \itemize{
 #'     \item \code{FA}:
 #'       \deqn{
@@ -1214,8 +1214,8 @@ calc_net_energy_pregnancy <- function(
       ret <- 0
     }
   } else if (animal == "PGS") {
-    cgest <- 0.14985 
-    
+    cgest <- 0.14985
+
     if (cohort == "FA") {
       ret <- cgest * litsize * gest / (idle + gest + lact)
 
@@ -1430,7 +1430,6 @@ calc_reg_growth <- function(
 #' Livestock and Manure Management, Equation 10.16.
 #'
 #' @export
-
 calc_total_energy_requirement <- function(
     animal,
     cohort,

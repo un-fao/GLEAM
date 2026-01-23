@@ -150,8 +150,7 @@ run_energy_requirements <- function(data) {
     nefibre = nefibre,
     neegg = 0,
     reg = reg,
-    diet_dig = diet_dig,
-    afc = afc
+    diet_dig = diet_dig
   ), by = .I]
 
   # 11. Dry matter intake (kg DM/day)
