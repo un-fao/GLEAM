@@ -73,13 +73,13 @@ compute_methane_conversion_factor <- function(
   if (animal %in% c("CTL", "BFL")) {
     ret = 9.75 - 0.05 * diet_dig * 100
   } else if (animal %in% c("SHP", "GTS", "CML")) {
-    if (cohort %in% c("SF", "SM", "JF", "JM")) {
+    if (cohort %in% c("FS", "MS", "FJ", "MJ")) {
       ret = 7.75 - 0.05 * diet_dig * 100
     } else {
       ret = 9.75 - 0.05 * diet_dig * 100
     }
   } else if (animal %in% c("PGS")) {
-    ret <- if (cohort %in% c("AF", "AM")) 1.01 else 0.39
+    ret <- if (cohort %in% c("FA", "MA")) 1.01 else 0.39
   } else if (animal == "CHK") {
     ret <- NA_real_
   }
