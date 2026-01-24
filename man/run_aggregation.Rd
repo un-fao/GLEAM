@@ -69,35 +69,23 @@ using allocation shares, and (iv) converts CH₄ and N₂O emissions to CO₂-eq
 a selected GWP-100 option.
 }
 \details{
-#' @details
-
-#' ## Workflow
-\enumerate{
-\item \strong{Reshape to long format}: Convert cohort-level data from wide to long format
-\item \strong{Classify variables}: Group variables into Emissions, Production, Feed, NitrogenBalance
-\item \strong{Calculate cohort totals}: Scale per-head-per-day values to cohort totals
-\item \strong{Aggregate to herd level}: Sum cohort values to herd-level totals
-\item \strong{Merge allocation data}: Combine emissions with allocation shares
-\item \strong{Allocate emissions}: Apply allocation shares to emissions by commodity
-\item \strong{Convert to CO2eq}: Apply GWP factors to convert CH4 and N2O to CO2-equivalents
-\item \strong{Standardize output}: Rename variables, assign units, and format final results
-}
-
-The aggregation function follows these steps:
+The function follows this workflow:
 \enumerate{
 \item \strong{Reshape to long format.} Cohort-level variables are converted from wide to long
 format using \code{data.table::melt()}.
-\item \strong{Classify variables.} Each variable is grouped into categories.
+\item \strong{Classify variables.} Group variables into Emissions, Production, Feed, Nitrogen Balance.
 \item \strong{Scale to totals.} Variables expressed per head per day are converted to cohort totals
 over the assessment period using cohort size (\code{size}) and \code{assessment_duration}.
 \item \strong{Aggregate to herd level.} Cohort totals are summed to herd totals within each
 \code{herd_id × Animal_short} group.
-\item \strong{Allocate emissions only.} Emission totals are merged with
+\item \strong{Merge allocation data:} Combine emissions with allocation shares.
+\item \strong{Allocate emissions.} Emission totals are merged with
 \code{allocation_herd_long} and multiplied by \code{allocation_share} to obtain
 commodity-specific emissions. Non-emission variables are assigned to commodity \code{"ALL"}
 with \code{allocation_share = 1}.
-\item \strong{Convert to CO₂e.} Allocated CH₄ and N₂O emissions are converted to CO₂e using
-the selected GWP-100 option. Results are stored as \code{value_total} with \code{unit = "kg co2eq"}.
+\item \strong{Convert to CO₂eq.} Allocated CH₄ and N₂O emissions are converted to CO₂eq using
+the selected GWP-100 option. Results are stored as \code{value_total} with \code{unit = "kg CO₂eq"}.
+  \item \strong{Standardize output:} Rename variables, assign units, and format final results.
 }
 }
 \references{
