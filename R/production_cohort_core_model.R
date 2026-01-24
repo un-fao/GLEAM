@@ -9,10 +9,10 @@
 #' (IDF) Global Carbon Footprint Standard for the Dairy Sector (IDF, 2022).
 #'
 #' @param milk_yield Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day). 
-#' This value can be calculated by dividing the total milk destinated to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.
+#' This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.
 #' @param assessment_duration Numeric. Length of the assessment period (days).
-#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
-#' @param milking_fraction Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
+#' @param size Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).
+#' @param milking_fraction Numeric. Share of adult females lactating within the assessment duration (fraction). Applies to species: camels (CML), cattle (CTL), buffalo (BFL), sheep (SHP) and goats (GTS).
 #' @param milk_protein Numeric. Milk protein fraction (kg protein/kg milk).
 #' @param milk_fat Numeric. Milk fat fraction (kg fat/kg milk).
 #' @param lactose Numeric. Milk lactose fraction (kg lactose/kg milk).
@@ -91,7 +91,7 @@ compute_milk_outputs <- function(
 #'
 #' @param fibre_prod Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
 #' @param assessment_duration Numeric. Length of the assessment period (days).
-#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
+#' @param size Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).
 #'
 #' @return Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).
 #' 
@@ -123,14 +123,15 @@ compute_fibre_output <- function(
 #' expressed in live weight, carcass weight, boneless meat, and meat protein.
 #' All outputs are expressed in kg per cohort per assessment period.
 #'
-#' @param offtake_number_assessment Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA) (heads/year)
+#' @param offtake_number_assessment Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) (heads/year).
 #' @param slaughter_weight Numeric. Live weight at slaughter for animals removed from the cohort (kg).
 #' @param carcass_dressing_percentage Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).
 #' @param bone_free_meat_fraction Numeric. Ratio of bone-free-meat to carcass weight (fraction).
-#' @param meat_protein Numeric. Protein content of bone-free-meat (fraction).
+#' @param meat_protein Numeric. Protein content of bone-free-meat (kg protein/kg bone-free-meat).
+#' @param assessment_duration Numeric. Length of the assessment period (days).
 #'
 #' @return Named list containing:
-#'   \item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).}
+#'   \item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
 #'   \item{output_meat_production_carcassweight}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
 #'   \item{output_meat_production_meat}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg/cohort/assessment period)}
 #'   \item{output_meat_production_protein}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/assessment period).}

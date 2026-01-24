@@ -14,7 +14,7 @@ compute_meat_outputs(
 )
 }
 \arguments{
-\item{offtake_number_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA) (heads/year)}
+\item{offtake_number_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) (heads/year).}
 
 \item{slaughter_weight}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 
@@ -22,11 +22,13 @@ compute_meat_outputs(
 
 \item{bone_free_meat_fraction}{Numeric. Ratio of bone-free-meat to carcass weight (fraction).}
 
-\item{meat_protein}{Numeric. Protein content of bone-free-meat (fraction).}
+\item{meat_protein}{Numeric. Protein content of bone-free-meat (kg protein/kg bone-free-meat).}
+
+\item{assessment_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
 Named list containing:
-\item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/year).}
+\item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
 \item{output_meat_production_carcassweight}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
 \item{output_meat_production_meat}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg/cohort/assessment period)}
 \item{output_meat_production_protein}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/assessment period).}
