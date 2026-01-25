@@ -28,7 +28,7 @@
 #' @param average_weight Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).
 #' @param milking_fraction Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
-#' @param afc Numeric. Age at first parturition for female breeding animals (years)
+#' @param afc Numeric. Age at first parturition for female breeding animals (days)
 #'
 #' @return Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal
 #' in equilibrium such that body energy is neither gained nor lost.
@@ -76,7 +76,7 @@
 #'   \item \code{FJ}:
 #'     \eqn{cmain = 0.236}
 #'   \item \code{FS}:
-#'     \eqn{cmain = 0.236 \times (1/afc) + 0.217 \times ((afc - 1)/afc)}
+#'     \eqn{cmain = 0.236 \times (365/afc) + 0.217 \times ((afc - 365)/afc)}
 #'   \item \code{MA}:
 #'     \eqn{cmain = 0.217 \times offtake\_rate + (0.217 \times 1.15) \times (1 - offtake\_rate)}
 #'   \item \code{MJ}:
@@ -162,7 +162,7 @@ calc_net_energy_maintenance <- function(
       cmain <- 0.217
     } else if (cohort == "FS") {
       # Weighted by age at first calving (afc)
-      cmain <- (0.236 * (1 / afc)) + (0.217 * ((afc - 1) / afc))
+      cmain <- (0.236 * (365 / afc)) + (0.217 * ((afc - 365) / afc))
     } else if (cohort == "FJ") {
       cmain <- 0.236
     } else if (cohort == "MA") {
@@ -170,8 +170,8 @@ calc_net_energy_maintenance <- function(
       cmain <- 0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)
     } else if (cohort == "MS") {
       # Complex weighted average for subadult males
-      cmain <- ((0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)) * ((afc - 1) / afc) +
-                  (0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)) * (1 / afc))
+      cmain <- ((0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)) * ((afc - 365) / afc) +
+                  (0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)) * (365 / afc))
     } else if (cohort == "MJ") {
       cmain <- 0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)
     }
@@ -471,7 +471,7 @@ calc_net_energy_growth <- function(
     }
     ret <- ((final_weight - initial_weight) * (a + 0.5 * b * (initial_weight + final_weight))) / duration
   } else if (animal == "PGS") {
-    prot_tissue_frac <- 0.65 
+    prot_tissue_frac <- 0.65
     if (cohort %in% c("FS", "FJ", "MS", "MJ")) {
       cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * 0.9 * 52.3)
       ret <- dwg * cgro
@@ -545,9 +545,9 @@ calc_net_energy_growth <- function(
 #' }
 #'
 #' Lactation energy requirements are applied **only to adult females** and are
-#' scaled by the proportion of milked (\code{milking_fraction}) or lactating 
+#' scaled by the proportion of milked (\code{milking_fraction}) or lactating
 #' (\code{parturition_rate}) animals within the cohort.
-#' 
+#'
 #'
 #' In general form, lactation energy is computed as:
 #'
@@ -555,14 +555,14 @@ calc_net_energy_growth <- function(
 #' energy\_lactation =
 #' (milk\_yield \times milking\_fraction + milk\_for\_offspring)
 #' \times energy\_milk
-#' 
+#'
 #' }
 #'
-#' where: 
-#' 
+#' where:
+#'
 #' \code{energy_milk} is a species-specific coefficient representing the
 #' net energy cost of producing one kilogram of milk (MJ kg\eqn{^{-1}})
-#' 
+#'
 #' Species-specific values of \code{energy_milk} are:
 #' \itemize{
 #'   \item \code{CTL}, \code{BFL}: estimated as a function of milk fat content,
@@ -571,27 +571,27 @@ calc_net_energy_growth <- function(
 #'   \item \code{SHP}: 4.6 (AFRC, 1993; AFRC, 1995),
 #'   \item \code{GTS}: 3.0 (AFRC, 1998).
 #'   }
-#' 
+#'
 #' \code{milk_for_offspring} is the daily amount of milk required to rear offspring across the year (kg day\eqn{^{-1}}).
 #' It is calculated assuming that **5 kg of milk are required for each kilogram of live-weight gain up to weaning**, using the equation below.
-#' 
+#'
 #' \deqn{
 #' milk\_for\_offspring =
 #' \frac{parturition\_rate \times 5 \times (wkg - ckg)}
 #' {365} \code(AFRC, 1990)
 #' }
 
-#' 
+#'
 #' For \code{SHP} and \code{GTS}, \code{milk_for_offspring} also accounts for
 #' the average number of offspring per birth by multiplying by \code{litsize}.
-#' 
+#'
 #'
 #' \strong{For PGS} — NRC (1998):
 #'
 #' For pigs, lactation energy accounts only for the milk consumed directly by offspring (\code{milk_for_offspring})
 #' adjusted by the fraction of the reproductive cycle spent in lactation (\code{cadj}),
 #' and is calculated as follows:
-#' 
+#'
 #' \deqn{
 #' energy\_lactation =
 #' litsize \times (1 - 0.5 \times dr1)
@@ -601,7 +601,7 @@ calc_net_energy_growth <- function(
 #' \right)
 #' \times cadj
 #' }
-#' 
+#'
 #' where:
 #' \itemize{
 #'   \item \eqn{0.02059} is the coefficient for lactation energy requirement
@@ -615,7 +615,7 @@ calc_net_energy_growth <- function(
 #'   \item \eqn{wkg} and \eqn{ckg} are live weights at weaning and at birth,
 #'     respectively (kg),
 #'    \item \eqn{cadj} is the fraction of the reproductive cycle spent in lactation calculated as
-#'    
+#'
 #'    \deqn{
 #'    cadj = \frac{lact}{idle + gest + lact}
 #'    }
@@ -1049,7 +1049,7 @@ calc_net_energy_fibre <- function(
 #' Pregnancy energy is calculated **only for female cohorts**
 #' (i.e., \code{FA} and \code{FS}) and represents the additional
 #' energy required to support gestation.
-#' 
+#'
 #' For \code{FA}, pregnancy energy requirements are adjusted to account
 #' for the proportion of time animals spend in gestation.
 #'
@@ -1059,7 +1059,7 @@ calc_net_energy_fibre <- function(
 #'
 #' \itemize{
 #'   \item For \strong{CTL and BFL} — IPCC (2006, 2019):
-#'   
+#'
 #'   Pregnancy energy is approximated as 10% of maintenance energy.
 #'   \itemize{
 #'     \item \code{FA}:
@@ -1076,7 +1076,7 @@ calc_net_energy_fibre <- function(
 #'   }
 #'
 #'   \item For \strong{CML} — Wardeh (2004):
-#'   
+#'
 #'   Pregnancy energy is estimated as 12% of maintenance energy.
 #'   \itemize{
 #'     \item \code{FA}:
@@ -1093,7 +1093,7 @@ calc_net_energy_fibre <- function(
 #'   }
 #'
 #'   \item For \strong{SHP and GTS} — IPCC (2006, 2019):
-#'   
+#'
 #'   Pregnancy energy is calculated as a litter-size–dependent fraction
 #'   of maintenance energy.
 #'   \itemize{
@@ -1111,7 +1111,7 @@ calc_net_energy_fibre <- function(
 #'         \item If \eqn{litsize > 2}:
 #'           \deqn{cpreg = 0.150}
 #'       }
-#'     \item \code{FS} - 
+#'     \item \code{FS} -
 #'       Pregnancy energy is calculated using the single-birth coefficient
 #'       and scaled to the proportion of reproductive individuals in the cohort.
 #'       \deqn{
@@ -1122,7 +1122,7 @@ calc_net_energy_fibre <- function(
 #'   }
 #'
 #'   \item For \strong{PGS} — NRC (1998):
-#'   
+#'
 #'   \itemize{
 #'     \item \code{FA}:
 #'       \deqn{
@@ -1214,8 +1214,8 @@ calc_net_energy_pregnancy <- function(
       ret <- 0
     }
   } else if (animal == "PGS") {
-    cgest <- 0.14985 
-    
+    cgest <- 0.14985
+
     if (cohort == "FA") {
       ret <- cgest * litsize * gest / (idle + gest + lact)
 
@@ -1364,7 +1364,6 @@ calc_reg_growth <- function(
 #' @param neegg Numeric. Net energy for egg production.
 #' @param reg Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)
 #' @param diet_dig Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
-#' @param afc Numeric. Age at first parturition for female breeding animals (years)
 #'
 #' @return Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS
 #'   this is expressed as **gross energy intake requirement (GE)**. For CML and PGS
@@ -1431,7 +1430,6 @@ calc_reg_growth <- function(
 #' Livestock and Manure Management, Equation 10.16.
 #'
 #' @export
-
 calc_total_energy_requirement <- function(
     animal,
     cohort,
@@ -1445,13 +1443,12 @@ calc_total_energy_requirement <- function(
     nefibre,
     neegg,
     reg,
-    diet_dig,
-    afc
+    diet_dig
 ) {
   # Validate inputs
   validate_total_energy_inputs(
     animal, cohort, nemain, neact, nelact, nework, nepreg,
-    rem, negrow, nefibre, neegg, reg, diet_dig, afc
+    rem, negrow, nefibre, neegg, reg, diet_dig
   )
   # Cattle, buffalo: sum maintenance, activity, lactation, work, pregnancy, growth
   if (animal %in% c("CTL", "BFL")) {

@@ -102,8 +102,8 @@ validate_nitrogen_retention_inputs <- function(
   if (!is.na(ckg) && (ckg < 0 || ckg > 100)) {
     cli::cli_abort("{.arg ckg} must be between 0 and 100.")
   }
-  if (!is.na(afc) && (afc < 0.3 || afc > 9)) {
-    cli::cli_abort("{.arg afc} must be between 0.3 and 9")
+  if (!is.na(afc) && (afc < 110 || afc > 3300)) {
+    cli::cli_abort("{.arg afc} must be between 110 and 3300")
   }
 
   # Enforce configured bounds
