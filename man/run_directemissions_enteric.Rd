@@ -8,39 +8,6 @@ run_directemissions_enteric(data)
 }
 \arguments{
 \item{data}{A \code{data.table} with cohort-level nutritional and demographic inputs.}
-
-\item{animal}{Character. Code identifying the livestock species.
-Supported values include:
-\itemize{
-\item \code{PGS}: pigs
-\item \code{CML}: camels
-\item \code{CTL}: cattle
-\item \code{BFL}: buffalo
-\item \code{SHP}: sheep
-\item \code{GTS}: goats
-}}
-
-\item{cohort}{Character Sex- and age-specific cohort code describing the
-production stage of the animals. Supported values include:
-\itemize{
-\item \code{FA}: adult females (from age at first parturition)
-\item \code{FS}: sub-adult females (from weaning to age at first parturition)
-\item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{MA}: adult males (from age at first breeding)
-\item \code{MS}: sub-adult males (from weaning to age at first breeding)
-\item \code{MJ}: juvenile males (from birth to weaning)
-}
-\itemize{
-\item \code{diet_dig}: Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
-\item \code{diet_ge}: Numeric. Average gross energy content of the diet (MJ/kg DM).
-\item \code{dmi}: Numeric. Daily dry matter intake of feed (kg DM/head/day).
-}
-
-Optional input data include:
-\itemize{
-\item \code{ch4_mitigation_factor}: Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
-multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10\% reduction). Set to 1 by default.
-}}
 }
 \value{
 The same \code{data.table} with new columns \code{ym} and \code{ch4_enteric}.
@@ -66,6 +33,38 @@ It adds two columns:
 }
 
 Input data must at minimum include the following columns:
+param animal Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}
+
+param cohort Character Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}
+\itemize{
+\item \code{diet_dig}: Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
+\item \code{diet_ge}: Numeric. Average gross energy content of the diet (MJ/kg DM).
+\item \code{dmi}: Numeric. Daily dry matter intake of feed (kg DM/head/day).
+}
+
+Optional input data include:
+\itemize{
+\item \code{ch4_mitigation_factor}: Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
+multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10\% reduction). Set to 1 by default.
+}
 }
 \examples{
 \dontrun{

@@ -1,373 +1,321 @@
-#' Run Herd Simulation (Internal)
+#' Run Herd Simulation
 #'
-#' Performs the full steady-state demographic simulation of herd cohorts across species,
-#' production systems, and countries. This includes modeling of fecundity, mortality, offtake,
-#' cohort transitions, population structure, and final population sizes.
+#' This function takes herd- and cohort-level demographic inputs and estimates a steady-state
+#' sex–age herd structure compatible with downstream calculations in the Global Livestock
+#' Environmental Assessment Model (GLEAM). In addition to cohort population sizes, it derives
+#' population growth rates, and offtake numbers.
 #'
-#' In addition to demographic simulation, this function reshapes cohort-level variables from wide
-#' to long format and back, and calculates key animal weights (initial, final, slaughter, average),
-#' as well as daily weight gain (DWG). It also fills in weaning weights for non-pig animals
-#' based on FS cohorts.
+#' @details
+#' The function operates under a \strong{steady-state assumption}: demographic parameters
+#' are constant over time, so the population converges to a stable cohort composition and
+#' a constant annual growth rate (\eqn{\lambda}). Once this regime is reached, the model
+#' computes cohort population sizes (start/end/average), cohort shares, and offtake totals.
 #'
-#' Input data must be preloaded. If using example data from the package (located in `inst/extdata`),
-#' load it using [system.file()] and [fread()] as shown in the examples.
+#' A key feature of this implementation is that it applies demography at a \strong{daily}
+#' resolution. Annual mortality and offtake inputs are converted into daily hazards and
+#' daily transition probabilities under competing risks (death vs. offtake vs. survival).
 #'
-#' This function is intended for internal use.
+#' Conceptually, this corresponds to the steady-state demographic approach implemented in
+#' Dynmod \emph{STEADY1} (Lesnoff, 2013), adapted here to a daily time-step formulation within
+#' an R workflow and fully integrated into the GLEAM computational pipeline.
 #'
-#' @param herd_data A `data.table` containing herd-level input parameters per country/animal/LPS.
-#'   It must include cohort durations, offtake and mortality rates, fecundity inputs,
-#'   liveweights, and classification columns (e.g., `Animal`, `LPS`, `HerdType`, etc.).
-#' @param initial_structure A numeric vector of initial values used to simulate population dynamics for the
-#'   6 sex-age classes (FJ, FS, FA, MJ, MS, MA). Defaults to `c(100, 50, 30, 100, 50, 30)`.
-#' @param max_years Integer. Maximum number of simulation years to run when seeking a steady-state
-#'   population structure. Defaults to `100`.
-#' @param lambda_threshold Numeric. Tolerance threshold for detecting convergence in growth rate (`lambda`)
-#'   changes across cohorts. Defaults to `1e-9`.
+#' ## Model structure
 #'
-#' @return A `data.table` in long format (per cohort) with appended simulation results,
-#'   including:
-#'   - population structure and sizes
-#'   - offtake numbers
-#'   - transition probabilities
-#'   - cohort-level liveweights and weight gain
+#' The population is divided by sex (female/male) and age class (juvenile/subadult/adult),
+#' represented by six cohorts:
+#' \itemize{
+#'   \item \code{FJ}, \code{FS}, \code{FA} (female juvenile, subadult, adult)
+#'   \item \code{MJ}, \code{MS}, \code{MA} (male juvenile, subadult, adult)
+#' }
+#'
+#' Only adult females (\code{FA}) contribute to reproduction. Births are distributed between
+#' females and males using \code{female_birth_fraction}. Reproduction is assumed to be
+#' distributed over time (no birth pulse).
+#'
+#' ## Dynamics and parameters
+#'
+#' Herd dynamics result from:
+#' \itemize{
+#'   \item births (driven by \code{parturition_rate} and \code{litsize})
+#'   \item natural deaths (driven by \code{mort_rate})
+#'   \item removals by offtake (driven by \code{offtake_rate})
+#'   \item cohort aging / growth transitions (driven by \code{duration})
+#' }
+#'
+#' As in Dynmod, \code{offtake_rate} is interpreted as a \emph{net removal rate} for the cohort
+#' (e.g. slaughter), while \code{mort_rate} represents
+#' natural mortality excluding offtake.
+#'
+#' ## Competing risks and conversion to daily probabilities
+#'
+#' Mortality and offtake are treated as **competing risks** within each cohort: at any time an
+#' animal can survive, die, or be offtaken. Annual inputs are converted to daily hazards and then
+#' daily probabilities to avoid bias from interference between processes.
+#'
+#' Internally, the model:
+#' \enumerate{
+#'   \item Converts annual mortality (\code{mort_rate}) into a daily mortality hazard.
+#'   \item Solves for the daily offtake hazard such that the implied offtake probability matches
+#'   \code{offtake_rate} under competing risks.
+#'   \item Computes daily probabilities of death, offtake, and survival from the hazards.
+#' }
+#'
+#' ## Steady state
+#'
+#' Under constant parameters, the cohort structure converges to a stable composition and a
+#' stable population growth rate (\eqn{\lambda}). This function seeks that steady state by
+#' iterating the demographic system starting from \code{initial_structure} until changes in
+#' \eqn{\lambda} fall below \code{lambda_threshold}, or until \code{max_years} is reached.
+#'
+#' Once steady state is reached, the model projects cohort sizes over the assessment period and
+#' returns:
+#' \itemize{
+#'   \item cohort shares (\code{share})
+#'   \item cohort sizes at start/end/average (\code{size}, \code{size_end}, \code{size_avg})
+#'   \item cohort offtake totals (\code{offtake_number}) and assessment-scaled totals
+#'         (\code{offtake_number_assessment})
+#'   \item daily transition probabilities (\code{prob_death}, \code{prob_offtake}, \code{prob_survival},
+#'         \code{prob_growth})
+#' }
+#'
+#' @references
+#' Lesnoff, M. (2013). \emph{DYNMOD: A spreadsheet interface for demographic projections of tropical
+#' livestock populations, User’s manual}. CIRAD, Montpellier, France.
+#'
+#' @param cohort_level_data A `data.table` with mandatory columns:
+#'   \describe{
+#'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'     \item{`cohort`}{"Character scalar. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     }
+#'       }
+#'     \item{`duration`}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+#'     \item{`offtake_rate`}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
+#'     \item{`mort_rate`}{Numeric. Fraction of deaths in a herd over a year for each sex-age class (fraction).}
+#'   }
+#' @param herd_level_data A `data.table` with one row per herd and mandatory columns:
+#'   \describe{
+#'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd. Must match `herd_id` values in `cohort_level_data`.}
+#'     \item{`parturition_rate`}{Numeric. Average annual number of parturitions per female animal (# parturitions/reproductive female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+#'     \item{`litsize`}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+#'     \item{`female_birth_fraction`}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
+#'     \item{`size_total`}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
+#'   }
+#' @param initial_structure A named numeric vector of initial population values used to
+#'   bootstrap the steady-state simulation. Must be named with cohort codes:
+#'   `c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30)`. These values are used
+#'   as starting points for the iterative simulation and do not affect the final steady-state
+#'   results (only convergence speed).
+#' @param max_years Integer. Maximum number of simulation years to run when seeking a
+#'   steady-state population structure. The simulation will stop earlier if convergence
+#'   is detected. Defaults to `100`.
+#' @param lambda_threshold Numeric. Tolerance threshold for detecting convergence in
+#'   population growth rate. When the change in growth rate (lambda) across consecutive
+#'   time steps falls below this threshold for all cohorts, steady-state is considered
+#'   reached. Defaults to `1e-9`.
+#' @param show_indicator Logical. Whether to display progress indicators during simulation.
+#'   Defaults to `TRUE`.
+#'@param assessment_duration Numeric. Length of the assessment period (days).
+#'
+#' @return A named list with two elements:
+#'   \describe{
+#'     \item{`cohort_level_results`}{A `data.table` with one row per cohort containing all original
+#'       `cohort_level_data` columns plus the following simulation results:
+#'       \itemize{
+#'         \item `share` - Numeric. Final steady-state share of the 6 grouped sex-age classes  (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (fraction). Shares should sum to 1.
+#'         \item `size` - Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads).
+#'         \item `size_end` - Numeric. Population size in each of the 6 sex–age cohorts at the end of the year, projected using the steady-state growth rate (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads).
+#'         \item `size_avg` - Numeric. Average population size in each of the 6 sex–age cohorts over the year (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads). Estimated from cohort_stock_start and cohort_stock_end_projected.
+#'         \item `offtake_number` - Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (heads/year)
+#'         \item `offtake_number_assessment` - "Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (heads/year)
+#'         \item `prob_growth` - Numeric. Probability of growing into the next age class for 6 cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (fraction).
+#'       }
+#'     }
+#'     \item{`herd_level_results`}{A `data.table` with one row per herd containing all original
+#'       `herd_level_data` columns plus the following herd-level simulation results:
+#'       \itemize{
+#'         \item `growth_rate_pop` - Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).
+#'       }
+#'     }
+#'   }
 #'
 #' @examples
 #' \dontrun{
-#' # Load example input from the package and run the simulation
-#' input_path <- system.file("extdata/GLEAM_input_herd.csv", package = "gleam")
-#' herd_data <- data.table::fread(input_path)[1:20, ]
-#' sim_results <- run_herd_simulation(herd_data)
-#' }
-#' @keywords internal
+#' # Load example input data from the package
+#' cohort_path <- system.file(
+#'   "extdata/examples/herd_simulation_input_cohort_level_data.csv",
+#'   package = "gleam"
+#' )
+#' herd_level_path <- system.file(
+#'   "extdata/examples/herd_simulation_input_herd_level_data.csv",
+#'   package = "gleam"
+#' )
+#' cohort_level_data <- data.table::fread(cohort_path)
+#' herd_level_data <- data.table::fread(herd_level_path)
 #'
-#' @importFrom data.table := .SD .I melt dcast setcolorder
-#' @importFrom stats setNames
+#' # Run herd simulation
+#' results <- run_herd_simulation(
+#'   cohort_level_data = cohort_level_data,
+#'   herd_level_data = herd_level_data,
+#'   assessment_duration = 200
+#' )
+#'
+#' # Access results
+#' print(results$cohort_level_results)
+#' print(results$herd_level_results)
+#' }
+#'
+#' @export
+#'
+#' @importFrom data.table := .SD .I .N setkey setkeyv uniqueN
 run_herd_simulation <- function(
-    herd_data,
+    cohort_level_data,
+    herd_level_data,
     initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
     max_years = 100,
     lambda_threshold = 1e-9,
-    show_indicator = TRUE
+    show_indicator = TRUE,
+    assessment_duration = 365
 ) {
 
-  # If the user wants feedback, show one persistent "please wait" message.
+  # --- Step 1: Validate Inputs -----------------------------------------------
+  validate_herd_simulation_inputs(cohort_level_data, herd_level_data)
+
+  # Show progress indicator if requested
   if (show_indicator) {
     cli::cli_status("\U1F552 Running herd simulation, please wait\U2026")
   }
 
-  # Capture the initial column names
-  base_cols <- names(data.table::copy(herd_data))
+  # --- Step 2: Prepare Data for Processing ------------------------------------
+  # Create working copies
+  cohort_level_results <- data.table::copy(cohort_level_data)
+  herd_level_results <- data.table::copy(herd_level_data)
 
-  # --- Step 1: Compute Core Demographic Parameters -----------------------------
+  # Set keys for fast lookups
+  data.table::setkey(cohort_level_results, herd_id, cohort)
+  data.table::setkey(herd_level_results, herd_id)
+  data.table::setkey(herd_level_data, herd_id)
 
-  # Compute fecundity rates
-  herd_data[, c("fem_fec", "mal_fec") := compute_fecundity_rates(
-    parturition_rate = parturition_rate,
-    litsize = litsize,
-    fem_birth_fraction = female_birth_fraction
-  ), by = seq_len(nrow(herd_data))]
+  # Get unique herd IDs to process
+  unique_herd_ids <- unique(cohort_level_results$herd_id)
 
-  # Compute transition probabilities
-  transition_cols <- names(unlist(
-    with(herd_data[1], compute_transition_probabilities(
-      duration = c(FJ = duration.FJ, FS = duration.FS, FA = duration.FA,
-                   MJ = duration.MJ, MS = duration.MS, MA = duration.MA),
-      offtake_rate = c(FJ = offtake_rate.FJ, FS = offtake_rate.FS, FA = offtake_rate.FA,
-                       MJ = offtake_rate.MJ, MS = offtake_rate.MS, MA = offtake_rate.MA),
-      mort_rate = c(FJ = mort_rate.FJ, FS = mort_rate.FS, FA = mort_rate.FA,
-                     MJ = mort_rate.MJ, MS = mort_rate.MS, MA = mort_rate.MA)
-    ))
-  ))
+  # Define valid cohort names (used for result mapping loop)
+  cohort_order <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
-  # Apply transition probability computation row-wise
-  herd_data[, (transition_cols) := as.list(unlist(
-    compute_transition_probabilities(
-      duration = c(FJ = duration.FJ, FS = duration.FS, FA = duration.FA,
-                   MJ = duration.MJ, MS = duration.MS, MA = duration.MA),
-      offtake_rate = c(FJ = offtake_rate.FJ, FS = offtake_rate.FS, FA = offtake_rate.FA,
-                       MJ = offtake_rate.MJ, MS = offtake_rate.MS, MA = offtake_rate.MA),
-      mort_rate = c(FJ = mort_rate.FJ, FS = mort_rate.FS, FA = mort_rate.FA,
-                     MJ = mort_rate.MJ, MS = mort_rate.MS, MA = mort_rate.MA)
+  # --- Step 3: Process Each Herd ---------------------------------------------
+  for (current_herd_id in unique_herd_ids) {
+
+    # Lookup herd-level parameters (single row)
+    herd_params <- herd_level_data[herd_id == current_herd_id]
+
+    # Lookup cohort-level data for this herd (should be exactly 6 rows)
+    cohort_rows <- cohort_level_results[herd_id == current_herd_id]
+
+    # Calculate fecundity rates (herd-level)
+    # Fecundity rates represent the daily number of births per adult female
+    fecundity_result <- compute_fecundity_rates(
+      parturition_rate = herd_params$parturition_rate,
+      litsize = herd_params$litsize,
+      fem_birth_fraction = herd_params$female_birth_fraction
     )
-  )), by = seq_len(nrow(herd_data))]
 
-  # --- Step 2: Simulate Population Dynamics -----------------------------------
+    fem_fec <- fecundity_result$fem_fec
+    mal_fec <- fecundity_result$mal_fec
 
-  # Simulate steady-state structure
+    # Build cohort-specific vectors from long-format data
+    # The core scientific functions expect named vectors with one value per cohort
+    duration_vec <- cohort_rows$duration
+    offtake_rate_vec <- cohort_rows$offtake_rate
+    mort_rate_vec <- cohort_rows$mort_rate
+    names(duration_vec) <- cohort_rows$cohort
+    names(offtake_rate_vec) <- cohort_rows$cohort
+    names(mort_rate_vec) <- cohort_rows$cohort
 
-  # Get structure column names from a sample run
-  structure_cols <- names(unlist(
-    with(herd_data[1], simulate_steady_state_structure(
+    # Calculate transition probabilities
+    # Converts annual rates to daily probabilities for death, offtake, survival, and growth
+    transition_result <- compute_transition_probabilities(
+      duration = duration_vec,
+      offtake_rate = offtake_rate_vec,
+      mort_rate = mort_rate_vec
+    )
+
+    # Simulate steady-state population structure
+    # Runs iterative simulation until population growth rates stabilize
+    structure_result <- simulate_steady_state_structure(
       initial_structure = initial_structure,
       max_years = max_years,
       min_lambda_change = lambda_threshold,
       fem_fec = fem_fec,
       mal_fec = mal_fec,
-      prob_death = c(
-        FB = prob_death.FB, FJ = prob_death.FJ, FS = prob_death.FS, FA = prob_death.FA, FC = prob_death.FC,
-        MB = prob_death.MB, MJ = prob_death.MJ, MS = prob_death.MS, MA = prob_death.MA, MC = prob_death.MC
-      ),
-      prob_offtake = c(
-        FB = prob_offtake.FB, FJ = prob_offtake.FJ, FS = prob_offtake.FS, FA = prob_offtake.FA, FC = prob_offtake.FC,
-        MB = prob_offtake.MB, MJ = prob_offtake.MJ, MS = prob_offtake.MS, MA = prob_offtake.MA, MC = prob_offtake.MC
-      ),
-      prob_growth = c(
-        FB = prob_growth.FB, FJ = prob_growth.FJ, FS = prob_growth.FS, FA = prob_growth.FA, FC = prob_growth.FC,
-        MB = prob_growth.MB, MJ = prob_growth.MJ, MS = prob_growth.MS, MA = prob_growth.MA, MC = prob_growth.MC
-      )
-    ))
-  ))
+      prob_death = transition_result$prob_death,
+      prob_offtake = transition_result$prob_offtake,
+      prob_growth = transition_result$prob_growth
+    )
 
-  # Apply simulation to full data.table, row-wise
-  herd_data[, (structure_cols) := as.list(unlist(
-    simulate_steady_state_structure(
-      initial_structure = initial_structure,
-      max_years = max_years,
-      min_lambda_change = lambda_threshold,
+    # Project one year of population dynamics
+    # Simulates a full year (366 days) under steady-state conditions
+    popsize_result <- project_population_size(
+      size_total = herd_params$size_total,
       fem_fec = fem_fec,
       mal_fec = mal_fec,
-      prob_death = c(
-        FB = prob_death.FB, FJ = prob_death.FJ, FS = prob_death.FS, FA = prob_death.FA, FC = prob_death.FC,
-        MB = prob_death.MB, MJ = prob_death.MJ, MS = prob_death.MS, MA = prob_death.MA, MC = prob_death.MC
-      ),
-      prob_offtake = c(
-        FB = prob_offtake.FB, FJ = prob_offtake.FJ, FS = prob_offtake.FS, FA = prob_offtake.FA, FC = prob_offtake.FC,
-        MB = prob_offtake.MB, MJ = prob_offtake.MJ, MS = prob_offtake.MS, MA = prob_offtake.MA, MC = prob_offtake.MC
-      ),
-      prob_growth = c(
-        FB = prob_growth.FB, FJ = prob_growth.FJ, FS = prob_growth.FS, FA = prob_growth.FA, FC = prob_growth.FC,
-        MB = prob_growth.MB, MJ = prob_growth.MJ, MS = prob_growth.MS, MA = prob_growth.MA, MC = prob_growth.MC
-      )
+      prob_death = transition_result$prob_death,
+      prob_offtake = transition_result$prob_offtake,
+      prob_growth = transition_result$prob_growth,
+      growth_rate_pop = structure_result$growth_rate_pop,
+      structure = structure_result$structure,
+      share = structure_result$share
     )
-  )), by = seq_len(nrow(herd_data))]
 
-  # Project population size
-
-  # Single-row version to extract output column names
-  popsize_cols <- names(unlist(
-    with(herd_data[1], project_population_size(
-      size_total = size_total,
-      fem_fec = fem_fec,
-      mal_fec = mal_fec,
-      prob_death = c(
-        FB = prob_death.FB, FJ = prob_death.FJ, FS = prob_death.FS, FA = prob_death.FA, FC = prob_death.FC,
-        MB = prob_death.MB, MJ = prob_death.MJ, MS = prob_death.MS, MA = prob_death.MA, MC = prob_death.MC
-      ),
-      prob_offtake = c(
-        FB = prob_offtake.FB, FJ = prob_offtake.FJ, FS = prob_offtake.FS, FA = prob_offtake.FA, FC = prob_offtake.FC,
-        MB = prob_offtake.MB, MJ = prob_offtake.MJ, MS = prob_offtake.MS, MA = prob_offtake.MA, MC = prob_offtake.MC
-      ),
-      prob_growth = c(
-        FB = prob_growth.FB, FJ = prob_growth.FJ, FS = prob_growth.FS, FA = prob_growth.FA, FC = prob_growth.FC,
-        MB = prob_growth.MB, MJ = prob_growth.MJ, MS = prob_growth.MS, MA = prob_growth.MA, MC = prob_growth.MC
-      ),
-      growth_rate_pop = growth_rate_pop,
-      structure = c(FB = structure.FB, FJ = structure.FJ, FS = structure.FS, FA = structure.FA,
-                    MB = structure.MB, MJ = structure.MJ, MS = structure.MS, MA = structure.MA),
-      share = c(FJ = share.FJ, FS = share.FS, FA = share.FA,
-                MJ = share.MJ, MS = share.MS, MA = share.MA)
-    ))
-  ))
-
-  # Full-row application inside herd_data
-  herd_data[, (popsize_cols) := as.list(unlist(
-    project_population_size(
-      size_total = size_total,
-      fem_fec = fem_fec,
-      mal_fec = mal_fec,
-      prob_death = c(
-        FB = prob_death.FB, FJ = prob_death.FJ, FS = prob_death.FS, FA = prob_death.FA, FC = prob_death.FC,
-        MB = prob_death.MB, MJ = prob_death.MJ, MS = prob_death.MS, MA = prob_death.MA, MC = prob_death.MC
-      ),
-      prob_offtake = c(
-        FB = prob_offtake.FB, FJ = prob_offtake.FJ, FS = prob_offtake.FS, FA = prob_offtake.FA, FC = prob_offtake.FC,
-        MB = prob_offtake.MB, MJ = prob_offtake.MJ, MS = prob_offtake.MS, MA = prob_offtake.MA, MC = prob_offtake.MC
-      ),
-      prob_growth = c(
-        FB = prob_growth.FB, FJ = prob_growth.FJ, FS = prob_growth.FS, FA = prob_growth.FA, FC = prob_growth.FC,
-        MB = prob_growth.MB, MJ = prob_growth.MJ, MS = prob_growth.MS, MA = prob_growth.MA, MC = prob_growth.MC
-      ),
-      growth_rate_pop = growth_rate_pop,
-      structure = c(FB = structure.FB, FJ = structure.FJ, FS = structure.FS, FA = structure.FA,
-                    MB = structure.MB, MJ = structure.MJ, MS = structure.MS, MA = structure.MA),
-      share = c(FJ = share.FJ, FS = share.FS, FA = share.FA,
-                MJ = share.MJ, MS = share.MS, MA = share.MA)
+    # Calculate offtake summary statistics
+    offtake_result <- summarise_offtake(
+      size = popsize_result$size,
+      size_end = popsize_result$size_end,
+      size_avg = popsize_result$size_avg,
+      offtake = popsize_result$offtake,
+      assessment_duration = assessment_duration
     )
-  )), by = seq_len(nrow(herd_data))]
 
-  # --- Step 3: Calculate Offtake and Weights ---------------------------------
+    # Map simulation results back to cohort-level results
+    # Assign values from named vectors to the appropriate cohort rows
+    for (cohort_name in cohort_order) {
+      cohort_level_results[
+        herd_id == current_herd_id & cohort == cohort_name,
+        `:=`(
+          size = popsize_result$size[cohort_name],
+          size_end = popsize_result$size_end[cohort_name],
+          size_avg = popsize_result$size_avg[cohort_name],
+          offtake_number = offtake_result$offtake_number[cohort_name],
+          offtake_number_assessment = offtake_result$offtake_number_assessment[cohort_name],
+          prob_growth = transition_result$prob_growth[cohort_name]
+        )
+      ]
+    }
 
-  # Calculate offtake summary
-  offtake_cols <- names(unlist(
-    with(herd_data[1], summarise_offtake(
-      size = c(FJ = size.FJ, FS = size.FS, FA = size.FA,
-               MJ = size.MJ, MS = size.MS, MA = size.MA),
-      size_end = c(FJ = size_end.FJ, FS = size_end.FS, FA = size_end.FA,
-                   MJ = size_end.MJ, MS = size_end.MS, MA = size_end.MA),
-      size_avg = c(FJ = size_avg.FJ, FS = size_avg.FS, FA = size_avg.FA,
-                   MJ = size_avg.MJ, MS = size_avg.MS, MA = size_avg.MA),
-      offtake = c(FB = offtake.FB, FJ = offtake.FJ, FS = offtake.FS, FA = offtake.FA, FC = offtake.FC,
-                  MB = offtake.MB, MJ = offtake.MJ, MS = offtake.MS, MA = offtake.MA, MC = offtake.MC)
-    ))
-  ))
-
-  # Apply to full data.table
-  herd_data[, (offtake_cols) := as.list(unlist(
-    summarise_offtake(
-      size = c(FJ = size.FJ, FS = size.FS, FA = size.FA,
-               MJ = size.MJ, MS = size.MS, MA = size.MA),
-      size_end = c(FJ = size_end.FJ, FS = size_end.FS, FA = size_end.FA,
-                   MJ = size_end.MJ, MS = size_end.MS, MA = size_end.MA),
-      size_avg = c(FJ = size_avg.FJ, FS = size_avg.FS, FA = size_avg.FA,
-                   MJ = size_avg.MJ, MS = size_avg.MS, MA = size_avg.MA),
-      offtake = c(FB = offtake.FB, FJ = offtake.FJ, FS = offtake.FS, FA = offtake.FA, FC = offtake.FC,
-                  MB = offtake.MB, MJ = offtake.MJ, MS = offtake.MS, MA = offtake.MA, MC = offtake.MC)
-    )
-  )), by = seq_len(nrow(herd_data))]
-
-  # --- Step 4: Filter and Prepare Data for Reshaping -------------------------
-
-  # Explicit list of computed columns to keep in the final output
-  extra_cols <- c(
-    "share.FJ", "share.FS", "share.FA", "share.MJ", "share.MS", "share.MA",
-    "growth_rate_pop", "size.FJ", "size.FS", "size.FA", "size.MJ", "size.MS", "size.MA",
-    "offtake_number.FJ", "offtake_number.FS", "offtake_number.FA",
-    "offtake_number.MJ", "offtake_number.MS", "offtake_number.MA"
-  )
-
-  # Merge the original columns with the desired new ones
-  # intersect() ensures we keep only columns that actually exist in herd_data
-  final_cols <- intersect(unique(c(base_cols, extra_cols)), names(herd_data))
-
-  # Subset herd_data to keep only the intended columns
-  herd_data <- herd_data[, ..final_cols]
-
-  # Define ID and cohort-specific columns
-  id_cols <- c(
-    "LPS", "HerdType", "Animal", "ADM0_CODE", "ISO3",
-    "ISO3_num", "M49_code", "RegionClass", "COUNTRY"
-  )
-
-  cohort_cols <- c(
-    "offtake_rate.FJ", "offtake_rate.FS", "offtake_rate.FA",
-    "offtake_rate.MJ", "offtake_rate.MS", "offtake_rate.MA",
-    "mort_rate.FJ", "mort_rate.FS", "mort_rate.FA",
-    "mort_rate.MJ", "mort_rate.MS", "mort_rate.MA",
-    "duration.FJ", "duration.FS", "duration.FA",
-    "duration.MJ", "duration.MS", "duration.MA",
-    "share.FJ", "share.FS", "share.FA",
-    "share.MJ", "share.MS", "share.MA",
-    "size.FJ", "size.FS", "size.FA",
-    "size.MJ", "size.MS", "size.MA",
-    "offtake_number.FJ", "offtake_number.FS", "offtake_number.FA",
-    "offtake_number.MJ", "offtake_number.MS", "offtake_number.MA"
-  )
-
-  # --- Step 5: Reshape Data and Calculate Final Metrics ----------------------
-
-  # Reshape to long format
-  herd_long <- data.table::melt(
-    herd_data[, .SD, .SDcols = c(id_cols, cohort_cols)],
-    id.vars = id_cols,
-    variable.name = "variable",
-    value.name = "value"
-  )
-
-  # Split variable column into 'item' and 'cohort'
-  herd_long[, `:=`(
-    item = sub("\\..*$", "", variable),
-    cohort = ifelse(
-      grepl("\\.", variable),
-      sub("^[^.]*\\.", "", variable),
-      NA_character_
-    )
-  )]
-
-  # Reshape to wide by item
-  herd_wide <- data.table::dcast(
-    herd_long,
-    LPS + HerdType + Animal + ADM0_CODE + ISO3 + ISO3_num +
-      RegionClass + COUNTRY + M49_code + cohort + RegionClass ~ item,
-    value.var = "value"
-  )
-
-  # Merge with static herd data
-  herd_merged <- merge(
-    herd_data[, .SD, .SDcols = setdiff(names(herd_data), cohort_cols)],
-    herd_wide,
-    by = id_cols,
-    all.x = TRUE
-  )
-
-  # Set preferred column order
-  data.table::setcolorder(herd_merged, c(
-    "LPS", "LPS_short", "HerdType", "HerdType_short",
-    "Animal", "Animal_short",
-    "ADM0_CODE", "ISO3", "ISO3_num", "M49_code",
-    "RegionClass", "COUNTRY"
-  ))
-
-  # Calculate weights
-  herd_merged[, c("initial_weight", "potential_final_weight", "slaughter_weight") :=
-                calc_cohort_weights(
-                  animal = Animal_short,
-                  cohort = cohort,
-                  adult_fem_weight = AFKG,
-                  adult_mal_weight = AMKG,
-                  birth_weight = ckg,
-                  slaughter_weight_fem = MFSKG,
-                  slaughter_weight_mal = MMSKG,
-                  weaning_weight = wkg,
-                  age_first_calving = afc,
-                  animal_age = WA
-                ),
-              by = .I
-  ]
-
-  herd_merged[, c("average_weight", "final_weight") :=
-                calc_avg_weights(
-                  initial_weight = initial_weight,
-                  potential_final_weight = potential_final_weight,
-                  slaughter_weight = slaughter_weight,
-                  offtake_rate = offtake_rate
-                ),
-              by = .I
-  ]
-
-  herd_merged[, dwg := calc_daily_weight_gain(
-    potential_final_weight = potential_final_weight,
-    initial_weight = initial_weight,
-    duration = duration
-  ), by = .I]
-
-  # Assign weaning weights for non-pig cohorts using FS values
-  weaning_dt <- herd_merged[
-    cohort == "FS" & Animal_short != "PGS",
-    .(COUNTRY, ADM0_CODE, Animal_short, LPS_short, HerdType_short, cohort, initial_weight)
-  ]
-
-  herd_merged[
-    Animal_short != "PGS",
-    wkg := weaning_dt[
-      .SD,
-      on = .(COUNTRY, ADM0_CODE, Animal_short, LPS_short, HerdType_short),
-      initial_weight
+    # Map herd-level results
+    herd_level_results[
+      herd_id == current_herd_id,
+      `:=`(growth_rate_pop = structure_result$growth_rate_pop)
     ]
-  ]
 
-  # Remove unused columns
-  cols_to_drop <- c(
-    "AFCM", "AFKG", "AMKG", "BCR", "DR1M", "DR2", "DRF", "DRR2A", "DRR2B",
-    "DWG2", "FRRF", "LW", "M2SKG", "MFSKG", "RRF", "RRM", "WA", "MMSKG"
-  )
+  } # End of loop over herds
 
-  herd_final <- herd_merged[, !..cols_to_drop]
-
-  # Clear the spinner and leave a permanent success alert.
+  # Clear progress indicator if it was shown
   if (show_indicator) {
     cli::cli_status_clear()
     cli::cli_alert_success("Herd simulation complete.")
   }
 
-  return(herd_final)
+  # Return separate result tables
+  return(
+    list(
+      cohort_level_results = cohort_level_results,
+      herd_level_results = herd_level_results
+    )
+  )
 }

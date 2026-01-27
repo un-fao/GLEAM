@@ -110,11 +110,12 @@ test_that("summarise_offtake returns all expected components", {
     size = setNames(rep(100, 6), share_cohorts),
     size_end = setNames(rep(105, 6), share_cohorts),
     size_avg = setNames(rep(102, 6), share_cohorts),
-    offtake = setNames(rep(0.01, 10), cohorts)
+    offtake = setNames(rep(0.01, 10), cohorts),
+    assessment_duration = 200
   )
 
   expect_named(res, c(
-    "stock_variation", "offtake_number", "offtake_share", "offtake_share_avg",
+    "stock_variation", "offtake_number", "offtake_number_assessment", "offtake_share", "offtake_share_avg",
     "offtake_sv_number", "offtake_sv_share", "offtake_sv_share_avg"
   ))
   expect_length(res$offtake_number, 6)
@@ -123,11 +124,10 @@ test_that("summarise_offtake returns all expected components", {
 # ---- test calc_cohort_weights ----
 test_that("calc_cohort_weights returns valid weights for juvenile non-pig", {
   result <- calc_cohort_weights(
-    animal = "CTL", cohort = "FJ",
+    cohort = "FJ",
     adult_fem_weight = 500, adult_mal_weight = 600,
     birth_weight = 35, slaughter_weight_fem = 480,
-    slaughter_weight_mal = 550, weaning_weight = 90,
-    age_first_calving = 730, animal_age = 200
+    slaughter_weight_mal = 550, weaning_weight = 90
   )
 
   expect_named(result, c("initial_weight", "potential_final_weight", "slaughter_weight"))
@@ -139,11 +139,10 @@ test_that("calc_cohort_weights returns valid weights for juvenile non-pig", {
 
 test_that("calc_cohort_weights returns correct weights for adult female", {
   result <- calc_cohort_weights(
-    animal = "SHP", cohort = "FA",
+    cohort = "FA",
     adult_fem_weight = 70, adult_mal_weight = 90,
     birth_weight = 4, slaughter_weight_fem = 65,
-    slaughter_weight_mal = 85, weaning_weight = 18,
-    age_first_calving = 400, animal_age = 300
+    slaughter_weight_mal = 85, weaning_weight = 18
   )
 
   expect_equal(result$initial_weight, 70)
@@ -153,11 +152,10 @@ test_that("calc_cohort_weights returns correct weights for adult female", {
 
 test_that("calc_cohort_weights handles pig juvenile with weaning weight", {
   result <- calc_cohort_weights(
-    animal = "PGS", cohort = "FJ",
+    cohort = "FJ",
     adult_fem_weight = 180, adult_mal_weight = 220,
     birth_weight = 1.5, slaughter_weight_fem = 160,
-    slaughter_weight_mal = 200, weaning_weight = 10,
-    age_first_calving = 365, animal_age = 60
+    slaughter_weight_mal = 200, weaning_weight = 10
   )
 
   expect_equal(result$initial_weight, 1.5)

@@ -93,8 +93,7 @@ validate_meat_outputs_inputs <- function(
     slaughter_weight,
     carcass_dressing_percentage,
     bone_free_meat_fraction,
-    meat_protein,
-    assessment_duration
+    meat_protein
 ) {
   # Scalar numeric inputs
   validate_scalar_numeric(offtake_number_assessment, "offtake_number_assessment")

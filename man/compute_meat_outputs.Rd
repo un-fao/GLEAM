@@ -9,8 +9,7 @@ compute_meat_outputs(
   slaughter_weight,
   carcass_dressing_percentage,
   bone_free_meat_fraction,
-  meat_protein,
-  assessment_duration
+  meat_protein
 )
 }
 \arguments{

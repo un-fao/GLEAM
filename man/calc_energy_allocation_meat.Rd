@@ -97,7 +97,7 @@ animals sold for meat during the assessment period, which is calculated with a s
 
 Growth energy is calculated using species- and
 cohort-specific biophysical relationships adapted from established growth
-energy formulations (further details in \code{\link{?gleam::calc_net_energy_growth}}).
+energy formulations (further details in \code{\link[gleam]{calc_net_energy_growth}}).
 
 \item \strong{For (\code{PGS})}:
 

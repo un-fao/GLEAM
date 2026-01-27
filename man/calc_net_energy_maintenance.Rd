@@ -42,7 +42,7 @@ production stage of the animals. Supported values include:
 
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 
-\item{afc}{Numeric. Age at first parturition for female breeding animals (years)}
+\item{afc}{Numeric. Age at first parturition for female breeding animals (days)}
 }
 \value{
 Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal
@@ -97,7 +97,7 @@ weighted average to account for:
 \item \code{FJ}:
 \eqn{cmain = 0.236}
 \item \code{FS}:
-\eqn{cmain = 0.236 \times (1/afc) + 0.217 \times ((afc - 1)/afc)}
+\eqn{cmain = 0.236 \times (365/afc) + 0.217 \times ((afc - 365)/afc)}
 \item \code{MA}:
 \eqn{cmain = 0.217 \times offtake\_rate + (0.217 \times 1.15) \times (1 - offtake\_rate)}
 \item \code{MJ}:

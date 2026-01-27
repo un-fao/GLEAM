@@ -30,7 +30,7 @@ test_that("calc_net_energy_maintenance handles sheep with age at first calving",
     animal = "SHP", cohort = "FS", average_weight = 40,
     afc = 400
   )
-  expected <- (40^0.75) * ((0.236 * (1/400)) + (0.217 * (399/400)))
+  expected <- (40^0.75) * ((0.236 * (365/400)) + (0.217 * ((400-365)/400)))
   expect_equal(result, expected)
 
   # Test adult female
@@ -421,7 +421,7 @@ test_that("calc_total_energy_requirement returns correct values for cattle", {
   result <- calc_total_energy_requirement(
     animal = "CTL", cohort = "FA",
     nemain = 15.0, neact = 3.0, nelact = 8.0, nework = 0, nepreg = 1.5,
-    rem = 0.6, negrow = 0, nefibre = 0, neegg = 0, reg = 0.5, diet_dig = 0.65, afc = 730
+    rem = 0.6, negrow = 0, nefibre = 0, neegg = 0, reg = 0.5, diet_dig = 0.65
   )
   expected <- (((15.0 + 3.0 + 8.0 + 0 + 1.5) / 0.6) + (0 / 0.5)) / 0.65
   expect_equal(result, expected)
@@ -431,7 +431,7 @@ test_that("calc_total_energy_requirement handles sheep with fibre", {
   result <- calc_total_energy_requirement(
     animal = "SHP", cohort = "FA",
     nemain = 8.0, neact = 1.5, nelact = 4.0, nework = 0, nepreg = 1.0,
-    rem = 0.55, negrow = 0, nefibre = 0.2, neegg = 0, reg = 0.45, diet_dig = 0.60, afc = 400
+    rem = 0.55, negrow = 0, nefibre = 0.2, neegg = 0, reg = 0.45, diet_dig = 0.60
   )
   expected <- (((8.0 + 1.5 + 4.0 + 1.0) / 0.55) + ((0 + 0.2) / 0.45)) / 0.60
   expect_equal(result, expected)
@@ -442,7 +442,7 @@ test_that("calc_total_energy_requirement handles different species", {
   result <- calc_total_energy_requirement(
     animal = "CML", cohort = "FA",
     nemain = 12.0, neact = 2.0, nelact = 6.0, nework = 1.0, nepreg = 1.5,
-    rem = NA, negrow = 0, nefibre = 0.3, neegg = 0, reg = NA, diet_dig = 0.70, afc = 730
+    rem = NA, negrow = 0, nefibre = 0.3, neegg = 0, reg = NA, diet_dig = 0.70
   )
   expected <- 12.0 + 2.0 + 6.0 + 1.0 + 0.3 + 1.5 + 0
   expect_equal(result, expected)
@@ -451,7 +451,7 @@ test_that("calc_total_energy_requirement handles different species", {
   result <- calc_total_energy_requirement(
     animal = "PGS", cohort = "FA",
     nemain = 10.0, neact = 1.0, nelact = 5.0, nework = 0, nepreg = 2.0,
-    rem = NA, negrow = 0, nefibre = 0, neegg = 0, reg = NA, diet_dig = 0.75, afc = 365
+    rem = NA, negrow = 0, nefibre = 0, neegg = 0, reg = NA, diet_dig = 0.75
   )
   expected <- 10.0 + 1.0 + 5.0 + 2.0 + 0
   expect_equal(result, expected)

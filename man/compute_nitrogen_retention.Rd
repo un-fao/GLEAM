@@ -57,7 +57,7 @@ production stage of the animals. Supported values include:
 
 \item{ckg}{Numeric. Live weight of the animal at birth (kg).}
 
-\item{afc}{Numeric. Age at first parturition for female breeding animals (years).}
+\item{afc}{Numeric. Age at first parturition for female breeding animals (days)}
 }
 \value{
 Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)

@@ -88,6 +88,8 @@ the selected GWP-100 option. Results are stored as \code{value_total} with \code
   \item \strong{Standardize output:} Rename variables, assign units, and format final results.
 }
 }
+}
+}
 \references{
 IPCC (2021). \emph{Climate Change 2021: The Physical Science Basis}.
 Contribution of Working Group I to the Sixth Assessment Report of the

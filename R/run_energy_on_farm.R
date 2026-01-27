@@ -166,7 +166,7 @@ run_energy_on_farm <- function(
   # Apply core calculation: emissions = energy_onfarm * emission_factor / 1000
   # This converts energy consumption (MJ) to emissions (kg CO2-eq) using country-specific factors
   # Processed row by row for consistency with other modules
-  merged_dt[, onfarm_emissions := calc_onfarm_emissions(
+  merged_dt[, onfarm_emissions := calc_on_farm_emissions(
     energy_onfarm = energy_onfarm,
     emission_factor = V1
   ), by = .I]

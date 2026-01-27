@@ -3,8 +3,8 @@
 #' Calculates the net energy demand required to produce total fat-protein-corrected milk (FPCM) over a defined assessment period.
 #' 
 #'
-#' @param milk_fpcm_output Numeric scalar. Total fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/assessment period). 
-#' 
+#' @param milk_fpcm_output Numeric scalar. Total fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/assessment period).
+#'
 #' Default fat and protein content=0.04 and 0.033.
 #' @param standard_protein Numeric. Standard protein content of milk, used to calculate fat-protein-corrected milk (FPCM), (kg protein/kg milk). 
 #' 
@@ -75,7 +75,7 @@
 #' FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
 #' chains: Guidelines for assessment. Livestock Environmental Assessment and
 #' Performance (LEAP) Partnership. FAO, Rome, Italy.
-#' 
+#'
 #' @export
 calc_energy_allocation_milk <- function(
     milk_fpcm_output,
@@ -138,8 +138,8 @@ calc_energy_allocation_milk <- function(
 #' 
 #' Non-zero values are applicable to all species/cohorts where growth is modelled. For
 #' pigs (\code{PGS}), the function returns \code{NA} by design.
-#' 
-#' 
+#'
+#'
 #' @details
 #' This function provides the meat-related energy term used in a biophysical
 #' allocation framework to apportion emissions between milk and other co-products
@@ -181,20 +181,20 @@ calc_energy_allocation_milk <- function(
 #' \itemize{
 #'   \item \strong{For (\code{CTL}, \code{BFL}, \code{CML},
 #'   \code{SHP}, \code{GTS})}:
-#'   
+#'
 #'   Growth energy is calculated using species- and
 #'   cohort-specific biophysical relationships adapted from established growth
-#'   energy formulations (further details in \code{\link{?gleam::calc_net_energy_growth}}). 
+#'   energy formulations (further details in \code{\link[gleam]{calc_net_energy_growth}}).
 #'
 #'   \item \strong{For (\code{PGS})}:
-#'   
+#'
 #'   Growth energy is not calculated in this
 #'   function and \code{NA} is returned. In downstream processing,
 #'   \code{\link{calc_allocation_shares}} assigns 100% of the allocation to the
 #'   edible meat commodity for pig systems.
 #' }
-#' 
-#' @references 
+#'
+#' @references
 #' ISO. 2006. Environmental management — Life cycle assessment — Requirements and
 #' guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
 #'
@@ -217,7 +217,7 @@ calc_energy_allocation_milk <- function(
 #' FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
 #' chains: Guidelines for assessment. Livestock Environmental Assessment and
 #' Performance (LEAP) Partnership. FAO, Rome, Italy.
-#' 
+#'
 #' @export
 calc_energy_allocation_meat <- function(
     animal,
@@ -256,7 +256,7 @@ calc_energy_allocation_meat <- function(
     }
 
   } else if (animal == "CML") {
-    
+
     specific_energy_meat <- (41.8 * ratio_ne_to_me * (slaughter_liveweight - birth_liveweight)) / slaughter_liveweight
 
   } else if (animal == "SHP") {
@@ -303,9 +303,6 @@ calc_energy_allocation_meat <- function(
 #' Calculates the net energy demand associated with fibre production over the
 #' assessment period for fibre-producing species and cohorts.
 #' 
-#'
-#' 
-#' 
 #' @param animal Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
@@ -341,8 +338,8 @@ calc_energy_allocation_meat <- function(
 #' energy requirements (e.g., net energy for lactation, growth, etc.). If the
 #' resulting process remains multifunctional, these energy terms may subsequently
 #' be used to derive allocation factors among co-products.
-#' 
-#' 
+#'
+#'
 #' Total fibre-related energy over the assessment period is computed for
 #' fibre-producing species (\code{CML}, \code{SHP},
 #' \code{GTS}) and applicable cohorts (\code{"FA"}, \code{"FS"}, \code{"MA"},
@@ -367,8 +364,8 @@ calc_energy_allocation_meat <- function(
 #' where \code{fibre_energy_requirement} represents the daily energy requirement
 #' for fibre production (MJ/head/day) and is obtained from
 #' \code{\link[gleam]{calc_net_energy_fibre}}.
-#' 
-#' @references 
+#'
+#' @references
 #' ISO. 2006. Environmental management — Life cycle assessment — Requirements and
 #' guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
 #'
@@ -391,7 +388,7 @@ calc_energy_allocation_meat <- function(
 #' FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
 #' chains: Guidelines for assessment. Livestock Environmental Assessment and
 #' Performance (LEAP) Partnership. FAO, Rome, Italy.
-#' 
+#'
 #' @export
 calc_energy_allocation_fibre <- function(
     animal,
@@ -460,9 +457,9 @@ calc_energy_allocation_fibre <- function(
 #' energy requirements (e.g., net energy for lactation, growth..etc.). If the
 #' resulting process remains multifunctional, these energy terms may subsequently
 #' be used to derive allocation factors among co-products.
-#' 
+#'
 #' Total work-related energy is computed for species (\code{CTL}, \code{BFL}, \code{CML})
-#' and cohorts (\code{MA}) assumed to be potentially involved in draught power generation, and 
+#' and cohorts (\code{MA}) assumed to be potentially involved in draught power generation, and
 #' is calculated as follows:
 #'
 #' \itemize{
@@ -472,8 +469,8 @@ calc_energy_allocation_fibre <- function(
 #' where \code{work_energy_requirement} represents the daily energy requirement for
 #' animal work (MJ/head/day) and is obtained from
 #' \code{\link[gleam]{calc_net_energy_work}}.
-#' 
-#' @references 
+#'
+#' @references
 #' ISO. 2006. Environmental management — Life cycle assessment — Requirements and
 #' guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
 #'
@@ -496,7 +493,7 @@ calc_energy_allocation_fibre <- function(
 #' FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
 #' chains: Guidelines for assessment. Livestock Environmental Assessment and
 #' Performance (LEAP) Partnership. FAO, Rome, Italy.
-#' 
+#'
 #' @export
 calc_energy_allocation_work <- function(
     animal,
@@ -524,8 +521,8 @@ calc_energy_allocation_work <- function(
 #'
 #' This function aggregates a dataset from cohort level to herd level by summing
 #' specified variables over the defined 'id' columns.
-#' 
-#' @param data A `data.table` at cohort-level containing energy allocation variables and herd identifiers. Each row corresponds to a single sex–age cohort within a herd.
+#'
+#' @param data_cohort A `data.table` at cohort-level containing energy allocation variables and herd identifiers. Each row corresponds to a single sex–age cohort within a herd.
 #' @param id_cols Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.
 #' @param vars_to_sum Character vector. Names of numeric cohort-level variables to be summed across cohorts to produce herd-level totals (e.g., energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre, energy_allocation_work, energy_allocation_eggs).
 #' @param cohort Character. Name of the column identifying the sex–age cohort (e.g. FJ, FA, MJ, etc.).
@@ -533,10 +530,8 @@ calc_energy_allocation_work <- function(
 #'
 #' @return A `data.table` at herd scale, in which selected cohort-level variables have been summed across all cohorts belonging to the same herd, as defined by id_herd.
 #' @export
-#'
-
 aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) {
-  
+
   # Aggregate over cohorts
   data_herd <- data_cohort[
     ,
@@ -544,13 +539,12 @@ aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) 
     by = id_cols,
     .SDcols = vars_to_sum
   ]
-  
+
   # Add cohort = "ALL"
   data_herd[, (cohort) := "ALL"]
-  
+
   return(data_herd[])
 }
-
 
 #' Calculate Energy Allocation Shares for Livestock Commodities
 #'
@@ -583,8 +577,8 @@ aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) 
 #'   \item{allocation_share_work}{Numeric. Allocation share assigned to work (fraction).}
 #'   \item{allocation_share_eggs}{Numeric. Allocation share assigned to eggs (fraction).}
 #' }
-#' 
-#' 
+#'
+#'
 #' @details
 #' These fractions represent the proportions of total environmental burdens (e.g., GHG
 #' emissions) that will be allocated to each commodity in subsequent steps of the
@@ -612,10 +606,10 @@ aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) 
 #' partitioning because pig production is treated as functionally single-output
 #' (edible meat). Consequently, 100% of the allocation is assigned to the meat
 #' commodity (meat share = 1; all other commodity shares = 0), independent of the
-#' energy inputs. 
+#' energy inputs.
 #'
-#' 
-#' @references 
+#'
+#' @references
 #' ISO. 2006. Environmental management — Life cycle assessment — Requirements and
 #' guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
 #'
@@ -638,16 +632,18 @@ aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) 
 #' FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
 #' chains: Guidelines for assessment. Livestock Environmental Assessment and
 #' Performance (LEAP) Partnership. FAO, Rome, Italy.
-#' 
+#'
 #' @export
-#' 
-calc_allocation_shares <- function(animal,
-                                   energy_allocation_meat,
-                                   energy_allocation_milk,
-                                   energy_allocation_fibre,
-                                   energy_allocation_work,
-                                   energy_allocation_eggs) {
-  
+#'
+calc_allocation_shares <- function(
+    animal,
+    energy_allocation_meat,
+    energy_allocation_milk,
+    energy_allocation_fibre,
+    energy_allocation_work,
+    energy_allocation_eggs
+) {
+
   total_energy <- sum(
     c(energy_allocation_meat,
       energy_allocation_milk,
@@ -656,7 +652,7 @@ calc_allocation_shares <- function(animal,
       energy_allocation_eggs),
     na.rm = TRUE
   )
-  
+
   if (animal == "PGS") {
     allocation_share_meat  <- 1
     allocation_share_milk  <- 0
@@ -669,7 +665,7 @@ calc_allocation_shares <- function(animal,
     allocation_share_fibre  <- ifelse(is.na(energy_allocation_fibre), 0, energy_allocation_fibre / total_energy)
     allocation_share_work  <- ifelse(is.na(energy_allocation_work), 0, energy_allocation_work / total_energy)
     allocation_share_eggs  <- ifelse(is.na(energy_allocation_eggs), 0, energy_allocation_eggs / total_energy)
-    
+
   }
   list(
     allocation_share_meat  = allocation_share_meat,
@@ -679,9 +675,6 @@ calc_allocation_shares <- function(animal,
     allocation_share_eggs  = allocation_share_eggs
   )
 }
-
-
-
 
 
 #' Assign Allocation Shares to Emission Variables by Commodity
@@ -714,7 +707,7 @@ calc_allocation_shares <- function(animal,
 #' these emissions are allocated entirely to the residual commodity category
 #' \code{"Other"} and are not distributed across milk, meat, fibre, work, or egg
 #' outputs.
-#' 
+#'
 #' The following methodological rules apply to emission variables listed in
 #' \code{excluded_vars}:
 #'
@@ -723,14 +716,14 @@ calc_allocation_shares <- function(animal,
 #'   life cycle assessment system boundaries under the defined goal and scope and
 #'   are therefore not attributed to edible livestock commodities. A cut-off
 #'   approach is applied, consistent with the IDF (2022) standard and LEAP guidelines (LEAP 2016a, 2016b, 2016c).
-#'   
+#'
 #'   \item \strong{Manure deposited on pasture or grassland} — Emissions are not
 #'   allocated to edible livestock commodities in order to avoid double counting.
 #'   When upstream feed production is included in the inventory, emission factors of feed items
 #'   already account for this source.
 #' }
 #'
-#' @references 
+#' @references
 #'
 #' IDF. 2022. The IDF Global Carbon Footprint Standard for the Dairy Sector.
 #' Bulletin of the IDF No. 520/2022. International Dairy Federation, Brussels.
@@ -746,24 +739,23 @@ calc_allocation_shares <- function(animal,
 #' FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
 #' chains: Guidelines for assessment. Livestock Environmental Assessment and
 #' Performance (LEAP) Partnership. FAO, Rome, Italy.
-#' 
+#'
 #' @export
-
-assign_allocation_to_emissions <- function(allocation_herd_long,
-                                           emissions_vars,
-                                           commodities,
-                                           excluded_vars,
-                                           commodity_col,
-                                           allocation_col) {
-  
-  
+assign_allocation_to_emissions <- function(
+    allocation_herd_long,
+    emissions_vars,
+    commodities,
+    excluded_vars,
+    commodity_col,
+    allocation_col
+) {
   # 1) All combinations: commodity x emission variable
   grid <- data.table::CJ(
     variable_name  = emissions_vars,
     commodity_name = commodities,
     unique = TRUE
   )
-  
+
   # 2) Expand allocation table by emission variables
   out <- merge(
     allocation_herd_long,
@@ -771,22 +763,17 @@ assign_allocation_to_emissions <- function(allocation_herd_long,
     by = commodity_col,
     allow.cartesian = TRUE
   )
-  
+
   # 3) Excluded vars → 100% to Other, 0% to others
   out[variable_name %in% excluded_vars & get(commodity_col) == "Other",
       (allocation_col) := 1]
-  
+
   out[variable_name %in% excluded_vars & get(commodity_col) != "Other",
       (allocation_col) := 0]
-  
+
   # 4) Non-excluded vars → Other = 0
   out[!(variable_name %in% excluded_vars) & get(commodity_col) == "Other",
       (allocation_col) := 0]
-  
-  return(out[])
+
+  return(out)
 }
-
-
-
-
-

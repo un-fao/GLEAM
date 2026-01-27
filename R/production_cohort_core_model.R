@@ -24,15 +24,15 @@
 #'   \item{output_milk_mass_production}{Numeric. Total milk production produced over the assessment period (kg/herd/assessment period).}
 #'   \item{output_milk_protein_production}{Numeric. Total milk protein production produced over the assessment period (kg protein/herd/assessment period).}
 #'   \item{output_milk_fpcm_production}{Numeric. Total Fat-protein-corrected milk (FPCM) produced over the assessment period (kg/herd/assessment period). Default fat and protein content=0.04 and 0.033.}
-#'   
+#'
 #' Non-zero milk outputs are only expected for adult female cohorts. All other
 #' cohorts should return zero milk production through upstream parameterisation.
-#' 
+#'
 #' @references
 #' International Dairy Federation (IDF). 2022.
 #' *The IDF Global Carbon Footprint Standard for the Dairy Sector*.
 #' Bulletin of the IDF No. 520/2022.
-#' International Dairy Federation (ed.), Brussels, Belgium. 
+#' International Dairy Federation (ed.), Brussels, Belgium.
 #' @export
 
 compute_milk_outputs <- function(
@@ -84,7 +84,7 @@ compute_milk_outputs <- function(
 }
 
 #' Compute Fibre Production
-#' 
+#'
 #' Computes fibre production for producing cohorts by scaling per-animal
 #' fibre yield to the assessment period and cohort size.
 #' The output is expressed in kg per cohort per assessment period.
@@ -94,10 +94,10 @@ compute_milk_outputs <- function(
 #' @param size Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).
 #'
 #' @return Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).
-#' 
+#'
 #' Cohorts that do not produce fibre should return zero output through
 #' upstream parameterisation.
-#' 
+#'
 #' @export
 compute_fibre_output <- function(
     fibre_prod,
@@ -119,7 +119,7 @@ compute_fibre_output <- function(
 #' Computes meat production outputs at the animal cohort level based on
 #' the number of animals removed from the herd during the assessment
 #' period.
-#' The function returns multiple meat production metrics, including total meat production 
+#' The function returns multiple meat production metrics, including total meat production
 #' expressed in live weight, carcass weight, boneless meat, and meat protein.
 #' All outputs are expressed in kg per cohort per assessment period.
 #'
@@ -135,27 +135,24 @@ compute_fibre_output <- function(
 #'   \item{output_meat_production_carcassweight}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
 #'   \item{output_meat_production_meat}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg/cohort/assessment period)}
 #'   \item{output_meat_production_protein}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/assessment period).}
-#'   
+#'
 #' Cohorts with no offtake during the assessment period should return
 #' zero outputs through upstream parameterisation (e.g. `offtake_number = 0`).
-#' 
-#' 
+#'
 #' @export
 compute_meat_outputs <- function(
     offtake_number_assessment,
     slaughter_weight,
     carcass_dressing_percentage,
     bone_free_meat_fraction,
-    meat_protein,
-    assessment_duration
+    meat_protein
 ) {
   validate_meat_outputs_inputs(
     offtake_number_assessment = offtake_number_assessment,
     slaughter_weight = slaughter_weight,
     carcass_dressing_percentage = carcass_dressing_percentage,
     bone_free_meat_fraction = bone_free_meat_fraction,
-    meat_protein = meat_protein,
-    assessment_duration = assessment_duration
+    meat_protein = meat_protein
   )
 
   meat_production_liveweight <- offtake_number_assessment * slaughter_weight

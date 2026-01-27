@@ -340,8 +340,7 @@ validate_total_energy_inputs <- function(
     nefibre,
     neegg,
     reg,
-    diet_dig,
-    afc
+    diet_dig
 ) {
   validate_animal_species(animal)
   validate_cohort_code(cohort)
@@ -372,11 +371,6 @@ validate_total_energy_inputs <- function(
     }
     validate_scalar_numeric(rem, "rem")
     validate_scalar_numeric(reg, "reg")
-  }
-
-  # Validate afc for sheep and goats
-  if (animal %in% c("SHP", "GTS")) {
-    if (!is.na(afc)) validate_positive_numeric(afc, "afc")
   }
 }
 

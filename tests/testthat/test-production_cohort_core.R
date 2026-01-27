@@ -287,8 +287,7 @@ test_that("compute_meat_outputs returns expected output structure", {
     slaughter_weight = 400,
     carcass_dressing_percentage = 0.55,
     bone_free_meat_fraction = 0.75,
-    meat_protein = 0.20,
-    assessment_duration = 365
+    meat_protein = 0.20
   )
 
   expect_type(result, "list")

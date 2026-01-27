@@ -70,8 +70,7 @@ validate_totals_by_cohort_inputs <- function(
   invalid_types <- setdiff(unique(variable_type), valid_types)
   if (length(invalid_types) > 0) {
     cli::cli_abort(
-      "{.arg variable_type} must be one of: {cli::format_inline('{valid_types}')}. ",
-      "Found invalid values: {cli::format_inline('{invalid_types}')}"
+      "{.arg variable_type} must be one of: {cli::format_inline('{valid_types}')}. Found invalid values: {cli::format_inline('{invalid_types}')}"
     )
   }
 }
@@ -178,8 +177,7 @@ validate_co2eq_inputs <- function(
   invalid_gases <- setdiff(unique(gas), valid_gases)
   if (length(invalid_gases) > 0) {
     cli::cli_abort(
-      "{.arg gas} must be one of: {cli::format_inline('{valid_gases}')}. ",
-      "Found invalid values: {cli::format_inline('{invalid_gases}')}"
+      "{.arg gas} must be one of: {cli::format_inline('{valid_gases}')}. Found invalid values: {cli::format_inline('{invalid_gases}')}"
     )
   }
 

@@ -44,16 +44,6 @@ run_energy_requirements <- function(data) {
     cli::cli_abort("Missing required columns: {paste(miss, collapse = ', ')}")
   }
 
-  # 0. Create a new variable (adult_weight)
-  data[, adult_weight := data.table::fifelse(
-    cohort %in% c("FA", "FS", "FJ"),
-    average_weight[cohort == "FA"][1],   # female adult ref for this group
-    data.table::fifelse(
-      cohort %in% c("MA", "MS", "MJ"),
-      average_weight[cohort == "MA"][1], # male adult ref for this group
-      NA_real_
-    )
-  ), by = .(ADM0_CODE, Animal_short, LPS_short, HerdType_short)]
 
   # 1. Maintenance energy (MJ/day)
   data[, nemain := calc_net_energy_maintenance(
@@ -160,8 +150,7 @@ run_energy_requirements <- function(data) {
     nefibre = nefibre,
     neegg = 0,
     reg = reg,
-    diet_dig = diet_dig,
-    afc = afc
+    diet_dig = diet_dig
   ), by = .I]
 
   # 11. Dry matter intake (kg DM/day)
