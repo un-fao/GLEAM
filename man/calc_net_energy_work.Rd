@@ -4,7 +4,15 @@
 \alias{calc_net_energy_work}
 \title{Calculate Energy for Work}
 \usage{
-calc_net_energy_work(animal, cohort, nemain, work_hours, draught_fraction)
+calc_net_energy_work(
+  animal,
+  cohort,
+  nemain,
+  work_hours_female,
+  work_hours_male,
+  draught_fraction_female,
+  draught_fraction_male
+)
 }
 \arguments{
 \item{animal}{Character. Code identifying the livestock species.
@@ -31,12 +39,16 @@ production stage of the animals. Supported values include:
 
 \item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{work_hours}{Numeric. Mean daily working time per animal for CTL, BFL and CML, expressed as hours worked per head per day (hours/head/day).}
+\item{work_hours_female}{Numeric. Average daily working time per adult females for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day).}
 
-\item{draught_fraction}{Numeric. Fraction of adult males involved in draught work (fraction).}
+\item{work_hours_male}{Numeric. Average daily working time per adult males for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day).}
+
+\item{draught_fraction_female}{Numeric. Fraction of adult females involved in draught work (fraction).}
+
+\item{draught_fraction_male}{Numeric. Fraction of adult males involved in draught work (fraction).}
 }
 \value{
-Numeric. Energy required for work, used to estimate the energy required for draft power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
 Computes the \strong{energy requirement for work} (MJ/head/day), defined as the
@@ -48,7 +60,7 @@ Energy for work (\code{energy_work}) represents the additional energy required
 to support \strong{draught power generation} by working animals.
 
 This component is applied only to draught-capable species and is scaled by
-the fraction of adult males involved in draught work (\code{draught_fraction})
+the fraction of adult animals involved in draught work (\code{draught_fraction})
 and their average daily working time (\code{work_hours}).
 
 \strong{CTL and BFL} - Bamualim & Kartiarso (1985); IPCC (2006, 2019).

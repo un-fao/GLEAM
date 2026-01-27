@@ -782,17 +782,19 @@ calc_net_energy_eggs <- function(
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
 #' @param nemain Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#' @param work_hours Numeric. Mean daily working time per animal for CTL, BFL and CML, expressed as hours worked per head per day (hours/head/day).
-#' @param draught_fraction Numeric. Fraction of adult males involved in draught work (fraction).
+#' @param work_hours_female Numeric. Average daily working time per adult females for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day). 
+#' @param work_hours_male Numeric. Average daily working time per adult males for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day). 
+#' @param draught_fraction_female Numeric. Fraction of adult females involved in draught work (fraction).
+#' @param draught_fraction_male Numeric. Fraction of adult males involved in draught work (fraction).
 #'
-#' @return Numeric. Energy required for work, used to estimate the energy required for draft power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @return Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #'
 #'@details
 #' Energy for work (\code{energy_work}) represents the additional energy required
 #' to support \strong{draught power generation} by working animals.
 #'
 #' This component is applied only to draught-capable species and is scaled by
-#' the fraction of adult males involved in draught work (\code{draught_fraction})
+#' the fraction of adult animals involved in draught work (\code{draught_fraction})
 #' and their average daily working time (\code{work_hours}).
 #'
 #' \strong{CTL and BFL} - Bamualim & Kartiarso (1985); IPCC (2006, 2019).
@@ -847,24 +849,34 @@ calc_net_energy_work <- function(
     animal,
     cohort,
     nemain,
-    work_hours,
-    draught_fraction
+    work_hours_female,
+    work_hours_male,
+    draught_fraction_female,
+    draught_fraction_male
 ) {
   # Validate inputs
-  validate_work_inputs(animal, cohort, nemain, work_hours, draught_fraction)
+  validate_work_inputs(animal, cohort, nemain,  
+                       work_hours_female,
+                       work_hours_male,
+                       draught_fraction_female,
+                       draught_fraction_male)
+  
   # Only adult males (MA) work
   if (animal %in% c("CTL", "BFL")) {
-    if (cohort != "MA") {
-      ret <- 0
+    if (cohort == "MA") {
+      ret <- 0.1 * nemain * work_hours_male * draught_fraction_male
+    } else if (cohort == "FA") {  
+      ret <- 0.1 * nemain * work_hours_female * draught_fraction_female
     } else {
-      # 0.1 coefficient: GLEAM standard for work
-      ret <- 0.1 * nemain * work_hours * draught_fraction
+      ret <- 0
     }
   } else if (animal %in% c("CML")) {
-    if (cohort != "MA") {
-      ret <- 0
+    if (cohort == "MA") {
+      ret <- 4 * work_hours_male * draught_fraction_male
+    } else if (cohort == "FA") {  
+      ret <- 4 * work_hours_female * draught_fraction_female
     } else {
-      ret <- 4 * work_hours * draught_fraction
+      ret <- 0
     }
   } else if (animal %in% c("SHP", "GTS", "PGS", "CHK")) {
     ret <- 0 # No work for these species
