@@ -19,28 +19,16 @@
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }}
 #'     \item{`duration`}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
-#'     \item{`Animal_short`}{Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }}
 #'     \item{`offtake_rate`}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 #'   }
 #'   Additional required columns for weight calculations:
 #'   \itemize{
-#'     \item `AFKG` - Numeric. Live weight of adult females (kg)
-#'     \item `AMKG` - Numeric. Live weight of adult males (kg)
-#'     \item `ckg` - Numeric. Live weight of the animal at birth (kg).
-#'     \item `MFSKG` - Numeric. Slaughter weight of female sub-adult animals (kg).
-#'     \item `MMSKG` - Numeric. Slaughter weight of male sub-adult animals (kg).
-#'     \item `wkg` - Numeric. Live weight of the animal at weaning (kg)
-#'     \item `afc` - Numeric. Age at first parturition for female breeding animals (years)
-#'     \item `WA` - Numeric. Average age of the juvenile animals at weaning (days)
+#'     \item `adult_fem_weight` - Numeric. Live weight of adult females (kg)
+#'     \item `adult_mal_weight` - Numeric. Live weight of adult males (kg)
+#'     \item `birth_weight` - Numeric. Live weight of the animal at birth (kg).
+#'     \item `slaughter_weight_fem` - Numeric. Slaughter weight of female sub-adult animals (kg).
+#'     \item `slaughter_weight_mal` - Numeric. Slaughter weight of male sub-adult animals (kg).
+#'     \item `weaning_weight` - Numeric. Live weight of the animal at weaning (kg)
 #'   }
 #'
 #' @return A `data.table` with the same structure as input, with the following
@@ -52,8 +40,24 @@
 #'     \item{`average_weight`}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
 #'     \item{`final_weight`}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
 #'     \item{`adult_weight`}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
-#'     \item{`dwg`}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
+#'     \item{`daily_weight_gain`}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 #'   }
+#'
+#' @examples
+#' \dontrun{
+#' # Load example input data from the package
+#' weights_path <- system.file(
+#'   "extdata/examples/weight_input_cohort_level_data.csv",
+#'   package = "gleam"
+#' )
+#' weights_data <- data.table::fread(weights_path)
+#'
+#' # Run weight calculations
+#' results <- run_weights_calculations(weights_data)
+#'
+#' # Access results
+#' print(results)
+#' }
 #'
 #' @export
 #'
@@ -69,12 +73,12 @@ run_weights_calculations <- function(data) {
     "cohort",
     "duration",
     "offtake_rate",
-    "AFKG", # Adult female weight
-    "AMKG", # Adult male weight
-    "ckg", # Birth weight
-    "MFSKG", # Slaughter weight female
-    "MMSKG", # Slaughter weight male
-    "wkg" # Weaning weight (must be provided in input data)
+    "adult_fem_weight",
+    "adult_mal_weight",
+    "birth_weight",
+    "slaughter_weight_fem",
+    "slaughter_weight_mal",
+    "weaning_weight"
 
   )
   missing_cols <- setdiff(required_cols, names(data))
@@ -83,48 +87,44 @@ run_weights_calculations <- function(data) {
   }
 
   # Calculate initial, potential final, and slaughter weights
-  data[, c(
-    "initial_weight", "potential_final_weight", "slaughter_weight"
-  ) := calc_cohort_weights(
-    cohort = cohort,
-    adult_fem_weight = AFKG,
-    adult_mal_weight = AMKG,
-    birth_weight = ckg,
-    slaughter_weight_fem = MFSKG,
-    slaughter_weight_mal = MMSKG,
-    weaning_weight = wkg
-  ),
-  by = .I
+  data[
+    ,
+    c(
+      "adult_weight", "initial_weight", "potential_final_weight", "slaughter_weight"
+    ) := calc_cohort_weights(
+      cohort = cohort,
+      adult_fem_weight = adult_fem_weight,
+      adult_mal_weight = adult_mal_weight,
+      birth_weight = birth_weight,
+      slaughter_weight_fem = slaughter_weight_fem,
+      slaughter_weight_mal = slaughter_weight_mal,
+      weaning_weight = weaning_weight
+    ),
+    by = .I
   ]
 
   # Calculate average and final weights
-  data[, c("average_weight", "final_weight") :=
-         calc_avg_weights(
-           initial_weight = initial_weight,
-           potential_final_weight = potential_final_weight,
-           slaughter_weight = slaughter_weight,
-           offtake_rate = offtake_rate
-         ),
-       by = .I
+  data[
+    ,
+    c("average_weight", "final_weight") := calc_avg_weights(
+      initial_weight = initial_weight,
+      potential_final_weight = potential_final_weight,
+      slaughter_weight = slaughter_weight,
+      offtake_rate = offtake_rate
+    ),
+    by = .I
   ]
 
-  # Create a new variable (adult_weight)
-  data[, adult_weight := data.table::fifelse(
-    cohort %in% c("FA", "FS", "FJ"),
-    average_weight[cohort == "FA"][1], # female adult ref for this group
-    data.table::fifelse(
-      cohort %in% c("MA", "MS", "MJ"),
-      average_weight[cohort == "MA"][1], # male adult ref for this group
-      NA_real_
-    )
-  ), by = .(herd_id, Animal_short)]
-
   # Calculate daily weight gain
-  data[, daily_weight_gain := calc_daily_weight_gain(
-    potential_final_weight = potential_final_weight,
-    initial_weight = initial_weight,
-    duration = duration
-  ), by = .I]
+  data[
+    ,
+    daily_weight_gain := calc_daily_weight_gain(
+      potential_final_weight = potential_final_weight,
+      initial_weight = initial_weight,
+      duration = duration
+    ),
+    by = .I
+  ]
 
   return(data)
 }

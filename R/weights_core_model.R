@@ -71,9 +71,6 @@ calc_cohort_weights <- function(
     weaning_weight
   )
 
-  # Defaults
-  initial_weight <- potential_final_weight <- slaughter_weight <- NA_real_
-
   # Juvenile cohorts
   if (cohort %in% c("FJ", "MJ")) {
     initial_weight <- birth_weight
@@ -90,13 +87,14 @@ calc_cohort_weights <- function(
 
     # Adult cohorts
   } else if (cohort == "FA") {
-    initial_weight <- potential_final_weight <- slaughter_weight <- adult_fem_weight
+    initial_weight <- adult_weight <- potential_final_weight <- slaughter_weight <- adult_fem_weight
   } else if (cohort == "MA") {
-    initial_weight <- potential_final_weight <- slaughter_weight <- adult_mal_weight
+    initial_weight <- adult_weight <- potential_final_weight <- slaughter_weight <- adult_mal_weight
   }
 
   return(
     list(
+      adult_weight = adult_weight,
       initial_weight = initial_weight,
       potential_final_weight = potential_final_weight,
       slaughter_weight = slaughter_weight
