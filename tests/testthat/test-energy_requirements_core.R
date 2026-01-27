@@ -260,7 +260,11 @@ test_that("calc_net_energy_work returns correct values for working animals", {
   # Test cattle adult male
   result <- calc_net_energy_work(
     animal = "CTL", cohort = "MA",
-    nemain = 20.0, work_hours = 4, draught_fraction = 0.3
+    nemain = 20.0, 
+    work_hours_female = 2,
+    work_hours_male = 4,
+    draught_fraction_female = 0.5,
+    draught_fraction_male = 0.3
   )
   expected <- 0.1 * 20.0 * 4 * 0.3
   expect_equal(result, expected)
@@ -268,16 +272,26 @@ test_that("calc_net_energy_work returns correct values for working animals", {
   # Test non-working cohort
   result <- calc_net_energy_work(
     animal = "CTL", cohort = "FA",
-    nemain = 15.0, work_hours = 4, draught_fraction = 0.3
+    nemain = 15.0, 
+    work_hours_female = 2,
+    work_hours_male = 4,
+    draught_fraction_female = 0.5,
+    draught_fraction_male = 0.3
   )
-  expect_equal(result, 0)
+  
+  expected <- 0.1 * 15.0 * 2 * 0.5
+  expect_equal(result, expected)
 })
 
 test_that("calc_net_energy_work handles different species", {
   # Test camelids
   result <- calc_net_energy_work(
     animal = "CML", cohort = "MA",
-    nemain = 18.0, work_hours = 6, draught_fraction = 0.4
+    nemain = 18.0, 
+    work_hours_female = 2,
+    work_hours_male = 6,
+    draught_fraction_female = 0.5,
+    draught_fraction_male = 0.4
   )
   expected <- 4 * 6 * 0.4
   expect_equal(result, expected)
@@ -285,7 +299,11 @@ test_that("calc_net_energy_work handles different species", {
   # Test species that don't work
   result <- calc_net_energy_work(
     animal = "SHP", cohort = "MA",
-    nemain = 10.0, work_hours = 4, draught_fraction = 0.3
+    nemain = 10.0,  
+    work_hours_female = 8,
+    work_hours_male = 4,
+    draught_fraction_female = 0.3,
+    draught_fraction_male = 0.3
   )
   expect_equal(result, 0)
 })
