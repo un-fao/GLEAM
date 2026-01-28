@@ -162,13 +162,12 @@ compute_methane_conversion_factor <- function(
 #' @export
 compute_daily_enteric_emissions <- function(
     animal,
-    cohort,
     ym,
     ch4_mitigation_factor,
     diet_ge,
     dmi
 ) {
-  validate_enteric_emission_inputs(animal, cohort, ym, ch4_mitigation_factor, diet_ge, dmi)
+  validate_enteric_emission_inputs(animal, ym, ch4_mitigation_factor, diet_ge, dmi)
   if (animal %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
     ret <- diet_ge * dmi * (ym / 100) * ch4_mitigation_factor / 55.65
   } else if (animal == "CHK") {

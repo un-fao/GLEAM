@@ -41,14 +41,12 @@ validate_ym_inputs <- function(
 #' @noRd
 validate_enteric_emission_inputs <- function(
     animal,
-    cohort,
     ym,
     ch4_mitigation_factor,
     diet_ge,
     dmi
 ) {
   validate_scalar_character(animal, "animal")
-  validate_scalar_character(cohort, "cohort")
 
   # Special case: chickens always return NA for now
   if (animal == "CHK") {
