@@ -1,0 +1,3 @@
+herd_id,adult_fem_weight,adult_mal_weight,birth_weight,slaughter_weight_fem,slaughter_weight_mal,weaning_weight
+1,450.0,600.0,35.0,500.0,650.0,200.0
+2,180.0,220.0,1.5,100.0,120.0,20.0
