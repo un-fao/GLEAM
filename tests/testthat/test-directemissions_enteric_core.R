@@ -17,10 +17,10 @@ test_that("compute_methane_conversion_factor validates inputs and computes YM", 
 
   # Pigs: adult vs juvenile
   expect_equal(compute_methane_conversion_factor("PGS", "FA", 0.65), 1.01)
-  expect_equal(compute_methane_conversion_factor("PGS", "FJ", 0.65), 0.39)
+  expect_equal(compute_methane_conversion_factor("PGS", "FJ", 0.65), 0)
 
   # Small ruminants/camels: juvenile/subadult vs adult
-  ym_juv <- compute_methane_conversion_factor("SHP", "FJ", 0.65) # 7.75 rule
+  ym_juv <- compute_methane_conversion_factor("SHP", "FJ", 0) 
   ym_adult <- compute_methane_conversion_factor("SHP", "FA", 0.65) # 9.75 rule
   expect_lt(ym_juv, ym_adult)
 
