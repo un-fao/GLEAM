@@ -95,9 +95,9 @@
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'     }
 #'       }
-#'     \item{`duration`}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
-#'     \item{`offtake_rate`}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
-#'     \item{`mort_rate`}{Numeric. Fraction of deaths in a herd over a year for each sex-age class (fraction).}
+#'     \item{`duration`}{Numeric vector of legth 6. Amount of time that each animal spends in a specific cohort (days).}
+#'     \item{`offtake_rate`}{Numeric vector of legth 6. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
+#'     \item{`mort_rate`}{Numeric vector of legth 6. Fraction of deaths in a herd over a year for each sex-age class (fraction).}
 #'   }
 #' @param herd_level_data A `data.table` with one row per herd and mandatory columns:
 #'   \describe{
@@ -128,13 +128,11 @@
 #'     \item{`cohort_level_results`}{A `data.table` with one row per cohort containing all original
 #'       `cohort_level_data` columns plus the following simulation results:
 #'       \itemize{
-#'         \item `share` - Numeric. Final steady-state share of the 6 grouped sex-age classes  (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (fraction). Shares should sum to 1.
-#'         \item `size` - Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads).
-#'         \item `size_end` - Numeric. Population size in each of the 6 sex–age cohorts at the end of the year, projected using the steady-state growth rate (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads).
-#'         \item `size_avg` - Numeric. Average population size in each of the 6 sex–age cohorts over the year (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads). Estimated from cohort_stock_start and cohort_stock_end_projected.
-#'         \item `offtake_number` - Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (heads/year)
-#'         \item `offtake_number_assessment` - "Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (heads/year)
-#'         \item `prob_growth` - Numeric. Probability of growing into the next age class for 6 cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (fraction).
+#'         \item `size` - Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (# heads).
+#'         This corresponds to `size_start` returned by \code{\link{project_population_size}}, as it reflects the size of the population by cohort while preserving the total population size (`size_total`) provided in the inputs.
+#'         \item `offtake_number` - Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (heads/year).
+#'         \item `offtake_number_assessment` - Numeric vector of legth 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (heads/assessment period).
+#'         \item `prob_growth` - Numeric vector of length 6. Probability of growing into the next age class for 6 cohorts (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)) (fraction).
 #'       }
 #'     }
 #'     \item{`herd_level_results`}{A `data.table` with one row per herd containing all original
