@@ -288,8 +288,6 @@ run_herd_simulation <- function(
         herd_id == current_herd_id & cohort == cohort_name,
         `:=`(
           size = popsize_result$size[cohort_name],
-          size_end = popsize_result$size_end[cohort_name],
-          size_avg = popsize_result$size_avg[cohort_name],
           offtake_number = offtake_result$offtake_number[cohort_name],
           offtake_number_assessment = offtake_result$offtake_number_assessment[cohort_name],
           prob_growth = transition_result$prob_growth[cohort_name]
