@@ -77,59 +77,15 @@
 #' @export
 #'
 #' @importFrom data.table := .I
-run_weights_calculations <- function(cohort_level_data, herd_level_data) {
-  # Validate input
-  if (!data.table::is.data.table(cohort_level_data)) {
-    cli::cli_abort("{.arg cohort_level_data} must be a data.table.")
-  }
-  if (!data.table::is.data.table(herd_level_data)) {
-    cli::cli_abort("{.arg herd_level_data} must be a data.table.")
-  }
+run_weights_calculations <- function(
+    cohort_level_data,
+    herd_level_data
+) {
 
-  # Required columns for weight calculations
-  required_cohort_cols <- c(
-    "herd_id",
-    "cohort",
-    "duration",
-    "offtake_rate"
-  )
-  required_herd_cols <- c(
-    "herd_id",
-    "adult_fem_weight",
-    "adult_mal_weight",
-    "birth_weight",
-    "slaughter_weight_fem",
-    "slaughter_weight_mal",
-    "weaning_weight"
-  )
+  # --- Step 1: Validate Inputs -----------------------------------------------
+  validate_weights_inputs(cohort_level_data, herd_level_data)
 
-  missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
-  if (length(missing_cohort_cols) > 0) {
-    cli::cli_abort("Missing required columns: {.val {missing_cohort_cols}}")
-  }
-  missing_herd_cols <- setdiff(required_herd_cols, names(herd_level_data))
-  if (length(missing_herd_cols) > 0) {
-    cli::cli_abort("Missing required columns: {.val {missing_herd_cols}}")
-  }
-
-  herd_id_counts <- herd_level_data[, .N, by = herd_id]
-  duplicate_herds <- herd_id_counts[N > 1]
-  if (nrow(duplicate_herds) > 0) {
-    cli::cli_abort(
-      "Each herd_id must appear exactly once in {.arg herd_level_data}.
-      Found duplicates for herd_ids: {.val {duplicate_herds$herd_id}}"
-    )
-  }
-
-  cohort_herd_ids <- unique(cohort_level_data$herd_id)
-  herd_level_herd_ids <- unique(herd_level_data$herd_id)
-  missing_in_herd_level <- setdiff(cohort_herd_ids, herd_level_herd_ids)
-  if (length(missing_in_herd_level) > 0) {
-    cli::cli_abort(
-      "Herd IDs in {.arg cohort_level_data} not found in {.arg herd_level_data}: {.val {missing_in_herd_level}}"
-    )
-  }
-
+  # --- Step 2: Calculate Cohort Weights --------------------------------------
   cohort_level_data[
     ,
     c(
@@ -146,7 +102,7 @@ run_weights_calculations <- function(cohort_level_data, herd_level_data) {
     by = .I
   ]
 
-  # Calculate average and final weights
+  # --- Step 3: Calculate Average and Final Weights ---------------------------
   cohort_level_data[
     ,
     c("average_weight", "final_weight") := calc_avg_weights(
@@ -158,7 +114,7 @@ run_weights_calculations <- function(cohort_level_data, herd_level_data) {
     by = .I
   ]
 
-  # Calculate daily weight gain
+  # --- Step 4: Calculate Daily Weight Gain -----------------------------------
   cohort_level_data[
     ,
     daily_weight_gain := calc_daily_weight_gain(
@@ -169,6 +125,7 @@ run_weights_calculations <- function(cohort_level_data, herd_level_data) {
     by = .I
   ]
 
+  # Return separate result tables
   return(
     list(
       cohort_level_results = cohort_level_data,
