@@ -75,3 +75,49 @@ test_that("calc_daily_weight_gain returns 0 when weights are equal", {
 test_that("calc_daily_weight_gain handles negative gain", {
   expect_equal(calc_daily_weight_gain(100, 200, 100), -1)
 })
+
+# ---- test cohort-specific validation ----
+test_that("calc_cohort_weights rejects missing adult_fem_weight for FJ", {
+  expect_error(
+    calc_cohort_weights(
+      cohort = "FJ",
+      adult_fem_weight = NA_real_,
+      adult_mal_weight = 600,
+      birth_weight = 35,
+      slaughter_weight_fem = 480,
+      slaughter_weight_mal = 550,
+      weaning_weight = 90
+    ),
+    "Missing required weight inputs"
+  )
+})
+
+test_that("calc_cohort_weights rejects missing slaughter_weight_fem for FS", {
+  expect_error(
+    calc_cohort_weights(
+      cohort = "FS",
+      adult_fem_weight = 500,
+      adult_mal_weight = 600,
+      birth_weight = 35,
+      slaughter_weight_fem = NA_real_,
+      slaughter_weight_mal = 550,
+      weaning_weight = 90
+    ),
+    "Missing required weight inputs"
+  )
+})
+
+test_that("calc_cohort_weights rejects missing adult_mal_weight for MA", {
+  expect_error(
+    calc_cohort_weights(
+      cohort = "MA",
+      adult_fem_weight = 500,
+      adult_mal_weight = NA_real_,
+      birth_weight = 35,
+      slaughter_weight_fem = 480,
+      slaughter_weight_mal = 550,
+      weaning_weight = 90
+    ),
+    "Missing required weight inputs"
+  )
+})
