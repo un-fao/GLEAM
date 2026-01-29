@@ -129,6 +129,7 @@ run_production_cohort <- function(
   # --- Step 3: Aggregate fibre production ------------------------------------
   # The downstream energy requirements module expects annual fibre tonnage at the cohort level.
   data[ , output_fibre_production := compute_fibre_output(
+    cohort = cohort,
     fibre_prod = fibre_prod,
     assessment_duration = assessment_duration,
     size = size

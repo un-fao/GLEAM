@@ -68,10 +68,14 @@ validate_milk_outputs_inputs <- function(
 #'
 #' @noRd
 validate_fibre_output_inputs <- function(
+    cohort,
     fibre_prod,
     assessment_duration,
     size
 ) {
+  
+  validate_cohort_code(cohort)
+  
   # Scalar numeric inputs
   validate_scalar_numeric(fibre_prod, "fibre_prod")
   validate_scalar_numeric(assessment_duration, "assessment_duration")

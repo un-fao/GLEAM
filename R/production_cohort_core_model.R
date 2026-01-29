@@ -105,10 +105,20 @@ compute_milk_outputs <- function(
 
 #' Compute Fibre Production
 #'
-#' Computes fibre production for producing cohorts by scaling per-animal
+#' Computes fibre production for producing cohorts (\code{FA}, \code{MA}, \code{FS}, \code{MS})  by scaling per-animal
 #' fibre yield to the assessment period and cohort size.
 #' The output is expressed in kg per cohort per assessment period.
 #' 
+#' @param cohort Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
 #' @param fibre_prod Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
 #' @param assessment_duration Numeric. Length of the assessment period (days).
 #' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
@@ -120,17 +130,27 @@ compute_milk_outputs <- function(
 #'
 #' @export
 compute_fibre_output <- function(
+    cohort = cohort,
     fibre_prod,
     assessment_duration,
     size
 ) {
   validate_fibre_output_inputs(
+    cohort = cohort,
     fibre_prod = fibre_prod,
     assessment_duration = assessment_duration,
     size = size
   )
   
+  if (cohort %in% c("FA", "FS", "MA", "MS")) {
+    
   fibre_production <- fibre_prod / 365 * assessment_duration * size
+  
+    } else {
+    fibre_production <- 0
+  }
+    
+  
   return(fibre_production)
 }
 
