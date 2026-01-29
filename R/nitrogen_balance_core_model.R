@@ -154,7 +154,7 @@ compute_nitrogen_retention <- function(
 
     milk_comp <- if (!is.na(milk_yield) && cohort == "FA" && milk_yield > 0) milk_yield * milk_n else 0
     growth_comp <- if (!is.na(dwg) && dwg > 0) dwg * tissue_n else 0
-    fibre_comp <- if (!is.na(fibre_prod) && fibre_prod > 0) fibre_prod / 365 * fibre_n else 0
+    fibre_comp <- if (!is.na(fibre_prod) &&  cohort %in% c("FA", "FS", "MA", "MS") && fibre_prod > 0) fibre_prod / 365 * fibre_n else 0
 
     return(milk_comp + growth_comp + fibre_comp)
 
