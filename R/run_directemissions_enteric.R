@@ -86,7 +86,6 @@ run_directemissions_enteric <- function(data) {
   # Compute enteric methane emissions (kg CH4/day)
   data[, ch4_enteric := compute_daily_enteric_emissions(
     animal = Animal_short,
-    cohort = cohort,
     ym = ym,
     ch4_mitigation_factor = 1,
     diet_ge = diet_ge,

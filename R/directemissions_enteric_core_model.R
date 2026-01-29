@@ -103,16 +103,6 @@ compute_methane_conversion_factor <- function(
 #'     \item \code{GTS}: goats
 #'   }
 #'   
-#' @param cohort Character. Sex- and age-specific cohort code describing the
-#'   production stage of the animals. Supported values include:
-#'   \itemize{
-#'     \item \code{FA}: adult females (from age at first parturition)
-#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{MA}: adult males (from age at first breeding)
-#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'     \item \code{MJ}: juvenile males (from birth to weaning)
-#'   }
 #' @param ym Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).
 #' @param ch4_mitigation_factor Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
 #' multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10% reduction). Default = 1.
@@ -141,13 +131,12 @@ compute_methane_conversion_factor <- function(
 #' @export
 compute_daily_enteric_emissions <- function(
     animal,
-    cohort,
     ym,
     ch4_mitigation_factor,
     diet_ge,
     dmi
 ) {
-  validate_enteric_emission_inputs(animal, cohort, ym, ch4_mitigation_factor, diet_ge, dmi)
+  validate_enteric_emission_inputs(animal, ym, ch4_mitigation_factor, diet_ge, dmi)
   if (animal %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
     ret <- diet_ge * dmi * (ym / 100) * ch4_mitigation_factor / 55.65
   } else if (animal == "CHK") {
