@@ -337,7 +337,6 @@ validate_reg_inputs <- function(
 #' @noRd
 validate_total_energy_inputs <- function(
     animal,
-    cohort,
     nemain,
     neact,
     nelact,
@@ -351,7 +350,6 @@ validate_total_energy_inputs <- function(
     diet_dig
 ) {
   validate_animal_species(animal)
-  validate_cohort_code(cohort)
   validate_scalar_numeric(nemain, "nemain")
   validate_scalar_numeric(neact, "neact")
   validate_scalar_numeric(nelact, "nelact")

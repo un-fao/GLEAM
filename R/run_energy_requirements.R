@@ -141,7 +141,6 @@ run_energy_requirements <- function(data) {
   # 10. Total ME requirement (MJ/day)
   data[, getot := calc_total_energy_requirement(
     animal = Animal_short,
-    cohort = cohort,
     nemain = nemain,
     neact = neact,
     nelact = nelact,
