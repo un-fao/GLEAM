@@ -6,7 +6,6 @@
 \usage{
 compute_daily_enteric_emissions(
   animal,
-  cohort,
   ym,
   ch4_mitigation_factor,
   diet_ge,
@@ -23,17 +22,6 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
-}}
-
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
-production stage of the animals. Supported values include:
-\itemize{
-\item \code{FA}: adult females (from age at first parturition)
-\item \code{FS}: sub-adult females (from weaning to age at first parturition)
-\item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{MA}: adult males (from age at first breeding)
-\item \code{MS}: sub-adult males (from weaning to age at first breeding)
-\item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
 \item{ym}{Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).}

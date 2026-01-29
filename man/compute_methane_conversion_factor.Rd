@@ -48,22 +48,27 @@ ym is computed using species- and cohort-specific default relationships with die
 
 \item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
 \itemize{
-\item \code{JF} and \code{JM} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_dig \times 100)}
-\item Other cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
+\item \code{FA} and \code{MA} cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
+\item \code{FS} and \code{MS} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_dig \times 100)}
 }
 
 \item \strong{For \code{PGS}:}
 ym is assigned fixed values by cohort:
 \itemize{
 \item \code{FA} and \code{MA} cohorts: \deqn{ym = 1.01}
-\item Other cohorts: \deqn{ym = 0.39}
+\item \code{FS} and \code{MS} cohorts: \deqn{ym = 0.39}
 }
 }
+
+ym is returned as 0 for juvenile cohorts (\code{JF}, \code{JM}), assuming negligible enteric methane production before weaning/rumen development.
 }
 \references{
 Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
 MacLeod, M., Vellinga, T., Henderson, B. & Steinfeld, H. (2013).
 \emph{Greenhouse gas emissions from ruminant supply chains – A global life cycle assessment}. Food and Agriculture Organization of the United Nations (FAO), Rome.
+
+Jørgensen, H., Theil, P.K. and Knudsen, K.E.B., (2011).
+\emph{Enteric methane emission from pigs}. In Planet Earth 2011-Global Warming Challenges and Opportunities for Policy and Practice (p. 610 - Table 2). InTech.
 
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management, Equation 10.21.
