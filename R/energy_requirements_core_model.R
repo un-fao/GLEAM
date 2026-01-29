@@ -1355,16 +1355,6 @@ calc_reg_growth <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param cohort Character. Sex- and age-specific cohort code describing the
-#'   production stage of the animals. Supported values include:
-#'   \itemize{
-#'     \item \code{FA}: adult females (from age at first parturition)
-#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{MA}: adult males (from age at first breeding)
-#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'     \item \code{MJ}: juvenile males (from birth to weaning)
-#'   }
 #' @param nemain Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param neact Numeric. Energy required for activity, defined as the amount of energy needed to obtain food, water and shelter (example stall, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param nelact Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
@@ -1444,7 +1434,6 @@ calc_reg_growth <- function(
 #' @export
 calc_total_energy_requirement <- function(
     animal,
-    cohort,
     nemain,
     neact,
     nelact,
@@ -1459,7 +1448,7 @@ calc_total_energy_requirement <- function(
 ) {
   # Validate inputs
   validate_total_energy_inputs(
-    animal, cohort, nemain, neact, nelact, nework, nepreg,
+    animal, nemain, neact, nelact, nework, nepreg,
     rem, negrow, nefibre, neegg, reg, diet_dig
   )
   # Cattle, buffalo: sum maintenance, activity, lactation, work, pregnancy, growth

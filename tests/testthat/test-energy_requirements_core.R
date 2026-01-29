@@ -437,7 +437,7 @@ test_that("calc_reg_growth returns NA for non-ruminants", {
 # ---- test calc_total_energy_requirement ----
 test_that("calc_total_energy_requirement returns correct values for cattle", {
   result <- calc_total_energy_requirement(
-    animal = "CTL", cohort = "FA",
+    animal = "CTL",
     nemain = 15.0, neact = 3.0, nelact = 8.0, nework = 0, nepreg = 1.5,
     rem = 0.6, negrow = 0, nefibre = 0, neegg = 0, reg = 0.5, diet_dig = 0.65
   )
@@ -447,7 +447,7 @@ test_that("calc_total_energy_requirement returns correct values for cattle", {
 
 test_that("calc_total_energy_requirement handles sheep with fibre", {
   result <- calc_total_energy_requirement(
-    animal = "SHP", cohort = "FA",
+    animal = "SHP",
     nemain = 8.0, neact = 1.5, nelact = 4.0, nework = 0, nepreg = 1.0,
     rem = 0.55, negrow = 0, nefibre = 0.2, neegg = 0, reg = 0.45, diet_dig = 0.60
   )
@@ -458,7 +458,7 @@ test_that("calc_total_energy_requirement handles sheep with fibre", {
 test_that("calc_total_energy_requirement handles different species", {
   # Test camelids (direct sum)
   result <- calc_total_energy_requirement(
-    animal = "CML", cohort = "FA",
+    animal = "CML",
     nemain = 12.0, neact = 2.0, nelact = 6.0, nework = 1.0, nepreg = 1.5,
     rem = NA, negrow = 0, nefibre = 0.3, neegg = 0, reg = NA, diet_dig = 0.70
   )
@@ -467,7 +467,7 @@ test_that("calc_total_energy_requirement handles different species", {
 
   # Test pigs
   result <- calc_total_energy_requirement(
-    animal = "PGS", cohort = "FA",
+    animal = "PGS", 
     nemain = 10.0, neact = 1.0, nelact = 5.0, nework = 0, nepreg = 2.0,
     rem = NA, negrow = 0, nefibre = 0, neegg = 0, reg = NA, diet_dig = 0.75
   )
