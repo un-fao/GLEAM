@@ -110,6 +110,7 @@ run_production_cohort <- function(
   # Standard composition constants reflect IDF 2022 guidance and must remain fixed to
   # reproduce the historical FPCM values distributed with GLEAM.
   data[ , (milk_output_cols) := compute_milk_outputs(
+    cohort = cohort,
     milk_yield = milk_yield,
     assessment_duration = assessment_duration,
     size = size,
