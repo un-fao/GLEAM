@@ -1,18 +1,18 @@
- #' Run the GLEAM pipeline
- #'
- #' Orchestrates herd simulation (or uses a provided cohort structure) and then
- #' applies weight calculations at the cohort level.
- #'
- #' @param has_structure Logical. If TRUE, use `herd_structure` directly as the
- #'   cohort-level input for the weights module.
- #' @param herd_structure data.table. Cohort-level table used when `has_structure`
- #'   is TRUE.
- #' @param herd_simulation_args List. Arguments passed to `run_herd_simulation()`
- #'   when `has_structure` is FALSE.
- #' @param weights_args List. Must contain `herd_level_data` for
- #'   `run_weights_calculations()`.
- #'
- #' @return A cohort-level `data.table` with weight calculations appended.
+#' Run the GLEAM pipeline
+#'
+#' Runs the core sequence of model modules to generate cohort-level outputs for a
+#' livestock production system.
+#'
+#' @param has_structure Logical. If TRUE, use `herd_structure` directly as the
+#'   cohort-level input for the weights module.
+#' @param herd_structure data.table. Cohort-level table used when `has_structure`
+#'   is TRUE.
+#' @param herd_simulation_args List. Arguments passed to `run_herd_simulation()` when
+#'   `has_structure` is FALSE.
+#' @param weights_args List. Arguments passed to `run_weights_calculations()`.
+#'
+#' @return A cohort-level `data.table` containing the outputs produced by the
+#'   modules executed within this pipeline call.
 #'
 #' @examples
 #' \dontrun{
@@ -50,7 +50,7 @@
 #' # Access results
 #' print(results)
 #' }
- #' @export
+#' @export
 run_gleam <- function(
     has_structure = FALSE,
     herd_structure = NULL,
