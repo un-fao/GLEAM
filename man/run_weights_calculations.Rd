@@ -48,7 +48,6 @@ following weight-related columns appended:
 \item \code{adult_weight} - Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).
 \item \code{daily_weight_gain} - Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).
 }}
-}
 \item{\code{herd_level_results}}{A \code{data.table} with the same structure as the input
 \code{herd_level_data} (one row per herd).}
 }

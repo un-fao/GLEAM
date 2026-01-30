@@ -86,6 +86,12 @@ utils::globalVariables(c(
 ))
 
 utils::globalVariables(c(
+  # Columns created by update joins in run_weights_calculations
+  "x.adult_fem_weight", "x.adult_mal_weight", "x.birth_weight",
+  "x.slaughter_weight_fem", "x.slaughter_weight_mal", "x.weaning_weight"
+))
+
+utils::globalVariables(c(
   # Columns used in run_energy_requirements
   "average_weight", "dmi", "dr1", "draught_fraction", "fibre_prod",
   "final_weight", "gest", "getot", "idle", "lact", "lambing_interval",
