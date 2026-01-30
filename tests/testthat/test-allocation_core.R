@@ -223,6 +223,7 @@ test_that("calc_energy_allocation_meat validates weight bounds", {
 test_that("calc_energy_allocation_fibre returns correct value for sheep", {
   result <- calc_energy_allocation_fibre(
     animal = "SHP",
+    size = 100,
     fibre_energy_requirement = 5,
     ratio_ne_to_me = 0.43,
     assessment_duration = 365
@@ -230,23 +231,25 @@ test_that("calc_energy_allocation_fibre returns correct value for sheep", {
 
   expect_type(result, "double")
   expect_length(result, 1)
-  expect_equal(result, 5 * 365)  # Direct calculation for sheep
+  expect_equal(result, 5 * 365 * 100)  # Direct calculation for sheep
 })
 
 test_that("calc_energy_allocation_fibre returns correct value for goats", {
   result <- calc_energy_allocation_fibre(
     animal = "GTS",
+    size = 100,
     fibre_energy_requirement = 4,
     ratio_ne_to_me = 0.43,
     assessment_duration = 365
   )
 
-  expect_equal(result, 4 * 365)  # Direct calculation for goats
+  expect_equal(result, 4 * 365 * 100)  # Direct calculation for goats
 })
 
 test_that("calc_energy_allocation_fibre returns correct value for camelids", {
   result <- calc_energy_allocation_fibre(
     animal = "CML",
+    size = 100,
     fibre_energy_requirement = 6,
     ratio_ne_to_me = 0.43,
     assessment_duration = 365
@@ -254,12 +257,13 @@ test_that("calc_energy_allocation_fibre returns correct value for camelids", {
 
   expect_type(result, "double")
   # For camelids: fibre_energy * ratio_ne_to_me * assessment_duration
-  expect_equal(result, 6 * 0.43 * 365)
+  expect_equal(result, 6 * 0.43 * 365 * 100)
 })
 
 test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
   result_cattle <- calc_energy_allocation_fibre(
     animal = "CTL",
+    size = 100,
     fibre_energy_requirement = 10,
     ratio_ne_to_me = 0.43,
     assessment_duration = 365
@@ -268,6 +272,7 @@ test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
 
   result_pigs <- calc_energy_allocation_fibre(
     animal = "PGS",
+    size = 100,
     fibre_energy_requirement = 10,
     ratio_ne_to_me = 0.43,
     assessment_duration = 365
@@ -278,25 +283,26 @@ test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
 test_that("calc_energy_allocation_fibre uses default assessment_duration", {
   result <- calc_energy_allocation_fibre(
     animal = "SHP",
+    size = 100,
     fibre_energy_requirement = 5,
     ratio_ne_to_me = 0.43,
     assessment_duration = 365
   )
 
-  expect_equal(result, 5 * 365)  # Default is 365 days
+  expect_equal(result, 5 * 365 * 100)  # Default is 365 days
 })
 
 test_that("calc_energy_allocation_fibre validates inputs", {
   expect_error(
-    calc_energy_allocation_fibre(animal = "INVALID", fibre_energy_requirement = 5, ratio_ne_to_me = 0.43, assessment_duration = 365),
+    calc_energy_allocation_fibre(animal = "INVALID", size = 100, fibre_energy_requirement = 5, ratio_ne_to_me = 0.43, assessment_duration = 365),
     "must be one of"
   )
   expect_error(
-    calc_energy_allocation_fibre(animal = "SHP", fibre_energy_requirement = -5, ratio_ne_to_me = 0.43, assessment_duration = 365),
+    calc_energy_allocation_fibre(animal = "SHP", size = 100, fibre_energy_requirement = -5, ratio_ne_to_me = 0.43, assessment_duration = 365),
     "must be non-negative"
   )
   expect_error(
-    calc_energy_allocation_fibre(animal = "SHP", fibre_energy_requirement = 5, ratio_ne_to_me = 1.5, assessment_duration = 365),
+    calc_energy_allocation_fibre(animal = "SHP", size = 100, fibre_energy_requirement = 5, ratio_ne_to_me = 1.5, assessment_duration = 365),
     "must be between 0 and 1"
   )
 })

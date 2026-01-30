@@ -99,6 +99,7 @@ run_allocation <- function(
   # Fibre energy allocation: applies camelid conversion factor when needed
   allocation_inputs[, energy_allocation_fibre := calc_energy_allocation_fibre(
     animal = Animal_short,
+    size = size,
     fibre_energy_requirement = nefibre,
     ratio_ne_to_me = ratio_ne_me_camelids,
     assessment_duration = assessment_duration

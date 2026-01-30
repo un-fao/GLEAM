@@ -308,7 +308,8 @@ calc_energy_allocation_meat <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#'
+#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
+
 #' @param fibre_energy_requirement Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy for CML (MJ/head/day).
 #' @param ratio_ne_to_me Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.
 #' @param assessment_duration Numeric. Length of the assessment period (days).
@@ -369,20 +370,21 @@ calc_energy_allocation_meat <- function(
 #' @export
 calc_energy_allocation_fibre <- function(
     animal,
+    size,
     fibre_energy_requirement,
     ratio_ne_to_me,
     assessment_duration
 ) {
   validate_allocation_fibre_inputs(
-    animal, fibre_energy_requirement, ratio_ne_to_me, assessment_duration
+    animal, size, fibre_energy_requirement, ratio_ne_to_me, assessment_duration
   )
 
   if (animal %in% c("GTS", "SHP")) {
     # Sheep and goats: direct NE calculation
-    energy_allocation_fibre <- fibre_energy_requirement * assessment_duration
+    energy_allocation_fibre <- fibre_energy_requirement * assessment_duration * size
   } else if (animal == "CML") {
     # Camelids: convert ME to NE using ratio
-    energy_allocation_fibre <- fibre_energy_requirement * ratio_ne_to_me * assessment_duration
+    energy_allocation_fibre <- fibre_energy_requirement * ratio_ne_to_me * assessment_duration * size
   } else {
     # Other species: no fibre production
     energy_allocation_fibre <- 0
