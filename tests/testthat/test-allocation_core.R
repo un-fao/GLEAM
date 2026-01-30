@@ -312,6 +312,7 @@ test_that("calc_energy_allocation_fibre validates inputs", {
 test_that("calc_energy_allocation_work returns correct value for camelids", {
   result <- calc_energy_allocation_work(
     animal = "CML",
+    size = 100, 
     work_energy_requirement = 10,
     ratio_ne_to_me = 0.43,
     assessment_duration = 365
@@ -320,12 +321,13 @@ test_that("calc_energy_allocation_work returns correct value for camelids", {
   expect_type(result, "double")
   expect_length(result, 1)
   # For camelids: work_energy * ratio_ne_to_me * assessment_duration
-  expect_equal(result, 10 * 0.43 * 365)
+  expect_equal(result, 10 * 0.43 * 365 * 100)
 })
 
 test_that("calc_energy_allocation_work returns correct value for non-camelids", {
   result <- calc_energy_allocation_work(
     animal = "CTL",
+    size = 100, 
     work_energy_requirement = 8,
     ratio_ne_to_me = 0.43,
     assessment_duration = 365
@@ -333,23 +335,25 @@ test_that("calc_energy_allocation_work returns correct value for non-camelids", 
 
   expect_type(result, "double")
   # For non-camelids: work_energy * assessment_duration (ratio not applied)
-  expect_equal(result, 8 * 365)
+  expect_equal(result, 8 * 365 * 100)
 })
 
 test_that("calc_energy_allocation_work uses default assessment_duration", {
   result <- calc_energy_allocation_work(
     animal = "CTL",
+    size = 100, 
     work_energy_requirement = 8,
     ratio_ne_to_me = 0.43,
     assessment_duration = 365
   )
 
-  expect_equal(result, 8 * 365)  # Default is 365 days
+  expect_equal(result, 8 * 365 * 100)  # Default is 365 days
 })
 
 test_that("calc_energy_allocation_work handles zero energy requirement", {
   result <- calc_energy_allocation_work(
     animal = "CTL",
+    size = 100, 
     work_energy_requirement = 0,
     ratio_ne_to_me = 0.43,
     assessment_duration = 365
@@ -360,19 +364,19 @@ test_that("calc_energy_allocation_work handles zero energy requirement", {
 
 test_that("calc_energy_allocation_work validates inputs", {
   expect_error(
-    calc_energy_allocation_work(animal = "INVALID", work_energy_requirement = 10, ratio_ne_to_me = 0.43, assessment_duration = 365),
+    calc_energy_allocation_work(animal = "INVALID", size = 100, work_energy_requirement = 10, ratio_ne_to_me = 0.43, assessment_duration = 365),
     "must be one of"
   )
   expect_error(
-    calc_energy_allocation_work(animal = "CML", work_energy_requirement = -5, ratio_ne_to_me = 0.43, assessment_duration = 365),
+    calc_energy_allocation_work(animal = "CML", size = 100, work_energy_requirement = -5, ratio_ne_to_me = 0.43, assessment_duration = 365),
     "must be non-negative"
   )
   expect_error(
-    calc_energy_allocation_work(animal = "CML", work_energy_requirement = 10, ratio_ne_to_me = -0.1, assessment_duration = 365),
+    calc_energy_allocation_work(animal = "CML", size = 100, work_energy_requirement = 10, ratio_ne_to_me = -0.1, assessment_duration = 365),
     "must be between 0 and 1"
   )
   expect_error(
-    calc_energy_allocation_work(animal = "CML", work_energy_requirement = 10, ratio_ne_to_me = 0.43, assessment_duration = 5000),
+    calc_energy_allocation_work(animal = "CML", size = 100, work_energy_requirement = 10, ratio_ne_to_me = 0.43, assessment_duration = 5000),
     "must be between 0 and 3650"
   )
 })

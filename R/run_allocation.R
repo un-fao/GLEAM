@@ -108,6 +108,7 @@ run_allocation <- function(
   # Work energy allocation: applies camelid conversion factor when needed
   allocation_inputs[, energy_allocation_work := calc_energy_allocation_work(
     animal = Animal_short,
+    size = size,
     work_energy_requirement = nework,
     ratio_ne_to_me = ratio_ne_me_camelids,
     assessment_duration = assessment_duration
