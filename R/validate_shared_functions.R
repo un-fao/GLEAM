@@ -75,6 +75,24 @@ validate_scalar_numeric_or_na <- function(x, arg_name) {
   }
 }
 
+#' Normalize a rate to a bounded range
+#'
+#' Clamps numeric values to the provided lower/upper bounds while preserving NA.
+#' This is used when rates are reused as scaling factors in downstream modules.
+#'
+#' @param x Numeric scalar or vector to normalize.
+#' @param lower Numeric. Minimum allowed value (default: 0).
+#' @param upper Numeric. Maximum allowed value (default: 1).
+#'
+#' @return Numeric values clamped to [lower, upper], with NA preserved.
+#' @noRd
+normalize_rate <- function(x, lower = 0, upper = 1) {
+  if (!is.numeric(x)) {
+    cli::cli_abort("{.arg x} must be numeric.")
+  }
+  pmax(lower, pmin(upper, x))
+}
+
 #' Validate fraction input (0 to 1)
 #'
 #' Ensures that the input is a numeric fraction between 0 and 1.

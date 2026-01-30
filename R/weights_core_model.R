@@ -144,6 +144,9 @@ calc_avg_weights <- function(
     offtake_rate
   )
 
+  # Normalize offtake_rate
+  offtake_rate <- normalize_rate(offtake_rate)
+
   # Weighted final weight: survivors reach potential_final_weight, offtaken animals go to slaughter
   final_weight <- potential_final_weight * (1 - offtake_rate) + slaughter_weight * offtake_rate
 

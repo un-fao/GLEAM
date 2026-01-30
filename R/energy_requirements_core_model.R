@@ -127,13 +127,7 @@ calc_net_energy_maintenance <- function(
 ) {
 
   # Normalize offtake_rate
-  if (!is.na(offtake_rate)) {
-    if (offtake_rate < 0) {
-      offtake_rate <- 0
-    } else if (offtake_rate > 1) {
-      offtake_rate <- 1
-    }
-  }
+  offtake_rate <- normalize_rate(offtake_rate)
 
   # Validate inputs
   validate_maintenance_inputs(
@@ -417,13 +411,7 @@ calc_net_energy_growth <- function(
 ) {
 
   # Normalize offtake_rate
-  if (!is.na(offtake_rate)) {
-    if (offtake_rate < 0) {
-      offtake_rate <- 0
-    } else if (offtake_rate > 1) {
-      offtake_rate <- 1
-    }
-  }
+  offtake_rate <- normalize_rate(offtake_rate)
 
   # Validate inputs
   validate_growth_inputs(
@@ -1169,13 +1157,7 @@ calc_net_energy_pregnancy <- function(
 ) {
 
   # Normalize offtake_rate
-  if (!is.na(offtake_rate)) {
-    if (offtake_rate < 0) {
-      offtake_rate <- 0
-    } else if (offtake_rate > 1) {
-      offtake_rate <- 1
-    }
-  }
+  offtake_rate <- normalize_rate(offtake_rate)
 
   # Validate inputs
   validate_pregnancy_inputs(
