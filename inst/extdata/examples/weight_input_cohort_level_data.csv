@@ -1,4 +1,4 @@
-herd_id,cohort,duration,offtake_rate
+herd_id,cohort_short,cohort_duration_days,offtake_rate
 1,FA,5000,0
 1,FJ,369.9427083,0
 1,FS,1546.550625,0

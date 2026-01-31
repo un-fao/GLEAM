@@ -1,8 +1,16 @@
 variable_name,lower_bound,lower_inclusive,upper_bound,upper_inclusive
 mort_rate,0,TRUE,1,FALSE
-offtake_rate,-2,TRUE,1,TRUE
+offtake_rate,-10,TRUE,1,TRUE
 duration,1,TRUE,5000,TRUE
+cohort_duration_days,1,TRUE,8000,TRUE
 fem_birth_fraction,0,TRUE,1,TRUE
 litsize,0.01,TRUE,25,TRUE
 parturition_rate,0.01,TRUE,3,TRUE
 size_total,1,TRUE,Inf,TRUE
+live_weight_female_adult,0,TRUE,Inf,TRUE
+live_weight_male_adult,0,TRUE,Inf,TRUE
+birth_weight,0,TRUE,1000,TRUE
+weaning_weight,0,TRUE,1000,TRUE
+slaughter_weight_female,0,TRUE,Inf,TRUE
+slaughter_weight_male,0,TRUE,Inf,TRUE
+slaughter_weight_cohort,0,TRUE,Inf,TRUE

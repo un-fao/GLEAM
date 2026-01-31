@@ -18,18 +18,18 @@ cohort-level input for the weights module.}
 \item{herd_structure}{data.table. Cohort-level table used when \code{has_structure}
 is TRUE.}
 
-\item{herd_simulation_args}{List. Arguments passed to \code{run_herd_simulation()}
-when \code{has_structure} is FALSE.}
+\item{herd_simulation_args}{List. Arguments passed to \code{run_herd_simulation()} when
+\code{has_structure} is FALSE.}
 
-\item{weights_args}{List. Must contain \code{herd_level_data} for
-\code{run_weights_calculations()}.}
+\item{weights_args}{List. Arguments passed to \code{run_weights_calculations()}.}
 }
 \value{
-A cohort-level \code{data.table} with weight calculations appended.
+A cohort-level \code{data.table} containing the outputs produced by the
+modules executed within this pipeline call.
 }
 \description{
-Orchestrates herd simulation (or uses a provided cohort structure) and then
-applies weight calculations at the cohort level.
+Runs the core sequence of model modules to generate cohort-level outputs for a
+livestock production system.
 }
 \examples{
 \dontrun{

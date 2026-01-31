@@ -1,65 +1,70 @@
 # ---- test calc_cohort_weights ----
 test_that("calc_cohort_weights returns valid weights for juvenile non-pig", {
   result <- calc_cohort_weights(
-    cohort = "FJ",
-    adult_fem_weight = 500, adult_mal_weight = 600,
-    birth_weight = 35, slaughter_weight_fem = 480,
-    slaughter_weight_mal = 550, weaning_weight = 90
+    cohort_short = "FJ",
+    live_weight_female_adult = 500, live_weight_male_adult = 600,
+    birth_weight = 35, slaughter_weight_female = 480,
+    slaughter_weight_male = 550, weaning_weight = 90
   )
 
   expect_named(
     result,
-    c("adult_weight", "initial_weight", "potential_final_weight", "slaughter_weight")
+    c(
+      "adult_weight",
+      "live_weight_cohort_initial",
+      "live_weight_cohort_potential_final",
+      "slaughter_weight_cohort"
+    )
   )
-  expect_type(result$initial_weight, "double")
-  expect_true(result$initial_weight == 35)
-  expect_gt(result$potential_final_weight, result$initial_weight)
-  expect_equal(result$potential_final_weight, result$slaughter_weight)
+  expect_type(result$live_weight_cohort_initial, "double")
+  expect_true(result$live_weight_cohort_initial == 35)
+  expect_gt(result$live_weight_cohort_potential_final, result$live_weight_cohort_initial)
+  expect_equal(result$live_weight_cohort_potential_final, result$slaughter_weight_cohort)
 })
 
 test_that("calc_cohort_weights returns correct weights for adult female", {
   result <- calc_cohort_weights(
-    cohort = "FA",
-    adult_fem_weight = 70, adult_mal_weight = 90,
-    birth_weight = 4, slaughter_weight_fem = 65,
-    slaughter_weight_mal = 85, weaning_weight = 18
+    cohort_short = "FA",
+    live_weight_female_adult = 70, live_weight_male_adult = 90,
+    birth_weight = 4, slaughter_weight_female = 65,
+    slaughter_weight_male = 85, weaning_weight = 18
   )
 
-  expect_equal(result$initial_weight, 70)
-  expect_equal(result$potential_final_weight, 70)
-  expect_equal(result$slaughter_weight, 70)
+  expect_equal(result$live_weight_cohort_initial, 70)
+  expect_equal(result$live_weight_cohort_potential_final, 70)
+  expect_equal(result$slaughter_weight_cohort, 70)
 })
 
 test_that("calc_cohort_weights handles pig juvenile with weaning weight", {
   result <- calc_cohort_weights(
-    cohort = "FJ",
-    adult_fem_weight = 180, adult_mal_weight = 220,
-    birth_weight = 1.5, slaughter_weight_fem = 160,
-    slaughter_weight_mal = 200, weaning_weight = 10
+    cohort_short = "FJ",
+    live_weight_female_adult = 180, live_weight_male_adult = 220,
+    birth_weight = 1.5, slaughter_weight_female = 160,
+    slaughter_weight_male = 200, weaning_weight = 10
   )
 
-  expect_equal(result$initial_weight, 1.5)
-  expect_equal(result$potential_final_weight, 10)
-  expect_equal(result$slaughter_weight, 10)
+  expect_equal(result$live_weight_cohort_initial, 1.5)
+  expect_equal(result$live_weight_cohort_potential_final, 10)
+  expect_equal(result$slaughter_weight_cohort, 10)
 })
 
 # ---- test calc_avg_weights ----
 test_that("calc_avg_weights returns correct average and final weights", {
   result <- calc_avg_weights(
-    initial_weight = 100,
-    potential_final_weight = 300,
-    slaughter_weight = 200,
+    live_weight_cohort_initial = 100,
+    live_weight_cohort_potential_final = 300,
+    slaughter_weight_cohort = 200,
     offtake_rate = 0.4
   )
 
-  expect_equal(result$final_weight, 260)
-  expect_equal(result$average_weight, 180)
+  expect_equal(result$live_weight_cohort_final, 260)
+  expect_equal(result$live_weight_cohort_average, 180)
 })
 
 test_that("calc_avg_weights handles zero offtake", {
   result <- calc_avg_weights(100, 300, 200, 0)
-  expect_equal(result$final_weight, 300)
-  expect_equal(result$average_weight, 200)
+  expect_equal(result$live_weight_cohort_final, 300)
+  expect_equal(result$live_weight_cohort_average, 200)
 })
 
 # ---- test calc_daily_weight_gain ----
@@ -77,45 +82,45 @@ test_that("calc_daily_weight_gain handles negative gain", {
 })
 
 # ---- test cohort-specific validation ----
-test_that("calc_cohort_weights rejects missing adult_fem_weight for FJ", {
+test_that("calc_cohort_weights rejects missing live_weight_female_adult for FJ", {
   expect_error(
     calc_cohort_weights(
-      cohort = "FJ",
-      adult_fem_weight = NA_real_,
-      adult_mal_weight = 600,
+      cohort_short = "FJ",
+      live_weight_female_adult = NA_real_,
+      live_weight_male_adult = 600,
       birth_weight = 35,
-      slaughter_weight_fem = 480,
-      slaughter_weight_mal = 550,
+      slaughter_weight_female = 480,
+      slaughter_weight_male = 550,
       weaning_weight = 90
     ),
     "Missing required weight inputs"
   )
 })
 
-test_that("calc_cohort_weights rejects missing slaughter_weight_fem for FS", {
+test_that("calc_cohort_weights rejects missing slaughter_weight_female for FS", {
   expect_error(
     calc_cohort_weights(
-      cohort = "FS",
-      adult_fem_weight = 500,
-      adult_mal_weight = 600,
+      cohort_short = "FS",
+      live_weight_female_adult = 500,
+      live_weight_male_adult = 600,
       birth_weight = 35,
-      slaughter_weight_fem = NA_real_,
-      slaughter_weight_mal = 550,
+      slaughter_weight_female = NA_real_,
+      slaughter_weight_male = 550,
       weaning_weight = 90
     ),
     "Missing required weight inputs"
   )
 })
 
-test_that("calc_cohort_weights rejects missing adult_mal_weight for MA", {
+test_that("calc_cohort_weights rejects missing live_weight_male_adult for MA", {
   expect_error(
     calc_cohort_weights(
-      cohort = "MA",
-      adult_fem_weight = 500,
-      adult_mal_weight = NA_real_,
+      cohort_short = "MA",
+      live_weight_female_adult = 500,
+      live_weight_male_adult = NA_real_,
       birth_weight = 35,
-      slaughter_weight_fem = 480,
-      slaughter_weight_mal = 550,
+      slaughter_weight_female = 480,
+      slaughter_weight_male = 550,
       weaning_weight = 90
     ),
     "Missing required weight inputs"

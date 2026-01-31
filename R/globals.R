@@ -13,7 +13,7 @@
 # This is a standard and CRAN-friendly practice for packages using
 # dynamic column references or pipelines.
 utils::globalVariables(c(
-  ".", "..cols_to_drop", "..final_cols", "ADM0_CODE", "AFKG", "AMKG", "Animal_short",
+  ".", ":=", ".I", ".N", ".SD", "..cols_to_drop", "..final_cols", "ADM0_CODE", "AFKG", "AMKG", "Animal_short",
   "COUNTRY", "HerdType_short", "LPS_short", "MFSKG", "MMSKG", "WA", "afc", "ckg",
   "cohort", "count", "daily_weight_gain", "duration", "duration.FA", "duration.FJ", "duration.FS",
   "duration.MA", "duration.MJ", "duration.MS", "dwg", "female_birth_fraction", "fem_fec",
@@ -37,7 +37,13 @@ utils::globalVariables(c(
   "size_end.FJ", "size_end.FS", "size_end.MA", "size_end.MJ", "size_end.MS",
   "size_total", "slaughter_weight", "structure.FA", "structure.FB", "structure.FJ",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
-  "variable", "wkg", "variable_name", "offtake_number_assessment"
+  "variable", "wkg", "variable_name", "offtake_number_assessment",
+  # Columns used in run_weights_calculations
+  "cohort_short", "cohort_duration_days",
+  "live_weight_female_adult", "live_weight_male_adult",
+  "live_weight_cohort_initial", "live_weight_cohort_potential_final",
+  "slaughter_weight_cohort", "live_weight_cohort_average",
+  "live_weight_cohort_final"
 ))
 
 utils::globalVariables(c(
@@ -87,8 +93,8 @@ utils::globalVariables(c(
 
 utils::globalVariables(c(
   # Columns created by update joins in run_weights_calculations
-  "x.adult_fem_weight", "x.adult_mal_weight", "x.birth_weight",
-  "x.slaughter_weight_fem", "x.slaughter_weight_mal", "x.weaning_weight"
+  "x.live_weight_female_adult", "x.live_weight_male_adult", "x.birth_weight",
+  "x.slaughter_weight_female", "x.slaughter_weight_male", "x.weaning_weight"
 ))
 
 utils::globalVariables(c(

@@ -29,15 +29,15 @@ validate_weights_inputs <- function(
 
   # --- Required columns validation --------------------------------------------
   required_cohort_cols <- c(
-    "herd_id", "cohort", "duration", "offtake_rate"
+    "herd_id", "cohort_short", "cohort_duration_days", "offtake_rate"
   )
   required_herd_cols <- c(
     "herd_id",
-    "adult_fem_weight",
-    "adult_mal_weight",
+    "live_weight_female_adult",
+    "live_weight_male_adult",
     "birth_weight",
-    "slaughter_weight_fem",
-    "slaughter_weight_mal",
+    "slaughter_weight_female",
+    "slaughter_weight_male",
     "weaning_weight"
   )
 
@@ -60,7 +60,7 @@ validate_weights_inputs <- function(
   valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
   # Check for invalid cohort values
-  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort), valid_cohorts)
+  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), valid_cohorts)
   if (length(invalid_cohorts) > 0) {
     cli::cli_abort(
       "Invalid cohort values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
@@ -72,8 +72,8 @@ validate_weights_inputs <- function(
   cohort_completeness <- cohort_level_data[
     , list(
       count = .N,
-      has_all_cohorts = setequal(cohort, valid_cohorts),
-      missing_cohorts = paste(setdiff(valid_cohorts, cohort), collapse = ", ")
+      has_all_cohorts = setequal(cohort_short, valid_cohorts),
+      missing_cohorts = paste(setdiff(valid_cohorts, cohort_short), collapse = ", ")
     ),
     by = herd_id
   ]
