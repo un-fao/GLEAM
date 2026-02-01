@@ -48,10 +48,11 @@ utils::globalVariables(c(
 
 utils::globalVariables(c(
   # Columns used in run_feed_rations
-  "DE_pigs", "DE_ruminants", "GE", "GLEAM3_name", "HerdType", "LPS",
-  "ME_chickens", "ME_pigs", "ME_ruminants", "N_content",
+  "DE_pigs", "DE_ruminants", "GE", "ME_chickens", "ME_pigs", "ME_ruminants",
+  "N_content", "animal", "feed_id", "feed_name", "category", "ration",
+  "feed_name_input", "feed_name_params",
   "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
-  "dig_chickens", "dig_pigs", "dig_ruminants", "value", "Item_Name",
+  "dig_chickens", "dig_pigs", "dig_ruminants",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
   # Columns used in run_directemissions_manure
@@ -127,6 +128,6 @@ utils::globalVariables(c(
 
 # Add species abbreviations
 abbr_animals <- data.table::data.table(
-  Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
-  Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
+  animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
+  animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
 )

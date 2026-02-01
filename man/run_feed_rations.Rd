@@ -4,26 +4,26 @@
 \alias{run_feed_rations}
 \title{Calculate Feed Intake Metrics}
 \usage{
-run_feed_rations(rations_share, feed_params, input_feed)
+run_feed_rations(
+  rations_share,
+  feed_params = data.table::fread(system.file("extdata/Parameters/feed/feed_params.csv",
+    package = "gleam"))
+)
 }
 \arguments{
 \item{rations_share}{A data.table containing feed shares per cohort. Must include:
 \itemize{
-\item \code{Animal_short}, \code{Item_Name}, \code{ADM0_CODE}, \code{HerdType_short}, \code{LPS_short}, \code{cohort}, and \code{value}.
+\item \code{herd_id}, \code{animal}, \code{feed_name}, \code{feed_id}, \code{cohort}, and \code{ration}.
 }}
 
 \item{feed_params}{A data.table of nutrient parameters. Must include:
 \itemize{
-\item \code{Item_Name}, \code{GE}, \code{DE_ruminants}, \code{DE_pigs}, \code{ME_ruminants}, \code{ME_pigs}, \code{ME_chickens}, \code{N_content}.
-}}
-
-\item{input_feed}{A data.table of cohort-level baseline GLEAM data. Must include:
-\itemize{
-\item \code{Animal_short}, \code{ADM0_CODE}, \code{HerdType_short}, \code{LPS_short}, \code{cohort}.
+\item \code{feed_id}, \code{feed_name}, \code{category}, \code{GE}, \code{DE_ruminants}, \code{DE_pigs},
+\code{ME_ruminants}, \code{ME_pigs}, \code{ME_chickens}, \code{N_content}.
 }}
 }
 \value{
-A data.table matching \code{input_feed} enriched with dietary metrics:
+A data.table summarized by \code{herd_id}, \code{animal}, and \code{cohort} with:
 \itemize{
 \item \code{diet_ge}, \code{diet_me}, \code{diet_nitrogen}, \code{diet_dig}
 }
@@ -36,18 +36,14 @@ from feed rations and nutritional parameters. Assumes inputs are pre-cleaned.
 \dontrun{
 # Load cleaned example input from the package and compute feed intake metrics
 feed_params <- data.table::fread(
-  system.file("extdata/Feed_parameters/GLEAM_Feed_parameters.csv", package = "gleam")
+  system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
 )
 
 rations_share <- data.table::fread(
-  system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
+  system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
 )
 
-input_feed <- data.table::fread(
-  system.file("extdata/GLEAM_input_feed.csv", package = "gleam")
-)
-
-result <- run_feed_rations(rations_share, feed_params, input_feed)
+result <- run_feed_rations(rations_share, feed_params)
 }
 }
 \keyword{internal}
