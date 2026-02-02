@@ -40,11 +40,14 @@ utils::globalVariables(c(
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
   "variable", "wkg", "variable_name", "offtake_number_assessment",
   # Columns used in run_weights_calculations
-  "cohort_short", "cohort_duration_days",
+  "cohort", "cohort_short", "cohort_duration_days",
   "live_weight_female_adult", "live_weight_male_adult",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
   "slaughter_weight_cohort", "live_weight_cohort_average",
-  "live_weight_cohort_final"
+  "live_weight_cohort_final", "animal", "animal_short",
+  "feed_id", "feed_name", "category", "ration",
+  "diet_ge", "diet_me", "diet_nitrogen", "diet_dig",
+  "dig_ruminants", "dig_pigs", "dig_chickens"
 ))
 
 utils::globalVariables(c(

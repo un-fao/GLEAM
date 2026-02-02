@@ -20,6 +20,10 @@ calc_energy_digestibility_ratio <- function(
     energy_digestible,
     energy_gross
 ) {
+  validate_energy_digestibility_inputs(
+    energy_digestible, energy_gross
+  )
+  # Ratio is unitless and vectorized by default
   digestibility <- energy_digestible / energy_gross
   return(digestibility)
 }
@@ -56,6 +60,11 @@ calc_diet_digestibility <- function(
     dig_pigs,
     dig_chickens
 ) {
+  validate_diet_digestibility_inputs(
+    animal, ration, dig_ruminants, dig_pigs, dig_chickens
+  )
+
+  # Apply the species-specific digestibility coefficient
   if (animal %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
     diet_dig <- ration * dig_ruminants
   } else if (animal == "CHK") {
@@ -98,6 +107,11 @@ calc_diet_metabolizable_energy <- function(
     me_pigs,
     me_chickens
 ) {
+  validate_diet_metabolizable_energy_inputs(
+    animal, ration, me_ruminants, me_pigs, me_chickens
+  )
+
+  # Apply the species-specific metabolizable energy parameter
   if (animal %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
     diet_me <- ration * me_ruminants
   } else if (animal == "CHK") {
@@ -125,6 +139,8 @@ calc_diet_metabolizable_energy <- function(
 #'
 #' @export
 calc_diet_gross_energy <- function(ration, ge) {
+  validate_diet_gross_energy_inputs(ration, ge)
+  # Contribution is ration share multiplied by gross energy content
   diet_ge <- ration * ge
   return(diet_ge)
 }
@@ -146,6 +162,8 @@ calc_diet_gross_energy <- function(ration, ge) {
 #'
 #' @export
 calc_diet_nitrogen_content <- function(ration, n_content) {
+  validate_diet_nitrogen_inputs(ration, n_content)
+  # Contribution is ration share multiplied by nitrogen content
   diet_nitrogen <- ration * n_content
   return(diet_nitrogen)
 }

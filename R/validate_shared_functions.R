@@ -61,20 +61,6 @@ validate_named_numeric_vector <- function(
   }
 }
 
-#' Validate numeric input that can be NA
-#'
-#' Ensures that the input is a single numeric value, but allows NA.
-#'
-#' @param x The object to validate.
-#' @param arg_name String. The name of the argument to use in the error message.
-#'
-#' @noRd
-validate_scalar_numeric_or_na <- function(x, arg_name) {
-  if (!is.numeric(x) || length(x) != 1) {
-    cli::cli_abort("{.arg {arg_name}} must be a single numeric value (NA is allowed).")
-  }
-}
-
 #' Normalize a rate to a bounded range
 #'
 #' Clamps numeric values to the provided lower/upper bounds while preserving NA.

@@ -4,13 +4,7 @@
 \alias{calc_diet_metabolizable_energy}
 \title{Calculate diet metabolizable energy contribution for a ration component}
 \usage{
-calc_diet_metabolizable_energy(
-  animal,
-  ration,
-  me_ruminants,
-  me_pigs,
-  me_chickens
-)
+calc_diet_metabolizable_energy(animal, ration, me_ruminants, me_pigs, me_chickens)
 }
 \arguments{
 \item{animal}{Character. Species short code. Supported values include

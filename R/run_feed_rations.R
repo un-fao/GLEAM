@@ -34,59 +34,10 @@ run_feed_rations <- function(
       system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
     )
 ) {
-  # --- Input validation --------------------------------------------------------
-  if (!data.table::is.data.table(rations_share)) {
-    cli::cli_abort("{.arg rations_share} must be a data.table.")
-  }
-  if (!data.table::is.data.table(feed_params)) {
-    cli::cli_abort("{.arg feed_params} must be a data.table.")
-  }
+  # --- Step 1: Validate inputs ------------------------------------------------
+  validate_feed_rations_inputs(rations_share, feed_params)
 
-  required_rations_cols <- c(
-    "herd_id", "animal", "feed_name", "feed_id", "cohort", "ration"
-  )
-  required_feed_cols <- c(
-    "feed_id", "feed_name", "category", "GE", "DE_ruminants", "DE_pigs",
-    "ME_ruminants", "ME_pigs", "ME_chickens", "N_content"
-  )
-
-  missing_rations_cols <- setdiff(required_rations_cols, names(rations_share))
-  if (length(missing_rations_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg rations_share}: {.val {missing_rations_cols}}"
-    )
-  }
-
-  missing_feed_cols <- setdiff(required_feed_cols, names(feed_params))
-  if (length(missing_feed_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg feed_params}: {.val {missing_feed_cols}}"
-    )
-  }
-
-  if (anyDuplicated(feed_params$feed_id) > 0) {
-    cli::cli_abort("{.arg feed_params$feed_id} must be unique.")
-  }
-
-  # Validate mapping between feed_id and feed_name in rations_share
-  feed_name_check <- merge(
-    rations_share[, .(feed_id, feed_name)],
-    unique(feed_params[, .(feed_id, feed_name)]),
-    by = "feed_id",
-    all.x = TRUE,
-    suffixes = c("_input", "_params")
-  )
-  mismatched_feed_names <- feed_name_check[
-    is.na(feed_name_params) | feed_name_input != feed_name_params,
-    unique(feed_id)
-  ]
-  if (length(mismatched_feed_names) > 0) {
-    cli::cli_abort(
-      "feed_id values with missing or mismatched feed_name in {.arg feed_params}: {.val {mismatched_feed_names}}"
-    )
-  }
-
-  # Compute digestibility ratios
+  # --- Step 2: Compute digestibility ratios -----------------------------------
   feed_params[
     ,
     `:=`(
@@ -104,7 +55,7 @@ run_feed_rations <- function(
       )
     )
   ]
-  # Merge ration shares with feed parameters
+  # --- Step 3: Merge ration shares with feed parameters -----------------------
   rations_detailed <- merge(
     rations_share, feed_params,
     by = "feed_id", all.x = TRUE, allow.cartesian = TRUE
@@ -125,7 +76,7 @@ run_feed_rations <- function(
     )
   }
 
-  # Calculate cohort feed contributions: GE, ME, digestibility, nitrogen
+  # --- Step 4: Calculate cohort feed contributions ----------------------------
   rations_detailed[
     ,
     diet_ge := calc_diet_gross_energy(
@@ -168,7 +119,7 @@ run_feed_rations <- function(
     by = .I
   ]
 
-  # Summarize dietary metrics at the cohort level
+  # --- Step 5: Summarize dietary metrics at cohort level ----------------------
   rations_summary <- rations_detailed[
     ,
     .(
