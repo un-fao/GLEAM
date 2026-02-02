@@ -14,6 +14,7 @@
 # dynamic column references or pipelines.
 utils::globalVariables(c(
   ".", ":=", ".I", ".N", ".SD", "..cols_to_drop", "..final_cols", "ADM0_CODE", "AFKG", "AMKG", "Animal_short",
+  "animal_short",
   "COUNTRY", "HerdType_short", "LPS_short", "MFSKG", "MMSKG", "WA", "afc", "ckg",
   "cohort", "count", "daily_weight_gain", "duration", "duration.FA", "duration.FJ", "duration.FS",
   "duration.MA", "duration.MJ", "duration.MS", "dwg", "female_birth_fraction", "fem_fec",

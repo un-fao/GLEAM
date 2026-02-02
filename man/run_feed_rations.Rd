@@ -46,4 +46,3 @@ rations_share <- data.table::fread(
 result <- run_feed_rations(rations_share, feed_params)
 }
 }
-\keyword{internal}

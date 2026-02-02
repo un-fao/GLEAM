@@ -25,7 +25,7 @@
 #'
 #' result <- run_feed_rations(rations_share, feed_params)
 #' }
-#' @keywords internal
+#' @export
 #'
 #' @importFrom data.table fifelse data.table
 run_feed_rations <- function(
@@ -90,12 +90,20 @@ run_feed_rations <- function(
   feed_params[
     ,
     `:=`(
-      dig_ruminants  = DE_ruminants / GE,
-      dig_pigs       = DE_pigs / GE,
-      dig_chickens   = ME_chickens / GE
+      dig_ruminants = calc_energy_digestibility_ratio(
+        energy_digestible = DE_ruminants,
+        energy_gross = GE
+      ),
+      dig_pigs = calc_energy_digestibility_ratio(
+        energy_digestible = DE_pigs,
+        energy_gross = GE
+      ),
+      dig_chickens = calc_energy_digestibility_ratio(
+        energy_digestible = ME_chickens,
+        energy_gross = GE
+      )
     )
   ]
-
   # Merge ration shares with feed parameters
   rations_detailed <- merge(
     rations_share, feed_params,
@@ -120,20 +128,44 @@ run_feed_rations <- function(
   # Calculate cohort feed contributions: GE, ME, digestibility, nitrogen
   rations_detailed[
     ,
-    `:=`(
-      diet_ge = ration * GE,
-      diet_nitrogen = ration * N_content,
-      diet_dig = data.table::fifelse(
-        animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), ration * dig_ruminants,
-        data.table::fifelse(animal_short == "CHK", ration * dig_chickens,
-                            data.table::fifelse(animal_short == "PGS", ration * dig_pigs, NA_real_))
-      ),
-      diet_me = data.table::fifelse(
-        animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), ration * ME_ruminants,
-        data.table::fifelse(animal_short == "CHK", ration * ME_chickens,
-                            data.table::fifelse(animal_short == "PGS", ration * ME_pigs, NA_real_))
-      )
-    )
+    diet_ge := calc_diet_gross_energy(
+      ration = ration,
+      ge = GE
+    ),
+    by = .I
+  ]
+
+  rations_detailed[
+    ,
+    diet_nitrogen := calc_diet_nitrogen_content(
+      ration = ration,
+      n_content = N_content
+    ),
+    by = .I
+  ]
+
+  rations_detailed[
+    ,
+    diet_dig := calc_diet_digestibility(
+      animal = animal_short,
+      ration = ration,
+      dig_ruminants = dig_ruminants,
+      dig_pigs = dig_pigs,
+      dig_chickens = dig_chickens
+    ),
+    by = .I
+  ]
+
+  rations_detailed[
+    ,
+    diet_me := calc_diet_metabolizable_energy(
+      animal = animal_short,
+      ration = ration,
+      me_ruminants = ME_ruminants,
+      me_pigs = ME_pigs,
+      me_chickens = ME_chickens
+    ),
+    by = .I
   ]
 
   # Summarize dietary metrics at the cohort level
