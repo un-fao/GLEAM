@@ -5,20 +5,10 @@
 #' and is required to proceed with the estimate of methane emissions from manure maanagement.
 #'
 #'
-#' @param animal Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
 #' @param dmi Numeric. Daily dry matter intake of feed (kg DM/head/day).
 #' @param diet_dig Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
-#' @param diet_me Numeric. Average metabolizable energy content of the diet (MJ/kg DM).
-#' @param diet_ge Numeric. Average gross energy content of the diet (MJ/kg DM).
+#' @param urinary_energy_fraction Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM)
+#' @param diet_ash Numeric. Fraction of animal's gross energy that is excreted in urine (fraction).
 #' 
 #' @return Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
 #' 
@@ -31,23 +21,10 @@
 #'
 #' **Implementation note (simplified coefficients).**
 #' This package uses simplified algebraic forms by species/method that are consistent with the
-#' structure of Eq. 10.24 under fixed/default assumptions for \eqn{UE} and \eqn{ASH}, and with
-#' digestibility supplied directly as a fraction (\code{diet_dig}). 
-#' 
-#' **Species/method branches**
-#' \itemize{
-#'   \item \strong{(\code{"CTL"}, \code{"BFL"}, \code{"CML"}, \code{"SHP"}, \code{"GTS"}):
-#'     \code{vs = dmi * (1.04 - diet_dig) * 0.92}.
-#'     The formula is a modification of the original IPCC equation. First, the average gross energy content of the ration is used instead
+#' structure of Eq. 10.24. 
+#' Specifically, in IPCC guidelines the the average gross energy content of the ration is used instead 
 #' of a fixed value of 18.45 MJ×kg DM-1. Thus, ge / diet_ge equals the daily intake, dmi. 
-#'     Second, it is assumed that Urinary energy is 4% and the Ash content in feed is 8%. Therefore, GE × (GE + UE) becomes 1.04 and 1 – ASH becomes 0.92
-#'     }
-#'   \item \strong{Swine} (\code{"PGS"}):
-#'     \itemize{
-#'       \item \code{vs = dmi * (1.02 - diet_dig) * 0.94}.
-#'       It is assumed that urinary energy is 2% and the ash content in feed is 6% (based on IPCC, 2019). Therefore, GE × (GE + UE) becomes 1.02 and 1 – ASH becomes 0.94.
-#'     }
-#' }
+#'     
 #'
 #'
 #'@references
