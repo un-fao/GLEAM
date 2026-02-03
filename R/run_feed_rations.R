@@ -4,13 +4,17 @@
 #' from feed rations and nutritional parameters. Assumes inputs are pre-cleaned.
 #'
 #' @param rations_share A data.table containing feed shares per cohort. Must include:
-#'   - `herd_id`, `animal`, `feed_name`, `feed_id`, `cohort`, and `ration`.
+#'   - `herd_id`, `animal`, `feed_name`, `feed_id`, `cohort`, and
+#'     `feed_ration_fraction`.
 #' @param feed_params A data.table of nutrient parameters. Must include:
-#'   - `feed_id`, `feed_name`, `category`, `GE`, `DE_ruminants`, `DE_pigs`,
-#'     `ME_ruminants`, `ME_pigs`, `ME_chickens`, `N_content`.
+#'   - `feed_id`, `feed_name`, `category`, `feed_gross_energy`,
+#'     `feed_digestible_energy_ruminant`, `feed_digestible_energy_pigs`,
+#'     `feed_metabolizable_energy_ruminant`, `feed_metabolizable_energy_pigs`,
+#'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`.
 #'
 #' @return A data.table summarized by `herd_id`, `animal`, and `cohort` with:
-#'   - `diet_ge`, `diet_me`, `diet_nitrogen`, `diet_dig`
+#'   - `diet_gross_energy`, `diet_metabolizable_energy`,
+#'     `diet_nitrogen`, `diet_digestibility_fraction`
 #'
 #' @examples
 #' \dontrun{
@@ -41,19 +45,20 @@ run_feed_rations <- function(
   feed_params[
     ,
     `:=`(
-      dig_ruminants = calc_energy_digestibility_ratio(
-        energy_digestible = DE_ruminants,
-        energy_gross = GE
+      feed_digestibility_fraction_ruminant = calc_feed_digestibility_fraction(
+        feed_digestible_energy = feed_digestible_energy_ruminant,
+        feed_gross_energy = feed_gross_energy
       ),
-      dig_pigs = calc_energy_digestibility_ratio(
-        energy_digestible = DE_pigs,
-        energy_gross = GE
+      feed_digestibility_fraction_pigs = calc_feed_digestibility_fraction(
+        feed_digestible_energy = feed_digestible_energy_pigs,
+        feed_gross_energy = feed_gross_energy
       ),
-      dig_chickens = calc_energy_digestibility_ratio(
-        energy_digestible = ME_chickens,
-        energy_gross = GE
+      feed_digestibility_fraction_chicken = calc_feed_digestibility_fraction(
+        feed_digestible_energy = feed_metabolizable_energy_chicken,
+        feed_gross_energy = feed_gross_energy
       )
-    )
+    ),
+    by = .I
   ]
   # --- Step 3: Merge ration shares with feed parameters -----------------------
   rations_detailed <- merge(
@@ -79,9 +84,9 @@ run_feed_rations <- function(
   # --- Step 4: Calculate cohort feed contributions ----------------------------
   rations_detailed[
     ,
-    diet_ge := calc_diet_gross_energy(
-      ration = ration,
-      ge = GE
+    diet_gross_energy := calc_diet_gross_energy(
+      feed_ration_fraction = feed_ration_fraction,
+      feed_gross_energy = feed_gross_energy
     ),
     by = .I
   ]
@@ -89,32 +94,32 @@ run_feed_rations <- function(
   rations_detailed[
     ,
     diet_nitrogen := calc_diet_nitrogen_content(
-      ration = ration,
-      n_content = N_content
+      feed_ration_fraction = feed_ration_fraction,
+      feed_nitrogen_content = feed_nitrogen_content
     ),
     by = .I
   ]
 
   rations_detailed[
     ,
-    diet_dig := calc_diet_digestibility(
-      animal = animal_short,
-      ration = ration,
-      dig_ruminants = dig_ruminants,
-      dig_pigs = dig_pigs,
-      dig_chickens = dig_chickens
+    diet_digestibility_fraction := calc_diet_digestibility(
+      species_short = animal_short,
+      feed_ration_fraction = feed_ration_fraction,
+      feed_digestibility_fraction_ruminant = feed_digestibility_fraction_ruminant,
+      feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs,
+      feed_digestibility_fraction_chicken = feed_digestibility_fraction_chicken
     ),
     by = .I
   ]
 
   rations_detailed[
     ,
-    diet_me := calc_diet_metabolizable_energy(
-      animal = animal_short,
-      ration = ration,
-      me_ruminants = ME_ruminants,
-      me_pigs = ME_pigs,
-      me_chickens = ME_chickens
+    diet_metabolizable_energy := calc_diet_metabolizable_energy(
+      species_short = animal_short,
+      feed_ration_fraction = feed_ration_fraction,
+      feed_metabolizable_energy_ruminant = feed_metabolizable_energy_ruminant,
+      feed_metabolizable_energy_pigs = feed_metabolizable_energy_pigs,
+      feed_metabolizable_energy_chicken = feed_metabolizable_energy_chicken
     ),
     by = .I
   ]
@@ -123,10 +128,10 @@ run_feed_rations <- function(
   rations_summary <- rations_detailed[
     ,
     .(
-      diet_ge = sum(diet_ge, na.rm = TRUE),
-      diet_me = sum(diet_me, na.rm = TRUE),
+      diet_gross_energy = sum(diet_gross_energy, na.rm = TRUE),
+      diet_metabolizable_energy = sum(diet_metabolizable_energy, na.rm = TRUE),
       diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
-      diet_dig = sum(diet_dig, na.rm = TRUE)
+      diet_digestibility_fraction = sum(diet_digestibility_fraction, na.rm = TRUE)
     ),
     by = .(herd_id, animal, cohort)
   ]

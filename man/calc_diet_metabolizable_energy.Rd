@@ -4,20 +4,26 @@
 \alias{calc_diet_metabolizable_energy}
 \title{Calculate diet metabolizable energy contribution for a ration component}
 \usage{
-calc_diet_metabolizable_energy(animal, ration, me_ruminants, me_pigs, me_chickens)
+calc_diet_metabolizable_energy(
+  species_short,
+  feed_ration_fraction,
+  feed_metabolizable_energy_ruminant = NA_real_,
+  feed_metabolizable_energy_pigs = NA_real_,
+  feed_metabolizable_energy_chicken = NA_real_
+)
 }
 \arguments{
-\item{animal}{Character. Species short code. Supported values include
+\item{species_short}{Character. Species short code. Supported values include
 ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}),
 chickens (\code{CHK}), and pigs (\code{PGS}).}
 
-\item{ration}{Numeric. Ration share for the feed component (fraction).}
+\item{feed_ration_fraction}{Numeric. Ration share for the feed component (fraction).}
 
-\item{me_ruminants}{Numeric. Metabolizable energy for ruminants.}
+\item{feed_metabolizable_energy_ruminant}{Numeric. Metabolizable energy for ruminants.}
 
-\item{me_pigs}{Numeric. Metabolizable energy for pigs.}
+\item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy for pigs.}
 
-\item{me_chickens}{Numeric. Metabolizable energy for chickens.}
+\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy for chickens.}
 }
 \value{
 Numeric. Metabolizable energy contribution for the ration component.
@@ -28,9 +34,9 @@ Applies species-specific metabolizable energy parameters to a ration share.
 \details{
 The metabolizable energy contribution uses the animal-specific parameter:
 \itemize{
-\item Ruminants: \code{ration * me_ruminants}
-\item Chickens: \code{ration * me_chickens}
-\item Pigs: \code{ration * me_pigs}
+\item Ruminants: \code{feed_ration_fraction * feed_metabolizable_energy_ruminant}
+\item Chickens: \code{feed_ration_fraction * feed_metabolizable_energy_chicken}
+\item Pigs: \code{feed_ration_fraction * feed_metabolizable_energy_pigs}
 }
 
 This helper is vectorized over its inputs.

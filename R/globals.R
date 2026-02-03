@@ -44,19 +44,20 @@ utils::globalVariables(c(
   "live_weight_female_adult", "live_weight_male_adult",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
   "slaughter_weight_cohort", "live_weight_cohort_average",
-  "live_weight_cohort_final", "animal", "animal_short",
-  "feed_id", "feed_name", "category", "ration",
-  "diet_ge", "diet_me", "diet_nitrogen", "diet_dig",
-  "dig_ruminants", "dig_pigs", "dig_chickens"
+  "live_weight_cohort_final", "animal", "animal_short"
 ))
 
 utils::globalVariables(c(
   # Columns used in run_feed_rations
-  "DE_pigs", "DE_ruminants", "GE", "ME_chickens", "ME_pigs", "ME_ruminants",
-  "N_content", "animal", "feed_id", "feed_name", "category", "ration",
+  "animal", "animal_short", "feed_id", "feed_name", "category", "feed_ration_fraction",
+  "feed_gross_energy", "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
+  "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
+  "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
   "feed_name_input", "feed_name_params",
-  "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
-  "dig_chickens", "dig_pigs", "dig_ruminants",
+  "diet_gross_energy", "diet_metabolizable_energy",
+  "diet_nitrogen", "diet_digestibility_fraction",
+  "feed_digestibility_fraction_ruminant", "feed_digestibility_fraction_pigs",
+  "feed_digestibility_fraction_chicken",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
   # Columns used in run_directemissions_manure

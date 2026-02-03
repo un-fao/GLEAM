@@ -4,12 +4,12 @@
 \alias{calc_diet_nitrogen_content}
 \title{Calculate diet nitrogen contribution for a ration component}
 \usage{
-calc_diet_nitrogen_content(ration, n_content)
+calc_diet_nitrogen_content(feed_ration_fraction, feed_nitrogen_content)
 }
 \arguments{
-\item{ration}{Numeric. Ration share for the feed component (fraction).}
+\item{feed_ration_fraction}{Numeric. Ration share for the feed component (fraction).}
 
-\item{n_content}{Numeric. Nitrogen content (kg N/kg DM).}
+\item{feed_nitrogen_content}{Numeric. Nitrogen content (kg N/kg DM).}
 }
 \value{
 Numeric. Nitrogen contribution for the ration component.
@@ -19,7 +19,7 @@ Computes nitrogen contribution from a ration share and nitrogen content.
 }
 \details{
 The nitrogen contribution is defined as:
-\deqn{diet\_nitrogen = ration \times n\_content}
+\deqn{diet\_nitrogen = feed\_ration\_fraction \times feed\_nitrogen\_content}
 
 This helper is vectorized over its inputs.
 }

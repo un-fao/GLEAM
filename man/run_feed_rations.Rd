@@ -13,19 +13,23 @@ run_feed_rations(
 \arguments{
 \item{rations_share}{A data.table containing feed shares per cohort. Must include:
 \itemize{
-\item \code{herd_id}, \code{animal}, \code{feed_name}, \code{feed_id}, \code{cohort}, and \code{ration}.
+\item \code{herd_id}, \code{animal}, \code{feed_name}, \code{feed_id}, \code{cohort}, and
+\code{feed_ration_fraction}.
 }}
 
 \item{feed_params}{A data.table of nutrient parameters. Must include:
 \itemize{
-\item \code{feed_id}, \code{feed_name}, \code{category}, \code{GE}, \code{DE_ruminants}, \code{DE_pigs},
-\code{ME_ruminants}, \code{ME_pigs}, \code{ME_chickens}, \code{N_content}.
+\item \code{feed_id}, \code{feed_name}, \code{category}, \code{feed_gross_energy},
+\code{feed_digestible_energy_ruminant}, \code{feed_digestible_energy_pigs},
+\code{feed_metabolizable_energy_ruminant}, \code{feed_metabolizable_energy_pigs},
+\code{feed_metabolizable_energy_chicken}, \code{feed_nitrogen_content}.
 }}
 }
 \value{
 A data.table summarized by \code{herd_id}, \code{animal}, and \code{cohort} with:
 \itemize{
-\item \code{diet_ge}, \code{diet_me}, \code{diet_nitrogen}, \code{diet_dig}
+\item \code{diet_gross_energy}, \code{diet_metabolizable_energy},
+\code{diet_nitrogen}, \code{diet_digestibility_fraction}
 }
 }
 \description{

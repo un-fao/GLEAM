@@ -4,20 +4,26 @@
 \alias{calc_diet_digestibility}
 \title{Calculate diet digestibility contribution for a ration component}
 \usage{
-calc_diet_digestibility(animal, ration, dig_ruminants, dig_pigs, dig_chickens)
+calc_diet_digestibility(
+  species_short,
+  feed_ration_fraction,
+  feed_digestibility_fraction_ruminant = NA_real_,
+  feed_digestibility_fraction_pigs = NA_real_,
+  feed_digestibility_fraction_chicken = NA_real_
+)
 }
 \arguments{
-\item{animal}{Character. Species short code. Supported values include
+\item{species_short}{Character. Species short code. Supported values include
 ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}),
 chickens (\code{CHK}), and pigs (\code{PGS}).}
 
-\item{ration}{Numeric. Ration share for the feed component (fraction).}
+\item{feed_ration_fraction}{Numeric. Ration share for the feed component (fraction).}
 
-\item{dig_ruminants}{Numeric. Digestibility ratio for ruminants.}
+\item{feed_digestibility_fraction_ruminant}{Numeric. Digestibility ratio for ruminants.}
 
-\item{dig_pigs}{Numeric. Digestibility ratio for pigs.}
+\item{feed_digestibility_fraction_pigs}{Numeric. Digestibility ratio for pigs.}
 
-\item{dig_chickens}{Numeric. Digestibility ratio for chickens.}
+\item{feed_digestibility_fraction_chicken}{Numeric. Digestibility ratio for chickens.}
 }
 \value{
 Numeric. Digestibility contribution for the ration component.
@@ -28,9 +34,9 @@ Applies species-specific digestibility parameters to a ration share.
 \details{
 The digestibility contribution uses the animal-specific digestibility ratio:
 \itemize{
-\item Ruminants: \code{ration * dig_ruminants}
-\item Chickens: \code{ration * dig_chickens}
-\item Pigs: \code{ration * dig_pigs}
+\item Ruminants: \code{feed_ration_fraction * feed_digestibility_fraction_ruminant}
+\item Chickens: \code{feed_ration_fraction * feed_digestibility_fraction_chicken}
+\item Pigs: \code{feed_ration_fraction * feed_digestibility_fraction_pigs}
 }
 
 This helper is vectorized over its inputs.

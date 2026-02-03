@@ -1,169 +1,177 @@
-#' Calculate energy digestibility ratio
+#' Calculate feed digestibility fraction
 #'
 #' Computes digestibility as the ratio of digestible or metabolizable energy
 #' to gross energy.
 #'
-#' @param energy_digestible Numeric. Digestible or metabolizable energy (same
-#'   units as `energy_gross`).
-#' @param energy_gross Numeric. Gross energy (same units as `energy_digestible`).
+#' @param feed_digestible_energy Numeric. Digestible or metabolizable energy (same
+#'   units as `feed_gross_energy`).
+#' @param feed_gross_energy Numeric. Gross energy (same units as `feed_digestible_energy`).
 #'
-#' @return Numeric. Digestibility ratio (unitless).
+#' @return Numeric. Digestibility fraction (unitless).
 #'
 #' @details
 #' The digestibility ratio is defined as:
-#' \deqn{digestibility = energy_digestible / energy_gross}
+#' \deqn{feed\_digestibility\_fraction = feed\_digestible\_energy / feed\_gross\_energy}
 #'
 #' This helper is vectorized over its inputs.
 #'
 #' @export
-calc_energy_digestibility_ratio <- function(
-    energy_digestible,
-    energy_gross
+calc_feed_digestibility_fraction <- function(
+    feed_digestible_energy,
+    feed_gross_energy
 ) {
-  validate_energy_digestibility_inputs(
-    energy_digestible, energy_gross
-  )
+  # validate_feed_digestibility_inputs(
+  #  feed_digestible_energy, feed_gross_energy
+  # )
   # Ratio is unitless and vectorized by default
-  digestibility <- energy_digestible / energy_gross
-  return(digestibility)
+  feed_digestibility_fraction <- feed_digestible_energy / feed_gross_energy
+  return(feed_digestibility_fraction)
 }
 
 #' Calculate diet digestibility contribution for a ration component
 #'
 #' Applies species-specific digestibility parameters to a ration share.
 #'
-#' @param animal Character. Species short code. Supported values include
+#' @param species_short Character. Species short code. Supported values include
 #'   ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}),
 #'   chickens (\code{CHK}), and pigs (\code{PGS}).
-#' @param ration Numeric. Ration share for the feed component (fraction).
-#' @param dig_ruminants Numeric. Digestibility ratio for ruminants.
-#' @param dig_pigs Numeric. Digestibility ratio for pigs.
-#' @param dig_chickens Numeric. Digestibility ratio for chickens.
+#' @param feed_ration_fraction Numeric. Ration share for the feed component (fraction).
+#' @param feed_digestibility_fraction_ruminant Numeric. Digestibility ratio for ruminants.
+#' @param feed_digestibility_fraction_pigs Numeric. Digestibility ratio for pigs.
+#' @param feed_digestibility_fraction_chicken Numeric. Digestibility ratio for chickens.
 #'
 #' @return Numeric. Digestibility contribution for the ration component.
 #'
 #' @details
 #' The digestibility contribution uses the animal-specific digestibility ratio:
 #' \itemize{
-#'   \item Ruminants: \code{ration * dig_ruminants}
-#'   \item Chickens: \code{ration * dig_chickens}
-#'   \item Pigs: \code{ration * dig_pigs}
+#'   \item Ruminants: \code{feed_ration_fraction * feed_digestibility_fraction_ruminant}
+#'   \item Chickens: \code{feed_ration_fraction * feed_digestibility_fraction_chicken}
+#'   \item Pigs: \code{feed_ration_fraction * feed_digestibility_fraction_pigs}
 #' }
 #'
 #' This helper is vectorized over its inputs.
 #'
 #' @export
 calc_diet_digestibility <- function(
-    animal,
-    ration,
-    dig_ruminants = NA_real_,
-    dig_pigs = NA_real_,
-    dig_chickens = NA_real_
+    species_short,
+    feed_ration_fraction,
+    feed_digestibility_fraction_ruminant = NA_real_,
+    feed_digestibility_fraction_pigs = NA_real_,
+    feed_digestibility_fraction_chicken = NA_real_
 ) {
   validate_diet_digestibility_inputs(
-    animal, ration, dig_ruminants, dig_pigs, dig_chickens
+    species_short,
+    feed_ration_fraction,
+    feed_digestibility_fraction_ruminant,
+    feed_digestibility_fraction_pigs,
+    feed_digestibility_fraction_chicken
   )
 
   # Apply the species-specific digestibility coefficient
-  if (animal %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
-    diet_dig <- ration * dig_ruminants
-  } else if (animal == "CHK") {
-    diet_dig <- ration * dig_chickens
+  if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+    diet_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_ruminant
+  } else if (species_short == "CHK") {
+    diet_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_chicken
   } else {
-    diet_dig <- ration * dig_pigs
+    diet_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_pigs
   }
-  return(diet_dig)
+  return(diet_digestibility_fraction)
 }
 
 #' Calculate diet metabolizable energy contribution for a ration component
 #'
 #' Applies species-specific metabolizable energy parameters to a ration share.
 #'
-#' @param animal Character. Species short code. Supported values include
+#' @param species_short Character. Species short code. Supported values include
 #'   ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}),
 #'   chickens (\code{CHK}), and pigs (\code{PGS}).
-#' @param ration Numeric. Ration share for the feed component (fraction).
-#' @param me_ruminants Numeric. Metabolizable energy for ruminants.
-#' @param me_pigs Numeric. Metabolizable energy for pigs.
-#' @param me_chickens Numeric. Metabolizable energy for chickens.
+#' @param feed_ration_fraction Numeric. Ration share for the feed component (fraction).
+#' @param feed_metabolizable_energy_ruminant Numeric. Metabolizable energy for ruminants.
+#' @param feed_metabolizable_energy_pigs Numeric. Metabolizable energy for pigs.
+#' @param feed_metabolizable_energy_chicken Numeric. Metabolizable energy for chickens.
 #'
 #' @return Numeric. Metabolizable energy contribution for the ration component.
 #'
 #' @details
 #' The metabolizable energy contribution uses the animal-specific parameter:
 #' \itemize{
-#'   \item Ruminants: \code{ration * me_ruminants}
-#'   \item Chickens: \code{ration * me_chickens}
-#'   \item Pigs: \code{ration * me_pigs}
+#'   \item Ruminants: \code{feed_ration_fraction * feed_metabolizable_energy_ruminant}
+#'   \item Chickens: \code{feed_ration_fraction * feed_metabolizable_energy_chicken}
+#'   \item Pigs: \code{feed_ration_fraction * feed_metabolizable_energy_pigs}
 #' }
 #'
 #' This helper is vectorized over its inputs.
 #'
 #' @export
 calc_diet_metabolizable_energy <- function(
-    animal,
-    ration,
-    me_ruminants = NA_real_,
-    me_pigs = NA_real_,
-    me_chickens = NA_real_
+    species_short,
+    feed_ration_fraction,
+    feed_metabolizable_energy_ruminant = NA_real_,
+    feed_metabolizable_energy_pigs = NA_real_,
+    feed_metabolizable_energy_chicken = NA_real_
 ) {
   validate_diet_metabolizable_energy_inputs(
-    animal, ration, me_ruminants, me_pigs, me_chickens
+    species_short,
+    feed_ration_fraction,
+    feed_metabolizable_energy_ruminant,
+    feed_metabolizable_energy_pigs,
+    feed_metabolizable_energy_chicken
   )
 
   # Apply the species-specific metabolizable energy parameter
-  if (animal %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
-    diet_me <- ration * me_ruminants
-  } else if (animal == "CHK") {
-    diet_me <- ration * me_chickens
+  if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+    diet_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_ruminant
+  } else if (species_short == "CHK") {
+    diet_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_chicken
   } else {
-    diet_me <- ration * me_pigs
+    diet_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_pigs
   }
-  return(diet_me)
+  return(diet_metabolizable_energy)
 }
 
 #' Calculate diet gross energy contribution for a ration component
 #'
 #' Computes gross energy contribution from a ration share and gross energy input.
 #'
-#' @param ration Numeric. Ration share for the feed component (fraction).
-#' @param ge Numeric. Gross energy content (MJ/kg DM).
+#' @param feed_ration_fraction Numeric. Ration share for the feed component (fraction).
+#' @param feed_gross_energy Numeric. Gross energy content (MJ/kg DM).
 #'
 #' @return Numeric. Gross energy contribution for the ration component.
 #'
 #' @details
 #' The gross energy contribution is defined as:
-#' \deqn{diet\_ge = ration \times ge}
+#' \deqn{diet\_gross\_energy = feed\_ration\_fraction \times feed\_gross\_energy}
 #'
 #' This helper is vectorized over its inputs.
 #'
 #' @export
-calc_diet_gross_energy <- function(ration, ge) {
-  validate_diet_gross_energy_inputs(ration, ge)
+calc_diet_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
+  validate_diet_gross_energy_inputs(feed_ration_fraction, feed_gross_energy)
   # Contribution is ration share multiplied by gross energy content
-  diet_ge <- ration * ge
-  return(diet_ge)
+  diet_gross_energy <- feed_ration_fraction * feed_gross_energy
+  return(diet_gross_energy)
 }
 
 #' Calculate diet nitrogen contribution for a ration component
 #'
 #' Computes nitrogen contribution from a ration share and nitrogen content.
 #'
-#' @param ration Numeric. Ration share for the feed component (fraction).
-#' @param n_content Numeric. Nitrogen content (kg N/kg DM).
+#' @param feed_ration_fraction Numeric. Ration share for the feed component (fraction).
+#' @param feed_nitrogen_content Numeric. Nitrogen content (kg N/kg DM).
 #'
 #' @return Numeric. Nitrogen contribution for the ration component.
 #'
 #' @details
 #' The nitrogen contribution is defined as:
-#' \deqn{diet\_nitrogen = ration \times n\_content}
+#' \deqn{diet\_nitrogen = feed\_ration\_fraction \times feed\_nitrogen\_content}
 #'
 #' This helper is vectorized over its inputs.
 #'
 #' @export
-calc_diet_nitrogen_content <- function(ration, n_content) {
-  validate_diet_nitrogen_inputs(ration, n_content)
+calc_diet_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_content) {
+  validate_diet_nitrogen_inputs(feed_ration_fraction, feed_nitrogen_content)
   # Contribution is ration share multiplied by nitrogen content
-  diet_nitrogen <- ration * n_content
+  diet_nitrogen <- feed_ration_fraction * feed_nitrogen_content
   return(diet_nitrogen)
 }

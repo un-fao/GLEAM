@@ -2,20 +2,20 @@
 #'
 #' @noRd
 validate_diet_digestibility_inputs <- function(
-    animal,
-    ration,
-    dig_ruminants,
-    dig_pigs,
-    dig_chickens
+    species_short,
+    feed_ration_fraction,
+    feed_digestibility_fraction_ruminant,
+    feed_digestibility_fraction_pigs,
+    feed_digestibility_fraction_chicken
 ) {
-  validate_scalar_character(animal, "animal")
-  validate_scalar_numeric(ration, "ration")
+  validate_scalar_character(species_short, "species_short")
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
 
   # Ensure all digestibility inputs are scalar numerics (NA allowed)
   args <- list(
-    dig_ruminants = dig_ruminants,
-    dig_pigs = dig_pigs,
-    dig_chickens = dig_chickens
+    feed_digestibility_fraction_ruminant = feed_digestibility_fraction_ruminant,
+    feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs,
+    feed_digestibility_fraction_chicken = feed_digestibility_fraction_chicken
   )
   for (arg_name in names(args)) {
     val <- args[[arg_name]]
@@ -25,19 +25,19 @@ validate_diet_digestibility_inputs <- function(
   }
 
   valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "CHK", "PGS")
-  if (!animal %in% valid_animals) {
+  if (!species_short %in% valid_animals) {
     cli::cli_abort(
-      "Invalid animal value: {.val {animal}}. Must be one of: {.val {valid_animals}}"
+      "Invalid species_short value: {.val {species_short}}. Must be one of: {.val {valid_animals}}"
     )
   }
 
   # Require the species-specific digestibility input to be present (non-NA)
-  required_by_animal <- if (animal %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
-    c("dig_ruminants")
-  } else if (animal == "CHK") {
-    c("dig_chickens")
+  required_by_animal <- if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+    c("feed_digestibility_fraction_ruminant")
+  } else if (species_short == "CHK") {
+    c("feed_digestibility_fraction_chicken")
   } else {
-    c("dig_pigs")
+    c("feed_digestibility_fraction_pigs")
   }
 
   missing_required <- required_by_animal[vapply(
@@ -48,7 +48,7 @@ validate_diet_digestibility_inputs <- function(
 
   if (length(missing_required) > 0) {
     cli::cli_abort(
-      "Missing required digestibility inputs for animal {.val {animal}}: {.val {missing_required}}"
+      "Missing required digestibility inputs for species_short {.val {species_short}}: {.val {missing_required}}"
     )
   }
 }
@@ -57,19 +57,19 @@ validate_diet_digestibility_inputs <- function(
 #'
 #' @noRd
 validate_diet_metabolizable_energy_inputs <- function(
-    animal,
-    ration,
-    me_ruminants,
-    me_pigs,
-    me_chickens
+    species_short,
+    feed_ration_fraction,
+    feed_metabolizable_energy_ruminant,
+    feed_metabolizable_energy_pigs,
+    feed_metabolizable_energy_chicken
 ) {
-  validate_scalar_character(animal, "animal")
-  validate_scalar_numeric(ration, "ration")
+  validate_scalar_character(species_short, "species_short")
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
   # Ensure all metabolizable energy inputs are scalar numerics (NA allowed)
   args <- list(
-    me_ruminants = me_ruminants,
-    me_pigs = me_pigs,
-    me_chickens = me_chickens
+    feed_metabolizable_energy_ruminant = feed_metabolizable_energy_ruminant,
+    feed_metabolizable_energy_pigs = feed_metabolizable_energy_pigs,
+    feed_metabolizable_energy_chicken = feed_metabolizable_energy_chicken
   )
   for (arg_name in names(args)) {
     val <- args[[arg_name]]
@@ -79,19 +79,19 @@ validate_diet_metabolizable_energy_inputs <- function(
   }
 
   valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "CHK", "PGS")
-  if (!animal %in% valid_animals) {
+  if (!species_short %in% valid_animals) {
     cli::cli_abort(
-      "Invalid animal value: {.val {animal}}. Must be one of: {.val {valid_animals}}"
+      "Invalid species_short value: {.val {species_short}}. Must be one of: {.val {valid_animals}}"
     )
   }
 
   # Require the species-specific ME input to be present (non-NA)
-  required_by_animal <- if (animal %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
-    c("me_ruminants")
-  } else if (animal == "CHK") {
-    c("me_chickens")
+  required_by_animal <- if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+    c("feed_metabolizable_energy_ruminant")
+  } else if (species_short == "CHK") {
+    c("feed_metabolizable_energy_chicken")
   } else {
-    c("me_pigs")
+    c("feed_metabolizable_energy_pigs")
   }
 
   missing_required <- required_by_animal[vapply(
@@ -102,37 +102,37 @@ validate_diet_metabolizable_energy_inputs <- function(
 
   if (length(missing_required) > 0) {
     cli::cli_abort(
-      "Missing required metabolizable energy inputs for animal {.val {animal}}: {.val {missing_required}}"
+      "Missing required metabolizable energy inputs for species_short {.val {species_short}}: {.val {missing_required}}"
     )
   }
 }
 
-#' Validate inputs for calc_energy_digestibility_ratio
+#' Validate inputs for calc_feed_digestibility_fraction
 #'
 #' @noRd
-validate_energy_digestibility_inputs <- function(
-    energy_digestible,
-    energy_gross
+validate_feed_digestibility_inputs <- function(
+    feed_digestible_energy,
+    feed_gross_energy
 ) {
   # Scalar numeric checks (no NA)
-  validate_scalar_numeric(energy_digestible, "energy_digestible")
-  validate_scalar_numeric(energy_gross, "energy_gross")
+  validate_scalar_numeric(feed_digestible_energy, "feed_digestible_energy")
+  validate_scalar_numeric(feed_gross_energy, "feed_gross_energy")
 }
 
 #' Validate inputs for calc_diet_gross_energy
 #'
 #' @noRd
-validate_diet_gross_energy_inputs <- function(ration, ge) {
+validate_diet_gross_energy_inputs <- function(feed_ration_fraction, feed_gross_energy) {
   # Ration and GE must be numeric scalars
-  validate_scalar_numeric(ration, "ration")
-  validate_scalar_numeric(ge, "ge")
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_scalar_numeric(feed_gross_energy, "feed_gross_energy")
 }
 
 #' Validate inputs for calc_diet_nitrogen_content
 #'
 #' @noRd
-validate_diet_nitrogen_inputs <- function(ration, n_content) {
+validate_diet_nitrogen_inputs <- function(feed_ration_fraction, feed_nitrogen_content) {
   # Ration and nitrogen content must be numeric scalars
-  validate_scalar_numeric(ration, "ration")
-  validate_scalar_numeric(n_content, "n_content")
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_scalar_numeric(feed_nitrogen_content, "feed_nitrogen_content")
 }

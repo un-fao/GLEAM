@@ -4,12 +4,12 @@
 \alias{calc_diet_gross_energy}
 \title{Calculate diet gross energy contribution for a ration component}
 \usage{
-calc_diet_gross_energy(ration, ge)
+calc_diet_gross_energy(feed_ration_fraction, feed_gross_energy)
 }
 \arguments{
-\item{ration}{Numeric. Ration share for the feed component (fraction).}
+\item{feed_ration_fraction}{Numeric. Ration share for the feed component (fraction).}
 
-\item{ge}{Numeric. Gross energy content (MJ/kg DM).}
+\item{feed_gross_energy}{Numeric. Gross energy content (MJ/kg DM).}
 }
 \value{
 Numeric. Gross energy contribution for the ration component.
@@ -19,7 +19,7 @@ Computes gross energy contribution from a ration share and gross energy input.
 }
 \details{
 The gross energy contribution is defined as:
-\deqn{diet\_ge = ration \times ge}
+\deqn{diet\_gross\_energy = feed\_ration\_fraction \times feed\_gross\_energy}
 
 This helper is vectorized over its inputs.
 }

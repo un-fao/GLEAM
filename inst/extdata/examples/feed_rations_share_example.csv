@@ -1,4 +1,4 @@
-herd_id,animal,feed_name,feed_id,cohort,ration
+herd_id,animal,feed_name,feed_id,cohort,feed_ration_fraction
 1,Cattle,GRASSF_uncultivated,1,FJ,0.6
 1,Cattle,MAIZE,5,FJ,0.4
 1,Cattle,GRASSF_uncultivated,1,FS,0.6
