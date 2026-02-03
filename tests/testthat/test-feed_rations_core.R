@@ -1,3 +1,4 @@
+# ---- calc_diet_digestibility -------------------------------------------------
 test_that("calc_diet_digestibility selects ruminant digestibility", {
   value <- calc_diet_digestibility(
     animal = "CTL",
@@ -31,6 +32,7 @@ test_that("calc_diet_digestibility selects pig digestibility", {
   expect_equal(value, 0.3)
 })
 
+# ---- calc_diet_metabolizable_energy ------------------------------------------
 test_that("calc_diet_metabolizable_energy selects ruminant ME", {
   value <- calc_diet_metabolizable_energy(
     animal = "CTL",
@@ -138,6 +140,7 @@ test_that("calc_diet_digestibility rejects missing required inputs by animal", {
   )
 })
 
+# ---- calc_energy_digestibility_ratio -----------------------------------------
 test_that("calc_energy_digestibility_ratio computes ratio", {
   expect_equal(calc_energy_digestibility_ratio(8, 16), 0.5)
 })
@@ -149,6 +152,7 @@ test_that("calc_energy_digestibility_ratio rejects NA inputs", {
   )
 })
 
+# ---- calc_diet_gross_energy --------------------------------------------------
 test_that("calc_diet_gross_energy computes contribution", {
   expect_equal(calc_diet_gross_energy(0.6, 18), 10.8)
 })
@@ -160,6 +164,7 @@ test_that("calc_diet_gross_energy rejects NA inputs", {
   )
 })
 
+# ---- calc_diet_nitrogen_content ----------------------------------------------
 test_that("calc_diet_nitrogen_content computes contribution", {
   expect_equal(calc_diet_nitrogen_content(0.6, 0.02), 0.012)
 })

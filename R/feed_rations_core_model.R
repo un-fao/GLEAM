@@ -56,9 +56,9 @@ calc_energy_digestibility_ratio <- function(
 calc_diet_digestibility <- function(
     animal,
     ration,
-    dig_ruminants,
-    dig_pigs,
-    dig_chickens
+    dig_ruminants = NA_real_,
+    dig_pigs = NA_real_,
+    dig_chickens = NA_real_
 ) {
   validate_diet_digestibility_inputs(
     animal, ration, dig_ruminants, dig_pigs, dig_chickens
@@ -103,9 +103,9 @@ calc_diet_digestibility <- function(
 calc_diet_metabolizable_energy <- function(
     animal,
     ration,
-    me_ruminants,
-    me_pigs,
-    me_chickens
+    me_ruminants = NA_real_,
+    me_pigs = NA_real_,
+    me_chickens = NA_real_
 ) {
   validate_diet_metabolizable_energy_inputs(
     animal, ration, me_ruminants, me_pigs, me_chickens
