@@ -52,6 +52,19 @@ validate_feed_rations_inputs <- function(
     )
   }
 
+  # --- Ration share consistency ------------------------------------------------
+  ration_sums <- rations_share[
+    ,
+    .(feed_ration_sum = sum(feed_ration_fraction)),
+    by = .(herd_id, animal, cohort)
+  ]
+  invalid_ration_sums <- ration_sums[abs(feed_ration_sum - 1) > 1e-6]
+  if (nrow(invalid_ration_sums) > 0) {
+    cli::cli_abort(
+      "Feed rations must sum to 1 within each herd_id, animal, and cohort."
+    )
+  }
+
   # --- Feed parameter integrity checks ----------------------------------------
   if (anyDuplicated(feed_params$feed_id) > 0) {
     cli::cli_abort("{.arg feed_params$feed_id} must be unique.")
