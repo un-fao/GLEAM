@@ -121,15 +121,32 @@ validate_diet_metabolizable_energy_inputs <- function(
 #'
 #' @noRd
 validate_feed_digestibility_inputs <- function(
-    feed_digestible_energy,
+    feed_digestible_energy_ruminant,
+    feed_digestible_energy_pigs,
+    feed_metabolizable_energy_chicken,
     feed_gross_energy
 ) {
-  # Scalar numeric checks (no NA)
-  validate_scalar_numeric(feed_digestible_energy, "feed_digestible_energy")
-  validate_scalar_numeric(feed_gross_energy, "feed_gross_energy")
+  # Numeric checks (vectorized allowed; no NA)
+  args <- list(
+    feed_digestible_energy_ruminant = feed_digestible_energy_ruminant,
+    feed_digestible_energy_pigs = feed_digestible_energy_pigs,
+    feed_metabolizable_energy_chicken = feed_metabolizable_energy_chicken,
+    feed_gross_energy = feed_gross_energy
+  )
+  for (arg_name in names(args)) {
+    val <- args[[arg_name]]
+    if (!is.numeric(val)) {
+      cli::cli_abort("{.arg {arg_name}} must be numeric.")
+    }
+    if (anyNA(val)) {
+      cli::cli_abort("{.arg {arg_name}} must not contain missing values.")
+    }
+  }
 
   # Enforce configured bounds
-  validate_param_range(feed_digestible_energy)
+  validate_param_range(feed_digestible_energy_ruminant)
+  validate_param_range(feed_digestible_energy_pigs)
+  validate_param_range(feed_metabolizable_energy_chicken)
   validate_param_range(feed_gross_energy)
 }
 

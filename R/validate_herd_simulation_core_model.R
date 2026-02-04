@@ -208,11 +208,11 @@ validate_offtake_summary_inputs <- function(
 validate_param_range <- function(
     x,
     arg_name = deparse(substitute(x)),
-    parameter_ranges = herd_module_parameter_ranges
+    parameter_ranges_data = parameter_ranges
 ) {
 
   # Look up the single rule row
-  rule_row <- parameter_ranges[variable_name == arg_name]
+  rule_row <- parameter_ranges_data[variable_name == arg_name]
   if (nrow(rule_row) != 1L) {
     cli::cli_abort(
       "Internal error: expected exactly one rule for {.arg {arg_name}}, found {nrow(rule_row)}."

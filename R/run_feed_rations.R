@@ -44,19 +44,15 @@ run_feed_rations <- function(
   # --- Step 2: Compute digestibility ratios -----------------------------------
   feed_params[
     ,
-    `:=`(
-      feed_digestibility_fraction_ruminant = calc_feed_digestibility_fraction(
-        feed_digestible_energy = feed_digestible_energy_ruminant,
-        feed_gross_energy = feed_gross_energy
-      ),
-      feed_digestibility_fraction_pigs = calc_feed_digestibility_fraction(
-        feed_digestible_energy = feed_digestible_energy_pigs,
-        feed_gross_energy = feed_gross_energy
-      ),
-      feed_digestibility_fraction_chicken = calc_feed_digestibility_fraction(
-        feed_digestible_energy = feed_metabolizable_energy_chicken,
-        feed_gross_energy = feed_gross_energy
-      )
+    c(
+      "feed_digestibility_fraction_ruminant",
+      "feed_digestibility_fraction_pigs",
+      "feed_digestibility_fraction_chicken"
+    ) := calc_feed_digestibility_fraction(
+      feed_digestible_energy_ruminant = feed_digestible_energy_ruminant,
+      feed_digestible_energy_pigs = feed_digestible_energy_pigs,
+      feed_metabolizable_energy_chicken = feed_metabolizable_energy_chicken,
+      feed_gross_energy = feed_gross_energy
     ),
     by = .I
   ]

@@ -141,13 +141,32 @@ test_that("calc_diet_digestibility rejects missing required inputs by species_sh
 })
 
 # ---- calc_feed_digestibility_fraction -----------------------------------------
-test_that("calc_feed_digestibility_fraction computes ratio", {
-  expect_equal(calc_feed_digestibility_fraction(8, 16), 0.5)
+test_that("calc_feed_digestibility_fraction computes ratios", {
+  results <- calc_feed_digestibility_fraction(
+    feed_digestible_energy_ruminant = 8,
+    feed_digestible_energy_pigs = 7,
+    feed_metabolizable_energy_chicken = 6,
+    feed_gross_energy = 16
+  )
+
+  expect_equal(
+    results,
+    list(
+      feed_digestibility_fraction_ruminant = 0.5,
+      feed_digestibility_fraction_pigs = 0.4375,
+      feed_digestibility_fraction_chicken = 0.375
+    )
+  )
 })
 
 # test_that("calc_feed_digestibility_fraction rejects NA inputs", {
 #   expect_error(
-#     calc_feed_digestibility_fraction(NA_real_, 16),
+#     calc_feed_digestibility_fraction(
+#       feed_digestible_energy_ruminant = NA_real_,
+#       feed_digestible_energy_pigs = 7,
+#       feed_metabolizable_energy_chicken = 6,
+#       feed_gross_energy = 16
+#     ),
 #     "must be a single numeric value"
 #   )
 # })

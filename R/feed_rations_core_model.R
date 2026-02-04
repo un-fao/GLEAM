@@ -3,11 +3,19 @@
 #' Computes digestibility as the ratio of digestible or metabolizable energy
 #' to gross energy.
 #'
-#' @param feed_digestible_energy Numeric. Digestible or metabolizable energy (same
-#'   units as `feed_gross_energy`).
-#' @param feed_gross_energy Numeric. Gross energy (same units as `feed_digestible_energy`).
+#' @param feed_digestible_energy_ruminant Numeric. Digestible energy for ruminants
+#'   (same units as `feed_gross_energy`).
+#' @param feed_digestible_energy_pigs Numeric. Digestible energy for pigs
+#'   (same units as `feed_gross_energy`).
+#' @param feed_metabolizable_energy_chicken Numeric. Metabolizable energy for chickens
+#'   (same units as `feed_gross_energy`).
+#' @param feed_gross_energy Numeric. Gross energy (same units as
+#'   `feed_digestible_energy_ruminant`, `feed_digestible_energy_pigs`,
+#'   and `feed_metabolizable_energy_chicken`).
 #'
-#' @return Numeric. Digestibility fraction (unitless).
+#' @return List. Digestibility fractions (unitless) with elements:
+#'   `feed_digestibility_fraction_ruminant`, `feed_digestibility_fraction_pigs`,
+#'   `feed_digestibility_fraction_chicken`.
 #'
 #' @details
 #' The digestibility ratio is defined as:
@@ -17,15 +25,30 @@
 #'
 #' @export
 calc_feed_digestibility_fraction <- function(
-    feed_digestible_energy,
+    feed_digestible_energy_ruminant,
+    feed_digestible_energy_pigs,
+    feed_metabolizable_energy_chicken,
     feed_gross_energy
 ) {
-  # validate_feed_digestibility_inputs(
-  #  feed_digestible_energy, feed_gross_energy
-  # )
-  # Ratio is unitless and vectorized by default
-  feed_digestibility_fraction <- feed_digestible_energy / feed_gross_energy
-  return(feed_digestibility_fraction)
+ # validate_feed_digestibility_inputs(
+ #   feed_digestible_energy_ruminant,
+ #   feed_digestible_energy_pigs,
+ #   feed_metabolizable_energy_chicken,
+ #   feed_gross_energy
+ # )
+
+  # Ratios are unitless and vectorized by default
+  feed_digestibility_fraction_ruminant <- feed_digestible_energy_ruminant / feed_gross_energy
+  feed_digestibility_fraction_pigs <- feed_digestible_energy_pigs / feed_gross_energy
+  feed_digestibility_fraction_chicken <- feed_metabolizable_energy_chicken / feed_gross_energy
+
+  return(
+    list(
+      feed_digestibility_fraction_ruminant = feed_digestibility_fraction_ruminant,
+      feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs,
+      feed_digestibility_fraction_chicken = feed_digestibility_fraction_chicken
+    )
+  )
 }
 
 #' Calculate diet digestibility contribution for a ration component
