@@ -1,5 +1,5 @@
 # Read the CSV
-csv_path <- "data-raw/herd_module_parameter_ranges.csv"
+csv_path <- "data-raw/parameter_ranges.csv"
 herd_module_parameter_ranges <- data.table::fread(csv_path)
 
 # Snapshot as internal data

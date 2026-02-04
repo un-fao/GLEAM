@@ -58,6 +58,7 @@ utils::globalVariables(c(
   "diet_nitrogen", "diet_digestibility_fraction",
   "feed_digestibility_fraction_ruminant", "feed_digestibility_fraction_pigs",
   "feed_digestibility_fraction_chicken",
+  "diet_dig", "diet_ge", "diet_me", "feed_ration_sum",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
   # Columns used in run_directemissions_manure

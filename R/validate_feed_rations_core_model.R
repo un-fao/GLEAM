@@ -10,6 +10,7 @@ validate_diet_digestibility_inputs <- function(
 ) {
   validate_scalar_character(species_short, "species_short")
   validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
 
   # Ensure all digestibility inputs are scalar numerics (NA allowed)
   args <- list(
@@ -21,6 +22,10 @@ validate_diet_digestibility_inputs <- function(
     val <- args[[arg_name]]
     if (!is.numeric(val) || length(val) != 1) {
       cli::cli_abort("{.arg {arg_name}} must be a single numeric (scalar). NA is allowed.")
+    }
+    if (!is.na(val)) {
+      # Enforce configured bounds
+      validate_param_range(val, arg_name)
     }
   }
 
@@ -65,6 +70,7 @@ validate_diet_metabolizable_energy_inputs <- function(
 ) {
   validate_scalar_character(species_short, "species_short")
   validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
   # Ensure all metabolizable energy inputs are scalar numerics (NA allowed)
   args <- list(
     feed_metabolizable_energy_ruminant = feed_metabolizable_energy_ruminant,
@@ -75,6 +81,10 @@ validate_diet_metabolizable_energy_inputs <- function(
     val <- args[[arg_name]]
     if (!is.numeric(val) || length(val) != 1) {
       cli::cli_abort("{.arg {arg_name}} must be a single numeric (scalar). NA is allowed.")
+    }
+    if (!is.na(val)) {
+      # Enforce configured bounds
+      validate_param_range(val, arg_name)
     }
   }
 
@@ -117,6 +127,10 @@ validate_feed_digestibility_inputs <- function(
   # Scalar numeric checks (no NA)
   validate_scalar_numeric(feed_digestible_energy, "feed_digestible_energy")
   validate_scalar_numeric(feed_gross_energy, "feed_gross_energy")
+
+  # Enforce configured bounds
+  validate_param_range(feed_digestible_energy)
+  validate_param_range(feed_gross_energy)
 }
 
 #' Validate inputs for calc_diet_gross_energy
@@ -126,6 +140,10 @@ validate_diet_gross_energy_inputs <- function(feed_ration_fraction, feed_gross_e
   # Ration and GE must be numeric scalars
   validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
   validate_scalar_numeric(feed_gross_energy, "feed_gross_energy")
+
+  # Enforce configured bounds
+  validate_param_range(feed_ration_fraction)
+  validate_param_range(feed_gross_energy)
 }
 
 #' Validate inputs for calc_diet_nitrogen_content
@@ -135,4 +153,8 @@ validate_diet_nitrogen_inputs <- function(feed_ration_fraction, feed_nitrogen_co
   # Ration and nitrogen content must be numeric scalars
   validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
   validate_scalar_numeric(feed_nitrogen_content, "feed_nitrogen_content")
+
+  # Enforce configured bounds
+  validate_param_range(feed_ration_fraction)
+  validate_param_range(feed_nitrogen_content)
 }
