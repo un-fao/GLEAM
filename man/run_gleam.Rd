@@ -8,7 +8,8 @@ run_gleam(
   has_structure = FALSE,
   herd_structure = NULL,
   herd_simulation_args,
-  weights_args
+  weights_args,
+  feed_rations_args
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ is TRUE.}
 \code{has_structure} is FALSE.}
 
 \item{weights_args}{List. Arguments passed to \code{run_weights_calculations()}.}
+
+\item{feed_rations_args}{List. Arguments passed to \code{run_feed_rations()}.}
 }
 \value{
 A cohort-level \code{data.table} containing the outputs produced by the
@@ -52,6 +55,14 @@ weights_herd_path <- system.file(
 )
 weights_herd_level_data <- data.table::fread(weights_herd_path)
 
+# Load feed rations inputs
+feed_params <- data.table::fread(
+  system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
+)
+feed_rations <- data.table::fread(
+  system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
+)
+
 # Run GLEAM using herd simulation outputs
 results <- run_gleam(
   has_structure = FALSE,
@@ -61,6 +72,10 @@ results <- run_gleam(
   ),
   weights_args = list(
     herd_level_data = weights_herd_level_data
+  ),
+  feed_rations_args = list(
+    feed_rations = feed_rations,
+    feed_params = feed_params
   )
 )
 

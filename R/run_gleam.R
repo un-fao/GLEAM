@@ -10,6 +10,7 @@
 #' @param herd_simulation_args List. Arguments passed to `run_herd_simulation()` when
 #'   `has_structure` is FALSE.
 #' @param weights_args List. Arguments passed to `run_weights_calculations()`.
+#' @param feed_rations_args List. Arguments passed to `run_feed_rations()`.
 #'
 #' @return A cohort-level `data.table` containing the outputs produced by the
 #'   modules executed within this pipeline call.
@@ -35,6 +36,14 @@
 #' )
 #' weights_herd_level_data <- data.table::fread(weights_herd_path)
 #'
+#' # Load feed rations inputs
+#' feed_params <- data.table::fread(
+#'   system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
+#' )
+#' feed_rations <- data.table::fread(
+#'   system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
+#' )
+#'
 #' # Run GLEAM using herd simulation outputs
 #' results <- run_gleam(
 #'   has_structure = FALSE,
@@ -44,6 +53,10 @@
 #'   ),
 #'   weights_args = list(
 #'     herd_level_data = weights_herd_level_data
+#'   ),
+#'   feed_rations_args = list(
+#'     feed_rations = feed_rations,
+#'     feed_params = feed_params
 #'   )
 #' )
 #'
@@ -55,7 +68,8 @@ run_gleam <- function(
     has_structure = FALSE,
     herd_structure = NULL,
     herd_simulation_args,
-    weights_args
+    weights_args,
+    feed_rations_args
 ) {
   # --- Step 1: Run herd simulation (or use provided structure) ----------------
   if (isTRUE(has_structure)) {
@@ -72,6 +86,20 @@ run_gleam <- function(
   )
 
   gleam_data <- weights_results$cohort_level_results
+
+  # --- Step 3: Merge feed rations and run feed --------------------------------
+  gleam_data <- merge(
+    gleam_data,
+    feed_rations_args$feed_rations,
+    by = "herd_id",
+    all.x = TRUE,
+    allow.cartesian = TRUE
+  )
+
+  gleam_data <- run_feed_rations(
+    rations_share = gleam_data,
+    feed_params = feed_rations_args$feed_params
+  )
 
   return(gleam_data)
 }
