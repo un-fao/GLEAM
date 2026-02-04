@@ -18,7 +18,7 @@ calc_avg_weights(
 
 \item{slaughter_weight}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 
-\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort, does not include natural deaths (fraction).}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 }
 \value{
 A named list with:

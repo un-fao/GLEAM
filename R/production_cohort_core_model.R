@@ -8,7 +8,7 @@
 #' FPCM is calculated using Equation 10 of the International Dairy Federation
 #' (IDF) Global Carbon Footprint Standard for the Dairy Sector (IDF, 2022).
 #'
-#' @param milk_yield Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day). 
+#' @param milk_yield Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day).
 #' This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.
 #' @param assessment_duration Numeric. Length of the assessment period (days).
 #' @param size Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).
@@ -128,7 +128,6 @@ compute_fibre_output <- function(
 #' @param carcass_dressing_percentage Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).
 #' @param bone_free_meat_fraction Numeric. Ratio of bone-free-meat to carcass weight (fraction).
 #' @param meat_protein Numeric. Protein content of bone-free-meat (kg protein/kg bone-free-meat).
-#' @param assessment_duration Numeric. Length of the assessment period (days).
 #'
 #' @return Named list containing:
 #'   \item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
@@ -160,10 +159,12 @@ compute_meat_outputs <- function(
   meat_production_meat <- meat_production_carcassweight * bone_free_meat_fraction
   meat_production_protein <- meat_production_meat * meat_protein
 
-  return(list(
-    output_meat_production_liveweight = meat_production_liveweight,
-    output_meat_production_carcassweight = meat_production_carcassweight,
-    output_meat_production_meat = meat_production_meat,
-    output_meat_production_protein = meat_production_protein
-  ))
+  return(
+    list(
+      output_meat_production_liveweight = meat_production_liveweight,
+      output_meat_production_carcassweight = meat_production_carcassweight,
+      output_meat_production_meat = meat_production_meat,
+      output_meat_production_protein = meat_production_protein
+    )
+  )
 }

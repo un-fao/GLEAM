@@ -16,7 +16,7 @@ aggregate_cohort_to_herd(data_cohort, id_cols, vars_to_sum, cohort)
 \item{cohort}{Character. Name of the column identifying the sex–age cohort (e.g. FJ, FA, MJ, etc.).}
 }
 \value{
-A \code{data.table} at herd scale, in which selected cohort-level variables have been summed across all cohorts belonging to the same herd, as defined by id_cols.
+A \code{data.table} at herd scale, in which selected cohort-level variables have been summed across all cohorts belonging to the same herd, as defined by id_herd.
 }
 \description{
 This function aggregates a dataset from cohort level to herd level by summing

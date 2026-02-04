@@ -527,7 +527,6 @@ calc_net_energy_growth <- function(
 #' @param wkg Numeric. Live body weight of the animal at weaning (kg).
 #' @param lact Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).
 #' @param parturition_rate Numeric. Average annual number of parturition per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (born) occurring during a year divided by the number of adult females potentially able to give birth during that year.
-#' @param animal_age Numeric. Numeric. Average age of the juvenile animals at weaning (days)
 #'
 #' @return Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #'
@@ -1479,7 +1478,7 @@ calc_total_energy_requirement <- function(
 #' animal's daily energy requirement and the diet energy density.
 #'
 #' This function follows the IPCC Tier 2, logic.
-#' Dry matter intake is calculated by dividing the appropriate daily energy requirement by the 
+#' Dry matter intake is calculated by dividing the appropriate daily energy requirement by the
 #' corresponding diet energy density (MJ per kg DM).
 #'
 #' @param animal Character. Code identifying the livestock species.
