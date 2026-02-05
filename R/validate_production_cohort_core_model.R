@@ -2,6 +2,7 @@
 #'
 #' @noRd
 validate_milk_outputs_inputs <- function(
+    cohort,
     milk_yield,
     assessment_duration,
     size,
@@ -13,6 +14,9 @@ validate_milk_outputs_inputs <- function(
     standard_fat,
     standard_lactose
 ) {
+  
+  validate_cohort_code(cohort)
+  
   # Scalar numeric inputs
   validate_scalar_numeric(milk_yield, "milk_yield")
   validate_scalar_numeric(assessment_duration, "assessment_duration")
@@ -64,10 +68,14 @@ validate_milk_outputs_inputs <- function(
 #'
 #' @noRd
 validate_fibre_output_inputs <- function(
+    cohort,
     fibre_prod,
     assessment_duration,
     size
 ) {
+  
+  validate_cohort_code(cohort)
+  
   # Scalar numeric inputs
   validate_scalar_numeric(fibre_prod, "fibre_prod")
   validate_scalar_numeric(assessment_duration, "assessment_duration")
