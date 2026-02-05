@@ -29,10 +29,10 @@ validate_herd_simulation_inputs <- function(
 
   # --- Required columns validation --------------------------------------------
   required_cohort_cols <- c(
-    "herd_id", "cohort", "duration", "offtake_rate", "mort_rate"
+    "herd_id", "cohort", "cohort_duration_days", "offtake_rate", "death_rate"
   )
   required_herd_cols <- c(
-    "herd_id", "parturition_rate", "litsize", "female_birth_fraction", "size_total"
+    "herd_id", "parturition_rate", "litter_size", "birth_fraction_female", "herd_size_total"
   )
 
   missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))

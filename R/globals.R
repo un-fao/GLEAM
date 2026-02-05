@@ -16,7 +16,10 @@ utils::globalVariables(c(
   ".", "..cols_to_drop", "..final_cols", "ADM0_CODE", "AFKG", "AMKG", "Animal_short",
   "COUNTRY", "HerdType_short", "LPS_short", "MFSKG", "MMSKG", "WA", "afc", "ckg",
   "cohort", "count", "daily_weight_gain", "duration", "duration.FA", "duration.FJ", "duration.FS",
+  "cohort_duration_days", "death_rate",
   "duration.MA", "duration.MJ", "duration.MS", "dwg", "female_birth_fraction", "fem_fec",
+  "birth_fraction_female", "litter_size", "herd_size_total",
+  "fecundity_female", "fecundity_male",
   "herd_id", "has_all_cohorts", "missing_cohorts", "n_unique", "index", "N",  # Variables used in run_herd_simulation
   "prob_growth.FA", "prob_growth.FB", "prob_growth.FC", "prob_growth.FJ", "prob_growth.FS",
   "prob_growth.MA", "prob_growth.MB", "prob_growth.MC", "prob_growth.MJ", "prob_growth.MS",
@@ -36,6 +39,8 @@ utils::globalVariables(c(
   "size_avg.FS", "size_avg.MA", "size_avg.MJ", "size_avg.MS", "size_end.FA",
   "size_end.FJ", "size_end.FS", "size_end.MA", "size_end.MJ", "size_end.MS",
   "size_total", "slaughter_weight", "structure.FA", "structure.FB", "structure.FJ",
+  "probability_death", "probability_offtake", "probability_survival", "probability_growth",
+  "cohort_stock_size", "offtake_heads", "offtake_heads_assessment", "growth_rate_herd",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
   "variable", "wkg", "variable_name", "offtake_number_assessment"
 ))
@@ -92,6 +97,8 @@ utils::globalVariables(c(
   "milk_fat", "milk_yield", "milking_fraction", "high_activity_fraction", "neact",
   "neegg", "nefibre", "negrow", "nelact", "nemain", "nepreg",
   "nework", "activity_fraction", "reg", "rem", "work_hours",
+  "work_hours_female", "work_hours_male", "draught_fraction_female",
+  "draught_fraction_male",
   "adult_weight"  # Variable used in run_energy_requirements
 ))
 
