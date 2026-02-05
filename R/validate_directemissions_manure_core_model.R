@@ -1,25 +1,13 @@
 #' Validate inputs for calc_volatile_solids
 #'
 #' @noRd
-validate_manure_inputs <- function(animal_short, dmi, diet_dig, diet_me, diet_ge) {
-  # Character inputs
-  if (!is.character(animal_short) || length(animal_short) == 0 || anyNA(animal_short)) {
-    cli::cli_abort("{.arg animal_short} must be a non-empty character vector.")
-  }
-
-  # Validate animal species
-  valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "PGS", "CHK")
-  if (!all(animal_short %in% valid_animals)) {
-    cli::cli_abort(
-      "{.arg animal_short} must contain only values from: {cli::format_inline('{valid_animals}')}"
-    )
-  }
-
+validate_manure_inputs <- function(dmi, diet_dig, urinary_energy_fraction, diet_ash) 
+{
   # Numeric inputs
   validate_scalar_numeric(dmi, "dmi")
   validate_scalar_numeric(diet_dig, "diet_dig")
-  validate_scalar_numeric(diet_me, "diet_me")
-  validate_scalar_numeric(diet_ge, "diet_ge")
+  validate_scalar_numeric(urinary_energy_fraction, "urinary_energy_fraction")
+  validate_scalar_numeric(diet_ash, "diet_ash")
 
   # Basic range checks
   if (any(dmi < 0)) {
@@ -28,11 +16,11 @@ validate_manure_inputs <- function(animal_short, dmi, diet_dig, diet_me, diet_ge
   if (any(diet_dig < 0 | diet_dig > 1)) {
     cli::cli_abort("{.arg diet_dig} must be between 0 and 1.")
   }
-  if (any(diet_me < 0)) {
-    cli::cli_abort("{.arg diet_me} must be non-negative.")
+  if (any(urinary_energy_fraction < 0)) {
+    cli::cli_abort("{.arg urinary_energy_fraction} must be non-negative.")
   }
-  if (any(diet_ge <= 0)) {
-    cli::cli_abort("{.arg diet_ge} must be strictly positive.")
+  if (any(diet_ash <= 0)) {
+    cli::cli_abort("{.arg diet_ash} must be strictly positive.")
   }
 }
 
