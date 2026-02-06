@@ -22,6 +22,7 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
+\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep

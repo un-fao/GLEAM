@@ -13,29 +13,29 @@ calc_direct_n2o_emissions(
 )
 }
 \arguments{
-\item{n_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day)}
+\item{n_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
 
-\item{ef3_pasture}{Numeric. Effective EF3 factor for manure deposited on pasture (ef3pasture), expressed in kg N2O-N / kg N excreted, and already weighted by the share of manure deposited on pasture (mmspasture) (kg N2O-N / kg N excreted)}
+\item{ef3_pasture}{Numeric. Effective emission factor (EF\eqn{_3}) for manure deposited on pasture (ef3pasture), expressed in kg N₂O-N / kg N excreted, and already weighted by the share of manure deposited on pasture (mmspasture) (kg N₂O-N / kg N excreted).}
 
-\item{ef3_burned}{Numeric. Effective EF3 factor for manure burned for fuel (ef3burned), expressed in kg N2O-N / kg N excreted, and already weighted by the share of manure burned for fuel (mmsburned) (kg N2O-N / kg N excreted)}
+\item{ef3_burned}{Numeric. Effective EF\eqn{_3} factor for manure burned for fuel (ef3burned), expressed in kg N₂O-N / kg N excreted, and already weighted by the share of manure burned for fuel (mmsburned) (kg N₂O-N / kg N excreted).}
 
-\item{ef3_other}{Numeric. Effective EF3 factor for manure managed in non-pasture, non-burned manure management systems, expressed in g N2O-N / kg N excreted, and already weighted by the share of each corresponding manure management system (e.g., mmsolid, mmsliquid...etc.) (kg N2O-N / kg N excreted)}
+\item{ef3_other}{Numeric. Effective EF\eqn{_3} factor for manure managed in non-pasture, non-burned manure management systems, expressed in kg N₂O-N / kg N excreted, and already weighted by the share of each corresponding manure management system (e.g., solid storage (mmsolid), liquid/slurry (mmsliquid)) (kg N₂O-N / kg N excreted).}
 
-\item{ration_N2ON_to_N2O}{Numeric. Conversion factor from kg N2O-N to kg N2O. Default to 44/28.}
+\item{ration_N2ON_to_N2O}{Numeric. Conversion factor from N₂O-N (kg N) to N₂O (kg), based on molecular weights, defaults to 44/28.}
 }
 \value{
 A named list with:
 \describe{
-\item{direct_n2o_manure_pasture}{Numeric. Direct nitrous oxide emissions from manure deposited on pasture (kg N2O/head/day)}
-\item{direct_n2o_manure_burned}{Numeric. Direct nitrous oxide emissions from manure burned for fuel (kg N2O/head/day)}
-\item{direct_n2o_manure_other}{Numeric. Direct nitrous oxide emissions from manure managed in all other manure management systems, excluding emissions from manure deposired on pasture and burned (kg N2O/head/day)}
-\item{direct_n2o_manure_all_noburn}{Numeric. Direct nitrous oxide emissions from manure managed in all other manure management systems and deposited on pasture, excluding emissions from burned manure (kg N2O/head/day)}
+\item{direct_n2o_manure_pasture}{Numeric. Direct nitrous oxide emissions from manure deposited on pasture (kg N₂O/head/day)}
+\item{direct_n2o_manure_burned}{Numeric. Direct nitrous oxide emissions from manure burned for fuel (kg N₂O/head/day)}
+\item{direct_n2o_manure_other}{Numeric. Direct nitrous oxide emissions from manure managed in all other manure management systems, excluding emissions from manure deposired on pasture and burned (kg N₂O/head/day)}
+\item{direct_n2o_manure_all_noburn}{Numeric. Direct nitrous oxide emissions from manure managed in all other manure management systems and deposited on pasture, excluding emissions from burned manure (kg N₂O/head/day)}
 }
 }
 \description{
-Calculates \strong{direct nitrous oxide (N2O)} emissions from manure management
+Calculates \strong{direct nitrous oxide (N₂O)} emissions from manure management
 pathways using the IPCC Tier 2 framework. The calculation follows the structure of
-IPCC Eq. 10.25 (direct N2O emissions from manure management), but is expressed
+IPCC Eq. 10.25 (direct N₂O emissions from manure management), but is expressed
 on a \strong{daily basis} because \code{n_excretion} is provided in
 kg N/head/day.
 }

@@ -30,7 +30,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{"Character. Sex- and age-specific cohort code describing the
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -43,17 +43,17 @@ production stage of the animals. Supported values include:
 
 \item{milk_protein}{Numeric. Milk protein fraction (kg protein / kg milk).}
 
-\item{milk_yield}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destinated to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
+\item{milk_yield}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
 
 \item{dwg}{Numeric. Average live weight of the cohort over the cohort stage (kg/head/day).}
 
 \item{fibre_prod}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
 
-\item{litsize}{Numeric. Average number of offspring born per parturition (#). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{litsize}{Numeric. Average number of offspring born per parturition. This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
-\item{parturition_rate}{Numeric. Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.}
 
-\item{wkg}{Numeric. Live weight of the animal at weaning (kg)}
+\item{wkg}{Numeric. Live weight of the animal at weaning (kg).}
 
 \item{ckg}{Numeric. Live weight of the animal at birth (kg).}
 
@@ -70,9 +70,10 @@ The approach follows the Tier 2 IPCC guidelines (IPCC 2006, 2019).
 }
 \details{
 Species-specific calculations are performed.
-\subsection{Ruminants and camelids (CTL, BFL, SHP, GTS, CML)}{
 
-For ruminants and camelids, nitrogen retained in products and tissues is
+\strong{For CTL, BFL, SHP, GTS and CML}
+
+Nitrogen retained in products and tissues is
 computed consistent with the process described in the Technical paper
 from MPI (Ministry for Primary Industries (MPI), 2025).
 
@@ -96,15 +97,14 @@ The following constants are used:
 }
 \item \strong{Fibre nitrogen content (\code{fibre_n})}:
 \strong{0.134 kg N per kg fibre}
-\item \strong{Milk nitrogen content}:
+\item \strong{Milk nitrogen content (\code{milk_n})}:
 Milk nitrogen is derived from milk protein using a protein-to-nitrogen
 conversion factor of \strong{6.25}
 }
-}
 
-\subsection{Pigs (PGS)}{
+\strong{For PGS}
 
-For pigs, nitrogen retention is calculated following the IPCC 2019 equations
+Nitrogen retention is calculated following the IPCC 2019 equations
 for swine (Equations 10.33A and 10.33B).
 
 Nitrogen retention includes nitrogen retained in:
@@ -120,7 +120,6 @@ Calculations are expressed on a daily basis. In this implementation:
 \item \code{0.98} is the protein digestibility fraction,
 \item breeding cohorts include an annual reproductive component that is
 converted to a daily rate.
-}
 }
 }
 \references{

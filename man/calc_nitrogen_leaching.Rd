@@ -12,7 +12,7 @@ calc_nitrogen_leaching(
 )
 }
 \arguments{
-\item{n_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day)}
+\item{n_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
 
 \item{fracleach_pasture}{Numeric. Effective fraction of excreted nitrogen lost through leaching and runoff from manure deposited on pasture, already weighted by the share of manure deposited on pasture (mmspasture) (fraction).}
 

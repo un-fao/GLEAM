@@ -204,6 +204,7 @@ validate_allocation_work_inputs <- function(
     work_energy_requirement,
     ratio_ne_to_me,
     assessment_duration
+    
 ) {
   validate_scalar_character(animal, "animal")
   validate_scalar_numeric(work_energy_requirement, "work_energy_requirement")

@@ -12,13 +12,14 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
+\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
 }}
 
-\item{total_energy}{"Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as \strong{gross energy intake requirement (GE)}. For CML and PGS the function returns the summed daily metabolizable energy requirement.}
+\item{total_energy}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as \strong{gross energy intake requirement (GE)}. For CML and PGS the function returns the summed daily metabolizable energy requirement.}
 
 \item{diet_ge}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 
@@ -33,8 +34,8 @@ animal's daily energy requirement and the diet energy density.
 }
 \details{
 This function follows the IPCC Tier 2, logic.
-Dry matter intake by dividing the appropriate daily energy requirement by the
-corresponding diet energy content (MJ per kg DM).
+Dry matter intake is calculated by dividing the appropriate daily energy requirement by the
+corresponding diet energy density (MJ per kg DM).
 
 The function applies one of two analogous intake calculations, depending on how the
 upstream energy requirement is expressed:

@@ -33,8 +33,8 @@ nitrogen intake and nitrogen retention.
 Nitrogen excretion represents the fraction of consumed nitrogen that is not
 retained in animal products or body tissues and is therefore excreted in urine
 and dung. This quantity forms the basis for subsequent calculations of
-nitrous oxide (N2O) emissions from manure management and agricultural soils.
-The approach follows the Tier 2 IPCC guidelines.
+nitrous oxide \code{N₂O} emissions from manure management and agricultural soils.
+The approach follows the IPCC 2019 guidelines.
 }
 \references{
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from

@@ -21,7 +21,7 @@ Numeric. Total volatile solids (VS) excreted per animal per day, representing th
 \description{
 Computes daily volatile solids (VS) excretion in manure (kg VS/head/day).
 VS represents the total organic material excreted (biodegradable + non-biodegradable)
-and is required to proceed with the estimate of methane emissions from manure maanagement.
+and is required to proceed with the estimate of methane emissions from manure management.
 }
 \details{
 The IPCC recommends estimating VS from feed intake and digestibility when

@@ -26,6 +26,7 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
+\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
@@ -64,7 +65,7 @@ This value can be calculated as the total number of offspring born divided by th
 
 \item{lact}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).}
 
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+\item{parturition_rate}{Numeric. Average annual number of parturition per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (born) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
 }
 \value{
 Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).

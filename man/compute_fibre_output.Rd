@@ -22,7 +22,7 @@ production stage of the animals. Supported values include:
 
 \item{assessment_duration}{Numeric. Length of the assessment period (days).}
 
-\item{size}{Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)}
+\item{size}{Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).}
 }
 \value{
 Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).

@@ -24,7 +24,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{size}{Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)}
+\item{size}{Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).}
 
 \item{fibre_energy_requirement}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy for CML (MJ/head/day).}
 
@@ -35,10 +35,10 @@ Supported values include:
 \value{
 Numeric scalar. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).
 
-Non-zero values are expected only for fiber-producing species (CML, SHP, GTS) and assumed cohorts ("FA", "FS", "MA", "MS")
+Non-zero values are expected only for fibre-producing species (CML, SHP, GTS) and applicable cohorts ("FA", "FS", "MA", "MS")
 }
 \description{
-Calculates the net energy demand (MJ) associated with fibre production over the
+Calculates the net energy demand associated with fibre production over the
 assessment period for fibre-producing species and cohorts.
 }
 \details{
@@ -53,7 +53,7 @@ In accordance with ISO 14044:2006 (Section 4.3.4.2, Step 2), known processing or
 biophysical relationships may be used to assign shared inputs and outputs of a
 single production unit to individual products or sub-units. In livestock systems,
 this includes apportioning shared feed and energy use according to physiological
-energy requirements (e.g., net energy for lactation, growth..etc.). If the
+energy requirements (e.g., net energy for lactation, growth, etc.). If the
 resulting process remains multifunctional, these energy terms may subsequently
 be used to derive allocation factors among co-products.
 
@@ -62,10 +62,19 @@ fibre-producing species (\code{CML}, \code{SHP},
 \code{GTS}) and applicable cohorts (\code{"FA"}, \code{"FS"}, \code{"MA"},
 \code{"MS"}).
 
-The calculation is:
+The fibre-related energy over the assessment period is calculated as:
 
 \itemize{
-\item \code{energy_allocation_fibre = fibre_energy_requirement * assessment_duration}
+\item For sheep (\code{SHP}) and goats (\code{GTS}):
+
+\code{energy_allocation_fibre =
+  fibre_energy_requirement * assessment_duration * size}
+
+\item For camels (\code{CML}):
+
+\code{energy_allocation_fibre =
+  fibre_energy_requirement * ratio_ne_to_me * assessment_duration * size}
+
 }
 
 where \code{fibre_energy_requirement} represents the daily energy requirement

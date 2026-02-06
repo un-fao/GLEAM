@@ -31,13 +31,13 @@ production stage of the animals. Supported values include:
 }}
 
 \item{milk_yield}{Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day).
-This value can be calculated by dividing the total milk destinated to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
+This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
 
 \item{assessment_duration}{Numeric. Length of the assessment period (days).}
 
-\item{size}{Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)}
+\item{size}{Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).}
 
-\item{milking_fraction}{Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).}
+\item{milking_fraction}{Numeric. Share of adult females lactating within the assessment duration (fraction). Applies to species: camels (CML), cattle (CTL), buffalo (BFL), sheep (SHP) and goats (GTS).}
 
 \item{milk_protein}{Numeric. Milk protein fraction (kg protein/kg milk).}
 
