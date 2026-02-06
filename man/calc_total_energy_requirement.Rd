@@ -6,7 +6,6 @@
 \usage{
 calc_total_energy_requirement(
   animal,
-  cohort,
   nemain,
   neact,
   nelact,
@@ -31,17 +30,6 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
-}}
-
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
-production stage of the animals. Supported values include:
-\itemize{
-\item \code{FA}: adult females (from age at first parturition)
-\item \code{FS}: sub-adult females (from weaning to age at first parturition)
-\item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{MA}: adult males (from age at first breeding)
-\item \code{MS}: sub-adult males (from weaning to age at first breeding)
-\item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
 \item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}

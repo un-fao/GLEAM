@@ -39,23 +39,28 @@
 #'
 #'   \item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
 #'     \itemize{
-#'       \item \code{JF} and \code{JM} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_dig \times 100)}
-#'       \item Other cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
+#'       \item \code{FA} and \code{MA} cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
+#'       \item \code{FS} and \code{MS} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_dig \times 100)}
 #'     }
 #'
 #'   \item \strong{For \code{PGS}:}
 #'     ym is assigned fixed values by cohort:
 #'     \itemize{
 #'       \item \code{FA} and \code{MA} cohorts: \deqn{ym = 1.01}
-#'       \item Other cohorts: \deqn{ym = 0.39}
+#'        \item \code{FS} and \code{MS} cohorts: \deqn{ym = 0.39}
 #'     }
 #' }
+#' 
+#' ym is returned as 0 for juvenile cohorts (\code{JF}, \code{JM}), assuming negligible enteric methane production before weaning/rumen development.
 #'
 #'
 #' @references
 #' Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
 #' MacLeod, M., Vellinga, T., Henderson, B. & Steinfeld, H. (2013).
 #' *Greenhouse gas emissions from ruminant supply chains – A global life cycle assessment*. Food and Agriculture Organization of the United Nations (FAO), Rome.
+#' 
+#' Jørgensen, H., Theil, P.K. and Knudsen, K.E.B., (2011). 
+#' *Enteric methane emission from pigs*. In Planet Earth 2011-Global Warming Challenges and Opportunities for Policy and Practice (p. 610 - Table 2). InTech.
 #'
 #' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
 #' Livestock and Manure Management, Equation 10.21.
@@ -70,19 +75,40 @@ compute_methane_conversion_factor <- function(
     diet_dig
 ) {
   validate_ym_inputs(animal, cohort, diet_dig)
+  
   if (animal %in% c("CTL", "BFL")) {
-    ret = 9.75 - 0.05 * diet_dig * 100
-  } else if (animal %in% c("SHP", "GTS", "CML")) {
-    if (cohort %in% c("FS", "MS", "FJ", "MJ")) {
-      ret = 7.75 - 0.05 * diet_dig * 100
+    
+    if (cohort %in% c("FJ", "MJ")) {
+      ret <- 0
     } else {
       ret = 9.75 - 0.05 * diet_dig * 100
     }
-  } else if (animal %in% c("PGS")) {
-    ret <- if (cohort %in% c("FA", "MA")) 1.01 else 0.39
-  } else if (animal == "CHK") {
+    
+    } else if (animal %in% c("SHP", "GTS", "CML")) {
+    
+      if (cohort %in% c("FJ", "MJ")){
+      ret <- 0
+      } else if (cohort %in% c("FS", "MS")) {
+      ret = 7.75 - 0.05 * diet_dig * 100
+      } else {
+      ret = 9.75 - 0.05 * diet_dig * 100
+      }
+      
+    } else if (animal %in% c("PGS")) {
+      
+      if (cohort %in% c("FJ", "MJ")){
+      ret <- 0
+      } else if (cohort %in% c("FS", "MS")) {
+      ret <- 0.39
+      } else {
+      ret <- 1.01
+      }
+    
+    } else if (animal == "CHK") {
+      
     ret <- NA_real_
-  }
+    }
+  
   return(ret)
 }
 
@@ -103,16 +129,6 @@ compute_methane_conversion_factor <- function(
 #'     \item \code{GTS}: goats
 #'   }
 #'   
-#' @param cohort Character. Sex- and age-specific cohort code describing the
-#'   production stage of the animals. Supported values include:
-#'   \itemize{
-#'     \item \code{FA}: adult females (from age at first parturition)
-#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{MA}: adult males (from age at first breeding)
-#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'     \item \code{MJ}: juvenile males (from birth to weaning)
-#'   }
 #' @param ym Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).
 #' @param ch4_mitigation_factor Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
 #' multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10% reduction). Default = 1.
@@ -141,13 +157,12 @@ compute_methane_conversion_factor <- function(
 #' @export
 compute_daily_enteric_emissions <- function(
     animal,
-    cohort,
     ym,
     ch4_mitigation_factor,
     diet_ge,
     dmi
 ) {
-  validate_enteric_emission_inputs(animal, cohort, ym, ch4_mitigation_factor, diet_ge, dmi)
+  validate_enteric_emission_inputs(animal, ym, ch4_mitigation_factor, diet_ge, dmi)
   if (animal %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
     ret <- diet_ge * dmi * (ym / 100) * ch4_mitigation_factor / 55.65
   } else if (animal == "CHK") {

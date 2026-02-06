@@ -100,8 +100,10 @@ run_energy_requirements <- function(data) {
     animal = Animal_short,
     cohort = cohort,
     nemain = nemain,
-    work_hours = work_hours,
-    draught_fraction = draught_fraction
+    work_hours_female = work_hours_female,
+    work_hours_male = work_hours_male,
+    draught_fraction_female = draught_fraction_female,
+    draught_fraction_male = draught_fraction_male
   ), by = .I]
 
   # 6. Fibre production energy (MJ/day)
@@ -139,7 +141,6 @@ run_energy_requirements <- function(data) {
   # 10. Total ME requirement (MJ/day)
   data[, getot := calc_total_energy_requirement(
     animal = Animal_short,
-    cohort = cohort,
     nemain = nemain,
     neact = neact,
     nelact = nelact,

@@ -1,26 +1,24 @@
 # ---- test calc_volatile_solids ----
-test_that("calc_volatile_solids produces expected results for cattle", {
+test_that("calc_volatile_solids produces expected results", {
   result <- calc_volatile_solids(
-    animal = "CTL",
     dmi = 5,
     diet_dig = 0.6,
-    diet_me = 9,
-    diet_ge = 18
-  )
+    urinary_energy_fraction = 0.04,
+    diet_ash = 0.08
+      )
   expect_length(result, 1)
   expect_true(result >= 0)
-  expect_equal(result, 5 * (1.04 - 0.6) * 0.92)
+  expect_equal(result, 5 * (1 - 0.6 + 0.04) * (1 - 0.08))
 })
 
-test_that("calc_volatile_solids handles PGS correctly", {
+test_that("calc_volatile_solids produces expected results", {
   result <- calc_volatile_solids(
-    animal = "PGS",
     dmi = 4,
     diet_dig = 0.7,
-    diet_me = 12,
-    diet_ge = 20
+    urinary_energy_fraction = 0.02,
+    diet_ash = 0.06
   )
-  expect_equal(result, 4 * (1.02 - 0.7) * 0.94)
+  expect_equal(result, 4 * (1 - 0.7 + 0.02) * (1 - 0.06))
 })
 
 
@@ -59,15 +57,13 @@ test_that("calc_volatile_solids handles PGS correctly", {
 
 test_that("calc_volatile_solids handles validation errors", {
   expect_error(
-    calc_volatile_solids("INVALID", 5, 0.6, 9, 18),
-    "animal"
-  )
-  expect_error(
-    calc_volatile_solids("CTL", -5, 0.6, 9, 18),
+    calc_volatile_solids(-5, 0.7, 0.02,
+                         0.06),
     "dmi"
   )
   expect_error(
-    calc_volatile_solids("CTL", 5, 2, 9, 18),
+    calc_volatile_solids(5, 2, 0.02,
+                         0.06),
     "diet_dig"
   )
 })

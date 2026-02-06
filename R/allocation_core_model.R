@@ -310,8 +310,9 @@ calc_energy_allocation_meat <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#'
-#' @param fibre_energy_requirement Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML (MJ/head/day). Assumed to be 0 for other species. Expressed as net energy for SHP and GTS and as metabolizable energy for CML (MJ/head/day).
+#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
+
+#' @param fibre_energy_requirement Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy for CML (MJ/head/day).
 #' @param ratio_ne_to_me Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.
 #' @param assessment_duration Numeric. Length of the assessment period (days).
 #' @param size Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).
@@ -389,13 +390,14 @@ calc_energy_allocation_meat <- function(
 #' @export
 calc_energy_allocation_fibre <- function(
     animal,
+    size,
     fibre_energy_requirement,
     ratio_ne_to_me,
     assessment_duration,
     size
 ) {
   validate_allocation_fibre_inputs(
-    animal, fibre_energy_requirement, ratio_ne_to_me, assessment_duration, size
+    animal, size, fibre_energy_requirement, ratio_ne_to_me, assessment_duration
   )
 
   if (animal %in% c("GTS", "SHP")) {
@@ -427,9 +429,10 @@ calc_energy_allocation_fibre <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#'
-#' @param work_energy_requirement Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day). For non-draught species (e.g., PGS, SHP, GTS), work_energy_requirement is expected to be 0, and the function returns 0.
-#' @param ratio_ne_to_me Numeric. Ratio of metabolizable energy converted to net energy (fraction). Applied only when animal == "CML"; otherwise not used.
+#'   
+#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
+#' @param work_energy_requirement Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param ratio_ne_to_me Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.
 #' @param assessment_duration Numeric. Length of the assessment period (days).
 #' @param size Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).
 #'
@@ -492,13 +495,14 @@ calc_energy_allocation_fibre <- function(
 #' @export
 calc_energy_allocation_work <- function(
     animal,
+    size,
     work_energy_requirement,
     ratio_ne_to_me,
     assessment_duration,
     size
 ) {
   validate_allocation_work_inputs(
-    animal, work_energy_requirement, ratio_ne_to_me, assessment_duration, size
+    animal, size, work_energy_requirement, ratio_ne_to_me, assessment_duration
   )
 
   if (animal == "CML") {

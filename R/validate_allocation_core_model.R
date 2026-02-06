@@ -139,6 +139,7 @@ validate_allocation_meat_inputs <- function(
 #' @noRd
 validate_allocation_fibre_inputs <- function(
     animal,
+    size,
     fibre_energy_requirement,
     ratio_ne_to_me,
     assessment_duration,
@@ -169,6 +170,9 @@ validate_allocation_fibre_inputs <- function(
   if (assessment_duration <= 0 || assessment_duration > 3650) {
     cli::cli_abort("{.arg assessment_duration} must be between 0 and 3650 days.")
   }
+  if (size < 0) {
+  cli::cli_abort("{.arg size} must be non-negative.")
+    }
 }
 
 #' Validate inputs for calc_energy_allocation_work
@@ -197,6 +201,7 @@ validate_allocation_fibre_inputs <- function(
 #' @noRd
 validate_allocation_work_inputs <- function(
     animal,
+    size,
     work_energy_requirement,
     ratio_ne_to_me,
     assessment_duration,
@@ -208,7 +213,6 @@ validate_allocation_work_inputs <- function(
   validate_scalar_numeric(ratio_ne_to_me, "ratio_ne_to_me")
   validate_scalar_numeric(assessment_duration, "assessment_duration")
   validate_scalar_numeric(size, "size")
-  
 
   # Validate animal species
   # Note: Allocation module uses these specific species codes
@@ -228,5 +232,8 @@ validate_allocation_work_inputs <- function(
   }
   if (assessment_duration <= 0 || assessment_duration > 3650) {
     cli::cli_abort("{.arg assessment_duration} must be between 0 and 3650 days.")
+  }
+  if (size < 0) {
+    cli::cli_abort("{.arg size} must be non-negative.")
   }
 }

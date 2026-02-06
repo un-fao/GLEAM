@@ -13,6 +13,31 @@
 #' @param ipcc_method Character. IPCC method to use: "2006" or "2019". Defaults to "2019".
 #'
 #' @return A data.table with added emission columns
+#' 
+#' @details
+#' 
+#' # TEMPORARY / This will have to be revised and incorporated with the full updated documentation. 
+#' #' **Implementation note (simplified coefficients).**
+#' This package uses simplified algebraic forms by species/method that are consistent with the
+#' structure of Eq. 10.24 under fixed/default assumptions for \eqn{UE} and \eqn{ASH}, and with
+#' digestibility supplied directly as a fraction (\code{diet_dig}). 
+#' 
+#' **Species/method branches**
+#' \itemize{
+#'   \item \strong{(\code{"CTL"}, \code{"BFL"}, \code{"CML"}, \code{"SHP"}, \code{"GTS"}):
+#'     \code{vs = dmi * (1.04 - diet_dig) * 0.92}.
+#'     The formula is a modification of the original IPCC equation. First, the average gross energy content of the ration is used instead
+#'     of a fixed value of 18.45 MJ×kg DM-1. Thus, ge / diet_ge equals the daily intake, dmi. 
+#'     Second, it is assumed that Urinary energy is 4% and the Ash content in feed is 8%. Therefore, GE × (GE + UE) becomes 1.04 and 1 – ASH becomes 0.92
+#'     }
+#'   \item \strong{Swine} (\code{"PGS"}):
+#'     \itemize{
+#'       \item \code{vs = dmi * (1.02 - diet_dig) * 0.94}.
+#'       It is assumed that urinary energy is 2% and the ash content in feed is 6% (based on IPCC, 2019). Therefore, GE × (GE + UE) becomes 1.02 and 1 – ASH becomes 0.94.
+#'     }
+#' }
+#'
+#' 
 #'
 #' @examples
 #' \dontrun{
@@ -105,11 +130,12 @@ run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
   #### VS - IPCC method------
   gleam_data[, paste0("vs", ipcc_method) :=
                calc_volatile_solids(
-                 animal = Animal_short,
                  dmi = dmi,
                  diet_dig = diet_dig,
-                 diet_me = diet_me,
-                 diet_ge = diet_ge
+                 urinary_energy_fraction =
+                   fifelse(Animal_short == "PGS", 0.02, 0.04),
+                 diet_ash =
+                   fifelse(Animal_short == "PGS", 0.06, 0.08)
                ),
              by = .I
   ]

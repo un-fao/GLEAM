@@ -25,6 +25,28 @@ the core calculation functions to produce emission estimates.
 This function is intended for internal use and performs no validation of inputs.
 Input data must be preloaded and properly formatted.
 }
+\section{TEMPORARY / This will have to be revised and incorporated with the full updated documentation.}{
+#' \strong{Implementation note (simplified coefficients).}
+This package uses simplified algebraic forms by species/method that are consistent with the
+structure of Eq. 10.24 under fixed/default assumptions for \eqn{UE} and \eqn{ASH}, and with
+digestibility supplied directly as a fraction (\code{diet_dig}).
+
+\strong{Species/method branches}
+\itemize{
+\item \strong{(\code{"CTL"}, \code{"BFL"}, \code{"CML"}, \code{"SHP"}, \code{"GTS"}):
+\code{vs = dmi * (1.04 - diet_dig) * 0.92}.
+The formula is a modification of the original IPCC equation. First, the average gross energy content of the ration is used instead
+of a fixed value of 18.45 MJ×kg DM-1. Thus, ge / diet_ge equals the daily intake, dmi.
+Second, it is assumed that Urinary energy is 4\% and the Ash content in feed is 8\%. Therefore, GE × (GE + UE) becomes 1.04 and 1 – ASH becomes 0.92
+}
+\item \strong{Swine} (\code{"PGS"}):
+\itemize{
+\item \code{vs = dmi * (1.02 - diet_dig) * 0.94}.
+It is assumed that urinary energy is 2\% and the ash content in feed is 6\% (based on IPCC, 2019). Therefore, GE × (GE + UE) becomes 1.02 and 1 – ASH becomes 0.94.
+}
+}
+}
+
 \examples{
 \dontrun{
 # Load example data and compute manure emissions

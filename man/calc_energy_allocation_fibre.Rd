@@ -6,6 +6,7 @@
 \usage{
 calc_energy_allocation_fibre(
   animal,
+  size,
   fibre_energy_requirement,
   ratio_ne_to_me,
   assessment_duration,
@@ -24,7 +25,9 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{fibre_energy_requirement}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML (MJ/head/day). Assumed to be 0 for other species. Expressed as net energy for SHP and GTS and as metabolizable energy for CML (MJ/head/day).}
+\item{size}{Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)}
+
+\item{fibre_energy_requirement}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy for CML (MJ/head/day).}
 
 \item{ratio_ne_to_me}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.}
 
