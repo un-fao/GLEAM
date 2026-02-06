@@ -142,8 +142,7 @@ validate_allocation_fibre_inputs <- function(
     size,
     fibre_energy_requirement,
     ratio_ne_to_me,
-    assessment_duration,
-    size
+    assessment_duration
 ) {
   validate_scalar_character(animal, "animal")
   validate_scalar_numeric(fibre_energy_requirement, "fibre_energy_requirement")
@@ -204,8 +203,7 @@ validate_allocation_work_inputs <- function(
     size,
     work_energy_requirement,
     ratio_ne_to_me,
-    assessment_duration,
-    size
+    assessment_duration
     
 ) {
   validate_scalar_character(animal, "animal")

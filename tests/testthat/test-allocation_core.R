@@ -226,8 +226,7 @@ test_that("calc_energy_allocation_fibre returns correct value for sheep", {
     size = 100,
     fibre_energy_requirement = 5,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365,
-    size = 100
+    assessment_duration = 365
   )
 
   expect_type(result, "double")
@@ -241,8 +240,7 @@ test_that("calc_energy_allocation_fibre returns correct value for goats", {
     size = 100,
     fibre_energy_requirement = 4,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365,
-    size = 100
+    assessment_duration = 365
   )
 
   expect_equal(result, 4 * 365 * 100)  # Direct calculation for goats
@@ -254,8 +252,7 @@ test_that("calc_energy_allocation_fibre returns correct value for camelids", {
     size = 100,
     fibre_energy_requirement = 6,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365,
-    size = 100
+    assessment_duration = 365
   )
 
   expect_type(result, "double")
@@ -269,8 +266,7 @@ test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
     size = 100,
     fibre_energy_requirement = 10,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365,
-    size = 100
+    assessment_duration = 365
   )
   expect_equal(result_cattle, 0)
 
@@ -279,8 +275,7 @@ test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
     size = 100,
     fibre_energy_requirement = 10,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365,
-    size = 100
+    assessment_duration = 365
   )
   expect_equal(result_pigs, 0)
 })
@@ -291,8 +286,7 @@ test_that("calc_energy_allocation_fibre uses default assessment_duration", {
     size = 100,
     fibre_energy_requirement = 5,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365,
-    size = 100
+    assessment_duration = 365
   )
 
   expect_equal(result, 5 * 365 * 100)  # Default is 365 days
@@ -321,8 +315,7 @@ test_that("calc_energy_allocation_work returns correct value for camelids", {
     size = 100, 
     work_energy_requirement = 10,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365,
-    size = 100
+    assessment_duration = 365
   )
 
   expect_type(result, "double")
@@ -337,8 +330,7 @@ test_that("calc_energy_allocation_work returns correct value for non-camelids", 
     size = 100, 
     work_energy_requirement = 8,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365,
-    size = 100
+    assessment_duration = 365
   )
 
   expect_type(result, "double")
@@ -352,8 +344,7 @@ test_that("calc_energy_allocation_work uses default assessment_duration", {
     size = 100, 
     work_energy_requirement = 8,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365,
-    size = 100
+    assessment_duration = 365
   )
 
   expect_equal(result, 8 * 365 * 100)  # Default is 365 days
@@ -365,8 +356,7 @@ test_that("calc_energy_allocation_work handles zero energy requirement", {
     size = 100, 
     work_energy_requirement = 0,
     ratio_ne_to_me = 0.43,
-    assessment_duration = 365,
-    size = 100
+    assessment_duration = 365
   )
 
   expect_equal(result, 0)

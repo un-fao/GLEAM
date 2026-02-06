@@ -9,7 +9,7 @@ calc_volatile_solids(dmi, diet_dig, urinary_energy_fraction, diet_ash)
 \arguments{
 \item{dmi}{Numeric. Daily dry matter intake of feed (kg DM/head/day).}
 
-\item{diet_dig}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
 
 \item{urinary_energy_fraction}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM)}
 

@@ -13,19 +13,15 @@ calc_energy_allocation_milk(
 }
 \arguments{
 \item{milk_fpcm_output}{Numeric scalar. Total fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/assessment period).
-
 Default fat and protein content=0.04 and 0.033.}
 
 \item{standard_protein}{Numeric. Standard protein content of milk, used to calculate fat-protein-corrected milk (FPCM), (kg protein/kg milk).
-
 Default used=0.033.}
 
 \item{standard_fat}{Numeric. Standard fat content of milk, used to calculate fat-protein-corrected milk (FPCM), (kg fat/kg milk).
-
 Default used=0.04.}
 
 \item{standard_lactose}{Numeric. Standard lactose content of milk, used to calculate fat-protein-corrected milk (FPCM) , (kg lactose/kg milk).
-
 Default used=0.048.}
 }
 \value{
