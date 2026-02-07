@@ -4,19 +4,24 @@
 \alias{calc_volatile_solids}
 \title{Calculate Volatile Solids for Manure Emissions}
 \usage{
-calc_volatile_solids(dmi, diet_dig, urinary_energy_fraction, diet_ash)
+calc_volatile_solids(
+  dry_matter_intake,
+  diet_digestibility_fraction,
+  urinary_energy_fraction = 0.04,
+  diet_ash = 0.08
+)
 }
 \arguments{
-\item{dmi}{Numeric. Daily dry matter intake of feed (kg DM/head/day).}
+\item{dry_matter_intake}{Numeric. Daily dry matter intake of feed (kg DM/head/day).}
 
-\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
 
 \item{urinary_energy_fraction}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM)}
 
 \item{diet_ash}{Numeric. Fraction of animal's gross energy that is excreted in urine (fraction).}
 }
 \value{
-Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
+Numeric. Total volatile solids (volatile_solids) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
 }
 \description{
 Computes daily volatile solids (VS) excretion in manure (kg VS/head/day).
@@ -35,6 +40,15 @@ This package uses simplified algebraic forms by species/method that are consiste
 structure of Eq. 10.24.
 Specifically, in IPCC guidelines the the average gross energy content of the ration is used instead
 of a fixed value of 18.45 MJ×kg DM-1. Thus, ge / diet_ge equals the daily intake, dmi.
+}
+\examples{
+calc_volatile_solids <- calc_volatile_solids(
+  dry_matter_intake = 5,
+  diet_digestibility_fraction = 0.6,
+  urinary_energy_fraction = 0.04,
+  diet_ash = 0.08
+)
+
 }
 \references{
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from

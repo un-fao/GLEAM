@@ -2,53 +2,70 @@
 % Please edit documentation in R/directemissions_manure_core_model.R
 \name{calc_direct_n2o_emissions}
 \alias{calc_direct_n2o_emissions}
-\title{Calculate Direct N2O Emissions from Manure}
+\title{Calculate direct N2O emissions from manure management systems}
 \usage{
-calc_direct_n2o_emissions(
-  n_excretion,
-  ef3_pasture,
-  ef3_burned,
-  ef3_other,
-  ration_N2ON_to_N2O = 44/28
-)
+calc_direct_n2o_emissions(ration_N2ON_to_N2O = 44/28, nitrogen_excretion, ...)
 }
 \arguments{
-\item{n_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
+\item{ration_N2ON_to_N2O}{Numeric. Conversion factor from N2O-N (kg N) to N2O
+(kg), based on molecular weights. Defaults to 44/28.}
 
-\item{ef3_pasture}{Numeric. Effective emission factor (EF\eqn{_3}) for manure deposited on pasture (ef3pasture), expressed in kg N₂O-N / kg N excreted, and already weighted by the share of manure deposited on pasture (mmspasture) (kg N₂O-N / kg N excreted).}
+\item{nitrogen_excretion}{Numeric. Daily nitrogen excretion
+(kg N/head/day).}
 
-\item{ef3_burned}{Numeric. Effective EF\eqn{_3} factor for manure burned for fuel (ef3burned), expressed in kg N₂O-N / kg N excreted, and already weighted by the share of manure burned for fuel (mmsburned) (kg N₂O-N / kg N excreted).}
+\item{...}{A variable number of manure management system (MMS) arguments.
+Each MMS must be provided as a named numeric vector with exactly the
+following fields:
+\itemize{
+\item{fraction} {Fraction of total manure managed in this system (0–1).
+The sum of all fractions must equal 1.}
+\item{n2o_ef3} {Effective emission factor (EF\eqn{_3}) for manure
+management, expressed in kg N2O-N / kg N excreted.}
+}
 
-\item{ef3_other}{Numeric. Effective EF\eqn{_3} factor for manure managed in non-pasture, non-burned manure management systems, expressed in kg N₂O-N / kg N excreted, and already weighted by the share of each corresponding manure management system (e.g., solid storage (mmsolid), liquid/slurry (mmsliquid)) (kg N₂O-N / kg N excreted).}
-
-\item{ration_N2ON_to_N2O}{Numeric. Conversion factor from N₂O-N (kg N) to N₂O (kg), based on molecular weights, defaults to 44/28.}
+Two MMS names are treated explicitly when present:
+\itemize{
+\item{\code{mms_pasture}} {manure deposited on pasture}
+\item{\code{mms_burned}} {manure burned for fuel}
+}
+All remaining MMS arguments are grouped and treated as other manure
+management systems.}
 }
 \value{
-A named list with:
+A named list with the following elements (kg N2O/head/day):
 \describe{
-\item{direct_n2o_manure_pasture}{Numeric. Direct nitrous oxide emissions from manure deposited on pasture (kg N₂O/head/day)}
-\item{direct_n2o_manure_burned}{Numeric. Direct nitrous oxide emissions from manure burned for fuel (kg N₂O/head/day)}
-\item{direct_n2o_manure_other}{Numeric. Direct nitrous oxide emissions from manure managed in all other manure management systems, excluding emissions from manure deposired on pasture and burned (kg N₂O/head/day)}
-\item{direct_n2o_manure_all_noburn}{Numeric. Direct nitrous oxide emissions from manure managed in all other manure management systems and deposited on pasture, excluding emissions from burned manure (kg N₂O/head/day)}
+\item{n2o_manure_pasture_direct}{Direct N2O emissions from manure deposited on pasture.}
+\item{n2o_manure_burned_direct}{Direct N2O emissions from manure burned for fuel.}
+\item{n2o_manure_other_direct}{Direct N2O emissions from all other manure management systems.}
+\item{n2o_manure_all_noburn_direct}{Total direct N2O emissions excluding burned manure
+(pasture + other systems).}
 }
 }
 \description{
-Calculates \strong{direct nitrous oxide (N₂O)} emissions from manure management
-pathways using the IPCC Tier 2 framework. The calculation follows the structure of
-IPCC Eq. 10.25 (direct N₂O emissions from manure management), but is expressed
-on a \strong{daily basis} because \code{n_excretion} is provided in
-kg N/head/day.
+Computes daily direct nitrous oxide (N2O) emissions from manure using
+IPCC-based parameters and separates emissions from pasture, burned manure,
+and all other manure management systems.
 }
-\details{
-This function expects that the emission-factor inputs
-(\code{ef3_pasture}, \code{ef3_burned}, \code{ef3_other}) are provided as
-\strong{effective (already weighted) factors}, i.e. they have already been
-multiplied by the corresponding manure management system shares (mms).
-}
-\references{
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management. Equation 10.25.
+\examples{
+calc_direct_n2o_emissions(
+  ration_N2ON_to_N2O = 44 / 28,
+  nitrogen_excretion = 0.9,
+  mms_burned = c(
+    fraction = 0.020,
+    n2o_ef3  = 0
+  ),
+  mms_drylot = c(
+    fraction = 0.264,
+    n2o_ef3  = 0.02
+  ),
+  mms_pasture = c(
+    fraction = 0.310,
+    n2o_ef3  = 0.02
+  ),
+  mms_solid = c(
+    fraction = 0.406,
+    n2o_ef3  = 0.005
+  )
+)
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management. Equation 10.25.
 }
