@@ -191,7 +191,7 @@ run_herd_simulation <- function(
     cli::cli_status("\U1F552 Running herd simulation, please wait\U2026")
   }
 
-  # --- Step 2: Prepare Data for Processing ------------------------------------
+  # --- Step 2: Prepare Data for Processing -----------------------------------
   # Create working copies
   cohort_level_results <- data.table::copy(cohort_level_data)
   herd_level_results <- data.table::copy(herd_level_data)

@@ -13,7 +13,8 @@
 # This is a standard and CRAN-friendly practice for packages using
 # dynamic column references or pipelines.
 utils::globalVariables(c(
-  ".", "..cols_to_drop", "..final_cols", "ADM0_CODE", "AFKG", "AMKG", "Animal_short",
+  ".", ":=", ".I", ".N", ".SD", "..cols_to_drop", "..final_cols", "ADM0_CODE", "AFKG", "AMKG", "Animal_short",
+  "animal_short",
   "COUNTRY", "HerdType_short", "LPS_short", "MFSKG", "MMSKG", "WA", "afc", "ckg",
   "cohort", "count", "daily_weight_gain", "duration", "duration.FA", "duration.FJ", "duration.FS",
   "cohort_duration_days", "death_rate",
@@ -42,15 +43,27 @@ utils::globalVariables(c(
   "probability_death", "probability_offtake", "probability_survival", "probability_growth",
   "cohort_stock_size", "offtake_heads", "offtake_heads_assessment", "growth_rate_herd",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
-  "variable", "wkg", "variable_name", "offtake_number_assessment"
+  "variable", "wkg", "variable_name", "offtake_number_assessment",
+  # Columns used in run_weights_calculations
+  "cohort", "cohort_short", "cohort_duration_days",
+  "live_weight_female_adult", "live_weight_male_adult",
+  "live_weight_cohort_initial", "live_weight_cohort_potential_final",
+  "slaughter_weight_cohort", "live_weight_cohort_average",
+  "live_weight_cohort_final", "animal", "animal_short"
 ))
 
 utils::globalVariables(c(
   # Columns used in run_feed_rations
-  "DE_pigs", "DE_ruminants", "GE", "GLEAM3_name", "HerdType", "LPS",
-  "ME_chickens", "ME_pigs", "ME_ruminants", "N_content",
-  "diet_dig", "diet_ge", "diet_me", "diet_nitrogen",
-  "dig_chickens", "dig_pigs", "dig_ruminants", "value", "Item_Name",
+  "animal", "animal_short", "feed_id", "feed_name", "category", "feed_ration_fraction",
+  "feed_gross_energy", "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
+  "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
+  "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
+  "feed_name_input", "feed_name_params",
+  "diet_gross_energy", "diet_metabolizable_energy",
+  "diet_nitrogen", "diet_digestibility_fraction",
+  "feed_digestibility_fraction_ruminant", "feed_digestibility_fraction_pigs",
+  "feed_digestibility_fraction_chicken",
+  "diet_dig", "diet_ge", "diet_me", "feed_ration_sum",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
   # Columns used in run_directemissions_manure
@@ -91,6 +104,12 @@ utils::globalVariables(c(
 ))
 
 utils::globalVariables(c(
+  # Columns created by update joins in run_weights_calculations
+  "x.live_weight_female_adult", "x.live_weight_male_adult", "x.birth_weight",
+  "x.slaughter_weight_female", "x.slaughter_weight_male", "x.weaning_weight"
+))
+
+utils::globalVariables(c(
   # Columns used in run_energy_requirements
   "average_weight", "dmi", "dr1", "draught_fraction", "fibre_prod",
   "final_weight", "gest", "getot", "idle", "lact", "lambing_interval",
@@ -122,6 +141,6 @@ utils::globalVariables(c(
 
 # Add species abbreviations
 abbr_animals <- data.table::data.table(
-  Animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
-  Animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
+  animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
+  animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
 )

@@ -4,89 +4,133 @@
 #' from feed rations and nutritional parameters. Assumes inputs are pre-cleaned.
 #'
 #' @param rations_share A data.table containing feed shares per cohort. Must include:
-#'   - `Animal_short`, `Item_Name`, `ADM0_CODE`, `HerdType_short`, `LPS_short`, `cohort`, and `value`.
+#'   - `herd_id`, `animal`, `feed_name`, `feed_id`, `cohort`, and
+#'     `feed_ration_fraction`.
 #' @param feed_params A data.table of nutrient parameters. Must include:
-#'   - `Item_Name`, `GE`, `DE_ruminants`, `DE_pigs`, `ME_ruminants`, `ME_pigs`, `ME_chickens`, `N_content`.
-#' @param input_feed A data.table of cohort-level baseline GLEAM data. Must include:
-#'   - `Animal_short`, `ADM0_CODE`, `HerdType_short`, `LPS_short`, `cohort`.
+#'   - `feed_id`, `feed_name`, `category`, `feed_gross_energy`,
+#'     `feed_digestible_energy_ruminant`, `feed_digestible_energy_pigs`,
+#'     `feed_metabolizable_energy_ruminant`, `feed_metabolizable_energy_pigs`,
+#'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`.
 #'
-#' @return A data.table matching `input_feed` enriched with dietary metrics:
-#'   - `diet_ge`, `diet_me`, `diet_nitrogen`, `diet_dig`
+#' @return A data.table summarized by `herd_id`, `animal`, and `cohort` with:
+#'   - `diet_gross_energy`, `diet_metabolizable_energy`,
+#'     `diet_nitrogen`, `diet_digestibility_fraction`
 #'
 #' @examples
 #' \dontrun{
 #' # Load cleaned example input from the package and compute feed intake metrics
 #' feed_params <- data.table::fread(
-#'   system.file("extdata/Feed_parameters/GLEAM_Feed_parameters.csv", package = "gleam")
+#'   system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
 #' )
 #'
 #' rations_share <- data.table::fread(
-#'   system.file("extdata/GLEAM_input_FeedRations.csv", package = "gleam")
+#'   system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
 #' )
 #'
-#' input_feed <- data.table::fread(
-#'   system.file("extdata/GLEAM_input_feed.csv", package = "gleam")
-#' )
-#'
-#' result <- run_feed_rations(rations_share, feed_params, input_feed)
+#' result <- run_feed_rations(rations_share, feed_params)
 #' }
-#' @keywords internal
+#' @export
 #'
 #' @importFrom data.table fifelse data.table
-run_feed_rations <- function(rations_share, feed_params, input_feed) {
-  # Compute digestibility ratios
-  feed_params[, `:=`(
-    dig_ruminants  = DE_ruminants / GE,
-    dig_pigs       = DE_pigs / GE,
-    dig_chickens   = ME_chickens / GE
-  )]
+run_feed_rations <- function(
+    rations_share,
+    feed_params = data.table::fread(
+      system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
+    )
+) {
+  # --- Step 1: Validate inputs ------------------------------------------------
+  validate_feed_rations_inputs(rations_share, feed_params)
 
-  # Select relevant nutrient columns
-  feed_params_nutrients <- feed_params[, .(
-    Item_Name, GE, ME_ruminants, ME_pigs, ME_chickens,
-    N_content, dig_ruminants, dig_pigs, dig_chickens
-  )]
-
-  # Merge ration shares with feed parameters
-  rations_detailed <- merge(
-    rations_share, feed_params_nutrients,
-    by = "Item_Name", all.x = TRUE, allow.cartesian = TRUE
-  )
-
-  rations_detailed <- merge(rations_detailed, abbr_animals, by = "Animal_short")
-
-  # Calculate cohort feed contributions: GE, ME, digestibility, nitrogen
-  rations_detailed[, `:=`(
-    diet_ge = value * GE,
-    diet_nitrogen = value * N_content,
-    diet_dig = data.table::fifelse(
-      Animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), value * dig_ruminants,
-      data.table::fifelse(Animal_short == "CHK", value * dig_chickens,
-              data.table::fifelse(Animal_short == "PGS", value * dig_pigs, NA_real_))
+  # --- Step 2: Compute digestibility ratios -----------------------------------
+  feed_params[
+    ,
+    c(
+      "feed_digestibility_fraction_ruminant",
+      "feed_digestibility_fraction_pigs",
+      "feed_digestibility_fraction_chicken"
+    ) := calc_feed_digestibility_fraction(
+      feed_digestible_energy_ruminant = feed_digestible_energy_ruminant,
+      feed_digestible_energy_pigs = feed_digestible_energy_pigs,
+      feed_metabolizable_energy_chicken = feed_metabolizable_energy_chicken,
+      feed_gross_energy = feed_gross_energy
     ),
-    diet_me = data.table::fifelse(
-      Animal_short %in% c("CTL", "BFL", "CML", "SHP", "GTS"), value * ME_ruminants,
-      data.table::fifelse(Animal_short == "CHK", value * ME_chickens,
-              data.table::fifelse(Animal_short == "PGS", value * ME_pigs, NA_real_))
-    )
-  )]
-
-  # Summarize dietary metrics at the cohort level
-  rations_summary <- rations_detailed[, .(
-    diet_ge = sum(diet_ge, na.rm = TRUE),
-    diet_me = sum(diet_me, na.rm = TRUE),
-    diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
-    diet_dig = sum(diet_dig, na.rm = TRUE)
-  ), by = .(Animal_short, ADM0_CODE, HerdType_short, LPS_short, cohort)]
-
-  # Merge back with input data and return output
-  return(
-    merge(
-      input_feed,
-      rations_summary,
-      by = c("Animal_short", "ADM0_CODE", "HerdType_short", "LPS_short", "cohort"),
-      all.x = TRUE,
-      allow.cartesian = TRUE
-    )
+    by = .I
+  ]
+  # --- Step 3: Merge ration shares with feed parameters -----------------------
+  rations_detailed <- merge(
+    rations_share, feed_params,
+    by = "feed_id", all.x = TRUE, allow.cartesian = TRUE
   )
+
+  rations_detailed <- merge(
+    rations_detailed,
+    abbr_animals,
+    by.x = "animal",
+    by.y = "animal",
+    all.x = TRUE
+  )
+
+  if (any(is.na(rations_detailed$animal_short))) {
+    unknown_animals <- unique(rations_detailed[is.na(animal_short), animal])
+    cli::cli_abort(
+      "Unknown {.arg animal} values in {.arg rations_share}: {.val {unknown_animals}}"
+    )
+  }
+
+  # --- Step 4: Calculate cohort feed contributions ----------------------------
+  rations_detailed[
+    ,
+    diet_gross_energy := calc_diet_gross_energy(
+      feed_ration_fraction = feed_ration_fraction,
+      feed_gross_energy = feed_gross_energy
+    ),
+    by = .I
+  ]
+
+  rations_detailed[
+    ,
+    diet_nitrogen := calc_diet_nitrogen_content(
+      feed_ration_fraction = feed_ration_fraction,
+      feed_nitrogen_content = feed_nitrogen_content
+    ),
+    by = .I
+  ]
+
+  rations_detailed[
+    ,
+    diet_digestibility_fraction := calc_diet_digestibility(
+      species_short = animal_short,
+      feed_ration_fraction = feed_ration_fraction,
+      feed_digestibility_fraction_ruminant = feed_digestibility_fraction_ruminant,
+      feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs,
+      feed_digestibility_fraction_chicken = feed_digestibility_fraction_chicken
+    ),
+    by = .I
+  ]
+
+  rations_detailed[
+    ,
+    diet_metabolizable_energy := calc_diet_metabolizable_energy(
+      species_short = animal_short,
+      feed_ration_fraction = feed_ration_fraction,
+      feed_metabolizable_energy_ruminant = feed_metabolizable_energy_ruminant,
+      feed_metabolizable_energy_pigs = feed_metabolizable_energy_pigs,
+      feed_metabolizable_energy_chicken = feed_metabolizable_energy_chicken
+    ),
+    by = .I
+  ]
+
+  # --- Step 5: Summarize dietary metrics at cohort level ----------------------
+  rations_summary <- rations_detailed[
+    ,
+    .(
+      diet_gross_energy = sum(diet_gross_energy, na.rm = TRUE),
+      diet_metabolizable_energy = sum(diet_metabolizable_energy, na.rm = TRUE),
+      diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
+      diet_digestibility_fraction = sum(diet_digestibility_fraction, na.rm = TRUE)
+    ),
+    by = .(herd_id, animal, cohort)
+  ]
+
+  return(rations_summary)
 }
