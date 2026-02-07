@@ -1,4 +1,4 @@
-#' Validate inputs for run_herd_simulation
+#' Validate inputs for run_weights_calculations
 #'
 #' Validates that cohort_level_data and herd_level_data have the correct structure,
 #' required columns, and proper relationships between them.
@@ -7,7 +7,7 @@
 #' @param herd_level_data data.table. Herd-level data with one row per herd.
 #'
 #' @noRd
-validate_herd_simulation_inputs <- function(
+validate_weights_inputs <- function(
     cohort_level_data,
     herd_level_data
 ) {
@@ -29,10 +29,16 @@ validate_herd_simulation_inputs <- function(
 
   # --- Required columns validation --------------------------------------------
   required_cohort_cols <- c(
-    "herd_id", "cohort", "cohort_duration_days", "offtake_rate", "death_rate"
+    "herd_id", "cohort_short", "cohort_duration_days", "offtake_rate"
   )
   required_herd_cols <- c(
-    "herd_id", "parturition_rate", "litter_size", "birth_fraction_female", "herd_size_total"
+    "herd_id",
+    "live_weight_female_adult",
+    "live_weight_male_adult",
+    "birth_weight",
+    "slaughter_weight_female",
+    "slaughter_weight_male",
+    "weaning_weight"
   )
 
   missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
@@ -54,7 +60,7 @@ validate_herd_simulation_inputs <- function(
   valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
   # Check for invalid cohort values
-  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort), valid_cohorts)
+  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), valid_cohorts)
   if (length(invalid_cohorts) > 0) {
     cli::cli_abort(
       "Invalid cohort values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
@@ -66,8 +72,8 @@ validate_herd_simulation_inputs <- function(
   cohort_completeness <- cohort_level_data[
     , list(
       count = .N,
-      has_all_cohorts = setequal(cohort, valid_cohorts),
-      missing_cohorts = paste(setdiff(valid_cohorts, cohort), collapse = ", ")
+      has_all_cohorts = setequal(cohort_short, valid_cohorts),
+      missing_cohorts = paste(setdiff(valid_cohorts, cohort_short), collapse = ", ")
     ),
     by = herd_id
   ]

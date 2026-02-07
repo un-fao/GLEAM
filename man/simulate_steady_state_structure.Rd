@@ -5,46 +5,46 @@
 \title{Simulate Steady-State Population Structure}
 \usage{
 simulate_steady_state_structure(
-  initial_structure,
-  max_years,
+  initial_herd_structure,
+  max_simulation_years,
   min_lambda_change,
-  fem_fec,
-  mal_fec,
-  prob_death,
-  prob_offtake,
-  prob_growth
+  fecundity_female,
+  fecundity_male,
+  probability_death,
+  probability_offtake,
+  probability_growth
 )
 }
 \arguments{
-\item{initial_structure}{Named numeric vector of length 6. Initial number of individuals in each of the 6
+\item{initial_herd_structure}{Named numeric vector of length 6. Initial number of individuals in each of the 6
 sex-age classes. Must be named with: \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.}
 
-\item{max_years}{Integer. Maximum number of years to simulate.}
+\item{max_simulation_years}{Integer. Maximum number of years to simulate.}
 
 \item{min_lambda_change}{Numeric. Threshold for minimal change in class-specific growth rates to reach
 steady state.}
 
-\item{fem_fec}{Numeric. Daily number of female births per adult female.}
+\item{fecundity_female}{Numeric. Daily number of female births per adult female.}
 
-\item{mal_fec}{Numeric. Daily number of male births per adult female.}
+\item{fecundity_male}{Numeric. Daily number of male births per adult female.}
 
-\item{prob_death}{Named numeric vector of length 10. Daily death probabilities for 10 cohorts. Must be named
+\item{probability_death}{Named numeric vector of length 10. Daily death probabilities for 10 cohorts. Must be named
 using: \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS},
 \code{MA}, \code{MC}.}
 
-\item{prob_offtake}{Named numeric vector of length 10. Daily offtake probabilities for 10 cohorts.
-Names must match those in \code{prob_death}.}
+\item{probability_offtake}{Named numeric vector of length 10. Daily offtake probabilities for 10 cohorts.
+Names must match those in \code{probability_death}.}
 
-\item{prob_growth}{Named numeric vector of length 10. Daily probability of transition
-to the next class for 10 cohorts. Names must match those in \code{prob_death}.}
+\item{probability_growth}{Named numeric vector of length 10. Daily probability of transition
+to the next class for 10 cohorts. Names must match those in \code{probability_death}.}
 }
 \value{
 A named list with:
 \describe{
-\item{days_steady}{Number of days until steady state is reached.}
-\item{structure}{Final share of each of the 8 sex-age cohorts.}
-\item{share}{Final share of 6 grouped sex-age classes.}
-\item{growth_rate_pop}{Annualized growth rate at steady state.}
+\item{days_to_steady_state}{Number of days until steady state is reached.}
+\item{herd_structure}{Final share of each of the 8 sex-age cohorts.}
+\item{cohort_share}{Final share of 6 grouped sex-age classes.}
+\item{growth_rate_herd}{Annualized growth rate at steady state.}
 }
 }
 \description{

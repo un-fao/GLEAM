@@ -4,29 +4,36 @@
 \alias{summarise_offtake}
 \title{Summarise Offtake and Stock Variation for a Steady-State Year}
 \usage{
-summarise_offtake(size, size_end, size_avg, offtake, assessment_duration)
+summarise_offtake(
+  cohort_stock_start,
+  cohort_stock_end_projected,
+  cohort_stock_average,
+  cohort_offtake_heads,
+  simulation_duration
+)
 }
 \arguments{
-\item{size}{Numeric vector of length 6. Population at start of year.}
+\item{cohort_stock_start}{Numeric vector of length 6. Population at start of year.}
 
-\item{size_end}{Numeric vector of length 6. Population at end of year.}
+\item{cohort_stock_end_projected}{Numeric vector of length 6. Population at end of year.}
 
-\item{size_avg}{Numeric vector of length 6. Average population over the year.}
+\item{cohort_stock_average}{Numeric vector of length 6. Average population over the year.}
 
-\item{offtake}{Numeric vector of length 10. Offtake counts from 10 sex-age classes.}
+\item{cohort_offtake_heads}{Numeric vector of length 10. Offtake counts from 10 sex-age classes.}
 
-\item{assessment_duration}{Numeric. Length of the assessment period (days).}
+\item{simulation_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
 A named list with:
 \describe{
-\item{stock_variation}{Difference between end and start population sizes.}
-\item{offtake_number}{Total number of individuals removed via offtake across 6 sex-age classes.}
-\item{offtake_share}{Offtake rate relative to starting population size.}
-\item{offtake_share_avg}{Offtake rate relative to average population size.}
-\item{offtake_sv_number}{Sum of offtake and stock variation (SV).}
-\item{offtake_sv_share}{SV rate relative to starting population size.}
-\item{offtake_sv_share_avg}{SV rate relative to average population size.}
+\item{stock_variation_heads}{Difference between end and start population sizes.}
+\item{offtake_heads}{Total number of individuals removed via offtake across 6 sex-age classes.}
+\item{offtake_heads_assessment}{Total offtake over the assessment period.}
+\item{offtake_rate_to_stock_start}{Offtake rate relative to starting population size.}
+\item{offtake_rate_to_stock_average}{Offtake rate relative to average population size.}
+\item{offtake_stock_variation_heads}{Sum of offtake and stock variation (SV).}
+\item{offtake_stock_plus_variation_rate_to_stock_start}{SV rate relative to starting population size.}
+\item{offtake_stock_plus_variation_rate_to_stock_average}{SV rate relative to average population size.}
 }
 }
 \description{
