@@ -163,8 +163,6 @@ compute_transition_probabilities <- function(duration, offtake_rate, mort_rate) 
   # Probability of growing into the next class (prob_growth)
   prob_growth <- (prob_survival^(duration_all - 1) - prob_survival^duration_all) / (1 - prob_survival^duration_all)
 
-  # --- Prepare and return results ---
-
   return(
     list(
       hazard_death = hazard_death,
@@ -326,7 +324,6 @@ simulate_steady_state_structure <- function(
   # Compute steady-state annual growth rate
   growth_rate_pop <- (fem_juv_fec[days_steady] / fem_juv_fec[days_steady - 1])^365 - 1
 
-  # Return output
   return(
     list(
       days_steady = days_steady,
@@ -486,7 +483,6 @@ project_population_size <- function(
     "FJ", "FS", "FA", "MJ", "MS", "MA"
   )
 
-  # Prepare output
   return(
     list(
       size = size,
@@ -572,7 +568,6 @@ summarise_offtake <- function(
     names(offtake_sv_number) <- names(offtake_sv_share) <-
     names(offtake_sv_share_avg) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
-  # Prepare output
   return(
     list(
       stock_variation = stock_variation,
