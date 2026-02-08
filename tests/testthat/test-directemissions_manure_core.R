@@ -34,7 +34,7 @@ test_that("calc_volatile_solids validates inputs", {
 
 # ---- test calc_ch4_emissions ----
 test_that("calc_ch4_emissions computes methane by MMS group", {
-  vs <- 2
+  volatile_solids <- 2
   ratio <- 0.67
   mms_burned <- c(
     fraction = 0.2,
@@ -54,15 +54,15 @@ test_that("calc_ch4_emissions computes methane by MMS group", {
 
   result <- calc_ch4_emissions(
     ratio_m3CH4_kgCH4 = ratio,
-    volatile_solids = vs,
+    volatile_solids = volatile_solids,
     mms_burned = mms_burned,
     mms_pasture = mms_pasture,
     mms_drylot = mms_drylot
   )
 
-  expected_pasture <- vs * ratio * 0.3 * (0.47 / 100) * 0.19
-  expected_burned <- vs * ratio * 0.2 * (10 / 100) * 0.13
-  expected_other <- vs * ratio * sum(0.5 * 2 * 0.13) / 100
+  expected_pasture <- volatile_solids * ratio * 0.3 * (0.47 / 100) * 0.19
+  expected_burned <- volatile_solids * ratio * 0.2 * (10 / 100) * 0.13
+  expected_other <- volatile_solids * ratio * sum(0.5 * 2 * 0.13) / 100
 
   expect_equal(result$ch4_manure_pasture, expected_pasture)
   expect_equal(result$ch4_manure_burned, expected_burned)
