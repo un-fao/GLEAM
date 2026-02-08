@@ -65,19 +65,19 @@ calc_volatile_solids <- function(
 #' @param ... A variable number of manure management system (MMS) arguments.
 #'   Each MMS must be provided as a named numeric vector with exactly the
 #'   following fields:
-#'   \itemize{
-#'     \item{fraction} {Fraction of total manure managed in this system (0–1).
+#'   \describe{
+#'     \item{fraction}{Fraction of total manure managed in this system (0–1).
 #'       The sum of all fractions must equal 1.}
-#'     \item{methane_conversion_factor_mcf} {Methane conversion factor (MCF),
+#'     \item{methane_conversion_factor_mcf}{Methane conversion factor (MCF),
 #'       expressed as a percentage.}
-#'     \item{ch4_max_producing_capacity_bo} {Maximum methane producing capacity
+#'     \item{ch4_max_producing_capacity_bo}{Maximum methane producing capacity
 #'       (B0), in m3 CH4 / kg VS.}
 #'   }
 #'
 #' Two MMS names are treated explicitly when present:
-#' \itemize{
-#'   \item{\code{mms_pasture}} {manure deposited on pasture}
-#'   \item{\code{mms_burned}} {manure burned for fuel}
+#' \describe{
+#'   \item{\code{mms_pasture}}{manure deposited on pasture}
+#'   \item{\code{mms_burned}}{manure burned for fuel}
 #' }
 #' All remaining MMS arguments are grouped and treated as other manure
 #' management systems.
@@ -195,17 +195,17 @@ calc_ch4_emissions <- function(
 #' @param ... A variable number of manure management system (MMS) arguments.
 #'   Each MMS must be provided as a named numeric vector with exactly the
 #'   following fields:
-#'   \itemize{
-#'     \item{fraction} {Fraction of total manure managed in this system (0–1).
+#'   \describe{
+#'     \item{fraction}{Fraction of total manure managed in this system (0–1).
 #'       The sum of all fractions must equal 1.}
-#'     \item{n2o_ef3} {Effective emission factor (EF\eqn{_3}) for manure
+#'     \item{n2o_ef3}{Effective emission factor (EF\eqn{_3}) for manure
 #'       management, expressed in kg N2O-N / kg N excreted.}
 #'   }
 #'
 #' Two MMS names are treated explicitly when present:
-#' \itemize{
-#'   \item{\code{mms_pasture}} {manure deposited on pasture}
-#'   \item{\code{mms_burned}} {manure burned for fuel}
+#' \describe{
+#'   \item{\code{mms_pasture}}{manure deposited on pasture}
+#'   \item{\code{mms_burned}}{manure burned for fuel}
 #' }
 #' All remaining MMS arguments are grouped and treated as other manure
 #' management systems.
@@ -308,21 +308,21 @@ calc_direct_n2o_emissions <- function(
 #' @param ... A variable number of manure management system (MMS) arguments.
 #'   Each MMS must be provided as a named numeric vector with exactly the
 #'   following fields:
-#'   \itemize{
-#'     \item{fraction} {Fraction of total manure managed in this system (0–1).
+#'   \describe{
+#'     \item{fraction}{Fraction of total manure managed in this system (0–1).
 #'       The sum of all fractions must equal 1.}
-#'     \item{n2o_ef4} {Emission factor for indirect N2O emissions resulting from
+#'     \item{n2o_ef4}{Emission factor for indirect N2O emissions resulting from
 #'       atmospheric deposition of volatilized nitrogen (NH3–N and NOx–N) onto
 #'       soils and water surfaces, expressed in
 #'       kg N2O–N / (kg NH3–N + kg NOx–N).}
-#'     \item{nitrogen_fracgas} {Fraction of nitrogen volatilized as NH3–N and
+#'     \item{nitrogen_fracgas}{Fraction of nitrogen volatilized as NH3–N and
 #'       NOx–N for this manure management system (0–1).}
 #'   }
 #'
 #' Two MMS names are treated explicitly when present:
-#' \itemize{
-#'   \item{\code{mms_pasture}} {manure deposited on pasture}
-#'   \item{\code{mms_burned}} {manure burned for fuel}
+#' \describe{
+#'   \item{\code{mms_pasture}}{manure deposited on pasture}
+#'   \item{\code{mms_burned}}{manure burned for fuel}
 #' }
 #' All remaining MMS arguments are grouped and treated as other manure
 #' management systems.
@@ -434,30 +434,30 @@ calc_n2o_from_volatilization <- function(
 #' @param ... A variable number of manure management system (MMS) arguments.
 #'   Each MMS must be provided as a named numeric vector with exactly the
 #'   following fields:
-#'   \itemize{
-#'     \item{fraction} {Fraction of total manure managed in this system (0–1).
+#'   \describe{
+#'     \item{fraction}{Fraction of total manure managed in this system (0–1).
 #'       The sum of all fractions must equal 1.}
-#'     \item{n2o_ef5} {Emission factor for indirect nitrous oxide emissions
+#'     \item{n2o_ef5}{Emission factor for indirect nitrous oxide emissions
 #'       resulting from nitrogen leaching and runoff, expressed as
 #'       kg N2O–N / kg N leached and runoff.}
-#'     \item{nitrogen_fracleach} {Fraction of nitrogen lost through leaching and
+#'     \item{nitrogen_fracleach}{Fraction of nitrogen lost through leaching and
 #'       runoff for this manure management system (0–1).}
 #'   }
 #'
 #' Two MMS names are treated explicitly when present:
-#' \itemize{
-#'   \item{\code{mms_pasture}} {manure deposited on pasture}
-#'   \item{\code{mms_burned}} {manure burned for fuel}
+#' \describe{
+#'   \item{\code{mms_pasture}}{manure deposited on pasture}
+#'   \item{\code{mms_burned}}{manure burned for fuel}
 #' }
 #' All remaining MMS arguments are grouped and treated as other manure
 #' management systems.
 #'
 #' @return A named list with the following elements (kg N2O/head/day):
 #' \describe{
-#'   \item{n2o_leach_manure_pasture} {Indirect N2O emissions from manure leaching and runoff on pasture.}
-#'   \item{n2o_leach_manure_burned} {Indirect N2O emissions from manure leaching and runoff from burned manure.}
-#'   \item{n2o_leach_manure_other} {Indirect N2O emissions from manure leaching and runoff in all other manure management systems.}
-#'   \item{n2o_leach_manure_all_noburn} {Total indirect N2O emissions from manure leaching and runoff excluding burned manure
+#'   \item{n2o_leach_manure_pasture}{Indirect N2O emissions from manure leaching and runoff on pasture.}
+#'   \item{n2o_leach_manure_burned}{Indirect N2O emissions from manure leaching and runoff from burned manure.}
+#'   \item{n2o_leach_manure_other}{Indirect N2O emissions from manure leaching and runoff in all other manure management systems.}
+#'   \item{n2o_leach_manure_all_noburn}{Total indirect N2O emissions from manure leaching and runoff excluding burned manure
 #'   (pasture + other systems).}
 #' }
 #'
@@ -588,12 +588,12 @@ calc_n2o_from_leaching <- function(
 #'
 #' @return A named list with:
 #' \describe{
-#'   \item{n2o_manure_pasture_indirect} {Numeric. Total indirect nitrous oxide emissions originating from manure deposited on pasture, including emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
-#'   \item{n2o_manure_burned_indirect} {Numeric. Total indirect nitrous oxide emissions originating from manure burned for fuel, including emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
-#'   \item{n2o_manure_other_indirect} {Numeric. Total indirect nitrous oxide emissions originating from manure managed in all other manure management systems, excluding manure deposited on pasture and manure burned for fuel, including emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
-#'   \item{n2o_manure_pasture_total} {Numeric. Total nitrous oxide emissions from manure deposited on pasture, including direct emissions and indirect emissions from volatilisation, leaching and runoff (kg N2O/head/day).}
-#'   \item{n2o_manure_burned_total} {Numeric. Total nitrous oxide emissions from manure burned for fuel, including direct emissions and indirect emissions from volatilisation, leaching and runoff (kg N2O/head/day).}
-#'   \item{n2o_manure_other_total} {Numeric. Total nitrous oxide emissions from manure managed in all other manure management systems, excluding manure deposited on pasture and manure burned for fuel, including direct emissions and indirect emissions from volatilisation, leaching and runoff (kg N2O/head/day).}
+#'   \item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide emissions originating from manure deposited on pasture, including emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
+#'   \item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide emissions originating from manure burned for fuel, including emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
+#'   \item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide emissions originating from manure managed in all other manure management systems, excluding manure deposited on pasture and manure burned for fuel, including emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
+#'   \item{n2o_manure_pasture_total}{Numeric. Total nitrous oxide emissions from manure deposited on pasture, including direct emissions and indirect emissions from volatilisation, leaching and runoff (kg N2O/head/day).}
+#'   \item{n2o_manure_burned_total}{Numeric. Total nitrous oxide emissions from manure burned for fuel, including direct emissions and indirect emissions from volatilisation, leaching and runoff (kg N2O/head/day).}
+#'   \item{n2o_manure_other_total}{Numeric. Total nitrous oxide emissions from manure managed in all other manure management systems, excluding manure deposited on pasture and manure burned for fuel, including direct emissions and indirect emissions from volatilisation, leaching and runoff (kg N2O/head/day).}
 #' }
 #'
 #' @examples

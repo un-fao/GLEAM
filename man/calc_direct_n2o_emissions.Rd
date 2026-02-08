@@ -16,17 +16,17 @@ calc_direct_n2o_emissions(ration_N2ON_to_N2O = 44/28, nitrogen_excretion, ...)
 \item{...}{A variable number of manure management system (MMS) arguments.
 Each MMS must be provided as a named numeric vector with exactly the
 following fields:
-\itemize{
-\item{fraction} {Fraction of total manure managed in this system (0–1).
+\describe{
+\item{fraction}{Fraction of total manure managed in this system (0–1).
 The sum of all fractions must equal 1.}
-\item{n2o_ef3} {Effective emission factor (EF\eqn{_3}) for manure
+\item{n2o_ef3}{Effective emission factor (EF\eqn{_3}) for manure
 management, expressed in kg N2O-N / kg N excreted.}
 }
 
 Two MMS names are treated explicitly when present:
-\itemize{
-\item{\code{mms_pasture}} {manure deposited on pasture}
-\item{\code{mms_burned}} {manure burned for fuel}
+\describe{
+\item{\code{mms_pasture}}{manure deposited on pasture}
+\item{\code{mms_burned}}{manure burned for fuel}
 }
 All remaining MMS arguments are grouped and treated as other manure
 management systems.}

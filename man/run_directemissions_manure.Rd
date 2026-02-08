@@ -53,22 +53,21 @@ Key requirements enforced at run time include:
 }
 \examples{
 \dontrun{
-library(data.table)
-herd_level <- fread(
+herd_level <- data.table::fread(
   system.file(
-    "extdata/new manure example data/manure_emissions_simulation_input_herd_level_data.csv",
+    "extdata/examples/manure_emissions_simulation_input_herd_level_data.csv",
     package = "gleam"
   )
 )
-cohort_level <- fread(
+cohort_level <- data.table::fread(
   system.file(
-    "extdata/new manure example data/manure_emissions_simulation_input_cohort_level_data.csv",
+    "extdata/examples/manure_emissions_simulation_input_cohort_level_data.csv",
     package = "gleam"
   )
 )
-inputs <- fread(
+inputs <- data.table::fread(
   system.file(
-    "extdata/new manure example data/manure_emissions_simulation_input_directemissions_manure_data.csv",
+    "extdata/examples/manure_emissions_simulation_input_directemissions_manure_data.csv",
     package = "gleam"
   )
 )

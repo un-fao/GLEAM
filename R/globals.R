@@ -64,6 +64,12 @@ utils::globalVariables(c(
   "feed_digestibility_fraction_ruminant", "feed_digestibility_fraction_pigs",
   "feed_digestibility_fraction_chicken",
   "diet_dig", "diet_ge", "diet_me", "feed_ration_sum",
+  "dry_matter_intake", "nitrogen_excretion", "volatile_solids",
+  "n2o_vol_manure_pasture", "n2o_vol_manure_burned", "n2o_vol_manure_other",
+  "n2o_leach_manure_pasture", "n2o_leach_manure_burned", "n2o_leach_manure_other",
+  "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
+  "manure_management_system", "mms_list", "mms_list_fraction", "mms_list_factors",
+  "unique_mms_sets",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
   # Columns used in run_directemissions_manure

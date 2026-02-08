@@ -14,19 +14,19 @@ calc_ch4_emissions(ratio_m3CH4_kgCH4 = 0.67, volatile_solids, ...)
 \item{...}{A variable number of manure management system (MMS) arguments.
 Each MMS must be provided as a named numeric vector with exactly the
 following fields:
-\itemize{
-\item{fraction} {Fraction of total manure managed in this system (0–1).
+\describe{
+\item{fraction}{Fraction of total manure managed in this system (0–1).
 The sum of all fractions must equal 1.}
-\item{methane_conversion_factor_mcf} {Methane conversion factor (MCF),
+\item{methane_conversion_factor_mcf}{Methane conversion factor (MCF),
 expressed as a percentage.}
-\item{ch4_max_producing_capacity_bo} {Maximum methane producing capacity
+\item{ch4_max_producing_capacity_bo}{Maximum methane producing capacity
 (B0), in m3 CH4 / kg VS.}
 }
 
 Two MMS names are treated explicitly when present:
-\itemize{
-\item{\code{mms_pasture}} {manure deposited on pasture}
-\item{\code{mms_burned}} {manure burned for fuel}
+\describe{
+\item{\code{mms_pasture}}{manure deposited on pasture}
+\item{\code{mms_burned}}{manure burned for fuel}
 }
 All remaining MMS arguments are grouped and treated as other manure
 management systems.}

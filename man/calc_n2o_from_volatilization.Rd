@@ -20,21 +20,21 @@ calc_n2o_from_volatilization(
 \item{...}{A variable number of manure management system (MMS) arguments.
 Each MMS must be provided as a named numeric vector with exactly the
 following fields:
-\itemize{
-\item{fraction} {Fraction of total manure managed in this system (0–1).
+\describe{
+\item{fraction}{Fraction of total manure managed in this system (0–1).
 The sum of all fractions must equal 1.}
-\item{n2o_ef4} {Emission factor for indirect N2O emissions resulting from
+\item{n2o_ef4}{Emission factor for indirect N2O emissions resulting from
 atmospheric deposition of volatilized nitrogen (NH3–N and NOx–N) onto
 soils and water surfaces, expressed in
 kg N2O–N / (kg NH3–N + kg NOx–N).}
-\item{nitrogen_fracgas} {Fraction of nitrogen volatilized as NH3–N and
+\item{nitrogen_fracgas}{Fraction of nitrogen volatilized as NH3–N and
 NOx–N for this manure management system (0–1).}
 }
 
 Two MMS names are treated explicitly when present:
-\itemize{
-\item{\code{mms_pasture}} {manure deposited on pasture}
-\item{\code{mms_burned}} {manure burned for fuel}
+\describe{
+\item{\code{mms_pasture}}{manure deposited on pasture}
+\item{\code{mms_burned}}{manure burned for fuel}
 }
 All remaining MMS arguments are grouped and treated as other manure
 management systems.}

@@ -16,20 +16,20 @@ calc_n2o_from_leaching(ration_N2ON_to_N2O = 44/28, nitrogen_excretion, ...)
 \item{...}{A variable number of manure management system (MMS) arguments.
 Each MMS must be provided as a named numeric vector with exactly the
 following fields:
-\itemize{
-\item{fraction} {Fraction of total manure managed in this system (0–1).
+\describe{
+\item{fraction}{Fraction of total manure managed in this system (0–1).
 The sum of all fractions must equal 1.}
-\item{n2o_ef5} {Emission factor for indirect nitrous oxide emissions
+\item{n2o_ef5}{Emission factor for indirect nitrous oxide emissions
 resulting from nitrogen leaching and runoff, expressed as
 kg N2O–N / kg N leached and runoff.}
-\item{nitrogen_fracleach} {Fraction of nitrogen lost through leaching and
+\item{nitrogen_fracleach}{Fraction of nitrogen lost through leaching and
 runoff for this manure management system (0–1).}
 }
 
 Two MMS names are treated explicitly when present:
-\itemize{
-\item{\code{mms_pasture}} {manure deposited on pasture}
-\item{\code{mms_burned}} {manure burned for fuel}
+\describe{
+\item{\code{mms_pasture}}{manure deposited on pasture}
+\item{\code{mms_burned}}{manure burned for fuel}
 }
 All remaining MMS arguments are grouped and treated as other manure
 management systems.}
@@ -37,10 +37,10 @@ management systems.}
 \value{
 A named list with the following elements (kg N2O/head/day):
 \describe{
-\item{n2o_leach_manure_pasture} {Indirect N2O emissions from manure leaching and runoff on pasture.}
-\item{n2o_leach_manure_burned} {Indirect N2O emissions from manure leaching and runoff from burned manure.}
-\item{n2o_leach_manure_other} {Indirect N2O emissions from manure leaching and runoff in all other manure management systems.}
-\item{n2o_leach_manure_all_noburn} {Total indirect N2O emissions from manure leaching and runoff excluding burned manure
+\item{n2o_leach_manure_pasture}{Indirect N2O emissions from manure leaching and runoff on pasture.}
+\item{n2o_leach_manure_burned}{Indirect N2O emissions from manure leaching and runoff from burned manure.}
+\item{n2o_leach_manure_other}{Indirect N2O emissions from manure leaching and runoff in all other manure management systems.}
+\item{n2o_leach_manure_all_noburn}{Total indirect N2O emissions from manure leaching and runoff excluding burned manure
 (pasture + other systems).}
 }
 }
