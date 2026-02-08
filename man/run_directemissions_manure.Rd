@@ -53,29 +53,29 @@ Key requirements enforced at run time include:
 }
 \examples{
 \dontrun{
-herd_level <- data.table::fread(
+manure_management_system_factors <- data.table::fread(
   system.file(
-    "extdata/examples/manure_emissions_simulation_input_herd_level_data.csv",
+    "extdata/examples/manure_management_system_factors.csv",
     package = "gleam"
   )
 )
-cohort_level <- data.table::fread(
+manure_management_system_fraction <- data.table::fread(
   system.file(
-    "extdata/examples/manure_emissions_simulation_input_cohort_level_data.csv",
+    "extdata/examples/manure_management_system_fraction.csv",
     package = "gleam"
   )
 )
-inputs <- data.table::fread(
+directemissions_manure_input_cohort_level_data <- data.table::fread(
   system.file(
-    "extdata/examples/manure_emissions_simulation_input_directemissions_manure_data.csv",
+    "extdata/examples/directemissions_manure_input_cohort_level_data.csv",
     package = "gleam"
   )
 )
 
 result <- run_directemissions_manure(
-  directemissions_manure_input_cohort_level_data = inputs,
-  manure_management_system_fraction = cohort_level,
-  manure_management_system_factors = herd_level
+  directemissions_manure_input_cohort_level_data = directemissions_manure_input_cohort_level_data,
+  manure_management_system_fraction = manure_management_system_fraction,
+  manure_management_system_factors = manure_management_system_factors
 )
 }
 
