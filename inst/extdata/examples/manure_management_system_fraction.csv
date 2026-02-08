@@ -1,8 +1,8 @@
 herd_id,cohort,manure_management_system,fraction
-1,FA,mms_burned,0.200000003
-1,FA,mms_drylot,0.038891595
-1,FA,mms_pasture,0.750024356
-1,FA,mms_solid,0.011084038
+1,FA,mms_burned,0.019633654
+1,FA,mms_drylot,0.263651097
+1,FA,mms_pasture,0.31100436
+1,FA,mms_solid,0.405710898
 1,FJ,mms_burned,0.200000003
 1,FJ,mms_drylot,0.038891595
 1,FJ,mms_pasture,0.750024356
