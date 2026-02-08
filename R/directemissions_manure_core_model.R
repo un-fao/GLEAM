@@ -8,9 +8,9 @@
 #' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
 #' @param urinary_energy_fraction Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM)
 #' @param diet_ash Numeric. Fraction of animal's gross energy that is excreted in urine (fraction).
-#' 
+#'
 #' @return Numeric. Total volatile solids (volatile_solids) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
-#' 
+#'
 #' @details
 #' The IPCC recommends estimating VS from feed intake and digestibility when
 #' country-specific average daily VS excretion rates are not available. The core relationship is
@@ -20,10 +20,10 @@
 #'
 #' **Implementation note (simplified coefficients).**
 #' This package uses simplified algebraic forms by species/method that are consistent with the
-#' structure of Eq. 10.24. 
-#' Specifically, in IPCC guidelines the the average gross energy content of the ration is used instead 
-#' of a fixed value of 18.45 MJ×kg DM-1. Thus, ge / diet_ge equals the daily intake, dmi. 
-#'     
+#' structure of Eq. 10.24.
+#' Specifically, in IPCC guidelines the the average gross energy content of the ration is used instead
+#' of a fixed value of 18.45 MJ×kg DM-1. Thus, ge / diet_ge equals the daily intake, dmi.
+#'
 #' @examples
 #' calc_volatile_solids <- calc_volatile_solids(
 #'   dry_matter_intake = 5,
@@ -31,7 +31,7 @@
 #'   urinary_energy_fraction = 0.04,
 #'   diet_ash = 0.08
 #' )
-#' 
+#'
 #'@references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.24.
@@ -46,9 +46,9 @@ calc_volatile_solids <- function(
     diet_ash = 0.08
 ) {
   validate_calc_volatile_solids(dry_matter_intake, diet_digestibility_fraction, urinary_energy_fraction, diet_ash)
-  
+
   volatile_solids <- dry_matter_intake * (1 - diet_digestibility_fraction + urinary_energy_fraction) * (1 - diet_ash)
-  
+
   return(volatile_solids)
 }
 
@@ -116,7 +116,7 @@ calc_volatile_solids <- function(
 #'     ch4_max_producing_capacity_bo = 0.13
 #'   )
 #' )
-#' 
+#'
 #' @export
 calc_ch4_emissions <- function(
     ratio_m3CH4_kgCH4 = 0.67,
@@ -124,7 +124,7 @@ calc_ch4_emissions <- function(
     ...
 ) {
   mms_list <- list(...)
-  
+
   validate_mms_inputs(
     mms_list,
     required_names = c(
@@ -135,26 +135,26 @@ calc_ch4_emissions <- function(
     ratio_m3CH4_kgCH4 = ratio_m3CH4_kgCH4,
     volatile_solids   = volatile_solids
   )
-  
+
   # split special (burned and pasture) vs other MMS
   mms_pasture <- mms_list[["mms_pasture"]]
-  mms_burned  <- mms_list[["mms_burned"]]
-  mms_other   <- mms_list[setdiff(names(mms_list), c("mms_pasture", "mms_burned"))]
-  
+  mms_burned <- mms_list[["mms_burned"]]
+  mms_other <- mms_list[setdiff(names(mms_list), c("mms_pasture", "mms_burned"))]
+
   # pasture
   ch4_manure_pasture <- if (is.null(mms_pasture)) 0 else
     volatile_solids * ratio_m3CH4_kgCH4 *
     mms_pasture[["fraction"]] *
     (mms_pasture[["methane_conversion_factor_mcf"]] / 100) *
     mms_pasture[["ch4_max_producing_capacity_bo"]]
-  
+
   # burned
   ch4_manure_burned <- if (is.null(mms_burned)) 0 else
     volatile_solids * ratio_m3CH4_kgCH4 *
     mms_burned[["fraction"]] *
     (mms_burned[["methane_conversion_factor_mcf"]] / 100) *
     mms_burned[["ch4_max_producing_capacity_bo"]]
-  
+
   # all other MMS (scalar product)
   ch4_manure_other <- if (length(mms_other) == 0) 0 else {
     other_term <- vapply(
@@ -166,10 +166,10 @@ calc_ch4_emissions <- function(
     )
     volatile_solids * ratio_m3CH4_kgCH4 * sum(other_term) / 100
   }
-  
+
   # total non-burned emissions
   ch4_manure_all_noburn <- ch4_manure_pasture + ch4_manure_other
-  
+
   return(
     list(
       ch4_manure_pasture = ch4_manure_pasture,
@@ -240,7 +240,7 @@ calc_ch4_emissions <- function(
 #'     n2o_ef3  = 0.005
 #'   )
 #' )
-#' 
+#'
 #' @export
 calc_direct_n2o_emissions <- function(
     ration_N2ON_to_N2O = 44 / 28,
@@ -248,27 +248,27 @@ calc_direct_n2o_emissions <- function(
     ...
 ) {
   mms_list <- list(...)
-  
+
   validate_mms_inputs(
     mms_list,
     required_names = c("fraction", "n2o_ef3"),
     ration_N2ON_to_N2O = ration_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
   )
-  
+
   # split special (burned and pasture) vs other MMS
   mms_pasture <- mms_list[["mms_pasture"]]
-  mms_burned  <- mms_list[["mms_burned"]]
-  mms_other   <- mms_list[setdiff(names(mms_list), c("mms_pasture", "mms_burned"))]
-  
+  mms_burned <- mms_list[["mms_burned"]]
+  mms_other <- mms_list[setdiff(names(mms_list), c("mms_pasture", "mms_burned"))]
+
   # pasture
   n2o_manure_pasture_direct <- if (is.null(mms_pasture)) 0 else
     nitrogen_excretion * ration_N2ON_to_N2O * mms_pasture[["fraction"]] * mms_pasture[["n2o_ef3"]]
-  
+
   # burned
   n2o_manure_burned_direct <- if (is.null(mms_burned)) 0 else
     nitrogen_excretion * ration_N2ON_to_N2O * mms_burned[["fraction"]] * mms_burned[["n2o_ef3"]]
-  
+
   # all other MMS (scalar product)
   n2o_manure_other_direct <- if (length(mms_other) == 0) 0 else {
     other_term <- vapply(
@@ -278,10 +278,10 @@ calc_direct_n2o_emissions <- function(
     )
     nitrogen_excretion * ration_N2ON_to_N2O * sum(other_term)
   }
-  
+
   # total non-burned emissions
   n2o_manure_all_noburn_direct <- n2o_manure_pasture_direct + n2o_manure_other_direct
-  
+
   return(
     list(
       n2o_manure_pasture_direct = n2o_manure_pasture_direct,
@@ -367,34 +367,34 @@ calc_n2o_from_volatilization <- function(
     nitrogen_excretion,
     ...
 ) {
-  
+
   mms_list <- list(...)
-  
+
   validate_mms_inputs(
     mms_list,
     required_names = c("fraction", "n2o_ef4", "nitrogen_fracgas"),
     ration_N2ON_to_N2O = ration_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
   )
-  
+
   # split special (burned and pasture) vs other MMS
   mms_pasture <- mms_list[["mms_pasture"]]
-  mms_burned  <- mms_list[["mms_burned"]]
-  mms_other   <- mms_list[setdiff(names(mms_list), c("mms_pasture", "mms_burned"))]
-  
+  mms_burned <- mms_list[["mms_burned"]]
+  mms_other <- mms_list[setdiff(names(mms_list), c("mms_pasture", "mms_burned"))]
+
   # pasture
   n2o_vol_manure_pasture <- if (is.null(mms_pasture)) 0 else
     nitrogen_excretion * ration_N2ON_to_N2O *
     mms_pasture[["fraction"]] * mms_pasture[["nitrogen_fracgas"]] * mms_pasture[["n2o_ef4"]]
-  
+
   # burned
   n2o_vol_manure_burned <- if (is.null(mms_burned)) 0 else
     nitrogen_excretion * ration_N2ON_to_N2O *
     mms_burned[["fraction"]] * mms_burned[["nitrogen_fracgas"]] * mms_burned[["n2o_ef4"]]
-  
+
   # all other MMS (scalar product)
   n2o_vol_manure_other <- if (length(mms_other) == 0) 0 else {
-    
+
     other_term <- vapply(
       mms_other,
       function(mms) {
@@ -402,13 +402,13 @@ calc_n2o_from_volatilization <- function(
       },
       numeric(1)
     )
-    
+
     nitrogen_excretion * ration_N2ON_to_N2O * sum(other_term)
   }
-  
+
   # total non-burned emissions
   n2o_vol_manure_all_noburn <- n2o_vol_manure_pasture + n2o_vol_manure_other
-  
+
   return(
     list(
       n2o_vol_manure_pasture = n2o_vol_manure_pasture,
@@ -418,7 +418,6 @@ calc_n2o_from_volatilization <- function(
     )
   )
 }
-
 
 #' Calculate indirect N2O emissions from manure leaching and runoff
 #'
@@ -493,34 +492,34 @@ calc_n2o_from_leaching <- function(
     nitrogen_excretion,
     ...
 ) {
-  
+
   mms_list <- list(...)
-  
+
   validate_mms_inputs(
     mms_list,
     required_names = c("fraction", "n2o_ef5", "nitrogen_fracleach"),
     ration_N2ON_to_N2O = ration_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
   )
-  
+
   # split special (burned and pasture) vs other MMS
   mms_pasture <- mms_list[["mms_pasture"]]
-  mms_burned  <- mms_list[["mms_burned"]]
-  mms_other   <- mms_list[setdiff(names(mms_list), c("mms_pasture", "mms_burned"))]
-  
+  mms_burned <- mms_list[["mms_burned"]]
+  mms_other <- mms_list[setdiff(names(mms_list), c("mms_pasture", "mms_burned"))]
+
   # pasture
   n2o_leach_manure_pasture <- if (is.null(mms_pasture)) 0 else
     nitrogen_excretion * ration_N2ON_to_N2O *
     mms_pasture[["fraction"]] * mms_pasture[["nitrogen_fracleach"]] * mms_pasture[["n2o_ef5"]]
-  
+
   # burned
   n2o_leach_manure_burned <- if (is.null(mms_burned)) 0 else
     nitrogen_excretion * ration_N2ON_to_N2O *
     mms_burned[["fraction"]] * mms_burned[["nitrogen_fracleach"]] * mms_burned[["n2o_ef5"]]
-  
+
   # all other MMS (scalar product)
   n2o_leach_manure_other <- if (length(mms_other) == 0) 0 else {
-    
+
     other_term <- vapply(
       mms_other,
       function(mms) {
@@ -528,13 +527,13 @@ calc_n2o_from_leaching <- function(
       },
       numeric(1)
     )
-    
+
     nitrogen_excretion * ration_N2ON_to_N2O * sum(other_term)
   }
-  
+
   # total non-burned emissions
   n2o_leach_manure_all_noburn <- n2o_leach_manure_pasture + n2o_leach_manure_other
-  
+
   return(
     list(
       n2o_leach_manure_pasture = n2o_leach_manure_pasture,
@@ -609,7 +608,7 @@ calc_n2o_from_leaching <- function(
 #'   n2o_manure_burned_direct = 0,
 #'   n2o_manure_other_direct = 0.01033
 #' )
-#' 
+#'
 #' @export
 calc_total_n2o_emissions <- function(
     n2o_vol_manure_pasture,
@@ -622,22 +621,28 @@ calc_total_n2o_emissions <- function(
     n2o_manure_burned_direct,
     n2o_manure_other_direct
 ) {
-  # validate that all inputs are scalar numeric values
-  args <- mget(formalArgs(sys.function()), envir = environment())
-  for (nm in names(args)) {
-    validate_scalar_numeric(args[[nm]], nm)
-  }
-  
+  validate_calc_total_n2o_emissions(
+    n2o_vol_manure_pasture = n2o_vol_manure_pasture,
+    n2o_leach_manure_pasture = n2o_leach_manure_pasture,
+    n2o_vol_manure_burned = n2o_vol_manure_burned,
+    n2o_leach_manure_burned = n2o_leach_manure_burned,
+    n2o_vol_manure_other = n2o_vol_manure_other,
+    n2o_leach_manure_other = n2o_leach_manure_other,
+    n2o_manure_pasture_direct = n2o_manure_pasture_direct,
+    n2o_manure_burned_direct = n2o_manure_burned_direct,
+    n2o_manure_other_direct = n2o_manure_other_direct
+  )
+
   # indirect components
   n2o_manure_pasture_indirect <- n2o_vol_manure_pasture + n2o_leach_manure_pasture
   n2o_manure_burned_indirect <- n2o_vol_manure_burned + n2o_leach_manure_burned
   n2o_manure_other_indirect <- n2o_vol_manure_other + n2o_leach_manure_other
-  
+
   # total components
   n2o_manure_pasture_total <- n2o_manure_pasture_indirect + n2o_manure_pasture_direct
   n2o_manure_burned_total <- n2o_manure_burned_indirect + n2o_manure_burned_direct
   n2o_manure_other_total <- n2o_manure_other_indirect + n2o_manure_other_direct
-  
+
   return(
     list(
       n2o_manure_pasture_indirect = n2o_manure_pasture_indirect,

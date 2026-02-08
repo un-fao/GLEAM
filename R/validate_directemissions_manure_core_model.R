@@ -20,11 +20,11 @@ validate_calc_volatile_solids <- function(
   if (any(diet_digestibility_fraction < 0 | diet_digestibility_fraction > 1)) {
     cli::cli_abort("{.arg diet_digestibility_fraction} must be between 0 and 1.")
   }
-  if (any(urinary_energy_fraction < 0)) {
-    cli::cli_abort("{.arg urinary_energy_fraction} must be non-negative.")
+  if (any(urinary_energy_fraction < 0 | urinary_energy_fraction > 1)) {
+    cli::cli_abort("{.arg urinary_energy_fraction} must be between 0 and 1.")
   }
-  if (any(diet_ash <= 0)) {
-    cli::cli_abort("{.arg diet_ash} must be strictly positive.")
+  if (any(diet_ash < 0 | diet_ash > 1)) {
+    cli::cli_abort("{.arg diet_ash} must be between 0 and 1.")
   }
 }
 
@@ -54,6 +54,48 @@ validate_mms_characteristics <- function(mms_list, required_names) {
           paste0("* {required_names}")
         )
       )
+    }
+    
+    # must not contain missing values
+    if (any(is.na(mms))) {
+      cli::cli_abort("MMS values must not contain missing values.")
+    }
+    
+    # fractions must be between 0 and 1
+    if ("fraction" %in% names(mms) && (mms[["fraction"]] < 0 || mms[["fraction"]] > 1)) {
+      cli::cli_abort("{.arg fraction} must be between 0 and 1.")
+    }
+    
+    if ("nitrogen_fracgas" %in% names(mms) &&
+        (mms[["nitrogen_fracgas"]] < 0 || mms[["nitrogen_fracgas"]] > 1)) {
+      cli::cli_abort("{.arg nitrogen_fracgas} must be between 0 and 1.")
+    }
+    
+    if ("nitrogen_fracleach" %in% names(mms) &&
+        (mms[["nitrogen_fracleach"]] < 0 || mms[["nitrogen_fracleach"]] > 1)) {
+      cli::cli_abort("{.arg nitrogen_fracleach} must be between 0 and 1.")
+    }
+    
+    if ("methane_conversion_factor_mcf" %in% names(mms) &&
+        (mms[["methane_conversion_factor_mcf"]] < 0 || mms[["methane_conversion_factor_mcf"]] > 100)) {
+      cli::cli_abort("{.arg methane_conversion_factor_mcf} must be between 0 and 100.")
+    }
+    
+    if ("ch4_max_producing_capacity_bo" %in% names(mms) &&
+        mms[["ch4_max_producing_capacity_bo"]] < 0) {
+      cli::cli_abort("{.arg ch4_max_producing_capacity_bo} must be non-negative.")
+    }
+    
+    if ("n2o_ef3" %in% names(mms) && mms[["n2o_ef3"]] < 0) {
+      cli::cli_abort("{.arg n2o_ef3} must be non-negative.")
+    }
+    
+    if ("n2o_ef4" %in% names(mms) && mms[["n2o_ef4"]] < 0) {
+      cli::cli_abort("{.arg n2o_ef4} must be non-negative.")
+    }
+    
+    if ("n2o_ef5" %in% names(mms) && mms[["n2o_ef5"]] < 0) {
+      cli::cli_abort("{.arg n2o_ef5} must be non-negative.")
     }
   }
   
@@ -89,4 +131,30 @@ validate_mms_inputs <- function(
       names(scalars)[i]
     )
   }
+}
+
+#' Validate inputs for calc_total_n2o_emissions
+#'
+#' @noRd
+validate_calc_total_n2o_emissions <- function(
+    n2o_vol_manure_pasture,
+    n2o_leach_manure_pasture,
+    n2o_vol_manure_burned,
+    n2o_leach_manure_burned,
+    n2o_vol_manure_other,
+    n2o_leach_manure_other,
+    n2o_manure_pasture_direct,
+    n2o_manure_burned_direct,
+    n2o_manure_other_direct
+) {
+  # Numeric inputs
+  validate_scalar_numeric(n2o_vol_manure_pasture, "n2o_vol_manure_pasture")
+  validate_scalar_numeric(n2o_leach_manure_pasture, "n2o_leach_manure_pasture")
+  validate_scalar_numeric(n2o_vol_manure_burned, "n2o_vol_manure_burned")
+  validate_scalar_numeric(n2o_leach_manure_burned, "n2o_leach_manure_burned")
+  validate_scalar_numeric(n2o_vol_manure_other, "n2o_vol_manure_other")
+  validate_scalar_numeric(n2o_leach_manure_other, "n2o_leach_manure_other")
+  validate_scalar_numeric(n2o_manure_pasture_direct, "n2o_manure_pasture_direct")
+  validate_scalar_numeric(n2o_manure_burned_direct, "n2o_manure_burned_direct")
+  validate_scalar_numeric(n2o_manure_other_direct, "n2o_manure_other_direct")
 }
