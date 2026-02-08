@@ -86,7 +86,7 @@ run_directemissions_manure <- function(
     allow.cartesian = TRUE
   )
 
-  # Build the MMS list expected by core functions.
+  # Build the MMS list expected by scientific core functions.
   # Each MMS becomes a named numeric vector with specific fields.
   build_mms_list <- function(mms_rows, fields) {
     if (nrow(mms_rows) == 0) {
