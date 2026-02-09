@@ -4,7 +4,7 @@
 #' from feed rations and nutritional parameters. Assumes inputs are pre-cleaned.
 #'
 #' @param rations_share A data.table containing feed shares per cohort. Must include:
-#'   - `herd_id`, `animal`, `feed_name`, `feed_id`, `cohort`, and
+#'   - `herd_id`, `animal`, `feed_name`, `feed_id`, `cohort_short`, and
 #'     `feed_ration_fraction`.
 #' @param feed_params A data.table of nutrient parameters. Must include:
 #'   - `feed_id`, `feed_name`, `category`, `feed_gross_energy`,
@@ -12,7 +12,7 @@
 #'     `feed_metabolizable_energy_ruminant`, `feed_metabolizable_energy_pigs`,
 #'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`.
 #'
-#' @return A data.table summarized by `herd_id`, `animal`, and `cohort` with:
+#' @return A data.table summarized by `herd_id`, `animal`, and `cohort_short` with:
 #'   - `diet_gross_energy`, `diet_metabolizable_energy`,
 #'     `diet_nitrogen`, `diet_digestibility_fraction`
 #'
@@ -129,7 +129,7 @@ run_feed_rations <- function(
       diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
       diet_digestibility_fraction = sum(diet_digestibility_fraction, na.rm = TRUE)
     ),
-    by = .(herd_id, animal, cohort)
+    by = .(herd_id, animal, cohort_short)
   ]
 
   return(rations_summary)
