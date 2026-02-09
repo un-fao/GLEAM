@@ -154,12 +154,10 @@ run_energy_on_farm <- function(
 
   # --- Merge energy inputs with emission factors
   # Join by ADM0_CODE to match country-level emission factors with herd-level energy consumption
-  # allow.cartesian = TRUE allows one-to-many joins (one country can have multiple emission factor items)
   merged_dt <- merge(
     energy_inputs[, ..energy_select_cols],
     emission_factor_subset[, ..emission_factor_merge_cols],
-    by = "ADM0_CODE",
-    allow.cartesian = TRUE
+    by = "ADM0_CODE"
   )
 
   # --- Calculate on-farm emissions

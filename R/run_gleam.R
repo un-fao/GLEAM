@@ -91,9 +91,7 @@ run_gleam <- function(
   gleam_data <- merge(
     gleam_data,
     feed_rations_args$feed_rations,
-    by = "herd_id",
-    all.x = TRUE,
-    allow.cartesian = TRUE
+    by = "herd_id"
   )
 
   gleam_data <- run_feed_rations(

@@ -58,16 +58,16 @@ run_feed_rations <- function(
   ]
   # --- Step 3: Merge ration shares with feed parameters -----------------------
   rations_detailed <- merge(
-    rations_share, feed_params,
-    by = "feed_id", all.x = TRUE, allow.cartesian = TRUE
+    rations_share,
+    feed_params,
+    by = "feed_id",
   )
 
   rations_detailed <- merge(
     rations_detailed,
     abbr_animals,
     by.x = "animal",
-    by.y = "animal",
-    all.x = TRUE
+    by.y = "animal"
   )
 
   if (any(is.na(rations_detailed$animal_short))) {

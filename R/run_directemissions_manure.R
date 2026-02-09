@@ -81,9 +81,7 @@ run_directemissions_manure <- function(
   mms_data <- merge(
     mms_fraction,
     mms_factors,
-    by = c("herd_id", "manure_management_system"),
-    all.x = TRUE,
-    allow.cartesian = TRUE
+    by = c("herd_id", "manure_management_system")
   )
 
   # Build the MMS list expected by scientific core functions.

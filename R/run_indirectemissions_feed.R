@@ -148,8 +148,7 @@ run_indirectemissions_feed <- function(
   dmi_feed <- merge(
     gleam_dmi,
     gleam_feedbasket,
-    by = c(country_code, "Animal_short", "HerdType_short", "LPS_short", "cohort"),
-    allow.cartesian = TRUE
+    by = c(country_code, "Animal_short", "HerdType_short", "LPS_short", "cohort")
   )
 
   # Calculate feed-specific DMI row-wise
@@ -190,8 +189,7 @@ run_indirectemissions_feed <- function(
   gleam_feedEF_filtered <- merge(
     gleam_feedEF[get(feed_id_col) %in% feeds_in_dmi],
     trade_prefs_all,
-    by = feed_id_col,
-    allow.cartesian = TRUE
+    by = feed_id_col
   )[
     # Apply trade logic: include only relevant trade scenarios
     (TradeOption_selected == "With Trade" &
@@ -204,10 +202,7 @@ run_indirectemissions_feed <- function(
   result <- merge(
     dmi_feed,
     gleam_feedEF_filtered,
-    by = c(country_code, feed_id_col),
-    all.x = TRUE,
-    all.y = TRUE,
-    allow.cartesian = TRUE
+    by = c(country_code, feed_id_col)
   )
 
   result[
