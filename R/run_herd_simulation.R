@@ -86,7 +86,7 @@
 #' @param cohort_level_data A `data.table` with mandatory columns:
 #'   \describe{
 #'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'     \item{`cohort`}{"Character scalar. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+#'     \item{`cohort_short`}{"Character scalar. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -197,7 +197,7 @@ run_herd_simulation <- function(
   herd_level_results <- data.table::copy(herd_level_data)
 
   # Set keys for fast lookups
-  data.table::setkey(cohort_level_results, herd_id, cohort)
+  data.table::setkey(cohort_level_results, herd_id, cohort_short)
   data.table::setkey(herd_level_results, herd_id)
   data.table::setkey(herd_level_data, herd_id)
 
@@ -232,9 +232,9 @@ run_herd_simulation <- function(
     duration_vec <- cohort_rows$cohort_duration_days
     offtake_rate_vec <- cohort_rows$offtake_rate
     death_rate_vec <- cohort_rows$death_rate
-    names(duration_vec) <- cohort_rows$cohort
-    names(offtake_rate_vec) <- cohort_rows$cohort
-    names(death_rate_vec) <- cohort_rows$cohort
+    names(duration_vec) <- cohort_rows$cohort_short
+    names(offtake_rate_vec) <- cohort_rows$cohort_short
+    names(death_rate_vec) <- cohort_rows$cohort_short
 
     # Calculate transition probabilities
     # Converts annual rates to daily probabilities for death, offtake, survival, and growth
@@ -284,7 +284,7 @@ run_herd_simulation <- function(
     # Assign values from named vectors to the appropriate cohort rows
     for (cohort_name in cohort_order) {
       cohort_level_results[
-        herd_id == current_herd_id & cohort == cohort_name,
+        herd_id == current_herd_id & cohort_short == cohort_name,
         `:=`(
           cohort_stock_size = popsize_result$cohort_stock_start[cohort_name],
           offtake_heads = offtake_result$offtake_heads[cohort_name],
