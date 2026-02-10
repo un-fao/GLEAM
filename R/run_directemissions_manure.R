@@ -14,15 +14,13 @@
 #'
 #' @param directemissions_manure_input_cohort_level_data Cohort-level data with at least:
 #'   `herd_id`, `cohort`, `dry_matter_intake`, `diet_digestibility_fraction`,
-#'   `nitrogen_excretion`.
+#'   `nitrogen_excretion`, `urinary_energy_fraction`, `diet_ash`.
 #' @param manure_management_system_fraction Cohort-level MMS fractions with at least:
 #'   `herd_id`, `cohort`, `manure_management_system`, `manure_management_system_fraction`.
 #' @param manure_management_system_factors Herd-level MMS factors with at least:
 #'   `herd_id`, `manure_management_system`,
 #'   `methane_conversion_factor_mcf`, `ch4_max_producing_capacity_bo`,
 #'   `n2o_ef3`, `n2o_ef4`, `n2o_ef5`, `nitrogen_fracgas`, `nitrogen_fracleach`.
-#' @param diet_ash Numeric. Fraction of feed as ash in dry matter.
-#' @param urinary_energy_fraction Numeric. Fraction of gross energy excreted in urine.
 #'
 #' @return The input `data.table` with added manure emissions columns
 #'   (volatile solids, CH4 components, N2O direct/indirect and totals).
@@ -61,9 +59,7 @@
 run_directemissions_manure <- function(
     directemissions_manure_input_cohort_level_data,
     manure_management_system_fraction,
-    manure_management_system_factors,
-    diet_ash = 0.08,
-    urinary_energy_fraction = 0.04
+    manure_management_system_factors
 ) {
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_directemissions_manure_inputs(

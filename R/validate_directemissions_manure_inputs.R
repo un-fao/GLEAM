@@ -38,7 +38,8 @@ validate_directemissions_manure_inputs <- function(
   # --- Required columns validation --------------------------------------------
   required_input_cols <- c(
     "herd_id", "cohort", "dry_matter_intake",
-    "diet_digestibility_fraction", "nitrogen_excretion"
+    "diet_digestibility_fraction", "nitrogen_excretion",
+    "urinary_energy_fraction", "diet_ash"
   )
   required_fraction_cols <- c(
     "herd_id", "cohort", "manure_management_system", "manure_management_system_fraction"
@@ -80,6 +81,10 @@ validate_directemissions_manure_inputs <- function(
   if (any(is.na(directemissions_manure_input_cohort_level_data$herd_id)) ||
       any(is.na(directemissions_manure_input_cohort_level_data$cohort))) {
     cli::cli_abort("{.arg directemissions_manure_input_cohort_level_data} must not contain missing herd_id or cohort.")
+  }
+  if (any(is.na(directemissions_manure_input_cohort_level_data$urinary_energy_fraction)) ||
+      any(is.na(directemissions_manure_input_cohort_level_data$diet_ash))) {
+    cli::cli_abort("{.arg directemissions_manure_input_cohort_level_data} must not contain missing urinary_energy_fraction or diet_ash.")
   }
   if (any(is.na(manure_management_system_fraction$herd_id)) ||
       any(is.na(manure_management_system_fraction$cohort)) ||

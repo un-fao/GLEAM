@@ -5,9 +5,9 @@
 #' and is required to proceed with the estimate of methane emissions from manure management.
 #'
 #' @param dry_matter_intake Numeric. Daily dry matter intake of feed (kg DM/head/day).
-#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
-#' @param urinary_energy_fraction Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM)
-#' @param diet_ash Numeric. Fraction of animal's gross energy that is excreted in urine (fraction).
+#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
+#' @param urinary_energy_fraction Numeric. Fraction of animal's gross energy that is excreted in urine (fraction).
+#' @param diet_ash Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).
 #'
 #' @return Numeric. Total volatile solids (volatile_solids) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
 #'
@@ -42,10 +42,12 @@
 calc_volatile_solids <- function(
     dry_matter_intake,
     diet_digestibility_fraction,
-    urinary_energy_fraction = 0.04,
-    diet_ash = 0.08
+    urinary_energy_fraction,
+    diet_ash
 ) {
-  validate_calc_volatile_solids(dry_matter_intake, diet_digestibility_fraction, urinary_energy_fraction, diet_ash)
+  validate_calc_volatile_solids(
+    dry_matter_intake, diet_digestibility_fraction, urinary_energy_fraction, diet_ash
+  )
 
   volatile_solids <- dry_matter_intake * (1 - diet_digestibility_fraction + urinary_energy_fraction) * (1 - diet_ash)
 

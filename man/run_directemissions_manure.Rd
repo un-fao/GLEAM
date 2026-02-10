@@ -7,15 +7,13 @@
 run_directemissions_manure(
   directemissions_manure_input_cohort_level_data,
   manure_management_system_fraction,
-  manure_management_system_factors,
-  diet_ash = 0.08,
-  urinary_energy_fraction = 0.04
+  manure_management_system_factors
 )
 }
 \arguments{
 \item{directemissions_manure_input_cohort_level_data}{Cohort-level data with at least:
 \code{herd_id}, \code{cohort}, \code{dry_matter_intake}, \code{diet_digestibility_fraction},
-\code{nitrogen_excretion}.}
+\code{nitrogen_excretion}, \code{urinary_energy_fraction}, \code{diet_ash}.}
 
 \item{manure_management_system_fraction}{Cohort-level MMS fractions with at least:
 \code{herd_id}, \code{cohort}, \code{manure_management_system}, \code{manure_management_system_fraction}.}
@@ -24,10 +22,6 @@ run_directemissions_manure(
 \code{herd_id}, \code{manure_management_system},
 \code{methane_conversion_factor_mcf}, \code{ch4_max_producing_capacity_bo},
 \code{n2o_ef3}, \code{n2o_ef4}, \code{n2o_ef5}, \code{nitrogen_fracgas}, \code{nitrogen_fracleach}.}
-
-\item{diet_ash}{Numeric. Fraction of feed as ash in dry matter.}
-
-\item{urinary_energy_fraction}{Numeric. Fraction of gross energy excreted in urine.}
 }
 \value{
 The input \code{data.table} with added manure emissions columns

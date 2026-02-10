@@ -74,7 +74,8 @@ utils::globalVariables(c(
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
   # Columns used in run_directemissions_manure
-  "dmi", "n_excretion", "ef4", "ef5", "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
+  "dmi", "n_excretion", "ef4", "ef5", "urinary_energy_fraction", "diet_ash",
+  "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
   "mmsdaily", "mmssolid", "mmssolidcov", "mmssolidbulk", "mmssolidadd", "mmsdrylot",
   "mmspit1", "mmspit3", "mmspit4", "mmspit6", "mmspit12",
   "mmsliquid1", "mmsliquid3", "mmsliquid4", "mmsliquid6", "mmsliquid12",
