@@ -183,6 +183,24 @@ validate_directemissions_manure_inputs <- function(
     )
   }
 
+  # --- MMS fraction sum-to-one checks (per herd_id + cohort) ------------------
+  fraction_sums <- manure_management_system_fraction[
+    ,
+    .(total_fraction = sum(manure_management_system_fraction)),
+    by = .(herd_id, cohort)
+  ]
+  invalid_sums <- fraction_sums[
+    is.na(total_fraction) | abs(total_fraction - 1) > 1e-8
+  ]
+  if (nrow(invalid_sums) > 0) {
+    invalid_herds <- sort(unique(invalid_sums$herd_id))
+    cli::cli_abort(
+      "For each herd_id and cohort, the sum of MMS fractions in
+      {.arg manure_management_system_fraction} must equal 1.
+      \nInvalid herd_ids: {.val {invalid_herds}}"
+    )
+  }
+
   duplicate_factors <- manure_management_system_factors[
     , .N, by = .(herd_id, manure_management_system)
   ][N > 1]
