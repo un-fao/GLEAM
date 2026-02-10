@@ -58,7 +58,7 @@ calc_volatile_solids <- function(
 #' separates emissions from pasture, burned manure, and all other manure
 #' management systems.
 #'
-#' @param ratio_m3CH4_kgCH4 Numeric. The conversion factor used to convert methane from a volumetric unit (m³) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m³ (at 20°C and 1 atm), which is the standard value defined in the IPCC 2006 and 2019 guidelines.
+#' @param ratio_m3CH4_to_kgCH4 Numeric. The conversion factor used to convert methane from a volumetric unit (m³) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m³ (at 20°C and 1 atm), which is the standard value defined in the IPCC 2006 and 2019 guidelines.
 #'
 #' @param volatile_solids Numeric. Total volatile solids (volatile_solids) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
 #'
@@ -93,7 +93,7 @@ calc_volatile_solids <- function(
 #'
 #' @examples
 #' calc_ch4_emissions(
-#'   ratio_m3CH4_kgCH4 = 0.67,
+#'   ratio_m3CH4_to_kgCH4 = 0.67,
 #'   volatile_solids   = 2.024,
 #'   mms_burned = c(
 #'     manure_management_system_fraction = 0.020,
@@ -119,10 +119,14 @@ calc_volatile_solids <- function(
 #'
 #' @export
 calc_ch4_emissions <- function(
-    ratio_m3CH4_kgCH4 = 0.67,
+    ratio_m3CH4_to_kgCH4 = 0.67,
     volatile_solids,
     ...
 ) {
+  # Enforce configured bounds
+  validate_param_range(ratio_m3CH4_to_kgCH4)
+  validate_param_range(volatile_solids)
+
   mms_list <- list(...)
 
   validate_mms_inputs(
@@ -132,7 +136,7 @@ calc_ch4_emissions <- function(
       "methane_conversion_factor_mcf",
       "ch4_max_producing_capacity_bo"
     ),
-    ratio_m3CH4_kgCH4 = ratio_m3CH4_kgCH4,
+    ratio_m3CH4_to_kgCH4 = ratio_m3CH4_to_kgCH4,
     volatile_solids   = volatile_solids
   )
 
@@ -143,14 +147,14 @@ calc_ch4_emissions <- function(
 
   # pasture
   ch4_manure_pasture <- if (is.null(mms_pasture)) 0 else
-    volatile_solids * ratio_m3CH4_kgCH4 *
+    volatile_solids * ratio_m3CH4_to_kgCH4 *
     mms_pasture[["manure_management_system_fraction"]] *
     (mms_pasture[["methane_conversion_factor_mcf"]] / 100) *
     mms_pasture[["ch4_max_producing_capacity_bo"]]
 
   # burned
   ch4_manure_burned <- if (is.null(mms_burned)) 0 else
-    volatile_solids * ratio_m3CH4_kgCH4 *
+    volatile_solids * ratio_m3CH4_to_kgCH4 *
     mms_burned[["manure_management_system_fraction"]] *
     (mms_burned[["methane_conversion_factor_mcf"]] / 100) *
     mms_burned[["ch4_max_producing_capacity_bo"]]
@@ -164,7 +168,7 @@ calc_ch4_emissions <- function(
       },
       numeric(1)
     )
-    volatile_solids * ratio_m3CH4_kgCH4 * sum(other_term) / 100
+    volatile_solids * ratio_m3CH4_to_kgCH4 * sum(other_term) / 100
   }
 
   # total non-burned emissions

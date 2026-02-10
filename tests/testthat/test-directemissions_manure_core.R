@@ -53,7 +53,7 @@ test_that("calc_ch4_emissions computes methane by MMS group", {
   )
 
   result <- calc_ch4_emissions(
-    ratio_m3CH4_kgCH4 = ratio,
+    ratio_m3CH4_to_kgCH4 = ratio,
     volatile_solids = volatile_solids,
     mms_burned = mms_burned,
     mms_pasture = mms_pasture,

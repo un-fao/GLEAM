@@ -4,10 +4,10 @@
 \alias{calc_ch4_emissions}
 \title{Calculate CH4 emissions from manure management systems}
 \usage{
-calc_ch4_emissions(ratio_m3CH4_kgCH4 = 0.67, volatile_solids, ...)
+calc_ch4_emissions(ratio_m3CH4_to_kgCH4 = 0.67, volatile_solids, ...)
 }
 \arguments{
-\item{ratio_m3CH4_kgCH4}{Numeric. The conversion factor used to convert methane from a volumetric unit (m³) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m³ (at 20°C and 1 atm), which is the standard value defined in the IPCC 2006 and 2019 guidelines.}
+\item{ratio_m3CH4_to_kgCH4}{Numeric. The conversion factor used to convert methane from a volumetric unit (m³) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m³ (at 20°C and 1 atm), which is the standard value defined in the IPCC 2006 and 2019 guidelines.}
 
 \item{volatile_solids}{Numeric. Total volatile solids (volatile_solids) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
 
@@ -48,7 +48,7 @@ management systems.
 }
 \examples{
 calc_ch4_emissions(
-  ratio_m3CH4_kgCH4 = 0.67,
+  ratio_m3CH4_to_kgCH4 = 0.67,
   volatile_solids   = 2.024,
   mms_burned = c(
     manure_management_system_fraction = 0.020,

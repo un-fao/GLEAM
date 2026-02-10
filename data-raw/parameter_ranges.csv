@@ -27,3 +27,17 @@ feed_metabolizable_energy_ruminant,0,TRUE,45,TRUE
 feed_metabolizable_energy_pigs,0,TRUE,45,TRUE
 feed_metabolizable_energy_chicken,0,TRUE,45,TRUE
 feed_nitrogen_content,0,TRUE,0.1,TRUE
+dry_matter_intake,0,TRUE,Inf,TRUE
+diet_digestibility_fraction,0,TRUE,1,TRUE
+urinary_energy_fraction,0,TRUE,0.2,TRUE
+diet_ash,0,TRUE,0.2,TRUE
+ratio_m3CH4_to_kgCH4,0,FALSE,Inf,TRUE
+volatile_solids,0,TRUE,Inf,TRUE
+methane_conversion_factor_mcf,0,TRUE,100,TRUE
+ch4_max_producing_capacity_bo,0,FALSE,Inf,TRUE
+n2o_ef3,0,TRUE,1,TRUE
+n2o_ef4,0,TRUE,1,TRUE
+nitrogen_fracgas,0,TRUE,1,TRUE
+n2o_ef5,0,TRUE,1,TRUE
+nitrogen_fracleach,0,TRUE,1,TRUE
+manure_management_system_fraction,0,TRUE,1,TRUE

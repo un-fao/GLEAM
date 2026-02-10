@@ -7,25 +7,11 @@ validate_calc_volatile_solids <- function(
     urinary_energy_fraction,
     diet_ash
 ) {
-  # Numeric inputs
-  validate_scalar_numeric(dry_matter_intake, "dry_matter_intake")
-  validate_scalar_numeric(diet_digestibility_fraction, "diet_digestibility_fraction")
-  validate_scalar_numeric(urinary_energy_fraction, "urinary_energy_fraction")
-  validate_scalar_numeric(diet_ash, "diet_ash")
-
-  # Basic range checks
-  if (any(dry_matter_intake < 0)) {
-    cli::cli_abort("{.arg dry_matter_intake} must be non-negative.")
-  }
-  if (any(diet_digestibility_fraction < 0 | diet_digestibility_fraction > 1)) {
-    cli::cli_abort("{.arg diet_digestibility_fraction} must be between 0 and 1.")
-  }
-  if (any(urinary_energy_fraction < 0 | urinary_energy_fraction > 1)) {
-    cli::cli_abort("{.arg urinary_energy_fraction} must be between 0 and 1.")
-  }
-  if (any(diet_ash < 0 | diet_ash > 1)) {
-    cli::cli_abort("{.arg diet_ash} must be between 0 and 1.")
-  }
+  # Enforce configured bounds
+  validate_param_range(dry_matter_intake)
+  validate_param_range(diet_digestibility_fraction)
+  validate_param_range(urinary_energy_fraction)
+  validate_param_range(diet_ash)
 }
 
 #' Validate manure variable characteristics
@@ -61,43 +47,46 @@ validate_mms_characteristics <- function(mms_list, required_names) {
       cli::cli_abort("MMS values must not contain missing values.")
     }
 
-    # fractions must be between 0 and 1
-    if ("manure_management_system_fraction" %in% names(mms) &&
-        (mms[["manure_management_system_fraction"]] < 0 ||
-         mms[["manure_management_system_fraction"]] > 1)) {
-      cli::cli_abort("{.arg manure_management_system_fraction} must be between 0 and 1.")
+    # Range checks via shared parameter_ranges rules
+    if ("manure_management_system_fraction" %in% names(mms)) {
+      validate_param_range(
+        mms[["manure_management_system_fraction"]],
+        "manure_management_system_fraction"
+      )
     }
 
-    if ("nitrogen_fracgas" %in% names(mms) &&
-        (mms[["nitrogen_fracgas"]] < 0 || mms[["nitrogen_fracgas"]] > 1)) {
-      cli::cli_abort("{.arg nitrogen_fracgas} must be between 0 and 1.")
+    if ("nitrogen_fracgas" %in% names(mms)) {
+      validate_param_range(mms[["nitrogen_fracgas"]], "nitrogen_fracgas")
     }
 
-    if ("nitrogen_fracleach" %in% names(mms) &&
-        (mms[["nitrogen_fracleach"]] < 0 || mms[["nitrogen_fracleach"]] > 1)) {
-      cli::cli_abort("{.arg nitrogen_fracleach} must be between 0 and 1.")
+    if ("nitrogen_fracleach" %in% names(mms)) {
+      validate_param_range(mms[["nitrogen_fracleach"]], "nitrogen_fracleach")
     }
 
-    if ("methane_conversion_factor_mcf" %in% names(mms) &&
-        (mms[["methane_conversion_factor_mcf"]] < 0 || mms[["methane_conversion_factor_mcf"]] > 100)) {
-      cli::cli_abort("{.arg methane_conversion_factor_mcf} must be between 0 and 100.")
+    if ("methane_conversion_factor_mcf" %in% names(mms)) {
+      validate_param_range(
+        mms[["methane_conversion_factor_mcf"]],
+        "methane_conversion_factor_mcf"
+      )
     }
 
-    if ("ch4_max_producing_capacity_bo" %in% names(mms) &&
-        mms[["ch4_max_producing_capacity_bo"]] < 0) {
-      cli::cli_abort("{.arg ch4_max_producing_capacity_bo} must be non-negative.")
+    if ("ch4_max_producing_capacity_bo" %in% names(mms)) {
+      validate_param_range(
+        mms[["ch4_max_producing_capacity_bo"]],
+        "ch4_max_producing_capacity_bo"
+      )
     }
 
-    if ("n2o_ef3" %in% names(mms) && mms[["n2o_ef3"]] < 0) {
-      cli::cli_abort("{.arg n2o_ef3} must be non-negative.")
+    if ("n2o_ef3" %in% names(mms)) {
+      validate_param_range(mms[["n2o_ef3"]], "n2o_ef3")
     }
 
-    if ("n2o_ef4" %in% names(mms) && mms[["n2o_ef4"]] < 0) {
-      cli::cli_abort("{.arg n2o_ef4} must be non-negative.")
+    if ("n2o_ef4" %in% names(mms)) {
+      validate_param_range(mms[["n2o_ef4"]], "n2o_ef4")
     }
 
-    if ("n2o_ef5" %in% names(mms) && mms[["n2o_ef5"]] < 0) {
-      cli::cli_abort("{.arg n2o_ef5} must be non-negative.")
+    if ("n2o_ef5" %in% names(mms)) {
+      validate_param_range(mms[["n2o_ef5"]], "n2o_ef5")
     }
   }
 
