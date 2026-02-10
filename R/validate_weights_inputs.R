@@ -130,4 +130,41 @@ validate_weights_inputs <- function(
       "Herd IDs in {.arg herd_level_data} not found in {.arg cohort_level_data}: {.val {missing_in_cohort}}"
     )
   }
+
+  # --- Weight ordering validation (per herd_id) -------------------------------
+  # For each herd: birth_weight must be less than slaughter_weight_female,
+  # slaughter_weight_male, and weaning_weight (cohort slaughter weights are
+  # derived from these, so this ensures birth_weight < slaughter_weight_cohort).
+  violations_female <- herd_level_data[
+    !is.na(birth_weight) & !is.na(slaughter_weight_female) & birth_weight >= slaughter_weight_female,
+    herd_id
+  ]
+  if (length(violations_female) > 0) {
+    cli::cli_abort(
+      "For each herd_id, {.var birth_weight} must be less than {.var slaughter_weight_female}.
+      Violation(s) for herd_id: {.val {violations_female}}"
+    )
+  }
+
+  violations_male <- herd_level_data[
+    !is.na(birth_weight) & !is.na(slaughter_weight_male) & birth_weight >= slaughter_weight_male,
+    herd_id
+  ]
+  if (length(violations_male) > 0) {
+    cli::cli_abort(
+      "For each herd_id, {.var birth_weight} must be less than {.var slaughter_weight_male}.
+      Violation(s) for herd_id: {.val {violations_male}}"
+    )
+  }
+
+  violations_weaning <- herd_level_data[
+    !is.na(birth_weight) & !is.na(weaning_weight) & birth_weight >= weaning_weight,
+    herd_id
+  ]
+  if (length(violations_weaning) > 0) {
+    cli::cli_abort(
+      "For each herd_id, {.var birth_weight} must be less than {.var weaning_weight}.
+      Violation(s) for herd_id: {.val {violations_weaning}}"
+    )
+  }
 }
