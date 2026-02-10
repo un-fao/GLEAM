@@ -37,17 +37,17 @@ test_that("calc_ch4_emissions computes methane by MMS group", {
   volatile_solids <- 2
   ratio <- 0.67
   mms_burned <- c(
-    fraction = 0.2,
+    manure_management_system_fraction = 0.2,
     methane_conversion_factor_mcf = 10,
     ch4_max_producing_capacity_bo = 0.13
   )
   mms_pasture <- c(
-    fraction = 0.3,
+    manure_management_system_fraction = 0.3,
     methane_conversion_factor_mcf = 0.47,
     ch4_max_producing_capacity_bo = 0.19
   )
   mms_drylot <- c(
-    fraction = 0.5,
+    manure_management_system_fraction = 0.5,
     methane_conversion_factor_mcf = 2,
     ch4_max_producing_capacity_bo = 0.13
   )
@@ -75,12 +75,12 @@ test_that("calc_ch4_emissions errors when MMS fractions do not sum to 1", {
     calc_ch4_emissions(
       volatile_solids = 1,
       mms_pasture = c(
-        fraction = 0.6,
+        manure_management_system_fraction = 0.6,
         methane_conversion_factor_mcf = 2,
         ch4_max_producing_capacity_bo = 0.13
       ),
       mms_solid = c(
-        fraction = 0.2,
+        manure_management_system_fraction = 0.2,
         methane_conversion_factor_mcf = 5,
         ch4_max_producing_capacity_bo = 0.13
       )
@@ -91,22 +91,26 @@ test_that("calc_ch4_emissions errors when MMS fractions do not sum to 1", {
 # ---- test calc_ch4_emissions edge cases ----
 test_that("calc_ch4_emissions validates MMS inputs", {
   expect_error(calc_ch4_emissions(volatile_solids = 1, mms_pasture = c(
-    fraction = 1.2, methane_conversion_factor_mcf = 2, ch4_max_producing_capacity_bo = 0.13
+    manure_management_system_fraction = 1.2,
+    methane_conversion_factor_mcf = 2,
+    ch4_max_producing_capacity_bo = 0.13
   )))
   expect_error(calc_ch4_emissions(volatile_solids = 1, mms_pasture = c(
-    fraction = 1, methane_conversion_factor_mcf = 120, ch4_max_producing_capacity_bo = 0.13
+    manure_management_system_fraction = 1,
+    methane_conversion_factor_mcf = 120,
+    ch4_max_producing_capacity_bo = 0.13
   )))
   expect_error(calc_ch4_emissions(volatile_solids = 1, mms_pasture = c(
-    fraction = 1, methane_conversion_factor_mcf = 2
+    manure_management_system_fraction = 1, methane_conversion_factor_mcf = 2
   )))
 })
 
 # ---- test calc_direct_n2o_emissions ----
 test_that("calc_direct_n2o_emissions computes direct N2O by MMS group", {
   n_excretion <- 0.9
-  mms_burned <- c(fraction = 0.2, n2o_ef3 = 0)
-  mms_pasture <- c(fraction = 0.3, n2o_ef3 = 0.02)
-  mms_drylot <- c(fraction = 0.5, n2o_ef3 = 0.01)
+  mms_burned <- c(manure_management_system_fraction = 0.2, n2o_ef3 = 0)
+  mms_pasture <- c(manure_management_system_fraction = 0.3, n2o_ef3 = 0.02)
+  mms_drylot <- c(manure_management_system_fraction = 0.5, n2o_ef3 = 0.01)
 
   result <- calc_direct_n2o_emissions(
     nitrogen_excretion = n_excretion,
@@ -128,19 +132,22 @@ test_that("calc_direct_n2o_emissions computes direct N2O by MMS group", {
 # ---- test calc_direct_n2o_emissions edge cases ----
 test_that("calc_direct_n2o_emissions validates MMS inputs", {
   expect_error(calc_direct_n2o_emissions(nitrogen_excretion = 0.9, mms_pasture = c(
-    fraction = 1.1, n2o_ef3 = 0.02
+    manure_management_system_fraction = 1.1, n2o_ef3 = 0.02
   )))
   expect_error(calc_direct_n2o_emissions(nitrogen_excretion = 0.9, mms_pasture = c(
-    fraction = 1, n2o_ef3 = -0.01
+    manure_management_system_fraction = 1, n2o_ef3 = -0.01
   )))
 })
 
 # ---- test calc_n2o_from_volatilization ----
 test_that("calc_n2o_from_volatilization computes indirect N2O by MMS group", {
   n_excretion <- 0.9
-  mms_burned <- c(fraction = 0.2, n2o_ef4 = 0.14, nitrogen_fracgas = 0)
-  mms_pasture <- c(fraction = 0.3, n2o_ef4 = 0.14, nitrogen_fracgas = 0.21)
-  mms_drylot <- c(fraction = 0.5, n2o_ef4 = 0.14, nitrogen_fracgas = 0.3)
+  mms_burned <- c(manure_management_system_fraction = 0.2,
+                  n2o_ef4 = 0.14, nitrogen_fracgas = 0)
+  mms_pasture <- c(manure_management_system_fraction = 0.3,
+                   n2o_ef4 = 0.14, nitrogen_fracgas = 0.21)
+  mms_drylot <- c(manure_management_system_fraction = 0.5,
+                  n2o_ef4 = 0.14, nitrogen_fracgas = 0.3)
 
   result <- calc_n2o_from_volatilization(
     nitrogen_excretion = n_excretion,
@@ -162,22 +169,25 @@ test_that("calc_n2o_from_volatilization computes indirect N2O by MMS group", {
 # ---- test calc_n2o_from_volatilization edge cases ----
 test_that("calc_n2o_from_volatilization validates MMS inputs", {
   expect_error(calc_n2o_from_volatilization(nitrogen_excretion = 0.9, mms_pasture = c(
-    fraction = 1.1, n2o_ef4 = 0.14, nitrogen_fracgas = 0.21
+    manure_management_system_fraction = 1.1, n2o_ef4 = 0.14, nitrogen_fracgas = 0.21
   )))
   expect_error(calc_n2o_from_volatilization(nitrogen_excretion = 0.9, mms_pasture = c(
-    fraction = 1, n2o_ef4 = -0.01, nitrogen_fracgas = 0.21
+    manure_management_system_fraction = 1, n2o_ef4 = -0.01, nitrogen_fracgas = 0.21
   )))
   expect_error(calc_n2o_from_volatilization(nitrogen_excretion = 0.9, mms_pasture = c(
-    fraction = 1, n2o_ef4 = 0.14, nitrogen_fracgas = 1.2
+    manure_management_system_fraction = 1, n2o_ef4 = 0.14, nitrogen_fracgas = 1.2
   )))
 })
 
 # ---- test calc_n2o_from_leaching ----
 test_that("calc_n2o_from_leaching computes indirect N2O by MMS group", {
   n_excretion <- 0.9
-  mms_burned <- c(fraction = 0.2, n2o_ef5 = 0.011, nitrogen_fracleach = 0)
-  mms_pasture <- c(fraction = 0.3, n2o_ef5 = 0.011, nitrogen_fracleach = 0.24)
-  mms_drylot <- c(fraction = 0.5, n2o_ef5 = 0.011, nitrogen_fracleach = 0.035)
+  mms_burned <- c(manure_management_system_fraction = 0.2,
+                  n2o_ef5 = 0.011, nitrogen_fracleach = 0)
+  mms_pasture <- c(manure_management_system_fraction = 0.3,
+                   n2o_ef5 = 0.011, nitrogen_fracleach = 0.24)
+  mms_drylot <- c(manure_management_system_fraction = 0.5,
+                  n2o_ef5 = 0.011, nitrogen_fracleach = 0.035)
 
   result <- calc_n2o_from_leaching(
     nitrogen_excretion = n_excretion,
@@ -199,13 +209,13 @@ test_that("calc_n2o_from_leaching computes indirect N2O by MMS group", {
 # ---- test calc_n2o_from_leaching edge cases ----
 test_that("calc_n2o_from_leaching validates MMS inputs", {
   expect_error(calc_n2o_from_leaching(nitrogen_excretion = 0.9, mms_pasture = c(
-    fraction = 1.1, n2o_ef5 = 0.011, nitrogen_fracleach = 0.24
+    manure_management_system_fraction = 1.1, n2o_ef5 = 0.011, nitrogen_fracleach = 0.24
   )))
   expect_error(calc_n2o_from_leaching(nitrogen_excretion = 0.9, mms_pasture = c(
-    fraction = 1, n2o_ef5 = -0.01, nitrogen_fracleach = 0.24
+    manure_management_system_fraction = 1, n2o_ef5 = -0.01, nitrogen_fracleach = 0.24
   )))
   expect_error(calc_n2o_from_leaching(nitrogen_excretion = 0.9, mms_pasture = c(
-    fraction = 1, n2o_ef5 = 0.011, nitrogen_fracleach = 1.2
+    manure_management_system_fraction = 1, n2o_ef5 = 0.011, nitrogen_fracleach = 1.2
   )))
 })
 

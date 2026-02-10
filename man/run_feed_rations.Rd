@@ -13,7 +13,7 @@ run_feed_rations(
 \arguments{
 \item{rations_share}{A data.table containing feed shares per cohort. Must include:
 \itemize{
-\item \code{herd_id}, \code{animal}, \code{feed_name}, \code{feed_id}, \code{cohort}, and
+\item \code{herd_id}, \code{animal}, \code{feed_name}, \code{feed_id}, \code{cohort_short}, and
 \code{feed_ration_fraction}.
 }}
 
@@ -26,7 +26,7 @@ run_feed_rations(
 }}
 }
 \value{
-A data.table summarized by \code{herd_id}, \code{animal}, and \code{cohort} with:
+A data.table summarized by \code{herd_id}, \code{animal}, and \code{cohort_short} with:
 \itemize{
 \item \code{diet_gross_energy}, \code{diet_metabolizable_energy},
 \code{diet_nitrogen}, \code{diet_digestibility_fraction}

@@ -66,7 +66,7 @@ calc_volatile_solids <- function(
 #'   Each MMS must be provided as a named numeric vector with exactly the
 #'   following fields:
 #'   \describe{
-#'     \item{fraction}{Fraction of total manure managed in this system (0–1).
+#'     \item{manure_management_system_fraction}{Fraction of total manure managed in this system (0–1).
 #'       The sum of all fractions must equal 1.}
 #'     \item{methane_conversion_factor_mcf}{Methane conversion factor (MCF),
 #'       expressed as a percentage.}
@@ -96,22 +96,22 @@ calc_volatile_solids <- function(
 #'   ratio_m3CH4_kgCH4 = 0.67,
 #'   volatile_solids   = 2.024,
 #'   mms_burned = c(
-#'     fraction = 0.020,
+#'     manure_management_system_fraction = 0.020,
 #'     methane_conversion_factor_mcf = 10,
 #'     ch4_max_producing_capacity_bo = 0.13
 #'   ),
 #'   mms_drylot = c(
-#'     fraction = 0.264,
+#'     manure_management_system_fraction = 0.264,
 #'     methane_conversion_factor_mcf = 2,
 #'     ch4_max_producing_capacity_bo = 0.13
 #'   ),
 #'   mms_pasture = c(
-#'     fraction = 0.310,
+#'     manure_management_system_fraction = 0.310,
 #'     methane_conversion_factor_mcf = 0.47,
 #'     ch4_max_producing_capacity_bo = 0.19
 #'   ),
 #'   mms_solid = c(
-#'     fraction = 0.406,
+#'     manure_management_system_fraction = 0.406,
 #'     methane_conversion_factor_mcf = 5,
 #'     ch4_max_producing_capacity_bo = 0.13
 #'   )
@@ -128,7 +128,7 @@ calc_ch4_emissions <- function(
   validate_mms_inputs(
     mms_list,
     required_names = c(
-      "fraction",
+      "manure_management_system_fraction",
       "methane_conversion_factor_mcf",
       "ch4_max_producing_capacity_bo"
     ),
@@ -144,14 +144,14 @@ calc_ch4_emissions <- function(
   # pasture
   ch4_manure_pasture <- if (is.null(mms_pasture)) 0 else
     volatile_solids * ratio_m3CH4_kgCH4 *
-    mms_pasture[["fraction"]] *
+    mms_pasture[["manure_management_system_fraction"]] *
     (mms_pasture[["methane_conversion_factor_mcf"]] / 100) *
     mms_pasture[["ch4_max_producing_capacity_bo"]]
 
   # burned
   ch4_manure_burned <- if (is.null(mms_burned)) 0 else
     volatile_solids * ratio_m3CH4_kgCH4 *
-    mms_burned[["fraction"]] *
+    mms_burned[["manure_management_system_fraction"]] *
     (mms_burned[["methane_conversion_factor_mcf"]] / 100) *
     mms_burned[["ch4_max_producing_capacity_bo"]]
 
@@ -160,7 +160,7 @@ calc_ch4_emissions <- function(
     other_term <- vapply(
       mms_other,
       function(mms) {
-        mms[["fraction"]] * mms[["methane_conversion_factor_mcf"]] * mms[["ch4_max_producing_capacity_bo"]]
+        mms[["manure_management_system_fraction"]] * mms[["methane_conversion_factor_mcf"]] * mms[["ch4_max_producing_capacity_bo"]]
       },
       numeric(1)
     )
@@ -196,7 +196,7 @@ calc_ch4_emissions <- function(
 #'   Each MMS must be provided as a named numeric vector with exactly the
 #'   following fields:
 #'   \describe{
-#'     \item{fraction}{Fraction of total manure managed in this system (0–1).
+#'     \item{manure_management_system_fraction}{Fraction of total manure managed in this system (0–1).
 #'       The sum of all fractions must equal 1.}
 #'     \item{n2o_ef3}{Effective emission factor (EF\eqn{_3}) for manure
 #'       management, expressed in kg N2O-N / kg N excreted.}
@@ -224,19 +224,19 @@ calc_ch4_emissions <- function(
 #'   ratio_N2ON_to_N2O = 44 / 28,
 #'   nitrogen_excretion = 0.9,
 #'   mms_burned = c(
-#'     fraction = 0.020,
+#'     manure_management_system_fraction = 0.020,
 #'     n2o_ef3  = 0
 #'   ),
 #'   mms_drylot = c(
-#'     fraction = 0.264,
+#'     manure_management_system_fraction = 0.264,
 #'     n2o_ef3  = 0.02
 #'   ),
 #'   mms_pasture = c(
-#'     fraction = 0.310,
+#'     manure_management_system_fraction = 0.310,
 #'     n2o_ef3  = 0.02
 #'   ),
 #'   mms_solid = c(
-#'     fraction = 0.406,
+#'     manure_management_system_fraction = 0.406,
 #'     n2o_ef3  = 0.005
 #'   )
 #' )
@@ -251,7 +251,7 @@ calc_direct_n2o_emissions <- function(
 
   validate_mms_inputs(
     mms_list,
-    required_names = c("fraction", "n2o_ef3"),
+    required_names = c("manure_management_system_fraction", "n2o_ef3"),
     ratio_N2ON_to_N2O = ratio_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
   )
@@ -263,17 +263,19 @@ calc_direct_n2o_emissions <- function(
 
   # pasture
   n2o_manure_pasture_direct <- if (is.null(mms_pasture)) 0 else
-    nitrogen_excretion * ratio_N2ON_to_N2O * mms_pasture[["fraction"]] * mms_pasture[["n2o_ef3"]]
+    nitrogen_excretion * ratio_N2ON_to_N2O * mms_pasture[["manure_management_system_fraction"]] *
+    mms_pasture[["n2o_ef3"]]
 
   # burned
   n2o_manure_burned_direct <- if (is.null(mms_burned)) 0 else
-    nitrogen_excretion * ratio_N2ON_to_N2O * mms_burned[["fraction"]] * mms_burned[["n2o_ef3"]]
+    nitrogen_excretion * ratio_N2ON_to_N2O * mms_burned[["manure_management_system_fraction"]] *
+    mms_burned[["n2o_ef3"]]
 
   # all other MMS (scalar product)
   n2o_manure_other_direct <- if (length(mms_other) == 0) 0 else {
     other_term <- vapply(
       mms_other,
-      function(mms) mms[["fraction"]] * mms[["n2o_ef3"]],
+      function(mms) mms[["manure_management_system_fraction"]] * mms[["n2o_ef3"]],
       numeric(1)
     )
     nitrogen_excretion * ratio_N2ON_to_N2O * sum(other_term)
@@ -309,7 +311,7 @@ calc_direct_n2o_emissions <- function(
 #'   Each MMS must be provided as a named numeric vector with exactly the
 #'   following fields:
 #'   \describe{
-#'     \item{fraction}{Fraction of total manure managed in this system (0–1).
+#'     \item{manure_management_system_fraction}{Fraction of total manure managed in this system (0–1).
 #'       The sum of all fractions must equal 1.}
 #'     \item{n2o_ef4}{Emission factor for indirect N2O emissions resulting from
 #'       atmospheric deposition of volatilized nitrogen (NH3–N and NOx–N) onto
@@ -341,22 +343,22 @@ calc_direct_n2o_emissions <- function(
 #'   ratio_N2ON_to_N2O = 44 / 28,
 #'   nitrogen_excretion = 0.9,
 #'   mms_burned = c(
-#'     fraction = 0.020,
+#'     manure_management_system_fraction = 0.020,
 #'     n2o_ef4 = 0.14,
 #'     nitrogen_fracgas = 0
 #'   ),
 #'   mms_drylot = c(
-#'     fraction = 0.264,
+#'     manure_management_system_fraction = 0.264,
 #'     n2o_ef4 = 0.14,
 #'     nitrogen_fracgas = 0.3
 #'   ),
 #'   mms_pasture = c(
-#'     fraction = 0.310,
+#'     manure_management_system_fraction = 0.310,
 #'     n2o_ef4 = 0.14,
 #'     nitrogen_fracgas = 0.21
 #'   ),
 #'   mms_solid = c(
-#'     fraction = 0.406,
+#'     manure_management_system_fraction = 0.406,
 #'     n2o_ef4 = 0.14,
 #'     nitrogen_fracgas = 0.45
 #'   )
@@ -372,7 +374,7 @@ calc_n2o_from_volatilization <- function(
 
   validate_mms_inputs(
     mms_list,
-    required_names = c("fraction", "n2o_ef4", "nitrogen_fracgas"),
+    required_names = c("manure_management_system_fraction", "n2o_ef4", "nitrogen_fracgas"),
     ratio_N2ON_to_N2O = ratio_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
   )
@@ -385,12 +387,14 @@ calc_n2o_from_volatilization <- function(
   # pasture
   n2o_vol_manure_pasture <- if (is.null(mms_pasture)) 0 else
     nitrogen_excretion * ratio_N2ON_to_N2O *
-    mms_pasture[["fraction"]] * mms_pasture[["nitrogen_fracgas"]] * mms_pasture[["n2o_ef4"]]
+    mms_pasture[["manure_management_system_fraction"]] * mms_pasture[["nitrogen_fracgas"]] *
+    mms_pasture[["n2o_ef4"]]
 
   # burned
   n2o_vol_manure_burned <- if (is.null(mms_burned)) 0 else
     nitrogen_excretion * ratio_N2ON_to_N2O *
-    mms_burned[["fraction"]] * mms_burned[["nitrogen_fracgas"]] * mms_burned[["n2o_ef4"]]
+    mms_burned[["manure_management_system_fraction"]] * mms_burned[["nitrogen_fracgas"]] *
+    mms_burned[["n2o_ef4"]]
 
   # all other MMS (scalar product)
   n2o_vol_manure_other <- if (length(mms_other) == 0) 0 else {
@@ -398,7 +402,7 @@ calc_n2o_from_volatilization <- function(
     other_term <- vapply(
       mms_other,
       function(mms) {
-        mms[["fraction"]] * mms[["nitrogen_fracgas"]] * mms[["n2o_ef4"]]
+        mms[["manure_management_system_fraction"]] * mms[["nitrogen_fracgas"]] * mms[["n2o_ef4"]]
       },
       numeric(1)
     )
@@ -435,7 +439,7 @@ calc_n2o_from_volatilization <- function(
 #'   Each MMS must be provided as a named numeric vector with exactly the
 #'   following fields:
 #'   \describe{
-#'     \item{fraction}{Fraction of total manure managed in this system (0–1).
+#'     \item{manure_management_system_fraction}{Fraction of total manure managed in this system (0–1).
 #'       The sum of all fractions must equal 1.}
 #'     \item{n2o_ef5}{Emission factor for indirect nitrous oxide emissions
 #'       resulting from nitrogen leaching and runoff, expressed as
@@ -466,22 +470,22 @@ calc_n2o_from_volatilization <- function(
 #'   ratio_N2ON_to_N2O = 44 / 28,
 #'   nitrogen_excretion = 0.9,
 #'   mms_burned = c(
-#'     fraction = 0.020,
+#'     manure_management_system_fraction = 0.020,
 #'     n2o_ef5 = 0.011,
 #'     nitrogen_fracleach = 0
 #'   ),
 #'   mms_drylot = c(
-#'     fraction = 0.264,
+#'     manure_management_system_fraction = 0.264,
 #'     n2o_ef5 = 0.011,
 #'     nitrogen_fracleach = 0.035
 #'   ),
 #'   mms_pasture = c(
-#'     fraction = 0.310,
+#'     manure_management_system_fraction = 0.310,
 #'     n2o_ef5 = 0.011,
 #'     nitrogen_fracleach = 0.24
 #'   ),
 #'   mms_solid = c(
-#'     fraction = 0.406,
+#'     manure_management_system_fraction = 0.406,
 #'     n2o_ef5 = 0.011,
 #'     nitrogen_fracleach = 0.02
 #'   )
@@ -497,7 +501,7 @@ calc_n2o_from_leaching <- function(
 
   validate_mms_inputs(
     mms_list,
-    required_names = c("fraction", "n2o_ef5", "nitrogen_fracleach"),
+    required_names = c("manure_management_system_fraction", "n2o_ef5", "nitrogen_fracleach"),
     ratio_N2ON_to_N2O = ratio_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
   )
@@ -510,12 +514,14 @@ calc_n2o_from_leaching <- function(
   # pasture
   n2o_leach_manure_pasture <- if (is.null(mms_pasture)) 0 else
     nitrogen_excretion * ratio_N2ON_to_N2O *
-    mms_pasture[["fraction"]] * mms_pasture[["nitrogen_fracleach"]] * mms_pasture[["n2o_ef5"]]
+    mms_pasture[["manure_management_system_fraction"]] * mms_pasture[["nitrogen_fracleach"]] *
+    mms_pasture[["n2o_ef5"]]
 
   # burned
   n2o_leach_manure_burned <- if (is.null(mms_burned)) 0 else
     nitrogen_excretion * ratio_N2ON_to_N2O *
-    mms_burned[["fraction"]] * mms_burned[["nitrogen_fracleach"]] * mms_burned[["n2o_ef5"]]
+    mms_burned[["manure_management_system_fraction"]] * mms_burned[["nitrogen_fracleach"]] *
+    mms_burned[["n2o_ef5"]]
 
   # all other MMS (scalar product)
   n2o_leach_manure_other <- if (length(mms_other) == 0) 0 else {
@@ -523,7 +529,7 @@ calc_n2o_from_leaching <- function(
     other_term <- vapply(
       mms_other,
       function(mms) {
-        mms[["fraction"]] * mms[["nitrogen_fracleach"]] * mms[["n2o_ef5"]]
+        mms[["manure_management_system_fraction"]] * mms[["nitrogen_fracleach"]] * mms[["n2o_ef5"]]
       },
       numeric(1)
     )

@@ -12,7 +12,7 @@ validate_calc_volatile_solids <- function(
   validate_scalar_numeric(diet_digestibility_fraction, "diet_digestibility_fraction")
   validate_scalar_numeric(urinary_energy_fraction, "urinary_energy_fraction")
   validate_scalar_numeric(diet_ash, "diet_ash")
-  
+
   # Basic range checks
   if (any(dry_matter_intake < 0)) {
     cli::cli_abort("{.arg dry_matter_intake} must be non-negative.")
@@ -32,20 +32,20 @@ validate_calc_volatile_solids <- function(
 #'
 #' @noRd
 validate_mms_characteristics <- function(mms_list, required_names) {
-  
+
   # at least one MMS provided
   if (length(mms_list) == 0) {
     cli::cli_abort("At least one manure management system must be provided.")
   }
-  
+
   # validate each MMS unit
   for (mms in mms_list) {
-    
+
     # must be numeric
     if (!is.numeric(mms)) {
       cli::cli_abort("Each MMS argument must be a numeric vector.")
     }
-    
+
     # must contain exactly the expected named fields
     if (!setequal(names(mms), required_names)) {
       cli::cli_abort(
@@ -55,52 +55,56 @@ validate_mms_characteristics <- function(mms_list, required_names) {
         )
       )
     }
-    
+
     # must not contain missing values
     if (any(is.na(mms))) {
       cli::cli_abort("MMS values must not contain missing values.")
     }
-    
+
     # fractions must be between 0 and 1
-    if ("fraction" %in% names(mms) && (mms[["fraction"]] < 0 || mms[["fraction"]] > 1)) {
-      cli::cli_abort("{.arg fraction} must be between 0 and 1.")
+    if ("manure_management_system_fraction" %in% names(mms) &&
+        (mms[["manure_management_system_fraction"]] < 0 ||
+         mms[["manure_management_system_fraction"]] > 1)) {
+      cli::cli_abort("{.arg manure_management_system_fraction} must be between 0 and 1.")
     }
-    
+
     if ("nitrogen_fracgas" %in% names(mms) &&
         (mms[["nitrogen_fracgas"]] < 0 || mms[["nitrogen_fracgas"]] > 1)) {
       cli::cli_abort("{.arg nitrogen_fracgas} must be between 0 and 1.")
     }
-    
+
     if ("nitrogen_fracleach" %in% names(mms) &&
         (mms[["nitrogen_fracleach"]] < 0 || mms[["nitrogen_fracleach"]] > 1)) {
       cli::cli_abort("{.arg nitrogen_fracleach} must be between 0 and 1.")
     }
-    
+
     if ("methane_conversion_factor_mcf" %in% names(mms) &&
         (mms[["methane_conversion_factor_mcf"]] < 0 || mms[["methane_conversion_factor_mcf"]] > 100)) {
       cli::cli_abort("{.arg methane_conversion_factor_mcf} must be between 0 and 100.")
     }
-    
+
     if ("ch4_max_producing_capacity_bo" %in% names(mms) &&
         mms[["ch4_max_producing_capacity_bo"]] < 0) {
       cli::cli_abort("{.arg ch4_max_producing_capacity_bo} must be non-negative.")
     }
-    
+
     if ("n2o_ef3" %in% names(mms) && mms[["n2o_ef3"]] < 0) {
       cli::cli_abort("{.arg n2o_ef3} must be non-negative.")
     }
-    
+
     if ("n2o_ef4" %in% names(mms) && mms[["n2o_ef4"]] < 0) {
       cli::cli_abort("{.arg n2o_ef4} must be non-negative.")
     }
-    
+
     if ("n2o_ef5" %in% names(mms) && mms[["n2o_ef5"]] < 0) {
       cli::cli_abort("{.arg n2o_ef5} must be non-negative.")
     }
   }
-  
+
   # the sum of all MMS fractions must equal 1
-  total_fraction <- sum(vapply(mms_list, function(mms) mms[["fraction"]], numeric(1)))
+  total_fraction <- sum(
+    vapply(mms_list, function(mms) mms[["manure_management_system_fraction"]], numeric(1))
+  )
   if (!isTRUE(all.equal(total_fraction, 1, tolerance = 1e-8))) {
     cli::cli_abort(
       "The sum of all MMS fractions must be equal to 1 (current sum: {total_fraction})."
@@ -121,9 +125,9 @@ validate_mms_inputs <- function(
     mms_list,
     required_names = required_names
   )
-  
+
   scalars <- list(...)
-  
+
   # validate any additional scalar numeric inputs
   for (i in seq_along(scalars)) {
     validate_scalar_numeric(

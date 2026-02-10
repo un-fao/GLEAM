@@ -1,4 +1,4 @@
-herd_id,cohort,manure_management_system,fraction
+herd_id,cohort,manure_management_system,manure_management_system_fraction
 1,FA,mms_burned,0.019633654
 1,FA,mms_drylot,0.263651097
 1,FA,mms_pasture,0.31100436

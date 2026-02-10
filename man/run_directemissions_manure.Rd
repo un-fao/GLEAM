@@ -18,7 +18,7 @@ run_directemissions_manure(
 \code{nitrogen_excretion}.}
 
 \item{manure_management_system_fraction}{Cohort-level MMS fractions with at least:
-\code{herd_id}, \code{cohort}, \code{manure_management_system}, \code{fraction}.}
+\code{herd_id}, \code{cohort}, \code{manure_management_system}, \code{manure_management_system_fraction}.}
 
 \item{manure_management_system_factors}{Herd-level MMS factors with at least:
 \code{herd_id}, \code{manure_management_system},

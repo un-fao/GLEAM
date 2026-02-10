@@ -41,7 +41,7 @@ validate_directemissions_manure_inputs <- function(
     "diet_digestibility_fraction", "nitrogen_excretion"
   )
   required_fraction_cols <- c(
-    "herd_id", "cohort", "manure_management_system", "fraction"
+    "herd_id", "cohort", "manure_management_system", "manure_management_system_fraction"
   )
   required_factors_cols <- c(
     "herd_id", "manure_management_system",

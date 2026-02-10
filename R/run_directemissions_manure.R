@@ -16,7 +16,7 @@
 #'   `herd_id`, `cohort`, `dry_matter_intake`, `diet_digestibility_fraction`,
 #'   `nitrogen_excretion`.
 #' @param manure_management_system_fraction Cohort-level MMS fractions with at least:
-#'   `herd_id`, `cohort`, `manure_management_system`, `fraction`.
+#'   `herd_id`, `cohort`, `manure_management_system`, `manure_management_system_fraction`.
 #' @param manure_management_system_factors Herd-level MMS factors with at least:
 #'   `herd_id`, `manure_management_system`,
 #'   `methane_conversion_factor_mcf`, `ch4_max_producing_capacity_bo`,
@@ -129,11 +129,12 @@ run_directemissions_manure <- function(
       current_cohort <- cohort
       mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
 
-      # Build the list expected by calc_ch4_emissions(...):
-      # mms_name = c(fraction, methane_conversion_factor_mcf, ch4_max_producing_capacity_bo)
+      # Build the list expected by calc_ch4_emissions(...)
       mms_list <- build_mms_list(
         mms_rows,
-        c("fraction", "methane_conversion_factor_mcf", "ch4_max_producing_capacity_bo")
+        c("manure_management_system_fraction",
+          "methane_conversion_factor_mcf",
+          "ch4_max_producing_capacity_bo")
       )
 
       # calc_ch4_emissions() accepts variable MMS inputs via `...`.
@@ -164,9 +165,8 @@ run_directemissions_manure <- function(
       current_cohort <- cohort
       mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
 
-      # Build the list expected by calc_direct_n2o_emissions(...):
-      # mms_name = c(fraction, n2o_ef3)
-      mms_list <- build_mms_list(mms_rows, c("fraction", "n2o_ef3"))
+      # Build the list expected by calc_direct_n2o_emissions(...)
+      mms_list <- build_mms_list(mms_rows, c("manure_management_system_fraction", "n2o_ef3"))
 
       # calc_direct_n2o_emissions() accepts variable MMS inputs via `...`.
       n2o_direct <- do.call(
@@ -197,9 +197,10 @@ run_directemissions_manure <- function(
       current_cohort <- cohort
       mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
 
-      # Build the list expected by calc_n2o_from_volatilization(...):
-      # mms_name = c(fraction, n2o_ef4, nitrogen_fracgas)
-      mms_list <- build_mms_list(mms_rows, c("fraction", "n2o_ef4", "nitrogen_fracgas"))
+      # Build the list expected by calc_n2o_from_volatilization(...)
+      mms_list <- build_mms_list(
+        mms_rows, c("manure_management_system_fraction", "n2o_ef4", "nitrogen_fracgas")
+      )
 
       # calc_n2o_from_volatilization() accepts variable MMS inputs via `...`.
       n2o_vol <- do.call(
@@ -230,9 +231,10 @@ run_directemissions_manure <- function(
       current_cohort <- cohort
       mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
 
-      # Build the list expected by calc_n2o_from_leaching(...):
-      # mms_name = c(fraction, n2o_ef5, nitrogen_fracleach)
-      mms_list <- build_mms_list(mms_rows, c("fraction", "n2o_ef5", "nitrogen_fracleach"))
+      # Build the list expected by calc_n2o_from_leaching(...)
+      mms_list <- build_mms_list(
+        mms_rows, c("manure_management_system_fraction", "n2o_ef5", "nitrogen_fracleach")
+      )
 
       # calc_n2o_from_leaching() accepts variable MMS inputs via `...`.
       n2o_leach <- do.call(

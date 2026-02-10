@@ -15,7 +15,7 @@ calc_ch4_emissions(ratio_m3CH4_kgCH4 = 0.67, volatile_solids, ...)
 Each MMS must be provided as a named numeric vector with exactly the
 following fields:
 \describe{
-\item{fraction}{Fraction of total manure managed in this system (0–1).
+\item{manure_management_system_fraction}{Fraction of total manure managed in this system (0–1).
 The sum of all fractions must equal 1.}
 \item{methane_conversion_factor_mcf}{Methane conversion factor (MCF),
 expressed as a percentage.}
@@ -51,22 +51,22 @@ calc_ch4_emissions(
   ratio_m3CH4_kgCH4 = 0.67,
   volatile_solids   = 2.024,
   mms_burned = c(
-    fraction = 0.020,
+    manure_management_system_fraction = 0.020,
     methane_conversion_factor_mcf = 10,
     ch4_max_producing_capacity_bo = 0.13
   ),
   mms_drylot = c(
-    fraction = 0.264,
+    manure_management_system_fraction = 0.264,
     methane_conversion_factor_mcf = 2,
     ch4_max_producing_capacity_bo = 0.13
   ),
   mms_pasture = c(
-    fraction = 0.310,
+    manure_management_system_fraction = 0.310,
     methane_conversion_factor_mcf = 0.47,
     ch4_max_producing_capacity_bo = 0.19
   ),
   mms_solid = c(
-    fraction = 0.406,
+    manure_management_system_fraction = 0.406,
     methane_conversion_factor_mcf = 5,
     ch4_max_producing_capacity_bo = 0.13
   )

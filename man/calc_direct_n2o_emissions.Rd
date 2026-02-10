@@ -17,7 +17,7 @@ calc_direct_n2o_emissions(ratio_N2ON_to_N2O = 44/28, nitrogen_excretion, ...)
 Each MMS must be provided as a named numeric vector with exactly the
 following fields:
 \describe{
-\item{fraction}{Fraction of total manure managed in this system (0–1).
+\item{manure_management_system_fraction}{Fraction of total manure managed in this system (0–1).
 The sum of all fractions must equal 1.}
 \item{n2o_ef3}{Effective emission factor (EF\eqn{_3}) for manure
 management, expressed in kg N2O-N / kg N excreted.}
@@ -51,19 +51,19 @@ calc_direct_n2o_emissions(
   ratio_N2ON_to_N2O = 44 / 28,
   nitrogen_excretion = 0.9,
   mms_burned = c(
-    fraction = 0.020,
+    manure_management_system_fraction = 0.020,
     n2o_ef3  = 0
   ),
   mms_drylot = c(
-    fraction = 0.264,
+    manure_management_system_fraction = 0.264,
     n2o_ef3  = 0.02
   ),
   mms_pasture = c(
-    fraction = 0.310,
+    manure_management_system_fraction = 0.310,
     n2o_ef3  = 0.02
   ),
   mms_solid = c(
-    fraction = 0.406,
+    manure_management_system_fraction = 0.406,
     n2o_ef3  = 0.005
   )
 )
