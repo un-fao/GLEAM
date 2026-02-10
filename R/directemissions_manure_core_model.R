@@ -186,7 +186,7 @@ calc_ch4_emissions <- function(
 #' IPCC-based parameters and separates emissions from pasture, burned manure,
 #' and all other manure management systems.
 #'
-#' @param ration_N2ON_to_N2O Numeric. Conversion factor from N2O-N (kg N) to N2O
+#' @param ratio_N2ON_to_N2O Numeric. Conversion factor from N2O-N (kg N) to N2O
 #'   (kg), based on molecular weights. Defaults to 44/28.
 #'
 #' @param nitrogen_excretion Numeric. Daily nitrogen excretion
@@ -221,7 +221,7 @@ calc_ch4_emissions <- function(
 #'
 #' @examples
 #' calc_direct_n2o_emissions(
-#'   ration_N2ON_to_N2O = 44 / 28,
+#'   ratio_N2ON_to_N2O = 44 / 28,
 #'   nitrogen_excretion = 0.9,
 #'   mms_burned = c(
 #'     fraction = 0.020,
@@ -243,7 +243,7 @@ calc_ch4_emissions <- function(
 #'
 #' @export
 calc_direct_n2o_emissions <- function(
-    ration_N2ON_to_N2O = 44 / 28,
+    ratio_N2ON_to_N2O = 44 / 28,
     nitrogen_excretion,
     ...
 ) {
@@ -252,7 +252,7 @@ calc_direct_n2o_emissions <- function(
   validate_mms_inputs(
     mms_list,
     required_names = c("fraction", "n2o_ef3"),
-    ration_N2ON_to_N2O = ration_N2ON_to_N2O,
+    ratio_N2ON_to_N2O = ratio_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
   )
 
@@ -263,11 +263,11 @@ calc_direct_n2o_emissions <- function(
 
   # pasture
   n2o_manure_pasture_direct <- if (is.null(mms_pasture)) 0 else
-    nitrogen_excretion * ration_N2ON_to_N2O * mms_pasture[["fraction"]] * mms_pasture[["n2o_ef3"]]
+    nitrogen_excretion * ratio_N2ON_to_N2O * mms_pasture[["fraction"]] * mms_pasture[["n2o_ef3"]]
 
   # burned
   n2o_manure_burned_direct <- if (is.null(mms_burned)) 0 else
-    nitrogen_excretion * ration_N2ON_to_N2O * mms_burned[["fraction"]] * mms_burned[["n2o_ef3"]]
+    nitrogen_excretion * ratio_N2ON_to_N2O * mms_burned[["fraction"]] * mms_burned[["n2o_ef3"]]
 
   # all other MMS (scalar product)
   n2o_manure_other_direct <- if (length(mms_other) == 0) 0 else {
@@ -276,7 +276,7 @@ calc_direct_n2o_emissions <- function(
       function(mms) mms[["fraction"]] * mms[["n2o_ef3"]],
       numeric(1)
     )
-    nitrogen_excretion * ration_N2ON_to_N2O * sum(other_term)
+    nitrogen_excretion * ratio_N2ON_to_N2O * sum(other_term)
   }
 
   # total non-burned emissions
@@ -299,7 +299,7 @@ calc_direct_n2o_emissions <- function(
 #' management systems and separates emissions from pasture, burned manure, and
 #' all other manure management systems.
 #'
-#' @param ration_N2ON_to_N2O Numeric. Conversion factor from N2O-N (kg N) to N2O
+#' @param ratio_N2ON_to_N2O Numeric. Conversion factor from N2O-N (kg N) to N2O
 #'   (kg), based on molecular weights. Defaults to 44/28.
 #'
 #' @param nitrogen_excretion Numeric. Daily nitrogen excretion
@@ -338,7 +338,7 @@ calc_direct_n2o_emissions <- function(
 #'
 #' @examples
 #' calc_n2o_from_volatilization(
-#'   ration_N2ON_to_N2O = 44 / 28,
+#'   ratio_N2ON_to_N2O = 44 / 28,
 #'   nitrogen_excretion = 0.9,
 #'   mms_burned = c(
 #'     fraction = 0.020,
@@ -363,7 +363,7 @@ calc_direct_n2o_emissions <- function(
 #' )
 #' @export
 calc_n2o_from_volatilization <- function(
-    ration_N2ON_to_N2O = 44 / 28,
+    ratio_N2ON_to_N2O = 44 / 28,
     nitrogen_excretion,
     ...
 ) {
@@ -373,7 +373,7 @@ calc_n2o_from_volatilization <- function(
   validate_mms_inputs(
     mms_list,
     required_names = c("fraction", "n2o_ef4", "nitrogen_fracgas"),
-    ration_N2ON_to_N2O = ration_N2ON_to_N2O,
+    ratio_N2ON_to_N2O = ratio_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
   )
 
@@ -384,12 +384,12 @@ calc_n2o_from_volatilization <- function(
 
   # pasture
   n2o_vol_manure_pasture <- if (is.null(mms_pasture)) 0 else
-    nitrogen_excretion * ration_N2ON_to_N2O *
+    nitrogen_excretion * ratio_N2ON_to_N2O *
     mms_pasture[["fraction"]] * mms_pasture[["nitrogen_fracgas"]] * mms_pasture[["n2o_ef4"]]
 
   # burned
   n2o_vol_manure_burned <- if (is.null(mms_burned)) 0 else
-    nitrogen_excretion * ration_N2ON_to_N2O *
+    nitrogen_excretion * ratio_N2ON_to_N2O *
     mms_burned[["fraction"]] * mms_burned[["nitrogen_fracgas"]] * mms_burned[["n2o_ef4"]]
 
   # all other MMS (scalar product)
@@ -403,7 +403,7 @@ calc_n2o_from_volatilization <- function(
       numeric(1)
     )
 
-    nitrogen_excretion * ration_N2ON_to_N2O * sum(other_term)
+    nitrogen_excretion * ratio_N2ON_to_N2O * sum(other_term)
   }
 
   # total non-burned emissions
@@ -425,7 +425,7 @@ calc_n2o_from_volatilization <- function(
 #' leaching and runoff from manure management systems and separates emissions
 #' from pasture, burned manure, and all other manure management systems.
 #'
-#' @param ration_N2ON_to_N2O Numeric. Conversion factor from N2O-N (kg N) to N2O
+#' @param ratio_N2ON_to_N2O Numeric. Conversion factor from N2O-N (kg N) to N2O
 #'   (kg), based on molecular weights. Defaults to 44/28.
 #'
 #' @param nitrogen_excretion Numeric. Daily nitrogen excretion
@@ -463,7 +463,7 @@ calc_n2o_from_volatilization <- function(
 #'
 #' @examples
 #' calc_n2o_from_leaching(
-#'   ration_N2ON_to_N2O = 44 / 28,
+#'   ratio_N2ON_to_N2O = 44 / 28,
 #'   nitrogen_excretion = 0.9,
 #'   mms_burned = c(
 #'     fraction = 0.020,
@@ -488,7 +488,7 @@ calc_n2o_from_volatilization <- function(
 #' )
 #' @export
 calc_n2o_from_leaching <- function(
-    ration_N2ON_to_N2O = 44 / 28,
+    ratio_N2ON_to_N2O = 44 / 28,
     nitrogen_excretion,
     ...
 ) {
@@ -498,7 +498,7 @@ calc_n2o_from_leaching <- function(
   validate_mms_inputs(
     mms_list,
     required_names = c("fraction", "n2o_ef5", "nitrogen_fracleach"),
-    ration_N2ON_to_N2O = ration_N2ON_to_N2O,
+    ratio_N2ON_to_N2O = ratio_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
   )
 
@@ -509,12 +509,12 @@ calc_n2o_from_leaching <- function(
 
   # pasture
   n2o_leach_manure_pasture <- if (is.null(mms_pasture)) 0 else
-    nitrogen_excretion * ration_N2ON_to_N2O *
+    nitrogen_excretion * ratio_N2ON_to_N2O *
     mms_pasture[["fraction"]] * mms_pasture[["nitrogen_fracleach"]] * mms_pasture[["n2o_ef5"]]
 
   # burned
   n2o_leach_manure_burned <- if (is.null(mms_burned)) 0 else
-    nitrogen_excretion * ration_N2ON_to_N2O *
+    nitrogen_excretion * ratio_N2ON_to_N2O *
     mms_burned[["fraction"]] * mms_burned[["nitrogen_fracleach"]] * mms_burned[["n2o_ef5"]]
 
   # all other MMS (scalar product)
@@ -528,7 +528,7 @@ calc_n2o_from_leaching <- function(
       numeric(1)
     )
 
-    nitrogen_excretion * ration_N2ON_to_N2O * sum(other_term)
+    nitrogen_excretion * ratio_N2ON_to_N2O * sum(other_term)
   }
 
   # total non-burned emissions

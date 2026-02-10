@@ -47,6 +47,7 @@ utils::globalVariables(c(
   # Columns used in run_weights_calculations
   "cohort", "cohort_short", "cohort_duration_days",
   "live_weight_female_adult", "live_weight_male_adult",
+  "birth_weight", "slaughter_weight_female", "slaughter_weight_male", "weaning_weight",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
   "slaughter_weight_cohort", "live_weight_cohort_average",
   "live_weight_cohort_final", "animal", "animal_short"

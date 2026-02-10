@@ -4,10 +4,10 @@
 \alias{calc_n2o_from_leaching}
 \title{Calculate indirect N2O emissions from manure leaching and runoff}
 \usage{
-calc_n2o_from_leaching(ration_N2ON_to_N2O = 44/28, nitrogen_excretion, ...)
+calc_n2o_from_leaching(ratio_N2ON_to_N2O = 44/28, nitrogen_excretion, ...)
 }
 \arguments{
-\item{ration_N2ON_to_N2O}{Numeric. Conversion factor from N2O-N (kg N) to N2O
+\item{ratio_N2ON_to_N2O}{Numeric. Conversion factor from N2O-N (kg N) to N2O
 (kg), based on molecular weights. Defaults to 44/28.}
 
 \item{nitrogen_excretion}{Numeric. Daily nitrogen excretion
@@ -51,7 +51,7 @@ from pasture, burned manure, and all other manure management systems.
 }
 \examples{
 calc_n2o_from_leaching(
-  ration_N2ON_to_N2O = 44 / 28,
+  ratio_N2ON_to_N2O = 44 / 28,
   nitrogen_excretion = 0.9,
   mms_burned = c(
     fraction = 0.020,
