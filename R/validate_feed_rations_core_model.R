@@ -144,9 +144,6 @@ validate_feed_digestibility_inputs <- function(
   }
 
   # Enforce configured bounds
-  validate_param_range(feed_digestible_energy_ruminant)
-  validate_param_range(feed_digestible_energy_pigs)
-  validate_param_range(feed_metabolizable_energy_chicken)
   validate_param_range(feed_gross_energy)
 }
 
