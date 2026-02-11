@@ -84,7 +84,11 @@ run_weights_calculations <- function(
   # --- Step 1: Validate Inputs -----------------------------------------------
   validate_weights_inputs(cohort_level_data, herd_level_data)
 
-  # --- Step 2: Calculate Cohort Weights --------------------------------------
+  # --- Step 2: Create working copies -----------------------------------------
+  cohort_level_data <- data.table::copy(cohort_level_data)
+  herd_level_data <- data.table::copy(herd_level_data)
+
+  # --- Step 3: Calculate Cohort Weights --------------------------------------
   cohort_level_data[
     ,
     c(
@@ -104,7 +108,7 @@ run_weights_calculations <- function(
     by = .I
   ]
 
-  # --- Step 3: Calculate Average and Final Weights ---------------------------
+  # --- Step 4: Calculate Average and Final Weights ---------------------------
   cohort_level_data[
     ,
     c(
@@ -119,7 +123,7 @@ run_weights_calculations <- function(
     by = .I
   ]
 
-  # --- Step 4: Calculate Daily Weight Gain -----------------------------------
+  # --- Step 5: Calculate Daily Weight Gain -----------------------------------
   cohort_level_data[
     ,
     daily_weight_gain := calc_daily_weight_gain(
