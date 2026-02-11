@@ -38,10 +38,14 @@ run_feed_rations <- function(
       system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
     )
 ) {
-  # --- Step 1: Validate inputs ------------------------------------------------
+  # --- Step 1: Validate inputs -----------------------------------------------
   validate_feed_rations_inputs(rations_share, feed_params)
 
-  # --- Step 2: Compute digestibility ratios -----------------------------------
+  # --- Step 2: Create working copies -----------------------------------------
+  rations_share <- data.table::copy(rations_share)
+  feed_params <- data.table::copy(feed_params)
+
+  # --- Step 3: Compute digestibility ratios ----------------------------------
   feed_params[
     ,
     c(
@@ -56,7 +60,7 @@ run_feed_rations <- function(
     ),
     by = .I
   ]
-  # --- Step 3: Merge ration shares with feed parameters -----------------------
+  # --- Step 4: Merge ration shares with feed parameters ----------------------
   rations_detailed <- merge(
     rations_share, feed_params,
     by = "feed_id", all.x = TRUE, allow.cartesian = TRUE
@@ -77,7 +81,7 @@ run_feed_rations <- function(
     )
   }
 
-  # --- Step 4: Calculate cohort feed contributions ----------------------------
+  # --- Step 5: Calculate cohort feed contributions ---------------------------
   rations_detailed[
     ,
     diet_gross_energy := calc_diet_gross_energy(
@@ -120,7 +124,7 @@ run_feed_rations <- function(
     by = .I
   ]
 
-  # --- Step 5: Summarize dietary metrics at cohort level ----------------------
+  # --- Step 6: Summarize dietary metrics at cohort level ---------------------
   rations_summary <- rations_detailed[
     ,
     .(
