@@ -11,40 +11,191 @@ run_directemissions_manure(
 )
 }
 \arguments{
-\item{directemissions_manure_input_cohort_level_data}{Cohort-level data with at least:
-\code{herd_id}, \code{cohort}, \code{dry_matter_intake}, \code{diet_digestibility_fraction},
-\code{nitrogen_excretion}, \code{urinary_energy_fraction}, \code{diet_ash}.}
+\item{directemissions_manure_input_cohort_level_data}{data.table. Cohort-level
+input table with (at minimum): \code{herd_id}, \code{cohort},
+\code{dry_matter_intake}, \code{diet_digestibility_fraction},
+\code{nitrogen_excretion}. Optional columns include \code{urinary_energy_fraction}
+and \code{diet_ash}.
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{cohort}{Character scalar. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
+\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg dry matter/head/day).}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
+\item{diet_ash}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).}
+\item{nitrogen_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
+}}
 
-\item{manure_management_system_fraction}{Cohort-level MMS fractions with at least:
-\code{herd_id}, \code{cohort}, \code{manure_management_system}, \code{manure_management_system_fraction}.}
+\item{manure_management_system_fraction}{data.table. Cohort-level MMS fractions
+with: \code{herd_id}, \code{cohort}, \code{manure_management_system},
+\code{manure_management_system_fraction}.
+\describe{
+\item{manure_management_system_fraction}{Numeric. Fraction of total manure excreted by animals in a given herd and cohort that is handled in a specific manure management system. Values range from 0 to 1. The sum of all fractions for each herd_id must equal 1.}
+}}
 
-\item{manure_management_system_factors}{Herd-level MMS factors with at least:
-\code{herd_id}, \code{manure_management_system},
-\code{methane_conversion_factor_mcf}, \code{ch4_max_producing_capacity_bo},
-\code{n2o_ef3}, \code{n2o_ef4}, \code{n2o_ef5}, \code{nitrogen_fracgas}, \code{nitrogen_fracleach}.}
+\item{manure_management_system_factors}{data.table. Herd-level MMS factors
+with: \code{herd_id}, \code{manure_management_system}, and associated
+methane (CH₄) and nitrous oxide (N₂O) parameters.
+\describe{
+\item{ratio_m3CH4_to_kgCH4}{
+Numeric. Conversion factor used to convert methane (CH₄) from a
+volumetric unit (m³) to a mass unit (kg). Represents methane density.
+Defaults to 0.67 kg/m³.
+}
+\item{methane_conversion_factor_mcf}{
+Numeric. Methane conversion factor (MCF), expressed as a percentage.
+Represents the proportion of the maximum methane-producing capacity
+(B₀) achieved within a specific manure management system, reflecting
+system temperature, retention time, and anaerobic conditions.
+Values range from 0 to 100 percent. Default values are provided in
+IPCC (2006, 2019), Table 10.17.
+}
+\item{ch4_max_producing_capacity_bo}{
+Numeric. Maximum methane-producing capacity (B₀)
+(m³ CH₄ kg⁻¹ VS). Region- and species-specific.
+Default values are provided in IPCC (2019), Table 10.16,
+and IPCC (2006), Tables 10A-4 to 10A-9.
+}
+\item{n2o_ef3}{
+Numeric. Emission factor for direct nitrous oxide (N₂O)
+emissions from manure management (kg N₂O–N per kg N).
+Represents N₂O emissions from nitrification and denitrification
+during manure storage and treatment.
+Default values are provided in IPCC (2006, 2019),
+Tables 10.21 and 11.1 (pasture).
+}
+\item{n2o_ef4}{
+Numeric. Emission factor for indirect N₂O emissions resulting from
+atmospheric deposition of volatilised nitrogen (NH₃–N and NOₓ–N)
+(kg N₂O–N per kg NH₃–N + NOₓ–N).
+Default values are provided in IPCC (2006, 2019), Table 11.3.
+}
+\item{nitrogen_fracgas}{
+Numeric. Fraction of manure nitrogen volatilised as ammonia (NH₃)
+and nitrogen oxides (NOₓ) within a specific manure management system
+(dimensionless, 0–1).
+Default values are provided in IPCC (2006, 2019), Table 10.22.
+}
+\item{n2o_ef5}{
+Numeric. Emission factor for indirect N₂O emissions resulting from
+nitrogen leaching and runoff (kg N₂O–N per kg N leached).
+Default values are provided in IPCC (2006, 2019), Table 11.3.
+}
+\item{nitrogen_fracleach}{
+Numeric. Fraction of manure nitrogen lost through leaching and runoff
+in a specific manure management system (dimensionless, 0–1).
+Default values are provided in IPCC (2006, 2019), Table 10.22.
+}
+}}
 }
 \value{
-The input \code{data.table} with added manure emissions columns
-(volatile solids, CH4 components, N2O direct/indirect and totals).
+cohort_level_data data.table. Input cohort table with added manure
+emissions columns:
+\describe{
+\item{volatile_solids}{Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
+\item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH4/head/day).}
+\item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH4/head/day).}
+\item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH4/head/day).}
+\item{ch4_manure_all_noburn}{Numeric. Methane (CH₄) emissions from manure management systems, excluding manure burned for fuel (kg CH4/head/day).}
+\item{n2o_manure_pasture_direct}{Numeric. Direct nitrous oxide (N2O) emissions from manure deposited on pasture (kg N2O/head/day).}
+\item{n2o_manure_burned_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_other_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_all_noburn_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure management systems, excluding emissions from manure burned for fuel (kg N2O/head/day).}
+\item{n2o_vol_manure_pasture}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure deposited on pasture (kg N2O/head/day).}
+\item{n2o_vol_manure_burned}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure burned for fuel (kg N2O/head/day).}
+\item{n2o_vol_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding manure deposited on pasture and manure burned for fuel (kg N2O/head/day).}
+\item{n2o_vol_manure_all_noburn}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding losses from manure burned for fuel (kg N2O/head/day).}
+\item{n2o_leach_manure_pasture}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure deposited on pasture (kg N₂O / head / day).}
+\item{n2o_leach_manure_burned}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure burned for fuel (kg N₂O / head / day).}
+\item{n2o_leach_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure deposited on pasture and manure burned for fuel (kg N₂O / head / day).}
+\item{n2o_leach_manure_all_noburn}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure burned for fuel (kg N₂O / head / day).}
+\item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions from manure deposited on pasture. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O / head / day).}
+\item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O / head / day).}
+\item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen.}
+\item{n2o_manure_pasture_total}{Numeric. Total nitrous oxide emissions from manure deposited on pasture. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N₂O / head / day).}
+\item{n2o_manure_burned_total}{Numeric. Total nitrous oxide emissions (N₂O) from manure burned for fuel. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N₂O / head / day).}
+\item{n2o_manure_other_total}{Numeric. Total nitrous oxide (N₂O) emissions from manure management systems, excluding manure deposited on pasture and manure burned for fuel. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N₂O / head / day).}
+}
 }
 \description{
-Orchestrates the manure emissions core model at the cohort level by:
-\itemize{
-\item estimating volatile solids from diet inputs,
-\item applying manure management system (MMS) fractions and factors, and
-\item aggregating CH4 and N2O direct + indirect emissions.
-}
+Run manure emissions (cohort-level)
 }
 \details{
-This wrapper assumes pre-cleaned inputs and performs run-level validation
-of table structure and key consistency.
-
-Key requirements enforced at run time include:
+Orchestrates the manure emissions core model at the cohort level by:
 \itemize{
-\item For each herd_id, the MMS list must match between
-\code{manure_management_system_fraction} and \code{manure_management_system_factors}.
+\item computing volatile solids (VS) excretion from diet inputs,
+\item applying manure management system (MMS) fractions and MMS-specific factors,
+\item computing methane (CH₄) emissions by MMS group (pasture, burned, other, and total excluding burned),
+\item computing direct nitrous oxide (N₂O) emissions by MMS group,
+\item computing indirect N₂O emissions from volatilisation and from leaching and runoff, and
+\item aggregating indirect and total N₂O emissions by MMS group.
+}
+
+Run-level validation is performed on input table structure and key consistency.
+In particular, for each \code{herd_id}, the set of MMS identifiers must be
+consistent between \code{manure_management_system_fraction} and
+\code{manure_management_system_factors}.
+
+This function orchestrates a cohort-level implementation of the IPCC manure
+management methodology using volatile solids (VS), manure management system
+(MMS) allocation fractions, and MMS-specific emission factors.
+
+The calculation sequence is:
+\enumerate{
+\item VS excretion is computed from diet inputs (digestibility, urinary
+energy, and ash) using the simplified form of the IPCC VS relationship
+(Equation 10.24).
+\item Methane (CH₄) emissions from manure management are computed from VS
+and MMS parameters (MCF and B₀) and reported by MMS group (pasture, burned,
+and all other systems), consistent with the CH₄ manure management emission
+factor relationship (Equation 10.23).
+\item Direct nitrous oxide (N₂O) emissions from manure management are
+computed from nitrogen excretion and MMS-specific EF3 values and reported
+by MMS group (Equation 10.25).
+\item Indirect N₂O emissions are computed as the sum of:
+\itemize{
+\item volatilisation-driven N₂O using MMS-specific nitrogen losses
+(FracGas) and EF4 (Equations 10.26 and 10.28), and
+\item leaching/runoff-driven N₂O using MMS-specific nitrogen losses
+(FracLeach) and EF5 (Equations 10.28, 10.27, and 10.29 as applicable).
+}
+\item Total indirect and total N₂O emissions are aggregated by MMS group
+(pasture, burned, other).
+}
+
+The approach corresponds to a Tier 2 implementation in the sense that:
+\itemize{
+\item VS is derived from ration-level inputs rather than using fixed daily
+excretion defaults, and
+\item emissions are allocated across MMS categories using herd/cohort MMS
+fractions and MMS-specific parameters.
 }
 }
+\section{Manure management system (MMS) reference}{
+
+A complete list of manure management system (MMS) names,
+definitions, and associated emission factors is provided in the
+following reference documents:
+
+\itemize{
+\item \href{gleam/legacy/Resources/mms_definitions.html}{MMS names and definitions}
+\item \href{gleam/legacy/Resources/mms_emission-factors.html}{MMS emission factors}
+}
+
+These documents provide guidance on IPCC MMS and the
+corresponding methane (CH₄) and nitrous oxide (N₂O) parameters
+(MCF, B₀, EF3, EF4, EF5, fracgas, fracleach).
+}
+
 \examples{
 \dontrun{
 manure_management_system_factors <- data.table::fread(
@@ -73,4 +224,13 @@ result <- run_directemissions_manure(
 )
 }
 
+}
+\references{
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Volume 4, Chapter 10: Emissions from Livestock and Manure Management.
+Equations 10.23, 10.24, 10.25, 10.26, 10.27, 10.28, and 10.29.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Volume 4, Chapter 10: Emissions from Livestock and Manure Management.
+Equations 10.23, 10.24, 10.25, 10.26, 10.27, 10.28, and 10.29.
 }

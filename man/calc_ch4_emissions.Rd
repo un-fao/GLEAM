@@ -2,49 +2,107 @@
 % Please edit documentation in R/directemissions_manure_core_model.R
 \name{calc_ch4_emissions}
 \alias{calc_ch4_emissions}
-\title{Calculate CH4 emissions from manure management systems}
+\title{Calculate methane (CH₄) emissions from manure management systems}
 \usage{
 calc_ch4_emissions(ratio_m3CH4_to_kgCH4 = 0.67, volatile_solids, ...)
 }
 \arguments{
-\item{ratio_m3CH4_to_kgCH4}{Numeric. The conversion factor used to convert methane from a volumetric unit (m³) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m³ (at 20°C and 1 atm), which is the standard value defined in the IPCC 2006 and 2019 guidelines.}
+\item{ratio_m3CH4_to_kgCH4}{Numeric. Conversion factor used to convert methane (CH₄) from volumetric unit (m³) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m³.}
 
-\item{volatile_solids}{Numeric. Total volatile solids (volatile_solids) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
+\item{volatile_solids}{Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
 
 \item{...}{A variable number of manure management system (MMS) arguments.
 Each MMS must be provided as a named numeric vector with exactly the
 following fields:
 \describe{
-\item{manure_management_system_fraction}{Fraction of total manure managed in this system (0–1).
-The sum of all fractions must equal 1.}
-\item{methane_conversion_factor_mcf}{Methane conversion factor (MCF),
-expressed as a percentage.}
-\item{ch4_max_producing_capacity_bo}{Maximum methane producing capacity
-(B0), in m3 CH4 / kg VS.}
+\item{manure_management_system_fraction}{
+Numeric. Fraction of total manure excreted by animals in a given herd
+and cohort that is handled in a specific manure management system.
+Values range from 0 to 1. The sum of all fractions for each herd_id
+must equal 1.
+}
+\item{methane_conversion_factor_mcf}{
+Numeric. Methane conversion factor represents the portion or degree of
+the maximum methane producing capacity (\eqn{B_0}) that is effectively
+achieved within a specific manure management system. It represents the
+extent to which the theoretical methane yield is realized based on
+management practices and environmental conditions, specifically the
+temperature of the system, the retention time of the organic material,
+and the degree of anaerobic conditions present. The value theoretically
+ranges from 0 to 100 percent. Default values can be selected from
+Table 10.17 of the IPCC guidelines.
+}
+\item{ch4_max_producing_capacity_bo}{
+Numeric. Maximum methane producing capacity (\eqn{B_0}) for all manure
+management systems (m³ CH₄ kg⁻¹ VS). The value is region- and
+species-specific. Default values may be selected from Table 10.16
+(IPCC, 2019) or from Tables 10A-4 to 10A-9 (IPCC, 2006).
+}
 }
 
 Two MMS names are treated explicitly when present:
 \describe{
-\item{\code{mms_pasture}}{manure deposited on pasture}
-\item{\code{mms_burned}}{manure burned for fuel}
+\item{\code{mms_pasture}}{Manure deposited on pasture.}
+\item{\code{mms_burned}}{Manure burned for fuel.}
 }
 All remaining MMS arguments are grouped and treated as other manure
 management systems.}
 }
 \value{
-A named list with the following elements (kg CH4/head/day):
+A named list with the following elements (kg CH₄ head⁻¹ day⁻¹):
 \describe{
-\item{ch4_manure_pasture}{Methane emissions from manure deposited on pasture.}
-\item{ch4_manure_burned}{Methane emissions from manure burned for fuel.}
-\item{ch4_manure_other}{Methane emissions from all other manure management systems.}
-\item{ch4_manure_all_noburn}{Total methane emissions excluding burned manure
-(pasture + other systems).}
+\item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH₄ head⁻¹ day⁻¹).}
+\item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH₄ head⁻¹ day⁻¹).}
+\item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH₄ head⁻¹ day⁻¹).}
+\item{ch4_manure_all_noburn}{Numeric. Methane (CH₄) emissions from manure management systems, excluding manure burned for fuel (kg CH₄ head⁻¹ day⁻¹).}
 }
 }
 \description{
-Computes daily methane emissions from manure using IPCC-based parameters and
+Computes daily methane emissions from manure management using IPCC-based parameters and
 separates emissions from pasture, burned manure, and all other manure
 management systems.
+}
+\details{
+This calculation follows the structure of IPCC Equation 10.23 for
+methane CH₄ emission factors from manure management.
+
+In the IPCC formulation, emissions are determined by combining:
+\itemize{
+\item daily volatile solids excretion (\code{volatile_solids}),
+\item the maximum methane-producing capacity (\code{b0}),
+\item the methane conversion factor (\code{mcf}) for each manure
+management system,
+\item and the fraction of manure handled in each system
+(\code{manure_management_system_fraction}).
+}
+
+Applying the IPCC conversion factor from m³ CH₄ to kg CH₄
+(0.67), daily methane emissions are calculated as:
+
+\deqn{
+  CH₄ =
+  volatile\_solids \times b0 \times 0.67 \times
+  \sum \left( \frac{mcf}{100} \times manure\_management\_system\_fraction \right)
+}
+
+where:
+\describe{
+\item{\code{b0}}{
+Maximum methane-producing capacity
+(m³ CH₄ kg⁻¹ VS), representing the theoretical maximum
+methane yield per unit of volatile solids.
+}
+\item{\code{mcf}}{
+Methane conversion factor (percent), representing the proportion
+of \code{b0} achieved under the specified manure management system
+and climate conditions.
+}
+}
+
+The summation is taken over all manure management systems included in
+the calculation. Results are expressed at daily resolution
+(kg CH₄ head⁻¹ day⁻¹), consistent with Equation 10.23 after
+adapting the original annual formulation to a daily basis.
 }
 \examples{
 calc_ch4_emissions(
@@ -72,4 +130,11 @@ calc_ch4_emissions(
   )
 )
 
+}
+\references{
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management. Equation 10.23.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+Livestock and Manure Management. Equation 10.23.
 }
