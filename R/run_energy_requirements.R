@@ -46,121 +46,165 @@ run_energy_requirements <- function(data) {
 
 
   # 1. Maintenance energy (MJ/day)
-  data[, nemain := calc_net_energy_maintenance(
-    animal = Animal_short,
-    cohort = cohort,
-    average_weight = average_weight,
-    milking_fraction = milking_fraction,
-    offtake_rate = offtake_rate,
-    afc = afc
-  ), by = .I]
+  data[
+    ,
+    nemain := calc_net_energy_maintenance(
+      animal = Animal_short,
+      cohort = cohort,
+      average_weight = average_weight,
+      milking_fraction = milking_fraction,
+      offtake_rate = offtake_rate,
+      afc = afc
+    ),
+    by = .I
+  ]
 
   # 2. Activity energy (MJ/day)
-  data[, neact := calc_net_energy_activity(
-    animal = Animal_short,
-    cohort = cohort,
-    nemain = nemain,
-    average_weight = average_weight,
-    activity_fraction = activity_fraction,
-    high_activity_fraction = high_activity_fraction
-  ), by = .I]
+  data[
+    ,
+    neact := calc_net_energy_activity(
+      animal = Animal_short,
+      cohort = cohort,
+      nemain = nemain,
+      average_weight = average_weight,
+      activity_fraction = activity_fraction,
+      high_activity_fraction = high_activity_fraction
+    ),
+    by = .I
+  ]
 
   # 3. Growth energy (MJ/day)
-  data[, negrow := calc_net_energy_growth(
-    animal = Animal_short,
-    cohort = cohort,
-    average_weight = average_weight,
-    final_weight = final_weight,
-    initial_weight = initial_weight,
-    adult_weight = adult_weight,
-    dwg = dwg,
-    offtake_rate = offtake_rate,
-    duration = duration
-  ), by = .I]
+  data[
+    ,
+    negrow := calc_net_energy_growth(
+      animal = Animal_short,
+      cohort = cohort,
+      average_weight = average_weight,
+      final_weight = final_weight,
+      initial_weight = initial_weight,
+      adult_weight = adult_weight,
+      dwg = dwg,
+      offtake_rate = offtake_rate,
+      duration = duration
+    ),
+    by = .I
+  ]
 
   # 4. Lactation energy (MJ/day)
-  data[, nelact := calc_net_energy_lactation(
-    animal = Animal_short,
-    cohort = cohort,
-    milking_fraction = milking_fraction,
-    milk_yield = milk_yield,
-    milk_fat = milk_fat,
-    idle = idle,
-    gest = gest,
-    litsize = litsize,
-    dr1 = dr1,
-    ckg = ckg,
-    wkg = wkg,
-    lact = lact,
-    parturition_rate = parturition_rate
-  ), by = .I]
+  data[
+    ,
+    nelact := calc_net_energy_lactation(
+      animal = Animal_short,
+      cohort = cohort,
+      milking_fraction = milking_fraction,
+      milk_yield = milk_yield,
+      milk_fat = milk_fat,
+      idle = idle,
+      gest = gest,
+      litsize = litsize,
+      dr1 = dr1,
+      ckg = ckg,
+      wkg = wkg,
+      lact = lact,
+      parturition_rate = parturition_rate
+    ),
+    by = .I
+  ]
 
   # 5. Work energy (MJ/day)
-  data[, nework := calc_net_energy_work(
-    animal = Animal_short,
-    cohort = cohort,
-    nemain = nemain,
-    work_hours_female = work_hours_female,
-    work_hours_male = work_hours_male,
-    draught_fraction_female = draught_fraction_female,
-    draught_fraction_male = draught_fraction_male
-  ), by = .I]
+  data[
+    ,
+    nework := calc_net_energy_work(
+      animal = Animal_short,
+      cohort = cohort,
+      nemain = nemain,
+      work_hours_female = work_hours_female,
+      work_hours_male = work_hours_male,
+      draught_fraction_female = draught_fraction_female,
+      draught_fraction_male = draught_fraction_male
+    ),
+    by = .I
+  ]
 
   # 6. Fibre production energy (MJ/day)
-  data[, nefibre := calc_net_energy_fibre(
-    animal = Animal_short,
-    cohort = cohort,
-    fibre_prod = fibre_prod
-  ), by = .I]
+  data[
+    ,
+    nefibre := calc_net_energy_fibre(
+      animal = Animal_short,
+      cohort = cohort,
+      fibre_prod = fibre_prod
+    ),
+    by = .I
+  ]
 
   # 7. Pregnancy energy (MJ/day)
-  data[, nepreg := calc_net_energy_pregnancy(
-    animal = Animal_short,
-    cohort = cohort,
-    nemain = nemain,
-    parturition_rate = parturition_rate,
-    litsize = litsize,
-    gest = gest,
-    idle = idle,
-    lact = lact,
-    duration = duration,
-    offtake_rate = offtake_rate
-  ), by = .I]
+  data[
+    ,
+    nepreg := calc_net_energy_pregnancy(
+      animal = Animal_short,
+      cohort = cohort,
+      nemain = nemain,
+      parturition_rate = parturition_rate,
+      litsize = litsize,
+      gest = gest,
+      idle = idle,
+      lact = lact,
+      duration = duration,
+      offtake_rate = offtake_rate
+    ),
+    by = .I
+  ]
 
   # 8–9. Diet NE fractions for maintenance & growth
-  data[, rem := calc_rem_maintenance(
-    animal = Animal_short,
-    diet_dig = diet_dig
-  ), by = .I]
+  data[
+    ,
+    rem := calc_rem_maintenance(
+      animal = Animal_short,
+      diet_dig = diet_dig
+    ),
+    by = .I
+  ]
 
-  data[, reg := calc_reg_growth(
-    animal = Animal_short,
-    diet_dig = diet_dig
-  ), by = .I]
+  data[
+    ,
+    reg := calc_reg_growth(
+      animal = Animal_short,
+      diet_dig = diet_dig
+    ),
+    by = .I
+  ]
 
   # 10. Total ME requirement (MJ/day)
-  data[, getot := calc_total_energy_requirement(
-    animal = Animal_short,
-    nemain = nemain,
-    neact = neact,
-    nelact = nelact,
-    nework = nework,
-    nepreg = nepreg,
-    rem = rem,
-    negrow = negrow,
-    nefibre = nefibre,
-    neegg = 0,
-    reg = reg,
-    diet_dig = diet_dig
-  ), by = .I]
+  data[
+    ,
+    getot := calc_total_energy_requirement(
+      animal = Animal_short,
+      nemain = nemain,
+      neact = neact,
+      nelact = nelact,
+      nework = nework,
+      nepreg = nepreg,
+      rem = rem,
+      negrow = negrow,
+      nefibre = nefibre,
+      neegg = 0,
+      reg = reg,
+      diet_dig = diet_dig
+    ),
+    by = .I
+  ]
 
   # 11. Dry matter intake (kg DM/day)
-  data[, dmi := calc_dry_matter_intake(
-    animal = Animal_short,
-    total_energy = getot,
-    diet_ge = diet_ge,
-    diet_me = diet_me
-  ), by = .I]
+  data[
+    ,
+    dmi := calc_dry_matter_intake(
+      animal = Animal_short,
+      total_energy = getot,
+      diet_ge = diet_ge,
+      diet_me = diet_me
+    ),
+    by = .I
+  ]
 
   return(data)
 }
