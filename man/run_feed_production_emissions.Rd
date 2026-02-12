@@ -12,7 +12,8 @@ run_feed_production_emissions(rations_share, feed_emissions)
 \item \code{herd_id}, \code{animal}, \code{feed_id}, \code{cohort}, \code{feed_ration_fraction}.
 }}
 
-\item{feed_emissions}{A data.table of feed production emission factors. Must include:
+\item{feed_emissions}{A data.table of feed production emission factors expressed as g gas/kg dry matter.
+Must include:
 \itemize{
 \item \code{feed_id},
 \item \code{co2_feed_fertilizer}, \code{co2_feed_pesticides},

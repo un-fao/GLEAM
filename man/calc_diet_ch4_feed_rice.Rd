@@ -11,10 +11,10 @@ calc_diet_ch4_feed_rice(feed_ration_fraction, ch4_feed_rice)
 by this feed component (unitless).}
 
 \item{ch4_feed_rice}{Numeric. Emission factor for CH4 from rice cultivation
-in feed production (e.g., kg CH4 per kg DM of feed).}
+in feed production (g CH4/kg dry matter of feed).}
 }
 \value{
-Numeric. CH4 contribution from rice cultivation for this feed item.
+Numeric. CH4 contribution from rice cultivation for this feed item (g CH4/kg dry matter of feed).
 }
 \description{
 Computes the weighted contribution of CH4 emissions from flooded rice cultivation

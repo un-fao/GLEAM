@@ -14,10 +14,10 @@ calc_diet_co2_feed_crop_operations(
 by this feed component (unitless).}
 
 \item{co2_feed_crop_operations}{Numeric. Emission factor for CO2 from crop
-operations (e.g., kg CO2 per kg DM of feed).}
+operations (g CO2/kg dry matter of feed).}
 }
 \value{
-Numeric. CO2 contribution from crop operations for this feed item.
+Numeric. CO2 contribution from crop operations for this feed item (g CO2/kg dry matter of feed).
 }
 \description{
 Computes the weighted contribution of CO2 emissions from crop operations

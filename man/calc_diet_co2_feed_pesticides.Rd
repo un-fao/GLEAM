@@ -11,10 +11,10 @@ calc_diet_co2_feed_pesticides(feed_ration_fraction, co2_feed_pesticides)
 by this feed component (unitless).}
 
 \item{co2_feed_pesticides}{Numeric. Emission factor for CO2 from pesticide use
-in feed production (e.g., kg CO2 per kg DM of feed).}
+in feed production (g CO2/kg dry matter of feed).}
 }
 \value{
-Numeric. CO2 contribution from pesticides for this feed item.
+Numeric. CO2 contribution from pesticides for this feed item (g CO2/kg dry matter of feed).
 }
 \description{
 Computes the weighted contribution of CO2 emissions from pesticide use

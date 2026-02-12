@@ -11,10 +11,10 @@ calc_diet_n2o_feed_crop_residues(feed_ration_fraction, n2o_feed_crop_residues)
 by this feed component (unitless).}
 
 \item{n2o_feed_crop_residues}{Numeric. Emission factor for N2O from crop residues
-in feed production (e.g., kg N2O per kg DM of feed).}
+in feed production (g N2O/kg dry matter of feed).}
 }
 \value{
-Numeric. N2O contribution from crop residues for this feed item.
+Numeric. N2O contribution from crop residues for this feed item (g N2O/kg dry matter of feed).
 }
 \description{
 Computes the weighted contribution of N2O emissions from crop residues returned

@@ -14,10 +14,10 @@ calc_diet_n2o_feed_manure_applied(
 by this feed component (unitless).}
 
 \item{n2o_feed_manure_applied}{Numeric. Emission factor for N2O from manure
-application in feed production (e.g., kg N2O per kg DM of feed).}
+application in feed production (g N2O/kg dry matter of feed).}
 }
 \value{
-Numeric. N2O contribution from manure application for this feed item.
+Numeric. N2O contribution from manure application for this feed item (g N2O/kg dry matter of feed).
 }
 \description{
 Computes the weighted contribution of N2O emissions from manure applied to cropland

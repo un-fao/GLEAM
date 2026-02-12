@@ -11,10 +11,10 @@ calc_diet_co2_feed_luc_peat(feed_ration_fraction, co2_feed_luc_peat)
 by this feed component (unitless).}
 
 \item{co2_feed_luc_peat}{Numeric. Emission factor for CO2 from peatland-related
-land-use change (e.g., kg CO2 per kg DM of feed).}
+land-use change (g CO2/kg dry matter of feed).}
 }
 \value{
-Numeric. CO2 contribution from LUC (peat) for this feed item.
+Numeric. CO2 contribution from LUC (peat) for this feed item (g CO2/kg dry matter of feed).
 }
 \description{
 Computes the weighted contribution of CO2 emissions from peatland conversion

@@ -6,7 +6,8 @@
 #'
 #' @param rations_share A data.table containing feed shares per cohort. Must include:
 #'   - `herd_id`, `animal`, `feed_id`, `cohort`, `feed_ration_fraction`.
-#' @param feed_emissions A data.table of feed production emission factors. Must include:
+#' @param feed_emissions A data.table of feed production emission factors expressed as g gas/kg dry matter.
+#' Must include:
 #'   - `feed_id`,
 #'   - `co2_feed_fertilizer`, `co2_feed_pesticides`,
 #'   - `co2_feed_crop_operations`, `co2_feed_luc_nopeat`, `co2_feed_luc_peat`,

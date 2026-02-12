@@ -6,10 +6,9 @@
 #' @param feed_ration_fraction Numeric. Fraction of the total ration represented
 #'   by this feed component (unitless, typically sums to 1 across feeds).
 #' @param co2_feed_fertilizer Numeric. Emission factor for CO2 from fertilizer
-#'   use in feed production (e.g., kg CO2 per kg DM of feed).
+#'   use in feed production (g CO2/kg dry matter of feed).
 #'
-#' @return Numeric. CO2 contribution from fertilizer by feed item
-#'   (same units as `co2_feed_fertilizer`).
+#' @return Numeric. CO2 contribution from fertilizer by feed item (g CO2/kg dry matter of feed).
 #'
 #' @details
 #' The contribution is computed as:
@@ -29,9 +28,9 @@ calc_diet_co2_feed_fertilizer <- function(feed_ration_fraction, co2_feed_fertili
 #' @param feed_ration_fraction Numeric. Fraction of the total ration represented
 #'   by this feed component (unitless).
 #' @param co2_feed_pesticides Numeric. Emission factor for CO2 from pesticide use
-#'   in feed production (e.g., kg CO2 per kg DM of feed).
+#'   in feed production (g CO2/kg dry matter of feed).
 #'
-#' @return Numeric. CO2 contribution from pesticides for this feed item.
+#' @return Numeric. CO2 contribution from pesticides for this feed item (g CO2/kg dry matter of feed).
 #'
 #' @details
 #' \deqn{diet\_co2\_feed\_pesticides = feed\_ration\_fraction \times co2\_feed\_pesticides}
@@ -53,9 +52,9 @@ calc_diet_co2_feed_pesticides <- function(feed_ration_fraction, co2_feed_pestici
 #' @param feed_ration_fraction Numeric. Fraction of the total ration represented
 #'   by this feed component (unitless).
 #' @param co2_feed_crop_operations Numeric. Emission factor for CO2 from crop
-#'   operations (e.g., kg CO2 per kg DM of feed).
+#'   operations (g CO2/kg dry matter of feed).
 #'
-#' @return Numeric. CO2 contribution from crop operations for this feed item.
+#' @return Numeric. CO2 contribution from crop operations for this feed item (g CO2/kg dry matter of feed).
 #'
 #' @details
 #' \deqn{diet\_co2\_feed\_crop\_operations =
@@ -78,9 +77,9 @@ calc_diet_co2_feed_crop_operations <- function(feed_ration_fraction, co2_feed_cr
 #' @param feed_ration_fraction Numeric. Fraction of the total ration represented
 #'   by this feed component (unitless).
 #' @param co2_feed_luc_nopeat Numeric. Emission factor for CO2 from land-use change
-#'   excluding peat (e.g., kg CO2 per kg DM of feed).
+#'   excluding peat (g CO2/kg dry matter of feed).
 #'
-#' @return Numeric. CO2 contribution from LUC (no peat) for this feed item.
+#' @return Numeric. CO2 contribution from LUC (no peat) for this feed item (g CO2/kg dry matter of feed).
 #'
 #' @details
 #' \deqn{diet\_co2\_feed\_luc\_nopeat = feed\_ration\_fraction \times co2\_feed\_luc\_nopeat}
@@ -102,9 +101,9 @@ calc_diet_co2_feed_luc_nopeat <- function(feed_ration_fraction, co2_feed_luc_nop
 #' @param feed_ration_fraction Numeric. Fraction of the total ration represented
 #'   by this feed component (unitless).
 #' @param co2_feed_luc_peat Numeric. Emission factor for CO2 from peatland-related
-#'   land-use change (e.g., kg CO2 per kg DM of feed).
+#'   land-use change (g CO2/kg dry matter of feed).
 #'
-#' @return Numeric. CO2 contribution from LUC (peat) for this feed item.
+#' @return Numeric. CO2 contribution from LUC (peat) for this feed item (g CO2/kg dry matter of feed).
 #'
 #' @details
 #' \deqn{diet\_co2\_feed\_luc\_peat = feed\_ration\_fraction \times co2\_feed\_luc\_peat}
@@ -126,9 +125,9 @@ calc_diet_co2_feed_luc_peat <- function(feed_ration_fraction, co2_feed_luc_peat)
 #' @param feed_ration_fraction Numeric. Fraction of the total ration represented
 #'   by this feed component (unitless).
 #' @param n2o_feed_fertilizer Numeric. Emission factor for N2O from fertilizer use
-#'   in feed production (e.g., kg N2O per kg DM of feed).
+#'   in feed production (g N2O/kg dry matter of feed).
 #'
-#' @return Numeric. N2O contribution from fertilizer for this feed item.
+#' @return Numeric. N2O contribution from fertilizer for this feed item (g N2O/kg dry matter of feed).
 #'
 #' @details
 #' \deqn{diet\_n2o\_feed\_fertilizer = feed\_ration\_fraction \times n2o\_feed\_fertilizer}
@@ -150,9 +149,9 @@ calc_diet_n2o_feed_fertilizer <- function(feed_ration_fraction, n2o_feed_fertili
 #' @param feed_ration_fraction Numeric. Fraction of the total ration represented
 #'   by this feed component (unitless).
 #' @param n2o_feed_manure_applied Numeric. Emission factor for N2O from manure
-#'   application in feed production (e.g., kg N2O per kg DM of feed).
+#'   application in feed production (g N2O/kg dry matter of feed).
 #'
-#' @return Numeric. N2O contribution from manure application for this feed item.
+#' @return Numeric. N2O contribution from manure application for this feed item (g N2O/kg dry matter of feed).
 #'
 #' @details
 #' \deqn{diet\_n2o\_feed\_manure\_applied =
@@ -175,9 +174,9 @@ calc_diet_n2o_feed_manure_applied <- function(feed_ration_fraction, n2o_feed_man
 #' @param feed_ration_fraction Numeric. Fraction of the total ration represented
 #'   by this feed component (unitless).
 #' @param n2o_feed_crop_residues Numeric. Emission factor for N2O from crop residues
-#'   in feed production (e.g., kg N2O per kg DM of feed).
+#'   in feed production (g N2O/kg dry matter of feed).
 #'
-#' @return Numeric. N2O contribution from crop residues for this feed item.
+#' @return Numeric. N2O contribution from crop residues for this feed item (g N2O/kg dry matter of feed).
 #'
 #' @details
 #' \deqn{diet\_n2o\_feed\_crop\_residues =
@@ -200,9 +199,9 @@ calc_diet_n2o_feed_crop_residues <- function(feed_ration_fraction, n2o_feed_crop
 #' @param feed_ration_fraction Numeric. Fraction of the total ration represented
 #'   by this feed component (unitless).
 #' @param ch4_feed_rice Numeric. Emission factor for CH4 from rice cultivation
-#'   in feed production (e.g., kg CH4 per kg DM of feed).
+#'   in feed production (g CH4/kg dry matter of feed).
 #'
-#' @return Numeric. CH4 contribution from rice cultivation for this feed item.
+#' @return Numeric. CH4 contribution from rice cultivation for this feed item (g CH4/kg dry matter of feed).
 #'
 #' @details
 #' \deqn{diet\_ch4\_feed\_rice = feed\_ration\_fraction \times ch4\_feed\_rice}

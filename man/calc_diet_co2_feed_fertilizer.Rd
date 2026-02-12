@@ -11,11 +11,10 @@ calc_diet_co2_feed_fertilizer(feed_ration_fraction, co2_feed_fertilizer)
 by this feed component (unitless, typically sums to 1 across feeds).}
 
 \item{co2_feed_fertilizer}{Numeric. Emission factor for CO2 from fertilizer
-use in feed production (e.g., kg CO2 per kg DM of feed).}
+use in feed production (g CO2/kg dry matter of feed).}
 }
 \value{
-Numeric. CO2 contribution from fertilizer by feed item
-(same units as \code{co2_feed_fertilizer}).
+Numeric. CO2 contribution from fertilizer by feed item (g CO2/kg dry matter of feed).
 }
 \description{
 Computes the weighted contribution of CO2 emissions from fertilizer use

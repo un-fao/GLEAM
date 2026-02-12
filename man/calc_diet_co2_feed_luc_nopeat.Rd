@@ -11,10 +11,10 @@ calc_diet_co2_feed_luc_nopeat(feed_ration_fraction, co2_feed_luc_nopeat)
 by this feed component (unitless).}
 
 \item{co2_feed_luc_nopeat}{Numeric. Emission factor for CO2 from land-use change
-excluding peat (e.g., kg CO2 per kg DM of feed).}
+excluding peat (g CO2/kg dry matter of feed).}
 }
 \value{
-Numeric. CO2 contribution from LUC (no peat) for this feed item.
+Numeric. CO2 contribution from LUC (no peat) for this feed item (g CO2/kg dry matter of feed).
 }
 \description{
 Computes the weighted contribution of CO2 emissions from land-use change
