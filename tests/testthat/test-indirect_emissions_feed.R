@@ -1,72 +1,216 @@
-# ---- test compute_dmi_by_feed ----
-test_that("compute_dmi_by_feed calculates correctly", {
-  expect_equal(compute_dmi_by_feed(10, 0.5), 5)
-  expect_equal(compute_dmi_by_feed(0, 0.5), 0)
-  expect_equal(compute_dmi_by_feed(10, 0), 0)
-  expect_equal(compute_dmi_by_feed(NA, 0.5), 0)
-  expect_equal(compute_dmi_by_feed(10, NA), 0)
+# CO2: fertilizer
+test_that("calc_diet_co2_feed_fertilizer computes contribution", {
+  expect_equal(calc_diet_co2_feed_fertilizer(0.6, 10), 6)
 })
 
-test_that("compute_dmi_by_feed handles edge cases", {
-  # Test with very small values
-  expect_equal(compute_dmi_by_feed(0.001, 0.1), 0.0001)
-
-  # Test with feed share at boundaries
-  expect_equal(compute_dmi_by_feed(10, 0), 0)
-  expect_equal(compute_dmi_by_feed(10, 1), 10)
-
-  # Test with zero DMI
-  expect_equal(compute_dmi_by_feed(0, 0.5), 0)
+test_that("calc_diet_co2_feed_fertilizer allows NA for co2_feed_fertilizer", {
+  value <- calc_diet_co2_feed_fertilizer(0.6, NA_real_)
+  expect_true(is.na(value))
 })
 
-test_that("compute_dmi_by_feed validates inputs", {
-  # Test non-numeric inputs
-  expect_error(compute_dmi_by_feed("10", 0.5), "must be a single numeric value")
-  expect_error(compute_dmi_by_feed(10, "0.5"), "must be a single numeric value")
-
-  # Test vector inputs
-  expect_error(compute_dmi_by_feed(c(10, 20), 0.5), "must be a single numeric value")
-  expect_error(compute_dmi_by_feed(10, c(0.5, 0.3)), "must be a single numeric value")
-
-  # Test invalid feed share values
-  expect_error(compute_dmi_by_feed(10, -0.1), "must be between 0 and 1")
-  expect_error(compute_dmi_by_feed(10, 1.1), "must be between 0 and 1")
-
-  # Test negative DMI
-  expect_error(compute_dmi_by_feed(-10, 0.5), "must be non-negative")
+test_that("calc_diet_co2_feed_fertilizer rejects negative co2_feed_fertilizer", {
+  expect_error(
+    calc_diet_co2_feed_fertilizer(0.6, -1),
+    "must be >= 0"
+  )
 })
 
-# ---- test compute_feed_emissions ----
-test_that("compute_feed_emissions calculates correctly", {
-  expect_equal(compute_feed_emissions(dmi_byfeed = 5, emission_factor = 0.1), 0.5)
-  expect_equal(compute_feed_emissions(dmi_byfeed = 0, emission_factor = 0.1), 0)
-  expect_equal(compute_feed_emissions(dmi_byfeed = 5, emission_factor = 0), 0)
-  expect_equal(compute_feed_emissions(dmi_byfeed = NA, emission_factor = 0.1), 0)
-  expect_equal(compute_feed_emissions(dmi_byfeed = 5, emission_factor = NA), 0)
+test_that("calc_diet_co2_feed_fertilizer rejects invalid co2_feed_fertilizer type/length", {
+  expect_error(
+    calc_diet_co2_feed_fertilizer(0.6, c(1, 2)),
+    "must be a single numeric"
+  )
 })
 
-test_that("compute_feed_emissions handles edge cases", {
-  # Test with very small values
-  expect_equal(compute_feed_emissions(dmi_byfeed = 0.001, emission_factor = 0.1), 0.0001)
-
-  # Test with zero values
-  expect_equal(compute_feed_emissions(dmi_byfeed = 0, emission_factor = 0.1), 0)
-  expect_equal(compute_feed_emissions(dmi_byfeed = 5, emission_factor = 0), 0)
-
-  # Test with high values
-  expect_equal(compute_feed_emissions(dmi_byfeed = 100, emission_factor = 0.5), 50)
+test_that("calc_diet_co2_feed_fertilizer rejects NA feed_ration_fraction", {
+  expect_error(
+    calc_diet_co2_feed_fertilizer(NA_real_, 10),
+    "must be a single numeric"
+  )
 })
 
-test_that("compute_feed_emissions validates inputs", {
-  # Test non-numeric inputs
-  expect_error(compute_feed_emissions(dmi_byfeed = "5", emission_factor = 0.1), "must be a single numeric value")
-  expect_error(compute_feed_emissions(dmi_byfeed = 5, emission_factor = "0.1"), "must be a single numeric value")
 
-  # Test vector inputs
-  expect_error(compute_feed_emissions(dmi_byfeed = c(5, 10), emission_factor = 0.1), "must be a single numeric value")
-  expect_error(compute_feed_emissions(dmi_byfeed = 5, emission_factor = c(0.1, 0.2)), "must be a single numeric value")
+# CO2: pesticides
+test_that("calc_diet_co2_feed_pesticides computes contribution", {
+  expect_equal(calc_diet_co2_feed_pesticides(0.6, 10), 6)
+})
 
-  # Test negative values
-  expect_error(compute_feed_emissions(dmi_byfeed = -5, emission_factor = 0.1), "must be non-negative")
-  expect_error(compute_feed_emissions(dmi_byfeed = 5, emission_factor = -0.1), "must be non-negative")
+test_that("calc_diet_co2_feed_pesticides allows NA for co2_feed_pesticides", {
+  value <- calc_diet_co2_feed_pesticides(0.6, NA_real_)
+  expect_true(is.na(value))
+})
+
+test_that("calc_diet_co2_feed_pesticides rejects negative co2_feed_pesticides", {
+  expect_error(
+    calc_diet_co2_feed_pesticides(0.6, -1),
+    "must be >= 0"
+  )
+})
+
+test_that("calc_diet_co2_feed_pesticides rejects invalid co2_feed_pesticides type/length", {
+  expect_error(
+    calc_diet_co2_feed_pesticides(0.6, "10"),
+    "must be a single numeric"
+  )
+})
+
+
+# CO2: crop operations
+test_that("calc_diet_co2_feed_crop_operations computes contribution", {
+  expect_equal(calc_diet_co2_feed_crop_operations(0.6, 10), 6)
+})
+
+test_that("calc_diet_co2_feed_crop_operations allows NA for co2_feed_crop_operations", {
+  value <- calc_diet_co2_feed_crop_operations(0.6, NA_real_)
+  expect_true(is.na(value))
+})
+
+test_that("calc_diet_co2_feed_crop_operations rejects negative co2_feed_crop_operations", {
+  expect_error(
+    calc_diet_co2_feed_crop_operations(0.6, -1),
+    "must be >= 0"
+  )
+})
+
+test_that("calc_diet_co2_feed_crop_operations rejects invalid co2_feed_crop_operations type/length", {
+  expect_error(
+    calc_diet_co2_feed_crop_operations(0.6, c(1, 2)),
+    "must be a single numeric"
+  )
+})
+
+
+# CO2: LUC no peat
+test_that("calc_diet_co2_feed_luc_nopeat computes contribution", {
+  expect_equal(calc_diet_co2_feed_luc_nopeat(0.6, 10), 6)
+})
+
+test_that("calc_diet_co2_feed_luc_nopeat allows NA for co2_feed_luc_nopeat", {
+  value <- calc_diet_co2_feed_luc_nopeat(0.6, NA_real_)
+  expect_true(is.na(value))
+})
+
+test_that("calc_diet_co2_feed_luc_nopeat rejects invalid co2_feed_luc_nopeat type/length", {
+  expect_error(
+    calc_diet_co2_feed_luc_nopeat(0.6, c(1, 2)),
+    "must be a single numeric"
+  )
+})
+
+
+# CO2: LUC peat
+test_that("calc_diet_co2_feed_luc_peat computes contribution", {
+  expect_equal(calc_diet_co2_feed_luc_peat(0.6, 10), 6)
+})
+
+test_that("calc_diet_co2_feed_luc_peat allows NA for co2_feed_luc_peat", {
+  value <- calc_diet_co2_feed_luc_peat(0.6, NA_real_)
+  expect_true(is.na(value))
+})
+
+test_that("calc_diet_co2_feed_luc_peat rejects invalid co2_feed_luc_peat type/length", {
+  expect_error(
+    calc_diet_co2_feed_luc_peat(0.6, c(1, 2)),
+    "must be a single numeric"
+  )
+})
+
+
+# N2O: fertilizer
+test_that("calc_diet_n2o_feed_fertilizer computes contribution", {
+  expect_equal(calc_diet_n2o_feed_fertilizer(0.6, 10), 6)
+})
+
+test_that("calc_diet_n2o_feed_fertilizer allows NA for n2o_feed_fertilizer", {
+  value <- calc_diet_n2o_feed_fertilizer(0.6, NA_real_)
+  expect_true(is.na(value))
+})
+
+test_that("calc_diet_n2o_feed_fertilizer rejects negative n2o_feed_fertilizer", {
+  expect_error(
+    calc_diet_n2o_feed_fertilizer(0.6, -1),
+    "must be >= 0"
+  )
+})
+
+test_that("calc_diet_n2o_feed_fertilizer rejects invalid n2o_feed_fertilizer type/length", {
+  expect_error(
+    calc_diet_n2o_feed_fertilizer(0.6, "10"),
+    "must be a single numeric"
+  )
+})
+
+
+# N2O: manure applied
+test_that("calc_diet_n2o_feed_manure_applied computes contribution", {
+  expect_equal(calc_diet_n2o_feed_manure_applied(0.6, 10), 6)
+})
+
+test_that("calc_diet_n2o_feed_manure_applied allows NA for n2o_feed_manure_applied", {
+  value <- calc_diet_n2o_feed_manure_applied(0.6, NA_real_)
+  expect_true(is.na(value))
+})
+
+test_that("calc_diet_n2o_feed_manure_applied rejects negative n2o_feed_manure_applied", {
+  expect_error(
+    calc_diet_n2o_feed_manure_applied(0.6, -1),
+    "must be >= 0"
+  )
+})
+
+test_that("calc_diet_n2o_feed_manure_applied rejects invalid n2o_feed_manure_applied type/length", {
+  expect_error(
+    calc_diet_n2o_feed_manure_applied(0.6, c(1, 2)),
+    "must be a single numeric"
+  )
+})
+
+
+# N2O: crop residues
+test_that("calc_diet_n2o_feed_crop_residues computes contribution", {
+  expect_equal(calc_diet_n2o_feed_crop_residues(0.6, 10), 6)
+})
+
+test_that("calc_diet_n2o_feed_crop_residues allows NA for n2o_feed_crop_residues", {
+  value <- calc_diet_n2o_feed_crop_residues(0.6, NA_real_)
+  expect_true(is.na(value))
+})
+
+test_that("calc_diet_n2o_feed_crop_residues rejects negative n2o_feed_crop_residues", {
+  expect_error(
+    calc_diet_n2o_feed_crop_residues(0.6, -1),
+    "must be >= 0"
+  )
+})
+
+test_that("calc_diet_n2o_feed_crop_residues rejects invalid n2o_feed_crop_residues type/length", {
+  expect_error(
+    calc_diet_n2o_feed_crop_residues(0.6, "10"),
+    "must be a single numeric"
+  )
+})
+
+
+# CH4: rice
+test_that("calc_diet_ch4_feed_rice computes contribution", {
+  expect_equal(calc_diet_ch4_feed_rice(0.6, 10), 6)
+})
+
+test_that("calc_diet_ch4_feed_rice allows NA for ch4_feed_rice", {
+  value <- calc_diet_ch4_feed_rice(0.6, NA_real_)
+  expect_true(is.na(value))
+})
+
+test_that("calc_diet_ch4_feed_rice rejects negative ch4_feed_rice", {
+  expect_error(
+    calc_diet_ch4_feed_rice(0.6, -1),
+    "must be >= 0"
+  )
+})
+
+test_that("calc_diet_ch4_feed_rice rejects invalid ch4_feed_rice type/length", {
+  expect_error(
+    calc_diet_ch4_feed_rice(0.6, c(1, 2)),
+    "must be a single numeric"
+  )
 })

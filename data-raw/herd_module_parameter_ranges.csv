@@ -6,3 +6,4 @@ fem_birth_fraction,0,TRUE,1,TRUE
 litsize,0.01,TRUE,25,TRUE
 parturition_rate,0.01,TRUE,3,TRUE
 size_total,1,TRUE,Inf,TRUE
+feed_ration_fraction,0,TRUE,1,TRUE

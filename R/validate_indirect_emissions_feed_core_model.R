@@ -1,61 +1,155 @@
-#' Validate inputs for compute_dmi_by_feed function
-#'
-#' Ensures that the inputs to compute_dmi_by_feed are valid numeric values.
-#' Both parameters must be single numeric values (can be NA, which is handled by the function).
-#'
-#' @param dmi_total The total dry matter intake to validate.
-#' @param feed_share The feed share to validate.
+#' Validate inputs for calc_diet_co2_feed_fertilizer
 #'
 #' @noRd
-validate_dmi_by_feed_inputs <- function(dmi_total, feed_share) {
-  # Check dmi_total (allow NA)
-  if (length(dmi_total) != 1 || (!is.na(dmi_total) && !is.numeric(dmi_total))) {
-    cli::cli_abort("{.arg dmi_total} must be a single numeric value.")
+validate_diet_co2_feed_fertilizer_inputs <- function(
+    feed_ration_fraction,
+    co2_feed_fertilizer
+) {
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
+  
+  if (!is.numeric(co2_feed_fertilizer) || length(co2_feed_fertilizer) != 1) {
+    cli::cli_abort("{.arg co2_feed_fertilizer} must be a single numeric (scalar). NA is allowed.")
   }
-
-  # Check feed_share (allow NA)
-  if (length(feed_share) != 1 || (!is.na(feed_share) && !is.numeric(feed_share))) {
-    cli::cli_abort("{.arg feed_share} must be a single numeric value.")
-  }
-
-  # Check that feed_share is between 0 and 1 (if not NA)
-  if (!is.na(feed_share) && (feed_share < 0 || feed_share > 1)) {
-    cli::cli_abort("{.arg feed_share} must be between 0 and 1.")
-  }
-
-  # Check that dmi_total is non-negative (if not NA)
-  if (!is.na(dmi_total) && dmi_total < 0) {
-    cli::cli_abort("{.arg dmi_total} must be non-negative.")
+  if (!is.na(co2_feed_fertilizer) && co2_feed_fertilizer < 0) {
+    cli::cli_abort("{.arg co2_feed_fertilizer} must be >= 0.")
   }
 }
 
-#' Validate inputs for compute_feed_emissions function
-#'
-#' Ensures that the inputs to compute_feed_emissions are valid numeric values.
-#' Both parameters must be single numeric values (can be NA, which is handled by the function).
-#'
-#' @param dmi_byfeed The dry matter intake by feed to validate.
-#' @param emission_factor The emission factor to validate.
+#' Validate inputs for calc_diet_co2_feed_pesticides
 #'
 #' @noRd
-validate_feed_emissions_inputs <- function(dmi_byfeed, emission_factor) {
-  # Check dmi_byfeed (allow NA)
-  if (length(dmi_byfeed) != 1 || (!is.na(dmi_byfeed) && !is.numeric(dmi_byfeed))) {
-    cli::cli_abort("{.arg dmi_byfeed} must be a single numeric value.")
+validate_diet_co2_feed_pesticides_inputs <- function(
+    feed_ration_fraction,
+    co2_feed_pesticides
+) {
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
+  
+  if (!is.numeric(co2_feed_pesticides) || length(co2_feed_pesticides) != 1) {
+    cli::cli_abort("{.arg co2_feed_pesticides} must be a single numeric (scalar). NA is allowed.")
   }
-
-  # Check emission_factor (allow NA)
-  if (length(emission_factor) != 1 || (!is.na(emission_factor) && !is.numeric(emission_factor))) {
-    cli::cli_abort("{.arg emission_factor} must be a single numeric value.")
+  if (!is.na(co2_feed_pesticides) && co2_feed_pesticides < 0) {
+    cli::cli_abort("{.arg co2_feed_pesticides} must be >= 0.")
   }
+}
 
-  # Check that dmi_byfeed is non-negative (if not NA)
-  if (!is.na(dmi_byfeed) && dmi_byfeed < 0) {
-    cli::cli_abort("{.arg dmi_byfeed} must be non-negative.")
+#' Validate inputs for calc_diet_co2_feed_crop_operations
+#'
+#' @noRd
+validate_diet_co2_feed_crop_operations_inputs <- function(
+    feed_ration_fraction,
+    co2_feed_crop_operations
+) {
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
+  
+  if (!is.numeric(co2_feed_crop_operations) || length(co2_feed_crop_operations) != 1) {
+    cli::cli_abort("{.arg co2_feed_crop_operations} must be a single numeric (scalar). NA is allowed.")
   }
+  if (!is.na(co2_feed_crop_operations) && co2_feed_crop_operations < 0) {
+    cli::cli_abort("{.arg co2_feed_crop_operations} must be >= 0.")
+  }
+}
 
-  # Check that emission_factor is non-negative (if not NA)
-  if (!is.na(emission_factor) && emission_factor < 0) {
-    cli::cli_abort("{.arg emission_factor} must be non-negative.")
+#' Validate inputs for calc_diet_co2_feed_luc_nopeat
+#'
+#' @noRd
+validate_diet_co2_feed_luc_nopeat_inputs <- function(
+    feed_ration_fraction,
+    co2_feed_luc_nopeat
+) {
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
+  
+  if (!is.numeric(co2_feed_luc_nopeat) || length(co2_feed_luc_nopeat) != 1) {
+    cli::cli_abort("{.arg co2_feed_luc_nopeat} must be a single numeric (scalar). NA is allowed.")
+  }
+}
+
+#' Validate inputs for calc_diet_co2_feed_luc_peat
+#'
+#' @noRd
+validate_diet_co2_feed_luc_peat_inputs <- function(
+    feed_ration_fraction,
+    co2_feed_luc_peat
+) {
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
+  
+  if (!is.numeric(co2_feed_luc_peat) || length(co2_feed_luc_peat) != 1) {
+    cli::cli_abort("{.arg co2_feed_luc_peat} must be a single numeric (scalar). NA is allowed.")
+  }
+}
+
+#' Validate inputs for calc_diet_n2o_feed_fertilizer
+#'
+#' @noRd
+validate_diet_n2o_feed_fertilizer_inputs <- function(
+    feed_ration_fraction,
+    n2o_feed_fertilizer
+) {
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
+  
+  if (!is.numeric(n2o_feed_fertilizer) || length(n2o_feed_fertilizer) != 1) {
+    cli::cli_abort("{.arg n2o_feed_fertilizer} must be a single numeric (scalar). NA is allowed.")
+  }
+  if (!is.na(n2o_feed_fertilizer) && n2o_feed_fertilizer < 0) {
+    cli::cli_abort("{.arg n2o_feed_fertilizer} must be >= 0.")
+  }
+}
+
+#' Validate inputs for calc_diet_n2o_feed_manure_applied
+#'
+#' @noRd
+validate_diet_n2o_feed_manure_applied_inputs <- function(
+    feed_ration_fraction,
+    n2o_feed_manure_applied
+) {
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
+  
+  if (!is.numeric(n2o_feed_manure_applied) || length(n2o_feed_manure_applied) != 1) {
+    cli::cli_abort("{.arg n2o_feed_manure_applied} must be a single numeric (scalar). NA is allowed.")
+  }
+  if (!is.na(n2o_feed_manure_applied) && n2o_feed_manure_applied < 0) {
+    cli::cli_abort("{.arg n2o_feed_manure_applied} must be >= 0.")
+  }
+}
+
+#' Validate inputs for calc_diet_n2o_feed_crop_residues
+#'
+#' @noRd
+validate_diet_n2o_feed_crop_residues_inputs <- function(
+    feed_ration_fraction,
+    n2o_feed_crop_residues
+) {
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
+  
+  if (!is.numeric(n2o_feed_crop_residues) || length(n2o_feed_crop_residues) != 1) {
+    cli::cli_abort("{.arg n2o_feed_crop_residues} must be a single numeric (scalar). NA is allowed.")
+  }
+  if (!is.na(n2o_feed_crop_residues) && n2o_feed_crop_residues < 0) {
+    cli::cli_abort("{.arg n2o_feed_crop_residues} must be >= 0.")
+  }
+}
+
+#' Validate inputs for calc_diet_ch4_feed_rice
+#'
+#' @noRd
+validate_diet_ch4_feed_rice_inputs <- function(
+    feed_ration_fraction,
+    ch4_feed_rice
+) {
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
+  
+  if (!is.numeric(ch4_feed_rice) || length(ch4_feed_rice) != 1) {
+    cli::cli_abort("{.arg ch4_feed_rice} must be a single numeric (scalar). NA is allowed.")
+  }
+  if (!is.na(ch4_feed_rice) && ch4_feed_rice < 0) {
+    cli::cli_abort("{.arg ch4_feed_rice} must be >= 0.")
   }
 }
