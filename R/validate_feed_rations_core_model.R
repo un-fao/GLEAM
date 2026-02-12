@@ -172,3 +172,71 @@ validate_diet_nitrogen_inputs <- function(feed_ration_fraction, feed_nitrogen_co
   validate_param_range(feed_ration_fraction)
   validate_param_range(feed_nitrogen_content)
 }
+
+#' Validate inputs for calc_urinary_energy_fraction
+#'
+#' @noRd
+validate_urinary_energy_inputs <- function(
+    species_short,
+    feed_ration_fraction,
+    feed_urinary_energy_ruminant,
+    feed_urinary_energy_pigs,
+    feed_urinary_energy_chicken
+) {
+  validate_scalar_character(species_short, "species_short")
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_param_range(feed_ration_fraction)
+
+  args <- list(
+    feed_urinary_energy_ruminant = feed_urinary_energy_ruminant,
+    feed_urinary_energy_pigs = feed_urinary_energy_pigs,
+    feed_urinary_energy_chicken = feed_urinary_energy_chicken
+  )
+  for (arg_name in names(args)) {
+    val <- args[[arg_name]]
+    if (!is.numeric(val) || length(val) != 1) {
+      cli::cli_abort("{.arg {arg_name}} must be a single numeric (scalar). NA is allowed.")
+    }
+    if (!is.na(val)) {
+      validate_param_range(val, arg_name)
+    }
+  }
+
+  valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "CHK", "PGS")
+  if (!species_short %in% valid_animals) {
+    cli::cli_abort(
+      "Invalid species_short value: {.val {species_short}}. Must be one of: {.val {valid_animals}}"
+    )
+  }
+
+  required_by_animal <- if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+    c("feed_urinary_energy_ruminant")
+  } else if (species_short == "CHK") {
+    c("feed_urinary_energy_chicken")
+  } else {
+    c("feed_urinary_energy_pigs")
+  }
+
+  missing_required <- required_by_animal[vapply(
+    required_by_animal,
+    function(arg_name) isTRUE(is.na(args[[arg_name]])),
+    logical(1)
+  )]
+
+  if (length(missing_required) > 0) {
+    cli::cli_abort(
+      "Missing required urinary energy inputs for species_short {.val {species_short}}: {.val {missing_required}}"
+    )
+  }
+}
+
+#' Validate inputs for calc_diet_ash
+#'
+#' @noRd
+validate_diet_ash_inputs <- function(feed_ration_fraction, feed_ash_content) {
+  validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
+  validate_scalar_numeric(feed_ash_content, "feed_ash_content")
+
+  validate_param_range(feed_ration_fraction)
+  validate_param_range(feed_ash_content)
+}

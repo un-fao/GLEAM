@@ -39,9 +39,11 @@ utils::globalVariables(c(
   "size_total", "slaughter_weight", "structure.FA", "structure.FB", "structure.FJ",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
   "variable", "wkg", "variable_name", "offtake_number_assessment",
-  # Columns used in run_weights_calculations
+  # Columns used in run_weights_calculations and validate_weights_inputs
   "cohort", "cohort_short", "cohort_duration_days",
   "live_weight_female_adult", "live_weight_male_adult",
+  "birth_weight", "slaughter_weight_female", "slaughter_weight_male",
+  "weaning_weight",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
   "slaughter_weight_cohort", "live_weight_cohort_average",
   "live_weight_cohort_final", "animal", "animal_short"
@@ -53,9 +55,12 @@ utils::globalVariables(c(
   "feed_gross_energy", "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
   "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
   "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
+  "feed_urinary_energy_ruminant", "feed_urinary_energy_pigs",
+  "feed_urinary_energy_chicken", "feed_ash_content",
   "feed_name_input", "feed_name_params",
   "diet_gross_energy", "diet_metabolizable_energy",
   "diet_nitrogen", "diet_digestibility_fraction",
+  "urinary_energy_fraction", "diet_ash",
   "feed_digestibility_fraction_ruminant", "feed_digestibility_fraction_pigs",
   "feed_digestibility_fraction_chicken",
   "diet_dig", "diet_ge", "diet_me", "feed_ration_sum",

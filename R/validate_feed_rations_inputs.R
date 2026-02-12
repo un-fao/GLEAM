@@ -35,7 +35,9 @@ validate_feed_rations_inputs <- function(
     "feed_id", "feed_name", "category", "feed_gross_energy",
     "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
     "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
-    "feed_metabolizable_energy_chicken", "feed_nitrogen_content"
+    "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
+    "feed_urinary_energy_ruminant", "feed_urinary_energy_pigs",
+    "feed_urinary_energy_chicken", "feed_ash_content"
   )
 
   missing_rations_cols <- setdiff(required_rations_cols, names(rations_share))

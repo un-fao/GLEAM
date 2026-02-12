@@ -194,3 +194,86 @@ test_that("calc_diet_nitrogen_content rejects NA inputs", {
     "must be a single numeric value"
   )
 })
+
+# ---- calc_urinary_energy_fraction --------------------------------------------
+test_that("calc_urinary_energy_fraction selects ruminant urinary energy", {
+  value <- calc_urinary_energy_fraction(
+    species_short = "CTL",
+    feed_ration_fraction = 0.6,
+    feed_urinary_energy_ruminant = 0.12,
+    feed_urinary_energy_pigs = 0.02,
+    feed_urinary_energy_chicken = 0.04
+  )
+  expect_equal(value, 0.072)
+})
+
+test_that("calc_urinary_energy_fraction selects chicken urinary energy", {
+  value <- calc_urinary_energy_fraction(
+    species_short = "CHK",
+    feed_ration_fraction = 0.6,
+    feed_urinary_energy_ruminant = 0.12,
+    feed_urinary_energy_pigs = 0.02,
+    feed_urinary_energy_chicken = 0.04
+  )
+  expect_equal(value, 0.024)
+})
+
+test_that("calc_urinary_energy_fraction selects pig urinary energy", {
+  value <- calc_urinary_energy_fraction(
+    species_short = "PGS",
+    feed_ration_fraction = 0.6,
+    feed_urinary_energy_ruminant = 0.12,
+    feed_urinary_energy_pigs = 0.02,
+    feed_urinary_energy_chicken = 0.04
+  )
+  expect_equal(value, 0.012)
+})
+
+test_that("calc_urinary_energy_fraction rejects invalid species_short", {
+  expect_error(
+    calc_urinary_energy_fraction(
+      species_short = "DOG",
+      feed_ration_fraction = 0.6,
+      feed_urinary_energy_ruminant = 0.12,
+      feed_urinary_energy_pigs = 0.02,
+      feed_urinary_energy_chicken = 0.04
+    ),
+    "Invalid species_short value"
+  )
+})
+
+test_that("calc_urinary_energy_fraction allows NA for unused animals", {
+  value <- calc_urinary_energy_fraction(
+    species_short = "CHK",
+    feed_ration_fraction = 0.6,
+    feed_urinary_energy_ruminant = NA_real_,
+    feed_urinary_energy_pigs = NA_real_,
+    feed_urinary_energy_chicken = 0.04
+  )
+  expect_equal(value, 0.024)
+})
+
+test_that("calc_urinary_energy_fraction rejects missing required inputs", {
+  expect_error(
+    calc_urinary_energy_fraction(
+      species_short = "CHK",
+      feed_ration_fraction = 0.6,
+      feed_urinary_energy_ruminant = 0.12,
+      feed_urinary_energy_pigs = 0.02,
+      feed_urinary_energy_chicken = NA_real_
+    ),
+    "Missing required urinary energy inputs"
+  )
+})
+
+# ---- calc_diet_ash ----------------------------------------------------------
+test_that("calc_diet_ash computes contribution", {
+  expect_equal(calc_diet_ash(0.6, 10), 0.06)
+})
+
+test_that("calc_diet_ash rejects NA inputs", {
+  expect_error(
+    calc_diet_ash(NA_real_, 10),
+    "must be a single numeric value"
+  )
+})

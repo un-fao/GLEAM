@@ -22,14 +22,17 @@ run_feed_rations(
 \item \code{feed_id}, \code{feed_name}, \code{category}, \code{feed_gross_energy},
 \code{feed_digestible_energy_ruminant}, \code{feed_digestible_energy_pigs},
 \code{feed_metabolizable_energy_ruminant}, \code{feed_metabolizable_energy_pigs},
-\code{feed_metabolizable_energy_chicken}, \code{feed_nitrogen_content}.
+\code{feed_metabolizable_energy_chicken}, \code{feed_nitrogen_content},
+\code{feed_urinary_energy_ruminant}, \code{feed_urinary_energy_pigs},
+\code{feed_urinary_energy_chicken}, \code{feed_ash_content}.
 }}
 }
 \value{
 A data.table summarized by \code{herd_id}, \code{animal}, and \code{cohort} with:
 \itemize{
 \item \code{diet_gross_energy}, \code{diet_metabolizable_energy},
-\code{diet_nitrogen}, \code{diet_digestibility_fraction}
+\code{diet_nitrogen}, \code{diet_digestibility_fraction},
+\code{urinary_energy_fraction}, \code{diet_ash}
 }
 }
 \description{

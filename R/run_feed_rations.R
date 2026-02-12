@@ -10,11 +10,14 @@
 #'   - `feed_id`, `feed_name`, `category`, `feed_gross_energy`,
 #'     `feed_digestible_energy_ruminant`, `feed_digestible_energy_pigs`,
 #'     `feed_metabolizable_energy_ruminant`, `feed_metabolizable_energy_pigs`,
-#'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`.
+#'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`,
+#'     `feed_urinary_energy_ruminant`, `feed_urinary_energy_pigs`,
+#'     `feed_urinary_energy_chicken`, `feed_ash_content`.
 #'
 #' @return A data.table summarized by `herd_id`, `animal`, and `cohort` with:
 #'   - `diet_gross_energy`, `diet_metabolizable_energy`,
-#'     `diet_nitrogen`, `diet_digestibility_fraction`
+#'     `diet_nitrogen`, `diet_digestibility_fraction`,
+#'     `urinary_energy_fraction`, `diet_ash`
 #'
 #' @examples
 #' \dontrun{
@@ -124,6 +127,27 @@ run_feed_rations <- function(
     by = .I
   ]
 
+  rations_detailed[
+    ,
+    urinary_energy_fraction := calc_urinary_energy_fraction(
+      species_short = animal_short,
+      feed_ration_fraction = feed_ration_fraction,
+      feed_urinary_energy_ruminant = feed_urinary_energy_ruminant,
+      feed_urinary_energy_pigs = feed_urinary_energy_pigs,
+      feed_urinary_energy_chicken = feed_urinary_energy_chicken
+    ),
+    by = .I
+  ]
+
+  rations_detailed[
+    ,
+    diet_ash := calc_diet_ash(
+      feed_ration_fraction = feed_ration_fraction,
+      feed_ash_content = feed_ash_content
+    ),
+    by = .I
+  ]
+
   # --- Step 6: Summarize dietary metrics at cohort level ---------------------
   rations_summary <- rations_detailed[
     ,
@@ -131,7 +155,9 @@ run_feed_rations <- function(
       diet_gross_energy = sum(diet_gross_energy, na.rm = TRUE),
       diet_metabolizable_energy = sum(diet_metabolizable_energy, na.rm = TRUE),
       diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
-      diet_digestibility_fraction = sum(diet_digestibility_fraction, na.rm = TRUE)
+      diet_digestibility_fraction = sum(diet_digestibility_fraction, na.rm = TRUE),
+      urinary_energy_fraction = sum(urinary_energy_fraction, na.rm = TRUE),
+      diet_ash = sum(diet_ash, na.rm = TRUE)
     ),
     by = .(herd_id, animal, cohort)
   ]
