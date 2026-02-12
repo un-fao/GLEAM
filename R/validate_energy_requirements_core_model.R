@@ -117,7 +117,7 @@ validate_growth_inputs <- function(
   validate_positive_numeric(average_weight, "average_weight")
   validate_positive_numeric(final_weight, "final_weight")
   validate_positive_numeric(initial_weight, "initial_weight")
-  validate_positive_numeric(initial_weight, "adult_weight")
+  validate_positive_numeric(adult_weight, "adult_weight")
   validate_scalar_numeric(dwg, "dwg")
   validate_scalar_numeric(offtake_rate, "offtake_rate")
   validate_positive_numeric(duration, "duration")
@@ -284,8 +284,8 @@ validate_pregnancy_inputs <- function(
   if (animal == "PGS") {
     if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")
     if (!is.na(gest)) validate_scalar_numeric(gest, "gest")
-    if (!is.na(gest)) validate_scalar_numeric(idle, "idle")
-    if (!is.na(gest)) validate_scalar_numeric(lact, "lact")
+    if (!is.na(idle)) validate_scalar_numeric(idle, "idle")
+    if (!is.na(lact)) validate_scalar_numeric(lact, "lact")
   }
   
   
