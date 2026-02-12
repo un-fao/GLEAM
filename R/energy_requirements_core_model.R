@@ -45,7 +45,7 @@
 #'   \item animals below vs. above one year of age (SHP).
 #' }
 #'
-#'**Specific cofficients by species and cohort:**
+#' **Specific coefficients by species and cohort:**
 #'
 #' \strong{CTL and BFL} (NRC, 1996; AFRC, 1993, 1995):
 #' \itemize{
@@ -116,7 +116,6 @@
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
 #' @export
-#'
 calc_net_energy_maintenance <- function(
     animal,
     cohort,
@@ -134,7 +133,6 @@ calc_net_energy_maintenance <- function(
     animal, cohort, average_weight,
     milking_fraction, offtake_rate, afc
   )
-  cmain <- NA
 
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
@@ -164,8 +162,8 @@ calc_net_energy_maintenance <- function(
       cmain <- 0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)
     } else if (cohort == "MS") {
       # Complex weighted average for subadult males
-      cmain <- ((0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)) * ((afc - 365) / afc) +
-                  (0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)) * (365 / afc))
+      cmain <- (0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)) * ((afc - 365) / afc) +
+                  (0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)) * (365 / afc)
     } else if (cohort == "MJ") {
       cmain <- 0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)
     }
@@ -241,7 +239,6 @@ calc_net_energy_maintenance <- function(
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
 #' @export
-
 calc_net_energy_activity <- function(
     animal,
     cohort,
@@ -257,6 +254,7 @@ calc_net_energy_activity <- function(
     activity_fraction,
     high_activity_fraction
   )
+
   if (animal %in% c("CTL", "BFL")) {
     # Weighted by pasture management
     cact <- (0.17 * activity_fraction) + (0.36 * high_activity_fraction)
@@ -326,14 +324,12 @@ calc_net_energy_activity <- function(
 #' animals removed from the herd are castrated and animals remaining in the
 #' cohort are intact.
 #'
-#
 #'   \item\strong{SHP and GTS} — Gibbs et al. (2002); AFRC (1993, 1995); IPCC (2006, 2019).
 #'
 #' For sheep, the coefficients \eqn{a} and \eqn{b} (MJ kg\eqn{^{-1}}) differ
 #' between castrated and intact males. The code calculates a **weighted average**
 #' using `offtake_rate`, assuming that offtaken animals are castrated.
 #'
-
 #'   \item\strong{CML} — Al-Jassim (2019).
 #'
 #' Growth energy is represented using a simplified linear relationship with
@@ -397,7 +393,6 @@ calc_net_energy_activity <- function(
 #' Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
 #'
 #' @export
-
 calc_net_energy_growth <- function(
     animal,
     cohort,
@@ -412,12 +407,12 @@ calc_net_energy_growth <- function(
 
   # Normalize offtake_rate
   offtake_rate <- normalize_rate(offtake_rate)
-
   # Validate inputs
   validate_growth_inputs(
     animal, cohort, average_weight, final_weight,
     initial_weight, adult_weight, dwg, offtake_rate, duration
   )
+
   if (animal %in% c("CTL", "BFL")) {
     if (cohort %in% c("FS", "FJ")) {
       cgro <- 0.8
@@ -639,9 +634,6 @@ calc_net_energy_growth <- function(
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
 #' @export
-#'
-#'
-#'
 calc_net_energy_lactation <- function(
     animal,
     cohort,
@@ -663,6 +655,7 @@ calc_net_energy_lactation <- function(
     idle, gest, litsize, dr1, ckg, wkg, lact,
     parturition_rate
   )
+
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
       ret <- ((milk_yield * milking_fraction) + (parturition_rate * 5 * (wkg - ckg) / 365)) *
@@ -770,8 +763,8 @@ calc_net_energy_eggs <- function(
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
 #' @param nemain Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#' @param work_hours_female Numeric. Average daily working time per adult females for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day). 
-#' @param work_hours_male Numeric. Average daily working time per adult males for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day). 
+#' @param work_hours_female Numeric. Average daily working time per adult females for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day).
+#' @param work_hours_male Numeric. Average daily working time per adult males for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day).
 #' @param draught_fraction_female Numeric. Fraction of adult females involved in draught work (fraction).
 #' @param draught_fraction_male Numeric. Fraction of adult males involved in draught work (fraction).
 #'
@@ -843,17 +836,18 @@ calc_net_energy_work <- function(
     draught_fraction_male
 ) {
   # Validate inputs
-  validate_work_inputs(animal, cohort, nemain,  
-                       work_hours_female,
-                       work_hours_male,
-                       draught_fraction_female,
-                       draught_fraction_male)
-  
-  # Only adult males (MA) work
+  validate_work_inputs(
+    animal, cohort, nemain,
+    work_hours_female,
+    work_hours_male,
+    draught_fraction_female,
+    draught_fraction_male
+  )
+
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "MA") {
       ret <- 0.1 * nemain * work_hours_male * draught_fraction_male
-    } else if (cohort == "FA") {  
+    } else if (cohort == "FA") {
       ret <- 0.1 * nemain * work_hours_female * draught_fraction_female
     } else {
       ret <- 0
@@ -861,7 +855,7 @@ calc_net_energy_work <- function(
   } else if (animal %in% c("CML")) {
     if (cohort == "MA") {
       ret <- 4 * work_hours_male * draught_fraction_male
-    } else if (cohort == "FA") {  
+    } else if (cohort == "FA") {
       ret <- 4 * work_hours_female * draught_fraction_female
     } else {
       ret <- 0
@@ -990,6 +984,7 @@ calc_net_energy_fibre <- function(
   # Validate inputs
   validate_fibre_inputs(animal, cohort, fibre_prod)
   # Only sheep, goats, camelids produce fibre
+
   if (animal %in% c("GTS", "SHP")) {
     if (cohort %in% c("FA", "FS", "MA", "MS")) {
       ret <- 24 * fibre_prod / 365 # 24 MJ/kg fibre, annualized
@@ -1176,6 +1171,7 @@ calc_net_energy_pregnancy <- function(
     animal, cohort, nemain, parturition_rate,
     litsize, gest, idle, lact, duration, offtake_rate
   )
+
   if (animal %in% c("CTL", "BFL")) {
     if (cohort == "FA") {
       ret <- (nemain * 0.1 * parturition_rate * gest / 365)
@@ -1263,9 +1259,11 @@ calc_rem_maintenance <- function(
   # Validate inputs
   validate_rem_inputs(animal, diet_dig)
   # Only ruminants: cattle, buffalo, sheep, goats
+
   if (animal %in% c("CTL", "BFL", "SHP", "GTS")) {
     # Polynomial fit from GLEAM
-    ret <- 1.123 - (0.004092 * (diet_dig * 100)) + (0.00001126 * (diet_dig * 100)^2) - (25.4 / (diet_dig * 100))
+    ret <- 1.123 - (0.004092 * (diet_dig * 100)) +
+      (0.00001126 * (diet_dig * 100)^2) - (25.4 / (diet_dig * 100))
   } else if (animal %in% c("PGS", "CHK", "CML")) {
     ret <- NA_real_ # Not applicable
   }
@@ -1304,7 +1302,6 @@ calc_rem_maintenance <- function(
 #' Livestock and Manure Management, Equation 10.15.
 #'
 #' @export
-
 calc_reg_growth <- function(
     animal,
     diet_dig
@@ -1312,9 +1309,11 @@ calc_reg_growth <- function(
   # Validate inputs
   validate_reg_inputs(animal, diet_dig)
   # Only ruminants: cattle, buffalo, sheep, goats
+
   if (animal %in% c("CTL", "BFL", "SHP", "GTS")) {
     # Polynomial fit
-    ret <- 1.164 - (0.005160 * (diet_dig * 100)) + (0.00001308 * (diet_dig * 100)^2) - (37.4 / (diet_dig * 100))
+    ret <- 1.164 - (0.005160 * (diet_dig * 100)) +
+      (0.00001308 * (diet_dig * 100)^2) - (37.4 / (diet_dig * 100))
   } else if (animal %in% c("PGS", "CHK", "CML")) {
     ret <- NA_real_ # Not applicable
   }
