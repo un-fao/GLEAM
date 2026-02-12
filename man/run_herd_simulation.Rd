@@ -18,7 +18,7 @@ run_herd_simulation(
 \item{cohort_level_data}{A \code{data.table} with mandatory columns:
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{\code{cohort}}{"Character scalar. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+\item{\code{cohort_short}}{"Character scalar. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
