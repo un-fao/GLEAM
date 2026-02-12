@@ -10,11 +10,14 @@
 #'   - `feed_id`, `feed_name`, `category`, `feed_gross_energy`,
 #'     `feed_digestible_energy_ruminant`, `feed_digestible_energy_pigs`,
 #'     `feed_metabolizable_energy_ruminant`, `feed_metabolizable_energy_pigs`,
-#'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`.
+#'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`,
+#'     `feed_urinary_energy_ruminant`, `feed_urinary_energy_pigs`,
+#'     `feed_urinary_energy_chicken`, `feed_ash_content`.
 #'
 #' @return A data.table summarized by `herd_id`, `animal`, and `cohort_short` with:
 #'   - `diet_gross_energy`, `diet_metabolizable_energy`,
-#'     `diet_nitrogen`, `diet_digestibility_fraction`
+#'     `diet_nitrogen`, `diet_digestibility_fraction`,
+#'     `urinary_energy_fraction`, `diet_ash`
 #'
 #' @examples
 #' \dontrun{
@@ -38,10 +41,14 @@ run_feed_rations <- function(
       system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
     )
 ) {
-  # --- Step 1: Validate inputs ------------------------------------------------
+  # --- Step 1: Validate inputs -----------------------------------------------
   validate_feed_rations_inputs(rations_share, feed_params)
 
-  # --- Step 2: Compute digestibility ratios -----------------------------------
+  # --- Step 2: Create working copies -----------------------------------------
+  rations_share <- data.table::copy(rations_share)
+  feed_params <- data.table::copy(feed_params)
+
+  # --- Step 3: Compute digestibility ratios ----------------------------------
   feed_params[
     ,
     c(
@@ -56,7 +63,7 @@ run_feed_rations <- function(
     ),
     by = .I
   ]
-  # --- Step 3: Merge ration shares with feed parameters -----------------------
+  # --- Step 4: Merge ration shares with feed parameters ----------------------
   rations_detailed <- merge(
     rations_share, feed_params,
     by = "feed_id", all.x = TRUE, allow.cartesian = TRUE
@@ -70,14 +77,14 @@ run_feed_rations <- function(
     all.x = TRUE
   )
 
-  if (any(is.na(rations_detailed$animal_short))) {
-    unknown_animals <- unique(rations_detailed[is.na(animal_short), animal])
+  if (any(is.na(rations_detailed$species_short))) {
+    unknown_animals <- unique(rations_detailed[is.na(species_short), animal])
     cli::cli_abort(
       "Unknown {.arg animal} values in {.arg rations_share}: {.val {unknown_animals}}"
     )
   }
 
-  # --- Step 4: Calculate cohort feed contributions ----------------------------
+  # --- Step 5: Calculate cohort feed contributions ---------------------------
   rations_detailed[
     ,
     diet_gross_energy := calc_diet_gross_energy(
@@ -99,7 +106,7 @@ run_feed_rations <- function(
   rations_detailed[
     ,
     diet_digestibility_fraction := calc_diet_digestibility(
-      species_short = animal_short,
+      species_short = species_short,
       feed_ration_fraction = feed_ration_fraction,
       feed_digestibility_fraction_ruminant = feed_digestibility_fraction_ruminant,
       feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs,
@@ -111,7 +118,7 @@ run_feed_rations <- function(
   rations_detailed[
     ,
     diet_metabolizable_energy := calc_diet_metabolizable_energy(
-      species_short = animal_short,
+      species_short = species_short,
       feed_ration_fraction = feed_ration_fraction,
       feed_metabolizable_energy_ruminant = feed_metabolizable_energy_ruminant,
       feed_metabolizable_energy_pigs = feed_metabolizable_energy_pigs,
@@ -120,14 +127,37 @@ run_feed_rations <- function(
     by = .I
   ]
 
-  # --- Step 5: Summarize dietary metrics at cohort level ----------------------
+  rations_detailed[
+    ,
+    urinary_energy_fraction := calc_urinary_energy_fraction(
+      species_short = species_short,
+      feed_ration_fraction = feed_ration_fraction,
+      feed_urinary_energy_ruminant = feed_urinary_energy_ruminant,
+      feed_urinary_energy_pigs = feed_urinary_energy_pigs,
+      feed_urinary_energy_chicken = feed_urinary_energy_chicken
+    ),
+    by = .I
+  ]
+
+  rations_detailed[
+    ,
+    diet_ash := calc_diet_ash(
+      feed_ration_fraction = feed_ration_fraction,
+      feed_ash_content = feed_ash_content
+    ),
+    by = .I
+  ]
+
+  # --- Step 6: Summarize dietary metrics at cohort level ---------------------
   rations_summary <- rations_detailed[
     ,
     .(
       diet_gross_energy = sum(diet_gross_energy, na.rm = TRUE),
       diet_metabolizable_energy = sum(diet_metabolizable_energy, na.rm = TRUE),
       diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
-      diet_digestibility_fraction = sum(diet_digestibility_fraction, na.rm = TRUE)
+      diet_digestibility_fraction = sum(diet_digestibility_fraction, na.rm = TRUE),
+      urinary_energy_fraction = sum(urinary_energy_fraction, na.rm = TRUE),
+      diet_ash = sum(diet_ash, na.rm = TRUE)
     ),
     by = .(herd_id, animal, cohort_short)
   ]

@@ -35,7 +35,9 @@ validate_feed_rations_inputs <- function(
     "feed_id", "feed_name", "category", "feed_gross_energy",
     "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
     "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
-    "feed_metabolizable_energy_chicken", "feed_nitrogen_content"
+    "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
+    "feed_urinary_energy_ruminant", "feed_urinary_energy_pigs",
+    "feed_urinary_energy_chicken", "feed_ash_content"
   )
 
   missing_rations_cols <- setdiff(required_rations_cols, names(rations_share))
@@ -61,7 +63,7 @@ validate_feed_rations_inputs <- function(
   invalid_ration_sums <- ration_sums[abs(feed_ration_sum - 1) > 1e-6]
   if (nrow(invalid_ration_sums) > 0) {
     cli::cli_abort(
-      "Feed rations must sum to 1 within each herd_id, animal, and cohort."
+      "Feed rations must sum to 1 within each herd_id, animal, and cohort_short."
     )
   }
 

@@ -18,7 +18,11 @@ test_that("validate_feed_rations_inputs passes for valid inputs", {
     feed_metabolizable_energy_ruminant = c(11, 10),
     feed_metabolizable_energy_pigs = c(9, 8),
     feed_metabolizable_energy_chicken = c(8, 7),
-    feed_nitrogen_content = c(0.02, 0.018)
+    feed_nitrogen_content = c(0.02, 0.018),
+    feed_urinary_energy_ruminant = c(0.12, 0.11),
+    feed_urinary_energy_pigs = c(0.02, 0.02),
+    feed_urinary_energy_chicken = c(0.04, 0.03),
+    feed_ash_content = c(1.4, 2.6)
   )
 
   expect_silent(validate_feed_rations_inputs(rations_share, feed_params))
@@ -42,7 +46,11 @@ test_that("validate_feed_rations_inputs rejects missing rations columns", {
     feed_metabolizable_energy_ruminant = 11,
     feed_metabolizable_energy_pigs = 9,
     feed_metabolizable_energy_chicken = 8,
-    feed_nitrogen_content = 0.02
+    feed_nitrogen_content = 0.02,
+    feed_urinary_energy_ruminant = 0.12,
+    feed_urinary_energy_pigs = 0.02,
+    feed_urinary_energy_chicken = 0.04,
+    feed_ash_content = 1.4
   )
 
   expect_error(
@@ -70,7 +78,11 @@ test_that("validate_feed_rations_inputs rejects duplicate feed_id in feed_params
     feed_metabolizable_energy_ruminant = c(11, 11),
     feed_metabolizable_energy_pigs = c(9, 9),
     feed_metabolizable_energy_chicken = c(8, 8),
-    feed_nitrogen_content = c(0.02, 0.02)
+    feed_nitrogen_content = c(0.02, 0.02),
+    feed_urinary_energy_ruminant = c(0.12, 0.12),
+    feed_urinary_energy_pigs = c(0.02, 0.02),
+    feed_urinary_energy_chicken = c(0.04, 0.04),
+    feed_ash_content = c(1.4, 1.4)
   )
 
   expect_error(
@@ -98,7 +110,11 @@ test_that("validate_feed_rations_inputs rejects missing feed_id in feed_params",
     feed_metabolizable_energy_ruminant = 11,
     feed_metabolizable_energy_pigs = 9,
     feed_metabolizable_energy_chicken = 8,
-    feed_nitrogen_content = 0.02
+    feed_nitrogen_content = 0.02,
+    feed_urinary_energy_ruminant = 0.12,
+    feed_urinary_energy_pigs = 0.02,
+    feed_urinary_energy_chicken = 0.04,
+    feed_ash_content = 1.4
   )
 
   expect_error(
@@ -126,7 +142,11 @@ test_that("validate_feed_rations_inputs rejects mismatched feed_name", {
     feed_metabolizable_energy_ruminant = 11,
     feed_metabolizable_energy_pigs = 9,
     feed_metabolizable_energy_chicken = 8,
-    feed_nitrogen_content = 0.02
+    feed_nitrogen_content = 0.02,
+    feed_urinary_energy_ruminant = 0.12,
+    feed_urinary_energy_pigs = 0.02,
+    feed_urinary_energy_chicken = 0.04,
+    feed_ash_content = 1.4
   )
 
   expect_error(

@@ -2,7 +2,7 @@
 % Please edit documentation in R/feed_rations_core_model.R
 \name{calc_feed_digestibility_fraction}
 \alias{calc_feed_digestibility_fraction}
-\title{Calculate feed digestibility fractions}
+\title{Calculate feed digestibility fraction}
 \usage{
 calc_feed_digestibility_fraction(
   feed_digestible_energy_ruminant,
@@ -22,7 +22,8 @@ calc_feed_digestibility_fraction(
 (same units as \code{feed_gross_energy}).}
 
 \item{feed_gross_energy}{Numeric. Gross energy (same units as
-\code{feed_digestible_energy_ruminant}).}
+\code{feed_digestible_energy_ruminant}, \code{feed_digestible_energy_pigs},
+and \code{feed_metabolizable_energy_chicken}).}
 }
 \value{
 List. Digestibility fractions (unitless) with elements:
