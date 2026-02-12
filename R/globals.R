@@ -46,12 +46,12 @@ utils::globalVariables(c(
   "weaning_weight",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
   "slaughter_weight_cohort", "live_weight_cohort_average",
-  "live_weight_cohort_final", "animal", "animal_short"
+  "live_weight_cohort_final", "animal"
 ))
 
 utils::globalVariables(c(
   # Columns used in run_feed_rations
-  "animal", "animal_short", "feed_id", "feed_name", "category", "feed_ration_fraction",
+  "animal", "species_short", "feed_id", "feed_name", "category", "feed_ration_fraction",
   "feed_gross_energy", "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
   "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
   "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
@@ -140,5 +140,5 @@ utils::globalVariables(c(
 # Add species abbreviations
 abbr_animals <- data.table::data.table(
   animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
-  animal_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
+  species_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
 )

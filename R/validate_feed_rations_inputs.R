@@ -28,7 +28,7 @@ validate_feed_rations_inputs <- function(
 
   # --- Required columns validation --------------------------------------------
   required_rations_cols <- c(
-    "herd_id", "animal", "feed_name", "feed_id", "cohort",
+    "herd_id", "animal", "feed_name", "feed_id", "cohort_short",
     "feed_ration_fraction"
   )
   required_feed_cols <- c(
@@ -58,7 +58,7 @@ validate_feed_rations_inputs <- function(
   ration_sums <- rations_share[
     ,
     .(feed_ration_sum = sum(feed_ration_fraction)),
-    by = .(herd_id, animal, cohort)
+    by = .(herd_id, animal, cohort_short)
   ]
   invalid_ration_sums <- ration_sums[abs(feed_ration_sum - 1) > 1e-6]
   if (nrow(invalid_ration_sums) > 0) {

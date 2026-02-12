@@ -1,4 +1,4 @@
-herd_id,animal,feed_name,feed_id,cohort,feed_ration_fraction
+herd_id,animal,feed_name,feed_id,cohort_short,feed_ration_fraction
 1,Buffalo,"Fresh grass, natural pastures",F1,FA,0.45
 1,Buffalo,"Fresh grass, natural pastures",F1,FS,0.6
 1,Buffalo,"Fresh grass, natural pastures",F1,MA,0.3
