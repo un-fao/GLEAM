@@ -24,7 +24,7 @@ run_feed_rations(
 \code{feed_metabolizable_energy_ruminant}, \code{feed_metabolizable_energy_pigs},
 \code{feed_metabolizable_energy_chicken}, \code{feed_nitrogen_content},
 \code{feed_urinary_energy_ruminant}, \code{feed_urinary_energy_pigs},
-\code{feed_urinary_energy_chicken}, \code{feed_ash_content}.
+\code{feed_ash_content}.
 }}
 }
 \value{

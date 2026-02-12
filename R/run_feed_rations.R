@@ -12,7 +12,7 @@
 #'     `feed_metabolizable_energy_ruminant`, `feed_metabolizable_energy_pigs`,
 #'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`,
 #'     `feed_urinary_energy_ruminant`, `feed_urinary_energy_pigs`,
-#'     `feed_urinary_energy_chicken`, `feed_ash_content`.
+#'      `feed_ash_content`.
 #'
 #' @return A data.table summarized by `herd_id`, `animal`, and `cohort_short` with:
 #'   - `diet_gross_energy`, `diet_metabolizable_energy`,
@@ -134,7 +134,6 @@ run_feed_rations <- function(
       feed_ration_fraction = feed_ration_fraction,
       feed_urinary_energy_ruminant = feed_urinary_energy_ruminant,
       feed_urinary_energy_pigs = feed_urinary_energy_pigs,
-      feed_urinary_energy_chicken = feed_urinary_energy_chicken
     ),
     by = .I
   ]

@@ -213,7 +213,7 @@ calc_diet_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_conte
 #' @param feed_urinary_energy_pigs Numeric. Fraction of feed's gross energy that
 #'  is excreted in urine for pigs (fraction).
 #' @param feed_urinary_energy_chicken Numeric. Fraction of feed's gross energy that
-#'  is excreted in urine for chickens (fraction).
+#'  is excreted in urine for chickens (fraction). Default to 0.
 #'
 #' @return Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).
 #'
@@ -231,7 +231,7 @@ calc_urinary_energy_fraction <- function(
     feed_ration_fraction,
     feed_urinary_energy_ruminant = NA_real_,
     feed_urinary_energy_pigs = NA_real_,
-    feed_urinary_energy_chicken = NA_real_
+    feed_urinary_energy_chicken = 0
 ) {
   validate_urinary_energy_inputs(
     species_short,
