@@ -51,7 +51,7 @@ utils::globalVariables(c(
 
 utils::globalVariables(c(
   # Columns used in run_feed_rations
-  "animal", "species_short", "feed_id", "feed_name", "category", "feed_ration_fraction",
+  "animal", "species_short", "cohort_short", "feed_id", "feed_name", "category", "feed_ration_fraction",
   "feed_gross_energy", "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
   "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
   "feed_metabolizable_energy_chicken", "feed_nitrogen_content",

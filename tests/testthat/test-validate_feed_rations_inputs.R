@@ -5,7 +5,7 @@ test_that("validate_feed_rations_inputs passes for valid inputs", {
     animal = c("Cattle", "Cattle"),
     feed_name = c("MAIZE", "BARLEY"),
     feed_id = c(1, 2),
-    cohort = c("FJ", "FJ"),
+    cohort_short = c("FJ", "FJ"),
     feed_ration_fraction = c(0.5, 0.5)
   )
   feed_params <- data.table::data.table(
@@ -34,7 +34,7 @@ test_that("validate_feed_rations_inputs rejects missing rations columns", {
     animal = "Cattle",
     feed_name = "MAIZE",
     feed_id = 1,
-    cohort = "FJ"
+    cohort_short = "FJ"
   )
   feed_params <- data.table::data.table(
     feed_id = 1,
@@ -65,7 +65,7 @@ test_that("validate_feed_rations_inputs rejects duplicate feed_id in feed_params
     animal = "Cattle",
     feed_name = "MAIZE",
     feed_id = 1,
-    cohort = "FJ",
+    cohort_short = "FJ",
     feed_ration_fraction = 1
   )
   feed_params <- data.table::data.table(
@@ -97,7 +97,7 @@ test_that("validate_feed_rations_inputs rejects missing feed_id in feed_params",
     animal = "Cattle",
     feed_name = "MAIZE",
     feed_id = 2,
-    cohort = "FJ",
+    cohort_short = "FJ",
     feed_ration_fraction = 1
   )
   feed_params <- data.table::data.table(
@@ -129,7 +129,7 @@ test_that("validate_feed_rations_inputs rejects mismatched feed_name", {
     animal = "Cattle",
     feed_name = "BARLEY",
     feed_id = 1,
-    cohort = "FJ",
+    cohort_short = "FJ",
     feed_ration_fraction = 1
   )
   feed_params <- data.table::data.table(
