@@ -73,11 +73,53 @@ validate_feed_indirect_emissions_inputs <- function(
   }
   
   # --- Feed emissions integrity checks ----------------------------------------
-  if (anyDuplicated(feed_emissions$feed_id) > 0) {
-    cli::cli_abort("{.arg feed_emissions$feed_id} must be unique.")
+  dup_feed_ids <- feed_emissions[
+    duplicated(feed_id) | duplicated(feed_id, fromLast = TRUE),
+    unique(feed_id)
+  ]
+  
+  if (length(dup_feed_ids) > 0) {
+    cols_to_show <- intersect(c("feed_id", "feed_name"), names(feed_emissions))
+    dup_rows <- unique(feed_emissions[feed_id %in% dup_feed_ids, ..cols_to_show])
+    preview <- utils::head(dup_rows, 10)
+    
+    cli::cli_abort(c(
+      "{.arg feed_emissions$feed_id} must be unique.",
+      "i" = "Duplicated feed_id(s): {.val {dup_feed_ids}}",
+      "i" = "Offending rows (first 10):",
+      "x" = paste(capture.output(print(preview)), collapse = "\n")
+    ))
   }
   
-  # --- Optional feed_name consistency checks ----------------------------------
+  # 2) If feed_name is provided, it must be unique (show which ids share a name)
+  if ("feed_name" %in% names(feed_emissions)) {
+    
+    dup_feed_names <- feed_emissions[
+      !is.na(feed_name) &
+        (duplicated(feed_name) | duplicated(feed_name, fromLast = TRUE)),
+      unique(feed_name)
+    ]
+    
+    if (length(dup_feed_names) > 0) {
+      # Summarize which feed_ids each duplicated feed_name maps to
+      dup_map <- feed_emissions[
+        feed_name %in% dup_feed_names,
+        .(feed_ids = paste(sort(unique(feed_id)), collapse = ", "),
+          n_ids = data.table::uniqueN(feed_id)),
+        by = feed_name
+      ][order(-n_ids, feed_name)]
+      
+      preview <- utils::head(dup_map, 10)
+      
+      cli::cli_abort(c(
+        "{.arg feed_emissions$feed_name} must be unique.",
+        "i" = "Duplicated feed_name(s): {.val {dup_feed_names}}",
+        "i" = "feed_name → feed_id mapping (first 10 names):",
+        "x" = paste(capture.output(print(preview)), collapse = "\n")
+      ))
+    }
+  }
+  # Cross-check feed_name consistency between rations_share and feed_emissions by feed_id
   if ("feed_name" %in% names(feed_emissions)) {
     feed_name_check <- merge(
       rations_share[, .(feed_id, feed_name)],
