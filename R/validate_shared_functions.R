@@ -63,9 +63,7 @@ validate_named_numeric_vector <- function(
 
 #' Normalize a rate to a bounded range
 #'
-#' Clamps numeric values to the provided lower/upper bounds while preserving NA.
-#' This is used when rates are reused as scaling factors in downstream modules.
-#'
+#' Ensures rate-like inputs remain within valid bounds before being used as scaling factors in downstream computations
 #' @param x Numeric scalar or vector to normalize.
 #' @param lower Numeric. Minimum allowed value (default: 0).
 #' @param upper Numeric. Maximum allowed value (default: 1).
