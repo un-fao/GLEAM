@@ -72,6 +72,47 @@ validate_feed_indirect_emissions_inputs <- function(
     )
   }
   
+  # --- Rations_share key uniqueness -------------------------------------------
+  # Prevent duplicate feed lines within a herd/cohort (and animal).
+  # Expected grain: one row per feed per herd_id × animal × cohort_short.
+  ration_scope <- c("herd_id", "animal", "cohort_short")
+  
+  # 1) feed_id must be unique within herd/animal/cohort
+  dup_feed_id_rows <- rations_share[
+    duplicated(rations_share[, c(ration_scope, "feed_id"), with = FALSE]) |
+      duplicated(rations_share[, c(ration_scope, "feed_id"), with = FALSE], fromLast = TRUE),
+    c(ration_scope, "feed_id"),
+    with = FALSE
+  ]
+  
+  if (nrow(dup_feed_id_rows) > 0) {
+    preview <- utils::head(unique(dup_feed_id_rows), 10)
+    cli::cli_abort(c(
+      "{.arg rations_share} contains duplicated {.arg feed_id} within herd/cohort/animal.",
+      "i" = "Expected unique rows by: {.val {c(ration_scope, 'feed_id')}}",
+      "i" = "Duplicate keys (first 10):",
+      "x" = paste(capture.output(print(preview)), collapse = "\n")
+    ))
+  }
+  
+  # 2) feed_name must be unique within herd/animal/cohort
+  dup_feed_name_rows <- rations_share[
+    duplicated(rations_share[, c(ration_scope, "feed_name"), with = FALSE]) |
+      duplicated(rations_share[, c(ration_scope, "feed_name"), with = FALSE], fromLast = TRUE),
+    c(ration_scope, "feed_name"),
+    with = FALSE
+  ]
+  
+  if (nrow(dup_feed_name_rows) > 0) {
+    preview <- utils::head(unique(dup_feed_name_rows), 10)
+    cli::cli_abort(c(
+      "{.arg rations_share} contains duplicated {.arg feed_name} within herd/cohort/animal.",
+      "i" = "Expected unique rows by: {.val {c(ration_scope, 'feed_name')}}",
+      "i" = "Duplicate keys (first 10):",
+      "x" = paste(capture.output(print(preview)), collapse = "\n")
+    ))
+  
+  }
   # --- Feed emissions integrity checks ----------------------------------------
   dup_feed_ids <- feed_emissions[
     duplicated(feed_id) | duplicated(feed_id, fromLast = TRUE),
