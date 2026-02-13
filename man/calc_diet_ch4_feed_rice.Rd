@@ -2,26 +2,24 @@
 % Please edit documentation in R/indirect_emissions_feed_core_model.R
 \name{calc_diet_ch4_feed_rice}
 \alias{calc_diet_ch4_feed_rice}
-\title{Calculate diet CH4 from rice cultivation (feed production)}
+\title{Calculate diet Methane (CH₄) from rice cultivation for feed production}
 \usage{
 calc_diet_ch4_feed_rice(feed_ration_fraction, ch4_feed_rice)
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Fraction of the total ration represented
-by this feed component (unitless).}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). Within each herd_id and cohort, proportions should sum to 1.}
 
-\item{ch4_feed_rice}{Numeric. Emission factor for CH4 from rice cultivation
-in feed production (g CH4/kg dry matter of feed).}
+\item{ch4_feed_rice}{Numeric. Methane (CH₄) emission factor from rice cultivation in feed production, calculated per kg of dry matter intake (g CH₄/kg DM).}
 }
 \value{
-Numeric. CH4 contribution from rice cultivation for this feed item (g CH4/kg dry matter of feed).
+Numeric. Average methane (CH₄) emission factor from rice cultivation in feed production of the diet (g CH₄/kg DM).
 }
 \description{
-Computes the weighted contribution of CH4 emissions from flooded rice cultivation
-associated with feed production.
+Computes the weighted contribution of Methane (CH₄) emissions from flooded rice cultivation
+associated with feed production for a feed ration component.
 }
 \details{
-\deqn{diet\_ch4\_feed\_rice = feed\_ration\_fraction \times ch4\_feed\_rice}
+The contribution is computed as:
 
-This helper is vectorized over its inputs.
+\deqn{diet\_ch4\_feed\_rice = feed\_ration\_fraction \times ch4\_feed\_rice}
 }

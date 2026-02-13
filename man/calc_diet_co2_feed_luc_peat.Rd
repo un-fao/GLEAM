@@ -2,26 +2,24 @@
 % Please edit documentation in R/indirect_emissions_feed_core_model.R
 \name{calc_diet_co2_feed_luc_peat}
 \alias{calc_diet_co2_feed_luc_peat}
-\title{Calculate diet CO2 from land-use change (peat) for feed production}
+\title{Calculate diet Carbon dioxide (CO₂) from land-use change (peat) for feed production}
 \usage{
 calc_diet_co2_feed_luc_peat(feed_ration_fraction, co2_feed_luc_peat)
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Fraction of the total ration represented
-by this feed component (unitless).}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). Within each herd_id and cohort, proportions should sum to 1.}
 
-\item{co2_feed_luc_peat}{Numeric. Emission factor for CO2 from peatland-related
-land-use change (g CO2/kg dry matter of feed).}
+\item{co2_feed_luc_peat}{Numeric. Carbon dioxide (CO₂) emission factor from peatland land-use change in feed production, calculated per kg of dry matter intake (g CO₂/kg DM).}
 }
 \value{
-Numeric. CO2 contribution from LUC (peat) for this feed item (g CO2/kg dry matter of feed).
+Numeric. Average carbon dioxide (CO₂) emission factor from peatland land-use change in feed production of the diet (g CO₂/kg DM).
 }
 \description{
-Computes the weighted contribution of CO2 emissions from peatland conversion
-associated with feed production.
+Computes the weighted contribution of Carbon dioxide (CO₂) emissions from peatland conversion
+associated with feed production for a feed ration component.
 }
 \details{
-\deqn{diet\_co2\_feed\_luc\_peat = feed\_ration\_fraction \times co2\_feed\_luc\_peat}
+The contribution is computed as:
 
-This helper is vectorized over its inputs.
+\deqn{diet\_co2\_feed\_luc\_peat = feed\_ration\_fraction \times co2\_feed\_luc\_peat}
 }

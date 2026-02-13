@@ -2,7 +2,7 @@
 % Please edit documentation in R/indirect_emissions_feed_core_model.R
 \name{calc_diet_co2_feed_crop_operations}
 \alias{calc_diet_co2_feed_crop_operations}
-\title{Calculate diet CO2 from crop operations (feed production)}
+\title{Calculate diet Carbon dioxide (CO₂) from crop operations for feed production}
 \usage{
 calc_diet_co2_feed_crop_operations(
   feed_ration_fraction,
@@ -10,22 +10,20 @@ calc_diet_co2_feed_crop_operations(
 )
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Fraction of the total ration represented
-by this feed component (unitless).}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). Within each herd_id and cohort, proportions should sum to 1.}
 
-\item{co2_feed_crop_operations}{Numeric. Emission factor for CO2 from crop
-operations (g CO2/kg dry matter of feed).}
+\item{co2_feed_crop_operations}{Numeric. Carbon dioxide (CO₂) emission factor from crop operations in feed production, calculated per kg of dry matter intake (g CO₂/kg DM).}
 }
 \value{
-Numeric. CO2 contribution from crop operations for this feed item (g CO2/kg dry matter of feed).
+Numeric. Average carbon dioxide (CO₂) emission factor from crop operations in feed production of the diet (g CO₂/kg DM).
 }
 \description{
-Computes the weighted contribution of CO2 emissions from crop operations
-(e.g., machinery use, on-field energy use) for feed production.
+Computes the weighted contribution of Carbon dioxide (CO₂) emissions from crop operations
+(e.g., machinery use, on-field energy use) associated with feed production for a feed ration component.
 }
 \details{
+The contribution is computed as:
+
 \deqn{diet\_co2\_feed\_crop\_operations =
   feed\_ration\_fraction \times co2\_feed\_crop\_operations}
-
-This helper is vectorized over its inputs.
 }

@@ -2,26 +2,24 @@
 % Please edit documentation in R/indirect_emissions_feed_core_model.R
 \name{calc_diet_co2_feed_pesticides}
 \alias{calc_diet_co2_feed_pesticides}
-\title{Calculate diet CO2 from pesticide use (feed production)}
+\title{Calculate diet Carbon dioxide (CO₂) from pesticide used for feed production}
 \usage{
 calc_diet_co2_feed_pesticides(feed_ration_fraction, co2_feed_pesticides)
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Fraction of the total ration represented
-by this feed component (unitless).}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). Within each herd_id and cohort, proportions should sum to 1.}
 
-\item{co2_feed_pesticides}{Numeric. Emission factor for CO2 from pesticide use
-in feed production (g CO2/kg dry matter of feed).}
+\item{co2_feed_pesticides}{Numeric. Carbon dioxide (CO₂) emission factor from pesticide use in feed production, calculated per kg of dry matter intake (g CO₂/kg DM).}
 }
 \value{
-Numeric. CO2 contribution from pesticides for this feed item (g CO2/kg dry matter of feed).
+Numeric. Average carbon dioxide (CO₂) emission factor from pesticide use in feed production of the diet (g CO₂/kg DM).
 }
 \description{
-Computes the weighted contribution of CO2 emissions from pesticide use
-associated with feed production for a ration component.
+Computes the weighted contribution of Carbon dioxide (CO₂) emissions from pesticide use
+associated with feed production for a feed ration component.
 }
 \details{
-\deqn{diet\_co2\_feed\_pesticides = feed\_ration\_fraction \times co2\_feed\_pesticides}
+The contribution is computed as:
 
-This helper is vectorized over its inputs.
+\deqn{diet\_co2\_feed\_pesticides = feed\_ration\_fraction \times co2\_feed\_pesticides}
 }

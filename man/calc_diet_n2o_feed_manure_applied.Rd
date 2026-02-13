@@ -2,7 +2,7 @@
 % Please edit documentation in R/indirect_emissions_feed_core_model.R
 \name{calc_diet_n2o_feed_manure_applied}
 \alias{calc_diet_n2o_feed_manure_applied}
-\title{Calculate diet N2O from manure application (feed production)}
+\title{Calculate diet nitrous oxide (N₂O) from manure application for feed production}
 \usage{
 calc_diet_n2o_feed_manure_applied(
   feed_ration_fraction,
@@ -10,22 +10,20 @@ calc_diet_n2o_feed_manure_applied(
 )
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Fraction of the total ration represented
-by this feed component (unitless).}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). Within each herd_id and cohort, proportions should sum to 1.}
 
-\item{n2o_feed_manure_applied}{Numeric. Emission factor for N2O from manure
-application in feed production (g N2O/kg dry matter of feed).}
+\item{n2o_feed_manure_applied}{Numeric. Nitrous oxide (N₂O) emission factor from manure applied to cropland in feed production, calculated per kg of dry matter intake (g N₂O/kg DM).}
 }
 \value{
-Numeric. N2O contribution from manure application for this feed item (g N2O/kg dry matter of feed).
+Numeric. Average nitrous oxide (N₂O) emission factor from manure applied to cropland in feed production of the diet (g N₂O/kg DM).
 }
 \description{
 Computes the weighted contribution of N2O emissions from manure applied to cropland
-associated with feed production.
+associated with feed production for a feed ration component.
 }
 \details{
+The contribution is computed as:
+
 \deqn{diet\_n2o\_feed\_manure\_applied =
   feed\_ration\_fraction \times n2o\_feed\_manure\_applied}
-
-This helper is vectorized over its inputs.
 }

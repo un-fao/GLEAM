@@ -1,4 +1,4 @@
-#' Validate inputs for run_feed_production_emissions
+#' Validate inputs for run_feed_emissions
 #'
 #' Validates that rations_share and feed_emissions have the expected structure,
 #' required columns, and consistent identifiers.

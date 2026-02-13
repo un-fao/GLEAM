@@ -2,26 +2,24 @@
 % Please edit documentation in R/indirect_emissions_feed_core_model.R
 \name{calc_diet_n2o_feed_fertilizer}
 \alias{calc_diet_n2o_feed_fertilizer}
-\title{Calculate diet N2O from fertilizer use (feed production)}
+\title{Calculate diet nitrous oxide (N₂O) from fertilizer use for feed production}
 \usage{
 calc_diet_n2o_feed_fertilizer(feed_ration_fraction, n2o_feed_fertilizer)
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Fraction of the total ration represented
-by this feed component (unitless).}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). Within each herd_id and cohort, proportions should sum to 1.}
 
-\item{n2o_feed_fertilizer}{Numeric. Emission factor for N2O from fertilizer use
-in feed production (g N2O/kg dry matter of feed).}
+\item{n2o_feed_fertilizer}{Numeric. Nitrous oxide (N₂O) emission factor from fertilizer use in feed production, calculated per kg of dry matter intake (g N₂O/kg DM).}
 }
 \value{
-Numeric. N2O contribution from fertilizer for this feed item (g N2O/kg dry matter of feed).
+Numeric. Average nitrous oxide (N₂O) emission factor from fertilizer use in feed production of the diet (g N₂O/kg DM).
 }
 \description{
-Computes the weighted contribution of N2O emissions from fertilizer application
-associated with feed production.
+Computes the weighted contribution of nitrous oxide (N₂O) emissions from fertilizer application
+associated with feed production for a feed ration component.
 }
 \details{
-\deqn{diet\_n2o\_feed\_fertilizer = feed\_ration\_fraction \times n2o\_feed\_fertilizer}
+The contribution is computed as:
 
-This helper is vectorized over its inputs.
+\deqn{diet\_n2o\_feed\_fertilizer = feed\_ration\_fraction \times n2o\_feed\_fertilizer}
 }
