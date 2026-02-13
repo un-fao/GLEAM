@@ -97,7 +97,9 @@ management system \eqn{S}.}
 
 In this implementation, calculations are performed at daily,
 per-head resolution using \code{nitrogen_excretion}
-(kg N/head/day). Daily emissions are computed as:
+(kg N/head/day) - see also \code{\link{compute_nitrogen_excretion}}.
+
+Daily emissions are computed as:
 
 \deqn{
   N₂O =
