@@ -79,6 +79,7 @@ validate_scalar_numeric_or_na <- function(x, arg_name) {
 #'
 #' Clamps numeric values to the provided lower/upper bounds while preserving NA.
 #' This is used when rates are reused as scaling factors in downstream modules.
+#' Purpose: enforce valid bounds on rate-like inputs before reuse as scaling factors in downstream computations.
 #'
 #' @param x Numeric scalar or vector to normalize.
 #' @param lower Numeric. Minimum allowed value (default: 0).
