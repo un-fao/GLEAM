@@ -121,27 +121,14 @@ validate_positive_numeric <- function(x, arg_name) {
 #'
 #' @param x Numeric scalar or named numeric vector to validate.
 #' @param arg_name Character scalar: must match one `variable_name`.
-#' @param parameter_ranges Data.table of rules.
+#' @param parameter_ranges Data.table of rules. Defaults to "data-raw/parameter_ranges.csv" loaded as internal data.
 #'
 #' @noRd
 validate_param_range <- function(
     x,
     arg_name = deparse(substitute(x)),
-    parameter_ranges_data = parameter_ranges
+    parameter_ranges = parameter_ranges
 ) {
-
-  # Look up the single rule row
-  rule_row <- parameter_ranges_data[variable_name == arg_name]
-  if (nrow(rule_row) != 1L) {
-    cli::cli_abort(
-      "Internal error: expected exactly one rule for {.arg {arg_name}}, found {nrow(rule_row)}."
-    )
-  }
-
-  minimum_value <- rule_row$lower_bound
-  is_lower_strict <- !isTRUE(rule_row$lower_inclusive)
-  maximum_value <- rule_row$upper_bound
-  is_upper_strict <- !isTRUE(rule_row$upper_inclusive)
 
   # Type and missingness checks
   if (!is.numeric(x)) {
@@ -150,6 +137,20 @@ validate_param_range <- function(
   if (anyNA(x)) {
     cli::cli_abort("{.arg {arg_name}} must not contain missing values.")
   }
+  
+  # Look up the single rule row
+  rule_row <- parameter_ranges[variable_name == arg_name]
+  if (nrow(rule_row) != 1L) {
+    cli::cli_abort(
+      "Internal error: expected exactly one rule for {.arg {arg_name}}, found {nrow(rule_row)}."
+    )
+  }
+
+  # Extract bounds and inclusivity
+  minimum_value <- rule_row$lower_bound
+  is_lower_strict <- !isTRUE(rule_row$lower_inclusive)
+  maximum_value <- rule_row$upper_bound
+  is_upper_strict <- !isTRUE(rule_row$upper_inclusive)
 
   # Prepare the values vector and its labels
   numeric_values <- as.numeric(x)
