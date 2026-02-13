@@ -12,7 +12,7 @@ calc_volatile_solids(
 )
 }
 \arguments{
-\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg dry matter/head/day).}
+\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 
 \item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 
@@ -24,7 +24,7 @@ calc_volatile_solids(
 Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
 }
 \description{
-Computes daily volatile solids (VS) excretion in manure (kg VS head⁻¹ day⁻¹).
+Computes daily volatile solids (VS) excretion in manure (kg VS/head/day).
 VS represent the organic fraction of manure dry matter,
 including both biodegradable and non-biodegradable organic material.
 VS is a key intermediate variable required for estimating methane (CH₄)
@@ -37,12 +37,12 @@ rates are not available. The core relationship is provided in
 \strong{IPCC Equation 10.24 (Volatile solids excretion rates)}, which estimates
 daily VS excretion as a function of:
 \itemize{
-\item Gross energy intake (gross_energy_intake, MJ day⁻¹)
+\item Gross energy intake (gross_energy_intake, MJ/day)
 \item Digestibility of the diet (diet_digestibility_fraction)
 \item Urinary energy expressed as a fraction of GE (urinary_energy_fraction)
-\item Ash fraction of the diet (diet_ash, fraction of dry matter)
+\item Ash content of the diet (diet_ash, fraction of dry matter)
 \item A conversion factor representing the average gross energy content of
-dry matter (18.45 MJ kg⁻¹ DM)
+dry matter (18.45 MJ/kg DM)
 }
 
 The general structure of Eq. 10.24 partitions gross energy intake into
@@ -57,13 +57,13 @@ as an input. It can be calculated upstream with
 \code{\link{calc_dry_matter_intake}} as a function of energy requirements and
 the energy content of the diet.
 
-This reflects the use of ration-specific energy content upstream and avoids
-assuming a fixed gross energy density of 18.45 MJ kg⁻¹ DM, as in the IPCC
-default approach.
-
 \deqn{
   dry\_matter\_intake = \frac{gross\_energy\_intake}{diet\_gross\_energy}
 }
+
+This reflects the use of ration-specific energy content upstream and avoids
+assuming a fixed gross energy density of 18.45 MJ/kg DM, as in the IPCC
+default approach.
 
 The volatile solids excretion is then calculated as:
 

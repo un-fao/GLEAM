@@ -30,12 +30,13 @@ management practices and environmental conditions, specifically the
 temperature of the system, the retention time of the organic material,
 and the degree of anaerobic conditions present. The value theoretically
 ranges from 0 to 100 percent. Default values can be selected from
-Table 10.17 of the IPCC guidelines.
+Table 10.17 of the IPCC guidelines (IPCC 2006, 2019).
 }
 \item{ch4_max_producing_capacity_bo}{
 Numeric. Maximum methane producing capacity (\eqn{B_0}) for all manure
-management systems (m³ CH₄ kg⁻¹ VS). The value is region- and
-species-specific. Default values may be selected from Table 10.16
+management systems (m³ CH₄ / kg VS). The value is region- and
+species-specific, and represents the theoretical maximum methane yield
+per unit of volatile solids.. Default values may be selected from Table 10.16
 (IPCC, 2019) or from Tables 10A-4 to 10A-9 (IPCC, 2006).
 }
 }
@@ -49,22 +50,22 @@ All remaining MMS arguments are grouped and treated as other manure
 management systems.}
 }
 \value{
-A named list with the following elements (kg CH₄ head⁻¹ day⁻¹):
+A named list with the following elements:
 \describe{
-\item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH₄ head⁻¹ day⁻¹).}
-\item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH₄ head⁻¹ day⁻¹).}
-\item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH₄ head⁻¹ day⁻¹).}
-\item{ch4_manure_all_noburn}{Numeric. Methane (CH₄) emissions from manure management systems, excluding manure burned for fuel (kg CH₄ head⁻¹ day⁻¹).}
+\item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH₄/head/day).}
+\item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH₄/head/day).}
+\item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH₄/head/day).}
+\item{ch4_manure_all_noburn}{Numeric. Methane (CH₄) emissions from manure management systems, excluding manure burned for fuel (kg CH₄/head/day).}
 }
 }
 \description{
 Computes daily methane emissions from manure management using IPCC-based parameters and
-separates emissions from pasture, burned manure, and all other manure
+separates emissions from manure deposited on pasture, manure burned for fuel, and all other manure
 management systems.
 }
 \details{
 This calculation follows the structure of IPCC Equation 10.23 for
-methane CH₄ emission factors from manure management.
+methane (CH₄) emission factors from manure management.
 
 In the IPCC formulation, emissions are determined by combining:
 \itemize{
@@ -85,23 +86,9 @@ Applying the IPCC conversion factor from m³ CH₄ to kg CH₄
   \sum \left( \frac{mcf}{100} \times manure\_management\_system\_fraction \right)
 }
 
-where:
-\describe{
-\item{\code{b0}}{
-Maximum methane-producing capacity
-(m³ CH₄ kg⁻¹ VS), representing the theoretical maximum
-methane yield per unit of volatile solids.
-}
-\item{\code{mcf}}{
-Methane conversion factor (percent), representing the proportion
-of \code{b0} achieved under the specified manure management system
-and climate conditions.
-}
-}
-
 The summation is taken over all manure management systems included in
 the calculation. Results are expressed at daily resolution
-(kg CH₄ head⁻¹ day⁻¹), consistent with Equation 10.23 after
+(kg CH₄/head/day), consistent with Equation 10.23 after
 adapting the original annual formulation to a daily basis.
 }
 \examples{

@@ -11,7 +11,7 @@ calc_direct_n2o_emissions(ratio_N2ON_to_N2O = 44/28, nitrogen_excretion, ...)
 based on molecular weights. Defaults to 44/28.}
 
 \item{nitrogen_excretion}{Numeric. Daily nitrogen excretion
-(kg N head⁻¹ day⁻¹).}
+(kg N/head/day).}
 
 \item{...}{A variable number of manure management system (MMS) arguments.
 Each MMS must be provided as a named numeric vector with exactly the
@@ -20,7 +20,7 @@ following fields:
 \item{manure_management_system_fraction}{
 Numeric. Fraction of total manure excreted by animals in a given
 herd and cohort that is handled in a specific manure management
-system (0–1). The sum of all fractions for each herd_id must equal 1.
+system. Value range from 0 to 1. The sum of all fractions for each herd_id must equal 1.
 }
 \item{n2o_ef3}{
 Numeric. Emission factor for direct nitrous oxide (N₂O)
@@ -29,7 +29,7 @@ nitrous oxide emitted per unit of nitrogen from nitrification
 and denitrification processes occurring during manure storage
 and treatment (kg N₂O–N per kg N).
 Default values may be selected from Table 10.21 and Table 11.1
-(for manure deposited on pasture) in the 2006 and 2019 IPCC Guidelines.
+(for manure deposited on pasture) in IPCC Guidelines (IPCC 2006, 2019).
 }
 }
 
@@ -42,33 +42,32 @@ All remaining MMS arguments are grouped and treated as other manure
 management systems.}
 }
 \value{
-A named list with the following elements
-(kg N₂O head⁻¹ day⁻¹):
+A named list with the following elements:
 \describe{
 \item{n2o_manure_pasture_direct}{
 Numeric. Direct nitrous oxide (N₂O) emissions from manure
-deposited on pasture (kg N₂O head⁻¹ day⁻¹).
+deposited on pasture (kg N₂O/head/day).
 }
 \item{n2o_manure_burned_direct}{
 Numeric. Direct nitrous oxide (N₂O) emissions from manure
-burned for fuel (kg N₂O head⁻¹ day⁻¹).
+burned for fuel (kg N₂O/head/day).
 }
 \item{n2o_manure_other_direct}{
 Numeric. Direct nitrous oxide (N₂O) emissions from manure
 management systems, excluding emissions from manure deposited
-on pasture and burned for fuel (kg N₂O head⁻¹ day⁻¹).
+on pasture and burned for fuel (kg N₂O/head/day).
 }
 \item{n2o_manure_all_noburn_direct}{
 Numeric. Direct nitrous oxide (N₂O) emissions from manure
 management systems, excluding manure burned for fuel
-(kg N₂O head⁻¹ day⁻¹).
+(kg N₂O/head/day).
 }
 }
 }
 \description{
 Computes daily direct nitrous oxide (N₂O) emissions from manure management
-using IPCC-based parameters and separates emissions from pasture,
-burned manure, and all other manure management systems.
+using IPCC-based parameters and separates emissions from manure deposited on pasture,
+manure burned for fuel, and all other manure management systems.
 }
 \details{
 This calculation follows the Tier 2 methodology for direct
@@ -78,15 +77,16 @@ in the IPCC Guidelines (Equation 10.25).
 In the IPCC formulation, annual direct emissions are:
 
 \deqn{
-  N₂O_{D,mm} =
+  N₂O_{D(mm)} =
   \frac{44}{28}
-  \sum \left(
+  \sum_{S} \left(
     N \times AWMS_S \times EF3_S
   \right)
 }
 
 where:
 \describe{
+\item{\eqn{N₂O_D(mm)}}{Direct N₂O emissions from Manure Management.}
 \item{\eqn{44/28}}{Conversion factor from N₂O–N to N₂O.}
 \item{\eqn{N}}{Nitrogen excreted (kg N).}
 \item{\eqn{AWMS_S}}{Fraction of excreted nitrogen managed in manure
@@ -97,7 +97,7 @@ management system \eqn{S}.}
 
 In this implementation, calculations are performed at daily,
 per-head resolution using \code{nitrogen_excretion}
-(kg N head⁻¹ day⁻¹). Daily emissions are computed as:
+(kg N/head/day). Daily emissions are computed as:
 
 \deqn{
   N₂O =

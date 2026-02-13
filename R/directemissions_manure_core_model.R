@@ -1,12 +1,12 @@
 #' Calculate Volatile Solids for Manure Emissions
 #'
-#' Computes daily volatile solids (VS) excretion in manure (kg VS head⁻¹ day⁻¹).
+#' Computes daily volatile solids (VS) excretion in manure (kg VS/head/day).
 #' VS represent the organic fraction of manure dry matter,
 #' including both biodegradable and non-biodegradable organic material.
 #' VS is a key intermediate variable required for estimating methane (CH₄)
 #' emissions from manure management systems under IPCC methodologies.
 #'
-#' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg dry matter/head/day).
+#' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #' @param urinary_energy_fraction Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).
 #' @param diet_ash Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).
@@ -20,12 +20,12 @@
 #' **IPCC Equation 10.24 (Volatile solids excretion rates)**, which estimates
 #' daily VS excretion as a function of:
 #'
-#' * Gross energy intake (gross_energy_intake, MJ day⁻¹)
+#' * Gross energy intake (gross_energy_intake, MJ/day)
 #' * Digestibility of the diet (diet_digestibility_fraction)
 #' * Urinary energy expressed as a fraction of GE (urinary_energy_fraction)
-#' * Ash fraction of the diet (diet_ash, fraction of dry matter)
+#' * Ash content of the diet (diet_ash, fraction of dry matter)
 #' * A conversion factor representing the average gross energy content of
-#'   dry matter (18.45 MJ kg⁻¹ DM)
+#'   dry matter (18.45 MJ/kg DM)
 #'
 #' The general structure of Eq. 10.24 partitions gross energy intake into
 #' digestible energy, urinary losses, and ash, and converts the remaining
@@ -39,13 +39,13 @@
 #' \code{\link{calc_dry_matter_intake}} as a function of energy requirements and
 #' the energy content of the diet.
 #'
-#' This reflects the use of ration-specific energy content upstream and avoids
-#' assuming a fixed gross energy density of 18.45 MJ kg⁻¹ DM, as in the IPCC
-#' default approach.
-#'
 #' \deqn{
 #'   dry\_matter\_intake = \frac{gross\_energy\_intake}{diet\_gross\_energy}
 #' }
+#'
+#' This reflects the use of ration-specific energy content upstream and avoids
+#' assuming a fixed gross energy density of 18.45 MJ/kg DM, as in the IPCC
+#' default approach.
 #'
 #' The volatile solids excretion is then calculated as:
 #'
@@ -94,7 +94,7 @@ calc_volatile_solids <- function(
 #' Calculate methane (CH₄) emissions from manure management systems
 #'
 #' Computes daily methane emissions from manure management using IPCC-based parameters and
-#' separates emissions from pasture, burned manure, and all other manure
+#' separates emissions from manure deposited on pasture, manure burned for fuel, and all other manure
 #' management systems.
 #'
 #' @param ratio_m3CH4_to_kgCH4 Numeric. Conversion factor used to convert methane (CH₄) from volumetric unit (m³) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m³.
@@ -120,12 +120,13 @@ calc_volatile_solids <- function(
 #'       temperature of the system, the retention time of the organic material,
 #'       and the degree of anaerobic conditions present. The value theoretically
 #'       ranges from 0 to 100 percent. Default values can be selected from
-#'       Table 10.17 of the IPCC guidelines.
+#'       Table 10.17 of the IPCC guidelines (IPCC 2006, 2019).
 #'     }
 #'     \item{ch4_max_producing_capacity_bo}{
 #'       Numeric. Maximum methane producing capacity (\eqn{B_0}) for all manure
-#'       management systems (m³ CH₄ kg⁻¹ VS). The value is region- and
-#'       species-specific. Default values may be selected from Table 10.16
+#'       management systems (m³ CH₄ / kg VS). The value is region- and
+#'       species-specific, and represents the theoretical maximum methane yield 
+#'       per unit of volatile solids.. Default values may be selected from Table 10.16
 #'       (IPCC, 2019) or from Tables 10A-4 to 10A-9 (IPCC, 2006).
 #'     }
 #'   }
@@ -138,17 +139,17 @@ calc_volatile_solids <- function(
 #' All remaining MMS arguments are grouped and treated as other manure
 #' management systems.
 #'
-#' @return A named list with the following elements (kg CH₄ head⁻¹ day⁻¹):
+#' @return A named list with the following elements:
 #' \describe{
-#'   \item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH₄ head⁻¹ day⁻¹).}
-#'   \item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH₄ head⁻¹ day⁻¹).}
-#'   \item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH₄ head⁻¹ day⁻¹).}
-#'   \item{ch4_manure_all_noburn}{Numeric. Methane (CH₄) emissions from manure management systems, excluding manure burned for fuel (kg CH₄ head⁻¹ day⁻¹).}
+#'   \item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH₄/head/day).}
+#'   \item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH₄/head/day).}
+#'   \item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH₄/head/day).}
+#'   \item{ch4_manure_all_noburn}{Numeric. Methane (CH₄) emissions from manure management systems, excluding manure burned for fuel (kg CH₄/head/day).}
 #' }
 #'
 #' @details
 #' This calculation follows the structure of IPCC Equation 10.23 for
-#' methane CH₄ emission factors from manure management.
+#' methane (CH₄) emission factors from manure management.
 #'
 #' In the IPCC formulation, emissions are determined by combining:
 #' \itemize{
@@ -169,23 +170,9 @@ calc_volatile_solids <- function(
 #'   \sum \left( \frac{mcf}{100} \times manure\_management\_system\_fraction \right)
 #' }
 #'
-#' where:
-#' \describe{
-#'   \item{\code{b0}}{
-#'     Maximum methane-producing capacity
-#'     (m³ CH₄ kg⁻¹ VS), representing the theoretical maximum
-#'     methane yield per unit of volatile solids.
-#'   }
-#'   \item{\code{mcf}}{
-#'     Methane conversion factor (percent), representing the proportion
-#'     of \code{b0} achieved under the specified manure management system
-#'     and climate conditions.
-#'   }
-#' }
-#'
 #' The summation is taken over all manure management systems included in
 #' the calculation. Results are expressed at daily resolution
-#' (kg CH₄ head⁻¹ day⁻¹), consistent with Equation 10.23 after
+#' (kg CH₄/head/day), consistent with Equation 10.23 after
 #' adapting the original annual formulation to a daily basis.
 #'
 #' @examples
@@ -291,14 +278,14 @@ calc_ch4_emissions <- function(
 #' Calculate direct Nitrous Oxide (N₂O) emissions from manure management systems
 #'
 #' Computes daily direct nitrous oxide (N₂O) emissions from manure management
-#' using IPCC-based parameters and separates emissions from pasture,
-#' burned manure, and all other manure management systems.
+#' using IPCC-based parameters and separates emissions from manure deposited on pasture,
+#' manure burned for fuel, and all other manure management systems.
 #'
 #' @param ratio_N2ON_to_N2O Numeric. Conversion factor from kg N₂O–N to kg N₂O,
 #'   based on molecular weights. Defaults to 44/28.
 #'
 #' @param nitrogen_excretion Numeric. Daily nitrogen excretion
-#'   (kg N head⁻¹ day⁻¹).
+#'   (kg N/head/day).
 #'
 #' @param ... A variable number of manure management system (MMS) arguments.
 #'   Each MMS must be provided as a named numeric vector with exactly the
@@ -307,7 +294,7 @@ calc_ch4_emissions <- function(
 #'     \item{manure_management_system_fraction}{
 #'       Numeric. Fraction of total manure excreted by animals in a given
 #'       herd and cohort that is handled in a specific manure management
-#'       system (0–1). The sum of all fractions for each herd_id must equal 1.
+#'       system. Value range from 0 to 1. The sum of all fractions for each herd_id must equal 1.
 #'     }
 #'     \item{n2o_ef3}{
 #'       Numeric. Emission factor for direct nitrous oxide (N₂O)
@@ -316,7 +303,7 @@ calc_ch4_emissions <- function(
 #'       and denitrification processes occurring during manure storage
 #'       and treatment (kg N₂O–N per kg N).
 #'       Default values may be selected from Table 10.21 and Table 11.1
-#'       (for manure deposited on pasture) in the 2006 and 2019 IPCC Guidelines.
+#'       (for manure deposited on pasture) in IPCC Guidelines (IPCC 2006, 2019).
 #'     }
 #'   }
 #'
@@ -328,26 +315,25 @@ calc_ch4_emissions <- function(
 #' All remaining MMS arguments are grouped and treated as other manure
 #' management systems.
 #'
-#' @return A named list with the following elements
-#'   (kg N₂O head⁻¹ day⁻¹):
+#' @return A named list with the following elements:
 #' \describe{
 #'   \item{n2o_manure_pasture_direct}{
 #'     Numeric. Direct nitrous oxide (N₂O) emissions from manure
-#'     deposited on pasture (kg N₂O head⁻¹ day⁻¹).
+#'     deposited on pasture (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_manure_burned_direct}{
 #'     Numeric. Direct nitrous oxide (N₂O) emissions from manure
-#'     burned for fuel (kg N₂O head⁻¹ day⁻¹).
+#'     burned for fuel (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_manure_other_direct}{
 #'     Numeric. Direct nitrous oxide (N₂O) emissions from manure
 #'     management systems, excluding emissions from manure deposited
-#'     on pasture and burned for fuel (kg N₂O head⁻¹ day⁻¹).
+#'     on pasture and burned for fuel (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_manure_all_noburn_direct}{
 #'     Numeric. Direct nitrous oxide (N₂O) emissions from manure
 #'     management systems, excluding manure burned for fuel
-#'     (kg N₂O head⁻¹ day⁻¹).
+#'     (kg N₂O/head/day).
 #'   }
 #' }
 #'
@@ -382,15 +368,16 @@ calc_ch4_emissions <- function(
 #' In the IPCC formulation, annual direct emissions are:
 #'
 #' \deqn{
-#'   N₂O_{D,mm} =
+#'   N₂O_{D(mm)} =
 #'   \frac{44}{28}
-#'   \sum \left(
+#'   \sum_{S} \left(
 #'     N \times AWMS_S \times EF3_S
 #'   \right)
 #' }
 #'
 #' where:
 #' \describe{
+#'   \item{\eqn{N₂O_D(mm)}}{Direct N₂O emissions from Manure Management.}
 #'   \item{\eqn{44/28}}{Conversion factor from N₂O–N to N₂O.}
 #'   \item{\eqn{N}}{Nitrogen excreted (kg N).}
 #'   \item{\eqn{AWMS_S}}{Fraction of excreted nitrogen managed in manure
@@ -401,7 +388,7 @@ calc_ch4_emissions <- function(
 #'
 #' In this implementation, calculations are performed at daily,
 #' per-head resolution using \code{nitrogen_excretion}
-#' (kg N head⁻¹ day⁻¹). Daily emissions are computed as:
+#' (kg N/head/day). Daily emissions are computed as:
 #'
 #' \deqn{
 #'   N₂O =
@@ -475,14 +462,14 @@ calc_direct_n2o_emissions <- function(
 #'
 #' Computes daily indirect nitrous oxide (N₂O) emissions resulting from
 #' atmospheric deposition of volatilised nitrogen (NH₃–N and NOₓ–N) from manure
-#' management systems and separates emissions from pasture, burned manure, and
+#' management systems and separates emissions from manure deposited on pasture, manure burned for fuel, and
 #' all other manure management systems.
 #'
 #' @param ratio_N2ON_to_N2O Numeric. Conversion factor from kg N₂O–N to kg N₂O,
 #'   based on molecular weights. Defaults to 44/28.
 #'
 #' @param nitrogen_excretion Numeric. Daily nitrogen excretion
-#'   (kg N head⁻¹ day⁻¹).
+#'   (kg N/head/day).
 #'
 #' @param ... A variable number of manure management system (MMS) arguments.
 #'   Each MMS must be provided as a named numeric vector with exactly the
@@ -499,8 +486,7 @@ calc_direct_n2o_emissions <- function(
 #'       resulting from atmospheric deposition of volatilised nitrogen
 #'       (NH₃–N and NOₓ–N) onto soils and water surfaces
 #'       (kg N₂O–N per kg NH₃–N + NOₓ–N).
-#'       Default values can be selected from Table 11.3 in the 2006 and
-#'       2019 IPCC Guidelines.
+#'       Default values can be selected from Table 11.3 in IPCC Guidelines (IPCC 2006, 2019).
 #'     }
 #'     \item{nitrogen_fracgas}{
 #'       Numeric. Fraction of manure nitrogen excreted by a given livestock
@@ -509,8 +495,7 @@ calc_direct_n2o_emissions <- function(
 #'       This parameter represents the share of excreted nitrogen that is
 #'       mineralised and released to the atmosphere during manure collection,
 #'       storage, and treatment. It is expressed as a dimensionless fraction
-#'       (0–1). Default values are provided in Table 10.22 of the 2006 and
-#'       2019 IPCC Guidelines.
+#'       (0–1). Default values are provided in Table 10.22 of IPCC Guidelines (IPCC 2006, 2019).
 #'     }
 #'   }
 #'
@@ -522,30 +507,29 @@ calc_direct_n2o_emissions <- function(
 #' All remaining MMS arguments are grouped and treated as other manure
 #' management systems.
 #'
-#' @return A named list with the following elements
-#'   (kg N₂O head⁻¹ day⁻¹):
+#' @return A named list with the following elements:
 #' \describe{
 #'   \item{n2o_vol_manure_pasture}{
 #'     Numeric. Indirect nitrous oxide (N₂O) emissions resulting from
 #'     atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
-#'     from manure deposited on pasture (kg N₂O head⁻¹ day⁻¹).
+#'     from manure deposited on pasture (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_vol_manure_burned}{
 #'     Numeric. Indirect nitrous oxide (N₂O) emissions resulting from
 #'     atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
-#'     from manure burned for fuel (kg N₂O head⁻¹ day⁻¹).
+#'     from manure burned for fuel (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_vol_manure_other}{
 #'     Numeric. Indirect nitrous oxide (N₂O) emissions resulting from
 #'     atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
 #'     from manure management systems, excluding manure deposited on
-#'     pasture and manure burned for fuel (kg N₂O head⁻¹ day⁻¹).
+#'     pasture and manure burned for fuel (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_vol_manure_all_noburn}{
 #'     Numeric. Indirect nitrous oxide (N₂O) emissions resulting from
 #'     atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
 #'     from manure management systems, excluding losses from manure
-#'     burned for fuel (kg N₂O head⁻¹ day⁻¹).
+#'     burned for fuel (kg N₂O/head/day).
 #'   }
 #' }
 #'
@@ -577,31 +561,34 @@ calc_direct_n2o_emissions <- function(
 #' 
 #' @details
 #' This calculation follows the Tier 2 methodology for indirect N₂O 
-#' emissions from manure management as defined in the IPCC
-#' Guidelines (Equations 10.26 and 10.28).
+#' emissions from manure management as defined in the IPCC Guidelines in Equations 10.26 (IPCC, 2006, 2019), 
+#' 10.27 (IPCC, 2006) and 10.28 (IPCC, 2019).
 #'
 #' In the IPCC formulation, indirect emissions from atmospheric deposition
 #' of volatilised nitrogen are calculated as:
 #'
 #' \deqn{
-#'   N₂O_{vol} =
+#'   N₂O_{G(mm)} =
 #'   \frac{44}{28}
 #'   \sum_{S} \left(
-#'     N \times FracGas_{S} \times EF4_{S}
+#'     N \times AWMS_S \times FracGas_{S} \times EF4
 #'   \right)
 #' }
 #'
 #' where:
 #' \describe{
+#'   \item{\eqn{N₂O_G(mm)}}{Indirect N₂O emissions due to volatilization of N from Manure Management.}
 #'   \item{\eqn{44/28}}{Conversion factor from N₂O-N to N₂O.}
 #'   \item{\eqn{N}}{Nitrogen excreted (kg N).}
+#'   \item{\eqn{AWMS_S}}{Fraction of excreted nitrogen managed in manure
+#'     management system \eqn{S}.}
 #'   \item{\eqn{FracGas_{S}}}{Fraction of nitrogen volatilised as NH₃–N and NOₓ–N in manure management system \eqn{S}.}
-#'   \item{\eqn{EF4_{S}}}{Emission factor for indirect N₂O emissions from atmospheric deposition (kg N₂O-N per kg NH₃–N + NOₓ–N).}
+#'   \item{\eqn{EF4}}{Emission factor for indirect N₂O emissions from atmospheric deposition (kg N₂O-N per kg NH₃–N + NOₓ–N).}
 #' }
 #'
 #' In this implementation, calculations are performed at daily,
 #' per-head resolution using \code{nitrogen_excretion}
-#' (kg N head⁻¹ day⁻¹):
+#' (kg N/head/day):
 #'
 #' \deqn{
 #'   N₂O =
@@ -618,7 +605,7 @@ calc_direct_n2o_emissions <- function(
 #' Livestock and Manure Management. Equation 10.26; 10.28.
 #'
 #' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-#' Livestock and Manure Management. Equation 10.26; 10.28.
+#' Livestock and Manure Management. Equation 10.26; 10.27.
 #' 
 #' @export
 calc_n2o_from_volatilization <- function(
@@ -684,13 +671,13 @@ calc_n2o_from_volatilization <- function(
 #'
 #' Computes daily indirect nitrous oxide (N₂O) emissions resulting from nitrogen
 #' leaching and runoff from manure management systems and separates emissions
-#' from pasture, burned manure, and all other manure management systems.
+#' from manure deposited on pasture, manure burned for fuel, and all other manure management systems.
 #'
 #' @param ratio_N2ON_to_N2O Numeric. Conversion factor from kg N₂O–N to kg N₂O,
 #'   based on molecular weights. Defaults to 44/28.
 #'
 #' @param nitrogen_excretion Numeric. Daily nitrogen excretion
-#'   (kg N head⁻¹ day⁻¹).
+#'   (kg N/head/day).
 #'
 #' @param ... A variable number of manure management system (MMS) arguments.
 #'   Each MMS must be provided as a named numeric vector with exactly the
@@ -706,8 +693,8 @@ calc_n2o_from_volatilization <- function(
 #'       Numeric. Emission factor for indirect nitrous oxide (N₂O) emissions
 #'       resulting from nitrogen leaching and runoff, expressed as kilograms of
 #'       N₂O–N per kilogram of nitrogen leached or lost through runoff
-#'       (kg N₂O–N / kg N). Default values can be selected from Table 11.3 in the
-#'       2006 and 2019 IPCC Guidelines.
+#'       (kg N₂O–N / kg N). Default values can be selected from Table 11.3 in 
+#'       IPCC Guidelines (IPCC 2006, 2019).
 #'     }
 #'     \item{nitrogen_fracleach}{
 #'       Numeric. Fraction of manure nitrogen excreted by a given livestock
@@ -715,8 +702,8 @@ calc_n2o_from_volatilization <- function(
 #'       management system. This parameter is highly uncertain and is used to
 #'       estimate indirect N₂O emissions from nitrogen that enters the surrounding
 #'       environment of the storage facility. It is expressed as a dimensionless
-#'       fraction (0–1). Default values are provided in Table 10.22 of the 2006
-#'       and 2019 IPCC Guidelines.
+#'       fraction (0–1). Default values are provided in Table 10.22 of 
+#'       IPCC Guidelines (IPCC 2006, 2019).
 #'     }
 #'   }
 #'
@@ -729,28 +716,27 @@ calc_n2o_from_volatilization <- function(
 #' management systems.
 #'
 #' @return A named list with the following elements
-#'   (kg N₂O head⁻¹ day⁻¹):
 #' \describe{
 #'   \item{n2o_leach_manure_pasture}{
 #'     Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
 #'     runoff of manure nitrogen from manure deposited on pasture
-#'     (kg N₂O head⁻¹ day⁻¹).
+#'     (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_leach_manure_burned}{
 #'     Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
 #'     runoff of manure nitrogen from manure burned for fuel
-#'     (kg N₂O head⁻¹ day⁻¹).
+#'     (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_leach_manure_other}{
 #'     Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
 #'     runoff of manure nitrogen from manure management systems, excluding losses
 #'     from manure deposited on pasture and manure burned for fuel
-#'     (kg N₂O head⁻¹ day⁻¹).
+#'     (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_leach_manure_all_noburn}{
 #'     Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
 #'     runoff of manure nitrogen from manure management systems, excluding losses
-#'     from manure burned for fuel (kg N₂O head⁻¹ day⁻¹).
+#'     from manure burned for fuel (kg N₂O/head/day).
 #'   }
 #' }
 #'
@@ -782,29 +768,33 @@ calc_n2o_from_volatilization <- function(
 #' 
 #' @details
 #' This calculation follows the Tier 2 methodology for indirect N₂O emissions
-#' from manure management as defined in the IPCC Guidelines (Equation 10.28).
+#' from manure management as defined in Equations 10.28 (IPCC, 2006), 10.27 (IPCC, 2019), 
+#' and 10.29 (IPCC, 2006, 2019).
 #'
 #' In the IPCC formulation, indirect emissions associated with nitrogen leaching
 #' and runoff are calculated as:
 #'
 #' \deqn{
-#'   N₂O_{leach} =
+#'   N₂O_{L(mm)} =
 #'   \frac{44}{28}
 #'   \sum_{S} \left(
-#'     N \times FracLeach_{S} \times EF5_{S}
+#'     N \times AWMS_S  \times FracLeach_{S} \times EF5
 #'   \right)
 #' }
 #'
 #' where:
 #' \describe{
+#'   \item{\eqn{N₂O_L(mm)}}{Indirect N₂O emissions due to leaching and runoff from Manure Management.}
 #'   \item{\eqn{44/28}}{Conversion factor from N₂O–N to N₂O.}
 #'   \item{\eqn{N}}{Nitrogen excreted (kg N).}
+#'   \item{\eqn{AWMS_S}}{Fraction of excreted nitrogen managed in manure
+#'     management system \eqn{S}.}
 #'   \item{\eqn{FracLeach_{S}}}{Fraction of nitrogen lost through leaching and runoff in manure management system \eqn{S}.}
-#'   \item{\eqn{EF5_{S}}}{Emission factor for indirect N₂O emissions from leaching and runoff (kg N₂O–N per kg N leached or lost through runoff).}
+#'   \item{\eqn{EF5}}{Emission factor for indirect N₂O emissions from leaching and runoff (kg N₂O–N per kg N leached or lost through runoff).}
 #' }
 #'
 #' In this implementation, calculations are performed at daily, per-head
-#' resolution using \code{nitrogen_excretion} (kg N head⁻¹ day⁻¹):
+#' resolution using \code{nitrogen_excretion} (kg N/head/day):
 #'
 #' \deqn{
 #'   N₂O =
@@ -821,7 +811,7 @@ calc_n2o_from_volatilization <- function(
 #' Chapter 10: Emissions from Livestock and Manure Management. Equations 10.27; 10.29.
 #'
 #' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories},
-#' Volume 4, Chapter 10: Emissions from Livestock and Manure Management. Equations 10.27; 10.29.
+#' Volume 4, Chapter 10: Emissions from Livestock and Manure Management. Equations 10.28; 10.29.
 #' @export
 calc_n2o_from_leaching <- function(
     ratio_N2ON_to_N2O = 44 / 28,
@@ -884,38 +874,38 @@ calc_n2o_from_leaching <- function(
 
 #' Calculate total N₂O emissions from manure
 #'
-#' Aggregates direct and indirect nitrous oxide (N₂O) emissions from manure by
-#' manure management system group (pasture, burned manure and all other systems).
-#' Indirect emissions include contributions from volatilisation and from leaching
+#' Aggregates direct and indirect nitrous oxide (N₂O) emissions from manure, by
+#' manure management system group (deposited on pasture, burned for fuel, and all other systems).
+#' Indirect emissions include contributions from volatilization and from leaching
 #' and runoff.
 #'
 #' @param n2o_vol_manure_pasture Numeric. Indirect nitrous oxide (N₂O) emissions
 #'   resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
-#'   from manure deposited on pasture (kg N₂O head⁻¹ day⁻¹).
+#'   from manure deposited on pasture (kg N₂O/head/day).
 #' @param n2o_leach_manure_pasture Numeric. Indirect nitrous oxide (N₂O) emissions
 #'   resulting from leaching and runoff of manure nitrogen from manure deposited on
-#'   pasture (kg N₂O head⁻¹ day⁻¹).
+#'   pasture (kg N₂O/head/day).
 #' @param n2o_vol_manure_burned Numeric. Indirect nitrous oxide (N₂O) emissions
 #'   resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
-#'   from manure burned for fuel (kg N₂O head⁻¹ day⁻¹).
+#'   from manure burned for fuel (kg N₂O/head/day).
 #' @param n2o_leach_manure_burned Numeric. Indirect nitrous oxide (N₂O) emissions
 #'   resulting from leaching and runoff of manure nitrogen from manure burned for
-#'   fuel (kg N₂O head⁻¹ day⁻¹).
+#'   fuel (kg N₂O/head/day).
 #' @param n2o_vol_manure_other Numeric. Indirect nitrous oxide (N₂O) emissions
 #'   resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
 #'   from manure management systems, excluding manure deposited on pasture and
-#'   manure burned for fuel (kg N₂O head⁻¹ day⁻¹).
+#'   manure burned for fuel (kg N₂O/head/day).
 #' @param n2o_leach_manure_other Numeric. Indirect nitrous oxide (N₂O) emissions
 #'   resulting from leaching and runoff of manure nitrogen from manure management
 #'   systems, excluding losses from manure deposited on pasture and manure burned
-#'   for fuel (kg N₂O head⁻¹ day⁻¹).
+#'   for fuel (kg N₂O/head/day).
 #' @param n2o_manure_pasture_direct Numeric. Direct nitrous oxide (N₂O) emissions
-#'   from manure deposited on pasture (kg N₂O head⁻¹ day⁻¹).
+#'   from manure deposited on pasture (kg N₂O/head/day).
 #' @param n2o_manure_burned_direct Numeric. Direct nitrous oxide (N₂O) emissions
-#'   from manure burned for fuel (kg N₂O head⁻¹ day⁻¹).
+#'   from manure burned for fuel (kg N₂O/head/day).
 #' @param n2o_manure_other_direct Numeric. Direct nitrous oxide (N₂O) emissions
 #'   from manure management systems, excluding emissions from manure deposited on
-#'   pasture and burned for fuel (kg N₂O head⁻¹ day⁻¹).
+#'   pasture and burned for fuel (kg N₂O/head/day).
 #'
 #' @details
 #' The following aggregations are applied:
@@ -950,36 +940,36 @@ calc_n2o_from_leaching <- function(
 #'     Numeric. Total indirect nitrous oxide (N₂O) emissions from manure deposited
 #'     on pasture. Includes emissions from atmospheric deposition of volatilised
 #'     nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen
-#'     (kg N₂O head⁻¹ day⁻¹).
+#'     (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_manure_burned_indirect}{
 #'     Numeric. Total indirect nitrous oxide (N₂O) emissions originating from
 #'     manure burned for fuel. Includes emissions from atmospheric deposition of
 #'     volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure
-#'     nitrogen (kg N₂O head⁻¹ day⁻¹).
+#'     nitrogen (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_manure_other_indirect}{
 #'     Numeric. Total indirect nitrous oxide (N₂O) emissions originating from
 #'     manure management systems, excluding manure deposited on pasture and
 #'     manure burned for fuel. Includes emissions from atmospheric deposition of
 #'     volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure
-#'     nitrogen (kg N₂O head⁻¹ day⁻¹).
+#'     nitrogen (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_manure_pasture_total}{
 #'     Numeric. Total nitrous oxide (N₂O) emissions from manure deposited on
 #'     pasture. Includes direct emissions and indirect emissions from
-#'     volatilisation, leaching, and runoff (kg N₂O head⁻¹ day⁻¹).
+#'     volatilisation, leaching, and runoff (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_manure_burned_total}{
 #'     Numeric. Total nitrous oxide (N₂O) emissions from manure burned for fuel.
 #'     Includes direct emissions and indirect emissions from volatilisation,
-#'     leaching, and runoff (kg N₂O head⁻¹ day⁻¹).
+#'     leaching, and runoff (kg N₂O/head/day).
 #'   }
 #'   \item{n2o_manure_other_total}{
 #'     Numeric. Total nitrous oxide (N₂O) emissions from manure management
 #'     systems, excluding manure deposited on pasture and manure burned for fuel.
 #'     Includes direct emissions and indirect emissions from volatilisation,
-#'     leaching, and runoff (kg N₂O head⁻¹ day⁻¹).
+#'     leaching, and runoff (kg N₂O/head/day).
 #'   }
 #' }
 #'
