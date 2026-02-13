@@ -68,7 +68,7 @@ validate_named_numeric_vector <- function(
 #' @param lower Numeric. Minimum allowed value (default: 0).
 #' @param upper Numeric. Maximum allowed value (default: 1).
 #'
-#' @return Numeric values clamped to `[lower, upper]`, with NA preserved.
+#' @return Numeric values clamped to `[lower, upper]`.
 #' @noRd
 normalize_rate <- function(x, lower = 0, upper = 1) {
   if (!is.numeric(x)) {
