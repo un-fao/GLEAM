@@ -28,7 +28,7 @@
 #' @param average_weight Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).
 #' @param milking_fraction Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
-#' @param afc Numeric. Age at first parturition for female breeding animals (years)
+#' @param afc Numeric. Age at first parturition for female breeding animals (days)
 #'
 #' @return Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal
 #' in equilibrium such that body energy is neither gained nor lost.
@@ -76,7 +76,7 @@
 #'   \item \code{FJ}:
 #'     \eqn{cmain = 0.236}
 #'   \item \code{FS}:
-#'     \eqn{cmain = 0.236 \times (1/afc) + 0.217 \times ((afc - 1)/afc)}
+#'     \eqn{cmain = 0.236 \times (365/afc) + 0.217 \times ((afc - 365)/afc)}
 #'   \item \code{MA}:
 #'     \eqn{cmain = 0.217 \times offtake\_rate + (0.217 \times 1.15) \times (1 - offtake\_rate)}
 #'   \item \code{MJ}:
@@ -156,7 +156,7 @@ calc_net_energy_maintenance <- function(
       cmain <- 0.217
     } else if (cohort == "FS") {
       # Weighted by age at first calving (afc)
-      cmain <- (0.236 * (1 / afc)) + (0.217 * ((afc - 1) / afc))
+      cmain <- (0.236 * (365 / afc)) + (0.217 * ((afc - 365) / afc))
     } else if (cohort == "FJ") {
       cmain <- 0.236
     } else if (cohort == "MA") {
@@ -164,8 +164,8 @@ calc_net_energy_maintenance <- function(
       cmain <- 0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)
     } else if (cohort == "MS") {
       # Complex weighted average for subadult males
-      cmain <- ((0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)) * ((afc - 1) / afc) +
-                  (0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)) * (1 / afc))
+      cmain <- ((0.217 * offtake_rate + 0.217 * 1.15 * (1 - offtake_rate)) * ((afc - 365) / afc) +
+                  (0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)) * (365 / afc))
     } else if (cohort == "MJ") {
       cmain <- 0.236 * offtake_rate + 0.236 * 1.15 * (1 - offtake_rate)
     }
@@ -191,6 +191,7 @@ calc_net_energy_maintenance <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -218,7 +219,7 @@ calc_net_energy_maintenance <- function(
 #' @details
 #' The activity coefficient \code{cact} reflects the animal’s feeding and management conditions.
 #' For CTL, BFL, SHP, and GTS, \code{cact} is calculated as a **weighted average** of the different activity levels over the assessment period.
-#' Reference coefficients are derived from NRC (1996) and AFRC (1993) for CTL, BFL, SHP, and GTS; NRC (1998) for PGS; and Wardeh (2004) for camels.
+#' Reference coefficients are derived from NRC (1996) and AFRC (1993) for CTL, BFL, SHP, and GTS; NRC (1998) for PGS; and Wardeh (2004) for CML.
 #'
 #' @references
 #' NRC (1998). \emph{Nutrient Requirements of Swine},
@@ -287,6 +288,7 @@ calc_net_energy_activity <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -459,7 +461,7 @@ calc_net_energy_growth <- function(
     }
     ret <- ((final_weight - initial_weight) * (a + 0.5 * b * (initial_weight + final_weight))) / duration
   } else if (animal == "PGS") {
-    prot_tissue_frac <- 0.65 
+    prot_tissue_frac <- 0.65
     if (cohort %in% c("FS", "FJ", "MS", "MJ")) {
       cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * 0.9 * 52.3)
       ret <- dwg * cgro
@@ -484,6 +486,7 @@ calc_net_energy_growth <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -511,7 +514,7 @@ calc_net_energy_growth <- function(
 #' @param ckg Numeric. Live body weight of the animal at birth (kg).
 #' @param wkg Numeric. Live body weight of the animal at weaning (kg).
 #' @param lact Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).
-#' @param parturition_rate Numeric. Average annual number of parturitions per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.
+#' @param parturition_rate Numeric. Average annual number of parturition per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (born) occurring during a year divided by the number of adult females potentially able to give birth during that year.
 #'
 #' @return Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #'
@@ -533,9 +536,9 @@ calc_net_energy_growth <- function(
 #' }
 #'
 #' Lactation energy requirements are applied **only to adult females** and are
-#' scaled by the proportion of milked (\code{milking_fraction}) or lactating 
+#' scaled by the proportion of milked (\code{milking_fraction}) or lactating
 #' (\code{parturition_rate}) animals within the cohort.
-#' 
+#'
 #'
 #' In general form, lactation energy is computed as:
 #'
@@ -543,14 +546,14 @@ calc_net_energy_growth <- function(
 #' energy\_lactation =
 #' (milk\_yield \times milking\_fraction + milk\_for\_offspring)
 #' \times energy\_milk
-#' 
+#'
 #' }
 #'
-#' where: 
-#' 
+#' where:
+#'
 #' \code{energy_milk} is a species-specific coefficient representing the
 #' net energy cost of producing one kilogram of milk (MJ kg\eqn{^{-1}})
-#' 
+#'
 #' Species-specific values of \code{energy_milk} are:
 #' \itemize{
 #'   \item \code{CTL}, \code{BFL}: estimated as a function of milk fat content,
@@ -559,27 +562,27 @@ calc_net_energy_growth <- function(
 #'   \item \code{SHP}: 4.6 (AFRC, 1993; AFRC, 1995),
 #'   \item \code{GTS}: 3.0 (AFRC, 1998).
 #'   }
-#' 
+#'
 #' \code{milk_for_offspring} is the daily amount of milk required to rear offspring across the year (kg day\eqn{^{-1}}).
 #' It is calculated assuming that **5 kg of milk are required for each kilogram of live-weight gain up to weaning**, using the equation below.
-#' 
+#'
 #' \deqn{
 #' milk\_for\_offspring =
 #' \frac{parturition\_rate \times 5 \times (wkg - ckg)}
 #' {365} \code(AFRC, 1990)
 #' }
 
-#' 
+#'
 #' For \code{SHP} and \code{GTS}, \code{milk_for_offspring} also accounts for
 #' the average number of offspring per birth by multiplying by \code{litsize}.
-#' 
+#'
 #'
 #' \strong{For PGS} — NRC (1998):
 #'
 #' For pigs, lactation energy accounts only for the milk consumed directly by offspring (\code{milk_for_offspring})
 #' adjusted by the fraction of the reproductive cycle spent in lactation (\code{cadj}),
 #' and is calculated as follows:
-#' 
+#'
 #' \deqn{
 #' energy\_lactation =
 #' litsize \times (1 - 0.5 \times dr1)
@@ -589,7 +592,7 @@ calc_net_energy_growth <- function(
 #' \right)
 #' \times cadj
 #' }
-#' 
+#'
 #' where:
 #' \itemize{
 #'   \item \eqn{0.02059} is the coefficient for lactation energy requirement
@@ -603,7 +606,7 @@ calc_net_energy_growth <- function(
 #'   \item \eqn{wkg} and \eqn{ckg} are live weights at weaning and at birth,
 #'     respectively (kg),
 #'    \item \eqn{cadj} is the fraction of the reproductive cycle spent in lactation calculated as
-#'    
+#'
 #'    \deqn{
 #'    cadj = \frac{lact}{idle + gest + lact}
 #'    }
@@ -713,6 +716,7 @@ calc_net_energy_lactation <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -754,6 +758,7 @@ calc_net_energy_eggs <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -770,17 +775,19 @@ calc_net_energy_eggs <- function(
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
 #' @param nemain Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#' @param work_hours Numeric. Mean daily working time per animal for CTL, BFL and CML, expressed as hours worked per head per day (hours/head/day).
-#' @param draught_fraction Numeric. Fraction of adult males involved in draught work (fraction).
+#' @param work_hours_female Numeric. Average daily working time per adult females for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day). 
+#' @param work_hours_male Numeric. Average daily working time per adult males for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day). 
+#' @param draught_fraction_female Numeric. Fraction of adult females involved in draught work (fraction).
+#' @param draught_fraction_male Numeric. Fraction of adult males involved in draught work (fraction).
 #'
-#' @return Numeric. Energy required for work, used to estimate the energy required for draft power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @return Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #'
 #'@details
 #' Energy for work (\code{energy_work}) represents the additional energy required
 #' to support \strong{draught power generation} by working animals.
 #'
 #' This component is applied only to draught-capable species and is scaled by
-#' the fraction of adult males involved in draught work (\code{draught_fraction})
+#' the fraction of adult animals involved in draught work (\code{draught_fraction})
 #' and their average daily working time (\code{work_hours}).
 #'
 #' \strong{CTL and BFL} - Bamualim & Kartiarso (1985); IPCC (2006, 2019).
@@ -794,7 +801,7 @@ calc_net_energy_eggs <- function(
 #' where:
 #' \itemize{
 #'   \item \eqn{energy\_work} is net energy required for maintenance (MJ head\eqn{^{-1}} day\eqn{^{-1}}),
-#'   \item \eqn{0.1} represents a 10\% increase in maintenance energy per hour of work,
+#'   \item \eqn{0.1} represents a 10% increase in maintenance energy per hour of work,
 #'   \item \eqn{work\_hours} is the mean number of hours worked per animal per day,
 #'   \item \eqn{draught\_fraction} is the fraction of adult males performing draught work.
 #' }
@@ -835,24 +842,34 @@ calc_net_energy_work <- function(
     animal,
     cohort,
     nemain,
-    work_hours,
-    draught_fraction
+    work_hours_female,
+    work_hours_male,
+    draught_fraction_female,
+    draught_fraction_male
 ) {
   # Validate inputs
-  validate_work_inputs(animal, cohort, nemain, work_hours, draught_fraction)
+  validate_work_inputs(animal, cohort, nemain,  
+                       work_hours_female,
+                       work_hours_male,
+                       draught_fraction_female,
+                       draught_fraction_male)
+  
   # Only adult males (MA) work
   if (animal %in% c("CTL", "BFL")) {
-    if (cohort != "MA") {
-      ret <- 0
+    if (cohort == "MA") {
+      ret <- 0.1 * nemain * work_hours_male * draught_fraction_male
+    } else if (cohort == "FA") {  
+      ret <- 0.1 * nemain * work_hours_female * draught_fraction_female
     } else {
-      # 0.1 coefficient: GLEAM standard for work
-      ret <- 0.1 * nemain * work_hours * draught_fraction
+      ret <- 0
     }
   } else if (animal %in% c("CML")) {
-    if (cohort != "MA") {
-      ret <- 0
+    if (cohort == "MA") {
+      ret <- 4 * work_hours_male * draught_fraction_male
+    } else if (cohort == "FA") {  
+      ret <- 4 * work_hours_female * draught_fraction_female
     } else {
-      ret <- 4 * work_hours * draught_fraction
+      ret <- 0
     }
   } else if (animal %in% c("SHP", "GTS", "PGS", "CHK")) {
     ret <- 0 # No work for these species
@@ -1037,7 +1054,7 @@ calc_net_energy_fibre <- function(
 #' Pregnancy energy is calculated **only for female cohorts**
 #' (i.e., \code{FA} and \code{FS}) and represents the additional
 #' energy required to support gestation.
-#' 
+#'
 #' For \code{FA}, pregnancy energy requirements are adjusted to account
 #' for the proportion of time animals spend in gestation.
 #'
@@ -1047,7 +1064,7 @@ calc_net_energy_fibre <- function(
 #'
 #' \itemize{
 #'   \item For \strong{CTL and BFL} — IPCC (2006, 2019):
-#'   
+#'
 #'   Pregnancy energy is approximated as 10% of maintenance energy.
 #'   \itemize{
 #'     \item \code{FA}:
@@ -1064,7 +1081,7 @@ calc_net_energy_fibre <- function(
 #'   }
 #'
 #'   \item For \strong{CML} — Wardeh (2004):
-#'   
+#'
 #'   Pregnancy energy is estimated as 12% of maintenance energy.
 #'   \itemize{
 #'     \item \code{FA}:
@@ -1081,7 +1098,7 @@ calc_net_energy_fibre <- function(
 #'   }
 #'
 #'   \item For \strong{SHP and GTS} — IPCC (2006, 2019):
-#'   
+#'
 #'   Pregnancy energy is calculated as a litter-size–dependent fraction
 #'   of maintenance energy.
 #'   \itemize{
@@ -1099,7 +1116,7 @@ calc_net_energy_fibre <- function(
 #'         \item If \eqn{litsize > 2}:
 #'           \deqn{cpreg = 0.150}
 #'       }
-#'     \item \code{FS} - 
+#'     \item \code{FS} -
 #'       Pregnancy energy is calculated using the single-birth coefficient
 #'       and scaled to the proportion of reproductive individuals in the cohort.
 #'       \deqn{
@@ -1110,7 +1127,7 @@ calc_net_energy_fibre <- function(
 #'   }
 #'
 #'   \item For \strong{PGS} — NRC (1998):
-#'   
+#'
 #'   \itemize{
 #'     \item \code{FA}:
 #'       \deqn{
@@ -1196,8 +1213,8 @@ calc_net_energy_pregnancy <- function(
       ret <- 0
     }
   } else if (animal == "PGS") {
-    cgest <- 0.14985 
-    
+    cgest <- 0.14985
+
     if (cohort == "FA") {
       ret <- cgest * litsize * gest / (idle + gest + lact)
 
@@ -1313,40 +1330,30 @@ calc_reg_growth <- function(
 #'
 #' Computes the **total daily energy requirement** (MJ/head/day) by summing
 #' relevant energy partitions (maintenance, activity, lactation, work, pregnancy,
-#' growth, fibre, egg production).
+#' growth, fibre, egg deposition).
 #'
 #' @param animal Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param cohort Character. Sex- and age-specific cohort code describing the
-#'   production stage of the animals. Supported values include:
-#'   \itemize{
-#'     \item \code{FA}: adult females (from age at first parturition)
-#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{MA}: adult males (from age at first breeding)
-#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'     \item \code{MJ}: juvenile males (from birth to weaning)
-#'   }
 #' @param nemain Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#' @param neact Numeric. Energy required for activity, defined as the amount of energy needed to obtain food, water and shelter (example stall, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' @param neact Numeric. Energy required for activity, defined as the amount of energy needed to obtain feed, water and shelter (example stall feeding, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param nelact Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param nework Numeric. Energy required for work, used to estimate the energy required for draft power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param nepreg Numeric. Energy required for pregnancy for pregnant adult females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#' @param rem Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)
+#' @param rem Numeric. Ratio of net energy available for growth in a diet to digestible energy consumed (fraction).
 #' @param negrow Numeric. Energy required for growth (i.e., weight gain). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param nefibre Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#' @param neegg Numeric. Net energy for egg production.
-#' @param reg Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)
+#' @param neegg Numeric. Energy required for egg deposition for CHK (MJ/head/day).
+#' @param reg Numeric. Ratio of net energy available for growth in a diet to digestible energy consumed (fraction).
 #' @param diet_dig Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
-#' @param afc Numeric. Age at first parturition for female breeding animals (years)
 #'
 #' @return Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS
 #'   this is expressed as **gross energy intake requirement (GE)**. For CML and PGS
@@ -1413,10 +1420,8 @@ calc_reg_growth <- function(
 #' Livestock and Manure Management, Equation 10.16.
 #'
 #' @export
-
 calc_total_energy_requirement <- function(
     animal,
-    cohort,
     nemain,
     neact,
     nelact,
@@ -1427,13 +1432,12 @@ calc_total_energy_requirement <- function(
     nefibre,
     neegg,
     reg,
-    diet_dig,
-    afc
+    diet_dig
 ) {
   # Validate inputs
   validate_total_energy_inputs(
-    animal, cohort, nemain, neact, nelact, nework, nepreg,
-    rem, negrow, nefibre, neegg, reg, diet_dig, afc
+    animal, nemain, neact, nelact, nework, nepreg,
+    rem, negrow, nefibre, neegg, reg, diet_dig
   )
   # Cattle, buffalo: sum maintenance, activity, lactation, work, pregnancy, growth
   if (animal %in% c("CTL", "BFL")) {
@@ -1457,20 +1461,21 @@ calc_total_energy_requirement <- function(
 #' animal's daily energy requirement and the diet energy density.
 #'
 #' This function follows the IPCC Tier 2, logic.
-#' Dry matter intake by dividing the appropriate daily energy requirement by the
-#' corresponding diet energy content (MJ per kg DM).
+#' Dry matter intake is calculated by dividing the appropriate daily energy requirement by the
+#' corresponding diet energy density (MJ per kg DM).
 #'
 #' @param animal Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param total_energy "Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as **gross energy intake requirement (GE)**. For CML and PGS the function returns the summed daily metabolizable energy requirement.
+#' @param total_energy Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as **gross energy intake requirement (GE)**. For CML and PGS the function returns the summed daily metabolizable energy requirement.
 #' @param diet_ge Numeric. Average gross energy content of the diet (MJ/kg DM).
 #' @param diet_me Numeric. Average metabolizable energy content of the diet (MJ/kg DM).
 #'

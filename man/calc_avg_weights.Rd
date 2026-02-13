@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights_core_model.R
 \name{calc_avg_weights}
 \alias{calc_avg_weights}
-\title{Calculate Average and Final Live Weights by Cohort}
+\title{Calculate average and final live weights by cohort}
 \usage{
 calc_avg_weights(
   live_weight_cohort_initial,
@@ -28,7 +28,8 @@ A named list with:
 }
 }
 \description{
-Computes the average and final live weight of a cohort based on initial weight,
+Computes the average and final live weight for a given
+sex–age cohort based on initial weight,
 potential final weight, slaughter weight, and the offtake rate.
 }
 \details{

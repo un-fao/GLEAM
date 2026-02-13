@@ -64,28 +64,36 @@ validate_named_numeric_vector <- function(
 #' Validate inputs for compute_fecundity_rates
 #'
 #' @noRd
-validate_fecundity_inputs <- function(parturition_rate, litsize, fem_birth_fraction) {
+validate_fecundity_inputs <- function(
+    parturition_rate,
+    litter_size,
+    birth_fraction_female
+) {
   validate_scalar_numeric(parturition_rate, "parturition_rate")
-  validate_scalar_numeric(litsize, "litsize")
-  validate_scalar_numeric(fem_birth_fraction, "fem_birth_fraction")
+  validate_scalar_numeric(litter_size, "litter_size")
+  validate_scalar_numeric(birth_fraction_female, "birth_fraction_female")
 
   # Enforce configured bounds
   validate_param_range(parturition_rate)
-  validate_param_range(litsize)
-  validate_param_range(fem_birth_fraction)
+  validate_param_range(litter_size)
+  validate_param_range(birth_fraction_female)
 }
 
 #' Validate inputs for compute_transition_probabilities
 #'
 #' @noRd
-validate_transition_inputs <- function(duration, offtake_rate, mort_rate) {
-  validate_named_numeric_vector(duration, "duration", 6)
+validate_transition_inputs <- function(
+    cohort_duration_days,
+    offtake_rate,
+    death_rate
+) {
+  validate_named_numeric_vector(cohort_duration_days, "cohort_duration_days", 6)
   validate_named_numeric_vector(offtake_rate, "offtake_rate", 6)
-  validate_named_numeric_vector(mort_rate, "mort_rate", 6)
+  validate_named_numeric_vector(death_rate, "death_rate", 6)
 
   # Enforce configured bounds
-  validate_param_range(duration)
-  validate_param_range(mort_rate)
+  validate_param_range(cohort_duration_days)
+  validate_param_range(death_rate)
   validate_param_range(offtake_rate)
 }
 
@@ -93,14 +101,14 @@ validate_transition_inputs <- function(duration, offtake_rate, mort_rate) {
 #'
 #' @noRd
 validate_steady_state_inputs <- function(
-    initial_structure,
-    max_years,
+    initial_herd_structure,
+    max_simulation_years,
     min_lambda_change,
-    fem_fec,
-    mal_fec,
-    prob_death,
-    prob_offtake,
-    prob_growth
+    fecundity_female,
+    fecundity_male,
+    probability_death,
+    probability_offtake,
+    probability_growth
 ) {
   # Define expected names
   six_cohort_names <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
@@ -108,38 +116,38 @@ validate_steady_state_inputs <- function(
 
   # Vector inputs with required names
   validate_named_numeric_vector(
-    initial_structure, "initial_structure", 6, expected_names = six_cohort_names
+    initial_herd_structure, "initial_herd_structure", 6, expected_names = six_cohort_names
   )
   validate_named_numeric_vector(
-    prob_death, "prob_death", 10, expected_names = ten_cohort_names
+    probability_death, "probability_death", 10, expected_names = ten_cohort_names
   )
   validate_named_numeric_vector(
-    prob_offtake, "prob_offtake", 10, expected_names = ten_cohort_names
+    probability_offtake, "probability_offtake", 10, expected_names = ten_cohort_names
   )
   validate_named_numeric_vector(
-    prob_growth, "prob_growth", 10, expected_names = ten_cohort_names
+    probability_growth, "probability_growth", 10, expected_names = ten_cohort_names
   )
 
   # Scalar numeric inputs
-  validate_scalar_numeric(max_years, "max_years")
+  validate_scalar_numeric(max_simulation_years, "max_simulation_years")
   validate_scalar_numeric(min_lambda_change, "min_lambda_change")
-  validate_scalar_numeric(fem_fec, "fem_fec")
-  validate_scalar_numeric(mal_fec, "mal_fec")
+  validate_scalar_numeric(fecundity_female, "fecundity_female")
+  validate_scalar_numeric(fecundity_male, "fecundity_male")
 }
 
 #' Validate inputs for project_population_size
 #'
 #' @noRd
 validate_population_size_inputs <- function(
-    size_total,
-    fem_fec,
-    mal_fec,
-    prob_death,
-    prob_offtake,
-    prob_growth,
-    growth_rate_pop,
-    structure,
-    share
+    herd_size_total,
+    fecundity_female,
+    fecundity_male,
+    probability_death,
+    probability_offtake,
+    probability_growth,
+    growth_rate_herd,
+    herd_structure,
+    cohort_share
 ) {
   # Expected cohort names
   six_cohort_names <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
@@ -148,44 +156,44 @@ validate_population_size_inputs <- function(
 
   # Named vector inputs with required names
   validate_named_numeric_vector(
-    prob_death, "prob_death", 10, expected_names = ten_cohort_names
+    probability_death, "probability_death", 10, expected_names = ten_cohort_names
   )
   validate_named_numeric_vector(
-    prob_offtake, "prob_offtake", 10, expected_names = ten_cohort_names
+    probability_offtake, "probability_offtake", 10, expected_names = ten_cohort_names
   )
   validate_named_numeric_vector(
-    prob_growth, "prob_growth", 10, expected_names = ten_cohort_names
+    probability_growth, "probability_growth", 10, expected_names = ten_cohort_names
   )
   validate_named_numeric_vector(
-    structure, "structure", 8, expected_names = eight_cohort_names
+    herd_structure, "herd_structure", 8, expected_names = eight_cohort_names
   )
   validate_named_numeric_vector(
-    share, "share", 6, expected_names = six_cohort_names
+    cohort_share, "cohort_share", 6, expected_names = six_cohort_names
   )
 
   # Scalar numeric inputs
-  validate_scalar_numeric(size_total, "size_total")
-  validate_scalar_numeric(fem_fec, "fem_fec")
-  validate_scalar_numeric(mal_fec, "mal_fec")
-  validate_scalar_numeric(growth_rate_pop, "growth_rate_pop")
+  validate_scalar_numeric(herd_size_total, "herd_size_total")
+  validate_scalar_numeric(fecundity_female, "fecundity_female")
+  validate_scalar_numeric(fecundity_male, "fecundity_male")
+  validate_scalar_numeric(growth_rate_herd, "growth_rate_herd")
 
   # Enforce configured bounds
-  validate_param_range(size_total)
+  validate_param_range(herd_size_total)
 }
 
 #' Validate inputs for summarise_offtake
 #'
 #' @noRd
 validate_offtake_summary_inputs <- function(
-    size,
-    size_end,
-    size_avg,
-    offtake,
-    assessment_duration
+    cohort_stock_start,
+    cohort_stock_end_projected,
+    cohort_stock_average,
+    cohort_offtake_heads,
+    simulation_duration
 ) {
-  validate_named_numeric_vector(size, "size", 6)
-  validate_named_numeric_vector(size_end, "size_end", 6)
-  validate_named_numeric_vector(size_avg, "size_avg", 6)
-  validate_named_numeric_vector(offtake, "offtake", 10)
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
+  validate_named_numeric_vector(cohort_stock_start, "cohort_stock_start", 6)
+  validate_named_numeric_vector(cohort_stock_end_projected, "cohort_stock_end_projected", 6)
+  validate_named_numeric_vector(cohort_stock_average, "cohort_stock_average", 6)
+  validate_named_numeric_vector(cohort_offtake_heads, "cohort_offtake_heads", 10)
+  validate_scalar_numeric(simulation_duration, "simulation_duration")
 }

@@ -5,49 +5,49 @@
 \title{Project One Year of Steady-State Population Dynamics}
 \usage{
 project_population_size(
-  size_total,
-  fem_fec,
-  mal_fec,
-  prob_death,
-  prob_offtake,
-  prob_growth,
-  growth_rate_pop,
-  structure,
-  share
+  herd_size_total,
+  fecundity_female,
+  fecundity_male,
+  probability_death,
+  probability_offtake,
+  probability_growth,
+  growth_rate_herd,
+  herd_structure,
+  cohort_share
 )
 }
 \arguments{
-\item{size_total}{Numeric. Total population size at the start of the year.}
+\item{herd_size_total}{Numeric. Total population size at the start of the year.}
 
-\item{fem_fec}{Numeric. Daily female births per adult female.}
+\item{fecundity_female}{Numeric. Daily female births per adult female.}
 
-\item{mal_fec}{Numeric. Daily male births per adult female.}
+\item{fecundity_male}{Numeric. Daily male births per adult female.}
 
-\item{prob_death}{Named numeric vector of length 10. Daily death probabilities. Must be named using:
+\item{probability_death}{Named numeric vector of length 10. Daily death probabilities. Must be named using:
 \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}, \code{MC}.}
 
-\item{prob_offtake}{Named numeric vector of length 10. Daily offtake probabilities.
-Names must match those in \code{prob_death}.}
+\item{probability_offtake}{Named numeric vector of length 10. Daily offtake probabilities.
+Names must match those in \code{probability_death}.}
 
-\item{prob_growth}{Named numeric vector of length 10. Transition probabilities to next age class.
-Names must match those in \code{prob_death}.}
+\item{probability_growth}{Named numeric vector of length 10. Transition probabilities to next age class.
+Names must match those in \code{probability_death}.}
 
-\item{growth_rate_pop}{Numeric. Annual population growth rate.}
+\item{growth_rate_herd}{Numeric. Annual population growth rate.}
 
-\item{structure}{Named numeric vector of length 8. Final population share in 8 classes. Must be named:
+\item{herd_structure}{Named numeric vector of length 8. Final population share in 8 classes. Must be named:
 \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}.}
 
-\item{share}{Named numeric vector of length 6. Final population share in 6 grouped classes. Must be named:
+\item{cohort_share}{Named numeric vector of length 6. Final population share in 6 grouped classes. Must be named:
 \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.}
 }
 \value{
 A named list with:
 \describe{
-\item{size}{Size in 6 sex-age classes at the start of the year.}
-\item{size_end}{Size at year end (projected using growth rate).}
-\item{size_end_exact}{Size at year end (based on full simulation over 366 days).}
-\item{size_avg}{Average population size over the year.}
-\item{offtake}{Total offtake over the year per sex-age class.}
+\item{cohort_stock_start}{Size in 6 sex-age classes at the start of the year.}
+\item{cohort_stock_end_projected}{Size at year end (projected using growth rate).}
+\item{cohort_stock_end_exact_simulated}{Size at year end (based on full simulation over 366 days).}
+\item{cohort_stock_average}{Average population size over the year.}
+\item{cohort_offtake_heads}{Total offtake over the year per sex-age class.}
 }
 }
 \description{

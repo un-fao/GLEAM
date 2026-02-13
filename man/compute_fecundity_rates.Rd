@@ -4,26 +4,26 @@
 \alias{compute_fecundity_rates}
 \title{Compute Daily Fecundity Rates}
 \usage{
-compute_fecundity_rates(parturition_rate, litsize, fem_birth_fraction)
+compute_fecundity_rates(parturition_rate, litter_size, birth_fraction_female)
 }
 \arguments{
 \item{parturition_rate}{Numeric. Parturition rate (probability of an adult female to give birth).}
 
-\item{litsize}{Numeric. Prolificacy rate (mean number of offspring per parturition).}
+\item{litter_size}{Numeric. Prolificacy rate (mean number of offspring per parturition).}
 
-\item{fem_birth_fraction}{Numeric. Female birth ratio (probability that an offspring is female).}
+\item{birth_fraction_female}{Numeric. Female birth ratio (probability that an offspring is female).}
 }
 \value{
 A named list with two elements:
 \describe{
-\item{fem_fec}{Daily number of female offspring per adult female.}
-\item{mal_fec}{Daily number of male offspring per adult female.}
+\item{fecundity_female}{Daily number of female offspring per adult female.}
+\item{fecundity_male}{Daily number of male offspring per adult female.}
 }
 }
 \description{
 Calculates the daily number of male and female offspring produced per adult female.
 }
 \examples{
-compute_fecundity_rates(parturition_rate = 0.8, litsize = 2, fem_birth_fraction = 0.5)
+compute_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)
 
 }

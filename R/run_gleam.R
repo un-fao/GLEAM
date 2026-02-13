@@ -87,18 +87,16 @@ run_gleam <- function(
 
   gleam_data <- weights_results$cohort_level_results
 
-  # --- Step 3: Merge feed rations and run feed --------------------------------
-  gleam_data <- merge(
-    gleam_data,
-    feed_rations_args$feed_rations,
-    by = "herd_id",
-    all.x = TRUE,
-    allow.cartesian = TRUE
+  # --- Step 3: Summarize feed rations and merge -------------------------------
+  feed_rations_summary <- run_feed_rations(
+    rations_share = feed_rations_args$feed_rations,
+    feed_params = feed_rations_args$feed_params
   )
 
-  gleam_data <- run_feed_rations(
-    rations_share = gleam_data,
-    feed_params = feed_rations_args$feed_params
+  gleam_data <- merge(
+    gleam_data,
+    feed_rations_summary,
+    by = c("herd_id", "cohort_short")
   )
 
   return(gleam_data)

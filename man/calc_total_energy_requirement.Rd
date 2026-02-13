@@ -6,7 +6,6 @@
 \usage{
 calc_total_energy_requirement(
   animal,
-  cohort,
   nemain,
   neact,
   nelact,
@@ -17,8 +16,7 @@ calc_total_energy_requirement(
   nefibre,
   neegg,
   reg,
-  diet_dig,
-  afc
+  diet_dig
 )
 }
 \arguments{
@@ -27,26 +25,16 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
+\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
-production stage of the animals. Supported values include:
-\itemize{
-\item \code{FA}: adult females (from age at first parturition)
-\item \code{FS}: sub-adult females (from weaning to age at first parturition)
-\item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{MA}: adult males (from age at first breeding)
-\item \code{MS}: sub-adult males (from weaning to age at first breeding)
-\item \code{MJ}: juvenile males (from birth to weaning)
-}}
-
 \item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{neact}{Numeric. Energy required for activity, defined as the amount of energy needed to obtain food, water and shelter (example stall, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{neact}{Numeric. Energy required for activity, defined as the amount of energy needed to obtain feed, water and shelter (example stall feeding, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
 \item{nelact}{Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
@@ -54,19 +42,17 @@ production stage of the animals. Supported values include:
 
 \item{nepreg}{Numeric. Energy required for pregnancy for pregnant adult females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{rem}{Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)}
+\item{rem}{Numeric. Ratio of net energy available for growth in a diet to digestible energy consumed (fraction).}
 
 \item{negrow}{Numeric. Energy required for growth (i.e., weight gain). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
 \item{nefibre}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{neegg}{Numeric. Net energy for egg production.}
+\item{neegg}{Numeric. Energy required for egg deposition for CHK (MJ/head/day).}
 
-\item{reg}{Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)}
+\item{reg}{Numeric. Ratio of net energy available for growth in a diet to digestible energy consumed (fraction).}
 
 \item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
-
-\item{afc}{Numeric. Age at first parturition for female breeding animals (years)}
 }
 \value{
 Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS
@@ -76,7 +62,7 @@ the function returns the summed daily metabolizable energy requirement.
 \description{
 Computes the \strong{total daily energy requirement} (MJ/head/day) by summing
 relevant energy partitions (maintenance, activity, lactation, work, pregnancy,
-growth, fibre, egg production).
+growth, fibre, egg deposition).
 }
 \details{
 The total energy requirement is computed differently depending on whether

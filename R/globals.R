@@ -17,7 +17,10 @@ utils::globalVariables(c(
   "animal_short",
   "COUNTRY", "HerdType_short", "LPS_short", "MFSKG", "MMSKG", "WA", "afc", "ckg",
   "cohort", "count", "daily_weight_gain", "duration", "duration.FA", "duration.FJ", "duration.FS",
+  "cohort_duration_days", "death_rate",
   "duration.MA", "duration.MJ", "duration.MS", "dwg", "female_birth_fraction", "fem_fec",
+  "birth_fraction_female", "litter_size", "herd_size_total",
+  "fecundity_female", "fecundity_male",
   "herd_id", "has_all_cohorts", "missing_cohorts", "n_unique", "index", "N",  # Variables used in run_herd_simulation
   "prob_growth.FA", "prob_growth.FB", "prob_growth.FC", "prob_growth.FJ", "prob_growth.FS",
   "prob_growth.MA", "prob_growth.MB", "prob_growth.MC", "prob_growth.MJ", "prob_growth.MS",
@@ -37,13 +40,14 @@ utils::globalVariables(c(
   "size_avg.FS", "size_avg.MA", "size_avg.MJ", "size_avg.MS", "size_end.FA",
   "size_end.FJ", "size_end.FS", "size_end.MA", "size_end.MJ", "size_end.MS",
   "size_total", "slaughter_weight", "structure.FA", "structure.FB", "structure.FJ",
+  "probability_death", "probability_offtake", "probability_survival", "probability_growth",
+  "cohort_stock_size", "offtake_heads", "offtake_heads_assessment", "growth_rate_herd",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
   "variable", "wkg", "variable_name", "offtake_number_assessment",
   # Columns used in run_weights_calculations and validate_weights_inputs
   "cohort", "cohort_short", "cohort_duration_days",
   "live_weight_female_adult", "live_weight_male_adult",
-  "birth_weight", "slaughter_weight_female", "slaughter_weight_male",
-  "weaning_weight",
+  "birth_weight", "slaughter_weight_female", "slaughter_weight_male", "weaning_weight",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
   "slaughter_weight_cohort", "live_weight_cohort_average",
   "live_weight_cohort_final", "animal"
@@ -64,10 +68,17 @@ utils::globalVariables(c(
   "feed_digestibility_fraction_ruminant", "feed_digestibility_fraction_pigs",
   "feed_digestibility_fraction_chicken",
   "diet_dig", "diet_ge", "diet_me", "feed_ration_sum",
+  "dry_matter_intake", "nitrogen_excretion", "volatile_solids", "total_fraction",
+  "n2o_vol_manure_pasture", "n2o_vol_manure_burned", "n2o_vol_manure_other",
+  "n2o_leach_manure_pasture", "n2o_leach_manure_burned", "n2o_leach_manure_other",
+  "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
+  "manure_management_system", "mms_list", "mms_list_fraction", "mms_list_factors",
+  "unique_mms_sets",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
   # Columns used in run_directemissions_manure
-  "dmi", "n_excretion", "ef4", "ef5", "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
+  "dmi", "n_excretion", "ef4", "ef5", "urinary_energy_fraction", "diet_ash",
+  "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
   "mmsdaily", "mmssolid", "mmssolidcov", "mmssolidbulk", "mmssolidadd", "mmsdrylot",
   "mmspit1", "mmspit3", "mmspit4", "mmspit6", "mmspit12",
   "mmsliquid1", "mmsliquid3", "mmsliquid4", "mmsliquid6", "mmsliquid12",
@@ -116,6 +127,8 @@ utils::globalVariables(c(
   "milk_fat", "milk_yield", "milking_fraction", "high_activity_fraction", "neact",
   "neegg", "nefibre", "negrow", "nelact", "nemain", "nepreg",
   "nework", "activity_fraction", "reg", "rem", "work_hours",
+  "work_hours_female", "work_hours_male", "draught_fraction_female",
+  "draught_fraction_male",
   "adult_weight"  # Variable used in run_energy_requirements
 ))
 

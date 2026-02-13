@@ -210,20 +210,28 @@ validate_work_inputs <- function(
     animal,
     cohort,
     nemain,
-    work_hours,
-    draught_fraction
+    work_hours_female,
+    work_hours_male,
+    draught_fraction_female,
+    draught_fraction_male
 ) {
   validate_animal_species(animal)
   validate_cohort_code(cohort)
   validate_positive_numeric(nemain, "nemain")
-  validate_scalar_numeric(work_hours, "work_hours")
-  validate_scalar_numeric(draught_fraction, "draught_fraction")
-  validate_fraction(draught_fraction, "draught_fraction")
-  
+  validate_scalar_numeric(work_hours_female, "work_hours_female")
+  validate_scalar_numeric(work_hours_male, "work_hours_male")
+  validate_scalar_numeric(draught_fraction_female, "draught_fraction_female")
+  validate_fraction(draught_fraction_female, "draught_fraction_female")
+  validate_scalar_numeric(draught_fraction_male, "draught_fraction_male")
+  validate_fraction(draught_fraction_male, "draught_fraction_male")
   
 
-  if (work_hours < 0 || work_hours > 24) {
-    cli::cli_abort("{.arg work_hours} must be between 0 and 24.")
+  if (work_hours_female < 0 || work_hours_female > 24) {
+    cli::cli_abort("{.arg work_hours_female} must be between 0 and 24.")
+  }
+  
+  if (draught_fraction_male < 0 || draught_fraction_male > 24) {
+    cli::cli_abort("{.arg draught_fraction_male} must be between 0 and 24.")
   }
 }
 
@@ -329,7 +337,6 @@ validate_reg_inputs <- function(
 #' @noRd
 validate_total_energy_inputs <- function(
     animal,
-    cohort,
     nemain,
     neact,
     nelact,
@@ -340,11 +347,9 @@ validate_total_energy_inputs <- function(
     nefibre,
     neegg,
     reg,
-    diet_dig,
-    afc
+    diet_dig
 ) {
   validate_animal_species(animal)
-  validate_cohort_code(cohort)
   validate_scalar_numeric(nemain, "nemain")
   validate_scalar_numeric(neact, "neact")
   validate_scalar_numeric(nelact, "nelact")
@@ -372,11 +377,6 @@ validate_total_energy_inputs <- function(
     }
     validate_scalar_numeric(rem, "rem")
     validate_scalar_numeric(reg, "reg")
-  }
-
-  # Validate afc for sheep and goats
-  if (animal %in% c("SHP", "GTS")) {
-    if (!is.na(afc)) validate_positive_numeric(afc, "afc")
   }
 }
 
