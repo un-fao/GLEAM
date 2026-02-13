@@ -52,7 +52,7 @@ run_feed_production_emissions <- function(
   # --- Step 2: Merge ration shares with feed emission parameters ---------------
   feed_emissions_detailed <- merge(
     rations_share, feed_emissions,
-    by = "feed_id", all.x = TRUE, allow.cartesian = TRUE
+    by = "feed_id", all.x = TRUE
   )
   
   # --- Step 3: Calculate cohort feed contributions ----------------------------
