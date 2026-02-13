@@ -17,7 +17,7 @@
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }}
-#'   \item{cohort_short}{Character scalar. Sex- and age-specific cohort code describing the
+#'   \item{cohort_short}{Character Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -87,32 +87,55 @@
 #'   }
 #'   
 #' @details
-#' The function computes greenhouse gas (GHG) emissions from feed production by
-#' weighting feed-specific emission factors by their share in the diet
-#' (`feed_ration_fraction`). Each emission factor corresponds to a specific
-#' source.
+#' The calculation pipeline is:
 #'
-#' For each feed item \(i\), the contribution of a given emission source is:
+#' \enumerate{
+#'
+#'   \item \strong{Merge ration shares with emission factors} using \code{\link[base]{merge}} on
+#'   \code{feed_id} (left join: \code{all.x = TRUE}), creating a feed-item–level table.
+#'
+#'   \item \strong{Compute feed-item contributions} (row-wise) for each emission source by
+#'   multiplying \code{feed_ration_fraction} by the corresponding feed emission factor.
+#'   Each contribution is computed using the specific helper below (called with \code{by = .I}):
+#'   \itemize{
+#'     \item CO₂ fertilizer: \code{\link{calc_diet_co2_feed_fertilizer}}
+#'     \item CO₂ pesticides: \code{\link{calc_diet_co2_feed_pesticides}}
+#'     \item CO₂ crop operations: \code{\link{calc_diet_co2_feed_crop_operations}}
+#'     \item CO₂ land-use change (no peat): \code{\link{calc_diet_co2_feed_luc_nopeat}}
+#'     \item CO₂ land-use change (peat): \code{\link{calc_diet_co2_feed_luc_peat}}
+#'     \item N₂O fertilizer: \code{\link{calc_diet_n2o_feed_fertilizer}}
+#'     \item N₂O manure applied: \code{\link{calc_diet_n2o_feed_manure_applied}}
+#'     \item N₂O crop residues: \code{\link{calc_diet_n2o_feed_crop_residues}}
+#'     \item CH₄ rice cultivation: \code{\link{calc_diet_ch4_feed_rice}}
+#'   }
+#'
+#'   \item \strong{Aggregate to cohort-level diet factors} by summing feed-item contributions
+#'   across all feeds within each \code{(herd_id, animal, cohort_short)} group
+#'   (using \code{sum(..., na.rm = TRUE)}).
+#' }
+#'
+#' For each emission source, cohort-level dietary emission factors are computed as:
 #'
 #' \deqn{
-#'   \text{diet\_ghg\_component}_{i} =
-#'     \text{feed\_ration\_fraction}_{i}
+#'   \mathrm{diet\_ef} =
+#'   \sum_{i=1}^{n}
+#'   \left(
+#'     \mathrm{feed\_ration\_fraction}_{i}
 #'     \times
-#'     \text{emission\_factor}_{i,\text{source}}
+#'     \mathrm{feed\_ef}_{i}
+#'   \right)
 #' }
 #'
-#' Cohort-level dietary emission factors are obtained by summing contributions
-#' across all feed items in the cohort:
-#'
-#' \deqn{
-#'   \text{diet\_ghg\_component} =
-#'     \sum_{i=1}^{n}
-#'       \left(
-#'         \text{feed\_ration\_fraction}_{i}
-#'         \times
-#'         \text{emission\_factor}_{i,\text{source}}
-#'       \right)
-#' }
+#' @seealso
+#' \code{\link{calc_diet_co2_feed_fertilizer}},
+#' \code{\link{calc_diet_co2_feed_pesticides}},
+#' \code{\link{calc_diet_co2_feed_crop_operations}},
+#' \code{\link{calc_diet_co2_feed_luc_nopeat}},
+#' \code{\link{calc_diet_co2_feed_luc_peat}},
+#' \code{\link{calc_diet_n2o_feed_fertilizer}},
+#' \code{\link{calc_diet_n2o_feed_manure_applied}},
+#' \code{\link{calc_diet_n2o_feed_crop_residues}},
+#' \code{\link{calc_diet_ch4_feed_rice}}
 #'
 #' @examples
 #' \dontrun{
