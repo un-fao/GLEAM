@@ -4,24 +4,28 @@
 \alias{compute_transition_probabilities}
 \title{Compute Transition Probabilities for Sex-Age Classes}
 \usage{
-compute_transition_probabilities(duration, offtake_rate, mort_rate)
+compute_transition_probabilities(
+  cohort_duration_days,
+  offtake_rate,
+  death_rate
+)
 }
 \arguments{
-\item{duration}{Numeric vector of length 6. Duration (in days) of each sex-age class.}
+\item{cohort_duration_days}{Numeric vector of length 6. Duration (in days) of each sex-age class.}
 
 \item{offtake_rate}{Numeric vector of length 6. Annual offtake rate for each sex-age class.}
 
-\item{mort_rate}{Numeric vector of length 6. Annual death rate for each sex-age class.}
+\item{death_rate}{Numeric vector of length 6. Annual death rate for each sex-age class.}
 }
 \value{
 A named list with:
 \describe{
 \item{hazard_death}{Instantaneous mortality hazard rate for 6 sex-age classes.}
 \item{hazard_offtake}{Instantaneous offtake hazard rate for 6 sex-age classes.}
-\item{prob_death}{Daily death probability for 10 cohorts.}
-\item{prob_offtake}{Daily offtake probability for 10 cohorts.}
-\item{prob_survival}{Daily survival probability for 10 cohorts.}
-\item{prob_growth}{Probability of growing into the next age class for 10 cohorts.}
+\item{probability_death}{Daily death probability for 10 cohorts.}
+\item{probability_offtake}{Daily offtake probability for 10 cohorts.}
+\item{probability_survival}{Daily survival probability for 10 cohorts.}
+\item{probability_growth}{Probability of growing into the next age class for 10 cohorts.}
 }
 }
 \description{

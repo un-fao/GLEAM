@@ -61,18 +61,22 @@ validate_named_numeric_vector <- function(
   }
 }
 
-#' Validate numeric input that can be NA
+#' Normalize a rate to a bounded range
 #'
-#' Ensures that the input is a single numeric value, but allows NA.
+#' Clamps numeric values to the provided lower/upper bounds while preserving NA.
+#' This is used when rates are reused as scaling factors in downstream modules.
 #'
-#' @param x The object to validate.
-#' @param arg_name String. The name of the argument to use in the error message.
+#' @param x Numeric scalar or vector to normalize.
+#' @param lower Numeric. Minimum allowed value (default: 0).
+#' @param upper Numeric. Maximum allowed value (default: 1).
 #'
+#' @return Numeric values clamped to `[lower, upper]`, with NA preserved.
 #' @noRd
-validate_scalar_numeric_or_na <- function(x, arg_name) {
-  if (!is.numeric(x) || length(x) != 1) {
-    cli::cli_abort("{.arg {arg_name}} must be a single numeric value (NA is allowed).")
+normalize_rate <- function(x, lower = 0, upper = 1) {
+  if (!is.numeric(x)) {
+    cli::cli_abort("{.arg x} must be numeric.")
   }
+  pmax(lower, pmin(upper, x))
 }
 
 #' Validate fraction input (0 to 1)
@@ -102,5 +106,87 @@ validate_positive_numeric <- function(x, arg_name) {
   validate_scalar_numeric(x, arg_name)
   if (x <= 0) {
     cli::cli_abort("{.arg {arg_name}} must be positive.")
+  }
+}
+
+#' Validate a numeric parameter (scalar or vector) against predefined bounds
+#'
+#' Look up `arg_name` in the internal data.table `parameter_ranges`
+#' (loaded from sysdata.rda) which must contain exactly one row with:
+#'   - variable_name
+#'   - lower_bound (numeric)
+#'   - lower_inclusive (logical)
+#'   - upper_bound (numeric)
+#'   - upper_inclusive (logical)
+#'
+#' @param x Numeric scalar or named numeric vector to validate.
+#' @param arg_name Character scalar: must match one `variable_name`.
+#' @param parameter_ranges Data.table of rules.
+#'
+#' @noRd
+validate_param_range <- function(
+    x,
+    arg_name = deparse(substitute(x)),
+    parameter_ranges_data = parameter_ranges
+) {
+
+  # Look up the single rule row
+  rule_row <- parameter_ranges_data[variable_name == arg_name]
+  if (nrow(rule_row) != 1L) {
+    cli::cli_abort(
+      "Internal error: expected exactly one rule for {.arg {arg_name}}, found {nrow(rule_row)}."
+    )
+  }
+
+  minimum_value <- rule_row$lower_bound
+  is_lower_strict <- !isTRUE(rule_row$lower_inclusive)
+  maximum_value <- rule_row$upper_bound
+  is_upper_strict <- !isTRUE(rule_row$upper_inclusive)
+
+  # Type and missingness checks
+  if (!is.numeric(x)) {
+    cli::cli_abort("{.arg {arg_name}} must be numeric.")
+  }
+  if (anyNA(x)) {
+    cli::cli_abort("{.arg {arg_name}} must not contain missing values.")
+  }
+
+  # Prepare the values vector and its labels
+  numeric_values <- as.numeric(x)
+  value_labels <- names(x) %||% seq_along(numeric_values)
+
+  # Perform vectorized bound checks
+  violates_lower <- if (is_lower_strict) {
+    numeric_values <= minimum_value
+  } else {
+    numeric_values < minimum_value
+  }
+  violates_upper <- if (is_upper_strict) {
+    numeric_values >= maximum_value
+  } else {
+    numeric_values > maximum_value
+  }
+  invalid_indices <- which(violates_lower | violates_upper)
+
+  # If any violation, report the first with full context
+  if (length(invalid_indices)) {
+    first_index <- invalid_indices[1]
+    invalid_value <- numeric_values[first_index]
+    invalid_label <- value_labels[first_index]
+
+    # Omit brackets for single, unnamed scalar
+    label_suffix <- if (length(numeric_values) == 1L && is.null(names(x))) {
+      ""
+    } else {
+      paste0("[", invalid_label, "]")
+    }
+
+    lower_operator <- if (is_lower_strict) ">" else "\u2265"
+    upper_operator <- if (is_upper_strict) "<" else "\u2264"
+
+    cli::cli_abort(
+      "{.arg {arg_name}}{label_suffix} = {invalid_value} is out of range;
+      expected value should be {lower_operator} {minimum_value} and {upper_operator} {maximum_value}."
+    )
   }
 }

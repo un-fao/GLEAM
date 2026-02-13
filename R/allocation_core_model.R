@@ -428,7 +428,7 @@ calc_energy_allocation_fibre <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#'   
+#'
 #' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
 #' @param work_energy_requirement Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param ratio_ne_to_me Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.
@@ -754,8 +754,7 @@ assign_allocation_to_emissions <- function(
   out <- merge(
     allocation_herd_long,
     grid,
-    by = commodity_col,
-    allow.cartesian = TRUE
+    by = commodity_col
   )
 
   # 3) Excluded vars → 100% to Other, 0% to others
