@@ -76,7 +76,7 @@ calc_cohort_weights <- function(
   if (cohort_short %in% c("FJ", "MJ")) {
     live_weight_cohort_initial <- birth_weight
     live_weight_cohort_potential_final <- slaughter_weight_cohort <- weaning_weight
-    adult_weight <- if (cohort_short == "FJ") {
+    mature_weight <- if (cohort_short == "FJ") {
       live_weight_female_adult
     } else {
       live_weight_male_adult
@@ -85,12 +85,12 @@ calc_cohort_weights <- function(
     # Subadult cohorts
   } else if (cohort_short %in% c("FS", "MS")) {
     live_weight_cohort_initial <- weaning_weight
-    adult_weight <- if (cohort_short == "FS") {
+    mature_weight <- if (cohort_short == "FS") {
       live_weight_female_adult
     } else {
       live_weight_male_adult
     }
-    live_weight_cohort_potential_final <- adult_weight
+    live_weight_cohort_potential_final <- mature_weight
     slaughter_weight_cohort <- if (cohort_short == "FS") {
       slaughter_weight_female
     } else {
@@ -100,19 +100,19 @@ calc_cohort_weights <- function(
     # Adult cohorts
   } else if (cohort_short == "FA") {
     live_weight_cohort_initial <- live_weight_female_adult
-    adult_weight <- live_weight_female_adult
-    live_weight_cohort_potential_final <- adult_weight
-    slaughter_weight_cohort <- adult_weight
+    mature_weight <- live_weight_female_adult
+    live_weight_cohort_potential_final <- mature_weight
+    slaughter_weight_cohort <- mature_weight
   } else if (cohort_short == "MA") {
     live_weight_cohort_initial <- live_weight_male_adult
-    adult_weight <- live_weight_male_adult
-    live_weight_cohort_potential_final <- adult_weight
-    slaughter_weight_cohort <- adult_weight
+    mature_weight <- live_weight_male_adult
+    live_weight_cohort_potential_final <- mature_weight
+    slaughter_weight_cohort <- mature_weight
   }
 
   return(
     list(
-      adult_weight = adult_weight,
+      mature_weight = mature_weight,
       live_weight_cohort_initial = live_weight_cohort_initial,
       live_weight_cohort_potential_final = live_weight_cohort_potential_final,
       slaughter_weight_cohort = slaughter_weight_cohort

@@ -92,7 +92,7 @@ run_weights_calculations <- function(
   cohort_level_data[
     ,
     c(
-      "adult_weight",
+      "mature_weight",
       "live_weight_cohort_initial",
       "live_weight_cohort_potential_final",
       "slaughter_weight_cohort"
