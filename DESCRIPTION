@@ -1,10 +1,6 @@
 Package: gleam
-Title: GLEAM Herd Simulation and Livestock Dynamics
+Title: Global Livestock Environmental Assessment Model (GLEAM-X) R package
 Version: 0.0.0.9000
-<<<<<<< Updated upstream
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-=======
 Authors@R: c(
     person(given = "Ahmed",
            family = "Jou",
@@ -26,7 +22,7 @@ Authors@R: c(
            family = "Lanzoni",
            email = "lydia.lanzonil@fao.org",
            role = c("aut"),
-           comment = "FAO"),
+           comment = "Livestock and climate change specialist, FAO"),
     person(given = "Giuseppe",
            family = "Tempio",
            email = "giuseppe.tempio@fao.org",
@@ -57,7 +53,6 @@ Authors@R: c(
            family = "FAO",
            role = c("cph", "fnd"),
            comment = "Original GLEAM model framework and funding support"))
->>>>>>> Stashed changes
 Description: Implements steady-state herd simulation components used in the Global Livestock 
     Environmental Assessment Model (GLEAM), including population structure, offtake 
     flows, demographic transitions, and cohort-level weight metrics. Designed to be 
