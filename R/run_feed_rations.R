@@ -6,13 +6,17 @@
 #' @param rations_share A data.table containing feed shares per cohort. Must include:
 #'   - `herd_id`, `animal`, `feed_name`, `feed_id`, `cohort_short`, and
 #'     `feed_ration_fraction`.
+#'   - Note that `feed_name` is optional but should be consistent with `feed_id`
+#'   for a coherent result.
 #' @param feed_params A data.table of nutrient parameters. Must include:
-#'   - `feed_id`, `feed_name`, `category`, `feed_gross_energy`,
+#'   - `feed_id`, `feed_gross_energy`,
 #'     `feed_digestible_energy_ruminant`, `feed_digestible_energy_pigs`,
 #'     `feed_metabolizable_energy_ruminant`, `feed_metabolizable_energy_pigs`,
 #'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`,
 #'     `feed_urinary_energy_ruminant`, `feed_urinary_energy_pigs`,
 #'      `feed_ash_content`.
+#'   - Note that `category` and `feed_name` are optional but should be consistent with `feed_id`
+#'   for a coherent result.
 #'
 #' @return A data.table summarized by `herd_id`, `animal`, and `cohort_short` with:
 #'   - `diet_gross_energy`, `diet_metabolizable_energy`,
