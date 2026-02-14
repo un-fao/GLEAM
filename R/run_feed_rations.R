@@ -69,7 +69,7 @@ run_feed_rations <- function(
     feed_params,
     by = "feed_id",
   )
-
+  # Map animal to species_short for digestibility and energy calculations
   rations_detailed <- merge(
     rations_detailed,
     abbr_animals,
@@ -77,6 +77,7 @@ run_feed_rations <- function(
     by.y = "animal"
   )
 
+  # Check for any unmatched animals after the merge
   if (any(is.na(rations_detailed$species_short))) {
     unknown_animals <- unique(rations_detailed[is.na(species_short), animal])
     cli::cli_abort(
@@ -93,7 +94,8 @@ run_feed_rations <- function(
     ),
     by = .I
   ]
-
+  
+  # Calculate nitrogen contribution
   rations_detailed[
     ,
     diet_nitrogen := calc_diet_nitrogen_content(
@@ -103,6 +105,7 @@ run_feed_rations <- function(
     by = .I
   ]
 
+  # Calculate digestibility fraction
   rations_detailed[
     ,
     diet_digestibility_fraction := calc_diet_digestibility(
@@ -115,6 +118,7 @@ run_feed_rations <- function(
     by = .I
   ]
 
+  # Calculate metabolizable energy contribution
   rations_detailed[
     ,
     diet_metabolizable_energy := calc_diet_metabolizable_energy(
@@ -127,6 +131,7 @@ run_feed_rations <- function(
     by = .I
   ]
 
+  # Calculate urinary energy fraction
   rations_detailed[
     ,
     urinary_energy_fraction := calc_urinary_energy_fraction(
