@@ -6,7 +6,7 @@ Authors@R: c(
            family = "Jou",
            email = "ahmed.jou@applitics.fr",
            role = c("aut", "cre"),
-           comment = c(ORCID = "0000-000X-XXXX-XXXX",  # Replace with real ORCID if available
+           comment = c(ORCID = "0000-000X-XXXX-XXXX", 
                        "Applitics.fr")),
     person(given = "Yassine",
            family = "Elouni",
@@ -65,11 +65,8 @@ Imports:
     cli (>= 3.0.0),
     data.table
 Suggests: 
-    knitr,
-    rmarkdown,
     testthat (>= 3.2.3)
 Config/testthat/edition: 3
 Depends: 
     R (>= 4.4.0)
 LazyData: true
-VignetteBuilder: knitr
