@@ -1,8 +1,63 @@
 Package: gleam
 Title: GLEAM Herd Simulation and Livestock Dynamics
 Version: 0.0.0.9000
+<<<<<<< Updated upstream
 Authors@R: 
     person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+=======
+Authors@R: c(
+    person(given = "Ahmed",
+           family = "Jou",
+           email = "ahmed.jou@applitics.fr",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-000X-XXXX-XXXX",  # Replace with real ORCID if available
+                       "Applitics.fr")),
+    person(given = "Yassine",
+           family = "Elouni",
+           email = "real.email@example.com",
+           role = c("aut")),
+    person(given = "Dominik",
+           family = "Wisser",
+           email = "dominik.wisser@fao.org",
+           role = c("aut"),
+           comment = c(ORCID = "0000-0001-8368-3801",
+                       "GLEAM team lead, FAO")),
+    person(given = "Lydia",
+           family = "Lanzoni",
+           email = "lydia.lanzonil@fao.org",
+           role = c("aut"),
+           comment = "FAO"),
+    person(given = "Giuseppe",
+           family = "Tempio",
+           email = "giuseppe.tempio@fao.org",
+           role = c("aut"),
+           comment = "FAO"),
+    person(given = "Phyllis",
+           family = "Ndungu'",
+           email = "real.email@example.com",
+           role = c("ctb"),
+           comment = "Livestock and climate change specialist"),
+    person(given = "Manling",
+           family = "Xu",
+           email = "real.email@example.com",
+           role = c("ctb")),
+    person(given = "Zixin",
+           family = "Wang",
+           email = "real.email@example.com",
+           role = c("ctb")),
+    person(given = "Narindra",
+           family = "Rakotovao",
+           email = "real.email@example.com",
+           role = c("ctb")),
+    person(given = "Stewart",
+           family = "Chikoloma",
+           email = "real.email@example.com",
+           role = c("ctb")),
+    person(given = "Food and Agriculture Organization of the United Nations",
+           family = "FAO",
+           role = c("cph", "fnd"),
+           comment = "Original GLEAM model framework and funding support"))
+>>>>>>> Stashed changes
 Description: Implements steady-state herd simulation components used in the Global Livestock 
     Environmental Assessment Model (GLEAM), including population structure, offtake 
     flows, demographic transitions, and cohort-level weight metrics. Designed to be 
