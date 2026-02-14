@@ -71,4 +71,8 @@ validate_feed_rations_inputs <- function(
   if (anyDuplicated(feed_params$feed_id) > 0) {
     cli::cli_abort("{.arg feed_params$feed_id} must be unique.")
   }
+  # nor for the rations_share table
+  if (anyDuplicated(rations_share$feed_id) > 0) {
+    cli::cli_abort("{.arg rations_share$feed_id} must be unique.")
+  }
 }
