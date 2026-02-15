@@ -98,7 +98,7 @@ run_feed_rations <- function(
     ),
     by = .I
   ]
-  
+
   # Calculate nitrogen contribution
   rations_detailed[
     ,
@@ -160,12 +160,12 @@ run_feed_rations <- function(
   rations_summary <- rations_detailed[
     ,
     .(
-      diet_gross_energy = sum(diet_gross_energy, na.rm = TRUE),
-      diet_metabolizable_energy = sum(diet_metabolizable_energy, na.rm = TRUE),
-      diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
-      diet_digestibility_fraction = sum(diet_digestibility_fraction, na.rm = TRUE),
-      urinary_energy_fraction = sum(urinary_energy_fraction, na.rm = TRUE),
-      diet_ash = sum(diet_ash, na.rm = TRUE)
+      diet_gross_energy = sum(diet_gross_energy),
+      diet_metabolizable_energy = sum(diet_metabolizable_energy),
+      diet_nitrogen = sum(diet_nitrogen),
+      diet_digestibility_fraction = sum(diet_digestibility_fraction),
+      urinary_energy_fraction = sum(urinary_energy_fraction),
+      diet_ash = sum(diet_ash)
     ),
     by = .(herd_id, animal, cohort_short)
   ]
