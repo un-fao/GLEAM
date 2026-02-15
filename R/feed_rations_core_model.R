@@ -19,7 +19,44 @@
 #'
 #' @details
 #' The digestibility ratio is defined as:
-#' \deqn{feed\_digestibilit
+#' \deqn{feed\_digestibility\_fraction = feed\_digestible\_energy / feed\_gross\_energy}
+#'
+#' This helper is vectorized over its inputs.
+#'
+#' @export
+calc_feed_digestibility_fraction <- function(
+    feed_digestible_energy_ruminant,
+    feed_digestible_energy_pigs,
+    feed_metabolizable_energy_chicken,
+    feed_gross_energy
+) {
+  validate_feed_digestibility_inputs(
+    feed_digestible_energy_ruminant,
+    feed_digestible_energy_pigs,
+    feed_metabolizable_energy_chicken,
+    feed_gross_energy
+  )
+
+  # Ratios are unitless and vectorized by default
+  # Treat missing numerator inputs as zero before division.
+  feed_digestibility_fraction_ruminant <- ifelse(
+    is.na(feed_digestible_energy_ruminant),
+    0,
+    feed_digestible_energy_ruminant / feed_gross_energy
+  )
+  feed_digestibility_fraction_pigs <- ifelse(
+    is.na(feed_digestible_energy_pigs),
+    0,
+    feed_digestible_energy_pigs / feed_gross_energy
+  )
+  feed_digestibility_fraction_chicken <- ifelse(
+    is.na(feed_metabolizable_energy_chicken),
+    0,
+    feed_metabolizable_energy_chicken / feed_gross_energy
+  )
+
+  return(
+    list(
       feed_digestibility_fraction_ruminant = feed_digestibility_fraction_ruminant,
       feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs,
       feed_digestibility_fraction_chicken = feed_digestibility_fraction_chicken
@@ -54,7 +91,11 @@
 #' @export
 calc_diet_digestibility <- function(
     species_short,
-    feed_ration_fra,,,
+    feed_ration_fraction,
+    feed_digestibility_fraction_ruminant = NA_real_,
+    feed_digestibility_fraction_pigs = NA_real_,
+    feed_digestibility_fraction_chicken = NA_real_
+) {
   validate_diet_digestibility_inputs(
     species_short,
     feed_ration_fraction,
@@ -116,7 +157,7 @@ calc_diet_metabolizable_energy <- function(
 
   # Apply the species-specific metabolizable energy parameter
   if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
-    diet_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_ruminant + 555
+    diet_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_ruminant
   } else if (species_short == "CHK") {
     diet_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_chicken
   } else {
