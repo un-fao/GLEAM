@@ -126,7 +126,6 @@ validate_feed_digestibility_inputs <- function(
     feed_metabolizable_energy_chicken,
     feed_gross_energy
 ) {
-  # Numeric checks (vectorized allowed; no NA)
   args <- list(
     feed_digestible_energy_ruminant = feed_digestible_energy_ruminant,
     feed_digestible_energy_pigs = feed_digestible_energy_pigs,
@@ -138,9 +137,9 @@ validate_feed_digestibility_inputs <- function(
     if (!is.numeric(val)) {
       cli::cli_abort("{.arg {arg_name}} must be numeric.")
     }
-    if (anyNA(val)) {
-      cli::cli_abort("{.arg {arg_name}} must not contain missing values.")
-    }
+  }
+  if (anyNA(feed_gross_energy)) {
+    cli::cli_abort("{.arg feed_gross_energy} must not contain missing values.")
   }
 
   # Enforce configured bounds
