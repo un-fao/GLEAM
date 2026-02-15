@@ -66,7 +66,7 @@ weighted average to account for:
 \item animals below vs. above one year of age (SHP).
 }
 
-\strong{Specific cofficients by species and cohort:}
+\strong{Specific coefficients by species and cohort:}
 
 \strong{CTL and BFL} (NRC, 1996; AFRC, 1993, 1995):
 \itemize{

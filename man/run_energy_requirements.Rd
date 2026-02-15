@@ -4,11 +4,36 @@
 \alias{run_energy_requirements}
 \title{Run Energy Requirements and Dry Matter Intake Calculation (Internal)}
 \usage{
-run_energy_requirements(data)
+run_energy_requirements(cohort_level_data, herd_level_data)
 }
 \arguments{
-\item{data}{A \code{data.table} or \code{data.frame} containing all required columns for energy requirements
-(see core model functions documentation for required fields).}
+\item{cohort_level_data}{A \code{data.table} or \code{data.frame} with cohort-level inputs and at least:
+\itemize{
+\item \code{herd_id} – Herd identifier (foreign key linking to herd-level table).
+\item \code{cohort} – Cohort code (\code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS}, \code{MJ}).
+\item \code{average_weight} – Average live weight in the cohort (kg).
+\item \code{offtake_rate} – Annual offtake rate for the cohort (fraction).
+\item \code{activity_fraction}, \code{high_activity_fraction} – Low-/high-activity shares (fractions).
+\item \code{initial_weight}, \code{final_weight}, \code{adult_weight} – Weights used for growth calculations (kg).
+\item \code{dwg} – Daily weight gain (kg/head/day).
+\item \code{duration} – Cohort duration (days).
+\item \code{diet_dig} – Diet digestibility (DE/GE, fraction).
+\item \code{diet_ge}, \code{diet_me} – Gross and metabolizable energy densities (MJ/kg DM).
+\item \code{lambing_interval} – Lambing interval (days) for small ruminants (kept for completeness).
+}}
+
+\item{herd_level_data}{A \code{data.table} or \code{data.frame} with herd-level inputs (one row per herd) and at least:
+\itemize{
+\item \code{herd_id} – Herd identifier (primary key).
+\item \code{animal} – Full species name used to derive internal short codes (e.g. \code{"Cattle"}, \code{"Sheep"}).
+\item \code{afc} – Age at first calving/parturition (days).
+\item \code{milking_fraction}, \code{milk_yield}, \code{milk_fat} – Lactation parameters.
+\item \code{idle}, \code{gest}, \code{litsize}, \code{dr1}, \code{ckg}, \code{wkg}, \code{lact}, \code{parturition_rate} – Reproduction and lactation inputs.
+\item \code{egg_weight} – Average egg weight (kg; used only for poultry/egg layers).
+\item \code{work_hours_female}, \code{work_hours_male} – Daily working hours for adult females/males (hours/head/day).
+\item \code{draught_fraction_female}, \code{draught_fraction_male} – Fractions of adult females/males used for draught work.
+\item \code{fibre_prod} – Annual fibre production per head (kg/head/year).
+}}
 }
 \value{
 The input data with new columns: nemain, neact, negrow, nelact, nework,
@@ -26,11 +51,23 @@ fractions (rem, reg), total metabolizable energy requirement (getot) and dry mat
 }
 \examples{
 \dontrun{
-# Load example input from the package and run the function
-input_path <- system.file("extdata/GLEAM_input_energyrequirements.csv", package = "gleam")
-data <- data.table::fread(input_path)
-energy_results <- run_energy_requirements(data)
+# Load example herd- and cohort-level inputs from the package
+herd_path <- system.file(
+  "extdata/examples/energy_requirements_herd_input_example.csv",
+  package = "gleam"
+)
+cohort_path <- system.file(
+  "extdata/examples/energy_requirements_cohort_input_example.csv",
+  package = "gleam"
+)
+herd_level_data <- data.table::fread(herd_path)
+cohort_level_data <- data.table::fread(cohort_path)
+
+# Run energy requirement and DMI calculations
+energy_results <- run_energy_requirements(
+  cohort_level_data = cohort_level_data,
+  herd_level_data = herd_level_data
+)
 }
 
 }
-\keyword{internal}

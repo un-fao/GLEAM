@@ -115,15 +115,24 @@ utils::globalVariables(c(
 ))
 
 utils::globalVariables(c(
-  # Columns used in run_energy_requirements
-  "average_weight", "dmi", "dr1", "draught_fraction", "fibre_prod",
+  # Columns used in run_energy_requirements (cohort-level and results)
+  "average_weight", "dmi", "dr1", "fibre_prod",
   "final_weight", "gest", "getot", "idle", "lact", "lambing_interval",
   "milk_fat", "milk_yield", "milking_fraction", "high_activity_fraction", "neact",
   "neegg", "nefibre", "negrow", "nelact", "nemain", "nepreg",
-  "nework", "activity_fraction", "reg", "rem", "work_hours",
-  "work_hours_female", "work_hours_male", "draught_fraction_female",
-  "draught_fraction_male",
-  "adult_weight"  # Variable used in run_energy_requirements
+  "nework", "activity_fraction", "reg", "rem",
+  "work_hours_female", "work_hours_male",
+  "draught_fraction_female", "draught_fraction_male",
+  "cohort", "duration", "dwg", "species_short",
+  "diet_dig", "diet_ge", "diet_me",
+  "initial_weight", "adult_weight", "activity_sum",
+  # herd-level lookups (x.* from herd_level_data[.SD, on = "herd_id", x.col])
+  "x.species_short", "x.milking_fraction", "x.afc", "x.milk_yield", "x.milk_fat",
+  "x.idle", "x.gest", "x.litsize", "x.dr1", "x.ckg", "x.wkg", "x.lact",
+  "x.parturition_rate", "x.work_hours_female", "x.work_hours_male",
+  "x.draught_fraction_female", "x.draught_fraction_male", "x.fibre_prod",
+  # validate_energy_requirements_inputs
+  "has_all_cohorts", "missing_cohorts"
 ))
 
 utils::globalVariables(c(
