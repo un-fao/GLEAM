@@ -72,7 +72,7 @@ run_gleam <- function(
     feed_rations_args
 ) {
   # --- Step 1: Run herd simulation (or use provided structure) ----------------
-  if (isTRUE(has_structure)) {
+  if (has_structure) {
     gleam_data <- herd_structure
   } else {
     herd_results <- do.call(run_herd_simulation, herd_simulation_args)

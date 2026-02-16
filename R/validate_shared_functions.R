@@ -146,9 +146,9 @@ validate_param_range <- function(
 
   # Extract bounds and inclusivity
   minimum_value <- rule_row$lower_bound
-  is_lower_strict <- !isTRUE(rule_row$lower_inclusive)
+  is_lower_strict <- !rule_row$lower_inclusive
   maximum_value <- rule_row$upper_bound
-  is_upper_strict <- !isTRUE(rule_row$upper_inclusive)
+  is_upper_strict <- !rule_row$upper_inclusive
 
   # Prepare the values vector and its labels
   numeric_values <- as.numeric(x)
