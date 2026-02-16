@@ -1,9 +1,10 @@
 
-# GLEAM R Package
+# GLEAM-X R Package
 
-**Official R package of the FAO Global Livestock Environmental Assessment Model (GLEAM).**
+**Official R package of FAO's Global Livestock Environmental Assessment Model (GLEAM-X).**
 
-This package provides a complete, modular implementation of GLEAM for quantifying greenhouse gas emissions from livestock systems. It models herd structures, feed allocation, energy requirements, and emissions across countries, species, and production systems.
+This package provides a complete, modular implementation of GLEAM to quantify greenhouse gas emissions from livestock agrifood systems. 
+It simulates herd structures, animal energy requirements, feed intake, as well as emissions from enteric fermentation, manure mangement, and the production of feed. 
 
 ## Purpose
 
@@ -19,9 +20,7 @@ The package supports the **official GLEAM workflow**, allowing users to:
 
 ## Model Coverage
 
-- **Species**: Cattle, Buffalo, Sheep, Goats, Pigs, Chickens, Camels  
-- **Systems**: Based on GLEAM's production systems (e.g. grazing, mixed, industrial)  
-- **Emissions**: CH₄ (enteric + manure), N₂O (manure pathways), energy-related components  
+The model currently consideres cattle, buffalo, camels, chicken, goats, pigs, and sheep.   
 
 ## Installation
 

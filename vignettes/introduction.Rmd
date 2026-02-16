@@ -1,5 +1,5 @@
 ---
-title: "introduction"
+title: "Introduction"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{introduction}
@@ -13,7 +13,30 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+# What is GLEAM?
 
-```{r setup}
-library(gleam)
+GLEAM provides tools for analyzing environmental data.
+```{r gleam-overview, echo=FALSE, out.width="70%", fig.align="center", fig.cap="Overview of GLEAM framework"}
+knitr::include_graphics("images/gleamLCA.png")
 ```
+
+## Key Features
+
+- Feature 1
+- Feature 2
+```
+
+## File Structure
+```
+yourpackage/
+├── vignettes/
+│   ├── images/
+│   │   ├── gleamhistory.png
+│   │   └── otherimage.png
+│   └── introduction.Rmd
+```{r setup}
+#library(gleam)
+#knitr::include_graphics("images/gleamLCA.png", out.width =%100%%)
+
+
+
