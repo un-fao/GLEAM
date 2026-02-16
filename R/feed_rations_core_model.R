@@ -30,17 +30,30 @@ calc_feed_digestibility_fraction <- function(
     feed_metabolizable_energy_chicken,
     feed_gross_energy
 ) {
- # validate_feed_digestibility_inputs(
- #   feed_digestible_energy_ruminant,
- #   feed_digestible_energy_pigs,
- #   feed_metabolizable_energy_chicken,
- #   feed_gross_energy
- # )
+  validate_feed_digestibility_inputs(
+    feed_digestible_energy_ruminant,
+    feed_digestible_energy_pigs,
+    feed_metabolizable_energy_chicken,
+    feed_gross_energy
+  )
 
   # Ratios are unitless and vectorized by default
-  feed_digestibility_fraction_ruminant <- feed_digestible_energy_ruminant / feed_gross_energy
-  feed_digestibility_fraction_pigs <- feed_digestible_energy_pigs / feed_gross_energy
-  feed_digestibility_fraction_chicken <- feed_metabolizable_energy_chicken / feed_gross_energy
+  # Treat missing numerator inputs as zero before division.
+  feed_digestibility_fraction_ruminant <- ifelse(
+    is.na(feed_digestible_energy_ruminant),
+    0,
+    feed_digestible_energy_ruminant / feed_gross_energy
+  )
+  feed_digestibility_fraction_pigs <- ifelse(
+    is.na(feed_digestible_energy_pigs),
+    0,
+    feed_digestible_energy_pigs / feed_gross_energy
+  )
+  feed_digestibility_fraction_chicken <- ifelse(
+    is.na(feed_metabolizable_energy_chicken),
+    0,
+    feed_metabolizable_energy_chicken / feed_gross_energy
+  )
 
   return(
     list(
@@ -197,4 +210,85 @@ calc_diet_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_conte
   # Contribution is ration share multiplied by nitrogen content
   diet_nitrogen <- feed_ration_fraction * feed_nitrogen_content
   return(diet_nitrogen)
+}
+
+#' Calculate urinary energy fraction contribution for a ration component
+#'
+#' Applies species-specific urinary energy parameters to a ration share.
+#'
+#' @param species_short Character. Species short code. Supported values include
+#'   ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}),
+#'   chickens (\code{CHK}), and pigs (\code{PGS}).
+#' @param feed_ration_fraction Numeric proportion of a specific feed item in the total ration,
+#'  expressed as its fraction of diet dry matter (fraction)
+#' @param feed_urinary_energy_ruminant Numeric. Fraction of feed's gross energy that
+#'  is excreted in urine for ruminants (fraction).
+#' @param feed_urinary_energy_pigs Numeric. Fraction of feed's gross energy that
+#'  is excreted in urine for pigs (fraction).
+#' @param feed_urinary_energy_chicken Numeric. Fraction of feed's gross energy that
+#'  is excreted in urine for chickens (fraction). Default to 0.
+#'
+#' @return Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).
+#'
+#' @details
+#' The urinary energy fraction contribution uses the animal-specific parameter:
+#' \itemize{
+#'   \item Ruminants: \code{feed_ration_fraction * feed_urinary_energy_ruminant}
+#'   \item Chickens: \code{feed_ration_fraction * feed_urinary_energy_chicken}
+#'   \item Pigs: \code{feed_ration_fraction * feed_urinary_energy_pigs}
+#' }
+#'
+#' @export
+calc_urinary_energy_fraction <- function(
+    species_short,
+    feed_ration_fraction,
+    feed_urinary_energy_ruminant = NA_real_,
+    feed_urinary_energy_pigs = NA_real_,
+    feed_urinary_energy_chicken = 0
+) {
+  validate_urinary_energy_inputs(
+    species_short,
+    feed_ration_fraction,
+    feed_urinary_energy_ruminant,
+    feed_urinary_energy_pigs,
+    feed_urinary_energy_chicken
+  )
+
+  # Apply the species-specific diet_urinary_energy
+  if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+    urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_ruminant
+  } else if (species_short == "CHK") {
+    urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_chicken
+  } else {
+    urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_pigs
+  }
+  return(urinary_energy_fraction)
+}
+
+#' Calculate diet ash contribution for a ration component
+#'
+#' Computes ash contribution from a ration share and ash content.
+#'
+#' @param feed_ration_fraction Numeric proportion of a specific feed item in the total ration,
+#'  expressed as its fraction of diet dry matter (fraction).
+#' @param feed_ash_content Numeric. Average ash content by feed item,
+#' calculated as a fraction of the dry matter intake (g ash/100g DM).
+#'
+#' @return Numeric. Average ash content of feed, calculated as a fraction of
+#'  the dry matter intake (kg ash/kg DM).
+#'
+#' @details
+#' The ash contribution is defined as:
+#' \deqn{diet\_ash = feed\_ration\_fraction \times feed\_ash\_content / 100}
+#'
+#' Ash content is expressed as a percentage; the result is a fraction.
+#'
+#' @export
+calc_diet_ash <- function(feed_ration_fraction, feed_ash_content) {
+  validate_diet_ash_inputs(feed_ration_fraction, feed_ash_content)
+
+  # Contribution is ration share multiplied by feed_ash_content
+  diet_ash <- feed_ration_fraction * feed_ash_content / 100
+
+  return(diet_ash)
 }
