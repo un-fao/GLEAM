@@ -4,62 +4,86 @@
 \alias{calc_volatile_solids}
 \title{Calculate Volatile Solids for Manure Emissions}
 \usage{
-calc_volatile_solids(animal, dmi, diet_dig, diet_me, diet_ge)
+calc_volatile_solids(
+  dry_matter_intake,
+  diet_digestibility_fraction,
+  urinary_energy_fraction,
+  diet_ash
+)
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
-Supported values include:
-\itemize{
-\item \code{PGS}: pigs
-\item \code{CML}: camels
-\item \code{CTL}: cattle
-\item \code{BFL}: buffalo
-\item \code{SHP}: sheep
-\item \code{GTS}: goats
-}}
+\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 
-\item{dmi}{Numeric. Daily dry matter intake of feed (kg DM/head/day).}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 
-\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
+\item{urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
 
-\item{diet_me}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
-
-\item{diet_ge}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{diet_ash}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).}
 }
 \value{
 Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
 }
 \description{
 Computes daily volatile solids (VS) excretion in manure (kg VS/head/day).
-VS represents the total organic material excreted (biodegradable + non-biodegradable)
-and is required to proceed with the estimate of methane emissions from manure maanagement.
+VS represent the organic fraction of manure dry matter,
+including both biodegradable and non-biodegradable organic material.
+VS is a key intermediate variable required for estimating methane (CH₄)
+emissions from manure management systems under IPCC methodologies.
 }
 \details{
-The IPCC recommends estimating VS from feed intake and digestibility when
-country-specific average daily VS excretion rates are not available. The core relationship is
-given in \strong{IPCC Equation 10.24 (Volatile solids excretion rates)}, which uses gross energy (GE)
-intake, digestibility (DE), urinary energy as a fraction of GE (UE·GE), ash fraction (ASH), and
-a conversion factor of 18.45 MJ/kg DM.
-
-\strong{Implementation note (simplified coefficients).}
-This package uses simplified algebraic forms by species/method that are consistent with the
-structure of Eq. 10.24 under fixed/default assumptions for \eqn{UE} and \eqn{ASH}, and with
-digestibility supplied directly as a fraction (\code{diet_dig}).
-
-\strong{Species/method branches}
+The IPCC recommends estimating volatile solids (VS) excretion from feed
+intake and digestibility when country-specific average daily VS excretion
+rates are not available. The core relationship is provided in
+\strong{IPCC Equation 10.24 (Volatile solids excretion rates)}, which estimates
+daily VS excretion as a function of:
 \itemize{
-\item \strong{(\code{"CTL"}, \code{"BFL"}, \code{"CML"}, \code{"SHP"}, \code{"GTS"}):
-\code{vs = dmi * (1.04 - diet_dig) * 0.92}.
-The formula is a modification of the original IPCC equation. First, the average gross energy content of the ration is used instead
-of a fixed value of 18.45 MJ×kg DM-1. Thus, ge / diet_ge equals the daily intake, dmi.
-Second, it is assumed that Urinary energy is 4\% and the Ash content in feed is 8\%. Therefore, GE × (GE + UE) becomes 1.04 and 1 – ASH becomes 0.92
+\item Gross energy intake (gross_energy_intake, MJ/day)
+\item Digestibility of the diet (diet_digestibility_fraction)
+\item Urinary energy expressed as a fraction of GE (urinary_energy_fraction)
+\item Ash content of the diet (diet_ash, fraction of dry matter)
+\item A conversion factor representing the average gross energy content of
+dry matter (18.45 MJ/kg DM)
 }
-\item \strong{Swine} (\code{"PGS"}):
-\itemize{
-\item \code{vs = dmi * (1.02 - diet_dig) * 0.94}.
-It is assumed that urinary energy is 2\% and the ash content in feed is 6\% (based on IPCC, 2019). Therefore, GE × (GE + UE) becomes 1.02 and 1 – ASH becomes 0.94.
+
+The general structure of Eq. 10.24 partitions gross energy intake into
+digestible energy, urinary losses, and ash, and converts the remaining
+organic matter into volatile solids using the energy density of dry matter.
+
+\strong{Implementation note.}
+This function applies an algebraically simplified formulation from Equation 10.24 of IPCC.
+
+In this implementation, the function takes \code{dry_matter_intake} directly
+as an input. It can be calculated upstream with
+\code{\link{calc_dry_matter_intake}} as a function of energy requirements and
+the energy content of the diet.
+
+\deqn{
+  dry\_matter\_intake = \frac{gross\_energy\_intake}{diet\_gross\_energy}
 }
+
+This reflects the use of ration-specific energy content upstream and avoids
+assuming a fixed gross energy density of 18.45 MJ/kg DM, as in the IPCC
+default approach.
+
+The volatile solids excretion is then calculated as:
+
+\deqn{
+  volatile\_solids =
+  dry\_matter\_intake \times (1 - diet\_digestibility\_fraction + urinary\_energy\_fraction)
+  \times (1 - diet\_ash)
 }
+
+The resulting calculations are algebraically equivalent
+to the IPCC approach and fully consistent with Equation 10.24.
+}
+\examples{
+calc_volatile_solids <- calc_volatile_solids(
+  dry_matter_intake = 5,
+  diet_digestibility_fraction = 0.6,
+  urinary_energy_fraction = 0.04,
+  diet_ash = 0.08
+)
+
 }
 \references{
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from

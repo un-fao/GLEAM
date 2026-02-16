@@ -9,7 +9,7 @@ calc_urinary_energy_fraction(
   feed_ration_fraction,
   feed_urinary_energy_ruminant = NA_real_,
   feed_urinary_energy_pigs = NA_real_,
-  feed_urinary_energy_chicken = NA_real_
+  feed_urinary_energy_chicken = 0
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ is excreted in urine for ruminants (fraction).}
 is excreted in urine for pigs (fraction).}
 
 \item{feed_urinary_energy_chicken}{Numeric. Fraction of feed's gross energy that
-is excreted in urine for chickens (fraction).}
+is excreted in urine for chickens (fraction). Default to 0.}
 }
 \value{
 Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).

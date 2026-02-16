@@ -1,6 +1,7 @@
 # ---- test compute_milk_outputs ----
 test_that("compute_milk_outputs returns expected output structure", {
   result <- compute_milk_outputs(
+    cohort = "FA",
     milk_yield = 10,
     assessment_duration = 365,
     size = 100,
@@ -23,6 +24,7 @@ test_that("compute_milk_outputs returns expected output structure", {
 
 test_that("compute_milk_outputs calculates milk mass production correctly", {
   result <- compute_milk_outputs(
+    cohort = "FA",
     milk_yield = 20,
     assessment_duration = 365,
     size = 50,
@@ -41,6 +43,7 @@ test_that("compute_milk_outputs calculates milk mass production correctly", {
 
 test_that("compute_milk_outputs calculates milk protein production correctly", {
   result <- compute_milk_outputs(
+    cohort = "FA",
     milk_yield = 15,
     assessment_duration = 365,
     size = 80,
@@ -60,6 +63,7 @@ test_that("compute_milk_outputs calculates milk protein production correctly", {
 
 test_that("compute_milk_outputs calculates FPCM using energy ratio", {
   result <- compute_milk_outputs(
+    cohort = "FA",
     milk_yield = 12,
     assessment_duration = 365,
     size = 60,
@@ -79,6 +83,7 @@ test_that("compute_milk_outputs calculates FPCM using energy ratio", {
 
 test_that("compute_milk_outputs calculates FPCM correctly with different composition", {
   result <- compute_milk_outputs(
+    cohort = "FA",
     milk_yield = 12,
     assessment_duration = 365,
     size = 60,
@@ -104,6 +109,7 @@ test_that("compute_milk_outputs calculates FPCM correctly with different composi
 test_that("compute_milk_outputs handles higher fat content correctly", {
   # Higher fat should result in higher FPCM (energy ratio > 1)
   standard_result <- compute_milk_outputs(
+    cohort = "FA",
     milk_yield = 10,
     assessment_duration = 365,
     size = 100,
@@ -117,6 +123,7 @@ test_that("compute_milk_outputs handles higher fat content correctly", {
   )
 
   high_fat_result <- compute_milk_outputs(
+    cohort = "FA",
     milk_yield = 10,
     assessment_duration = 365,
     size = 100,
@@ -134,6 +141,7 @@ test_that("compute_milk_outputs handles higher fat content correctly", {
 
 test_that("compute_milk_outputs handles zero size", {
   result <- compute_milk_outputs(
+    cohort = "FA",
     milk_yield = 10,
     assessment_duration = 365,
     size = 0,
@@ -153,6 +161,7 @@ test_that("compute_milk_outputs handles zero size", {
 
 test_that("compute_milk_outputs handles zero milking fraction", {
   result <- compute_milk_outputs(
+    cohort = "FA",
     milk_yield = 10,
     assessment_duration = 365,
     size = 100,
@@ -173,6 +182,7 @@ test_that("compute_milk_outputs handles zero milking fraction", {
 test_that("compute_milk_outputs handles validation errors", {
   expect_error(
     compute_milk_outputs(
+      cohort = "FA",
       milk_yield = -10, assessment_duration = 365, size = 100,
       milking_fraction = 0.8, milk_protein = 0.033, milk_fat = 0.04,
       lactose = 0.048, standard_protein = 0.033, standard_fat = 0.04,
@@ -183,6 +193,7 @@ test_that("compute_milk_outputs handles validation errors", {
 
   expect_error(
     compute_milk_outputs(
+      cohort = "FA",
       milk_yield = 10, assessment_duration = 365, size = 100,
       milking_fraction = 1.5, milk_protein = 0.033, milk_fat = 0.04,
       lactose = 0.048, standard_protein = 0.033, standard_fat = 0.04,
@@ -193,6 +204,7 @@ test_that("compute_milk_outputs handles validation errors", {
 
   expect_error(
     compute_milk_outputs(
+      cohort = "FA",
       milk_yield = 10, assessment_duration = 365, size = 100,
       milking_fraction = 0.8, milk_protein = 0.033, milk_fat = 1.5,
       lactose = 0.048, standard_protein = 0.033, standard_fat = 0.04,
@@ -206,6 +218,7 @@ test_that("compute_milk_outputs handles validation errors", {
 # ---- test compute_fibre_output ----
 test_that("compute_fibre_output returns expected value", {
   result <- compute_fibre_output(
+    cohort = "FS",
     fibre_prod = 0.1,
     assessment_duration = 365,
     size = 100
@@ -217,6 +230,7 @@ test_that("compute_fibre_output returns expected value", {
 
 test_that("compute_fibre_output handles zero fibre yield", {
   result <- compute_fibre_output(
+    cohort = "FS",
     fibre_prod = 0,
     assessment_duration = 365,
     size = 100
@@ -227,6 +241,7 @@ test_that("compute_fibre_output handles zero fibre yield", {
 
 test_that("compute_fibre_output handles zero size", {
   result <- compute_fibre_output(
+    cohort = "FA",
     fibre_prod = 0.1,
     assessment_duration = 365,
     size = 0
@@ -237,12 +252,14 @@ test_that("compute_fibre_output handles zero size", {
 
 test_that("compute_fibre_output handles different assessment durations", {
   result_365 <- compute_fibre_output(
+    cohort = "MA",
     fibre_prod = 0.1,
     assessment_duration = 365,
     size = 100
   )
 
   result_180 <- compute_fibre_output(
+    cohort = "MA",
     fibre_prod = 0.1,
     assessment_duration = 180,
     size = 100
@@ -253,6 +270,7 @@ test_that("compute_fibre_output handles different assessment durations", {
 
 test_that("compute_fibre_output handles large values", {
   result <- compute_fibre_output(
+    cohort = "MS",
     fibre_prod = 5.0,
     assessment_duration = 365,
     size = 1000
@@ -264,17 +282,17 @@ test_that("compute_fibre_output handles large values", {
 
 test_that("compute_fibre_output handles validation errors", {
   expect_error(
-    compute_fibre_output(fibre_prod = -0.1, assessment_duration = 365, size = 100),
+    compute_fibre_output(cohort = "MA", fibre_prod = -0.1, assessment_duration = 365, size = 100),
     "fibre_prod"
   )
 
   expect_error(
-    compute_fibre_output(fibre_prod = 0.1, assessment_duration = 0, size = 100),
+    compute_fibre_output(cohort = "MA", fibre_prod = 0.1, assessment_duration = 0, size = 100),
     "assessment_duration"
   )
 
   expect_error(
-    compute_fibre_output(fibre_prod = 0.1, assessment_duration = 365, size = -100),
+    compute_fibre_output(cohort = "MA", fibre_prod = 0.1, assessment_duration = 365, size = -100),
     "size"
   )
 })

@@ -63,14 +63,12 @@ validate_named_numeric_vector <- function(
 
 #' Normalize a rate to a bounded range
 #'
-#' Clamps numeric values to the provided lower/upper bounds while preserving NA.
-#' This is used when rates are reused as scaling factors in downstream modules.
-#'
+#' Ensures rate-like inputs remain within valid bounds before being used as scaling factors in downstream computations
 #' @param x Numeric scalar or vector to normalize.
 #' @param lower Numeric. Minimum allowed value (default: 0).
 #' @param upper Numeric. Maximum allowed value (default: 1).
 #'
-#' @return Numeric values clamped to [lower, upper], with NA preserved.
+#' @return Numeric values clamped to `[lower, upper]`.
 #' @noRd
 normalize_rate <- function(x, lower = 0, upper = 1) {
   if (!is.numeric(x)) {
@@ -121,7 +119,7 @@ validate_positive_numeric <- function(x, arg_name) {
 #'
 #' @param x Numeric scalar or named numeric vector to validate.
 #' @param arg_name Character scalar: must match one `variable_name`.
-#' @param parameter_ranges Data.table of rules.
+#' @param parameter_ranges_data Data.table of rules. Defaults to "data-raw/parameter_ranges.csv" loaded as internal data.
 #'
 #' @noRd
 validate_param_range <- function(
@@ -130,6 +128,14 @@ validate_param_range <- function(
     parameter_ranges_data = parameter_ranges
 ) {
 
+  # Type and missingness checks
+  if (!is.numeric(x)) {
+    cli::cli_abort("{.arg {arg_name}} must be numeric.")
+  }
+  if (anyNA(x)) {
+    cli::cli_abort("{.arg {arg_name}} must not contain missing values.")
+  }
+  
   # Look up the single rule row
   rule_row <- parameter_ranges_data[variable_name == arg_name]
   if (nrow(rule_row) != 1L) {
@@ -138,18 +144,11 @@ validate_param_range <- function(
     )
   }
 
+  # Extract bounds and inclusivity
   minimum_value <- rule_row$lower_bound
   is_lower_strict <- !isTRUE(rule_row$lower_inclusive)
   maximum_value <- rule_row$upper_bound
   is_upper_strict <- !isTRUE(rule_row$upper_inclusive)
-
-  # Type and missingness checks
-  if (!is.numeric(x)) {
-    cli::cli_abort("{.arg {arg_name}} must be numeric.")
-  }
-  if (anyNA(x)) {
-    cli::cli_abort("{.arg {arg_name}} must not contain missing values.")
-  }
 
   # Prepare the values vector and its labels
   numeric_values <- as.numeric(x)

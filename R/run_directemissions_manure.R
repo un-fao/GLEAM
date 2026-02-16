@@ -1,550 +1,468 @@
-#' Run Direct Emissions Manure Module (Internal)
+#' Run Direct Emissions From Manure
 #'
-#' Computes direct and indirect emissions from manure management systems following
-#' IPCC methodology. This function handles parameter loading, data merging, and calls
-#' the core calculation functions to produce emission estimates.
+#' Run emissions (cohort-level) from manure management systems (MMS)
 #'
-#' This function is intended for internal use and performs no validation of inputs.
-#' Input data must be preloaded and properly formatted.
+#' @param directemissions_manure_input_cohort_level_data data.table. Cohort-level
+#'   input table with the following minimum data requirement:
+#'   \describe{
+#'   \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'   \item{cohort}{Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }}
+#'     \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+#'     \item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+#'     \item{urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
+#'     \item{diet_ash}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).}
+#'     \item{nitrogen_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
+#'   }
 #'
-#' @param gleam_data A data.table containing cohort-level data with required columns:
-#'   Animal_short, LPS_short, ADM0_CODE, HerdType_short, dmi, diet_dig, diet_me,
-#'   diet_ge, mms_pasture, mms_burned, mms_other, n_excretion
-#' @param ipcc_method Character. IPCC method to use: "2006" or "2019". Defaults to "2019".
+#' @param manure_management_system_fraction data.table. Cohort-level MMS fractions
+#'   with:
+#'   \describe{
+#'   \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'   \item{cohort}{Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }}
+#'     \item{manure_management_system}{Character. Name identifying the manure management system. The identifiers mms_pasture and mms_burned are reserved for manure deposited on pasture and manure burned for fuel, respectively. No specific naming convention is required for other manure management systems, which are grouped and handled as “other” systems.}
+#'     \item{manure_management_system_fraction}{Numeric. Fraction of total manure excreted by animals in a given herd and cohort that is handled in a specific manure management system. Values range from 0 to 1. The sum of all fractions for each herd_id must equal 1.}
+#'   }
 #'
-#' @return A data.table with added emission columns
+#' @param manure_management_system_factors data.table. Herd-level MMS factors
+#'   with:
+#'   \describe{
+#'     \item{manure_management_system}{Character. Name identifying the manure management system. The identifiers mms_pasture and mms_burned are reserved for manure deposited on pasture and manure burned for fuel, respectively. No specific naming convention is required for other manure management systems, which are grouped and handled as “other” systems.}
+#'     \item{ratio_m3CH4_to_kgCH4}{
+#'       Numeric. Conversion factor used to convert methane (CH₄) from 
+#'       volumetric unit (m³) to a mass unit (kg). This value represents the 
+#'       density of methane. It defaults to 0.67 kg/m³
+#'     }
+#'     \item{methane_conversion_factor_mcf}{
+#'       Numeric. Methane (CH₄) conversion factor represents the portion or 
+#'       degree of the maximum methane producing capacity (Bo) that is effectively 
+#'       achieved within a specific manure management system. It represents the 
+#'       extent to which the theoretical methane yield is realized based on 
+#'       management practices and environmental conditions, specifically the 
+#'       temperature of the system, the retention time of the organic material, 
+#'       and the degree of anaerobic conditions present. The value theoretically 
+#'       ranges from 0 to 100 percent. Default values can be selected from 
+#'       Table 10.17 of IPCC guidelines (IPCC 2006, 2019).
+#'     }
+#'     \item{ch4_max_producing_capacity_bo}{
+#'       Numeric. Maximum methane (CH₄) producing capacity (B0) for all systems 
+#'       (m³ CH₄/kg VS). The value is region- and species-specific, and represents 
+#'       the theoretical maximum methane yield per unit of volatile solids. 
+#'       Default can be selected from Table 10.16 (IPCC, 2019) or from 
+#'       Tables 10A-4 to 10A-9 (IPCC, 2006).
+#'     }
+#'     \item{n2o_ef3}{
+#'       Numeric. Emission factor for direct nitrous oxide (N₂O) emissions for 
+#'       each manure management system, representing nitrous oxide emitted per 
+#'       unit of nitrogen from nitrification and denitrification processes 
+#'       occuring during manure storage and treatment (kg N₂O–N per kg N). 
+#'       Default values can be selected from Table 10.21 and Table 11.1 
+#'       (for manure deposited on pasture) in IPCC Guidelines (IPCC 2006, 2019).
+#'     }
+#'     \item{n2o_ef4}{
+#'       Numeric. Emission factor for indirect nitrous oxide (N₂O) emissions 
+#'       resulting from atmospheric deposition of volatilised nitrogen 
+#'       (NH₃–N and NOₓ–N) onto soils and water surfaces (kg N₂O–N / (kg NH₃–N + NOₓ–N)).
+#'        Default values can be selected from Table 11.3 in IPCC Guidelines (IPCC 2006, 2019).
+#'     }
+#'     \item{nitrogen_fracgas}{
+#'       Numeric. Fraction of manure nitrogen excreted by a given livestock 
+#'       category that is lost through volatilisation as ammonia (NH₃) and 
+#'       nitrogen oxides (NOₓ) within a specific manure management system. 
+#'       This parameter represents the share of excreted nitrogen that is 
+#'       mineralised and released to the atmosphere during manure collection, 
+#'       storage, and treatment. It is expressed as a dimensionless fraction (0–1). 
+#'       Default values are provided in Table 10.22 of IPCC Guidelines (IPCC 2006, 2019).
+#'     }
+#'     \item{n2o_ef5}{
+#'       Numeric. Emission factor for indirect nitrous oxide (N₂O) emissions 
+#'       resulting from nitrogen leaching and runoff, expressed as kilograms of 
+#'       N₂O–N per kilogram of nitrogen leached or lost through runoff (kg N₂O–N/kg N). 
+#'       Default values can be selected from Table 11.3 in IPCC Guidelines (IPCC 2006, 2019).
+#'     }
+#'     \item{nitrogen_fracleach}{
+#'       Numeric. Fraction of manure nitrogen excreted by a given livestock 
+#'       category that is lost through leaching and runoff from a specific 
+#'       manure management system. This parameter is highly uncertain and is used 
+#'       to estimate indirect N₂O emissions from nitrogen that enters the 
+#'       surrounding environment of the storage facility. It is expressed as a 
+#'       dimensionless fraction (0–1). Default values are provided in Table 10.22 
+#'       of IPCC Guidelines (IPCC 2006, 2019).
+#'     }
+#'   }
+#'
+#' @return cohort_level_data data.table. Input cohort table with added manure
+#'   emissions columns:
+#'   \describe{
+#'     \item{volatile_solids}{Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
+#'     \item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH₄/head/day).}
+#'     \item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH₄/head/day).}
+#'     \item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH₄/head/day).}
+#'     \item{ch4_manure_all_noburn}{Numeric. Methane (CH₄) emissions from manure management systems, excluding manure burned for fuel (kg CH₄/head/day).}
+#'     \item{n2o_manure_pasture_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure deposited on pasture (kg N₂O/head/day).}
+#'     \item{n2o_manure_burned_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_manure_other_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_manure_all_noburn_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure management systems, excluding emissions from manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_vol_manure_pasture}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure deposited on pasture (kg N₂O/head/day).}
+#'     \item{n2o_vol_manure_burned}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_vol_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_vol_manure_all_noburn}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding losses from manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_leach_manure_pasture}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure deposited on pasture (kg N₂O/head/day).}
+#'     \item{n2o_leach_manure_burned}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_leach_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_leach_manure_all_noburn}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions from manure deposited on pasture. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
+#'     \item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
+#'     \item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen.}
+#'     \item{n2o_manure_pasture_total}{Numeric. Total nitrous oxide emissions from manure deposited on pasture. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N₂O/head/day).}
+#'     \item{n2o_manure_burned_total}{Numeric. Total nitrous oxide emissions (N₂O) from manure burned for fuel. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N₂O/head/day).}
+#'     \item{n2o_manure_other_total}{Numeric. Total nitrous oxide (N₂O) emissions from manure management systems, excluding manure deposited on pasture and manure burned for fuel. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N₂O/head/day).}
+#'   }
+#'
+#' @section Manure management system (MMS) reference:
+#' A complete list of MMS names,
+#' definitions, and associated emission factors is provided in the
+#' following reference documents:
+#'
+#' \itemize{
+#'   \item \href{gleam/legacy/Resources/mms_definitions.html}{MMS names and definitions}
+#'   \item \href{gleam/legacy/Resources/mms_emission-factors.html}{MMS emission factors}
+#' }
+#'
+#' These documents provide guidance on IPCC MMS and the
+#' corresponding methane (CH₄) and nitrous oxide (N₂O) parameters
+#' (MCF, B₀, EF3, EF4, EF5, fracgas, fracleach).
+#' 
+#' @details
+#' This function orchestrates a cohort-level implementation of the IPCC manure
+#' management methodology using volatile solids (VS), manure management system
+#' (MMS) allocation fractions, and MMS-specific emission factors.
+#' Run-level validation is performed on input table structure and key consistency.
+#' In particular, for each \code{herd_id}, the set of MMS identifiers must be
+#' consistent between \code{manure_management_system_fraction} and
+#' \code{manure_management_system_factors}.
+#'
+#'
+#' The following calculation sequence is applied:
+#' \enumerate{
+#'   \item VS excretion is computed from nutritional parameters of the feed ration 
+#'   (digestibility, urinary energy, and ash) using a simplified formulation of Equation 10.24
+#'   (IPCC 2006, 2019) - \code{\link{calc_volatile_solids}}
+#'   \item Methane (CH₄) emissions from manure management are computed from VS
+#'   and MMS-specific factors (MCF and B₀) and reported by MMS group (pasture, burned,
+#'   and other), consistently with Equation 10.23 (IPCC, 2006, 2019) - \code{\link{calc_ch4_emissions}}
+#'   \item Direct nitrous oxide (N₂O) emissions from manure management are
+#'   computed from nitrogen excretion and MMS-specific EF3 values, and reported
+#'   by MMS group, consistently with Equation 10.25 (IPCC, 2006, 2019) -  \code{\link{calc_direct_n2o_emissions}}
+#'   \item Indirect N₂O emissions are computed as the sum of:
+#'   \itemize{
+#'     \item volatilisation-driven N₂O using MMS-specific nitrogen losses
+#'     (FracGas) and EF4, consistently with Equations 10.26 (IPCC, 2006, 2019), 
+#'     10.27 (IPCC, 2006), and 10.28 (IPCC, 2019) - \code{\link{calc_n2o_from_volatilization}}
+#'     \item leaching/runoff-driven N₂O using MMS-specific nitrogen losses
+#'     (FracLeach) and EF5, consistently with Equations 10.28 (IPCC, 2006), 
+#'     10.27 (IPCC, 2019), and 10.29 (IPCC, 2006, 2019) - \code{\link{calc_n2o_from_leaching}}
+#'   }
+#'   \item Total N₂O emissions are aggregated by MMS group
+#'   (pasture, burned, other) - \code{\link{calc_total_n2o_emissions}}
+#' }
+#'
+#' The approach corresponds to a Tier 2 implementation as:
+#' \itemize{
+#'   \item VS is derived from ration-level inputs rather than using fixed daily
+#'   excretion defaults, and
+#'   \item emissions are allocated across MMS categories using herd/cohort MMS
+#'   fractions and MMS-specific parameters.
+#' }
+#' @seealso
+#' \code{\link{calc_volatile_solids}},
+#' \code{\link{calc_ch4_emissions}},
+#' \code{\link{calc_direct_n2o_emissions}},
+#' \code{\link{calc_n2o_from_volatilization}},
+#' \code{\link{calc_n2o_from_leaching}},
+#' \code{\link{calc_total_n2o_emissions}}
 #'
 #' @examples
 #' \dontrun{
-#' # Load example data and compute manure emissions
-#' input_path <- system.file("extdata/GLEAM_input_directemissions_manure2.csv", package = "gleam")
-#' gleam_data <- data.table::fread(input_path)
-#' result <- run_directemissions_manure(gleam_data, ipcc_method = "2019")
-#' }
-#' @keywords internal
+#' manure_management_system_factors <- data.table::fread(
+#'   system.file(
+#'     "extdata/examples/manure_management_system_factors.csv",
+#'     package = "gleam"
+#'   )
+#' )
+#' manure_management_system_fraction <- data.table::fread(
+#'   system.file(
+#'     "extdata/examples/manure_management_system_fraction.csv",
+#'     package = "gleam"
+#'   )
+#' )
+#' directemissions_manure_input_cohort_level_data <- data.table::fread(
+#'   system.file(
+#'     "extdata/examples/directemissions_manure_input_cohort_level_data.csv",
+#'     package = "gleam"
+#'   )
+#' )
 #'
-#' @importFrom data.table := .SD .I rbindlist setcolorder
-run_directemissions_manure <- function(gleam_data, ipcc_method = "2019") {
-  # Internal checks
-  if (!inherits(gleam_data, "data.frame") || nrow(gleam_data) == 0) {
-    cli::cli_abort("Input must be a non-empty data.frame or data.table.")
-  }
-
-  required <- c(
-    "Animal_short", "LPS_short", "ADM0_CODE", "dmi", "diet_dig",
-    "diet_me", "diet_ge", "mmspasture", "mmsburned", "n_excretion"
+#' result <- run_directemissions_manure(
+#'   directemissions_manure_input_cohort_level_data = directemissions_manure_input_cohort_level_data,
+#'   manure_management_system_fraction = manure_management_system_fraction,
+#'   manure_management_system_factors = manure_management_system_factors
+#' )
+#' }
+#'
+#' @references
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+#' Volume 4, Chapter 10: Emissions from Livestock and Manure Management.
+#' Equations 10.23, 10.24, 10.25, 10.26, 10.27, 10.28, and 10.29.
+#'
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+#' Volume 4, Chapter 10: Emissions from Livestock and Manure Management.
+#' Equations 10.23, 10.24, 10.25, 10.26, 10.27, 10.28, and 10.29.
+#' 
+#' @export
+#'
+#' @importFrom data.table := .I
+run_directemissions_manure <- function(
+    directemissions_manure_input_cohort_level_data,
+    manure_management_system_fraction,
+    manure_management_system_factors
+) {
+  # --- Step 1: Validate inputs ------------------------------------------------
+  validate_directemissions_manure_inputs(
+    directemissions_manure_input_cohort_level_data = directemissions_manure_input_cohort_level_data,
+    manure_management_system_fraction = manure_management_system_fraction,
+    manure_management_system_factors = manure_management_system_factors
   )
-  miss <- setdiff(required, names(gleam_data))
-  if (length(miss)) {
-    cli::cli_abort(c(
-      "!" = "Missing required columns in input data.",
-      "x" = paste(miss, collapse = ", ")
-    ))
-  }
 
-  if (!ipcc_method %in% c("2006", "2019")) {
-    cli::cli_abort("ipcc_method must be either '2006' or '2019'.")
-  }
+  # --- Step 2: Prepare inputs -------------------------------------------------
+  cohort_level_data <- data.table::copy(directemissions_manure_input_cohort_level_data)
+  mms_fraction <- data.table::copy(manure_management_system_fraction)
+  mms_factors <- data.table::copy(manure_management_system_factors)
 
-  # Convert factor columns to character to avoid comparison issues in core functions
-  gleam_data[, Animal_short := as.character(Animal_short)]
-  gleam_data[, LPS_short := as.character(LPS_short)]
-  if ("HerdType_short" %in% names(gleam_data)) {
-    gleam_data[, HerdType_short := as.character(HerdType_short)]
-  }
+  # Join cohort fractions with herd-level MMS factors
+  mms_data <- merge(
+    mms_fraction,
+    mms_factors,
+    by = c("herd_id", "manure_management_system")
+  )
 
-  # Load parameter tables
-  read_param <- function(param_name) {
-    file_path <- paste0("inst/extdata/Manure_parameters/", param_name, "_", ipcc_method, ".csv")
-    if (!file.exists(file_path)) {
-      stop("Parameter file not found: ", file_path)
+  # Build the MMS list expected by scientific core functions.
+  # Each MMS becomes a named numeric vector with specific fields.
+  build_mms_list <- function(mms_rows, fields) {
+    if (nrow(mms_rows) == 0) {
+      return(list())
     }
-    param_table <- data.table::fread(file_path)
-    param_table[, ADM0_CODE := as.character(ADM0_CODE)]
-    # Remove ipcc_method column to avoid merge conflicts
-    if ("ipcc_method" %in% names(param_table)) {
-      param_table[, ipcc_method := NULL]
-    }
-    return(param_table)
+
+    # Keep only MMS id plus required fields, then split by MMS name.
+    mms_subset <- mms_rows[, c("manure_management_system", fields), with = FALSE]
+    mms_split <- split(mms_subset, mms_subset$manure_management_system)
+
+    # Convert each MMS to a named numeric vector of required fields.
+    mms_list <- lapply(mms_split, function(mms_df) {
+      unlist(mms_df[1, fields, with = FALSE], use.names = TRUE)
+    })
+
+    return(mms_list)
   }
 
-  b0_table <- read_param("b0")
-  mcf_table <- read_param("mcf")
-  ef3_table <- read_param("ef3")
-  ef4_table <- read_param("ef4")
-  ef5_table <- read_param("ef5")
-  fracgas_table <- read_param("fracgas")
-  fracleach_table <- read_param("fracleach")
+  # --- Step 3: Volatile solids (VS) -------------------------------------------
+  cohort_level_data[
+    ,
+    volatile_solids := calc_volatile_solids(
+      dry_matter_intake = dry_matter_intake,
+      diet_digestibility_fraction = diet_digestibility_fraction,
+      urinary_energy_fraction = urinary_energy_fraction,
+      diet_ash = diet_ash
+    ),
+    by = .I
+  ]
 
-  # Internal helper function to compute weighted terms
-  compute_weighted_terms <- function(dt, mms_cols, factor_suffix) {
-    dt[, {
-      mms_vals <- unlist(.SD[, mms_cols, with = FALSE])
-      factor_vals <- unlist(.SD[, paste0(mms_cols, factor_suffix), with = FALSE])
+  # --- Step 4: CH4 from manure (pasture, burned, other, total non-burned) -----
+  cohort_level_data[
+    ,
+    c(
+      "ch4_manure_pasture",
+      "ch4_manure_burned",
+      "ch4_manure_other",
+      "ch4_manure_all_noburn"
+    ) := {
+      # Select MMS records for this herd/cohort (fractions + factors).
+      current_herd_id <- herd_id
+      current_cohort <- cohort
+      mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
 
-      names(mms_vals) <- sub("^mms", "", mms_cols)
-      names(factor_vals) <- sub("^mms", "", mms_cols)
-
-      pasture <- if (!is.na(mms_vals["pasture"]) && !is.na(factor_vals["pasture"])) mms_vals["pasture"] * factor_vals["pasture"] else 0
-      burned <- if (!is.na(mms_vals["burned"])  && !is.na(factor_vals["burned"]))  mms_vals["burned"]  * factor_vals["burned"]  else 0
-      other <- sum(
-        mms_vals[setdiff(names(mms_vals), c("pasture","burned"))] *
-          factor_vals[setdiff(names(factor_vals), c("pasture","burned"))],
-        na.rm = TRUE
+      # Build the list expected by calc_ch4_emissions(...)
+      mms_list <- build_mms_list(
+        mms_rows,
+        c("manure_management_system_fraction",
+          "methane_conversion_factor_mcf",
+          "ch4_max_producing_capacity_bo")
       )
-      list(pasture = pasture, burned = burned, other = other)
-    }, by = .I]
-  }
 
-  # CH4-----
-
-  ## CH4 from manure-----
-
-  ### Volatile Solids (VS)------
-
-  #### VS - IPCC method------
-  gleam_data[, paste0("vs", ipcc_method) :=
-               calc_volatile_solids(
-                 animal = Animal_short,
-                 dmi = dmi,
-                 diet_dig = diet_dig,
-                 diet_me = diet_me,
-                 diet_ge = diet_ge
-               ),
-             by = .I
+      # calc_ch4_emissions() accepts variable MMS inputs via `...`.
+      ch4 <- do.call(
+        calc_ch4_emissions, c(list(volatile_solids = volatile_solids), mms_list)
+      )
+      list(
+        ch4$ch4_manure_pasture,
+        ch4$ch4_manure_burned,
+        ch4$ch4_manure_other,
+        ch4$ch4_manure_all_noburn
+      )
+    },
+    by = .I
   ]
 
-  #### MCF - IPCC method -----
-  # Merge MCF data into temporary variable
-  mms_cols <- grep("^mms", names(mcf_table), value = TRUE)
-  mcf_subset <- mcf_table[, c("ADM0_CODE", mms_cols), with = FALSE]
-  mcf_merged <- merge(
-    gleam_data,
-    mcf_subset,
-    by = "ADM0_CODE",
-    suffixes = c("", "_mcf"),
-    allow.cartesian = TRUE
-  )
+  # --- Step 5: Direct N2O from manure (pasture, burned, other, total non-burned) ----
+  cohort_level_data[
+    ,
+    c(
+      "n2o_manure_pasture_direct",
+      "n2o_manure_burned_direct",
+      "n2o_manure_other_direct",
+      "n2o_manure_all_noburn_direct"
+    ) := {
+      # Select MMS records for this herd/cohort (fractions + factors).
+      current_herd_id <- herd_id
+      current_cohort <- cohort
+      mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
 
-  # Calculate MCF values
-  mcf_temp <- compute_weighted_terms(mcf_merged, mms_cols, "_mcf")
-  mcf_result <- data.table::data.table(
-    mcf_pasture = mcf_temp$pasture / 100,
-    mcf_burned = mcf_temp$burned / 100,
-    mcf_other = mcf_temp$other / 100
-  )
+      # Build the list expected by calc_direct_n2o_emissions(...)
+      mms_list <- build_mms_list(mms_rows, c("manure_management_system_fraction", "n2o_ef3"))
 
-  gleam_data[, c(
-    paste0("mcf_pasture", ipcc_method),
-    paste0("mcf_burned", ipcc_method),
-    paste0("mcf_other", ipcc_method)
-  ) := list(
-    mcf_result$mcf_pasture,
-    mcf_result$mcf_burned,
-    mcf_result$mcf_other
-  )]
-
-  #### CH4 manure - IPCC method -----
-  # Merge B0 data into temporary variable (handle HerdType_short for CTL/CHK)
-  b0_table[, mms_all_b0 := mms_all]
-  b0_table[, mmspasture_b0 := mmspasture]
-
-  b0_with_herd <- b0_table[
-    HerdType_short %in% c("DRY", "LAY", "BRL") & Animal_short %in% c("CTL", "CHK")
-  ]
-  b0_without_herd <- b0_table[
-    !(Animal_short %in% c("CTL", "CHK") & HerdType_short %in% c("DRY", "LAY", "BRL"))
+      # calc_direct_n2o_emissions() accepts variable MMS inputs via `...`.
+      n2o_direct <- do.call(
+        calc_direct_n2o_emissions,
+        c(list(nitrogen_excretion = nitrogen_excretion), mms_list)
+      )
+      list(
+        n2o_direct$n2o_manure_pasture_direct,
+        n2o_direct$n2o_manure_burned_direct,
+        n2o_direct$n2o_manure_other_direct,
+        n2o_direct$n2o_manure_all_noburn_direct
+      )
+    },
+    by = .I
   ]
 
-  gleam_with_herd <- gleam_data[
-    HerdType_short %in% c("DRY", "LAY", "BRL") & Animal_short %in% c("CTL", "CHK")
-  ]
-  gleam_without_herd <- gleam_data[
-    !(Animal_short %in% c("CTL", "CHK") & HerdType_short %in% c("DRY", "LAY", "BRL"))
-  ]
+  # --- Step 6: Indirect N2O from volatilization -------------------------------
+  cohort_level_data[
+    ,
+    c(
+      "n2o_vol_manure_pasture",
+      "n2o_vol_manure_burned",
+      "n2o_vol_manure_other",
+      "n2o_vol_manure_all_noburn"
+    ) := {
+      # Select MMS records for this herd/cohort (fractions + factors).
+      current_herd_id <- herd_id
+      current_cohort <- cohort
+      mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
 
-  gleam_with_herd <- merge(
-    gleam_with_herd,
-    b0_with_herd,
-    by = c("ADM0_CODE", "Animal_short", "HerdType_short"),
-    all.x = TRUE
-  )
-  gleam_without_herd <- merge(
-    gleam_without_herd,
-    b0_without_herd[, .(ADM0_CODE, Animal_short, mms_all_b0, mmspasture_b0)],
-    by = c("ADM0_CODE", "Animal_short"),
-    all.x = TRUE
-  )
+      # Build the list expected by calc_n2o_from_volatilization(...)
+      mms_list <- build_mms_list(
+        mms_rows, c("manure_management_system_fraction", "n2o_ef4", "nitrogen_fracgas")
+      )
 
-  ch4_merged <- data.table::rbindlist(
-    list(gleam_with_herd, gleam_without_herd), fill = TRUE
-  )
-
-  # Calculate CH4 emissions
-  vs_col <- paste0("vs", ipcc_method)
-  mcf_pasture_col <- paste0("mcf_pasture", ipcc_method)
-  mcf_burned_col <- paste0("mcf_burned", ipcc_method)
-  mcf_other_col <- paste0("mcf_other", ipcc_method)
-
-  ch4_result <- ch4_merged[, calc_ch4_emissions(
-    vs = get(vs_col),
-    mcf_pasture = get(mcf_pasture_col),
-    mcf_burned = get(mcf_burned_col),
-    mcf_other = get(mcf_other_col),
-    b0_mms_all = mms_all_b0,
-    b0_mms_pasture = mmspasture_b0
-  ), by = .I]
-
-  gleam_data[, c(
-    paste0("ch4_manure_pasture", ipcc_method),
-    paste0("ch4_manure_burned", ipcc_method),
-    paste0("ch4_manure_other", ipcc_method),
-    paste0("ch4_manure_all_noburn", ipcc_method)
-  ) := list(
-    ch4_result$ch4_manure_pasture, ch4_result$ch4_manure_burned,
-    ch4_result$ch4_manure_other, ch4_result$ch4_manure_all_noburn
-  )]
-
-  # N2O------
-  ## N2O from manure - direct ------
-  ### EF3 - IPCC method------
-  # Merge EF3 data into temporary variable
-  mms_cols <- grep("^mms", names(ef3_table), value = TRUE)
-  ef3_subset <- ef3_table[, c("ADM0_CODE", "Animal_short", mms_cols), with = FALSE]
-  ef3_merged <- merge(
-    gleam_data,
-    ef3_subset,
-    by = c("ADM0_CODE", "Animal_short"),
-    suffixes = c("", "_ef3"),
-    allow.cartesian = TRUE
-  )
-
-  # Calculate EF3 values
-  ef3_temp <- compute_weighted_terms(ef3_merged, mms_cols, "_ef3")
-  ef3_result <- data.table::data.table(
-    ef3_pasture = ef3_temp$pasture,
-    ef3_burned = ef3_temp$burned,
-    ef3_other = ef3_temp$other
-  )
-
-  gleam_data[, c(
-    paste0("ef3_pasture", ipcc_method),
-    paste0("ef3_burned", ipcc_method),
-    paste0("ef3_other", ipcc_method)
-  ) := list(
-    ef3_result$ef3_pasture,
-    ef3_result$ef3_burned,
-    ef3_result$ef3_other
-  )]
-
-  ### N2O manure direct - IPCC method------
-  ef3_pasture_col <- paste0("ef3_pasture", ipcc_method)
-  ef3_burned_col <- paste0("ef3_burned", ipcc_method)
-  ef3_other_col <- paste0("ef3_other", ipcc_method)
-
-  direct_n2o_result <- gleam_data[, calc_direct_n2o_emissions(
-    n_excretion = n_excretion,
-    ef3_pasture = get(ef3_pasture_col),
-    ef3_burned = get(ef3_burned_col),
-    ef3_other = get(ef3_other_col)
-  ), by = .I]
-
-  gleam_data[, c(
-    paste0("direct_n2o_manure_pasture", ipcc_method),
-    paste0("direct_n2o_manure_burned", ipcc_method),
-    paste0("direct_n2o_manure_other", ipcc_method),
-    paste0("direct_n2o_manure_all_noburn", ipcc_method)
-  ) := list(
-    direct_n2o_result$direct_n2o_manure_pasture,
-    direct_n2o_result$direct_n2o_manure_burned,
-    direct_n2o_result$direct_n2o_manure_other,
-    direct_n2o_result$direct_n2o_manure_all_noburn
-  )]
-
-  ## N2O from manure - indirect ------
-
-  ### Fracgas - IPCC method------
-  # Merge FracGAS data into temporary variable (handle HerdType_short for CTL/CHK)
-  mms_cols <- grep("^mms", names(fracgas_table), value = TRUE)
-  fracgas_with_herd <- fracgas_table[
-    HerdType_short %in% c("DRY", "LAY", "BRL") & Animal_short %in% c("CTL", "CHK")
-  ]
-  fracgas_without_herd <- fracgas_table[
-    !(Animal_short %in% c("CTL", "CHK") & HerdType_short %in% c("DRY", "LAY", "BRL"))
+      # calc_n2o_from_volatilization() accepts variable MMS inputs via `...`.
+      n2o_vol <- do.call(
+        calc_n2o_from_volatilization,
+        c(list(nitrogen_excretion = nitrogen_excretion), mms_list)
+      )
+      list(
+        n2o_vol$n2o_vol_manure_pasture,
+        n2o_vol$n2o_vol_manure_burned,
+        n2o_vol$n2o_vol_manure_other,
+        n2o_vol$n2o_vol_manure_all_noburn
+      )
+    },
+    by = .I
   ]
 
-  gleam_fracgas_with_herd <- gleam_data[
-    HerdType_short %in% c("DRY", "LAY", "BRL") & Animal_short %in% c("CTL", "CHK")
-  ]
-  gleam_fracgas_without_herd <- gleam_data[
-    !(Animal_short %in% c("CTL", "CHK") & HerdType_short %in% c("DRY", "LAY", "BRL"))
-  ]
+  # --- Step 7: Indirect N2O from leaching/runoff ------------------------------
+  cohort_level_data[
+    ,
+    c(
+      "n2o_leach_manure_pasture",
+      "n2o_leach_manure_burned",
+      "n2o_leach_manure_other",
+      "n2o_leach_manure_all_noburn"
+    ) := {
+      # Select MMS records for this herd/cohort (fractions + factors).
+      current_herd_id <- herd_id
+      current_cohort <- cohort
+      mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
 
-  gleam_fracgas_with_herd <- merge(
-    gleam_fracgas_with_herd,
-    fracgas_with_herd,
-    by = c("ADM0_CODE", "Animal_short", "HerdType_short"),
-    suffixes = c("", "_fracgas"),
-    all.x = TRUE
-  )
-  gleam_fracgas_without_herd <- merge(
-    gleam_fracgas_without_herd,
-    fracgas_without_herd[, .(
-      ADM0_CODE, Animal_short, mmspasture, mmsdaily, mmssolid, mmssolidcov,
-      mmssolidbulk, mmssolidadd, mmsdrylot, mmspit1, mmspit3, mmspit4, mmspit6, mmspit12,
-      mmsliquid1, mmsliquid3, mmsliquid4, mmsliquid6, mmsliquid12,
-      mmsliquidnatcov1, mmsliquidnatcov3, mmsliquidnatcov4, mmsliquidnatcov6, mmsliquidnatcov12,
-      mmsliquidsolcov1, mmsliquidsolcov3, mmsliquidsolcov4, mmsliquidsolcov6, mmsliquidsolcov12,
-      mmslagoon,
-      mmsbiogaslowleak1, mmsbiogaslowleak2, mmsbiogaslowleak3,
-      mmsbiogashighleak1, mmsbiogashighleak2, mmsbiogashighleak3,
-      mmsburned, mmsdeepnomix2, mmsdeepnomix1, mmsdeepmix2, mmsdeepmix1,
-      mmscompostves, mmscompoststat, mmscompostint, mmscompostpass,
-      mmslitter, mmsnolitter, mmsareobic, mmsaerproc
-    )],
-    by = c("ADM0_CODE", "Animal_short"),
-    suffixes = c("", "_fracgas"),
-    all.x = TRUE
-  )
+      # Build the list expected by calc_n2o_from_leaching(...)
+      mms_list <- build_mms_list(
+        mms_rows, c("manure_management_system_fraction", "n2o_ef5", "nitrogen_fracleach")
+      )
 
-  fracgas_merged <- data.table::rbindlist(
-    list(gleam_fracgas_with_herd, gleam_fracgas_without_herd), use.names = TRUE, fill = TRUE
-  )
-
-  # Calculate FracGAS values
-  fracgas_temp <- compute_weighted_terms(fracgas_merged, mms_cols, "_fracgas")
-  fracgas_result <- data.table::data.table(
-    fracgas_pasture = fracgas_temp$pasture,
-    fracgas_burned = fracgas_temp$burned,
-    fracgas_other = fracgas_temp$other
-  )
-
-  gleam_data[, c(
-    paste0("fracgas_pasture", ipcc_method),
-    paste0("fracgas_burned", ipcc_method),
-    paste0("fracgas_other", ipcc_method)
-  ) := list(
-    fracgas_result$fracgas_pasture,
-    fracgas_result$fracgas_burned,
-    fracgas_result$fracgas_other
-  )]
-
-  ### Nvol - IPCC method------
-  fracgas_pasture_col <- paste0("fracgas_pasture", ipcc_method)
-  fracgas_burned_col <- paste0("fracgas_burned", ipcc_method)
-  fracgas_other_col <- paste0("fracgas_other", ipcc_method)
-
-  n_vol_result <- gleam_data[, calc_nitrogen_volatilization(
-    n_excretion = n_excretion,
-    fracgas_pasture = get(fracgas_pasture_col),
-    fracgas_burned = get(fracgas_burned_col),
-    fracgas_other = get(fracgas_other_col)
-  ), by = .I]
-
-  gleam_data[, c(
-    paste0("n_vol_manure_pasture", ipcc_method),
-    paste0("n_vol_manure_burned", ipcc_method),
-    paste0("n_vol_manure_other", ipcc_method),
-    paste0("n_vol_manure_all_noburn", ipcc_method)
-  ) := list(
-    n_vol_result$n_vol_manure_pasture, n_vol_result$n_vol_manure_burned,
-    n_vol_result$n_vol_manure_other, n_vol_result$n_vol_manure_all_noburn
-  )]
-
-  ### N2O manure indirect volatilization - IPCC method------
-  # Merge EF4 data into temporary variable
-  ef4_merged <- merge(
-    gleam_data,
-    ef4_table,
-    by = "ADM0_CODE",
-    allow.cartesian = TRUE
-  )
-
-  n_vol_pasture_col <- paste0("n_vol_manure_pasture", ipcc_method)
-  n_vol_burned_col <- paste0("n_vol_manure_burned", ipcc_method)
-  n_vol_other_col <- paste0("n_vol_manure_other", ipcc_method)
-
-  n2o_vol_result <- ef4_merged[, calc_n2o_from_volatilization(
-    n_vol_pasture = get(n_vol_pasture_col),
-    n_vol_burned = get(n_vol_burned_col),
-    n_vol_other = get(n_vol_other_col),
-    ef4 = ef4
-  ), by = .I]
-
-  gleam_data[, c(
-    paste0("n2o_vol_manure_pasture", ipcc_method),
-    paste0("n2o_vol_manure_burned", ipcc_method),
-    paste0("n2o_vol_manure_other", ipcc_method),
-    paste0("n2o_vol_manure_all_noburn", ipcc_method)
-  ) := list(
-    n2o_vol_result$n2o_vol_manure_pasture, n2o_vol_result$n2o_vol_manure_burned,
-    n2o_vol_result$n2o_vol_manure_other, n2o_vol_result$n2o_vol_manure_all_noburn
-  )]
-
-  ### Fracleach - IPCC method------
-  # Merge FracLEACH data into temporary variable (handle HerdType_short for CTL/CHK)
-  mms_cols <- grep("^mms", names(fracleach_table), value = TRUE)
-  fracleach_with_herd <- fracleach_table[
-    HerdType_short %in% c("DRY", "LAY", "BRL") & Animal_short %in% c("CTL", "CHK")
-  ]
-  fracleach_without_herd <- fracleach_table[
-    !(Animal_short %in% c("CTL", "CHK") & HerdType_short %in% c("DRY", "LAY", "BRL"))
+      # calc_n2o_from_leaching() accepts variable MMS inputs via `...`.
+      n2o_leach <- do.call(
+        calc_n2o_from_leaching,
+        c(list(nitrogen_excretion = nitrogen_excretion), mms_list)
+      )
+      list(
+        n2o_leach$n2o_leach_manure_pasture,
+        n2o_leach$n2o_leach_manure_burned,
+        n2o_leach$n2o_leach_manure_other,
+        n2o_leach$n2o_leach_manure_all_noburn
+      )
+    },
+    by = .I
   ]
 
-  gleam_fracleach_with_herd <- gleam_data[
-    HerdType_short %in% c("DRY", "LAY", "BRL") & Animal_short %in% c("CTL", "CHK")
+  # --- Step 8: Total N2O (direct + indirect) ---------------------------------
+  cohort_level_data[
+    ,
+    c(
+      "n2o_manure_pasture_indirect",
+      "n2o_manure_burned_indirect",
+      "n2o_manure_other_indirect",
+      "n2o_manure_pasture_total",
+      "n2o_manure_burned_total",
+      "n2o_manure_other_total"
+    ) := {
+      totals <- calc_total_n2o_emissions(
+        n2o_vol_manure_pasture = n2o_vol_manure_pasture,
+        n2o_leach_manure_pasture = n2o_leach_manure_pasture,
+        n2o_vol_manure_burned = n2o_vol_manure_burned,
+        n2o_leach_manure_burned = n2o_leach_manure_burned,
+        n2o_vol_manure_other = n2o_vol_manure_other,
+        n2o_leach_manure_other = n2o_leach_manure_other,
+        n2o_manure_pasture_direct = n2o_manure_pasture_direct,
+        n2o_manure_burned_direct = n2o_manure_burned_direct,
+        n2o_manure_other_direct = n2o_manure_other_direct
+      )
+      list(
+        totals$n2o_manure_pasture_indirect,
+        totals$n2o_manure_burned_indirect,
+        totals$n2o_manure_other_indirect,
+        totals$n2o_manure_pasture_total,
+        totals$n2o_manure_burned_total,
+        totals$n2o_manure_other_total
+      )
+    },
+    by = .I
   ]
-  gleam_fracleach_without_herd <- gleam_data[
-    !(Animal_short %in% c("CTL", "CHK") & HerdType_short %in% c("DRY", "LAY", "BRL"))
-  ]
 
-  gleam_fracleach_with_herd <- merge(
-    gleam_fracleach_with_herd,
-    fracleach_with_herd,
-    by = c("ADM0_CODE", "Animal_short", "HerdType_short"),
-    suffixes = c("", "_fracleach"),
-    all.x = TRUE
-  )
-  gleam_fracleach_without_herd <- merge(
-    gleam_fracleach_without_herd,
-    fracleach_without_herd[, .(
-      ADM0_CODE, Animal_short, mmspasture, mmsdaily, mmssolid, mmssolidcov,
-      mmssolidbulk, mmssolidadd, mmsdrylot, mmspit1, mmspit3, mmspit4, mmspit6, mmspit12,
-      mmsliquid1, mmsliquid3, mmsliquid4, mmsliquid6, mmsliquid12,
-      mmsliquidnatcov1, mmsliquidnatcov3, mmsliquidnatcov4, mmsliquidnatcov6, mmsliquidnatcov12,
-      mmsliquidsolcov1, mmsliquidsolcov3, mmsliquidsolcov4, mmsliquidsolcov6, mmsliquidsolcov12,
-      mmslagoon,
-      mmsbiogaslowleak1, mmsbiogaslowleak2, mmsbiogaslowleak3,
-      mmsbiogashighleak1, mmsbiogashighleak2, mmsbiogashighleak3,
-      mmsburned, mmsdeepnomix2, mmsdeepnomix1, mmsdeepmix2, mmsdeepmix1,
-      mmscompostves, mmscompoststat, mmscompostint, mmscompostpass,
-      mmslitter, mmsnolitter, mmsareobic, mmsaerproc
-    )],
-    by = c("ADM0_CODE", "Animal_short"),
-    suffixes = c("", "_fracleach"),
-    all.x = TRUE
-  )
-
-  fracleach_merged <- data.table::rbindlist(
-    list(gleam_fracleach_with_herd, gleam_fracleach_without_herd), use.names = TRUE, fill = TRUE
-  )
-
-  # Calculate FracLEACH values
-  fracleach_temp <- compute_weighted_terms(fracleach_merged, mms_cols, "_fracleach")
-  fracleach_result <- data.table::data.table(
-    fracleach_pasture = fracleach_temp$pasture,
-    fracleach_burned = fracleach_temp$burned,
-    fracleach_other = fracleach_temp$other
-  )
-
-  gleam_data[, c(
-    paste0("fracleach_pasture", ipcc_method),
-    paste0("fracleach_burned", ipcc_method),
-    paste0("fracleach_other", ipcc_method)
-  ) := list(
-    fracleach_result$fracleach_pasture,
-    fracleach_result$fracleach_burned,
-    fracleach_result$fracleach_other
-  )]
-
-  ### Nleach - IPCC method------
-  fracleach_pasture_col <- paste0("fracleach_pasture", ipcc_method)
-  fracleach_burned_col <- paste0("fracleach_burned", ipcc_method)
-  fracleach_other_col <- paste0("fracleach_other", ipcc_method)
-
-  n_leach_result <- gleam_data[, calc_nitrogen_leaching(
-    n_excretion = n_excretion,
-    fracleach_pasture = get(fracleach_pasture_col),
-    fracleach_burned = get(fracleach_burned_col),
-    fracleach_other = get(fracleach_other_col)
-  ), by = .I]
-
-  gleam_data[, c(
-    paste0("n_leach_manure_pasture", ipcc_method),
-    paste0("n_leach_manure_burned", ipcc_method),
-    paste0("n_leach_manure_other", ipcc_method),
-    paste0("n_leach_manure_all_noburn", ipcc_method)
-  ) := list(
-    n_leach_result$n_leach_manure_pasture, n_leach_result$n_leach_manure_burned,
-    n_leach_result$n_leach_manure_other, n_leach_result$n_leach_manure_all_noburn
-  )]
-
-  ### N2O manure indirect leaching - IPCC method------
-  # Merge EF5 data into temporary variable
-  ef5_merged <- merge(
-    gleam_data,
-    ef5_table,
-    by = "ADM0_CODE",
-    allow.cartesian = TRUE
-  )
-
-  n_leach_pasture_col <- paste0("n_leach_manure_pasture", ipcc_method)
-  n_leach_burned_col <- paste0("n_leach_manure_burned", ipcc_method)
-  n_leach_other_col <- paste0("n_leach_manure_other", ipcc_method)
-
-  n2o_leach_result <- ef5_merged[, calc_n2o_from_leaching(
-    n_leach_pasture = get(n_leach_pasture_col),
-    n_leach_burned = get(n_leach_burned_col),
-    n_leach_other = get(n_leach_other_col),
-    ef5 = ef5
-  ), by = .I]
-
-  gleam_data[, c(
-    paste0("n2o_leach_manure_pasture", ipcc_method),
-    paste0("n2o_leach_manure_burned", ipcc_method),
-    paste0("n2o_leach_manure_other", ipcc_method),
-    paste0("n2o_leach_manure_all_noburn", ipcc_method)
-  ) := list(
-    n2o_leach_result$n2o_leach_manure_pasture,
-    n2o_leach_result$n2o_leach_manure_burned,
-    n2o_leach_result$n2o_leach_manure_other,
-    n2o_leach_result$n2o_leach_manure_all_noburn
-  )]
-
-  ## TOTAL N2O -----
-  direct_pasture_col <- paste0("direct_n2o_manure_pasture", ipcc_method)
-  direct_burned_col <- paste0("direct_n2o_manure_burned", ipcc_method)
-  direct_other_col <- paste0("direct_n2o_manure_other", ipcc_method)
-  vol_pasture_col <- paste0("n2o_vol_manure_pasture", ipcc_method)
-  vol_burned_col <- paste0("n2o_vol_manure_burned", ipcc_method)
-  vol_other_col <- paste0("n2o_vol_manure_other", ipcc_method)
-  leach_pasture_col <- paste0("n2o_leach_manure_pasture", ipcc_method)
-  leach_burned_col <- paste0("n2o_leach_manure_burned", ipcc_method)
-  leach_other_col <- paste0("n2o_leach_manure_other", ipcc_method)
-
-  total_n2o_result <- gleam_data[, calc_total_n2o_emissions(
-    direct = list(
-      direct_n2o_manure_pasture = get(direct_pasture_col),
-      direct_n2o_manure_burned = get(direct_burned_col),
-      direct_n2o_manure_other = get(direct_other_col)
-    ),
-    vol = list(
-      n2o_vol_manure_pasture = get(vol_pasture_col),
-      n2o_vol_manure_burned = get(vol_burned_col),
-      n2o_vol_manure_other = get(vol_other_col)
-    ),
-    leach = list(
-      n2o_leach_manure_pasture = get(leach_pasture_col),
-      n2o_leach_manure_burned = get(leach_burned_col),
-      n2o_leach_manure_other = get(leach_other_col)
-    )
-  ), by = .I]
-
-  gleam_data[, c(
-    paste0("indirect_n2o_manure_burned", ipcc_method),
-    paste0("indirect_n2o_manure_pasture", ipcc_method),
-    paste0("indirect_n2o_manure_other", ipcc_method),
-    paste0("total_n2o_manure_burned", ipcc_method),
-    paste0("total_n2o_manure_pasture", ipcc_method),
-    paste0("total_n2o_manure_other", ipcc_method)
-  ) := list(
-    total_n2o_result$indirect_n2o_manure_burned,
-    total_n2o_result$indirect_n2o_manure_pasture,
-    total_n2o_result$indirect_n2o_manure_other,
-    total_n2o_result$total_n2o_manure_burned,
-    total_n2o_result$total_n2o_manure_pasture,
-    total_n2o_result$total_n2o_manure_other
-  )]
-
-  return(gleam_data)
+  return(cohort_level_data)
 }

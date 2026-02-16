@@ -2,50 +2,155 @@
 % Please edit documentation in R/directemissions_manure_core_model.R
 \name{calc_n2o_from_leaching}
 \alias{calc_n2o_from_leaching}
-\title{Calculate N2O Emissions from Nitrogen Leaching}
+\title{Calculate indirect Nitrous Oxide (N₂O) emissions from manure leaching and runoff}
 \usage{
-calc_n2o_from_leaching(
-  n_leach_pasture,
-  n_leach_burned,
-  n_leach_other,
-  ef5,
-  ration_N2ON_to_N2O = 44/28
-)
+calc_n2o_from_leaching(ratio_N2ON_to_N2O = 44/28, nitrogen_excretion, ...)
 }
 \arguments{
-\item{n_leach_pasture}{Numeric. Amount of manure nitrogen lost through leaching and runoff from manure deposited on pasture (kg N/head/day).}
+\item{ratio_N2ON_to_N2O}{Numeric. Conversion factor from kg N₂O–N to kg N₂O,
+based on molecular weights. Defaults to 44/28.}
 
-\item{n_leach_burned}{Numeric. Amount of manure nitrogen lost through leaching and runoff from manure burned for fuel (kg N/head/day).}
+\item{nitrogen_excretion}{Numeric. Daily nitrogen excretion
+(kg N/head/day).}
 
-\item{n_leach_other}{Numeric. Amount of manure nitrogen lost through leaching and runoff from manure managed in all other systems, excluding losses from manure deposited on pasture and manure burned for fuel (kg N/head/day).}
+\item{...}{A variable number of manure management system (MMS) arguments.
+Each MMS must be provided as a named numeric vector with exactly the
+following fields:
+\describe{
+\item{manure_management_system_fraction}{
+Numeric. Fraction of total manure excreted by animals in a given herd
+and cohort that is handled in a specific manure management system.
+Values range from 0 to 1. The sum of all fractions for each herd_id
+must equal 1.
+}
+\item{n2o_ef5}{
+Numeric. Emission factor for indirect nitrous oxide (N₂O) emissions
+resulting from nitrogen leaching and runoff, expressed as kilograms of
+N₂O–N per kilogram of nitrogen leached or lost through runoff
+(kg N₂O–N / kg N). Default values can be selected from Table 11.3 in
+IPCC Guidelines (IPCC 2006, 2019).
+}
+\item{nitrogen_fracleach}{
+Numeric. Fraction of manure nitrogen excreted by a given livestock
+category that is lost through leaching and runoff from a specific manure
+management system. This parameter is highly uncertain and is used to
+estimate indirect N₂O emissions from nitrogen that enters the surrounding
+environment of the storage facility. It is expressed as a dimensionless
+fraction (0–1). Default values are provided in Table 10.22 of
+IPCC Guidelines (IPCC 2006, 2019).
+}
+}
 
-\item{ef5}{Numeric. Emission factor for indirect nitrous oxide emissions resulting from nitrogen leaching and runoff, expressed as kilograms of N₂O–N per kilogram of nitrogen leached or lost through runoff (kg N₂O–N / kg N leached and runoff).}
-
-\item{ration_N2ON_to_N2O}{Numeric. Conversion factor from kg N2O-N to kg N2O. Default to 44/28.}
+Two MMS names are treated explicitly when present:
+\describe{
+\item{\code{mms_pasture}}{Manure deposited on pasture.}
+\item{\code{mms_burned}}{Manure burned for fuel.}
+}
+All remaining MMS arguments are grouped and treated as other manure
+management systems.}
 }
 \value{
-A named list with:
+A named list with the following elements
 \describe{
-\item{n2o_leach_manure_pasture}{Numeric. Indirect nitrous oxide emissions resulting from leaching and runoff of manure nitrogen originating from manure deposited on pasture (kg N₂O/head/day).}
-\item{n2o_leach_manure_burned}{Numeric. Indirect nitrous oxide emissions resulting from leaching and runoff of manure nitrogen originating from manure burned for fuel (kg N₂O/head/day).}
-\item{n2o_leach_manure_other}{Numeric. Indirect nitrous oxide emissions resulting from leaching and runoff of manure nitrogen originating from manure managed in all other systems, excluding manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
-\item{n2o_leach_manure_all_noburn}{Numeric. Indirect nitrous oxide emissions resulting from leaching and runoff of manure nitrogen originating from all non-burned manure management systems, including manure deposited on pasture (kg N₂O/head/day).}
+\item{n2o_leach_manure_pasture}{
+Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
+runoff of manure nitrogen from manure deposited on pasture
+(kg N₂O/head/day).
 }
-
-#' @references
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management. Equation 10.29.
-
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management. Equation 10.29.
+\item{n2o_leach_manure_burned}{
+Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
+runoff of manure nitrogen from manure burned for fuel
+(kg N₂O/head/day).
+}
+\item{n2o_leach_manure_other}{
+Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
+runoff of manure nitrogen from manure management systems, excluding losses
+from manure deposited on pasture and manure burned for fuel
+(kg N₂O/head/day).
+}
+\item{n2o_leach_manure_all_noburn}{
+Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
+runoff of manure nitrogen from manure management systems, excluding losses
+from manure burned for fuel (kg N₂O/head/day).
+}
+}
 }
 \description{
-Converts leached/runoff manure nitrogen losses (kg N/head/day) into indirect
-nitrous oxide (N\eqn{_2}O) emissions using the emission factor \code{ef5}
-(kg N2O-N per kg N leached/runoff), consistent with the IPCC framework
-for indirect N2O from leaching/runoff.
+Computes daily indirect nitrous oxide (N₂O) emissions resulting from nitrogen
+leaching and runoff from manure management systems and separates emissions
+from manure deposited on pasture, manure burned for fuel, and all other manure management systems.
 }
 \details{
-The calculation is implemented on a \strong{daily basis} because volatilized nitrogen
-inputs are provided as kg N/head/day.
+This calculation follows the Tier 2 methodology for indirect N₂O emissions
+from manure management as defined in Equations 10.28 (IPCC, 2006), 10.27 (IPCC, 2019),
+and 10.29 (IPCC, 2006, 2019).
+
+In the IPCC formulation, indirect emissions associated with nitrogen leaching
+and runoff are calculated as:
+
+\deqn{
+  N₂O_{L(mm)} =
+  \frac{44}{28}
+  \sum_{S} \left(
+    N \times AWMS_S  \times FracLeach_{S} \times EF5
+  \right)
+}
+
+where:
+\describe{
+\item{\eqn{N₂O_L(mm)}}{Indirect N₂O emissions due to leaching and runoff from Manure Management.}
+\item{\eqn{44/28}}{Conversion factor from N₂O–N to N₂O.}
+\item{\eqn{N}}{Nitrogen excreted (kg N).}
+\item{\eqn{AWMS_S}}{Fraction of excreted nitrogen managed in manure
+management system \eqn{S}.}
+\item{\eqn{FracLeach_{S}}}{Fraction of nitrogen lost through leaching and runoff in manure management system \eqn{S}.}
+\item{\eqn{EF5}}{Emission factor for indirect N₂O emissions from leaching and runoff (kg N₂O–N per kg N leached or lost through runoff).}
+}
+
+In this implementation, calculations are performed at daily, per-head
+resolution using \code{nitrogen_excretion} (kg N/head/day):
+
+\deqn{
+  N₂O =
+  nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times
+  \sum_{S} \left(
+    manure\_management\_system\_fraction \times
+    nitrogen\_fracleach \times
+    n2o\_ef5
+  \right)
+}
+}
+\examples{
+calc_n2o_from_leaching(
+  ratio_N2ON_to_N2O = 44 / 28,
+  nitrogen_excretion = 0.9,
+  mms_burned = c(
+    manure_management_system_fraction = 0.020,
+    n2o_ef5 = 0.011,
+    nitrogen_fracleach = 0
+  ),
+  mms_drylot = c(
+    manure_management_system_fraction = 0.264,
+    n2o_ef5 = 0.011,
+    nitrogen_fracleach = 0.035
+  ),
+  mms_pasture = c(
+    manure_management_system_fraction = 0.310,
+    n2o_ef5 = 0.011,
+    nitrogen_fracleach = 0.24
+  ),
+  mms_solid = c(
+    manure_management_system_fraction = 0.406,
+    n2o_ef5 = 0.011,
+    nitrogen_fracleach = 0.02
+  )
+)
+
+}
+\references{
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Chapter 10: Emissions from Livestock and Manure Management. Equations 10.27; 10.29.
+
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Volume 4, Chapter 10: Emissions from Livestock and Manure Management. Equations 10.28; 10.29.
 }

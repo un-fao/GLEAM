@@ -6,13 +6,17 @@
 #' @param rations_share A data.table containing feed shares per cohort. Must include:
 #'   - `herd_id`, `animal`, `feed_name`, `feed_id`, `cohort_short`, and
 #'     `feed_ration_fraction`.
+#'   - Note that `feed_name` is optional but should be consistent with `feed_id`
+#'   for a coherent result.
 #' @param feed_params A data.table of nutrient parameters. Must include:
-#'   - `feed_id`, `feed_name`, `category`, `feed_gross_energy`,
+#'   - `feed_id`, `feed_gross_energy`,
 #'     `feed_digestible_energy_ruminant`, `feed_digestible_energy_pigs`,
 #'     `feed_metabolizable_energy_ruminant`, `feed_metabolizable_energy_pigs`,
 #'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`,
 #'     `feed_urinary_energy_ruminant`, `feed_urinary_energy_pigs`,
-#'     `feed_urinary_energy_chicken`, `feed_ash_content`.
+#'      `feed_ash_content`.
+#'   - Note that `category` and `feed_name` are optional but should be consistent with `feed_id`
+#'   for a coherent result.
 #'
 #' @return A data.table summarized by `herd_id`, `animal`, and `cohort_short` with:
 #'   - `diet_gross_energy`, `diet_metabolizable_energy`,
@@ -65,18 +69,19 @@ run_feed_rations <- function(
   ]
   # --- Step 4: Merge ration shares with feed parameters ----------------------
   rations_detailed <- merge(
-    rations_share, feed_params,
-    by = "feed_id", all.x = TRUE, allow.cartesian = TRUE
+    rations_share,
+    feed_params,
+    by = "feed_id",
   )
-
+  # Map animal to species_short for digestibility and energy calculations
   rations_detailed <- merge(
     rations_detailed,
     abbr_animals,
     by.x = "animal",
-    by.y = "animal",
-    all.x = TRUE
+    by.y = "animal"
   )
 
+  # Check for any unmatched animals after the merge
   if (any(is.na(rations_detailed$species_short))) {
     unknown_animals <- unique(rations_detailed[is.na(species_short), animal])
     cli::cli_abort(
@@ -94,6 +99,7 @@ run_feed_rations <- function(
     by = .I
   ]
 
+  # Calculate nitrogen contribution
   rations_detailed[
     ,
     diet_nitrogen := calc_diet_nitrogen_content(
@@ -103,6 +109,7 @@ run_feed_rations <- function(
     by = .I
   ]
 
+  # Calculate digestibility fraction
   rations_detailed[
     ,
     diet_digestibility_fraction := calc_diet_digestibility(
@@ -115,6 +122,7 @@ run_feed_rations <- function(
     by = .I
   ]
 
+  # Calculate metabolizable energy contribution
   rations_detailed[
     ,
     diet_metabolizable_energy := calc_diet_metabolizable_energy(
@@ -127,6 +135,7 @@ run_feed_rations <- function(
     by = .I
   ]
 
+  # Calculate urinary energy fraction
   rations_detailed[
     ,
     urinary_energy_fraction := calc_urinary_energy_fraction(
@@ -134,7 +143,6 @@ run_feed_rations <- function(
       feed_ration_fraction = feed_ration_fraction,
       feed_urinary_energy_ruminant = feed_urinary_energy_ruminant,
       feed_urinary_energy_pigs = feed_urinary_energy_pigs,
-      feed_urinary_energy_chicken = feed_urinary_energy_chicken
     ),
     by = .I
   ]
@@ -152,12 +160,12 @@ run_feed_rations <- function(
   rations_summary <- rations_detailed[
     ,
     .(
-      diet_gross_energy = sum(diet_gross_energy, na.rm = TRUE),
-      diet_metabolizable_energy = sum(diet_metabolizable_energy, na.rm = TRUE),
-      diet_nitrogen = sum(diet_nitrogen, na.rm = TRUE),
-      diet_digestibility_fraction = sum(diet_digestibility_fraction, na.rm = TRUE),
-      urinary_energy_fraction = sum(urinary_energy_fraction, na.rm = TRUE),
-      diet_ash = sum(diet_ash, na.rm = TRUE)
+      diet_gross_energy = sum(diet_gross_energy),
+      diet_metabolizable_energy = sum(diet_metabolizable_energy),
+      diet_nitrogen = sum(diet_nitrogen),
+      diet_digestibility_fraction = sum(diet_digestibility_fraction),
+      urinary_energy_fraction = sum(urinary_energy_fraction),
+      diet_ash = sum(diet_ash)
     ),
     by = .(herd_id, animal, cohort_short)
   ]

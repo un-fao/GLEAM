@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights_core_model.R
 \name{calc_cohort_weights}
 \alias{calc_cohort_weights}
-\title{Calculate Live Weights by Cohort and at different lifestage}
+\title{Calculate live weights by cohort and life stage}
 \usage{
 calc_cohort_weights(
   cohort_short,
@@ -15,15 +15,15 @@ calc_cohort_weights(
 )
 }
 \arguments{
-\item{cohort_short}{Character scalar. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
-\describe{
-\item{\code{FA}}{Adult females (from age at first parturition).}
-\item{\code{FS}}{Subadult females (from weaning to age at first parturition).}
-\item{\code{FJ}}{Juvenile females (from birth to weaning).}
-\item{\code{MA}}{Adult males (from age at first breeding).}
-\item{\code{MS}}{Subadult males (from weaning to age at first breeding).}
-\item{\code{MJ}}{Juvenile males (from birth to weaning).}
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
 \item{live_weight_female_adult}{Numeric. Live weight of adult females (kg)}
@@ -44,12 +44,14 @@ A named list with:
 \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 \item{live_weight_cohort_potential_final}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
 \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
-\item{adult_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+\item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 }
 }
 \description{
-Attributes and/or compute initial, potential final, and slaughter live weight for
-a given cohort and animal species
+Determines the initial, potential final, and slaughter live weights for a given
+sex–age cohort based on species‑specific biological parameters. The function
+assigns weights according to the animal's life stage (juvenile, subadult, adult)
+and the sex of the cohort.
 }
 \details{
 The function attributes weights according to cohort and animal type:
