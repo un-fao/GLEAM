@@ -3,24 +3,25 @@
 
 **Official R package of FAO's Global Livestock Environmental Assessment Model (GLEAM-X).**
 
-This package provides a complete, modular implementation of GLEAM to quantify greenhouse gas emissions from livestock agrifood systems. 
-It simulates herd structures, animal energy requirements, feed intake, as well as emissions from enteric fermentation, manure mangement, and the production of feed. 
+This package provides a complete, modular implementation of GLEAM to quantify environmental impacts from livestock agrifood systems. 
+It currently simulates herd structures, animal energy requirements, feed intake, as well as greenhouse gas emissions from enteric fermentation, manure management, and the production of feed. 
 
 ## Purpose
 
 The package supports the **official GLEAM workflow**, allowing users to:
 
-- Simulate steady-state herd dynamics by species, cohort, and production system
-- Estimate cohort-specific population sizes, offtake, and mortality
-- Compute liveweight development, durations, and daily weight gain
+- Simulate steady-state herd dynamics to disaggreate animal herds into age and sex-specific cohorts
+- Compute liveweight development over time and transitions to  cohort
+- Estimate animal energy requirements for maintenance, growth, lactation, pregnancy, work, and fiber
 - Allocate feed rations and calculate nutritional contributions per cohort
-- Estimate energy requirements for maintenance, growth, lactation, pregnancy, work, and fiber
-- Calculate dry matter intake and direct CH₄ emissions from enteric fermentation and manure
-- Output detailed results at the sex-age cohort level, structured by species, system, and country
+- Calculate dry matter intake to meet energy and nutritional requirements 
+- Calculate CH~4~ emissions from enteric fermentation
+- Calculate N~2~O emissions from manure management
+- Calculate CO~2~, CH~4~, and N~2~O emission related to the production, processing and transport of feed 
 
 ## Model Coverage
 
-The model currently consideres cattle, buffalo, camels, chicken, goats, pigs, and sheep.   
+The model currently considers cattle, buffalo, camels, chicken, goats, pigs, and sheep.   
 
 ## Installation
 
