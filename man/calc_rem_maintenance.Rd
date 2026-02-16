@@ -4,10 +4,10 @@
 \alias{calc_rem_maintenance}
 \title{Calculate REM (Net Energy for Maintenance / Digestible Energy)}
 \usage{
-calc_rem_maintenance(animal, diet_dig)
+calc_rem_maintenance(species_short, diet_digestibility_fraction)
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -18,21 +18,24 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of
+digestible to gross energy content (fraction).}
 }
 \value{
-Ratio of net energy available in diet for maintenance to digestible energy consumed, REM (fraction)
+Ratio of net energy available in diet for maintenance to digestible energy consumed
+(\code{net_energy_maintenance_digestible_energy_ratio}), REM (fraction)
 }
 \description{
 Computes the ratio of net energy available in the diet for maintenance to digestible energy.
 }
 \references{
 Gibbs M.J., Johnson D.E. (1993) \emph{Livestock Emissions}.
-In: International Methane Emissions. Washington, D.C., U.S.A: US Environmental Protection Agency, Climate Change Division.
+In: International Methane Emissions. Washington, D.C., U.S.A: US Environmental Protection Agency,
+Climate Change Division.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.14.
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.14.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.14.
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
+from Livestock and Manure Management, Equation 10.14.
 }

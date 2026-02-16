@@ -4,10 +4,10 @@
 \alias{calc_reg_growth}
 \title{Calculate REG (Net Energy for Growth / Digestible Energy)}
 \usage{
-calc_reg_growth(animal, diet_dig)
+calc_reg_growth(species_short, diet_digestibility_fraction)
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -18,10 +18,12 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of
+digestible to gross energy content (fraction).}
 }
 \value{
-Ratio of net energy available for growth in a diet to digestible energy consumed, REG (fraction)
+Ratio of net energy available for growth in a diet to digestible energy consumed
+(\code{net_energy_growth_digestible_energy_ratio}), REG (fraction)
 }
 \description{
 Computes the ratio of \strong{net energy available for growth} to \strong{digestible
@@ -31,11 +33,12 @@ energy in the diet is converted into net energy retained as body tissue
 }
 \references{
 Gibbs M.J., Johnson D.E. (1993) \emph{Livestock Emissions}.
-In: International Methane Emissions. Washington, D.C., U.S.A: US Environmental Protection Agency, Climate Change Division.
+In: International Methane Emissions. Washington, D.C., U.S.A: US Environmental Protection Agency,
+Climate Change Division.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.15.
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.15.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.15.
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
+from Livestock and Manure Management, Equation 10.15.
 }

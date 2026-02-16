@@ -5,22 +5,22 @@
 \title{Calculate Total Energy Requirement}
 \usage{
 calc_total_energy_requirement(
-  animal,
-  nemain,
-  neact,
-  nelact,
-  nework,
-  nepreg,
-  rem,
-  negrow,
-  nefibre,
-  neegg,
-  reg,
-  diet_dig
+  species_short,
+  energy_requirement_maintenance,
+  energy_requirement_activity,
+  energy_requirement_lactation,
+  energy_requirement_work,
+  energy_requirement_pregnancy,
+  net_energy_maintenance_digestible_energy_ratio,
+  energy_requirement_growth,
+  energy_requirement_fibre_production,
+  energy_requirement_egg_deposition,
+  net_energy_growth_digestible_energy_ratio,
+  diet_digestibility_fraction
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -31,32 +31,35 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance (MJ/head/day).}
 
-\item{neact}{Numeric. Energy required for activity, defined as the amount of energy needed to obtain food, water and shelter (example stall, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_activity}{Numeric. Energy required for activity (MJ/head/day).}
 
-\item{nelact}{Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_lactation}{Numeric. Energy required for lactation (MJ/head/day).}
 
-\item{nework}{Numeric. Energy required for work, used to estimate the energy required for draft power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_work}{Numeric. Energy required for work (MJ/head/day).}
 
-\item{nepreg}{Numeric. Energy required for pregnancy for pregnant adult females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_pregnancy}{Numeric. Energy required for pregnancy (MJ/head/day).}
 
-\item{rem}{Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)}
+\item{net_energy_maintenance_digestible_energy_ratio}{Ratio of net energy available for maintenance in
+diet to digestible energy consumed (fraction).}
 
-\item{negrow}{Numeric. Energy required for growth (i.e., weight gain). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_growth}{Numeric. Energy required for growth (MJ/head/day).}
 
-\item{nefibre}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_fibre_production}{Numeric. Energy required for fibre production (MJ/head/day).}
 
-\item{neegg}{Numeric. Net energy for egg production.}
+\item{energy_requirement_egg_deposition}{Numeric. Net energy for egg production (MJ/head/day).}
 
-\item{reg}{Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)}
+\item{net_energy_growth_digestible_energy_ratio}{Ratio of net energy available for growth in diet to
+digestible energy consumed (fraction).}
 
-\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of
+digestible to gross energy content (fraction).}
 }
 \value{
-Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS
-this is expressed as \strong{gross energy intake requirement (GE)}. For CML and PGS
-the function returns the summed daily metabolizable energy requirement.
+Numeric. Total daily energy requirement (\code{energy_requirement_total}, MJ/head/day). For CTL,
+BFL, SHP and GTS this is expressed as \strong{gross energy intake requirement (GE)}. For CML and PGS the
+function returns the summed daily metabolizable energy requirement.
 }
 \description{
 Computes the \strong{total daily energy requirement} (MJ/head/day) by summing
@@ -118,9 +121,9 @@ For these species, total energy requirement is calculated as the
 }
 }
 \references{
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.16.
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.16.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.16.
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
+from Livestock and Manure Management, Equation 10.16.
 }

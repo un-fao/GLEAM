@@ -5,23 +5,23 @@
 \title{Calculate Energy for Lactation}
 \usage{
 calc_net_energy_lactation(
-  animal,
-  cohort,
-  milking_fraction,
-  milk_yield,
-  milk_fat,
-  idle,
-  gest,
-  litsize,
-  dr1,
-  ckg,
-  wkg,
-  lact,
+  species_short,
+  cohort_short,
+  lactating_females_fraction,
+  milk_yield_day,
+  milk_fat_fraction,
+  non_productive_duration,
+  pregnancy_duration,
+  litter_size,
+  death_rate_juvenile,
+  birth_weight,
+  weaning_weight,
+  lactation_duration,
   parturition_rate
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -32,7 +32,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -43,31 +43,42 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{milking_fraction}{Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).}
+\item{lactating_females_fraction}{Numeric. Share of adult females lactating within the assessment
+duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).}
 
-\item{milk_yield}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destinated to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
+\item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment
+duration (kg/head/day). This value can be calculated by dividing the total milk destinated to human
+consumption produced per milk-producing animal over the assessment duration by the length of the
+assessment period.}
 
-\item{milk_fat}{Numeric. Milk fat fraction (kg fat / kg milk).}
+\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat / kg milk).}
 
-\item{idle}{Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days).}
+\item{non_productive_duration}{Numeric. Period during which the animal is not performing any productive
+physiological function such as pregnancy or lactation (days).}
 
-\item{gest}{Numeric. Duration of pregnancy period (days).}
+\item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 
-\item{litsize}{Numeric. Average number of offspring born per parturition (#).
-This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{litter_size}{Numeric. Average number of offspring born per parturition (#). This value can be
+calculated as the total number of offspring born divided by the total number of parturitions during
+the year.}
 
-\item{dr1}{Numeric. Percentage of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ) (fraction).}
+\item{death_rate_juvenile}{Numeric. Percentage of deaths in a herd over a year for juvenile cohorts
+(i.e. FJ and MJ) (fraction).}
 
-\item{ckg}{Numeric. Live body weight of the animal at birth (kg).}
+\item{birth_weight}{Numeric. Live body weight of the animal at birth (kg).}
 
-\item{wkg}{Numeric. Live body weight of the animal at weaning (kg).}
+\item{weaning_weight}{Numeric. Live body weight of the animal at weaning (kg).}
 
-\item{lact}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).}
+\item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during
+which the animal is lactating (days).}
 
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (#). A herd-level
+reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring
+during a year divided by the number of adult females potentially able to give birth during that year.}
 }
 \value{
-Numeric. Energy required for lactation. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for lactation (\code{energy_requirement_lactation}). Expressed as net
+energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
 Computes the \strong{energy requirement for lactation} (MJ/head/day), defined as the
@@ -118,7 +129,8 @@ Species-specific values of \code{energy_milk} are:
 }
 
 \code{milk_for_offspring} is the daily amount of milk required to rear offspring across the year (kg day\eqn{^{-1}}).
-It is calculated assuming that \strong{5 kg of milk are required for each kilogram of live-weight gain up to weaning}, using the equation below.
+It is calculated assuming that \strong{5 kg of milk are required for each kilogram of live-weight gain up to
+weaning}, using the equation below.
 
 \deqn{
 milk\_for\_offspring =
@@ -177,11 +189,11 @@ CAB International, Wallingford, UK.
 AFRC (1990). \emph{Nutritive Requirements of Ruminant Animals: Energy.}
 Rep. 5. Wallingford, UK: CAB International.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.8-10.10.
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.8-10.10.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.8-10.10.
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
+from Livestock and Manure Management, Equation 10.8-10.10.
 
 NRC (1998). \emph{Nutrient Requirements of Swine},
 10th Revised Edition. National Academies Press, Washington, DC.

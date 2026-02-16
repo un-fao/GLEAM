@@ -10,34 +10,39 @@ run_energy_requirements(cohort_level_data, herd_level_data)
 \item{cohort_level_data}{A \code{data.table} or \code{data.frame} with cohort-level inputs and at least:
 \itemize{
 \item \code{herd_id} – Herd identifier (foreign key linking to herd-level table).
-\item \code{cohort} – Cohort code (\code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS}, \code{MJ}).
-\item \code{average_weight} – Average live weight in the cohort (kg).
+\item \code{cohort_short} – Cohort code (\code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS}, \code{MJ}).
+\item \code{live_weight_cohort_average} – Average live weight in the cohort (kg).
 \item \code{offtake_rate} – Annual offtake rate for the cohort (fraction).
-\item \code{activity_fraction}, \code{high_activity_fraction} – Low-/high-activity shares (fractions).
-\item \code{initial_weight}, \code{final_weight}, \code{adult_weight} – Weights used for growth calculations (kg).
-\item \code{dwg} – Daily weight gain (kg/head/day).
-\item \code{duration} – Cohort duration (days).
-\item \code{diet_dig} – Diet digestibility (DE/GE, fraction).
-\item \code{diet_ge}, \code{diet_me} – Gross and metabolizable energy densities (MJ/kg DM).
-\item \code{lambing_interval} – Lambing interval (days) for small ruminants (kept for completeness).
+\item \code{low_activity_fraction}, \code{high_activity_fraction} – Low-/high-activity shares (fractions).
+\item \code{live_weight_cohort_initial}, \code{live_weight_cohort_final}, \code{mature_weight} – Weights for growth (kg).
+\item \code{daily_weight_gain} – Daily weight gain (kg/head/day).
+\item \code{cohort_duration_days} – Cohort duration (days).
+\item \code{diet_digestibility_fraction} – Diet digestibility (DE/GE, fraction).
+\item \code{diet_gross_energy}, \code{diet_metabolizable_energy} – Gross and metabolizable energy (MJ/kg DM).
+\item \code{lambing_interval} – Lambing interval (days) for small ruminants.
 }}
 
-\item{herd_level_data}{A \code{data.table} or \code{data.frame} with herd-level inputs (one row per herd) and at least:
+\item{herd_level_data}{A \code{data.table} or \code{data.frame} with herd-level inputs (one row per herd)
+and at least:
 \itemize{
 \item \code{herd_id} – Herd identifier (primary key).
-\item \code{animal} – Full species name used to derive internal short codes (e.g. \code{"Cattle"}, \code{"Sheep"}).
-\item \code{afc} – Age at first calving/parturition (days).
-\item \code{milking_fraction}, \code{milk_yield}, \code{milk_fat} – Lactation parameters.
-\item \code{idle}, \code{gest}, \code{litsize}, \code{dr1}, \code{ckg}, \code{wkg}, \code{lact}, \code{parturition_rate} – Reproduction and lactation inputs.
-\item \code{egg_weight} – Average egg weight (kg; used only for poultry/egg layers).
-\item \code{work_hours_female}, \code{work_hours_male} – Daily working hours for adult females/males (hours/head/day).
-\item \code{draught_fraction_female}, \code{draught_fraction_male} – Fractions of adult females/males used for draught work.
-\item \code{fibre_prod} – Annual fibre production per head (kg/head/year).
+\item \code{animal} – Full species name used to derive species_short (e.g. \code{"Cattle"}, \code{"Sheep"}).
+\item \code{age_first_parturition} – Age at first parturition (days).
+\item \code{lactating_females_fraction}, \code{milk_yield_day}, \code{milk_fat_fraction} – Lactation parameters.
+\item \code{non_productive_duration}, \code{pregnancy_duration}, \code{litter_size}, \code{death_rate_juvenile},
+\code{birth_weight}, \code{weaning_weight}, \code{lactation_duration}, \code{parturition_rate} – Reproduction/lactation.
+\item \code{egg_average_weight} – Average egg weight (kg; poultry/egg layers).
+\item \code{draught_work_hours_female}, \code{draught_work_hours_male} – Daily draught work hours (hours/head/day).
+\item \code{draught_fraction_female}, \code{draught_fraction_male} – Fractions of adults used for draught work.
+\item \code{fibre_yield_year} – Annual fibre production per head (kg/head/year).
 }}
 }
 \value{
-The input data with new columns: nemain, neact, negrow, nelact, nework,
-nefibre, nepreg, rem, reg, getot, dmi.
+The cohort-level data with new columns: energy_requirement_maintenance,
+energy_requirement_activity, energy_requirement_growth, energy_requirement_lactation,
+energy_requirement_work, energy_requirement_fibre_production, energy_requirement_pregnancy,
+net_energy_maintenance_digestible_energy_ratio, net_energy_growth_digestible_energy_ratio,
+energy_requirement_total, dry_matter_intake.
 }
 \description{
 Computes energy requirements and dry matter intake (DMI) for each row of input data
@@ -45,9 +50,9 @@ using the GLEAM core model functions. This function is intended for internal wor
 and does not perform any file I/O.
 }
 \details{
-It adds columns for net energy for maintenance (nemain), activity (neact), growth (negrow),
-lactation (nelact), work (nework), fibre production (nefibre), pregnancy (nepreg), diet net energy
-fractions (rem, reg), total metabolizable energy requirement (getot) and dry matter intake (dmi).
+It adds columns for energy requirements (maintenance, activity, growth, lactation, work,
+fibre production, pregnancy), diet net energy ratios (REM, REG), total energy requirement
+and dry matter intake.
 }
 \examples{
 \dontrun{

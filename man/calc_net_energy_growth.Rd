@@ -5,19 +5,19 @@
 \title{Calculate Energy for Growth}
 \usage{
 calc_net_energy_growth(
-  animal,
-  cohort,
-  average_weight,
-  final_weight,
-  initial_weight,
-  adult_weight,
-  dwg,
+  species_short,
+  cohort_short,
+  live_weight_cohort_average,
+  live_weight_cohort_final,
+  live_weight_cohort_initial,
+  mature_weight,
+  daily_weight_gain,
   offtake_rate,
-  duration
+  cohort_duration_days
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -28,7 +28,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -39,26 +39,34 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{average_weight}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
+\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by
+accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the
+potential final weight of animals that remain in the cohort (kg).}
 
-\item{final_weight}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
+\item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both
+surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential
+final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake
+rate (kg).}
 
-\item{initial_weight}{Numeric. Live weight at the beginning of the cohort stage (kg).}
+\item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 
-\item{adult_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+\item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological
+and management conditions (kg).}
 
-\item{dwg}{Numeric. Average live weight of the cohort over the cohort stage (kg/head/day).}
+\item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 
-\item{duration}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 }
 \value{
-Numeric. Energy required for growth (i.e., weight gain). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for growth (\code{energy_requirement_growth}), i.e., weight gain.
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
 Computes the \strong{energy requirement for growth} (MJ/head/day), defined as the energy needed for body weight gain.
-This approach follows the IPCC Tier 2 partitioning method and applies species-specific equations for growth energy requirements.
+This approach follows the IPCC Tier 2 partitioning method and applies species-specific equations for
+growth energy requirements.
 }
 \details{
 Energy for growth represents the energy required for tissue accretion associated with live weight gain.
@@ -118,8 +126,8 @@ where:
 }
 }
 \references{
-Al-Jassim, R. (2019). \emph{Metabolisable energy and protein requirements of the Arabian camel (Camelus dromedarius)}.
-Journal of Camelid Science (12) 33-45
+Al-Jassim, R. (2019). \emph{Metabolisable energy and protein requirements of the Arabian camel
+(Camelus dromedarius)}. Journal of Camelid Science (12) 33-45
 
 NRC (1998). \emph{Nutrient Requirements of Swine},
 10th Revised Edition. National Academies Press, Washington, DC.
@@ -134,11 +142,13 @@ AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
 CAB International, Wallingford, UK.
 
 Gibbs, M.J., Conneely, D., Johnson, D., Lassey, K.R. and Ulyatt, M.J. (2002).
-\emph{CH4 emissions from enteric fermentation}. In: Background Papers: IPCC Expert Meetings on Good Practice Guidance and Uncertainty Management in National Greenhouse Gas Inventories, p 297–320. IPCC-NGGIP, Institute for Global Environmental Strategies (IGES), Hayama, Kanagawa, Japan.
+\emph{CH4 emissions from enteric fermentation}. In: Background Papers: IPCC Expert Meetings on Good
+Practice Guidance and Uncertainty Management in National Greenhouse Gas Inventories, p 297–320.
+IPCC-NGGIP, Institute for Global Environmental Strategies (IGES), Hayama, Kanagawa, Japan.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
+from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
 }

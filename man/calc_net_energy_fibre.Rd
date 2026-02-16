@@ -4,10 +4,10 @@
 \alias{calc_net_energy_fibre}
 \title{Calculate Energy for Fibre Production}
 \usage{
-calc_net_energy_fibre(animal, cohort, fibre_prod)
+calc_net_energy_fibre(species_short, cohort_short, fibre_yield_year)
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -18,7 +18,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -29,16 +29,19 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{fibre_prod}{Numeric. Annual fibre production yield (kg/head/year).}
+\item{fibre_yield_year}{Numeric. Annual fibre production yield (kg/head/year).}
 }
 \value{
-Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for the synthesis of fibre (\code{energy_requirement_fibre_production})
+for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for
+CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
 Computes the \strong{energy requirement for fibre production} (MJ/head/day),
 defined as the energy needed to produce animal fibres such as wool or hair.
 This component follows the IPCC Tier 2 partitioning approach and is applied
-only to fibre-producing species and relevant cohorts, which are assumed by the model to be = ("FA", "FS", "MA", "MS").
+only to fibre-producing species and relevant cohorts, which are assumed by the model to be
+= ("FA", "FS", "MA", "MS").
 }
 \details{
 \itemize{
@@ -109,8 +112,8 @@ Cannas, A., Atzori, A. S., Boe, F., & Teixeira, I. (2007).
 \emph{Energy and protein requirements of goats}.
 In: Dairy sheep nutrition (pp. 31-49). CAB International, Wallingford, UK.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.12.
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.12.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
 Livestock and Manure Management, Equation 10.12.

@@ -5,20 +5,20 @@
 \title{Calculate Energy for Pregnancy}
 \usage{
 calc_net_energy_pregnancy(
-  animal,
-  cohort,
-  nemain,
+  species_short,
+  cohort_short,
+  energy_requirement_maintenance,
   parturition_rate,
-  litsize,
-  gest,
-  idle,
-  lact,
-  duration,
+  litter_size,
+  pregnancy_duration,
+  non_productive_duration,
+  lactation_duration,
+  cohort_duration_days,
   offtake_rate
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -29,7 +29,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -40,24 +40,35 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of
+energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost.
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (#). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (#). A herd-level
+reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring
+during a year divided by the number of adult females potentially able to give birth during that year.}
 
-\item{litsize}{Numeric. Average number of offspring born per parturition (#). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{litter_size}{Numeric. Average number of offspring born per parturition (#). This value can be
+calculated as the total number of offspring born divided by the total number of parturitions during the
+year.}
 
-\item{gest}{Numeric. Duration of pregnancy period (days).}
+\item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 
-\item{idle}{Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days).}
+\item{non_productive_duration}{Numeric. Period during which the animal is not performing any productive
+physiological function such as pregnancy or lactation (days).}
 
-\item{lact}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).}
+\item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during
+which the animal is lactating (days).}
 
-\item{duration}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 
-\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort
+(fraction).}
 }
 \value{
-Numeric. Energy required for pregnancy for pregnant adult females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for pregnancy (\code{energy_requirement_pregnancy}) for pregnant adult
+females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML
+and PGS (MJ/head/day).
 }
 \description{
 Computes the \strong{energy requirement for pregnancy} (MJ/head/day) for pregnant
@@ -161,11 +172,11 @@ The default value for the gestation coefficient is
 NRC (1998). \emph{Nutrient Requirements of Swine},
 10th Revised Edition. National Academies Press, Washington, DC.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.13; Table 10.7.
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.13; Table 10.7.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.13; Table 10.7.
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions
+from Livestock and Manure Management, Equation 10.13; Table 10.7.
 
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
 Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),

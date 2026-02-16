@@ -5,17 +5,17 @@
 \title{Calculate Energy for Work}
 \usage{
 calc_net_energy_work(
-  animal,
-  cohort,
-  nemain,
-  work_hours_female,
-  work_hours_male,
+  species_short,
+  cohort_short,
+  energy_requirement_maintenance,
+  draught_work_hours_female,
+  draught_work_hours_male,
   draught_fraction_female,
   draught_fraction_male
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -26,7 +26,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -37,18 +37,24 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{nemain}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of
+energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost.
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{work_hours_female}{Numeric. Average daily working time per adult females for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day).}
+\item{draught_work_hours_female}{Numeric. Average daily working time per adult females for CTL, BFL and
+CML, expressed as hours worked per head per day (hours/head/day).}
 
-\item{work_hours_male}{Numeric. Average daily working time per adult males for CTL, BFL and CML, expressed as hours worked per head per day  (hours/head/day).}
+\item{draught_work_hours_male}{Numeric. Average daily working time per adult males for CTL, BFL and CML,
+expressed as hours worked per head per day (hours/head/day).}
 
 \item{draught_fraction_female}{Numeric. Fraction of adult females involved in draught work (fraction).}
 
 \item{draught_fraction_male}{Numeric. Fraction of adult males involved in draught work (fraction).}
 }
 \value{
-Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for work (\code{energy_requirement_work}), used to estimate the energy
+required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day).
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
 Computes the \strong{energy requirement for work} (MJ/head/day), defined as the
@@ -100,11 +106,11 @@ Bamualim A., Kartiarso (1985). \emph{Nutrition of draught animals with special r
 In:Draught Animal Power for Production. Australian Centre for International agricultural Research (ACIAR),
 Proceedings Series No. 10, ed. JW Copland. Canberra, A.C.T., Australia: ACIAR.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.11.
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.11.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.11.
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
+from Livestock and Manure Management, Equation 10.11.
 
 Wilson (1989). \emph{The nutritional requirements of camel}.
 In: Tisserand J.-L. (ed.). Séminaire sur la digestion, la nutrition et l'alimentation du dromadaire.

@@ -4,10 +4,15 @@
 \alias{calc_dry_matter_intake}
 \title{Calculate Daily Dry Matter Intake}
 \usage{
-calc_dry_matter_intake(animal, total_energy, diet_ge, diet_me)
+calc_dry_matter_intake(
+  species_short,
+  energy_requirement_total,
+  diet_gross_energy,
+  diet_metabolizable_energy
+)
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -18,14 +23,16 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{total_energy}{"Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as \strong{gross energy intake requirement (GE)}. For CML and PGS the function returns the summed daily metabolizable energy requirement.}
+\item{energy_requirement_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP
+and GTS this is expressed as \strong{gross energy intake requirement (GE)}. For CML and PGS the function
+returns the summed daily metabolizable energy requirement.}
 
-\item{diet_ge}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 
-\item{diet_me}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
+\item{diet_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
 }
 \value{
-Numeric. Daily dry matter intake of feed (kg DM/head/day).
+Numeric. Daily dry matter intake of feed (\code{dry_matter_intake}, kg DM/head/day).
 }
 \description{
 Computes feed intake, expressed as \strong{daily dry matter intake (DMI)} per animal (kg DM/head/day) from the
