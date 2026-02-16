@@ -188,7 +188,7 @@ run_herd_simulation <- function(
 
   # Show progress indicator if requested
   if (show_indicator) {
-    cli::cli_status("\U1F552 Running herd simulation, please wait\U2026")
+    cli::cli_status("\U1F552 Simulating the herd structure, please wait\U2026")
   }
 
   # --- Step 2: Prepare Data for Processing -----------------------------------
