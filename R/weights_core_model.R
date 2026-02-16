@@ -1,17 +1,19 @@
-#' Calculate Live Weights by Cohort and at different lifestage
+#' Calculate live weights by cohort and life stage
 #'
-#' Attributes and/or compute initial, potential final, and slaughter live weight for
-#' a given cohort and animal species
+#' Determines the initial, potential final, and slaughter live weights for a given
+#' sex–age cohort based on species‑specific biological parameters. The function
+#' assigns weights according to the animal's life stage (juvenile, subadult, adult)
+#' and the sex of the cohort.
 #'
-#' @param cohort_short Character scalar. Sex- and age-specific cohort code describing the
+#' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
-#'   \describe{
-#'     \item{\code{FA}}{Adult females (from age at first parturition).}
-#'     \item{\code{FS}}{Subadult females (from weaning to age at first parturition).}
-#'     \item{\code{FJ}}{Juvenile females (from birth to weaning).}
-#'     \item{\code{MA}}{Adult males (from age at first breeding).}
-#'     \item{\code{MS}}{Subadult males (from weaning to age at first breeding).}
-#'     \item{\code{MJ}}{Juvenile males (from birth to weaning).}
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
 #' @param live_weight_female_adult Numeric. Live weight of adult females (kg)
 #' @param live_weight_male_adult Numeric. Live weight of adult males (kg)
@@ -25,7 +27,7 @@
 #'   \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 #'   \item{live_weight_cohort_potential_final}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
 #'   \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
-#'   \item{adult_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+#'   \item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 #' }
 #'
 #' @details
@@ -76,7 +78,7 @@ calc_cohort_weights <- function(
   if (cohort_short %in% c("FJ", "MJ")) {
     live_weight_cohort_initial <- birth_weight
     live_weight_cohort_potential_final <- slaughter_weight_cohort <- weaning_weight
-    adult_weight <- if (cohort_short == "FJ") {
+    mature_weight <- if (cohort_short == "FJ") {
       live_weight_female_adult
     } else {
       live_weight_male_adult
@@ -85,12 +87,12 @@ calc_cohort_weights <- function(
     # Subadult cohorts
   } else if (cohort_short %in% c("FS", "MS")) {
     live_weight_cohort_initial <- weaning_weight
-    adult_weight <- if (cohort_short == "FS") {
+    mature_weight <- if (cohort_short == "FS") {
       live_weight_female_adult
     } else {
       live_weight_male_adult
     }
-    live_weight_cohort_potential_final <- adult_weight
+    live_weight_cohort_potential_final <- mature_weight
     slaughter_weight_cohort <- if (cohort_short == "FS") {
       slaughter_weight_female
     } else {
@@ -100,19 +102,19 @@ calc_cohort_weights <- function(
     # Adult cohorts
   } else if (cohort_short == "FA") {
     live_weight_cohort_initial <- live_weight_female_adult
-    adult_weight <- live_weight_female_adult
-    live_weight_cohort_potential_final <- adult_weight
-    slaughter_weight_cohort <- adult_weight
+    mature_weight <- live_weight_female_adult
+    live_weight_cohort_potential_final <- mature_weight
+    slaughter_weight_cohort <- mature_weight
   } else if (cohort_short == "MA") {
     live_weight_cohort_initial <- live_weight_male_adult
-    adult_weight <- live_weight_male_adult
-    live_weight_cohort_potential_final <- adult_weight
-    slaughter_weight_cohort <- adult_weight
+    mature_weight <- live_weight_male_adult
+    live_weight_cohort_potential_final <- mature_weight
+    slaughter_weight_cohort <- mature_weight
   }
 
   return(
     list(
-      adult_weight = adult_weight,
+      mature_weight = mature_weight,
       live_weight_cohort_initial = live_weight_cohort_initial,
       live_weight_cohort_potential_final = live_weight_cohort_potential_final,
       slaughter_weight_cohort = slaughter_weight_cohort
@@ -120,9 +122,10 @@ calc_cohort_weights <- function(
   )
 }
 
-#' Calculate Average and Final Live Weights by Cohort
+#' Calculate average and final live weights by cohort
 #'
-#' Computes the average and final live weight of a cohort based on initial weight,
+#' Computes the average and final live weight for a given
+#' sex–age cohort based on initial weight, 
 #' potential final weight, slaughter weight, and the offtake rate.
 #'
 #' @param live_weight_cohort_initial Numeric. Live weight at the beginning of the cohort stage (kg).
@@ -180,10 +183,10 @@ calc_avg_weights <- function(
   )
 }
 
-#' Calculate Daily Weight Gain
-#'
-#' Computes average daily weight gain over a given duration based on the difference
-#' between potential final and initial live weights.
+#' Calculate daily weight gain by cohort
+#' 
+#' Computes average daily weight gain for a given
+#' sex–age cohort based on the difference between potential final and initial live weights.
 #'
 #' @param live_weight_cohort_potential_final Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)
 #' @param live_weight_cohort_initial Numeric. Live weight at the beginning of the cohort stage (kg).
@@ -197,8 +200,6 @@ calc_avg_weights <- function(
 #' duration of the cohort stage:
 #'
 #' \deqn{daily\_weight\_gain = (live\_weight\_cohort\_potential\_final - live\_weight\_cohort\_initial) / cohort\_duration\_days}
-#'
-#' This represents an average (per-head) daily gain.
 #'
 #' @export
 calc_daily_weight_gain <- function(

@@ -39,7 +39,7 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param cohort "Character. Sex- and age-specific cohort code describing the
+#' @param cohort Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -50,12 +50,12 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
 #' @param milk_protein Numeric. Milk protein fraction (kg protein / kg milk).
-#' @param milk_yield Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destinated to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.
+#' @param milk_yield Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.
 #' @param dwg Numeric. Average live weight of the cohort over the cohort stage (kg/head/day).
 #' @param fibre_prod Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
-#' @param litsize Numeric. Average number of offspring born per parturition (#). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
-#' @param parturition_rate Numeric. Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.
-#' @param wkg Numeric. Live weight of the animal at weaning (kg)
+#' @param litsize Numeric. Average number of offspring born per parturition. This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
+#' @param parturition_rate Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.
+#' @param wkg Numeric. Live weight of the animal at weaning (kg).
 #' @param ckg Numeric. Live weight of the animal at birth (kg).
 #' @param afc Numeric. Age at first parturition for female breeding animals (days)
 #'
@@ -64,8 +64,9 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #' @details
 #' Species-specific calculations are performed.
 #'
-#' ## Ruminants and camelids (CTL, BFL, SHP, GTS, CML)
-#' For ruminants and camelids, nitrogen retained in products and tissues is
+#' \strong{For CTL, BFL, SHP, GTS and CML}
+#' 
+#' Nitrogen retained in products and tissues is
 #' computed consistent with the process described in the Technical paper
 #' from MPI (Ministry for Primary Industries (MPI), 2025).
 #'
@@ -89,13 +90,14 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #'     }
 #'   \item \strong{Fibre nitrogen content (\code{fibre_n})}:
 #'   \strong{0.134 kg N per kg fibre}
-#'   \item \strong{Milk nitrogen content}:
+#'   \item \strong{Milk nitrogen content (\code{milk_n})}:
 #'   Milk nitrogen is derived from milk protein using a protein-to-nitrogen
 #'   conversion factor of \strong{6.25}
 #' }
 #'
-#' ## Pigs (PGS)
-#' For pigs, nitrogen retention is calculated following the IPCC 2019 equations
+#' \strong{For PGS}
+#' 
+#' Nitrogen retention is calculated following the IPCC 2019 equations
 #' for swine (Equations 10.33A and 10.33B).
 #'
 #' Nitrogen retention includes nitrogen retained in:
@@ -154,7 +156,7 @@ compute_nitrogen_retention <- function(
 
     milk_comp <- if (!is.na(milk_yield) && cohort == "FA" && milk_yield > 0) milk_yield * milk_n else 0
     growth_comp <- if (!is.na(dwg) && dwg > 0) dwg * tissue_n else 0
-    fibre_comp <- if (!is.na(fibre_prod) && fibre_prod > 0) fibre_prod / 365 * fibre_n else 0
+    fibre_comp <- if (!is.na(fibre_prod) &&  cohort %in% c("FA", "FS", "MA", "MS") && animal %in% c("SHP", "GTS", "CML") && fibre_prod > 0) fibre_prod / 365 * fibre_n else 0
 
     return(milk_comp + growth_comp + fibre_comp)
 
@@ -189,8 +191,8 @@ compute_nitrogen_retention <- function(
 #' Nitrogen excretion represents the fraction of consumed nitrogen that is not
 #' retained in animal products or body tissues and is therefore excreted in urine
 #' and dung. This quantity forms the basis for subsequent calculations of
-#' nitrous oxide (N2O) emissions from manure management and agricultural soils.
-#' The approach follows the Tier 2 IPCC guidelines.
+#' nitrous oxide \code{N₂O} emissions from manure management and agricultural soils.
+#' The approach follows the IPCC 2019 guidelines.
 #'
 #' @param animal Character. Code identifying the livestock species.
 #'   Supported values include:

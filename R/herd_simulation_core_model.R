@@ -177,8 +177,6 @@ compute_transition_probabilities <- function(
   probability_growth <- (probability_survival^(duration_all - 1) - probability_survival^duration_all) /
     (1 - probability_survival^duration_all)
 
-  # --- Prepare and return results ---
-
   return(
     list(
       hazard_death = hazard_death,
@@ -351,7 +349,6 @@ simulate_steady_state_structure <- function(
   # Compute steady-state annual growth rate
   growth_rate_herd <- (fem_juv_fec[days_steady] / fem_juv_fec[days_steady - 1])^365 - 1
 
-  # Return output
   return(
     list(
       days_to_steady_state = days_steady,
@@ -523,7 +520,6 @@ project_population_size <- function(
     "FJ", "FS", "FA", "MJ", "MS", "MA"
   )
 
-  # Prepare output
   return(
     list(
       cohort_stock_start = size,
@@ -610,7 +606,6 @@ summarise_offtake <- function(
     names(offtake_stock_variation_heads) <- names(offtake_stock_plus_variation_rate_to_stock_start) <-
     names(offtake_stock_plus_variation_rate_to_stock_average) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
-  # Prepare output
   return(
     list(
       stock_variation_heads = stock_variation_heads,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights_core_model.R
 \name{calc_daily_weight_gain}
 \alias{calc_daily_weight_gain}
-\title{Calculate Daily Weight Gain}
+\title{Calculate daily weight gain by cohort}
 \usage{
 calc_daily_weight_gain(
   live_weight_cohort_potential_final,
@@ -21,8 +21,8 @@ calc_daily_weight_gain(
 Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).
 }
 \description{
-Computes average daily weight gain over a given duration based on the difference
-between potential final and initial live weights.
+Computes average daily weight gain for a given
+sex–age cohort based on the difference between potential final and initial live weights.
 }
 \details{
 Daily live weight gain is calculated as the difference between the
@@ -30,6 +30,4 @@ potential final live weight and the initial live weight, divided by the
 duration of the cohort stage:
 
 \deqn{daily\_weight\_gain = (live\_weight\_cohort\_potential\_final - live\_weight\_cohort\_initial) / cohort\_duration\_days}
-
-This represents an average (per-head) daily gain.
 }

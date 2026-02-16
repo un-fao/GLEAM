@@ -47,8 +47,7 @@ utils::globalVariables(c(
   # Columns used in run_weights_calculations and validate_weights_inputs
   "cohort", "cohort_short", "cohort_duration_days",
   "live_weight_female_adult", "live_weight_male_adult",
-  "birth_weight", "slaughter_weight_female", "slaughter_weight_male",
-  "weaning_weight",
+  "birth_weight", "slaughter_weight_female", "slaughter_weight_male", "weaning_weight",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
   "slaughter_weight_cohort", "live_weight_cohort_average",
   "live_weight_cohort_final", "animal"
@@ -69,10 +68,17 @@ utils::globalVariables(c(
   "feed_digestibility_fraction_ruminant", "feed_digestibility_fraction_pigs",
   "feed_digestibility_fraction_chicken",
   "diet_dig", "diet_ge", "diet_me", "feed_ration_sum",
+  "dry_matter_intake", "nitrogen_excretion", "volatile_solids", "total_fraction",
+  "n2o_vol_manure_pasture", "n2o_vol_manure_burned", "n2o_vol_manure_other",
+  "n2o_leach_manure_pasture", "n2o_leach_manure_burned", "n2o_leach_manure_other",
+  "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
+  "manure_management_system", "mms_list", "mms_list_fraction", "mms_list_factors",
+  "unique_mms_sets",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations",
   # Columns used in run_directemissions_manure
-  "dmi", "n_excretion", "ef4", "ef5", "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
+  "dmi", "n_excretion", "ef4", "ef5", "urinary_energy_fraction", "diet_ash",
+  "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
   "mmsdaily", "mmssolid", "mmssolidcov", "mmssolidbulk", "mmssolidadd", "mmsdrylot",
   "mmspit1", "mmspit3", "mmspit4", "mmspit6", "mmspit12",
   "mmsliquid1", "mmsliquid3", "mmsliquid4", "mmsliquid6", "mmsliquid12",

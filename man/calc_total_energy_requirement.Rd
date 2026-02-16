@@ -25,6 +25,7 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
+\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
@@ -64,7 +65,7 @@ function returns the summed daily metabolizable energy requirement.
 \description{
 Computes the \strong{total daily energy requirement} (MJ/head/day) by summing
 relevant energy partitions (maintenance, activity, lactation, work, pregnancy,
-growth, fibre, egg production).
+growth, fibre, egg deposition).
 }
 \details{
 The total energy requirement is computed differently depending on whether

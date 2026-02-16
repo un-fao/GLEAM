@@ -19,6 +19,7 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
+\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
@@ -72,7 +73,7 @@ The activity coefficient \code{cact} reflects the animal’s feeding and managem
 For CTL, BFL, SHP, and GTS, \code{cact} is calculated as a \strong{weighted average} of the different
 activity levels over the assessment period.
 Reference coefficients are derived from NRC (1996) and AFRC (1993) for CTL, BFL, SHP, and GTS; NRC (1998)
-for PGS; and Wardeh (2004) for camels.
+for PGS; and Wardeh (2004) for CML.
 }
 \references{
 NRC (1998). \emph{Nutrient Requirements of Swine},

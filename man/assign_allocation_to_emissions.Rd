@@ -20,7 +20,7 @@ assign_allocation_to_emissions(
 
 \item{commodities}{Character vector. List of commodity categories to which emissions may be allocated. List=c("Other","Milk","Meat","Fibre","Work","Eggs")}
 
-\item{excluded_vars}{Character vector. Emission variables that should not be allocated across commodities, even if they appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned"..)}
+\item{excluded_vars}{Character vector. Emission variables that should not be allocated across commodities, even if they appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").}
 
 \item{commodity_col}{Character. Name of the column in \code{allocation_herd_long} identifying the commodity category.}
 
@@ -35,10 +35,11 @@ with enforced allocation rules:
 }
 }
 \description{
-Assign Allocation Shares to Emission Variables by Commodity
+This function operationalizes commodity-level allocation of emissions by combining each commodity with each emission source
+and applying predefined allocation rules.
 }
 \details{
-Then enforces the allocation of emissions from manure burned as fuel and deposited on pasture
+The function enforces the allocation of emissions from manure burned as fuel and deposited on pasture
 to be \strong{100\% to the commodity "Other"}.
 
 Emission variables listed in \code{excluded_vars} (e.g., emissions from manure
@@ -63,10 +64,6 @@ When upstream feed production is included in the inventory, emission factors of 
 already account for this source.
 }
 }
-\section{This function operationalizes commodity-level allocation of emissions by combining each commodity with each emission source}{
-and applying predefined allocation rules (see details).
-}
-
 \references{
 IDF. 2022. The IDF Global Carbon Footprint Standard for the Dairy Sector.
 Bulletin of the IDF No. 520/2022. International Dairy Federation, Brussels.

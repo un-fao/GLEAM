@@ -2,52 +2,121 @@
 % Please edit documentation in R/directemissions_manure_core_model.R
 \name{calc_ch4_emissions}
 \alias{calc_ch4_emissions}
-\title{Calculate CH4 Emissions from Manure}
+\title{Calculate methane (CH₄) emissions from manure management systems}
 \usage{
-calc_ch4_emissions(
-  vs,
-  mcf_pasture,
-  mcf_burned,
-  mcf_other,
-  b0_mms_all,
-  b0_mms_pasture,
-  ratio_m3CH4_kgCH4 = 0.67
-)
+calc_ch4_emissions(ratio_m3CH4_to_kgCH4 = 0.67, volatile_solids, ...)
 }
 \arguments{
-\item{vs}{Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
+\item{ratio_m3CH4_to_kgCH4}{Numeric. Conversion factor used to convert methane (CH₄) from volumetric unit (m³) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m³.}
 
-\item{mcf_pasture}{Numeric. Effective methane conversion factor for manure deposited on pasture (mcfpasture), expressed in percent (\%), and already weighted by the share of manure deposited on pasture (mmspasture) (percentage)}
+\item{volatile_solids}{Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
 
-\item{mcf_burned}{Numeric. Effective methane conversion factor for manure burned for fuel (mcfburned), expressed in percent (\%), and already weighted by the share of manure burned for fuel (mmsburned) (percentage)}
+\item{...}{A variable number of manure management system (MMS) arguments.
+Each MMS must be provided as a named numeric vector with exactly the
+following fields:
+\describe{
+\item{manure_management_system_fraction}{
+Numeric. Fraction of total manure excreted by animals in a given herd
+and cohort that is handled in a specific manure management system.
+Values range from 0 to 1. The sum of all fractions for each herd_id
+must equal 1.
+}
+\item{methane_conversion_factor_mcf}{
+Numeric. Methane conversion factor represents the portion or degree of
+the maximum methane producing capacity (\eqn{B_0}) that is effectively
+achieved within a specific manure management system. It represents the
+extent to which the theoretical methane yield is realized based on
+management practices and environmental conditions, specifically the
+temperature of the system, the retention time of the organic material,
+and the degree of anaerobic conditions present. The value theoretically
+ranges from 0 to 100 percent. Default values can be selected from
+Table 10.17 of the IPCC guidelines (IPCC 2006, 2019).
+}
+\item{ch4_max_producing_capacity_bo}{
+Numeric. Maximum methane producing capacity (\eqn{B_0}) for all manure
+management systems (m³ CH₄ / kg VS). The value is region- and
+species-specific, and represents the theoretical maximum methane yield
+per unit of volatile solids.. Default values may be selected from Table 10.16
+(IPCC, 2019) or from Tables 10A-4 to 10A-9 (IPCC, 2006).
+}
+}
 
-\item{mcf_other}{Numeric. Effective methane conversion factor for manure managed in non-pasture, non-burned manure management systems, expressed in percent (\%), and already weighted by the share of each corresponding manure management system (e.g., mmsolid, mmsliquid...etc.) (percentage)}
-
-\item{b0_mms_all}{Numeric. Maximum methane producing capacity for all systems (m³ CH4/kg VS). The value should is region- and species-specific. Default can be selected from Table 10.16 (IPCC, 2019) or from Tables 10A-4 to 10A-9 (IPCC, 2006)}
-
-\item{b0_mms_pasture}{Numeric. Maximum methane producing capacity for manure deposited on pasture (m³ CH4/kg VS). Default can be selected from Table 10.16 (IPCC, 2019). For IPCC 2006 method, it is assumed to be equal to b0_mms_all.}
-
-\item{ratio_m3CH4_kgCH4}{Numeric. Conversion factor from m³ CH4 to kg CH4. Default to 0.67.}
+Two MMS names are treated explicitly when present:
+\describe{
+\item{\code{mms_pasture}}{Manure deposited on pasture.}
+\item{\code{mms_burned}}{Manure burned for fuel.}
+}
+All remaining MMS arguments are grouped and treated as other manure
+management systems.}
 }
 \value{
-A named list with:
+A named list with the following elements:
 \describe{
-\item{ch4_manure_pasture}{Numeric. Methane emissions from manure deposited on pasture (kg CH4/head/day))}
-\item{ch4_manure_burned}{Numeric. Methane emissions from manure burned for fuel (kg CH4/head/day)}
-\item{ch4_manure_other}{Numeric. Methane emissions from manure managed in all other manure management systems, excluding emissions from manure deposired on pasture and burned (kg CH4/head/day)}
-\item{ch4_manure_all_noburn}{Numeric. Methane emissions from manure managed in all other manure management systems and deposited on pasture, excluding emissions from burned manure (kg CH4/head/day)}
+\item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH₄/head/day).}
+\item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH₄/head/day).}
+\item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH₄/head/day).}
+\item{ch4_manure_all_noburn}{Numeric. Methane (CH₄) emissions from manure management systems, excluding manure burned for fuel (kg CH₄/head/day).}
 }
 }
 \description{
-Calculates \strong{methane (CH4) emissions} attributable to manure management pathways using
-the IPCC Tier 2 framework. The computation follows the structure of IPCC
-Eq. 10.23 (CH\eqn{_4} emission factor from manure management), but expressed on
-a daily basis because \code{vs} is provided as kg VS/head/day.
+Computes daily methane emissions from manure management using IPCC-based parameters and
+separates emissions from manure deposited on pasture, manure burned for fuel, and all other manure
+management systems.
 }
 \details{
-This function expects that methane conversion factors
-(\code{mcf_pasture}, \code{mcf_burned}, \code{mcf_other}) are provided as
-\strong{weighted fractions}, i.e. they have already been multiplied by the relative manure management system shares (mms)
+This calculation follows the structure of IPCC Equation 10.23 for
+methane (CH₄) emission factors from manure management.
+
+In the IPCC formulation, emissions are determined by combining:
+\itemize{
+\item daily volatile solids excretion (\code{volatile_solids}),
+\item the maximum methane-producing capacity (\code{b0}),
+\item the methane conversion factor (\code{mcf}) for each manure
+management system,
+\item and the fraction of manure handled in each system
+(\code{manure_management_system_fraction}).
+}
+
+Applying the IPCC conversion factor from m³ CH₄ to kg CH₄
+(0.67), daily methane emissions are calculated as:
+
+\deqn{
+  CH₄ =
+  volatile\_solids \times b0 \times 0.67 \times
+  \sum \left( \frac{mcf}{100} \times manure\_management\_system\_fraction \right)
+}
+
+The summation is taken over all manure management systems included in
+the calculation. Results are expressed at daily resolution
+(kg CH₄/head/day), consistent with Equation 10.23 after
+adapting the original annual formulation to a daily basis.
+}
+\examples{
+calc_ch4_emissions(
+  ratio_m3CH4_to_kgCH4 = 0.67,
+  volatile_solids   = 2.024,
+  mms_burned = c(
+    manure_management_system_fraction = 0.020,
+    methane_conversion_factor_mcf = 10,
+    ch4_max_producing_capacity_bo = 0.13
+  ),
+  mms_drylot = c(
+    manure_management_system_fraction = 0.264,
+    methane_conversion_factor_mcf = 2,
+    ch4_max_producing_capacity_bo = 0.13
+  ),
+  mms_pasture = c(
+    manure_management_system_fraction = 0.310,
+    methane_conversion_factor_mcf = 0.47,
+    ch4_max_producing_capacity_bo = 0.19
+  ),
+  mms_solid = c(
+    manure_management_system_fraction = 0.406,
+    methane_conversion_factor_mcf = 5,
+    ch4_max_producing_capacity_bo = 0.13
+  )
+)
+
 }
 \references{
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from

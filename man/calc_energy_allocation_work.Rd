@@ -6,6 +6,7 @@
 \usage{
 calc_energy_allocation_work(
   animal,
+  size,
   work_energy_requirement,
   ratio_ne_to_me,
   assessment_duration
@@ -23,6 +24,8 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
+\item{size}{Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).}
+
 \item{work_energy_requirement}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
 \item{ratio_ne_to_me}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.}
@@ -30,12 +33,12 @@ Supported values include:
 \item{assessment_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
-Numeric scalar. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).
+Numeric scalar. Energy required to provide all draught power (traction/work) over the assessment period (MJ/cohort/assessment period).
 
-Non-zero values are expected only for fiber-producing species (CTL, BFL CML) and assumed cohorts ("MA").'
+Non-zero values are expected only for draught or work-producing species (CTL, BFL CML) and applicable cohorts (MA).
 }
 \description{
-Calculates the net energy demand (MJ) associated with animal work over the
+Calculates the net energy demand associated with animal work over the
 assessment period for animals involved in draught power generation.
 }
 \details{
@@ -59,7 +62,7 @@ and cohorts (\code{MA}) assumed to be potentially involved in draught power gene
 is calculated as follows:
 
 \itemize{
-\item \code{energy_allocation_work = work_energy_requirement * assessment_duration}
+\item \code{energy_allocation_work = work_energy_requirement * assessment_duration * size}
 }
 
 where \code{work_energy_requirement} represents the daily energy requirement for

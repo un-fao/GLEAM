@@ -20,6 +20,7 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
+\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
@@ -80,7 +81,7 @@ energy\_work = 0.1 \times NEm \times work\_hours \times draught\_fraction
 where:
 \itemize{
 \item \eqn{energy\_work} is net energy required for maintenance (MJ head\eqn{^{-1}} day\eqn{^{-1}}),
-\item \eqn{0.1} represents a 10\\% increase in maintenance energy per hour of work,
+\item \eqn{0.1} represents a 10\% increase in maintenance energy per hour of work,
 \item \eqn{work\_hours} is the mean number of hours worked per animal per day,
 \item \eqn{draught\_fraction} is the fraction of adult males performing draught work.
 }

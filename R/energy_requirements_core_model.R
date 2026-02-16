@@ -200,6 +200,7 @@ calc_net_energy_maintenance <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -236,9 +237,9 @@ calc_net_energy_maintenance <- function(
 #' @details
 #' The activity coefficient \code{cact} reflects the animal’s feeding and management conditions.
 #' For CTL, BFL, SHP, and GTS, \code{cact} is calculated as a **weighted average** of the different
-#' activity levels over the assessment period.
+#'  activity levels over the assessment period.
 #' Reference coefficients are derived from NRC (1996) and AFRC (1993) for CTL, BFL, SHP, and GTS; NRC (1998)
-#' for PGS; and Wardeh (2004) for camels.
+#'  for PGS; and Wardeh (2004) for CML.
 #'
 #' @references
 #' NRC (1998). \emph{Nutrient Requirements of Swine},
@@ -308,6 +309,7 @@ calc_net_energy_activity <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -518,6 +520,7 @@ calc_net_energy_growth <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -558,7 +561,6 @@ calc_net_energy_growth <- function(
 #'
 #' @return Numeric. Energy required for lactation (\code{energy_requirement_lactation}). Expressed as net
 #'   energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#'
 #'
 #' @details
 #'
@@ -764,6 +766,7 @@ calc_net_energy_lactation <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -805,6 +808,7 @@ calc_net_energy_eggs <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -853,7 +857,7 @@ calc_net_energy_eggs <- function(
 #' where:
 #' \itemize{
 #'   \item \eqn{energy\_work} is net energy required for maintenance (MJ head\eqn{^{-1}} day\eqn{^{-1}}),
-#'   \item \eqn{0.1} represents a 10\% increase in maintenance energy per hour of work,
+#'   \item \eqn{0.1} represents a 10% increase in maintenance energy per hour of work,
 #'   \item \eqn{work\_hours} is the mean number of hours worked per animal per day,
 #'   \item \eqn{draught\_fraction} is the fraction of adult males performing draught work.
 #' }
@@ -1416,13 +1420,14 @@ calc_reg_growth <- function(
 #'
 #' Computes the **total daily energy requirement** (MJ/head/day) by summing
 #' relevant energy partitions (maintenance, activity, lactation, work, pregnancy,
-#' growth, fibre, egg production).
+#' growth, fibre, egg deposition).
 #'
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -1576,14 +1581,15 @@ calc_total_energy_requirement <- function(
 #' animal's daily energy requirement and the diet energy density.
 #'
 #' This function follows the IPCC Tier 2, logic.
-#' Dry matter intake by dividing the appropriate daily energy requirement by the
-#' corresponding diet energy content (MJ per kg DM).
+#' Dry matter intake is calculated by dividing the appropriate daily energy requirement by the
+#' corresponding diet energy density (MJ per kg DM).
 #'
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
+#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep

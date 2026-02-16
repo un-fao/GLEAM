@@ -4,14 +4,25 @@
 \alias{compute_fibre_output}
 \title{Compute Fibre Production}
 \usage{
-compute_fibre_output(fibre_prod, assessment_duration, size)
+compute_fibre_output(cohort = cohort, fibre_prod, assessment_duration, size)
 }
 \arguments{
+\item{cohort}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
+
 \item{fibre_prod}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
 
 \item{assessment_duration}{Numeric. Length of the assessment period (days).}
 
-\item{size}{Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)}
+\item{size}{Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).}
 }
 \value{
 Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).
@@ -20,7 +31,7 @@ Cohorts that do not produce fibre should return zero output through
 upstream parameterisation.
 }
 \description{
-Computes fibre production for producing cohorts by scaling per-animal
+Computes fibre production for producing cohorts (\code{FA}, \code{MA}, \code{FS}, \code{MS})  by scaling per-animal
 fibre yield to the assessment period and cohort size.
 The output is expressed in kg per cohort per assessment period.
 }

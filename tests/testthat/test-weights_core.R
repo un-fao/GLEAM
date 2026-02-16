@@ -10,7 +10,7 @@ test_that("calc_cohort_weights returns valid weights for juvenile non-pig", {
   expect_named(
     result,
     c(
-      "adult_weight",
+      "mature_weight",
       "live_weight_cohort_initial",
       "live_weight_cohort_potential_final",
       "slaughter_weight_cohort"
