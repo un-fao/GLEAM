@@ -1,4 +1,4 @@
-herd_id,animal,afc,milking_fraction,milk_yield,milk_fat,idle,gest,litsize,dr1,ckg,wkg,lact,parturition_rate,egg_weight,work_hours_female,work_hours_male,draught_fraction_female,draught_fraction_male,fibre_prod
+herd_id,animal,age_first_parturition,lactating_females_fraction,milk_yield_day,milk_fat_fraction,non_productive_duration,pregnancy_duration,litter_size,death_rate_juvenile,birth_weight,weaning_weight,lactation_duration,parturition_rate,egg_average_weight,draught_work_hours_female,draught_work_hours_male,draught_fraction_female,draught_fraction_male,fibre_yield_year
 1,Cattle,730,0.40,10,0.04,120,280,1.0,0.05,35,200,210,0.90,0,0,2,0,0.2,0
 2,Buffalo,800,0.35,8,0.045,120,300,1.0,0.05,40,220,220,0.85,0,0,2,0,0.2,0
 3,Sheep,540,0.30,1.5,0.06,150,150,1.5,0.08,3.5,20,150,1.00,0,0,0,0,0,3

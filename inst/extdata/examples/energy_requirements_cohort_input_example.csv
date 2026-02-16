@@ -1,4 +1,4 @@
-herd_id,cohort,average_weight,offtake_rate,activity_fraction,high_activity_fraction,initial_weight,final_weight,adult_weight,dwg,duration,diet_dig,diet_ge,diet_me,lambing_interval
+herd_id,cohort_short,live_weight_cohort_average,offtake_rate,low_activity_fraction,high_activity_fraction,live_weight_cohort_initial,live_weight_cohort_final,mature_weight,daily_weight_gain,cohort_duration_days,diet_digestibility_fraction,diet_gross_energy,diet_metabolizable_energy,lambing_interval
 1,FA,550,0.05,0.7,0.2,550,550,550,0.00,365,0.65,18,12,365
 1,FS,350,0.10,0.7,0.2,250,450,550,0.55,365,0.65,18,12,365
 1,FJ,200,0.00,0.7,0.2,100,300,550,0.55,365,0.65,18,12,365

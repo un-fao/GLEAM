@@ -28,22 +28,23 @@ validate_energy_requirements_inputs <- function(
 
   # --- Required columns validation --------------------------------------------
   required_cohort_cols <- c(
-    "herd_id", "cohort",
-    "average_weight", "offtake_rate",
-    "activity_fraction", "high_activity_fraction",
-    "initial_weight", "final_weight", "adult_weight",
-    "dwg", "duration",
-    "diet_dig", "diet_ge", "diet_me",
+    "herd_id", "cohort_short",
+    "live_weight_cohort_average", "offtake_rate",
+    "low_activity_fraction", "high_activity_fraction",
+    "live_weight_cohort_initial", "live_weight_cohort_final", "mature_weight",
+    "daily_weight_gain", "cohort_duration_days",
+    "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy",
     "lambing_interval"
   )
   required_herd_cols <- c(
     "herd_id", "animal",
-    "afc", "milking_fraction", "milk_yield", "milk_fat",
-    "idle", "gest", "litsize", "dr1", "ckg", "wkg",
-    "lact", "parturition_rate", "egg_weight",
-    "work_hours_female", "work_hours_male",
+    "age_first_parturition", "lactating_females_fraction", "milk_yield_day", "milk_fat_fraction",
+    "non_productive_duration", "pregnancy_duration", "litter_size", "death_rate_juvenile",
+    "birth_weight", "weaning_weight",
+    "lactation_duration", "parturition_rate", "egg_average_weight",
+    "draught_work_hours_female", "draught_work_hours_male",
     "draught_fraction_female", "draught_fraction_male",
-    "fibre_prod"
+    "fibre_yield_year"
   )
 
   missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
@@ -63,10 +64,10 @@ validate_energy_requirements_inputs <- function(
   # --- Cohort data validation -------------------------------------------------
   valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
-  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort), valid_cohorts)
+  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), valid_cohorts)
   if (length(invalid_cohorts) > 0) {
     cli::cli_abort(
-      "Invalid cohort values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
+      "Invalid cohort_short values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
       Must be one of: {.val {valid_cohorts}}"
     )
   }
@@ -74,8 +75,8 @@ validate_energy_requirements_inputs <- function(
   cohort_completeness <- cohort_level_data[
     , list(
       count = .N,
-      has_all_cohorts = setequal(cohort, valid_cohorts),
-      missing_cohorts = paste(setdiff(valid_cohorts, cohort), collapse = ", ")
+      has_all_cohorts = setequal(cohort_short, valid_cohorts),
+      missing_cohorts = paste(setdiff(valid_cohorts, cohort_short), collapse = ", ")
     ),
     by = herd_id
   ]
@@ -138,44 +139,44 @@ validate_energy_requirements_inputs <- function(
   }
 
   # --- Numeric consistency (cohort-level) ---------------------------------------
-  # activity_fraction + high_activity_fraction <= 1 per row
+  # low_activity_fraction + high_activity_fraction <= 1 per row
   cohort_level_data[
-    , activity_sum := activity_fraction + high_activity_fraction
+    , activity_sum := low_activity_fraction + high_activity_fraction
   ]
-  bad_activity <- cohort_level_data[activity_sum > 1, .(herd_id, cohort)]
+  bad_activity <- cohort_level_data[activity_sum > 1, .(herd_id, cohort_short)]
   cohort_level_data[, activity_sum := NULL]
   if (nrow(bad_activity) > 0) {
-    bad_info <- bad_activity[, paste0(herd_id, " / ", cohort)]
+    bad_info <- bad_activity[, paste0(herd_id, " / ", cohort_short)]
     cli::cli_abort(
-      "For each row, {.field activity_fraction} + {.field high_activity_fraction} must be <= 1.
+      "For each row, {.field low_activity_fraction} + {.field high_activity_fraction} must be <= 1.
       Violation(s): {.val {bad_info}}"
     )
   }
 
-  # initial_weight <= average_weight <= final_weight (skip if any NA)
+  # live_weight_cohort_initial <= live_weight_cohort_average <= live_weight_cohort_final (skip if any NA)
   inconsistent_weights <- cohort_level_data[
-    !is.na(initial_weight) & !is.na(average_weight) & !is.na(final_weight) &
-      (initial_weight > average_weight | average_weight > final_weight),
-    .(herd_id, cohort)
+    !is.na(live_weight_cohort_initial) & !is.na(live_weight_cohort_average) & !is.na(live_weight_cohort_final) &
+      (live_weight_cohort_initial > live_weight_cohort_average | live_weight_cohort_average > live_weight_cohort_final),
+    .(herd_id, cohort_short)
   ]
   if (nrow(inconsistent_weights) > 0) {
-    bad_info <- inconsistent_weights[, paste0(herd_id, " / ", cohort)]
+    bad_info <- inconsistent_weights[, paste0(herd_id, " / ", cohort_short)]
     cli::cli_abort(
-      "For each row, {.field initial_weight} <= {.field average_weight} <= {.field final_weight} must hold.
+      "For each row, {.field live_weight_cohort_initial} <= {.field live_weight_cohort_average} <= {.field live_weight_cohort_final} must hold.
       Violation(s): {.val {bad_info}}"
     )
   }
 
   # --- Numeric consistency (herd-level) ----------------------------------------
-  # ckg <= wkg where both present
-  bad_ckg_wkg <- herd_level_data[
-    !is.na(ckg) & !is.na(wkg) & ckg > wkg,
+  # birth_weight <= weaning_weight where both present
+  bad_birth_weaning <- herd_level_data[
+    !is.na(birth_weight) & !is.na(weaning_weight) & birth_weight > weaning_weight,
     herd_id
   ]
-  if (length(bad_ckg_wkg) > 0) {
+  if (length(bad_birth_weaning) > 0) {
     cli::cli_abort(
-      "For each herd, {.field ckg} must be <= {.field wkg}.
-      Violation(s) for herd_id: {.val {bad_ckg_wkg}}"
+      "For each herd, {.field birth_weight} must be <= {.field weaning_weight}.
+      Violation(s) for herd_id: {.val {bad_birth_weaning}}"
     )
   }
 }

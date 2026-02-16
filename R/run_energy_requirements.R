@@ -4,43 +4,44 @@
 #' using the GLEAM core model functions. This function is intended for internal workflows
 #' and does not perform any file I/O.
 #'
-#' It adds columns for net energy for maintenance (nemain), activity (neact), growth (negrow),
-#' lactation (nelact), work (nework), fibre production (nefibre), pregnancy (nepreg), diet net energy
-#' fractions (rem, reg), total metabolizable energy requirement (getot) and dry matter intake (dmi).
+#' It adds columns for energy requirements (maintenance, activity, growth, lactation, work,
+#' fibre production, pregnancy), diet net energy ratios (REM, REG), total energy requirement
+#' and dry matter intake.
 #'
 #' @param cohort_level_data A `data.table` or `data.frame` with cohort-level inputs and at least:
 #'   \itemize{
 #'     \item `herd_id` – Herd identifier (foreign key linking to herd-level table).
-#'     \item `cohort` – Cohort code (`FA`, `FS`, `FJ`, `MA`, `MS`, `MJ`).
-#'     \item `average_weight` – Average live weight in the cohort (kg).
+#'     \item `cohort_short` – Cohort code (`FA`, `FS`, `FJ`, `MA`, `MS`, `MJ`).
+#'     \item `live_weight_cohort_average` – Average live weight in the cohort (kg).
 #'     \item `offtake_rate` – Annual offtake rate for the cohort (fraction).
-#'     \item `activity_fraction`, `high_activity_fraction` – Low-/high-activity shares (fractions).
-#'     \item `initial_weight`, `final_weight`, `adult_weight` – Weights used for growth calculations (kg).
-#'     \item `dwg` – Daily weight gain (kg/head/day).
-#'     \item `duration` – Cohort duration (days).
-#'     \item `diet_dig` – Diet digestibility (DE/GE, fraction).
-#'     \item `diet_ge`, `diet_me` – Gross and metabolizable energy densities (MJ/kg DM).
-#'     \item `lambing_interval` – Lambing interval (days) for small ruminants (kept for completeness).
+#'     \item `low_activity_fraction`, `high_activity_fraction` – Low-/high-activity shares (fractions).
+#'     \item `live_weight_cohort_initial`, `live_weight_cohort_final`, `mature_weight` – Weights for growth (kg).
+#'     \item `daily_weight_gain` – Daily weight gain (kg/head/day).
+#'     \item `cohort_duration_days` – Cohort duration (days).
+#'     \item `diet_digestibility_fraction` – Diet digestibility (DE/GE, fraction).
+#'     \item `diet_gross_energy`, `diet_metabolizable_energy` – Gross and metabolizable energy (MJ/kg DM).
+#'     \item `lambing_interval` – Lambing interval (days) for small ruminants.
 #'   }
 #' @param herd_level_data A `data.table` or `data.frame` with herd-level inputs (one row per herd)
 #'  and at least:
 #'   \itemize{
 #'     \item `herd_id` – Herd identifier (primary key).
-#'     \item `animal` – Full species name used to derive internal short codes (e.g. `"Cattle"`, `"Sheep"`).
-#'     \item `afc` – Age at first calving/parturition (days).
-#'     \item `milking_fraction`, `milk_yield`, `milk_fat` – Lactation parameters.
-#'     \item `idle`, `gest`, `litsize`, `dr1`, `ckg`, `wkg`, `lact`, `parturition_rate`
-#'      – Reproduction and lactation inputs.
-#'     \item `egg_weight` – Average egg weight (kg; used only for poultry/egg layers).
-#'     \item `work_hours_female`, `work_hours_male` – Daily working hours for adult females/males
-#'      (hours/head/day).
-#'     \item `draught_fraction_female`, `draught_fraction_male` – Fractions of adult females/males
-#'      used for draught work.
-#'     \item `fibre_prod` – Annual fibre production per head (kg/head/year).
+#'     \item `animal` – Full species name used to derive species_short (e.g. `"Cattle"`, `"Sheep"`).
+#'     \item `age_first_parturition` – Age at first parturition (days).
+#'     \item `lactating_females_fraction`, `milk_yield_day`, `milk_fat_fraction` – Lactation parameters.
+#'     \item `non_productive_duration`, `pregnancy_duration`, `litter_size`, `death_rate_juvenile`,
+#'      `birth_weight`, `weaning_weight`, `lactation_duration`, `parturition_rate` – Reproduction/lactation.
+#'     \item `egg_average_weight` – Average egg weight (kg; poultry/egg layers).
+#'     \item `draught_work_hours_female`, `draught_work_hours_male` – Daily draught work hours (hours/head/day).
+#'     \item `draught_fraction_female`, `draught_fraction_male` – Fractions of adults used for draught work.
+#'     \item `fibre_yield_year` – Annual fibre production per head (kg/head/year).
 #'   }
 #'
-#' @return The input data with new columns: nemain, neact, negrow, nelact, nework,
-#' nefibre, nepreg, rem, reg, getot, dmi.
+#' @return The cohort-level data with new columns: energy_requirement_maintenance,
+#' energy_requirement_activity, energy_requirement_growth, energy_requirement_lactation,
+#' energy_requirement_work, energy_requirement_fibre_production, energy_requirement_pregnancy,
+#' net_energy_maintenance_digestible_energy_ratio, net_energy_growth_digestible_energy_ratio,
+#' energy_requirement_total, dry_matter_intake.
 #'
 #' @examples
 #' \dontrun{
@@ -71,14 +72,14 @@ run_energy_requirements <- function(
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
   herd_level_data <- data.table::as.data.table(herd_level_data)
 
-  # --- Step 1: Validate inputs -------------------------------------------------
+  # --- Step 1: Validate inputs ------------------------------------------------
   validate_energy_requirements_inputs(cohort_level_data, herd_level_data)
 
   # --- Step 2: Create working copies ------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
-  # --- Step 3: Map full animal names to species_short (herd table only) ------
+  # --- Step 3: Map full animal names to species_short (herd table only) -------
   herd_level_data <- merge(
     herd_level_data,
     abbr_animals,
@@ -89,13 +90,13 @@ run_energy_requirements <- function(
   # --- Step 4: Maintenance energy (MJ/day) ------------------------------------
   cohort_level_data[
     ,
-    nemain := calc_net_energy_maintenance(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      cohort = cohort,
-      average_weight = average_weight,
-      milking_fraction = herd_level_data[.SD, on = "herd_id", x.milking_fraction],
+    energy_requirement_maintenance := calc_net_energy_maintenance(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      live_weight_cohort_average = live_weight_cohort_average,
+      lactating_females_fraction = herd_level_data[.SD, on = "herd_id", x.lactating_females_fraction],
       offtake_rate = offtake_rate,
-      afc = herd_level_data[.SD, on = "herd_id", x.afc]
+      age_first_parturition = herd_level_data[.SD, on = "herd_id", x.age_first_parturition]
     ),
     by = .I
   ]
@@ -103,12 +104,12 @@ run_energy_requirements <- function(
   # --- Step 5: Activity energy (MJ/day) ---------------------------------------
   cohort_level_data[
     ,
-    neact := calc_net_energy_activity(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      cohort = cohort,
-      nemain = nemain,
-      average_weight = average_weight,
-      activity_fraction = activity_fraction,
+    energy_requirement_activity := calc_net_energy_activity(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      energy_requirement_maintenance = energy_requirement_maintenance,
+      live_weight_cohort_average = live_weight_cohort_average,
+      low_activity_fraction = low_activity_fraction,
       high_activity_fraction = high_activity_fraction
     ),
     by = .I
@@ -117,16 +118,16 @@ run_energy_requirements <- function(
   # --- Step 6: Growth energy (MJ/day) -----------------------------------------
   cohort_level_data[
     ,
-    negrow := calc_net_energy_growth(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      cohort = cohort,
-      average_weight = average_weight,
-      final_weight = final_weight,
-      initial_weight = initial_weight,
-      adult_weight = adult_weight,
-      dwg = dwg,
+    energy_requirement_growth := calc_net_energy_growth(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      live_weight_cohort_average = live_weight_cohort_average,
+      live_weight_cohort_final = live_weight_cohort_final,
+      live_weight_cohort_initial = live_weight_cohort_initial,
+      mature_weight = mature_weight,
+      daily_weight_gain = daily_weight_gain,
       offtake_rate = offtake_rate,
-      duration = duration
+      cohort_duration_days = cohort_duration_days
     ),
     by = .I
   ]
@@ -134,19 +135,19 @@ run_energy_requirements <- function(
   # --- Step 7: Lactation energy (MJ/day) --------------------------------------
   cohort_level_data[
     ,
-    nelact := calc_net_energy_lactation(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      cohort = cohort,
-      milking_fraction = herd_level_data[.SD, on = "herd_id", x.milking_fraction],
-      milk_yield = herd_level_data[.SD, on = "herd_id", x.milk_yield],
-      milk_fat = herd_level_data[.SD, on = "herd_id", x.milk_fat],
-      idle = herd_level_data[.SD, on = "herd_id", x.idle],
-      gest = herd_level_data[.SD, on = "herd_id", x.gest],
-      litsize = herd_level_data[.SD, on = "herd_id", x.litsize],
-      dr1 = herd_level_data[.SD, on = "herd_id", x.dr1],
-      ckg = herd_level_data[.SD, on = "herd_id", x.ckg],
-      wkg = herd_level_data[.SD, on = "herd_id", x.wkg],
-      lact = herd_level_data[.SD, on = "herd_id", x.lact],
+    energy_requirement_lactation := calc_net_energy_lactation(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      lactating_females_fraction = herd_level_data[.SD, on = "herd_id", x.lactating_females_fraction],
+      milk_yield_day = herd_level_data[.SD, on = "herd_id", x.milk_yield_day],
+      milk_fat_fraction = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction],
+      non_productive_duration = herd_level_data[.SD, on = "herd_id", x.non_productive_duration],
+      pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
+      litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
+      death_rate_juvenile = herd_level_data[.SD, on = "herd_id", x.death_rate_juvenile],
+      birth_weight = herd_level_data[.SD, on = "herd_id", x.birth_weight],
+      weaning_weight = herd_level_data[.SD, on = "herd_id", x.weaning_weight],
+      lactation_duration = herd_level_data[.SD, on = "herd_id", x.lactation_duration],
       parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate]
     ),
     by = .I
@@ -155,12 +156,12 @@ run_energy_requirements <- function(
   # --- Step 8: Work energy (MJ/day) ------------------------------------------
   cohort_level_data[
     ,
-    nework := calc_net_energy_work(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      cohort = cohort,
-      nemain = nemain,
-      work_hours_female = herd_level_data[.SD, on = "herd_id", x.work_hours_female],
-      work_hours_male = herd_level_data[.SD, on = "herd_id", x.work_hours_male],
+    energy_requirement_work := calc_net_energy_work(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      energy_requirement_maintenance = energy_requirement_maintenance,
+      draught_work_hours_female = herd_level_data[.SD, on = "herd_id", x.draught_work_hours_female],
+      draught_work_hours_male = herd_level_data[.SD, on = "herd_id", x.draught_work_hours_male],
       draught_fraction_female = herd_level_data[.SD, on = "herd_id", x.draught_fraction_female],
       draught_fraction_male = herd_level_data[.SD, on = "herd_id", x.draught_fraction_male]
     ),
@@ -170,10 +171,10 @@ run_energy_requirements <- function(
   # --- Step 9: Fibre production energy (MJ/day) ------------------------------
   cohort_level_data[
     ,
-    nefibre := calc_net_energy_fibre(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      cohort = cohort,
-      fibre_prod = herd_level_data[.SD, on = "herd_id", x.fibre_prod]
+    energy_requirement_fibre_production := calc_net_energy_fibre(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      fibre_yield_year = herd_level_data[.SD, on = "herd_id", x.fibre_yield_year]
     ),
     by = .I
   ]
@@ -181,68 +182,68 @@ run_energy_requirements <- function(
   # --- Step 10: Pregnancy energy (MJ/day) -------------------------------------
   cohort_level_data[
     ,
-    nepreg := calc_net_energy_pregnancy(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      cohort = cohort,
-      nemain = nemain,
+    energy_requirement_pregnancy := calc_net_energy_pregnancy(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      energy_requirement_maintenance = energy_requirement_maintenance,
       parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
-      litsize = herd_level_data[.SD, on = "herd_id", x.litsize],
-      gest = herd_level_data[.SD, on = "herd_id", x.gest],
-      idle = herd_level_data[.SD, on = "herd_id", x.idle],
-      lact = herd_level_data[.SD, on = "herd_id", x.lact],
-      duration = duration,
+      litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
+      pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
+      non_productive_duration = herd_level_data[.SD, on = "herd_id", x.non_productive_duration],
+      lactation_duration = herd_level_data[.SD, on = "herd_id", x.lactation_duration],
+      cohort_duration_days = cohort_duration_days,
       offtake_rate = offtake_rate
     ),
     by = .I
   ]
 
-  # --- Step 11: Diet NE fractions (rem, reg) -----------------------------------
+  # --- Step 11: Diet NE fractions ---------------------------------------------
   cohort_level_data[
     ,
-    rem := calc_rem_maintenance(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      diet_dig = diet_dig
+    net_energy_maintenance_digestible_energy_ratio := calc_rem_maintenance(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      diet_digestibility_fraction = diet_digestibility_fraction
     ),
     by = .I
   ]
 
   cohort_level_data[
     ,
-    reg := calc_reg_growth(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      diet_dig = diet_dig
+    net_energy_growth_digestible_energy_ratio := calc_reg_growth(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      diet_digestibility_fraction = diet_digestibility_fraction
     ),
     by = .I
   ]
 
-  # --- Step 12: Total ME requirement (MJ/day) ----------------------------------
+  # --- Step 12: Total ME requirement (MJ/day) ---------------------------------
   cohort_level_data[
     ,
-    getot := calc_total_energy_requirement(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      nemain = nemain,
-      neact = neact,
-      nelact = nelact,
-      nework = nework,
-      nepreg = nepreg,
-      rem = rem,
-      negrow = negrow,
-      nefibre = nefibre,
-      neegg = 0,
-      reg = reg,
-      diet_dig = diet_dig
+    energy_requirement_total := calc_total_energy_requirement(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      energy_requirement_maintenance = energy_requirement_maintenance,
+      energy_requirement_activity = energy_requirement_activity,
+      energy_requirement_lactation = energy_requirement_lactation,
+      energy_requirement_work = energy_requirement_work,
+      energy_requirement_pregnancy = energy_requirement_pregnancy,
+      net_energy_maintenance_digestible_energy_ratio = net_energy_maintenance_digestible_energy_ratio,
+      energy_requirement_growth = energy_requirement_growth,
+      energy_requirement_fibre_production = energy_requirement_fibre_production,
+      energy_requirement_egg_deposition = 0,
+      net_energy_growth_digestible_energy_ratio = net_energy_growth_digestible_energy_ratio,
+      diet_digestibility_fraction = diet_digestibility_fraction
     ),
     by = .I
   ]
 
-  # --- Step 13: Dry matter intake (kg DM/day) ----------------------------------
+  # --- Step 13: Dry matter intake (kg DM/day) ---------------------------------
   cohort_level_data[
     ,
-    dmi := calc_dry_matter_intake(
-      animal = herd_level_data[.SD, on = "herd_id", x.species_short],
-      total_energy = getot,
-      diet_ge = diet_ge,
-      diet_me = diet_me
+    dry_matter_intake := calc_dry_matter_intake(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      energy_requirement_total = energy_requirement_total,
+      diet_gross_energy = diet_gross_energy,
+      diet_metabolizable_energy = diet_metabolizable_energy
     ),
     by = .I
   ]

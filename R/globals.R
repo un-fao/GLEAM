@@ -116,23 +116,20 @@ utils::globalVariables(c(
 
 utils::globalVariables(c(
   # Columns used in run_energy_requirements (cohort-level and results)
-  "average_weight", "dmi", "dr1", "fibre_prod",
-  "final_weight", "gest", "getot", "idle", "lact", "lambing_interval",
-  "milk_fat", "milk_yield", "milking_fraction", "high_activity_fraction", "neact",
-  "neegg", "nefibre", "negrow", "nelact", "nemain", "nepreg",
-  "nework", "activity_fraction", "reg", "rem",
-  "work_hours_female", "work_hours_male",
-  "draught_fraction_female", "draught_fraction_male",
-  "cohort", "duration", "dwg", "species_short",
-  "diet_dig", "diet_ge", "diet_me",
-  "initial_weight", "adult_weight", "activity_sum",
+  "cohort_short", "live_weight_cohort_average", "offtake_rate", "low_activity_fraction", "high_activity_fraction",
+  "live_weight_cohort_initial", "live_weight_cohort_final", "mature_weight", "daily_weight_gain", "cohort_duration_days",
+  "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy", "lambing_interval",
+  "energy_requirement_maintenance", "energy_requirement_activity", "energy_requirement_growth", "energy_requirement_lactation",
+  "energy_requirement_work", "energy_requirement_fibre_production", "energy_requirement_pregnancy",
+  "net_energy_maintenance_digestible_energy_ratio", "net_energy_growth_digestible_energy_ratio",
+  "energy_requirement_total", "dry_matter_intake", "activity_sum", "species_short",
   # herd-level lookups (x.* from herd_level_data[.SD, on = "herd_id", x.col])
-  "x.species_short", "x.milking_fraction", "x.afc", "x.milk_yield", "x.milk_fat",
-  "x.idle", "x.gest", "x.litsize", "x.dr1", "x.ckg", "x.wkg", "x.lact",
-  "x.parturition_rate", "x.work_hours_female", "x.work_hours_male",
-  "x.draught_fraction_female", "x.draught_fraction_male", "x.fibre_prod",
+  "x.species_short", "x.lactating_females_fraction", "x.age_first_parturition", "x.milk_yield_day", "x.milk_fat_fraction",
+  "x.non_productive_duration", "x.pregnancy_duration", "x.litter_size", "x.death_rate_juvenile", "x.birth_weight", "x.weaning_weight",
+  "x.lactation_duration", "x.parturition_rate", "x.draught_work_hours_female", "x.draught_work_hours_male",
+  "x.draught_fraction_female", "x.draught_fraction_male", "x.fibre_yield_year",
   # validate_energy_requirements_inputs
-  "has_all_cohorts", "missing_cohorts"
+  "has_all_cohorts", "missing_cohorts", "birth_weight", "weaning_weight"
 ))
 
 utils::globalVariables(c(
