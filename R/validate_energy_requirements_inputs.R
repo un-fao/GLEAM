@@ -139,16 +139,24 @@ validate_energy_requirements_inputs <- function(
   }
 
   # --- Numeric consistency (cohort-level) ---------------------------------------
-  # low_activity_fraction + high_activity_fraction <= 1 per row
+  # low_activity_fraction + high_activity_fraction >= 0 and <= 1 per row
   cohort_level_data[
     , activity_sum := low_activity_fraction + high_activity_fraction
   ]
-  bad_activity <- cohort_level_data[activity_sum > 1, .(herd_id, cohort_short)]
+  bad_activity_high <- cohort_level_data[activity_sum > 1, .(herd_id, cohort_short)]
+  bad_activity_low <- cohort_level_data[activity_sum < 0, .(herd_id, cohort_short)]
   cohort_level_data[, activity_sum := NULL]
-  if (nrow(bad_activity) > 0) {
-    bad_info <- bad_activity[, paste0(herd_id, " / ", cohort_short)]
+  if (nrow(bad_activity_high) > 0) {
+    bad_info <- bad_activity_high[, paste0(herd_id, " / ", cohort_short)]
     cli::cli_abort(
       "For each row, {.field low_activity_fraction} + {.field high_activity_fraction} must be <= 1.
+      Violation(s): {.val {bad_info}}"
+    )
+  }
+  if (nrow(bad_activity_low) > 0) {
+    bad_info <- bad_activity_low[, paste0(herd_id, " / ", cohort_short)]
+    cli::cli_abort(
+      "For each row, {.field low_activity_fraction} + {.field high_activity_fraction} must be >= 0.
       Violation(s): {.val {bad_info}}"
     )
   }
@@ -168,14 +176,14 @@ validate_energy_requirements_inputs <- function(
   }
 
   # --- Numeric consistency (herd-level) ----------------------------------------
-  # birth_weight <= weaning_weight where both present
+  # birth_weight < weaning_weight where both present (strict)
   bad_birth_weaning <- herd_level_data[
-    !is.na(birth_weight) & !is.na(weaning_weight) & birth_weight > weaning_weight,
+    !is.na(birth_weight) & !is.na(weaning_weight) & birth_weight >= weaning_weight,
     herd_id
   ]
   if (length(bad_birth_weaning) > 0) {
     cli::cli_abort(
-      "For each herd, {.field birth_weight} must be <= {.field weaning_weight}.
+      "For each herd, {.field birth_weight} must be strictly less than {.field weaning_weight}.
       Violation(s) for herd_id: {.val {bad_birth_weaning}}"
     )
   }

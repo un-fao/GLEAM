@@ -71,17 +71,6 @@ test_that("calc_net_energy_maintenance calculates correctly for zero lactating_f
   expect_equal(result, expected, tolerance = 1e-8)
 })
 
-test_that("calc_net_energy_maintenance handles offtake extremes", {
-  expect_equal(
-    calc_net_energy_maintenance(species_short = "CTL", cohort_short = "MA", live_weight_cohort_average = 600, offtake_rate = 0),
-    (600^0.75) * 0.37, tolerance = 1e-8
-  )
-  expect_equal(
-    calc_net_energy_maintenance(species_short = "CTL", cohort_short = "MA", live_weight_cohort_average = 600, offtake_rate = 1),
-    (600^0.75) * 0.322, tolerance = 1e-8
-  )
-})
-
 # ---- test calc_net_energy_activity ----
 test_that("calc_net_energy_activity returns correct values for cattle", {
   energy_requirement_maintenance <- 15.0

@@ -1252,7 +1252,8 @@ calc_net_energy_pregnancy <- function(
   # Validate inputs
   validate_pregnancy_inputs(
     species_short, cohort_short, energy_requirement_maintenance, parturition_rate,
-    litter_size, pregnancy_duration, non_productive_duration, lactation_duration, cohort_duration_days, offtake_rate
+    litter_size, pregnancy_duration, non_productive_duration, lactation_duration,
+    cohort_duration_days, offtake_rate
   )
 
   if (species_short %in% c("CTL", "BFL")) {
