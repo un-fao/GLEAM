@@ -79,6 +79,10 @@ run_gleam <- function(
 ) {
 
   # --- Step 1: Validate inputs -----------------------------------------------
+  validate_run_gleam_inputs(
+    has_herd_structure = has_herd_structure,
+    herd_structure = herd_structure
+  )
 
   # Show progress indicator if requested
   if (show_indicator) {
