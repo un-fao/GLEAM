@@ -16,9 +16,19 @@ following minimum data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each
 cohort belonging to the same herd.}
-\item{animal}{Character. Livestock category name used to map to a species
-short code via internal lookup (e.g., for applying species-specific energy
-parameters).}
+\item{animal}{
+Character. Livestock category name used to map to a species short code via an
+internal lookup table. Supported values include:
+\itemize{
+\item \code{Cattle}
+\item \code{Buffalo}
+\item \code{Sheep}
+\item \code{Goats}
+\item \code{Chicken}
+\item \code{Pigs}
+\item \code{Camels}
+}
+}
 \item{cohort_short}{
 Character. Sex- and age-specific cohort code describing the production stage
 of the animals. Supported values include:
