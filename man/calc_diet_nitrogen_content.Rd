@@ -7,15 +7,18 @@
 calc_diet_nitrogen_content(feed_ration_fraction, feed_nitrogen_content)
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Ration share for the feed component (fraction).}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the
+total ration, expressed as its fraction of diet dry matter (fraction). Within
+each herd_id and cohort, proportions should sum to 1.}
 
-\item{feed_nitrogen_content}{Numeric. Nitrogen content (kg N/kg DM).}
+\item{feed_nitrogen_content}{Numeric. Nitrogen content a feed item (kg N/kg DM).}
 }
 \value{
-Numeric. Nitrogen contribution for the ration component.
+Numeric. Average nitrogen content of diet (kg N/kg DM).
 }
 \description{
-Computes nitrogen contribution from a ration share and nitrogen content.
+Computes the contribution of a single feed item to diet nitrogen content by
+weighting feed nitrogen content by its ration share.
 }
 \details{
 The nitrogen contribution is defined as:

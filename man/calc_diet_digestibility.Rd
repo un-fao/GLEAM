@@ -13,31 +13,49 @@ calc_diet_digestibility(
 )
 }
 \arguments{
-\item{species_short}{Character. Species short code. Supported values include
-ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}),
-chickens (\code{CHK}), and pigs (\code{PGS}).}
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+\item \code{CHK}: chickens
+}}
 
-\item{feed_ration_fraction}{Numeric. Ration share for the feed component (fraction).}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the
+total ration, expressed as its fraction of diet dry matter (fraction). Within
+each herd_id and cohort, proportions should sum to 1.}
 
-\item{feed_digestibility_fraction_ruminant}{Numeric. Digestibility ratio for ruminants.}
+\item{feed_digestibility_fraction_ruminant}{Numeric. Digestibility of a feed
+item for ruminants, expressed as the ratio of digestible energy to gross energy
+content (fraction).}
 
-\item{feed_digestibility_fraction_pigs}{Numeric. Digestibility ratio for pigs.}
+\item{feed_digestibility_fraction_pigs}{Numeric. Digestibility of a feed item
+for pigs, expressed as the ratio of digestible energy to gross energy content
+(fraction).}
 
-\item{feed_digestibility_fraction_chicken}{Numeric. Digestibility ratio for chickens.}
+\item{feed_digestibility_fraction_chicken}{Numeric. Digestibility of a feed
+item for chickens, expressed as the ratio of metabolizable energy to gross
+energy content (fraction).}
 }
 \value{
-Numeric. Digestibility contribution for the ration component.
+Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 }
 \description{
-Applies species-specific digestibility parameters to a ration share.
+Applies species-specific digestibility parameters to a ration share to compute
+the contribution of a single feed component to total diet digestibility.
 }
 \details{
 The digestibility contribution uses the animal-specific digestibility ratio:
 \itemize{
-\item Ruminants: \code{feed_ration_fraction * feed_digestibility_fraction_ruminant}
-\item Chickens: \code{feed_ration_fraction * feed_digestibility_fraction_chicken}
-\item Pigs: \code{feed_ration_fraction * feed_digestibility_fraction_pigs}
+\item Ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}):
+\code{feed_ration_fraction * feed_digestibility_fraction_ruminant}
+\item Chickens (\code{CHK}):
+\code{feed_ration_fraction * feed_digestibility_fraction_chicken}
+\item Pigs (\code{PGS}):
+\code{feed_ration_fraction * feed_digestibility_fraction_pigs}
 }
-
-This helper is vectorized over its inputs.
 }

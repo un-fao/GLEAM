@@ -1,27 +1,120 @@
 #' Calculate Feed Intake Metrics
 #'
-#' Computes cohort-level dietary energy, digestibility, and nitrogen intake
-#' from feed rations and nutritional parameters. Assumes inputs are pre-cleaned.
+#' Compute cohort-level diet composition metrics (gross and metabolizable energy
+#' content, digestibility, nitrogen content, urinary energy losses, and ash
+#' content) from cohort-level feed ration shares and feed item nutrient
+#' parameters.
 #'
-#' @param rations_share A data.table containing feed shares per cohort. Must include:
-#'   - `herd_id`, `animal`, `feed_name`, `feed_id`, `cohort_short`, and
-#'     `feed_ration_fraction`.
-#'   - Note that `feed_name` is optional but should be consistent with `feed_id`
-#'   for a coherent result.
-#' @param feed_params A data.table of nutrient parameters. Must include:
-#'   - `feed_id`, `feed_gross_energy`,
-#'     `feed_digestible_energy_ruminant`, `feed_digestible_energy_pigs`,
-#'     `feed_metabolizable_energy_ruminant`, `feed_metabolizable_energy_pigs`,
-#'     `feed_metabolizable_energy_chicken`, `feed_nitrogen_content`,
-#'     `feed_urinary_energy_ruminant`, `feed_urinary_energy_pigs`,
-#'      `feed_ash_content`.
-#'   - Note that `category` and `feed_name` are optional but should be consistent with `feed_id`
-#'   for a coherent result.
+#' @param rations_share data.table. Cohort-level feed ration shares with the
+#'   following minimum data requirement:
+#'   \describe{
+#'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each
+#'     cohort belonging to the same herd.}
+#'     \item{animal}{Character. Livestock category name used to map to a species
+#'     short code via internal lookup (e.g., for applying species-specific energy
+#'     parameters).}
+#'     \item{cohort_short}{
+#'     Character. Sex- and age-specific cohort code describing the production stage
+#'     of the animals. Supported values include:
+#'     \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
+#'   }
+#'     \item{feed_id}{Character. Unique identifier for the feed item, used to join feed ration data (\code{rations_share}) with feed nutritional parameters table (\code{feed_params}). Must be unique.}
+#'     \item{feed_name}{Character. Feed item name (optional, for readability and
+#'     reporting). If provided, should be consistent with \code{feed_id}.}
+#'     \item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). 
+#'     Within each herd_id and cohort, proportions should sum to 1.}
+#'   }
 #'
-#' @return A data.table summarized by `herd_id`, `animal`, and `cohort_short` with:
-#'   - `diet_gross_energy`, `diet_metabolizable_energy`,
-#'     `diet_nitrogen`, `diet_digestibility_fraction`,
-#'     `urinary_energy_fraction`, `diet_ash`
+#' @param feed_params data.table. Feed nutrient parameters with the following
+#'   minimum data requirement:
+#'   \describe{
+#'     \item{feed_id}{Character. Unique identifier for the feed item, used to join feed ration data (\code{rations_share}) with feed nutritional parameters table (\code{feed_params}). Must be unique.}
+#'     \item{feed_gross_energy}{Numeric. Gross energy content of a feed item,
+#'     representing the total chemical energy released upon complete combustion of
+#'     the feed (MJ/kg DM).}
+#'     \item{feed_digestible_energy_ruminant}{Numeric. Digestible energy content of
+#'     a feed item for ruminants, representing the energy absorbed by the animal
+#'     after fecal losses (MJ/kg DM).}
+#'     \item{feed_digestible_energy_pigs}{Numeric. Digestible energy content of a
+#'     feed item for pigs, representing the energy absorbed by the animal after
+#'     fecal losses (MJ/kg DM).}
+#'     \item{feed_metabolizable_energy_ruminant}{Numeric. Metabolizable energy
+#'     content of a feed item for ruminants, representing digestible energy minus
+#'     energy losses in urine and gaseous products of digestion (MJ/kg DM).}
+#'     \item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy content
+#'     of a feed item for pigs, representing digestible energy minus energy losses
+#'     in urine and gaseous products of digestion (MJ/kg DM).}
+#'     \item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy
+#'     content of a feed item for chickens, representing digestible energy minus
+#'     energy losses in urine and gaseous products of digestion (MJ/kg DM).}
+#'     \item{feed_nitrogen_content}{Numeric. Nitrogen content of a feed item
+#'     (kg N/kg DM).}
+#'     \item{feed_urinary_energy_ruminant}{Numeric. Fraction of feed's gross energy
+#'     that is excreted in urine for ruminants (fraction).}
+#'     \item{feed_urinary_energy_pigs}{Numeric. Fraction of feed's gross energy
+#'     that is excreted in urine for pigs (fraction).}
+#'     \item{feed_ash_content}{Numeric. Average ash content by feed item, calculated
+#'     as a fraction of the dry matter intake (g ash/100g DM).}
+#'     \item{category}{Character. Feed category (optional). If provided, should be
+#'     consistent with \code{feed_id} for a coherent result.}
+#'     \item{feed_name}{Character. Feed item name (optional, for readability and
+#'     reporting). If provided, should be consistent with \code{feed_id}.}
+#'   }
+#'
+#' @return data.table. Cohort-level diet metrics summarized by \code{herd_id},
+#'   \code{animal}, and \code{cohort_short} with the following columns:
+#'   \describe{
+#'     \item{diet_gross_energy}{Numeric. Average gross energy content of the diet
+#'     (MJ/kg DM).}
+#'     \item{diet_metabolizable_energy}{Numeric. Average metabolizable energy
+#'     content of the diet (MJ/kg DM).}
+#'     \item{diet_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
+#'     \item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed
+#'     ration, expressed as ratio of digestible (or metabolizable, for poultry) to
+#'     gross energy content (fraction).}
+#'     \item{urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that
+#'     is excreted in urine (fraction).}
+#'     \item{diet_ash}{Numeric. Average ash content of feed, calculated as a fraction
+#'     of the dry matter intake (kg ash/kg DM).}
+#'   }
+#'
+#' @details
+#' This function joins \code{rations_share} with \code{feed_params} by \code{feed_id},
+#' maps \code{animal} to a species short code, and computes ration-weighted diet
+#' metrics by cohort.
+#'
+#' The following calculation sequence is applied:
+#' \enumerate{
+#'   \item Species-specific digestibility ratios are computed from energy parameters
+#'   and \code{feed_gross_energy} using \code{\link{calc_feed_digestibility_fraction}}.
+#'   \item Feed-level contributions are computed as ration-weighted values:
+#'   \itemize{
+#'     \item gross energy using \code{\link{calc_diet_gross_energy}}
+#'     \item nitrogen using \code{\link{calc_diet_nitrogen_content}}
+#'     \item digestibility using \code{\link{calc_diet_digestibility}}
+#'     \item metabolizable energy using \code{\link{calc_diet_metabolizable_energy}}
+#'     \item urinary energy fraction using \code{\link{calc_urinary_energy_fraction}}
+#'     \item ash using \code{\link{calc_diet_ash}}
+#'   }
+#'   \item Cohort-level diet metrics are obtained by summing contributions across
+#'   feed items within each \code{herd_id}, \code{animal}, and \code{cohort_short}.
+#' }
+#'
+#' @seealso
+#' \code{\link{calc_feed_digestibility_fraction}},
+#' \code{\link{calc_diet_gross_energy}},
+#' \code{\link{calc_diet_nitrogen_content}},
+#' \code{\link{calc_diet_digestibility}},
+#' \code{\link{calc_diet_metabolizable_energy}},
+#' \code{\link{calc_urinary_energy_fraction}},
+#' \code{\link{calc_diet_ash}}
 #'
 #' @examples
 #' \dontrun{
