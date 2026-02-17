@@ -67,11 +67,11 @@ Authors@R: c(
            family = "BMELH",
            role = c( "fnd"),
            comment = "Funding support"))
-Description: Implements steady-state herd simulation components used in the Global Livestock 
+Description: Official R-package of FAO's Global Environmental Assessment Model (GLEAM) to calculate environmental impacts of livestock agrifood systems. Includes modules to disaggregate herds into sex and age-specific cohorts, animal energy  mplements steady-state herd simulation components used in the Global Livestock 
     Environmental Assessment Model (GLEAM), including population structure, offtake 
     flows, demographic transitions, and cohort-level weight metrics. Designed to be 
     modular, testable, and integrated with downstream feed and emissions models.
-License: file LICENSE
+License: AGPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

@@ -44,4 +44,4 @@ For documentation, internal guidance, or technical questions, please contact the
 
 ## License
 
-This package is licensed under the MIT License.
+This package is licensed under the AGPL-3 license. 
