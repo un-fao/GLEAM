@@ -15,10 +15,22 @@ run_gleam(
 }
 \arguments{
 \item{has_herd_structure}{Logical. If TRUE, use \code{herd_structure} directly as the
-cohort-level input for the weights module.}
+cohort-level input for the weights module; if FALSE, run herd simulation first.}
 
-\item{herd_structure}{data.table. Cohort-level table used when \code{has_herd_structure}
-is TRUE.}
+\item{herd_structure}{data.table or NULL. Cohort-level table used when
+\code{has_herd_structure} is TRUE. Required when \code{has_herd_structure} is TRUE;
+ignored otherwise. Must have one row per cohort (6 cohorts per herd: FJ, FS,
+FA, MJ, MS, MA) and at least these required columns:
+\describe{
+\item{\code{herd_id}}{Character or numeric. Herd identifier (one value per herd).}
+\item{\code{cohort_short}}{Character. Cohort code: one of \code{FJ}, \code{FS},
+\code{FA}, \code{MJ}, \code{MS}, \code{MA}.}
+\item{\code{cohort_duration_days}}{Numeric. Time spent in the cohort (days).}
+\item{\code{offtake_rate}}{Numeric. Annual proportion of animals removed from the
+cohort (fraction, 0--1).}
+}
+Additional columns (e.g. \code{cohort_stock_size}, \code{offtake_heads_assessment})
+are allowed and will be passed through the pipeline.}
 
 \item{herd_simulation_args}{List. Arguments passed to \code{run_herd_simulation()} when
 \code{has_herd_structure} is FALSE.}
@@ -38,6 +50,7 @@ Runs the core sequence of model modules to generate cohort-level outputs for a
 livestock production system.
 }
 \examples{
+# Example: run pipeline when you don't have herd structure
 \dontrun{
 # Load herd simulation inputs (cohort and herd-level)
 herd_simulation_chrt_dt <- data.table::fread(system.file(
@@ -87,6 +100,46 @@ results <- run_gleam(
 )
 
 # Access results
+print(results)
+}
+
+# Example: run pipeline when you already have cohort-level herd structure
+\dontrun{
+# Load pre-aggregated herd structure (cohort-level, with required columns for the rest of pipeline)
+herd_structure_dt <- data.table::fread(system.file(
+  "extdata/examples/herd_structure_chrt_data.csv",
+  package = "gleam"
+))
+
+# Load weights and feed inputs (same as above)
+weights_hrd_dt <- data.table::fread(system.file(
+  "extdata/examples/weights_input_hrd_data.csv",
+  package = "gleam"
+))
+feed_rations_chrt_dt <- data.table::fread(system.file(
+  "extdata/examples/feed_rations_share_chrt_data.csv",
+  package = "gleam"
+))
+feed_params_dt <- data.table::fread(system.file(
+  "extdata/Parameters/feed/feed_params.csv",
+  package = "gleam"
+))
+
+weights_args <- list(herd_level_data = weights_hrd_dt)
+feed_rations_args <- list(
+  feed_rations = feed_rations_chrt_dt,
+  feed_params = feed_params_dt
+)
+
+# Run GLEAM using provided herd structure (skip herd simulation)
+results <- run_gleam(
+  has_herd_structure = TRUE,
+  herd_structure = herd_structure_dt,
+  herd_simulation_args = list(),
+  weights_args = weights_args,
+  feed_rations_args = feed_rations_args
+)
+
 print(results)
 }
 }
