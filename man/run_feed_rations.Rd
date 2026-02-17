@@ -7,7 +7,8 @@
 run_feed_rations(
   rations_share,
   feed_params = data.table::fread(system.file("extdata/Parameters/feed/feed_params.csv",
-    package = "gleam"))
+    package = "gleam")),
+  show_indicator = TRUE
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ for a coherent result.
 \item Note that \code{category} and \code{feed_name} are optional but should be consistent with \code{feed_id}
 for a coherent result.
 }}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
 }
 \value{
 A data.table summarized by \code{herd_id}, \code{animal}, and \code{cohort_short} with:

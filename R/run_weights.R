@@ -31,6 +31,7 @@
 #'     \item \code{slaughter_weight_female} Numeric. Slaughter weight of female sub-adult animals (kg)
 #'     \item \code{slaughter_weight_male} Numeric. Slaughter weight of male sub-adult animals (kg)
 #'   }
+#' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'
 #' @return A named list with two \code{data.table}s:
 #'   \describe{
@@ -47,11 +48,11 @@
 #'       }}
 #'     \item{herd_level_results}{A copy of the input \code{herd_level_data}.}
 #'   }
-#'  
+#'
 #' @details
 #' The calculation pipeline is composed of the following steps:
 #'
-#' \enumerate{  
+#' \enumerate{
 #'   \item \strong{Cohort-stage weight assignment} using \code{\link{calc_cohort_weights}}.
 #'     Herd-level biological parameters are matched to each cohort row by
 #'     \code{herd_id} via \code{data.table} joins.
@@ -101,11 +102,17 @@
 #' @importFrom data.table := .I
 run_weights_calculations <- function(
     cohort_level_data,
-    herd_level_data
+    herd_level_data,
+    show_indicator = TRUE
 ) {
 
   # --- Step 1: Validate Inputs -----------------------------------------------
   validate_weights_inputs(cohort_level_data, herd_level_data)
+
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Calculating cohort weights, please wait\U2026")
+  }
 
   # --- Step 2: Create working copies -----------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
@@ -156,6 +163,12 @@ run_weights_calculations <- function(
     ),
     by = .I
   ]
+
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Cohort weights calculation complete.")
+  }
 
   # Return separate result tables
   return(

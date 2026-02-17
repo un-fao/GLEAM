@@ -9,7 +9,8 @@ run_gleam(
   herd_structure = NULL,
   herd_simulation_args,
   weights_args,
-  feed_rations_args
+  feed_rations_args,
+  show_indicator = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ is TRUE.}
 \item{weights_args}{List. Arguments passed to \code{run_weights_calculations()}.}
 
 \item{feed_rations_args}{List. Arguments passed to \code{run_feed_rations()}.}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during the pipeline run.}
 }
 \value{
 A cohort-level \code{data.table} containing the outputs produced by the

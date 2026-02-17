@@ -4,7 +4,11 @@
 \alias{run_weights_calculations}
 \title{Run weight calculations}
 \usage{
-run_weights_calculations(cohort_level_data, herd_level_data)
+run_weights_calculations(
+  cohort_level_data,
+  herd_level_data,
+  show_indicator = TRUE
+)
 }
 \arguments{
 \item{cohort_level_data}{A \code{data.table} in long format with one row per
@@ -33,6 +37,8 @@ herd \eqn{\times} cohort. Must include:
 \item \code{slaughter_weight_female} Numeric. Slaughter weight of female sub-adult animals (kg)
 \item \code{slaughter_weight_male} Numeric. Slaughter weight of male sub-adult animals (kg)
 }}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
 }
 \value{
 A named list with two \code{data.table}s:

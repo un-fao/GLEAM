@@ -17,6 +17,7 @@
 #'      `feed_ash_content`.
 #'   - Note that `category` and `feed_name` are optional but should be consistent with `feed_id`
 #'   for a coherent result.
+#' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'
 #' @return A data.table summarized by `herd_id`, `animal`, and `cohort_short` with:
 #'   - `diet_gross_energy`, `diet_metabolizable_energy`,
@@ -43,10 +44,16 @@ run_feed_rations <- function(
     rations_share,
     feed_params = data.table::fread(
       system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
-    )
+    ),
+    show_indicator = TRUE
 ) {
   # --- Step 1: Validate inputs -----------------------------------------------
   validate_feed_rations_inputs(rations_share, feed_params)
+
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Aggregating feed rations, please wait\U2026")
+  }
 
   # --- Step 2: Create working copies -----------------------------------------
   rations_share <- data.table::copy(rations_share)
@@ -169,6 +176,12 @@ run_feed_rations <- function(
     ),
     by = .(herd_id, animal, cohort_short)
   ]
+
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Feed rations aggregation complete.")
+  }
 
   return(rations_summary)
 }

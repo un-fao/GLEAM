@@ -11,6 +11,7 @@
 #'   `has_structure` is FALSE.
 #' @param weights_args List. Arguments passed to `run_weights_calculations()`.
 #' @param feed_rations_args List. Arguments passed to `run_feed_rations()`.
+#' @param show_indicator Logical. Whether to display progress indicators during the pipeline run.
 #'
 #' @return A cohort-level `data.table` containing the outputs produced by the
 #'   modules executed within this pipeline call.
@@ -69,28 +70,40 @@ run_gleam <- function(
     herd_structure = NULL,
     herd_simulation_args,
     weights_args,
-    feed_rations_args
+    feed_rations_args,
+    show_indicator = TRUE
 ) {
-  # --- Step 1: Run herd simulation (or use provided structure) ----------------
+
+  # --- Step 1: Validate inputs -----------------------------------------------
+
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_inform("Running GLEAM pipeline\U2026")
+  }
+
+  # --- Step 2: Run herd simulation (or use provided structure) ----------------
   if (has_structure) {
     gleam_data <- herd_structure
   } else {
-    herd_results <- do.call(run_herd_simulation, herd_simulation_args)
+    herd_args <- c(herd_simulation_args, list(show_indicator = show_indicator))
+    herd_results <- do.call(run_herd_simulation, herd_args)
     gleam_data <- herd_results$cohort_level_results
   }
 
-  # --- Step 2: Run weights at cohort level ------------------------------------
+  # --- Step 3: Run weights at cohort level ------------------------------------
   weights_results <- run_weights_calculations(
     cohort_level_data = gleam_data,
-    herd_level_data = weights_args$herd_level_data
+    herd_level_data = weights_args$herd_level_data,
+    show_indicator = show_indicator
   )
 
   gleam_data <- weights_results$cohort_level_results
 
-  # --- Step 3: Summarize feed rations and merge -------------------------------
+  # --- Step 4: Summarize feed rations and merge -------------------------------
   feed_rations_summary <- run_feed_rations(
     rations_share = feed_rations_args$feed_rations,
-    feed_params = feed_rations_args$feed_params
+    feed_params = feed_rations_args$feed_params,
+    show_indicator = show_indicator
   )
 
   gleam_data <- merge(
@@ -98,6 +111,11 @@ run_gleam <- function(
     feed_rations_summary,
     by = c("herd_id", "cohort_short")
   )
+
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_inform("GLEAM pipeline complete.")
+  }
 
   return(gleam_data)
 }
