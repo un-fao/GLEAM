@@ -7,14 +7,14 @@
 calc_net_energy_pregnancy(
   species_short,
   cohort_short,
-  energy_requirement_maintenance,
-  parturition_rate,
-  litter_size,
-  pregnancy_duration,
-  non_productive_duration,
-  lactation_duration,
-  cohort_duration_days,
-  offtake_rate
+  energy_requirement_maintenance = NA_real_,
+  parturition_rate = NA_real_,
+  litter_size = NA_real_,
+  pregnancy_duration = NA_real_,
+  non_productive_duration = NA_real_,
+  lactation_duration = NA_real_,
+  cohort_duration_days = NA_real_,
+  offtake_rate = NA_real_
 )
 }
 \arguments{

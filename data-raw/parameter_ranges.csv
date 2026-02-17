@@ -15,6 +15,9 @@ size_total,1,TRUE,Inf,TRUE
 herd_size_total,1,TRUE,Inf,TRUE
 live_weight_female_adult,0,TRUE,Inf,TRUE
 live_weight_male_adult,0,TRUE,Inf,TRUE
+live_weight_cohort_average,0,TRUE,Inf,TRUE
+live_weight_cohort_final,0,TRUE,Inf,TRUE
+live_weight_cohort_initial,0,TRUE,Inf,TRUE
 birth_weight,0,TRUE,1000,TRUE
 weaning_weight,0,TRUE,1000,TRUE
 slaughter_weight_female,0,TRUE,Inf,TRUE

@@ -4,7 +4,7 @@
 \alias{calc_net_energy_fibre}
 \title{Calculate Energy for Fibre Production}
 \usage{
-calc_net_energy_fibre(species_short, cohort_short, fibre_yield_year)
+calc_net_energy_fibre(species_short, cohort_short, fibre_yield_year = NA_real_)
 }
 \arguments{
 \item{species_short}{Character. Code identifying the livestock species.

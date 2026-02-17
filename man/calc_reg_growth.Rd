@@ -4,7 +4,7 @@
 \alias{calc_reg_growth}
 \title{Calculate REG (Net Energy for Growth / Digestible Energy)}
 \usage{
-calc_reg_growth(species_short, diet_digestibility_fraction)
+calc_reg_growth(species_short, diet_digestibility_fraction = NA_real_)
 }
 \arguments{
 \item{species_short}{Character. Code identifying the livestock species.

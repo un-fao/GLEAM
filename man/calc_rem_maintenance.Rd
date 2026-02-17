@@ -4,7 +4,7 @@
 \alias{calc_rem_maintenance}
 \title{Calculate REM (Net Energy for Maintenance / Digestible Energy)}
 \usage{
-calc_rem_maintenance(species_short, diet_digestibility_fraction)
+calc_rem_maintenance(species_short, diet_digestibility_fraction = NA_real_)
 }
 \arguments{
 \item{species_short}{Character. Code identifying the livestock species.

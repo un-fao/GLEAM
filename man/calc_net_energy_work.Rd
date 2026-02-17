@@ -7,11 +7,11 @@
 calc_net_energy_work(
   species_short,
   cohort_short,
-  energy_requirement_maintenance,
-  draught_work_hours_female,
-  draught_work_hours_male,
-  draught_fraction_female,
-  draught_fraction_male
+  energy_requirement_maintenance = NA_real_,
+  draught_work_hours_female = NA_real_,
+  draught_work_hours_male = NA_real_,
+  draught_fraction_female = NA_real_,
+  draught_fraction_male = NA_real_
 )
 }
 \arguments{

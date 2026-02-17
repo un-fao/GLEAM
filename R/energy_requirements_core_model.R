@@ -132,14 +132,16 @@ calc_net_energy_maintenance <- function(
     age_first_parturition = NA_real_
 ) {
 
-  # Normalize offtake_rate
-  offtake_rate <- normalize_rate(offtake_rate)
-
   # Validate inputs
   validate_maintenance_inputs(
     species_short, cohort_short, live_weight_cohort_average,
     lactating_females_fraction, offtake_rate, age_first_parturition
   )
+
+  # Normalize offtake_rate if it's available (not NA_real_)
+  if (!is.na(offtake_rate)) {
+    offtake_rate <- normalize_rate(offtake_rate)
+  }
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short == "FA") {
@@ -430,22 +432,25 @@ calc_net_energy_activity <- function(
 calc_net_energy_growth <- function(
     species_short,
     cohort_short,
-    live_weight_cohort_average,
-    live_weight_cohort_final,
-    live_weight_cohort_initial,
-    mature_weight,
-    daily_weight_gain,
-    offtake_rate,
-    cohort_duration_days
+    live_weight_cohort_average = NA_real_,
+    live_weight_cohort_final = NA_real_,
+    live_weight_cohort_initial = NA_real_,
+    mature_weight = NA_real_,
+    daily_weight_gain = NA_real_,
+    offtake_rate = NA_real_,
+    cohort_duration_days = NA_real_
 ) {
 
-  # Normalize offtake_rate
-  offtake_rate <- normalize_rate(offtake_rate)
   # Validate inputs
   validate_growth_inputs(
     species_short, cohort_short, live_weight_cohort_average, live_weight_cohort_final,
     live_weight_cohort_initial, mature_weight, daily_weight_gain, offtake_rate, cohort_duration_days
   )
+
+  # Normalize offtake_rate if it's available (not NA_real_)
+  if (!is.na(offtake_rate)) {
+    offtake_rate <- normalize_rate(offtake_rate)
+  }
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short %in% c("FS", "FJ")) {
@@ -689,17 +694,17 @@ calc_net_energy_growth <- function(
 calc_net_energy_lactation <- function(
     species_short,
     cohort_short,
-    lactating_females_fraction,
-    milk_yield_day,
-    milk_fat_fraction,
-    non_productive_duration,
-    pregnancy_duration,
-    litter_size,
-    death_rate_juvenile,
-    birth_weight,
-    weaning_weight,
-    lactation_duration,
-    parturition_rate
+    lactating_females_fraction = NA_real_,
+    milk_yield_day = NA_real_,
+    milk_fat_fraction = NA_real_,
+    non_productive_duration = NA_real_,
+    pregnancy_duration = NA_real_,
+    litter_size = NA_real_,
+    death_rate_juvenile = NA_real_,
+    birth_weight = NA_real_,
+    weaning_weight = NA_real_,
+    lactation_duration = NA_real_,
+    parturition_rate = NA_real_
 ) {
   # Validate inputs
   validate_lactation_inputs(
@@ -790,8 +795,8 @@ calc_net_energy_lactation <- function(
 calc_net_energy_eggs <- function(
     species_short,
     cohort_short,
-    egg_yield_year,
-    egg_average_weight
+    egg_yield_year = NA_real_,
+    egg_average_weight = NA_real_
 ) {
   return(NA_real_)
 }
@@ -897,11 +902,11 @@ calc_net_energy_eggs <- function(
 calc_net_energy_work <- function(
     species_short,
     cohort_short,
-    energy_requirement_maintenance,
-    draught_work_hours_female,
-    draught_work_hours_male,
-    draught_fraction_female,
-    draught_fraction_male
+    energy_requirement_maintenance = NA_real_,
+    draught_work_hours_female = NA_real_,
+    draught_work_hours_male = NA_real_,
+    draught_fraction_female = NA_real_,
+    draught_fraction_male = NA_real_
 ) {
   # Validate inputs
   validate_work_inputs(
@@ -1051,7 +1056,7 @@ calc_net_energy_work <- function(
 calc_net_energy_fibre <- function(
     species_short,
     cohort_short,
-    fibre_yield_year
+    fibre_yield_year = NA_real_
 ) {
   # Validate inputs
   validate_fibre_inputs(species_short, cohort_short, fibre_yield_year)
@@ -1236,18 +1241,20 @@ calc_net_energy_fibre <- function(
 calc_net_energy_pregnancy <- function(
     species_short,
     cohort_short,
-    energy_requirement_maintenance,
-    parturition_rate,
-    litter_size,
-    pregnancy_duration,
-    non_productive_duration,
-    lactation_duration,
-    cohort_duration_days,
-    offtake_rate
+    energy_requirement_maintenance = NA_real_,
+    parturition_rate = NA_real_,
+    litter_size = NA_real_,
+    pregnancy_duration = NA_real_,
+    non_productive_duration = NA_real_,
+    lactation_duration = NA_real_,
+    cohort_duration_days = NA_real_,
+    offtake_rate = NA_real_
 ) {
 
-  # Normalize offtake_rate
-  offtake_rate <- normalize_rate(offtake_rate)
+  # Normalize offtake_rate if it's available (not NA_real_)
+  if (!is.na(offtake_rate)) {
+    offtake_rate <- normalize_rate(offtake_rate)
+  }
 
   # Validate inputs
   validate_pregnancy_inputs(
@@ -1348,7 +1355,7 @@ calc_net_energy_pregnancy <- function(
 #' @export
 calc_rem_maintenance <- function(
     species_short,
-    diet_digestibility_fraction
+    diet_digestibility_fraction = NA_real_
 ) {
   # Validate inputs
   validate_rem_inputs(species_short, diet_digestibility_fraction)
@@ -1401,7 +1408,7 @@ calc_rem_maintenance <- function(
 #' @export
 calc_reg_growth <- function(
     species_short,
-    diet_digestibility_fraction
+    diet_digestibility_fraction = NA_real_
 ) {
   # Validate inputs
   validate_reg_inputs(species_short, diet_digestibility_fraction)

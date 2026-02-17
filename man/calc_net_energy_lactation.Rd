@@ -7,17 +7,17 @@
 calc_net_energy_lactation(
   species_short,
   cohort_short,
-  lactating_females_fraction,
-  milk_yield_day,
-  milk_fat_fraction,
-  non_productive_duration,
-  pregnancy_duration,
-  litter_size,
-  death_rate_juvenile,
-  birth_weight,
-  weaning_weight,
-  lactation_duration,
-  parturition_rate
+  lactating_females_fraction = NA_real_,
+  milk_yield_day = NA_real_,
+  milk_fat_fraction = NA_real_,
+  non_productive_duration = NA_real_,
+  pregnancy_duration = NA_real_,
+  litter_size = NA_real_,
+  death_rate_juvenile = NA_real_,
+  birth_weight = NA_real_,
+  weaning_weight = NA_real_,
+  lactation_duration = NA_real_,
+  parturition_rate = NA_real_
 )
 }
 \arguments{

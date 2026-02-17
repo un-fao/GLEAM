@@ -7,13 +7,13 @@
 calc_net_energy_growth(
   species_short,
   cohort_short,
-  live_weight_cohort_average,
-  live_weight_cohort_final,
-  live_weight_cohort_initial,
-  mature_weight,
-  daily_weight_gain,
-  offtake_rate,
-  cohort_duration_days
+  live_weight_cohort_average = NA_real_,
+  live_weight_cohort_final = NA_real_,
+  live_weight_cohort_initial = NA_real_,
+  mature_weight = NA_real_,
+  daily_weight_gain = NA_real_,
+  offtake_rate = NA_real_,
+  cohort_duration_days = NA_real_
 )
 }
 \arguments{
