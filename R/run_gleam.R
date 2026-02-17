@@ -83,7 +83,7 @@ run_gleam <- function(
 
   # Show progress indicator if requested
   if (show_indicator) {
-    cli::cli_inform("Running GLEAM pipeline\U2026")
+    cli::cli_h1("\U1F552 Running GLEAM pipeline\U2026")
   }
 
   # --- Step 2: Run herd simulation (or use provided structure) ----------------
@@ -119,7 +119,8 @@ run_gleam <- function(
 
   # Clear progress indicator if it was shown
   if (show_indicator) {
-    cli::cli_inform("GLEAM pipeline complete.")
+    cli::cli_rule()
+    cli::cli_alert_success("{.strong GLEAM pipeline complete.}")
   }
 
   return(gleam_data)
