@@ -3,12 +3,12 @@
 #' Runs the core sequence of model modules to generate cohort-level outputs for a
 #' livestock production system.
 #'
-#' @param has_structure Logical. If TRUE, use `herd_structure` directly as the
+#' @param has_herd_structure Logical. If TRUE, use `herd_structure` directly as the
 #'   cohort-level input for the weights module.
-#' @param herd_structure data.table. Cohort-level table used when `has_structure`
+#' @param herd_structure data.table. Cohort-level table used when `has_herd_structure`
 #'   is TRUE.
 #' @param herd_simulation_args List. Arguments passed to `run_herd_simulation()` when
-#'   `has_structure` is FALSE.
+#'   `has_herd_structure` is FALSE.
 #' @param weights_args List. Arguments passed to `run_weights_calculations()`.
 #' @param feed_rations_args List. Arguments passed to `run_feed_rations()`.
 #' @param show_indicator Logical. Whether to display progress indicators during the pipeline run.
@@ -60,7 +60,7 @@
 #'
 #' # Run GLEAM using herd simulation outputs
 #' results <- run_gleam(
-#'   has_structure = FALSE,
+#'   has_herd_structure = FALSE,
 #'   herd_simulation_args = herd_simulation_args,
 #'   weights_args = weights_args,
 #'   feed_rations_args = feed_rations_args
@@ -71,7 +71,7 @@
 #' }
 #' @export
 run_gleam <- function(
-    has_structure = FALSE,
+    has_herd_structure = FALSE,
     herd_structure = NULL,
     herd_simulation_args,
     weights_args,
@@ -87,7 +87,7 @@ run_gleam <- function(
   }
 
   # --- Step 2: Run herd simulation (or use provided structure) ----------------
-  if (has_structure) {
+  if (has_herd_structure) {
     gleam_data <- herd_structure
   } else {
     herd_args <- c(herd_simulation_args, list(show_indicator = show_indicator))

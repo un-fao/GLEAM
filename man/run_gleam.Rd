@@ -5,7 +5,7 @@
 \title{Run the GLEAM pipeline}
 \usage{
 run_gleam(
-  has_structure = FALSE,
+  has_herd_structure = FALSE,
   herd_structure = NULL,
   herd_simulation_args,
   weights_args,
@@ -14,14 +14,14 @@ run_gleam(
 )
 }
 \arguments{
-\item{has_structure}{Logical. If TRUE, use \code{herd_structure} directly as the
+\item{has_herd_structure}{Logical. If TRUE, use \code{herd_structure} directly as the
 cohort-level input for the weights module.}
 
-\item{herd_structure}{data.table. Cohort-level table used when \code{has_structure}
+\item{herd_structure}{data.table. Cohort-level table used when \code{has_herd_structure}
 is TRUE.}
 
 \item{herd_simulation_args}{List. Arguments passed to \code{run_herd_simulation()} when
-\code{has_structure} is FALSE.}
+\code{has_herd_structure} is FALSE.}
 
 \item{weights_args}{List. Arguments passed to \code{run_weights_calculations()}.}
 
@@ -66,20 +66,25 @@ feed_rations <- data.table::fread(
   system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
 )
 
+# Define argument lists for each pipeline step
+herd_simulation_args <- list(
+  cohort_level_data = cohort_level_data,
+  herd_level_data = herd_level_data
+)
+weights_args <- list(
+  herd_level_data = weights_herd_level_data
+)
+feed_rations_args <- list(
+  feed_rations = feed_rations,
+  feed_params = feed_params
+)
+
 # Run GLEAM using herd simulation outputs
 results <- run_gleam(
-  has_structure = FALSE,
-  herd_simulation_args = list(
-    cohort_level_data = cohort_level_data,
-    herd_level_data = herd_level_data
-  ),
-  weights_args = list(
-    herd_level_data = weights_herd_level_data
-  ),
-  feed_rations_args = list(
-    feed_rations = feed_rations,
-    feed_params = feed_params
-  )
+  has_herd_structure = FALSE,
+  herd_simulation_args = herd_simulation_args,
+  weights_args = weights_args,
+  feed_rations_args = feed_rations_args
 )
 
 # Access results
