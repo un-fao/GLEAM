@@ -45,20 +45,25 @@
 #'   system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
 #' )
 #'
+#' # Define argument lists for each pipeline step
+#' herd_simulation_args <- list(
+#'   cohort_level_data = cohort_level_data,
+#'   herd_level_data = herd_level_data
+#' )
+#' weights_args <- list(
+#'   herd_level_data = weights_herd_level_data
+#' )
+#' feed_rations_args <- list(
+#'   feed_rations = feed_rations,
+#'   feed_params = feed_params
+#' )
+#'
 #' # Run GLEAM using herd simulation outputs
 #' results <- run_gleam(
 #'   has_structure = FALSE,
-#'   herd_simulation_args = list(
-#'     cohort_level_data = cohort_level_data,
-#'     herd_level_data = herd_level_data
-#'   ),
-#'   weights_args = list(
-#'     herd_level_data = weights_herd_level_data
-#'   ),
-#'   feed_rations_args = list(
-#'     feed_rations = feed_rations,
-#'     feed_params = feed_params
-#'   )
+#'   herd_simulation_args = herd_simulation_args,
+#'   weights_args = weights_args,
+#'   feed_rations_args = feed_rations_args
 #' )
 #'
 #' # Access results
