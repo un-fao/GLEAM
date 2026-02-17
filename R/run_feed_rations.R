@@ -26,16 +26,20 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Load cleaned example input from the package and compute feed intake metrics
-#' feed_params <- data.table::fread(
-#'   system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
-#' )
+#' # Load feed rations inputs (cohort-level shares and feed parameters)
+#' feed_rations_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/examples/feed_rations_share_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#' feed_params_dt <- data.table::fread(system.file(
+#'   "extdata/Parameters/feed/feed_params.csv",
+#'   package = "gleam"
+#' ))
 #'
-#' rations_share <- data.table::fread(
-#'   system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
+#' result <- run_feed_rations(
+#'   rations_share = feed_rations_chrt_dt,
+#'   feed_params = feed_params_dt
 #' )
-#'
-#' result <- run_feed_rations(rations_share, feed_params)
 #' }
 #' @export
 #'

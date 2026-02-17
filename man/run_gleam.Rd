@@ -39,44 +39,43 @@ livestock production system.
 }
 \examples{
 \dontrun{
-# Load example herd simulation inputs
-cohort_path <- system.file(
-  "extdata/examples/herd_simulation_input_cohort_level_data.csv",
+# Load herd simulation inputs (cohort and herd-level)
+herd_simulation_chrt_dt <- data.table::fread(system.file(
+  "extdata/examples/herd_simulation_input_chrt_data.csv",
   package = "gleam"
-)
-herd_path <- system.file(
-  "extdata/examples/herd_simulation_input_herd_level_data.csv",
+))
+herd_simulation_hrd_dt <- data.table::fread(system.file(
+  "extdata/examples/herd_simulation_input_hrd_data.csv",
   package = "gleam"
-)
-cohort_level_data <- data.table::fread(cohort_path)
-herd_level_data <- data.table::fread(herd_path)
+))
 
-# Load herd-level weights
-weights_herd_path <- system.file(
-  "extdata/examples/weight_input_herd_level_data.csv",
+# Load weights herd-level inputs
+weights_hrd_dt <- data.table::fread(system.file(
+  "extdata/examples/weights_input_hrd_data.csv",
   package = "gleam"
-)
-weights_herd_level_data <- data.table::fread(weights_herd_path)
+))
 
-# Load feed rations inputs
-feed_params <- data.table::fread(
-  system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
-)
-feed_rations <- data.table::fread(
-  system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
-)
+# Load feed rations inputs (cohort-level shares and feed parameters)
+feed_rations_chrt_dt <- data.table::fread(system.file(
+  "extdata/examples/feed_rations_share_chrt_data.csv",
+  package = "gleam"
+))
+feed_params_dt <- data.table::fread(system.file(
+  "extdata/Parameters/feed/feed_params.csv",
+  package = "gleam"
+))
 
 # Define argument lists for each pipeline step
 herd_simulation_args <- list(
-  cohort_level_data = cohort_level_data,
-  herd_level_data = herd_level_data
+  cohort_level_data = herd_simulation_chrt_dt,
+  herd_level_data = herd_simulation_hrd_dt
 )
 weights_args <- list(
-  herd_level_data = weights_herd_level_data
+  herd_level_data = weights_hrd_dt
 )
 feed_rations_args <- list(
-  feed_rations = feed_rations,
-  feed_params = feed_params
+  feed_rations = feed_rations_chrt_dt,
+  feed_params = feed_params_dt
 )
 
 # Run GLEAM using herd simulation outputs

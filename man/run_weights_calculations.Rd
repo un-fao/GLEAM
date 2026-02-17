@@ -84,22 +84,20 @@ All cohort-level computations are evaluated row-wise using
 }
 \examples{
 \dontrun{
-# Load example input data from the package
-cohort_path <- system.file(
-  "extdata/examples/weight_input_cohort_level_data.csv",
+# Load weights inputs (cohort- and herd-level)
+weights_chrt_dt <- data.table::fread(system.file(
+  "extdata/examples/weights_input_chrt_data.csv",
   package = "gleam"
-)
-herd_path <- system.file(
-  "extdata/examples/weight_input_herd_level_data.csv",
+))
+weights_hrd_dt <- data.table::fread(system.file(
+  "extdata/examples/weights_input_hrd_data.csv",
   package = "gleam"
-)
-cohort_level_data <- data.table::fread(cohort_path)
-herd_level_data <- data.table::fread(herd_path)
+))
 
 # Run weight calculations
 results <- run_weights_calculations(
-  cohort_level_data = cohort_level_data,
-  herd_level_data = herd_level_data
+  cohort_level_data = weights_chrt_dt,
+  herd_level_data = weights_hrd_dt
 )
 
 # Access results
