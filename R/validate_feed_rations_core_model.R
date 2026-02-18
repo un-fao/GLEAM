@@ -47,7 +47,7 @@ validate_diet_digestibility_inputs <- function(
 
   missing_required <- required_by_animal[vapply(
     required_by_animal,
-    function(arg_name) isTRUE(is.na(args[[arg_name]])),
+    function(arg_name) is.na(args[[arg_name]]),
     logical(1)
   )]
 
@@ -106,7 +106,7 @@ validate_diet_metabolizable_energy_inputs <- function(
 
   missing_required <- required_by_animal[vapply(
     required_by_animal,
-    function(arg_name) isTRUE(is.na(args[[arg_name]])),
+    function(arg_name) is.na(args[[arg_name]]),
     logical(1)
   )]
 
@@ -218,7 +218,7 @@ validate_urinary_energy_inputs <- function(
 
   missing_required <- required_by_animal[vapply(
     required_by_animal,
-    function(arg_name) isTRUE(is.na(args[[arg_name]])),
+    function(arg_name) is.na(args[[arg_name]]),
     logical(1)
   )]
 

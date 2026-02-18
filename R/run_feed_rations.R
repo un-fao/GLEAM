@@ -38,10 +38,9 @@
 #'     \item{feed_id}{Character. Unique identifier for the feed component, used to join feed ration data (\code{rations_share}) with feed nutritional parameters table (\code{feed_params}). Must be unique.}
 #'     \item{feed_name}{Character. feed component name (optional, for readability and
 #'     reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
-#'     \item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the total ration, expressed as its fraction of diet dry matter intake (fraction). 
+#'     \item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the total ration, expressed as its fraction of diet dry matter intake (fraction).
 #'     Within each herd_id and cohort, proportions should sum to 1.}
 #'   }
-#'   
 #'
 #' @param feed_params data.table. Feed nutritional parameters with the following
 #'   minimum data requirement:
@@ -78,6 +77,8 @@
 #'     \item{feed_name}{Character. feed component name (optional, for readability and
 #'     reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
 #'   }
+#'
+#' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'
 #' @return data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
 #'   \code{animal}, and \code{cohort_short} with the following columns:
@@ -129,26 +130,36 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Load cleaned example input from the package and compute feed intake metrics
-#' feed_params <- data.table::fread(
-#'   system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
-#' )
+#' # Load feed rations inputs (cohort-level shares and feed parameters)
+#' feed_rations_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/examples/feed_rations_share_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#' feed_params_dt <- data.table::fread(system.file(
+#'   "extdata/Parameters/feed/feed_params.csv",
+#'   package = "gleam"
+#' ))
 #'
-#' rations_share <- data.table::fread(
-#'   system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
+#' result <- run_feed_rations(
+#'   rations_share = feed_rations_chrt_dt,
+#'   feed_params = feed_params_dt
 #' )
-#'
-#' result <- run_feed_rations(rations_share, feed_params)
 #' }
 #' @export
 #'
 #' @importFrom data.table fifelse data.table
 run_feed_rations <- function(
     rations_share,
-    feed_params
+    feed_params,
+    show_indicator = TRUE
 ) {
   # --- Step 1: Validate inputs -----------------------------------------------
   validate_feed_rations_inputs(rations_share, feed_params)
+
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Aggregating feed rations, please wait\U2026")
+  }
 
   # --- Step 2: Create working copies -----------------------------------------
   rations_share <- data.table::copy(rations_share)
@@ -271,6 +282,12 @@ run_feed_rations <- function(
     ),
     by = .(herd_id, animal, cohort_short)
   ]
+
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Feed rations aggregation complete.")
+  }
 
   return(rations_summary)
 }

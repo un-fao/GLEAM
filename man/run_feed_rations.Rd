@@ -4,7 +4,7 @@
 \alias{run_feed_rations}
 \title{Calculate Feed Intake Metrics}
 \usage{
-run_feed_rations(rations_share, feed_params)
+run_feed_rations(rations_share, feed_params, show_indicator = TRUE)
 }
 \arguments{
 \item{rations_share}{data.table. Cohort-level feed ration composition shares with the
@@ -79,6 +79,8 @@ used consistently  with \code{feed_id}, for a coherent result.}
 \item{feed_name}{Character. feed component name (optional, for readability and
 reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
 }}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
 }
 \value{
 data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
@@ -128,16 +130,20 @@ feed components within each \code{herd_id}, \code{animal}, and \code{cohort_shor
 }
 \examples{
 \dontrun{
-# Load cleaned example input from the package and compute feed intake metrics
-feed_params <- data.table::fread(
-  system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
-)
+# Load feed rations inputs (cohort-level shares and feed parameters)
+feed_rations_chrt_dt <- data.table::fread(system.file(
+  "extdata/examples/feed_rations_share_chrt_data.csv",
+  package = "gleam"
+))
+feed_params_dt <- data.table::fread(system.file(
+  "extdata/Parameters/feed/feed_params.csv",
+  package = "gleam"
+))
 
-rations_share <- data.table::fread(
-  system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
+result <- run_feed_rations(
+  rations_share = feed_rations_chrt_dt,
+  feed_params = feed_params_dt
 )
-
-result <- run_feed_rations(rations_share, feed_params)
 }
 }
 \seealso{

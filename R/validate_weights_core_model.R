@@ -48,7 +48,7 @@ validate_cohort_weight_inputs <- function(
 
   missing_required <- required_by_cohort[vapply(
     required_by_cohort,
-    function(arg_name) isTRUE(is.na(args[[arg_name]])),
+    function(arg_name) is.na(args[[arg_name]]),
     logical(1)
   )]
 
