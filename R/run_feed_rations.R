@@ -145,9 +145,7 @@
 #' @importFrom data.table fifelse data.table
 run_feed_rations <- function(
     rations_share,
-    feed_params = data.table::fread(
-      system.file("extdata/Parameters/feed/feed_params.csv", package = "gleam")
-    )
+    feed_params
 ) {
   # --- Step 1: Validate inputs -----------------------------------------------
   validate_feed_rations_inputs(rations_share, feed_params)

@@ -4,11 +4,7 @@
 \alias{run_feed_rations}
 \title{Calculate Feed Intake Metrics}
 \usage{
-run_feed_rations(
-  rations_share,
-  feed_params = data.table::fread(system.file("extdata/Parameters/feed/feed_params.csv",
-    package = "gleam"))
-)
+run_feed_rations(rations_share, feed_params)
 }
 \arguments{
 \item{rations_share}{data.table. Cohort-level feed ration composition shares with the
