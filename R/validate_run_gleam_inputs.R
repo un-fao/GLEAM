@@ -47,21 +47,6 @@ validate_run_gleam_inputs <- function(
       )
     }
 
-    # --- Required columns (same as cohort-level input for run_weights) ----------
-    required_cols <- c(
-      "herd_id",
-      "cohort_short",
-      "cohort_duration_days",
-      "offtake_rate"
-    )
-    missing_cols <- setdiff(required_cols, names(herd_structure))
-    if (length(missing_cols) > 0) {
-      cli::cli_abort(
-        "Missing required columns in {.arg herd_structure}: {.val {missing_cols}}.
-        Expected schema: {.val {required_cols}}"
-      )
-    }
-
     # --- Valid cohort codes ---------------------------------------------------
     valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
     invalid_cohorts <- setdiff(unique(herd_structure$cohort_short), valid_cohorts)
