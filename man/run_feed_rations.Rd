@@ -11,7 +11,7 @@ run_feed_rations(
 )
 }
 \arguments{
-\item{rations_share}{data.table. Cohort-level feed ration shares with the
+\item{rations_share}{data.table. Cohort-level feed ration composition shares with the
 following minimum data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each
@@ -41,51 +41,51 @@ of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }
 }
-\item{feed_id}{Character. Unique identifier for the feed item, used to join feed ration data (\code{rations_share}) with feed nutritional parameters table (\code{feed_params}). Must be unique.}
-\item{feed_name}{Character. Feed item name (optional, for readability and
-reporting). If provided, should be consistent with \code{feed_id}.}
-\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction).
+\item{feed_id}{Character. Unique identifier for the feed component, used to join feed ration data (\code{rations_share}) with feed nutritional parameters table (\code{feed_params}). Must be unique.}
+\item{feed_name}{Character. feed component name (optional, for readability and
+reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the total ration, expressed as its fraction of diet dry matter intake (fraction).
 Within each herd_id and cohort, proportions should sum to 1.}
 }}
 
-\item{feed_params}{data.table. Feed nutrient parameters with the following
+\item{feed_params}{data.table. Feed nutritional parameters with the following
 minimum data requirement:
 \describe{
-\item{feed_id}{Character. Unique identifier for the feed item, used to join feed ration data (\code{rations_share}) with feed nutritional parameters table (\code{feed_params}). Must be unique.}
-\item{feed_gross_energy}{Numeric. Gross energy content of a feed item,
+\item{feed_id}{Character. Unique identifier for the feed component, used to join feed ration data (\code{rations_share}) with feed nutritional parameters table (\code{feed_params}). Must be unique.}
+\item{feed_gross_energy}{Numeric. Gross energy content of a feed component,
 representing the total chemical energy released upon complete combustion of
 the feed (MJ/kg DM).}
 \item{feed_digestible_energy_ruminant}{Numeric. Digestible energy content of
-a feed item for ruminants, representing the energy absorbed by the animal
+a feed component for ruminants, representing the energy absorbed by the animal
 after fecal losses (MJ/kg DM).}
 \item{feed_digestible_energy_pigs}{Numeric. Digestible energy content of a
-feed item for pigs, representing the energy absorbed by the animal after
+feed component for pigs, representing the energy absorbed by the animal after
 fecal losses (MJ/kg DM).}
 \item{feed_metabolizable_energy_ruminant}{Numeric. Metabolizable energy
-content of a feed item for ruminants, representing digestible energy minus
+content of a feed component for ruminants, representing digestible energy minus
 energy losses in urine and gaseous products of digestion (MJ/kg DM).}
 \item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy content
-of a feed item for pigs, representing digestible energy minus energy losses
+of a feed component for pigs, representing digestible energy minus energy losses
 in urine and gaseous products of digestion (MJ/kg DM).}
 \item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy
-content of a feed item for chickens, representing digestible energy minus
-energy losses in urine and gaseous products of digestion (MJ/kg DM).}
-\item{feed_nitrogen_content}{Numeric. Nitrogen content of a feed item
+content of a feed component for chickens, representing digestible energy minus
+energy losses in uric acid and gaseous products of digestion (MJ/kg DM).}
+\item{feed_nitrogen_content}{Numeric. Nitrogen content of a feed component
 (kg N/kg DM).}
 \item{feed_urinary_energy_ruminant}{Numeric. Fraction of feed's gross energy
 that is excreted in urine for ruminants (fraction).}
 \item{feed_urinary_energy_pigs}{Numeric. Fraction of feed's gross energy
 that is excreted in urine for pigs (fraction).}
-\item{feed_ash_content}{Numeric. Average ash content by feed item, calculated
+\item{feed_ash_content}{Numeric. Average ash content by feed component, calculated
 as a fraction of the dry matter intake (g ash/100g DM).}
-\item{category}{Character. Feed category (optional). If provided, should be
-consistent with \code{feed_id} for a coherent result.}
-\item{feed_name}{Character. Feed item name (optional, for readability and
-reporting). If provided, should be consistent with \code{feed_id}.}
+\item{category}{Character. Feed category (optional). If provided, it should be
+used consistently  with \code{feed_id}, for a coherent result.}
+\item{feed_name}{Character. feed component name (optional, for readability and
+reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
 }}
 }
 \value{
-data.table. Cohort-level diet metrics summarized by \code{herd_id},
+data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
 \code{animal}, and \code{cohort_short} with the following columns:
 \describe{
 \item{diet_gross_energy}{Numeric. Average gross energy content of the diet
@@ -103,21 +103,21 @@ of the dry matter intake (kg ash/kg DM).}
 }
 }
 \description{
-Compute cohort-level diet composition metrics (gross and metabolizable energy
+Computes cohort-level diet nutritional metrics (gross and metabolizable energy
 content, digestibility, nitrogen content, urinary energy losses, and ash
-content) from cohort-level feed ration shares and feed item nutrient
+content) from cohort-level feed ration composition shares and feed component nutrient
 parameters.
 }
 \details{
 This function joins \code{rations_share} with \code{feed_params} by \code{feed_id},
-maps \code{animal} to a species short code, and computes ration-weighted diet
+maps \code{animal} to a species short code, and computes ration-weighted nutritional
 metrics by cohort.
 
 The following calculation sequence is applied:
 \enumerate{
 \item Species-specific digestibility ratios are computed from energy parameters
 and \code{feed_gross_energy} using \code{\link{calc_feed_digestibility_fraction}}.
-\item Feed-level contributions are computed as ration-weighted values:
+\item Contributions of each feed component are computed as ration-weighted values:
 \itemize{
 \item gross energy using \code{\link{calc_diet_gross_energy}}
 \item nitrogen using \code{\link{calc_diet_nitrogen_content}}
@@ -126,8 +126,8 @@ and \code{feed_gross_energy} using \code{\link{calc_feed_digestibility_fraction}
 \item urinary energy fraction using \code{\link{calc_urinary_energy_fraction}}
 \item ash using \code{\link{calc_diet_ash}}
 }
-\item Cohort-level diet metrics are obtained by summing contributions across
-feed items within each \code{herd_id}, \code{animal}, and \code{cohort_short}.
+\item Cohort-level nutritional metrics are obtained for the whole feed ration by summing contributions across
+feed components within each \code{herd_id}, \code{animal}, and \code{cohort_short}.
 }
 }
 \examples{

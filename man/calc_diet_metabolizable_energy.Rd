@@ -25,30 +25,29 @@ Supported values include:
 \item \code{CHK}: chickens
 }}
 
-\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the
-total ration, expressed as its fraction of diet dry matter (fraction). Within
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the
+total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 each herd_id and cohort, proportions should sum to 1.}
 
 \item{feed_metabolizable_energy_ruminant}{Numeric. Metabolizable energy content
-of a feed item for ruminants, representing digestible energy minus energy
+of a feed component for ruminants, representing digestible energy minus energy
 losses in urine and gaseous products of digestion (MJ/kg DM).}
 
 \item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy content of a
-feed item for pigs, representing digestible energy minus energy losses in
+feed component for pigs, representing digestible energy minus energy losses in
 urine and gaseous products of digestion (MJ/kg DM).}
 
 \item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy content
-of a feed item for chickens, representing digestible energy minus energy
-losses in urine and gaseous products of digestion (MJ/kg DM).}
+of a feed component for chickens, representing digestible energy minus energy
+losses in uric acid and gaseous products of digestion (MJ/kg DM).}
 }
 \value{
-Numeric. Metabolizable energy contribution of the feed component to the
-total diet metabolizable energy (MJ/kg DM).
+Numeric. Contribution of the feed component to total diet metabolizable energy content (MJ/kg DM).
 }
 \description{
-Applies species-specific metabolizable energy parameters to a ration share to
+Applies species-specific metabolizable energy parameters to a ration composition share to
 compute the contribution of a single feed component to total diet metabolizable
-energy.
+energy content.
 }
 \details{
 The metabolizable energy contribution uses the animal-specific parameter:

@@ -25,27 +25,27 @@ Supported values include:
 \item \code{CHK}: chickens
 }}
 
-\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the
-total ration, expressed as its fraction of diet dry matter (fraction). Within
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the
+total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 each herd_id and cohort, proportions should sum to 1.}
 
 \item{feed_digestibility_fraction_ruminant}{Numeric. Digestibility of a feed
-item for ruminants, expressed as the ratio of digestible energy to gross energy
+component for ruminants, expressed as the ratio of digestible energy to gross energy
 content (fraction).}
 
-\item{feed_digestibility_fraction_pigs}{Numeric. Digestibility of a feed item
+\item{feed_digestibility_fraction_pigs}{Numeric. Digestibility of a feed component
 for pigs, expressed as the ratio of digestible energy to gross energy content
 (fraction).}
 
 \item{feed_digestibility_fraction_chicken}{Numeric. Digestibility of a feed
-item for chickens, expressed as the ratio of metabolizable energy to gross
+component for chickens, expressed as the ratio of metabolizable energy to gross
 energy content (fraction).}
 }
 \value{
-Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
+Numeric. Contribution of the feed component to total diet digestibility (fraction).
 }
 \description{
-Applies species-specific digestibility parameters to a ration share to compute
+Applies species-specific digestibility parameters to a ration composition share to compute
 the contribution of a single feed component to total diet digestibility.
 }
 \details{

@@ -1,32 +1,32 @@
 #' Calculate feed digestibility fraction
 #'
-#' Computes species-specific feed digestibility fractions by feed item.
+#' Computes species-specific feed digestibility fractions by feed component.
 #'
 #' @param feed_digestible_energy_ruminant Numeric. Digestible energy content of a
-#'   feed item for ruminants, representing the energy absorbed by the animal after
+#'   feed component for ruminants, representing the energy absorbed by the animal after
 #'   fecal losses (MJ/kg DM).
 #' @param feed_digestible_energy_pigs Numeric. Digestible energy content of a feed
-#'   item for pigs, representing the energy absorbed by the animal after fecal
+#'   component for pigs, representing the energy absorbed by the animal after fecal
 #'   losses (MJ/kg DM).
 #' @param feed_metabolizable_energy_chicken Numeric. Metabolizable energy content
-#'   of a feed item for chickens, representing digestible energy minus energy
-#'   losses in urine and gaseous products of digestion (MJ/kg DM).
-#' @param feed_gross_energy Numeric. Gross energy content of a feed item,
+#'   of a feed component for chickens, representing digestible energy minus energy
+#'   losses in uric acid and gaseous products of digestion (MJ/kg DM).
+#' @param feed_gross_energy Numeric. Gross energy content of a feed component,
 #'   representing the total chemical energy released upon complete combustion of
 #'   the feed (MJ/kg DM).
 #'
 #' @return List with elements:
 #'   \describe{
 #'     \item{feed_digestibility_fraction_ruminant}{
-#'       Numeric. Digestibility of a feed item for ruminants, expressed as the ratio
+#'       Numeric. Digestibility of a feed component for ruminants, expressed as the ratio
 #'       of digestible energy to gross energy content (fraction).
 #'     }
 #'     \item{feed_digestibility_fraction_pigs}{
-#'       Numeric. Digestibility of a feed item for pigs, expressed as the ratio of
+#'       Numeric. Digestibility of a feed component for pigs, expressed as the ratio of
 #'       digestible energy to gross energy content (fraction).
 #'     }
 #'     \item{feed_digestibility_fraction_chicken}{
-#'       Numeric. Digestibility of a feed item for chickens, expressed as the ratio
+#'       Numeric. Digestibility of a feed component for chickens, expressed as the ratio
 #'       of metabolizable energy to gross energy content (fraction).
 #'     }
 #'   }
@@ -37,7 +37,7 @@
 #'
 #' For ruminants and pigs, usable energy is represented by \code{digestible_energy} (DE),
 #' which accounts for fecal energy losses. For chickens, \code{metabolizable_energy}
-#' (ME) is used instead of \code{digestible_energy} because urinary and fecal
+#' (ME) is used instead of \code{digestible_energy} because urinary losses (excreted as uric acid) and fecal
 #' excretions are voided together, making fecal energy losses difficult to measure
 #' separately. \code{metabolizable_energy} therefore provides a more appropriate and
 #' standard measure of usable dietary energy in poultry nutrition.
@@ -85,7 +85,7 @@ calc_feed_digestibility_fraction <- function(
 
 #' Calculate diet digestibility contribution for a ration component
 #'
-#' Applies species-specific digestibility parameters to a ration share to compute
+#' Applies species-specific digestibility parameters to a ration composition share to compute
 #' the contribution of a single feed component to total diet digestibility.
 #'
 #' @param species_short Character. Code identifying the livestock species.
@@ -99,20 +99,20 @@ calc_feed_digestibility_fraction <- function(
 #'     \item \code{GTS}: goats
 #'     \item \code{CHK}: chickens
 #'   }
-#' @param feed_ration_fraction Numeric. Proportion of a specific feed item in the
-#'   total ration, expressed as its fraction of diet dry matter (fraction). Within
+#' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
+#'   total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #'   each herd_id and cohort, proportions should sum to 1.
 #' @param feed_digestibility_fraction_ruminant Numeric. Digestibility of a feed
-#'   item for ruminants, expressed as the ratio of digestible energy to gross energy
+#'   component for ruminants, expressed as the ratio of digestible energy to gross energy
 #'   content (fraction).
-#' @param feed_digestibility_fraction_pigs Numeric. Digestibility of a feed item
+#' @param feed_digestibility_fraction_pigs Numeric. Digestibility of a feed component
 #'   for pigs, expressed as the ratio of digestible energy to gross energy content
 #'   (fraction).
 #' @param feed_digestibility_fraction_chicken Numeric. Digestibility of a feed
-#'   item for chickens, expressed as the ratio of metabolizable energy to gross
+#'   component for chickens, expressed as the ratio of metabolizable energy to gross
 #'   energy content (fraction).
 #'
-#' @return Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
+#' @return Numeric. Contribution of the feed component to total diet digestibility (fraction).
 #'
 #' @details
 #' The digestibility contribution uses the animal-specific digestibility ratio:
@@ -153,9 +153,9 @@ calc_diet_digestibility <- function(
 
 #' Calculate diet metabolizable energy contribution for a ration component
 #'
-#' Applies species-specific metabolizable energy parameters to a ration share to
+#' Applies species-specific metabolizable energy parameters to a ration composition share to
 #' compute the contribution of a single feed component to total diet metabolizable
-#' energy.
+#' energy content.
 #' 
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
@@ -168,21 +168,20 @@ calc_diet_digestibility <- function(
 #'     \item \code{GTS}: goats
 #'     \item \code{CHK}: chickens
 #'   }
-#' @param feed_ration_fraction Numeric. Proportion of a specific feed item in the
-#'   total ration, expressed as its fraction of diet dry matter (fraction). Within
+#' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
+#'   total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #'   each herd_id and cohort, proportions should sum to 1.
 #' @param feed_metabolizable_energy_ruminant Numeric. Metabolizable energy content
-#'   of a feed item for ruminants, representing digestible energy minus energy
+#'   of a feed component for ruminants, representing digestible energy minus energy
 #'   losses in urine and gaseous products of digestion (MJ/kg DM).
 #' @param feed_metabolizable_energy_pigs Numeric. Metabolizable energy content of a
-#'   feed item for pigs, representing digestible energy minus energy losses in
+#'   feed component for pigs, representing digestible energy minus energy losses in
 #'   urine and gaseous products of digestion (MJ/kg DM).
 #' @param feed_metabolizable_energy_chicken Numeric. Metabolizable energy content
-#'   of a feed item for chickens, representing digestible energy minus energy
-#'   losses in urine and gaseous products of digestion (MJ/kg DM).
+#'   of a feed component for chickens, representing digestible energy minus energy
+#'   losses in uric acid and gaseous products of digestion (MJ/kg DM).
 #'
-#' @return Numeric. Metabolizable energy contribution of the feed component to the
-#'   total diet metabolizable energy (MJ/kg DM).
+#' @return Numeric. Contribution of the feed component to total diet metabolizable energy content (MJ/kg DM).
 #'
 #' @details
 #' The metabolizable energy contribution uses the animal-specific parameter:
@@ -224,18 +223,17 @@ calc_diet_metabolizable_energy <- function(
 
 #' Calculate diet gross energy contribution for a ration component
 #'
-#' Computes the contribution of a single feed item to diet gross energy by
-#' weighting feed gross energy by its ration share.
+#' Computes the contribution of a single feed component to diet gross energy content by
+#' weighting feed gross energy by its ration composition share.
 #'
-#' @param feed_ration_fraction Numeric. Proportion of a specific feed item in the
-#'   total ration, expressed as its fraction of diet dry matter (fraction). Within
+#' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
+#'   total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #'   each herd_id and cohort, proportions should sum to 1.
-#' @param feed_gross_energy Numeric. Gross energy content of a feed item,
+#' @param feed_gross_energy Numeric. Gross energy content of a feed component,
 #'   representing the total chemical energy released upon complete combustion of
 #'   the feed (MJ/kg DM).
 #'
-#' @return Numeric. Average gross energy contribution of the diet component
-#'   (MJ/kg DM).
+#' @return Numeric. Contribution of the feed component to total diet gross energy content (MJ/kg DM).
 #'
 #' @details
 #' The gross energy contribution is defined as:
@@ -244,40 +242,38 @@ calc_diet_metabolizable_energy <- function(
 #' @export
 calc_diet_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
   validate_diet_gross_energy_inputs(feed_ration_fraction, feed_gross_energy)
-  # Contribution is ration share multiplied by gross energy content
+  # Contribution is ration composition share multiplied by gross energy content
   diet_gross_energy <- feed_ration_fraction * feed_gross_energy
   return(diet_gross_energy)
 }
 
 #' Calculate diet nitrogen contribution for a ration component
 #'
-#' Computes the contribution of a single feed item to diet nitrogen content by
-#' weighting feed nitrogen content by its ration share.
+#' Computes the contribution of a single feed component to diet nitrogen content by
+#' weighting feed nitrogen content by its ration composition share.
 #'
-#' @param feed_ration_fraction Numeric. Proportion of a specific feed item in the
-#'   total ration, expressed as its fraction of diet dry matter (fraction). Within
+#' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
+#'   total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #'   each herd_id and cohort, proportions should sum to 1.
-#' @param feed_nitrogen_content Numeric. Nitrogen content a feed item (kg N/kg DM).
+#' @param feed_nitrogen_content Numeric. Nitrogen content of a feed component (kg N/kg DM).
 #'
-#' @return Numeric. Average nitrogen content of diet (kg N/kg DM).
+#' @return Numeric. Contribution of the feed component to total diet nitrogen content (kg N/kg DM).
 #'
 #' @details
 #' The nitrogen contribution is defined as:
 #' \deqn{diet\_nitrogen = feed\_ration\_fraction \times feed\_nitrogen\_content}
 #'
-#' This helper is vectorized over its inputs.
-#'
 #' @export
 calc_diet_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_content) {
   validate_diet_nitrogen_inputs(feed_ration_fraction, feed_nitrogen_content)
-  # Contribution is ration share multiplied by nitrogen content
+  # Contribution is ration composition share multiplied by nitrogen content
   diet_nitrogen <- feed_ration_fraction * feed_nitrogen_content
   return(diet_nitrogen)
 }
 
 #' Calculate urinary energy fraction contribution for a ration component
 #' 
-#' Applies species-specific urinary energy fractions to a ration share to compute
+#' Applies species-specific urinary energy fractions to a ration composition share to compute
 #' the contribution of a feed component to urinary energy losses.
 #'
 #' @param species_short Character. Code identifying the livestock species.
@@ -291,18 +287,18 @@ calc_diet_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_conte
 #'     \item \code{GTS}: goats
 #'     \item \code{CHK}: chickens
 #'   }
-#' @param feed_ration_fraction Numeric. Proportion of a specific feed item in the
-#'   total ration, expressed as its fraction of diet dry matter (fraction). Within
+#' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
+#'   total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #'   each herd_id and cohort, proportions should sum to 1.
 #' @param feed_urinary_energy_ruminant Numeric. Fraction of feed's gross energy that
 #'   is excreted in urine for ruminants (fraction).
 #' @param feed_urinary_energy_pigs Numeric. Fraction of feed's gross energy that
 #'   is excreted in urine for pigs (fraction).
 #' @param feed_urinary_energy_chicken Numeric. Fraction of feed's gross energy that
-#'   is excreted in urine for chickens (fraction). Default = 0.
+#'   is excreted in uric acid for chickens (fraction). Default = 0.
 #'
-#' @return Numeric. Fraction of feed's gross energy that is excreted in urine
-#'   (fraction).
+#' @return Numeric. Contribution of the feed component to the fraction of total diet
+#'  gross energy that is excreted in urine (fraction).
 #'
 #' @details
 #' The urinary energy fraction contribution uses the animal-specific parameter:
@@ -349,17 +345,16 @@ calc_urinary_energy_fraction <- function(
 
 #' Calculate diet ash contribution for a ration component
 #'
-#' Computes the contribution of a single feed item to diet ash content by
-#' weighting feed ash content by its ration share.
+#' Computes the contribution of a single feed component to diet ash content by
+#' weighting feed ash content by its ration composition share.
 #'
-#' @param feed_ration_fraction Numeric. Proportion of a specific feed item in the
-#'   total ration, expressed as its fraction of diet dry matter (fraction). Within
+#' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
+#'   total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #'   each herd_id and cohort, proportions should sum to 1.
-#' @param feed_ash_content Numeric. Average ash content by feed item, calculated as
+#' @param feed_ash_content Numeric. Average ash content by feed component, expressed as
 #'   a fraction of the dry matter intake (g ash/100g DM).
 #'
-#' @return Numeric. Average ash content contribution of the diet component,
-#'   calculated as a fraction of the dry matter intake (kg ash/kg DM).
+#' @return Numeric. Contribution of the feed component to total diet ash content (kg ash/kg DM).
 #'
 #' @details
 #' The ash contribution is defined as:
@@ -371,7 +366,7 @@ calc_urinary_energy_fraction <- function(
 calc_diet_ash <- function(feed_ration_fraction, feed_ash_content) {
   validate_diet_ash_inputs(feed_ration_fraction, feed_ash_content)
 
-  # Contribution is ration share multiplied by feed_ash_content
+  # Contribution is ration composition share multiplied by feed_ash_content
   diet_ash <- feed_ration_fraction * feed_ash_content / 100
 
   return(diet_ash)

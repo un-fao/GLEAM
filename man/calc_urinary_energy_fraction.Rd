@@ -25,8 +25,8 @@ Supported values include:
 \item \code{CHK}: chickens
 }}
 
-\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the
-total ration, expressed as its fraction of diet dry matter (fraction). Within
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the
+total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 each herd_id and cohort, proportions should sum to 1.}
 
 \item{feed_urinary_energy_ruminant}{Numeric. Fraction of feed's gross energy that
@@ -36,14 +36,14 @@ is excreted in urine for ruminants (fraction).}
 is excreted in urine for pigs (fraction).}
 
 \item{feed_urinary_energy_chicken}{Numeric. Fraction of feed's gross energy that
-is excreted in urine for chickens (fraction). Default = 0.}
+is excreted in uric acid for chickens (fraction). Default = 0.}
 }
 \value{
-Numeric. Fraction of feed's gross energy that is excreted in urine
-(fraction).
+Numeric. Contribution of the feed component to the fraction of total diet
+gross energy that is excreted in urine (fraction).
 }
 \description{
-Applies species-specific urinary energy fractions to a ration share to compute
+Applies species-specific urinary energy fractions to a ration composition share to compute
 the contribution of a feed component to urinary energy losses.
 }
 \details{

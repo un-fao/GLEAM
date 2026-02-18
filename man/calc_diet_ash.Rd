@@ -7,20 +7,19 @@
 calc_diet_ash(feed_ration_fraction, feed_ash_content)
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the
-total ration, expressed as its fraction of diet dry matter (fraction). Within
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the
+total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 each herd_id and cohort, proportions should sum to 1.}
 
-\item{feed_ash_content}{Numeric. Average ash content by feed item, calculated as
+\item{feed_ash_content}{Numeric. Average ash content by feed component, expressed as
 a fraction of the dry matter intake (g ash/100g DM).}
 }
 \value{
-Numeric. Average ash content contribution of the diet component,
-calculated as a fraction of the dry matter intake (kg ash/kg DM).
+Numeric. Contribution of the feed component to total diet ash content (kg ash/kg DM).
 }
 \description{
-Computes the contribution of a single feed item to diet ash content by
-weighting feed ash content by its ration share.
+Computes the contribution of a single feed component to diet ash content by
+weighting feed ash content by its ration composition share.
 }
 \details{
 The ash contribution is defined as:
