@@ -13,31 +13,50 @@ calc_diet_metabolizable_energy(
 )
 }
 \arguments{
-\item{species_short}{Character. Species short code. Supported values include
-ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}),
-chickens (\code{CHK}), and pigs (\code{PGS}).}
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+\item \code{CHK}: chickens
+}}
 
-\item{feed_ration_fraction}{Numeric. Ration share for the feed component (fraction).}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the
+total ration, expressed as its fraction of diet dry matter intake (fraction). Within
+each herd_id and cohort, proportions should sum to 1.}
 
-\item{feed_metabolizable_energy_ruminant}{Numeric. Metabolizable energy for ruminants.}
+\item{feed_metabolizable_energy_ruminant}{Numeric. Metabolizable energy content
+of a feed component for ruminants, representing digestible energy minus energy
+losses in urine and gaseous products of digestion (MJ/kg DM).}
 
-\item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy for pigs.}
+\item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy content of a
+feed component for pigs, representing digestible energy minus energy losses in
+urine and gaseous products of digestion (MJ/kg DM).}
 
-\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy for chickens.}
+\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy content
+of a feed component for chickens, representing digestible energy minus energy
+losses in uric acid and gaseous products of digestion (MJ/kg DM).}
 }
 \value{
-Numeric. Metabolizable energy contribution for the ration component.
+Numeric. Contribution of the feed component to total diet metabolizable energy content (MJ/kg DM).
 }
 \description{
-Applies species-specific metabolizable energy parameters to a ration share.
+Applies species-specific metabolizable energy parameters to a ration composition share to
+compute the contribution of a single feed component to total diet metabolizable
+energy content.
 }
 \details{
 The metabolizable energy contribution uses the animal-specific parameter:
 \itemize{
-\item Ruminants: \code{feed_ration_fraction * feed_metabolizable_energy_ruminant}
-\item Chickens: \code{feed_ration_fraction * feed_metabolizable_energy_chicken}
-\item Pigs: \code{feed_ration_fraction * feed_metabolizable_energy_pigs}
+\item Ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}):
+\code{feed_ration_fraction * feed_metabolizable_energy_ruminant}
+\item Chickens (\code{CHK}):
+\code{feed_ration_fraction * feed_metabolizable_energy_chicken}
+\item Pigs (\code{PGS}):
+\code{feed_ration_fraction * feed_metabolizable_energy_pigs}
 }
-
-This helper is vectorized over its inputs.
 }
