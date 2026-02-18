@@ -20,7 +20,6 @@
 #'     \item `cohort_duration_days` – Cohort duration (days).
 #'     \item `diet_digestibility_fraction` – Diet digestibility (DE/GE, fraction).
 #'     \item `diet_gross_energy`, `diet_metabolizable_energy` – Gross and metabolizable energy (MJ/kg DM).
-#'     \item `lambing_interval` – Lambing interval (days) for small ruminants.
 #'   }
 #' @param herd_level_data A `data.table` or `data.frame` with herd-level inputs (one row per herd)
 #'  and at least:

@@ -33,8 +33,7 @@ validate_energy_requirements_inputs <- function(
     "low_activity_fraction", "high_activity_fraction",
     "live_weight_cohort_initial", "live_weight_cohort_final", "mature_weight",
     "daily_weight_gain", "cohort_duration_days",
-    "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy",
-    "lambing_interval"
+    "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy"
   )
   required_herd_cols <- c(
     "herd_id", "animal",

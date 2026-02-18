@@ -124,7 +124,7 @@ utils::globalVariables(c(
   # Columns used in run_energy_requirements (cohort-level and results)
   "cohort_short", "live_weight_cohort_average", "offtake_rate", "low_activity_fraction", "high_activity_fraction",
   "live_weight_cohort_initial", "live_weight_cohort_final", "mature_weight", "daily_weight_gain", "cohort_duration_days",
-  "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy", "lambing_interval",
+  "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy",
   "energy_requirement_maintenance", "energy_requirement_activity", "energy_requirement_growth", "energy_requirement_lactation",
   "energy_requirement_work", "energy_requirement_fibre_production", "energy_requirement_pregnancy",
   "net_energy_maintenance_digestible_energy_ratio", "net_energy_growth_digestible_energy_ratio",
