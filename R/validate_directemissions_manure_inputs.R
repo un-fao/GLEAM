@@ -3,20 +3,19 @@
 #' Validates that cohort-level manure inputs and MMS tables have the expected
 #' structure, required columns, and consistent identifiers.
 #'
-#' @param directemissions_manure_input_cohort_level_data data.table. Cohort-level
-#'   diet and nitrogen inputs for manure emissions.
+#' @param cohort_level_data data.table. Cohort-level diet and nitrogen inputs for manure emissions.
 #' @param manure_management_system_fraction data.table. Cohort-level MMS fractions.
 #' @param manure_management_system_factors data.table. Herd-level MMS factors.
 #'
 #' @noRd
 validate_directemissions_manure_inputs <- function(
-    directemissions_manure_input_cohort_level_data,
+    cohort_level_data,
     manure_management_system_fraction,
     manure_management_system_factors
 ) {
   # --- Basic type and structure checks ----------------------------------------
-  if (!data.table::is.data.table(directemissions_manure_input_cohort_level_data)) {
-    cli::cli_abort("{.arg directemissions_manure_input_cohort_level_data} must be a data.table.")
+  if (!data.table::is.data.table(cohort_level_data)) {
+    cli::cli_abort("{.arg cohort_level_data} must be a data.table.")
   }
   if (!data.table::is.data.table(manure_management_system_fraction)) {
     cli::cli_abort("{.arg manure_management_system_fraction} must be a data.table.")
@@ -25,8 +24,8 @@ validate_directemissions_manure_inputs <- function(
     cli::cli_abort("{.arg manure_management_system_factors} must be a data.table.")
   }
 
-  if (nrow(directemissions_manure_input_cohort_level_data) == 0) {
-    cli::cli_abort("{.arg directemissions_manure_input_cohort_level_data} must contain at least one row.")
+  if (nrow(cohort_level_data) == 0) {
+    cli::cli_abort("{.arg cohort_level_data} must contain at least one row.")
   }
   if (nrow(manure_management_system_fraction) == 0) {
     cli::cli_abort("{.arg manure_management_system_fraction} must contain at least one row.")
@@ -51,11 +50,11 @@ validate_directemissions_manure_inputs <- function(
   )
 
   missing_input_cols <- setdiff(
-    required_input_cols, names(directemissions_manure_input_cohort_level_data)
+    required_input_cols, names(cohort_level_data)
   )
   if (length(missing_input_cols) > 0) {
     cli::cli_abort(
-      "Missing required columns in {.arg directemissions_manure_input_cohort_level_data}: {.val {missing_input_cols}}"
+      "Missing required columns in {.arg cohort_level_data}: {.val {missing_input_cols}}"
     )
   }
 
@@ -78,13 +77,13 @@ validate_directemissions_manure_inputs <- function(
   }
 
   # --- Missing key values -----------------------------------------------------
-  if (any(is.na(directemissions_manure_input_cohort_level_data$herd_id)) ||
-      any(is.na(directemissions_manure_input_cohort_level_data$cohort))) {
-    cli::cli_abort("{.arg directemissions_manure_input_cohort_level_data} must not contain missing herd_id or cohort.")
+  if (any(is.na(cohort_level_data$herd_id)) ||
+      any(is.na(cohort_level_data$cohort))) {
+    cli::cli_abort("{.arg cohort_level_data} must not contain missing herd_id or cohort.")
   }
-  if (any(is.na(directemissions_manure_input_cohort_level_data$urinary_energy_fraction)) ||
-      any(is.na(directemissions_manure_input_cohort_level_data$diet_ash))) {
-    cli::cli_abort("{.arg directemissions_manure_input_cohort_level_data} must not contain missing urinary_energy_fraction or diet_ash.")
+  if (any(is.na(cohort_level_data$urinary_energy_fraction)) ||
+      any(is.na(cohort_level_data$diet_ash))) {
+    cli::cli_abort("{.arg cohort_level_data} must not contain missing urinary_energy_fraction or diet_ash.")
   }
   if (any(is.na(manure_management_system_fraction$herd_id)) ||
       any(is.na(manure_management_system_fraction$cohort)) ||
@@ -100,12 +99,12 @@ validate_directemissions_manure_inputs <- function(
   valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
   invalid_input_cohorts <- setdiff(
-    unique(directemissions_manure_input_cohort_level_data$cohort),
+    unique(cohort_level_data$cohort),
     valid_cohorts
   )
   if (length(invalid_input_cohorts) > 0) {
     cli::cli_abort(
-      "Invalid cohort values in {.arg directemissions_manure_input_cohort_level_data}: {.val {invalid_input_cohorts}}.
+      "Invalid cohort values in {.arg cohort_level_data}: {.val {invalid_input_cohorts}}.
       Must be one of: {.val {valid_cohorts}}"
     )
   }
@@ -122,7 +121,7 @@ validate_directemissions_manure_inputs <- function(
   }
 
   # Each herd must have all 6 cohorts in both cohort-level tables
-  cohort_completeness <- directemissions_manure_input_cohort_level_data[
+  cohort_completeness <- cohort_level_data[
     , list(
       count = .N,
       has_all_cohorts = setequal(cohort, valid_cohorts),
@@ -133,7 +132,7 @@ validate_directemissions_manure_inputs <- function(
   wrong_count <- cohort_completeness[count != 6]
   if (nrow(wrong_count) > 0) {
     cli::cli_abort(
-      "Each herd_id must have exactly 6 rows in {.arg directemissions_manure_input_cohort_level_data} (one per cohort).
+      "Each herd_id must have exactly 6 rows in {.arg cohort_level_data} (one per cohort).
       Found incorrect counts for herd_ids: {.val {wrong_count$herd_id}}"
     )
   }
@@ -144,7 +143,7 @@ validate_directemissions_manure_inputs <- function(
       by = herd_id
     ]$V1
     cli::cli_abort(
-      "Each herd_id must have exactly one row for each of the 6 cohorts in {.arg directemissions_manure_input_cohort_level_data}.
+      "Each herd_id must have exactly one row for each of the 6 cohorts in {.arg cohort_level_data}.
       Incomplete or duplicate cohorts found for herd_ids: {.val {missing_info}}"
     )
   }
@@ -170,12 +169,12 @@ validate_directemissions_manure_inputs <- function(
   }
 
   # --- Uniqueness checks ------------------------------------------------------
-  duplicate_input <- directemissions_manure_input_cohort_level_data[
+  duplicate_input <- cohort_level_data[
     , .N, by = .(herd_id, cohort)
   ][N > 1]
   if (nrow(duplicate_input) > 0) {
     cli::cli_abort(
-      "Duplicate herd_id + cohort combinations in {.arg directemissions_manure_input_cohort_level_data}: {.val {duplicate_input$herd_id}}"
+      "Duplicate herd_id + cohort combinations in {.arg cohort_level_data}: {.val {duplicate_input$herd_id}}"
     )
   }
 
@@ -287,13 +286,13 @@ validate_directemissions_manure_inputs <- function(
   }
 
   # --- Cross-table herd_id validation -----------------------------------------
-  input_herd_ids <- unique(directemissions_manure_input_cohort_level_data$herd_id)
+  input_herd_ids <- unique(cohort_level_data$herd_id)
   fraction_herd_ids <- unique(manure_management_system_fraction$herd_id)
   factors_herd_ids <- unique(manure_management_system_factors$herd_id)
 
   # Each herd_id + cohort in input must exist in fraction table
   input_pairs <- unique(
-    directemissions_manure_input_cohort_level_data[, .(herd_id, cohort)]
+    cohort_level_data[, .(herd_id, cohort)]
   )
   fraction_pairs <- unique(
     manure_management_system_fraction[, .(herd_id, cohort)]
@@ -311,7 +310,7 @@ validate_directemissions_manure_inputs <- function(
   missing_in_fraction <- setdiff(input_herd_ids, fraction_herd_ids)
   if (length(missing_in_fraction) > 0) {
     cli::cli_abort(
-      "Herd IDs in {.arg directemissions_manure_input_cohort_level_data} not found in
+      "Herd IDs in {.arg cohort_level_data} not found in
       {.arg manure_management_system_fraction}: {.val {missing_in_fraction}}"
     )
   }
@@ -320,14 +319,14 @@ validate_directemissions_manure_inputs <- function(
   if (length(missing_in_input_from_fraction) > 0) {
     cli::cli_abort(
       "Herd IDs in {.arg manure_management_system_fraction} not found in
-      {.arg directemissions_manure_input_cohort_level_data}: {.val {missing_in_input_from_fraction}}"
+      {.arg cohort_level_data}: {.val {missing_in_input_from_fraction}}"
     )
   }
 
   missing_in_factors <- setdiff(input_herd_ids, factors_herd_ids)
   if (length(missing_in_factors) > 0) {
     cli::cli_abort(
-      "Herd IDs in {.arg directemissions_manure_input_cohort_level_data} not found in
+      "Herd IDs in {.arg cohort_level_data} not found in
       {.arg manure_management_system_factors}: {.val {missing_in_factors}}"
     )
   }
@@ -336,7 +335,7 @@ validate_directemissions_manure_inputs <- function(
   if (length(missing_in_input_from_factors) > 0) {
     cli::cli_abort(
       "Herd IDs in {.arg manure_management_system_factors} not found in
-      {.arg directemissions_manure_input_cohort_level_data}: {.val {missing_in_input_from_factors}}"
+      {.arg cohort_level_data}: {.val {missing_in_input_from_factors}}"
     )
   }
 }

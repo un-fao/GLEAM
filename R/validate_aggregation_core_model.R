@@ -55,13 +55,13 @@ validate_totals_by_cohort_inputs <- function(
   }
 
   # Validate bounds
-  if (any(value < 0, na.rm = TRUE)) {
+  if (any(value < 0)) {
     cli::cli_abort("{.arg value} must be non-negative.")
   }
-  if (any(size <= 0, na.rm = TRUE)) {
+  if (any(size <= 0)) {
     cli::cli_abort("{.arg size} must be positive.")
   }
-  if (any(assessment_duration <= 0, na.rm = TRUE)) {
+  if (any(assessment_duration <= 0)) {
     cli::cli_abort("{.arg assessment_duration} must be positive.")
   }
 
@@ -111,10 +111,10 @@ validate_allocated_emissions_inputs <- function(
   }
 
   # Validate bounds
-  if (any(value < 0, na.rm = TRUE)) {
+  if (any(value < 0)) {
     cli::cli_abort("{.arg value} must be non-negative.")
   }
-  if (any(allocation_share < 0 | allocation_share > 1, na.rm = TRUE)) {
+  if (any(allocation_share < 0 | allocation_share > 1)) {
     cli::cli_abort("{.arg allocation_share} must be between 0 and 1.")
   }
 }
@@ -185,7 +185,7 @@ validate_co2eq_inputs <- function(
   if (!is.numeric(value_allocated)) {
     cli::cli_abort("{.arg value_allocated} must be numeric.")
   }
-  if (any(value_allocated < 0, na.rm = TRUE)) {
+  if (any(value_allocated < 0)) {
     cli::cli_abort("{.arg value_allocated} must be non-negative.")
   }
 }

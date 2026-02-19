@@ -4,35 +4,41 @@
 \alias{run_weights_calculations}
 \title{Run weight calculations}
 \usage{
-run_weights_calculations(cohort_level_data, herd_level_data)
+run_weights_calculations(
+  cohort_level_data,
+  herd_level_data,
+  show_indicator = TRUE
+)
 }
 \arguments{
 \item{cohort_level_data}{A \code{data.table} in long format with one row per
 herd \eqn{\times} cohort. Must include:
 \describe{
-\item{herd_id}{Character. Unique identifier for the herd (repeated across cohorts).}
-\item{cohort_short}{Character. Sex- and stage-specific cohort code. One of:
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 \itemize{
-\item \code{FA}: adult females (from first parturition onward)
-\item \code{FS}: subadult females (weaning to first parturition)
-\item \code{FJ}: juvenile females (birth to weaning)
-\item \code{MA}: adult males (from first breeding onward)
-\item \code{MS}: subadult males (weaning to first breeding)
-\item \code{MJ}: juvenile males (birth to weaning)
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
 }}
-\item{cohort_duration_days}{Numeric. Time spent in the cohort (days).}
-\item{offtake_rate}{Numeric. Annual proportion removed from the cohort (fraction).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 }}
 
 \item{herd_level_data}{A \code{data.table} with one row per herd. Must include:
 \itemize{
-\item \code{live_weight_female_adult} Numeric. Adult female live weight (kg).
-\item \code{live_weight_male_adult} Numeric. Adult male live weight (kg).
-\item \code{birth_weight} Numeric. Live weight at birth (kg).
-\item \code{weaning_weight} Numeric. Live weight at weaning (kg).
-\item \code{slaughter_weight_female} Numeric. Slaughter live weight for female subadults (kg).
-\item \code{slaughter_weight_male} Numeric. Slaughter live weight for male subadults (kg).
+\item \code{live_weight_female_adult} Numeric. Live weight of adult females (kg)
+\item \code{live_weight_male_adult} Numeric. Live weight of adult males (kg)
+\item \code{birth_weight} Numeric. Live weight of the animal at birth (kg).
+\item \code{weaning_weight} Numeric. Live weight of the animal at weaning (kg)
+\item \code{slaughter_weight_female} Numeric. Slaughter weight of female sub-adult animals (kg)
+\item \code{slaughter_weight_male} Numeric. Slaughter weight of male sub-adult animals (kg)
 }}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
 }
 \value{
 A named list with two \code{data.table}s:
@@ -40,14 +46,13 @@ A named list with two \code{data.table}s:
 \item{cohort_level_results}{The input \code{cohort_level_data} with these
 additional columns:
 \describe{
-\item{mature_weight}{Numeric. Mature (adult) live weight for the cohort sex (kg).}
-\item{live_weight_cohort_initial}{Numeric. Live weight at cohort start (kg).}
-\item{live_weight_cohort_potential_final}{Numeric. Potential live weight at cohort end
-in the absence of offtake (kg).}
-\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for removed animals (kg).}
-\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage (kg).}
-\item{live_weight_cohort_final}{Numeric. End-of-stage live weight accounting for offtake (kg).}
-\item{daily_weight_gain}{Numeric. Average daily live weight gain (kg/head/day).}
+\item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+\item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
+\item{live_weight_cohort_potential_final}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
+\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
+\item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
+\item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 }}
 \item{herd_level_results}{A copy of the input \code{herd_level_data}.}
 }
@@ -79,22 +84,20 @@ All cohort-level computations are evaluated row-wise using
 }
 \examples{
 \dontrun{
-# Load example input data from the package
-cohort_path <- system.file(
-  "extdata/examples/weight_input_cohort_level_data.csv",
+# Load weights inputs (cohort- and herd-level)
+weights_chrt_dt <- data.table::fread(system.file(
+  "extdata/examples/weights_input_chrt_data.csv",
   package = "gleam"
-)
-herd_path <- system.file(
-  "extdata/examples/weight_input_herd_level_data.csv",
+))
+weights_hrd_dt <- data.table::fread(system.file(
+  "extdata/examples/weights_input_hrd_data.csv",
   package = "gleam"
-)
-cohort_level_data <- data.table::fread(cohort_path)
-herd_level_data <- data.table::fread(herd_path)
+))
 
 # Run weight calculations
 results <- run_weights_calculations(
-  cohort_level_data = cohort_level_data,
-  herd_level_data = herd_level_data
+  cohort_level_data = weights_chrt_dt,
+  herd_level_data = weights_hrd_dt
 )
 
 # Access results

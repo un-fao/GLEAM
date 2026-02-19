@@ -146,22 +146,20 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Load example input data from the package
-#' cohort_path <- system.file(
-#'   "extdata/examples/herd_simulation_input_cohort_level_data.csv",
+#' # Load herd simulation inputs (cohort- and herd-level)
+#' herd_simulation_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/examples/herd_simulation_input_chrt_data.csv",
 #'   package = "gleam"
-#' )
-#' herd_level_path <- system.file(
-#'   "extdata/examples/herd_simulation_input_herd_level_data.csv",
+#' ))
+#' herd_simulation_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/examples/herd_simulation_input_hrd_data.csv",
 #'   package = "gleam"
-#' )
-#' cohort_level_data <- data.table::fread(cohort_path)
-#' herd_level_data <- data.table::fread(herd_level_path)
+#' ))
 #'
 #' # Run herd simulation
 #' results <- run_herd_simulation(
-#'   cohort_level_data = cohort_level_data,
-#'   herd_level_data = herd_level_data,
+#'   cohort_level_data = herd_simulation_chrt_dt,
+#'   herd_level_data = herd_simulation_hrd_dt,
 #'   simulation_duration = 200
 #' )
 #'
@@ -188,7 +186,7 @@ run_herd_simulation <- function(
 
   # Show progress indicator if requested
   if (show_indicator) {
-    cli::cli_status("\U1F552 Running herd simulation, please wait\U2026")
+    cli::cli_status("\U1F552 Simulating the herd structure, please wait\U2026")
   }
 
   # --- Step 2: Prepare Data for Processing -----------------------------------

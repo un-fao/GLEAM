@@ -7,19 +7,22 @@
 calc_diet_gross_energy(feed_ration_fraction, feed_gross_energy)
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Ration share for the feed component (fraction).}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the
+total ration, expressed as its fraction of diet dry matter intake (fraction). Within
+each herd_id and cohort, proportions should sum to 1.}
 
-\item{feed_gross_energy}{Numeric. Gross energy content (MJ/kg DM).}
+\item{feed_gross_energy}{Numeric. Gross energy content of a feed component,
+representing the total chemical energy released upon complete combustion of
+the feed (MJ/kg DM).}
 }
 \value{
-Numeric. Gross energy contribution for the ration component.
+Numeric. Contribution of the feed component to total diet gross energy content (MJ/kg DM).
 }
 \description{
-Computes gross energy contribution from a ration share and gross energy input.
+Computes the contribution of a single feed component to diet gross energy content by
+weighting feed gross energy by its ration composition share.
 }
 \details{
 The gross energy contribution is defined as:
 \deqn{diet\_gross\_energy = feed\_ration\_fraction \times feed\_gross\_energy}
-
-This helper is vectorized over its inputs.
 }
