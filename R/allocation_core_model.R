@@ -531,7 +531,7 @@ aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) 
   # Aggregate over cohorts
   data_herd <- data_cohort[
     ,
-    lapply(.SD, sum, na.rm = TRUE),
+    lapply(.SD, sum),
     by = id_cols,
     .SDcols = vars_to_sum
   ]
@@ -643,8 +643,7 @@ calc_allocation_shares <- function(
       energy_allocation_milk,
       energy_allocation_fibre,
       energy_allocation_work,
-      energy_allocation_eggs),
-    na.rm = TRUE
+      energy_allocation_eggs)
   )
 
   if (animal == "PGS") {

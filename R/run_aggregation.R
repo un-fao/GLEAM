@@ -170,8 +170,7 @@ run_aggregation <- function(
     ),
     measure.vars = available_vars,
     variable.name = "variable_name",
-    value.name = "value",
-    na.rm = FALSE
+    value.name = "value"
   )
 
   # --- Step 3: Classify variables by type ----------------------------------

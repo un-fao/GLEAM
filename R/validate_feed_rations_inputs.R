@@ -28,16 +28,16 @@ validate_feed_rations_inputs <- function(
 
   # --- Required columns validation --------------------------------------------
   required_rations_cols <- c(
-    "herd_id", "animal", "feed_name", "feed_id", "cohort_short",
+    "herd_id", "animal", "feed_id", "cohort_short",
     "feed_ration_fraction"
   )
   required_feed_cols <- c(
-    "feed_id", "feed_name", "category", "feed_gross_energy",
+    "feed_id", "feed_gross_energy",
     "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
     "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
     "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
     "feed_urinary_energy_ruminant", "feed_urinary_energy_pigs",
-    "feed_urinary_energy_chicken", "feed_ash_content"
+    "feed_ash_content"
   )
 
   missing_rations_cols <- setdiff(required_rations_cols, names(rations_share))
@@ -71,23 +71,10 @@ validate_feed_rations_inputs <- function(
   if (anyDuplicated(feed_params$feed_id) > 0) {
     cli::cli_abort("{.arg feed_params$feed_id} must be unique.")
   }
-
-  # Keep feed_id → feed_name mapping consistent across inputs
-  # Validate mapping between feed_id and feed_name in rations_share
-  feed_name_check <- merge(
-    rations_share[, .(feed_id, feed_name)],
-    unique(feed_params[, .(feed_id, feed_name)]),
-    by = "feed_id",
-    all.x = TRUE,
-    suffixes = c("_input", "_params")
-  )
-  mismatched_feed_names <- feed_name_check[
-    is.na(feed_name_params) | feed_name_input != feed_name_params,
-    unique(feed_id)
-  ]
-  if (length(mismatched_feed_names) > 0) {
+  # nor for the rations_share table (by herd_id, animal, cohort_short)
+  if (anyDuplicated(rations_share[, .(herd_id, animal, cohort_short, feed_id)]) > 0) {
     cli::cli_abort(
-      "feed_id values with missing or mismatched feed_name in {.arg feed_params}: {.val {mismatched_feed_names}}"
+      "{.arg rations_share$feed_id} must be unique within each herd_id, animal, and cohort_short combination."
     )
   }
 }

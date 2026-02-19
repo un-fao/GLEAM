@@ -94,7 +94,7 @@ validate_mms_characteristics <- function(mms_list, required_names) {
   total_fraction <- sum(
     vapply(mms_list, function(mms) mms[["manure_management_system_fraction"]], numeric(1))
   )
-  if (!isTRUE(all.equal(total_fraction, 1, tolerance = 1e-8))) {
+  if (abs(total_fraction - 1) > 1e-8) {
     cli::cli_abort(
       "The sum of all MMS fractions must be equal to 1 (current sum: {total_fraction})."
     )

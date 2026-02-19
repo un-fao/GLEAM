@@ -12,31 +12,50 @@ calc_feed_digestibility_fraction(
 )
 }
 \arguments{
-\item{feed_digestible_energy_ruminant}{Numeric. Digestible energy for ruminants
-(same units as \code{feed_gross_energy}).}
+\item{feed_digestible_energy_ruminant}{Numeric. Digestible energy content of a
+feed component for ruminants, representing the energy absorbed by the animal after
+fecal losses (MJ/kg DM).}
 
-\item{feed_digestible_energy_pigs}{Numeric. Digestible energy for pigs
-(same units as \code{feed_gross_energy}).}
+\item{feed_digestible_energy_pigs}{Numeric. Digestible energy content of a feed
+component for pigs, representing the energy absorbed by the animal after fecal
+losses (MJ/kg DM).}
 
-\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy for chickens
-(same units as \code{feed_gross_energy}).}
+\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy content
+of a feed component for chickens, representing digestible energy minus energy
+losses in uric acid and gaseous products of digestion (MJ/kg DM).}
 
-\item{feed_gross_energy}{Numeric. Gross energy (same units as
-\code{feed_digestible_energy_ruminant}, \code{feed_digestible_energy_pigs},
-and \code{feed_metabolizable_energy_chicken}).}
+\item{feed_gross_energy}{Numeric. Gross energy content of a feed component,
+representing the total chemical energy released upon complete combustion of
+the feed (MJ/kg DM).}
 }
 \value{
-List. Digestibility fractions (unitless) with elements:
-\code{feed_digestibility_fraction_ruminant}, \code{feed_digestibility_fraction_pigs},
-\code{feed_digestibility_fraction_chicken}.
+List with elements:
+\describe{
+\item{feed_digestibility_fraction_ruminant}{
+Numeric. Digestibility of a feed component for ruminants, expressed as the ratio
+of digestible energy to gross energy content (fraction).
+}
+\item{feed_digestibility_fraction_pigs}{
+Numeric. Digestibility of a feed component for pigs, expressed as the ratio of
+digestible energy to gross energy content (fraction).
+}
+\item{feed_digestibility_fraction_chicken}{
+Numeric. Digestibility of a feed component for chickens, expressed as the ratio
+of metabolizable energy to gross energy content (fraction).
+}
+}
 }
 \description{
-Computes digestibility as the ratio of digestible or metabolizable energy
-to gross energy.
+Computes species-specific feed digestibility fractions by feed component.
 }
 \details{
-The digestibility ratio is defined as:
-\deqn{feed\_digestibility\_fraction = feed\_digestible\_energy / feed\_gross\_energy}
+Digestibility is computed as the ratio of usable energy to gross energy:
+\deqn{feed\_digestibility\_fraction = usable\_energy / feed\_gross\_energy}
 
-This helper is vectorized over its inputs.
+For ruminants and pigs, usable energy is represented by \code{digestible_energy} (DE),
+which accounts for fecal energy losses. For chickens, \code{metabolizable_energy}
+(ME) is used instead of \code{digestible_energy} because urinary losses (excreted as uric acid) and fecal
+excretions are voided together, making fecal energy losses difficult to measure
+separately. \code{metabolizable_energy} therefore provides a more appropriate and
+standard measure of usable dietary energy in poultry nutrition.
 }
