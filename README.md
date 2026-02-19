@@ -38,10 +38,13 @@ devtools::install_git("https://github.com/APPLITICS/gleam.git")
 ## Help & Contact
 
 For documentation, internal guidance, or technical questions, please contact the GLEAM development team:
+We kindly ask users to inform us of your usage, as this helps us track the tool’s impact and guide future improvements. Please also get in touch with the GLEAM development team for  documentation, internal guidance, or technical questions. 
+
 
 - 📧 Info-GLEAM@fao.org
 - 🌐 [GLEAM Website](https://www.fao.org/gleam/en/)
 
+
 ## License
 
-This package is licensed under the AGPL-3 license. 
+This package is licensed under the AGPL-3 license which permits free use, modification, and sharing of the software. Under AGPL-3.0, any modifications to the code must be made publicly available by creating a new branch on GitHub. The software cannot be relicensed under more restrictive terms without adhering to the AGPL-3.0 guidelines. Developers may anonymize or remove any sensitive or identifiable data (customizations) before resubmitting code. 
