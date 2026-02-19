@@ -1,18 +1,19 @@
+Type: Package
 Package: gleam
-Title: Global Livestock Environmental Assessment Model (GLEAM-X) R package
+Title: Global Livestock Environmental Assessment Model (GLEAM-X)
 Version: 0.0.0.9000
 Authors@R: c(
     person(given = "Ahmed",
            family = "Jou",
-           email = "ahmed.jou@applitics.fr",
+           email = "ahmed@applitics.fr",
            role = c("aut", "cre"),
-           comment = c(ORCID = "0000-000X-XXXX-XXXX", 
-                       "Applitics.fr")),
+           comment = c(ORCID = "0009-0002-2309-4583", 
+                       "https://applitics.fr")),
     person(given = "Yassine",
-           family = "Elouni",
-           email = "real.email@example.com",
+           family = "Elaouni",
+           email = "yassine@applitics.fr",
            role = c("aut"),
-           comment = "Applitics.fr"),
+           comment = "https://applitics.fr"),
     person(given = "Dominik",
            family = "Wisser",
            email = "dominik.wisser@fao.org",
@@ -67,11 +68,15 @@ Authors@R: c(
            family = "BMELH",
            role = c( "fnd"),
            comment = "Funding support"))
-Description: Official R-package of FAO's Global Environmental Assessment Model (GLEAM) to calculate environmental impacts of livestock agrifood systems. Includes modules to disaggregate herds into sex and age-specific cohorts, animal energy  mplements steady-state herd simulation components used in the Global Livestock 
-    Environmental Assessment Model (GLEAM), including population structure, offtake 
-    flows, demographic transitions, and cohort-level weight metrics. Designed to be 
-    modular, testable, and integrated with downstream feed and emissions models.
+Description: Official R package implementation of FAO's Global Livestock Environmental 
+  Assessment Model (GLEAM). Provides core modules to calculate environmental 
+  impacts of livestock agrifood systems, including steady-state herd simulation, 
+  population structure, demographic transitions, offtake flows, cohort-level weight 
+  metrics, and sex- and age-specific disaggregation. Designed to be modular, 
+  testable, and fully integrable with downstream feed and emissions models.
 License: AGPL-3
+URL: https://github.com/APPLITICS/gleam/, https://www.fao.org/gleam/en/
+BugReports: https://github.com/APPLITICS/gleam/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
