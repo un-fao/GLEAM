@@ -23,6 +23,12 @@
 #'   `has_herd_structure` is FALSE.
 #' @param weights_args List. Arguments passed to `run_weights_calculations()`.
 #' @param feed_rations_args List. Arguments passed to `run_feed_rations()`.
+#' @param energy_requirements_args List. Arguments passed to `run_energy_requirements()`.
+#'   Must include \code{herd_level_data}. May include \code{cohort_level_data}: cohort-level
+#'   columns not produced by the pipeline (e.g. \code{low_activity_fraction},
+#'   \code{high_activity_fraction} are merged in by \code{herd_id}
+#'   and \code{cohort_short} before the energy step. If omitted, those columns must already
+#'   exist in the pipeline data.
 #' @param show_indicator Logical. Whether to display progress indicators during the pipeline run.
 #'
 #' @return A cohort-level `data.table` containing the outputs produced by the
@@ -69,13 +75,26 @@
 #'   feed_rations = feed_rations_chrt_dt,
 #'   feed_params = feed_params_dt
 #' )
+#' energy_requirements_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/examples/energy_requirements_input_hrd_data.csv",
+#'   package = "gleam"
+#' ))
+#' energy_requirements_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/examples/energy_requirements_input_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#' energy_requirements_args <- list(
+#'   herd_level_data = energy_requirements_hrd_dt,
+#'   cohort_level_data = energy_requirements_chrt_dt
+#' )
 #'
 #' # Run GLEAM using herd simulation outputs
 #' results <- run_gleam(
 #'   has_herd_structure = FALSE,
 #'   herd_simulation_args = herd_simulation_args,
 #'   weights_args = weights_args,
-#'   feed_rations_args = feed_rations_args
+#'   feed_rations_args = feed_rations_args,
+#'   energy_requirements_args = energy_requirements_args
 #' )
 #'
 #' # Access results
@@ -109,6 +128,18 @@
 #'   feed_rations = feed_rations_chrt_dt,
 #'   feed_params = feed_params_dt
 #' )
+#' energy_requirements_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/examples/energy_requirements_input_hrd_data.csv",
+#'   package = "gleam"
+#' ))
+#' energy_requirements_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/examples/energy_requirements_input_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#' energy_requirements_args <- list(
+#'   herd_level_data = energy_requirements_hrd_dt,
+#'   cohort_level_data = energy_requirements_chrt_dt
+#' )
 #'
 #' # Run GLEAM using provided herd structure (skip herd simulation)
 #' results <- run_gleam(
@@ -116,7 +147,8 @@
 #'   herd_structure = herd_structure_dt,
 #'   herd_simulation_args = list(),
 #'   weights_args = weights_args,
-#'   feed_rations_args = feed_rations_args
+#'   feed_rations_args = feed_rations_args,
+#'   energy_requirements_args = energy_requirements_args
 #' )
 #'
 #' print(results)
@@ -128,6 +160,7 @@ run_gleam <- function(
     herd_simulation_args,
     weights_args,
     feed_rations_args,
+    energy_requirements_args,
     show_indicator = TRUE
 ) {
 
@@ -171,6 +204,25 @@ run_gleam <- function(
     gleam_chrt_data,
     feed_rations_summary,
     by = c("herd_id", "cohort_short")
+  )
+
+  # --- Step 5: Run energy requirements and DMI --------------------------------
+  # Merge in cohort-level energy columns not produced by the pipeline
+  energy_cohort <- data.table::as.data.table(energy_requirements_args$cohort_level_data)
+  extra_cols <- setdiff(names(energy_cohort), names(gleam_chrt_data))
+  if (length(extra_cols) > 0) {
+    cols_to_merge <- c("herd_id", "cohort_short", extra_cols)
+    gleam_chrt_data <- merge(
+      gleam_chrt_data,
+      energy_cohort[, cols_to_merge, with = FALSE],
+      by = c("herd_id", "cohort_short"),
+      all.x = TRUE
+    )
+  }
+
+  gleam_chrt_data <- run_energy_requirements(
+    cohort_level_data = gleam_chrt_data,
+    herd_level_data = energy_requirements_args$herd_level_data
   )
 
   # Clear progress indicator if it was shown

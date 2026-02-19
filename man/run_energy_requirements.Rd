@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_energy_requirements.R
 \name{run_energy_requirements}
 \alias{run_energy_requirements}
-\title{Run Energy Requirements and Dry Matter Intake Calculation (Internal)}
+\title{Run Energy Requirements and Dry Matter Intake Calculation}
 \usage{
 run_energy_requirements(cohort_level_data, herd_level_data)
 }
@@ -19,7 +19,6 @@ run_energy_requirements(cohort_level_data, herd_level_data)
 \item \code{cohort_duration_days} – Cohort duration (days).
 \item \code{diet_digestibility_fraction} – Diet digestibility (DE/GE, fraction).
 \item \code{diet_gross_energy}, \code{diet_metabolizable_energy} – Gross and metabolizable energy (MJ/kg DM).
-\item \code{lambing_interval} – Lambing interval (days) for small ruminants.
 }}
 
 \item{herd_level_data}{A \code{data.table} or \code{data.frame} with herd-level inputs (one row per herd)
@@ -46,8 +45,7 @@ energy_requirement_total, dry_matter_intake.
 }
 \description{
 Computes energy requirements and dry matter intake (DMI) for each row of input data
-using the GLEAM core model functions. This function is intended for internal workflows
-and does not perform any file I/O.
+using the GLEAM core model functions.
 }
 \details{
 It adds columns for energy requirements (maintenance, activity, growth, lactation, work,
@@ -56,22 +54,20 @@ and dry matter intake.
 }
 \examples{
 \dontrun{
-# Load example herd- and cohort-level inputs from the package
-herd_path <- system.file(
-  "extdata/examples/energy_requirements_herd_input_example.csv",
+# Load energy requirements inputs (cohort and herd-level)
+energy_requirements_chrt_dt <- data.table::fread(system.file(
+  "extdata/examples/energy_requirements_input_chrt_data.csv",
   package = "gleam"
-)
-cohort_path <- system.file(
-  "extdata/examples/energy_requirements_cohort_input_example.csv",
+))
+energy_requirements_hrd_dt <- data.table::fread(system.file(
+  "extdata/examples/energy_requirements_input_hrd_data.csv",
   package = "gleam"
-)
-herd_level_data <- data.table::fread(herd_path)
-cohort_level_data <- data.table::fread(cohort_path)
+))
 
 # Run energy requirement and DMI calculations
 energy_results <- run_energy_requirements(
-  cohort_level_data = cohort_level_data,
-  herd_level_data = herd_level_data
+  cohort_level_data = energy_requirements_chrt_dt,
+  herd_level_data = energy_requirements_hrd_dt
 )
 }
 
