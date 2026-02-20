@@ -167,7 +167,11 @@ run_gleam <- function(
   # --- Step 1: Validate inputs -----------------------------------------------
   validate_run_gleam_inputs(
     has_herd_structure = has_herd_structure,
-    herd_structure = herd_structure
+    herd_structure = herd_structure,
+    herd_simulation_args = herd_simulation_args,
+    weights_args = weights_args,
+    feed_rations_args = feed_rations_args,
+    energy_requirements_args = energy_requirements_args
   )
 
   # Show progress indicator if requested
@@ -222,7 +226,8 @@ run_gleam <- function(
 
   gleam_chrt_data <- run_energy_requirements(
     cohort_level_data = gleam_chrt_data,
-    herd_level_data = energy_requirements_args$herd_level_data
+    herd_level_data = energy_requirements_args$herd_level_data,
+    show_indicator = show_indicator
   )
 
   # Clear progress indicator if it was shown

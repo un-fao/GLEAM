@@ -4,7 +4,11 @@
 \alias{run_energy_requirements}
 \title{Run Energy Requirements and Dry Matter Intake Calculation}
 \usage{
-run_energy_requirements(cohort_level_data, herd_level_data)
+run_energy_requirements(
+  cohort_level_data,
+  herd_level_data,
+  show_indicator = TRUE
+)
 }
 \arguments{
 \item{cohort_level_data}{A \code{data.table} or \code{data.frame} with cohort-level inputs and at least:
@@ -35,6 +39,9 @@ and at least:
 \item \code{draught_fraction_female}, \code{draught_fraction_male} – Fractions of adults used for draught work.
 \item \code{fibre_yield_year} – Annual fibre production per head (kg/head/year).
 }}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during simulation.
+Defaults to \code{TRUE}.}
 }
 \value{
 The cohort-level data with new columns: energy_requirement_maintenance,

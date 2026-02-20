@@ -34,6 +34,8 @@
 #'     \item `draught_fraction_female`, `draught_fraction_male` – Fractions of adults used for draught work.
 #'     \item `fibre_yield_year` – Annual fibre production per head (kg/head/year).
 #'   }
+#' @param show_indicator Logical. Whether to display progress indicators during simulation.
+#'   Defaults to `TRUE`.
 #'
 #' @return The cohort-level data with new columns: energy_requirement_maintenance,
 #' energy_requirement_activity, energy_requirement_growth, energy_requirement_lactation,
@@ -63,13 +65,19 @@
 #' @importFrom data.table := .I
 run_energy_requirements <- function(
     cohort_level_data,
-    herd_level_data
+    herd_level_data,
+    show_indicator = TRUE
 ) {
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
   herd_level_data <- data.table::as.data.table(herd_level_data)
 
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_energy_requirements_inputs(cohort_level_data, herd_level_data)
+
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Calculating energy requirements and DMI, please wait\U2026")
+  }
 
   # --- Step 2: Create working copies ------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
@@ -243,6 +251,12 @@ run_energy_requirements <- function(
     ),
     by = .I
   ]
+
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Energy requirements calculation complete.")
+  }
 
   return(cohort_level_data)
 }
