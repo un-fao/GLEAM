@@ -66,7 +66,6 @@ A named list with two elements:
 This corresponds to \code{cohort_stock_start} returned by \code{\link{project_population_size}}, as it reflects the size of the population by cohort while preserving the total population size (\code{herd_size_total}) provided in the inputs.
 \item \code{offtake_heads} - Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
 \item \code{offtake_heads_assessment} - Numeric vector of legth 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
-\item \code{probability_growth} - Numeric vector of length 6. Probability of growing into the next age class for 6 cohorts (fraction). (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})
 }
 }
 \item{\code{herd_level_results}}{A \code{data.table} with one row per herd containing all original
@@ -179,4 +178,11 @@ print(results$herd_level_results)
 \references{
 Lesnoff, M. (2013). \emph{DYNMOD: A spreadsheet interface for demographic projections of tropical
 livestock populations, User’s manual}. CIRAD, Montpellier, France.
+}
+\seealso{
+\code{\link{compute_fecundity_rates}},
+\code{\link{compute_transition_probabilities}},
+\code{\link{simulate_steady_state_structure}},
+\code{\link{project_population_size}},
+\code{\link{summarise_offtake}}
 }

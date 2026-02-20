@@ -118,7 +118,6 @@
 #'         This corresponds to `cohort_stock_start` returned by \code{\link{project_population_size}}, as it reflects the size of the population by cohort while preserving the total population size (`herd_size_total`) provided in the inputs.
 #'         \item `offtake_heads` - Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`).
 #'         \item `offtake_heads_assessment` - Numeric vector of legth 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`).
-#'         \item `probability_growth` - Numeric vector of length 6. Probability of growing into the next age class for 6 cohorts (fraction). (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)
 #'       }
 #'     }
 #'     \item{`herd_level_results`}{A `data.table` with one row per herd containing all original
@@ -129,6 +128,13 @@
 #'     }
 #'   }
 #'
+#' @seealso
+#' \code{\link{compute_fecundity_rates}},
+#' \code{\link{compute_transition_probabilities}},
+#' \code{\link{simulate_steady_state_structure}},
+#' \code{\link{project_population_size}},
+#' \code{\link{summarise_offtake}}
+#' 
 #' @examples
 #' \dontrun{
 #' # Load herd simulation inputs (cohort- and herd-level)
@@ -271,8 +277,7 @@ run_herd_simulation <- function(
         `:=`(
           cohort_stock_size = popsize_result$cohort_stock_start[cohort_name],
           offtake_heads = offtake_result$offtake_heads[cohort_name],
-          offtake_heads_assessment = offtake_result$offtake_heads_assessment[cohort_name],
-          probability_growth = transition_result$probability_growth[cohort_name]
+          offtake_heads_assessment = offtake_result$offtake_heads_assessment[cohort_name]
         )
       ]
     }
