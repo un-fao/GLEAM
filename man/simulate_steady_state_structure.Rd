@@ -16,38 +16,41 @@ simulate_steady_state_structure(
 )
 }
 \arguments{
-\item{initial_herd_structure}{Named numeric vector of length 6. Initial number of individuals in each of the 6
-sex-age classes. Must be named with: \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.}
+\item{initial_herd_structure}{Named numeric vector of length 6. Initial number of individuals in each of the 6 sex-age classes used
+to bootstrap the steady-state simulation (# heads).
+These values are used as starting points for the iterative simulation and do not affect the final steady-state results (only convergence speed).
+Must be named with: \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.}
 
-\item{max_simulation_years}{Integer. Maximum number of years to simulate.}
+\item{max_simulation_years}{Numeric. Maximum number of years to simulate (years).}
 
-\item{min_lambda_change}{Numeric. Threshold for minimal change in class-specific growth rates to reach
-steady state.}
+\item{min_lambda_change}{Numeric. Convergence threshold for changes in cohort-specific growth rates of sex–age cohort proportions (lambda). Iterations of the herd simulation stop when the absolute change in lambda between successive iterations falls below this threshold.}
 
-\item{fecundity_female}{Numeric. Daily number of female births per adult female.}
+\item{fecundity_female}{Numeric. Daily number of female offspring per adult female (# offspring/day)}
 
-\item{fecundity_male}{Numeric. Daily number of male births per adult female.}
+\item{fecundity_male}{Numeric. Daily number of male offspring per adult female (# offspring/day)}
 
-\item{probability_death}{Named numeric vector of length 10. Daily death probabilities for 10 cohorts. Must be named
-using: \code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{FC}, \code{MB}, \code{MJ}, \code{MS},
-\code{MA}, \code{MC}.}
+\item{probability_death}{Named numeric vector of length 10. Probability of animal dying within the model time interval for 10 cohorts (fraction)
+(cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling).}
 
-\item{probability_offtake}{Named numeric vector of length 10. Daily offtake probabilities for 10 cohorts.
-Names must match those in \code{probability_death}.}
+\item{probability_offtake}{Named numeric vector of length 10. Probability that an animal will be removed from the herd within the model time interval for 10 cohorts (fraction).
+(cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling).}
 
-\item{probability_growth}{Named numeric vector of length 10. Daily probability of transition
-to the next class for 10 cohorts. Names must match those in \code{probability_death}.}
+\item{probability_growth}{Named numeric vector of length 10. Probability of growing into the next age class for 10 cohorts (fraction)
+(cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling).}
 }
 \value{
 A named list with:
 \describe{
-\item{days_to_steady_state}{Number of days until steady state is reached.}
-\item{herd_structure}{Final share of each of the 8 sex-age cohorts.}
-\item{cohort_share}{Final share of 6 grouped sex-age classes.}
-\item{growth_rate_herd}{Annualized growth rate at steady state.}
+\item{days_to_steady_state}{Numeric. Number of days required for the herd population structure to converge to a steady state, defined as the point at which successive iterations produce negligible changes in cohort proportions (days)}
+\item{herd_structure}{Named numeric vector of length 8. Final steady-state share of each of 8 sex-age cohorts (\code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}) (fraction). Shares should sum to 1.}
+\item{cohort_share}{Named numeric vector of length 6. Final steady-state share of 6 grouped sex-age cohorts  (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}, where \code{FJ = FB + FJ} and \code{MJ = MB + MJ}) (fraction). Shares should sum to 1.}
+\item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction)}
 }
 }
 \description{
-Simulates population dynamics over time until a steady-state is reached. Tracks age-class structure and
-population growth based on survival, offtake, and fecundity parameters.
+Simulates population dynamics over time until a steady state is reached.
+The steady state is defined as a constant sex–age cohort structure over time,
+with population size potentially growing or declining at a constant rate.
+Tracks sex–age cohort structure and population growth based on survival,
+offtake, and fecundity parameters.
 }
