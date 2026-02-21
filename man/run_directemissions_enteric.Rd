@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_directemissions_enteric.R
 \name{run_directemissions_enteric}
 \alias{run_directemissions_enteric}
-\title{Run Enteric Methane Direct Emissions (Internal)}
+\title{Run Enteric Methane Direct Emissions}
 \usage{
 run_directemissions_enteric(data, show_indicator = TRUE)
 }
@@ -12,7 +12,7 @@ run_directemissions_enteric(data, show_indicator = TRUE)
 \item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
 }
 \value{
-The same \code{data.table} with new columns \code{ym} and \code{ch4_enteric}.
+The same \code{data.table} with new columns \code{ch4_conversion_factor_ym} and \code{ch4_enteric}.
 
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management, Equation 10.21.
@@ -30,12 +30,12 @@ This function is intended for internal workflows and does not perform any file I
 
 It adds two columns:
 \itemize{
-\item \code{ym}: Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).
+\item \code{ch4_conversion_factor_ym}: Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).
 \item \code{ch4_enteric}: Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
 }
 
 Input data must at minimum include the following columns:
-param animal Character. Code identifying the livestock species.
+param species_short Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -46,7 +46,7 @@ Supported values include:
 \item \code{GTS}: goats
 }
 
-param cohort Character Sex- and age-specific cohort code describing the
+param cohort_short Character Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -57,9 +57,9 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }
 \itemize{
-\item \code{diet_dig}: Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
-\item \code{diet_ge}: Numeric. Average gross energy content of the diet (MJ/kg DM).
-\item \code{dmi}: Numeric. Daily dry matter intake of feed (kg DM/head/day).
+\item \code{diet_digestibility_fraction}: Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).
+\item \code{diet_gross_energy}: Numeric. Average gross energy content of the diet (MJ/kg DM).
+\item \code{dry_matter_intake}: Numeric. Daily dry matter intake of feed (kg DM/head/day).
 }
 
 Optional input data include:
@@ -70,12 +70,14 @@ multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10\% red
 }
 \examples{
 \dontrun{
-# Load example input from the package and run the simulation
-input_path <- system.file("extdata/GLEAM_input_directemissions_enteric.csv", package = "gleam")
+# Load example input (6 herd_ids, cohort-level; only required columns)
+input_path <- system.file(
+  "extdata/examples/directemissions_enteric_input_chrt_data.csv",
+  package = "gleam"
+)
 dt <- data.table::fread(input_path)
 result <- run_directemissions_enteric(dt)
-head(result[, .(Animal_short, cohort, ym, ch4_enteric)])
+head(result[, .(species_short, cohort_short, ch4_conversion_factor_ym, ch4_enteric)])
 }
 
 }
-\keyword{internal}

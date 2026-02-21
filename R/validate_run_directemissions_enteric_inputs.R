@@ -19,7 +19,8 @@ validate_run_directemissions_enteric_inputs <- function(data) {
 
   # --- Required columns validation -------------------------------------------
   required_cols <- c(
-    "herd_id", "Animal_short", "cohort", "diet_dig", "diet_ge", "dmi"
+    "herd_id", "animal", "cohort_short", "diet_digestibility_fraction",
+    "diet_gross_energy", "dry_matter_intake"
   )
   missing_cols <- setdiff(required_cols, names(data))
   if (length(missing_cols) > 0) {
@@ -28,23 +29,23 @@ validate_run_directemissions_enteric_inputs <- function(data) {
     )
   }
 
-  # --- Valid cohort and species codes -----------------------------------------
+  # --- Valid cohort and animal (full name) codes ------------------------------
   valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-  valid_animals <- c("CTL", "BFL", "SHP", "GTS", "CML", "PGS", "CHK")
+  valid_animals_full <- c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels")
 
-  invalid_cohorts <- setdiff(unique(data$cohort), valid_cohorts)
+  invalid_cohorts <- setdiff(unique(data$cohort_short), valid_cohorts)
   if (length(invalid_cohorts) > 0) {
     cli::cli_abort(
-      "Invalid {.var cohort} values in {.arg data}: {.val {invalid_cohorts}}.
+      "Invalid {.var cohort_short} values in {.arg data}: {.val {invalid_cohorts}}.
       Must be one of: {.val {valid_cohorts}}"
     )
   }
 
-  invalid_animals <- setdiff(unique(data$Animal_short), valid_animals)
+  invalid_animals <- setdiff(unique(data$animal), valid_animals_full)
   if (length(invalid_animals) > 0) {
     cli::cli_abort(
-      "Invalid {.var Animal_short} values in {.arg data}: {.val {invalid_animals}}.
-      Must be one of: {.val {valid_animals}}"
+      "Invalid {.var animal} values in {.arg data}: {.val {invalid_animals}}.
+      Must be one of: {.val {valid_animals_full}}"
     )
   }
 
@@ -54,8 +55,8 @@ validate_run_directemissions_enteric_inputs <- function(data) {
     ,
     list(
       count = .N,
-      has_all_cohorts = setequal(cohort, valid_cohorts),
-      missing_cohorts = paste(setdiff(valid_cohorts, cohort), collapse = ", ")
+      has_all_cohorts = setequal(cohort_short, valid_cohorts),
+      missing_cohorts = paste(setdiff(valid_cohorts, cohort_short), collapse = ", ")
     ),
     by = herd_id
   ]

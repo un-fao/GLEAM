@@ -5,15 +5,15 @@
 \title{Compute Daily Enteric Methane Emissions}
 \usage{
 compute_daily_enteric_emissions(
-  animal,
-  ym,
+  species_short,
+  ch4_conversion_factor_ym,
   ch4_mitigation_factor,
-  diet_ge,
-  dmi
+  diet_gross_energy,
+  dry_matter_intake
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -24,26 +24,31 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{ym}{Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).}
+\item{ch4_conversion_factor_ym}{Numeric. Methane conversion factor (ym),
+representing the percentage of gross energy of the feed ration that is
+converted to CH₄ (percentage).}
 
-\item{ch4_mitigation_factor}{Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
-multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10\% reduction). Default = 1.}
+\item{ch4_mitigation_factor}{Numeric. Dimensionless fraction of baseline
+enteric methane emissions remaining after mitigation (1 = no mitigation,
+0.9 = 10\% reduction). Default = 1.}
 
-\item{diet_ge}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{diet_gross_energy}{Numeric. Average gross energy content of the diet
+(MJ/kg DM).}
 
-\item{dmi}{Numeric. Average daily dry matter intake of feed (kg dry matter/head/day).}
+\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed
+(kg DM/head/day).}
 }
 \value{
 Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
 }
 \description{
-Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross energy intake,
-methane conversion factor (ym), and dry matter intake (dmi).
+Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross
+energy intake, methane conversion factor (ym), and dry matter intake.
 }
 \details{
 The formula used to estimate daily enteric methane emissions is:
 
-\deqn{CH_4 = \frac{diet\_ge \times dmi \times \frac{ym}{100}}{55.65}}
+\deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake \times \frac{ch4\_conversion\_factor\_ym}{100}}{55.65}}
 
 where 55.65 MJ/kg is the energy content of methane.
 

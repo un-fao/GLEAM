@@ -4,10 +4,14 @@
 \alias{compute_methane_conversion_factor}
 \title{Compute Methane Conversion Factor (ym)}
 \usage{
-compute_methane_conversion_factor(animal, cohort, diet_dig)
+compute_methane_conversion_factor(
+  species_short,
+  cohort_short,
+  diet_digestibility_fraction
+)
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -18,7 +22,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -29,10 +33,13 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed
+ration, expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{
-Numeric. Methane conversion factor (ym), representing the share of gross energy of the feed ration that is converted to CH₄ (percentage)
+Numeric. Methane conversion factor (ch4_conversion_factor_ym),
+representing the share of gross energy of the feed ration that is converted
+to CH₄ (percentage).
 }
 \description{
 Calculates the methane conversion factor (ym, \% of dietary gross energy in feed converted to methane)
@@ -44,12 +51,12 @@ ym is computed using species- and cohort-specific default relationships with die
 
 \itemize{
 \item \strong{For \code{CTL} and \code{BFL}:}
-\deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
+\deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
 
 \item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
 \itemize{
-\item \code{FA} and \code{MA} cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
-\item \code{FS} and \code{MS} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_dig \times 100)}
+\item \code{FA} and \code{MA} cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+\item \code{FS} and \code{MS} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
 }
 
 \item \strong{For \code{PGS}:}

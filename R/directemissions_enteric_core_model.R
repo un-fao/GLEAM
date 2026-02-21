@@ -5,7 +5,7 @@
 #' rules consistent with IPCC Tier 2 approach.
 #' 
 #'
-#' @param animal Character. Code identifying the livestock species.
+#' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
@@ -16,7 +16,7 @@
 #'     \item \code{GTS}: goats
 #'   }
 #'   
-#' @param cohort Character. Sex- and age-specific cohort code describing the
+#' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -26,21 +26,24 @@
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param diet_dig Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction)
+#' @param diet_digestibility_fraction Numeric. Average digestibility of the feed
+#'   ration, expressed as ratio of digestible to gross energy content (fraction).
 #'
-#' @return Numeric. Methane conversion factor (ym), representing the share of gross energy of the feed ration that is converted to CH₄ (percentage)
+#' @return Numeric. Methane conversion factor (ch4_conversion_factor_ym),
+#'   representing the share of gross energy of the feed ration that is converted
+#'   to CH₄ (percentage).
 #'
 #'@details
 #' ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013).
 #'
 #' \itemize{
 #'   \item \strong{For \code{CTL} and \code{BFL}:}
-#'     \deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
+#'     \deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
 #'
 #'   \item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
 #'     \itemize{
-#'       \item \code{FA} and \code{MA} cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_dig \times 100)}
-#'       \item \code{FS} and \code{MS} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_dig \times 100)}
+#'       \item \code{FA} and \code{MA} cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+#'       \item \code{FS} and \code{MS} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
 #'     }
 #'
 #'   \item \strong{For \code{PGS}:}
@@ -70,48 +73,48 @@
 #'
 #' @export
 compute_methane_conversion_factor <- function(
-    animal,
-    cohort,
-    diet_dig
+    species_short,
+    cohort_short,
+    diet_digestibility_fraction
 ) {
-  validate_ym_inputs(animal, cohort, diet_dig)
-  
-  if (animal %in% c("CTL", "BFL")) {
-    if (cohort %in% c("FJ", "MJ")) {
-      ym_value <- 0
+  validate_ym_inputs(species_short, cohort_short, diet_digestibility_fraction)
+
+  if (species_short %in% c("CTL", "BFL")) {
+    if (cohort_short %in% c("FJ", "MJ")) {
+      ch4_conversion_factor_ym <- 0
     } else {
-      ym_value <- 9.75 - 0.05 * diet_dig * 100
+      ch4_conversion_factor_ym <- 9.75 - 0.05 * diet_digestibility_fraction * 100
     }
-  } else if (animal %in% c("SHP", "GTS", "CML")) {
-    if (cohort %in% c("FJ", "MJ")) {
-      ym_value <- 0
-    } else if (cohort %in% c("FS", "MS")) {
-      ym_value <- 7.75 - 0.05 * diet_dig * 100
+  } else if (species_short %in% c("SHP", "GTS", "CML")) {
+    if (cohort_short %in% c("FJ", "MJ")) {
+      ch4_conversion_factor_ym <- 0
+    } else if (cohort_short %in% c("FS", "MS")) {
+      ch4_conversion_factor_ym <- 7.75 - 0.05 * diet_digestibility_fraction * 100
     } else {
-      ym_value <- 9.75 - 0.05 * diet_dig * 100
+      ch4_conversion_factor_ym <- 9.75 - 0.05 * diet_digestibility_fraction * 100
     }
-  } else if (animal %in% c("PGS")) {
-    if (cohort %in% c("FJ", "MJ")) {
-      ym_value <- 0
-    } else if (cohort %in% c("FS", "MS")) {
-      ym_value <- 0.39
+  } else if (species_short %in% c("PGS")) {
+    if (cohort_short %in% c("FJ", "MJ")) {
+      ch4_conversion_factor_ym <- 0
+    } else if (cohort_short %in% c("FS", "MS")) {
+      ch4_conversion_factor_ym <- 0.39
     } else {
-      ym_value <- 1.01
+      ch4_conversion_factor_ym <- 1.01
     }
-  } else if (animal == "CHK") {
-    ym_value <- NA_real_
+  } else if (species_short == "CHK") {
+    ch4_conversion_factor_ym <- NA_real_
   }
 
-  return(ym_value)
+  return(ch4_conversion_factor_ym)
 }
 
 
 #' Compute Daily Enteric Methane Emissions
 #'
-#' Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross energy intake,
-#' methane conversion factor (ym), and dry matter intake (dmi). 
-#' 
-#' @param animal Character. Code identifying the livestock species.
+#' Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross
+#' energy intake, methane conversion factor (ym), and dry matter intake.
+#'
+#' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
@@ -121,19 +124,24 @@ compute_methane_conversion_factor <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#'   
-#' @param ym Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).
-#' @param ch4_mitigation_factor Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
-#' multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10% reduction). Default = 1.
-#' @param diet_ge Numeric. Average gross energy content of the diet (MJ/kg DM).
-#' @param dmi Numeric. Average daily dry matter intake of feed (kg dry matter/head/day).
+#'
+#' @param ch4_conversion_factor_ym Numeric. Methane conversion factor (ym),
+#'   representing the percentage of gross energy of the feed ration that is
+#'   converted to CH₄ (percentage).
+#' @param ch4_mitigation_factor Numeric. Dimensionless fraction of baseline
+#'   enteric methane emissions remaining after mitigation (1 = no mitigation,
+#'   0.9 = 10% reduction). Default = 1.
+#' @param diet_gross_energy Numeric. Average gross energy content of the diet
+#'   (MJ/kg DM).
+#' @param dry_matter_intake Numeric. Average daily dry matter intake of feed
+#'   (kg DM/head/day).
 #'
 #' @return Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
 #'
 #'@details
 #' The formula used to estimate daily enteric methane emissions is:
 #'
-#' \deqn{CH_4 = \frac{diet\_ge \times dmi \times \frac{ym}{100}}{55.65}}
+#' \deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake \times \frac{ch4\_conversion\_factor\_ym}{100}}{55.65}}
 #'
 #' where 55.65 MJ/kg is the energy content of methane.
 #'
@@ -149,17 +157,21 @@ compute_methane_conversion_factor <- function(
 #'
 #' @export
 compute_daily_enteric_emissions <- function(
-    animal,
-    ym,
+    species_short,
+    ch4_conversion_factor_ym,
     ch4_mitigation_factor,
-    diet_ge,
-    dmi
+    diet_gross_energy,
+    dry_matter_intake
 ) {
-  validate_enteric_emission_inputs(animal, ym, ch4_mitigation_factor, diet_ge, dmi)
+  validate_enteric_emission_inputs(
+    species_short, ch4_conversion_factor_ym, ch4_mitigation_factor,
+    diet_gross_energy, dry_matter_intake
+  )
 
-  if (animal %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
-    ch4_enteric_value <- diet_ge * dmi * (ym / 100) * ch4_mitigation_factor / 55.65
-  } else if (animal == "CHK") {
+  if (species_short %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
+    ch4_enteric_value <- diet_gross_energy * dry_matter_intake *
+      (ch4_conversion_factor_ym / 100) * ch4_mitigation_factor / 55.65
+  } else if (species_short == "CHK") {
     ch4_enteric_value <- NA_real_
   }
 
