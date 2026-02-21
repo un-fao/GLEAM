@@ -4,10 +4,12 @@
 \alias{run_directemissions_enteric}
 \title{Run Enteric Methane Direct Emissions (Internal)}
 \usage{
-run_directemissions_enteric(data)
+run_directemissions_enteric(data, show_indicator = TRUE)
 }
 \arguments{
 \item{data}{A \code{data.table} with cohort-level nutritional and demographic inputs.}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
 }
 \value{
 The same \code{data.table} with new columns \code{ym} and \code{ch4_enteric}.

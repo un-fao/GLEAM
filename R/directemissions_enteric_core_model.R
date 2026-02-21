@@ -77,39 +77,32 @@ compute_methane_conversion_factor <- function(
   validate_ym_inputs(animal, cohort, diet_dig)
   
   if (animal %in% c("CTL", "BFL")) {
-    
     if (cohort %in% c("FJ", "MJ")) {
-      ret <- 0
+      ym_value <- 0
     } else {
-      ret = 9.75 - 0.05 * diet_dig * 100
+      ym_value <- 9.75 - 0.05 * diet_dig * 100
     }
-    
-    } else if (animal %in% c("SHP", "GTS", "CML")) {
-    
-      if (cohort %in% c("FJ", "MJ")){
-      ret <- 0
-      } else if (cohort %in% c("FS", "MS")) {
-      ret = 7.75 - 0.05 * diet_dig * 100
-      } else {
-      ret = 9.75 - 0.05 * diet_dig * 100
-      }
-      
-    } else if (animal %in% c("PGS")) {
-      
-      if (cohort %in% c("FJ", "MJ")){
-      ret <- 0
-      } else if (cohort %in% c("FS", "MS")) {
-      ret <- 0.39
-      } else {
-      ret <- 1.01
-      }
-    
-    } else if (animal == "CHK") {
-      
-    ret <- NA_real_
+  } else if (animal %in% c("SHP", "GTS", "CML")) {
+    if (cohort %in% c("FJ", "MJ")) {
+      ym_value <- 0
+    } else if (cohort %in% c("FS", "MS")) {
+      ym_value <- 7.75 - 0.05 * diet_dig * 100
+    } else {
+      ym_value <- 9.75 - 0.05 * diet_dig * 100
     }
-  
-  return(ret)
+  } else if (animal %in% c("PGS")) {
+    if (cohort %in% c("FJ", "MJ")) {
+      ym_value <- 0
+    } else if (cohort %in% c("FS", "MS")) {
+      ym_value <- 0.39
+    } else {
+      ym_value <- 1.01
+    }
+  } else if (animal == "CHK") {
+    ym_value <- NA_real_
+  }
+
+  return(ym_value)
 }
 
 
@@ -163,10 +156,12 @@ compute_daily_enteric_emissions <- function(
     dmi
 ) {
   validate_enteric_emission_inputs(animal, ym, ch4_mitigation_factor, diet_ge, dmi)
+
   if (animal %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
-    ret <- diet_ge * dmi * (ym / 100) * ch4_mitigation_factor / 55.65
+    ch4_enteric_value <- diet_ge * dmi * (ym / 100) * ch4_mitigation_factor / 55.65
   } else if (animal == "CHK") {
-    ret <- NA_real_
+    ch4_enteric_value <- NA_real_
   }
-  return(ret)
+
+  return(ch4_enteric_value)
 }

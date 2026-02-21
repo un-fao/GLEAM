@@ -41,6 +41,7 @@
 #' multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10% reduction). Set to 1 by default.
 #'
 #' @param data A `data.table` with cohort-level nutritional and demographic inputs.
+#' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'
 #' @return The same `data.table` with new columns `ym` and `ch4_enteric`.
 #'
@@ -62,35 +63,53 @@
 #' @keywords internal
 #'
 #' @importFrom data.table :=
-run_directemissions_enteric <- function(data) {
-  # Internal checks
-  if (!inherits(data, "data.frame") || nrow(data) == 0) {
-    cli::cli_abort("Input must be a non-empty data.frame or data.table.")
+run_directemissions_enteric <- function(data, show_indicator = TRUE) {
+
+  # --- Step 1: Validate inputs ------------------------------------------------
+  validate_run_directemissions_enteric_inputs(data)
+
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Calculating enteric methane emissions, please wait\U2026")
   }
 
-  required <- c("Animal_short", "cohort", "diet_dig", "diet_ge", "dmi")
-  miss <- setdiff(required, names(data))
-  if (length(miss)) {
-    cli::cli_abort(c(
-      "Missing required columns:" = paste(miss, collapse = ", ")
-    ))
+  # --- Step 2: Create working copy --------------------------------------------
+  enteric_results <- data.table::copy(data)
+
+  # Use mitigation factor from data if present; otherwise default to 1.
+  if (!"ch4_mitigation_factor" %in% names(enteric_results)) {
+    enteric_results[, ch4_mitigation_factor := 1]
   }
 
-  # Compute methane conversion factor (YM)
-  data[, ym := compute_methane_conversion_factor(
-    animal = Animal_short,
-    cohort = cohort,
-    diet_dig = diet_dig
-  ), by = seq_len(nrow(data))]
+  # --- Step 3: Compute methane conversion factor (ym) -------------------------
+  enteric_results[
+    ,
+    ym := compute_methane_conversion_factor(
+      animal = Animal_short,
+      cohort = cohort,
+      diet_dig = diet_dig
+    )
+    , by = .I
+  ]
 
-  # Compute enteric methane emissions (kg CH4/day)
-  data[, ch4_enteric := compute_daily_enteric_emissions(
-    animal = Animal_short,
-    ym = ym,
-    ch4_mitigation_factor = 1,
-    diet_ge = diet_ge,
-    dmi = dmi
-  ), by = seq_len(nrow(data))]
+  # --- Step 4: Compute enteric methane emissions (kg CH4/head/day) ------------
+  enteric_results[
+    ,
+    ch4_enteric := compute_daily_enteric_emissions(
+      animal = Animal_short,
+      ym = ym,
+      ch4_mitigation_factor = ch4_mitigation_factor,
+      diet_ge = diet_ge,
+      dmi = dmi
+    )
+    , by = .I
+  ]
 
-  return(data)
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Enteric methane emissions calculation complete.")
+  }
+
+  return(enteric_results)
 }
