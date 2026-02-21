@@ -1,4 +1,4 @@
-#' Run Enteric Methane Direct Emissions (Internal)
+#' Run Enteric Methane Direct Emissions
 #'
 #' Computes daily enteric methane emissions (kg CH₄/head/day) for each
 #' cohort record by applying species-, cohort- and diet- specific methane conversion factors (ym),
@@ -53,14 +53,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Load example input from the package and run the simulation
-#' input_path <- system.file("extdata/GLEAM_input_directemissions_enteric.csv", package = "gleam")
-#' dt <- data.table::fread(input_path)
-#' result <- run_directemissions_enteric(dt)
+#' # Load example input (6 herd_ids, cohort-level; only required columns)
+#' input_path <- system.file(
+#'   "extdata/examples/directemissions_enteric_input_chrt_data.csv",
+#'   package = "gleam"
+#' )
+#' directemissions_enteric_input_chrt_data <- data.table::fread(input_path)
+#' result <- run_directemissions_enteric(directemissions_enteric_input_chrt_data)
 #' head(result[, .(Animal_short, cohort, ym, ch4_enteric)])
 #' }
-#'
-#' @keywords internal
 #'
 #' @importFrom data.table :=
 run_directemissions_enteric <- function(data, show_indicator = TRUE) {
