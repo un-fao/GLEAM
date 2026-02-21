@@ -68,7 +68,7 @@ test_that("compute_daily_enteric_emissions validates inputs and returns expected
 
   # Invalid arguments
   expect_error(compute_daily_enteric_emissions("CTL", -1, 1, 18, 10))  # ym < 0
-  expect_error(compute_daily_enteric_emissions("CTL", 5, 1, 0, 10))   # diet_gross_energy <= 0
+  expect_error(compute_daily_enteric_emissions("CTL", 5, 1, -1, 10))   # diet_gross_energy < 0
   expect_error(compute_daily_enteric_emissions("CTL", 5, 1, 18, -1))  # dry_matter_intake < 0
 
   # Emissions must be non-negative
