@@ -35,15 +35,10 @@ It adds two columns:
 }
 
 Input data must at minimum include the following columns:
-param species_short Character. Code identifying the livestock species.
-Supported values include:
 \itemize{
-\item \code{PGS}: pigs
-\item \code{CML}: camels
-\item \code{CTL}: cattle
-\item \code{BFL}: buffalo
-\item \code{SHP}: sheep
-\item \code{GTS}: goats
+\item \code{animal}: Character. Full species name (e.g. \code{Cattle}, \code{Buffalo},
+\code{Sheep}, \code{Goats}, \code{Camels}, \code{Pigs}). Used to derive
+\code{species_short} via the internal \code{abbr_animals} lookup.
 }
 
 param cohort_short Character Sex- and age-specific cohort code describing the
@@ -77,7 +72,7 @@ input_path <- system.file(
 )
 dt <- data.table::fread(input_path)
 result <- run_directemissions_enteric(dt)
-head(result[, .(species_short, cohort_short, ch4_conversion_factor_ym, ch4_enteric)])
+head(result[, .(animal, cohort_short, ch4_conversion_factor_ym, ch4_enteric)])
 }
 
 }
