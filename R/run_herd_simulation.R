@@ -67,7 +67,7 @@
 #' Under constant parameters, the cohort structure converges to a stable composition and a
 #' stable population growth rate. This function seeks that steady state by
 #' iterating the demographic system starting from \code{initial_herd_structure} until changes 
-#' in cohort-specific growth rates of sex–age cohort proportions (\eqn{\lambda}) fall below \code{lambda_threshold_default}, 
+#' in cohort-specific growth rates of sex–age cohort proportions (\eqn{\lambda}) fall below \code{min_lambda_change},
 #' or until \code{max_simulation_years} is reached.
 #'
 #' @references
@@ -103,7 +103,7 @@
 #' to bootstrap the steady-state simulation (# heads).These values are used as starting points for the iterative simulation and 
 #' do not affect the final steady-state results (only convergence speed). Default is `c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30)`. 
 #' @param max_simulation_years Numeric. Maximum number of years to simulate (years). Defaults to `100`.
-#' @param lambda_threshold_default Numeric. Convergence threshold for changes in cohort-specific growth rates of sex–age cohort proportions (lambda). 
+#' @param min_lambda_change Numeric. Convergence threshold for changes in cohort-specific growth rates of sex–age cohort proportions (lambda).
 #' Iterations of the herd simulation stop when the absolute change in lambda between successive iterations falls below this threshold. Defaults to `1e-9`.
 #' @param show_indicator Logical. Whether to display progress indicators during simulation.
 #'   Defaults to `TRUE`.
@@ -167,7 +167,7 @@ run_herd_simulation <- function(
     herd_level_data,
     initial_herd_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
     max_simulation_years = 100,
-    lambda_threshold_default = 1e-9,
+    min_lambda_change = 1e-9,
     show_indicator = TRUE,
     simulation_duration = 365
 ) {
@@ -238,7 +238,7 @@ run_herd_simulation <- function(
     structure_result <- simulate_steady_state_structure(
       initial_herd_structure = initial_herd_structure,
       max_simulation_years = max_simulation_years,
-      min_lambda_change = lambda_threshold_default,
+      min_lambda_change = min_lambda_change,
       fecundity_female = fecundity_female,
       fecundity_male = fecundity_male,
       probability_death = transition_result$probability_death,

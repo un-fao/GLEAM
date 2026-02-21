@@ -9,7 +9,7 @@ run_herd_simulation(
   herd_level_data,
   initial_herd_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
   max_simulation_years = 100,
-  lambda_threshold_default = 1e-09,
+  min_lambda_change = 1e-09,
   show_indicator = TRUE,
   simulation_duration = 365
 )
@@ -48,7 +48,7 @@ do not affect the final steady-state results (only convergence speed). Default i
 
 \item{max_simulation_years}{Numeric. Maximum number of years to simulate (years). Defaults to \code{100}.}
 
-\item{lambda_threshold_default}{Numeric. Convergence threshold for changes in cohort-specific growth rates of sex–age cohort proportions (lambda).
+\item{min_lambda_change}{Numeric. Convergence threshold for changes in cohort-specific growth rates of sex–age cohort proportions (lambda).
 Iterations of the herd simulation stop when the absolute change in lambda between successive iterations falls below this threshold. Defaults to \code{1e-9}.}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during simulation.
@@ -146,7 +146,7 @@ Internally, the model:
 Under constant parameters, the cohort structure converges to a stable composition and a
 stable population growth rate. This function seeks that steady state by
 iterating the demographic system starting from \code{initial_herd_structure} until changes
-in cohort-specific growth rates of sex–age cohort proportions (\eqn{\lambda}) fall below \code{lambda_threshold_default},
+in cohort-specific growth rates of sex–age cohort proportions (\eqn{\lambda}) fall below \code{min_lambda_change},
 or until \code{max_simulation_years} is reached.
 }
 }
