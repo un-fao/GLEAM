@@ -9,7 +9,7 @@
 #' @return A named list with two elements:
 #' \describe{
 #'   \item{fecundity_female}{Numeric. Daily number of female offspring per adult female (# offspring/day)}
-#'   \item{fecundity_male}{Numeric. Daily number of male offspring per adult female? (# offspring/day)}
+#'   \item{fecundity_male}{Numeric. Daily number of male offspring per adult female (# offspring/day)}
 #' }
 #' @examples
 #' compute_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)

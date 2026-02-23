@@ -17,7 +17,7 @@ compute_fecundity_rates(parturition_rate, litter_size, birth_fraction_female)
 A named list with two elements:
 \describe{
 \item{fecundity_female}{Numeric. Daily number of female offspring per adult female (# offspring/day)}
-\item{fecundity_male}{Numeric. Daily number of male offspring per adult female? (# offspring/day)}
+\item{fecundity_male}{Numeric. Daily number of male offspring per adult female (# offspring/day)}
 }
 }
 \description{

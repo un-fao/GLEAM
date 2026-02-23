@@ -108,7 +108,8 @@ represented by six cohorts:
 
 Only adult females (\code{FA}) contribute to reproduction. Births are distributed between
 females and males using \code{birth_fraction_female}. Reproduction is assumed to be
-distributed over time (no birth pulse).
+distributed over time (no birth pulse). Daily fecundity rates are computed in
+\code{\link{compute_fecundity_rates}}.
 }
 
 \subsection{Dynamics and parameters}{
@@ -129,8 +130,8 @@ natural mortality excluding offtake.
 \subsection{Competing risks and conversion to daily probabilities}{
 
 Mortality and offtake are treated as \strong{competing risks} within each cohort: at any time an
-animal can survive, die, or be offtaken. Annual inputs are converted to daily hazards and then
-daily probabilities to avoid bias from interference between processes.
+animal can survive, die, or be offtaken.Annual inputs are converted to daily hazards and then
+daily transition probabilities in \code{\link{compute_transition_probabilities}}.
 
 Internally, the model:
 \enumerate{
@@ -145,9 +146,23 @@ Internally, the model:
 
 Under constant parameters, the cohort structure converges to a stable composition and a
 stable population growth rate. This function seeks that steady state by
-iterating the demographic system starting from \code{initial_herd_structure} until changes
+iterating the demographic system (see \code{\link{simulate_steady_state_structure}}) starting from \code{initial_herd_structure} until changes
 in cohort-specific growth rates of sex–age cohort proportions (\eqn{\lambda}) fall below \code{min_lambda_change},
 or until \code{max_simulation_years} is reached.
+}
+
+\subsection{Projection of population size}{
+
+The steady-state solution obtained here provides:
+\itemize{
+\item cohort shares used to scale herd-level population sizes,
+\item a stable annual herd growth rate,
+\item internally consistent death, offtake, and survival probabilities.
+}
+
+These outputs are subsequently used to project one year of population dynamics
+(\code{\link{project_population_size}}) and to summarise annual offtake and stock variation
+(\code{\link{summarise_offtake}}).
 }
 }
 \examples{
