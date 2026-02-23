@@ -22,7 +22,6 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
-\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
@@ -40,19 +39,18 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by
-accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the
-potential final weight of animals that remain in the cohort (kg).}
+\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting
+for the share of offtaken animals within the cohort, using their slaughter weight, and the potential
+final weight of animals that remain in the cohort (kg).}
 
-\item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both
-surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential
-final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake
-rate (kg).}
+\item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for
+both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals
+and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
 
 \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 
-\item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological
-and management conditions (kg).}
+\item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given
+biological and management conditions (kg).}
 
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 
@@ -61,69 +59,67 @@ and management conditions (kg).}
 \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 }
 \value{
-Numeric. Energy required for growth (\code{energy_requirement_growth}), i.e., weight gain.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the \strong{energy requirement for growth} (MJ/head/day), defined as the energy needed for body weight gain.
-This approach follows the IPCC Tier 2 partitioning method and applies species-specific equations for
-growth energy requirements.
+Computes the energy requirement for growth by cohort (MJ/head/day), which is defined
+as the energy required for body weight gain (tissue accretion)
+associated with live weight gain.
 }
 \details{
-Energy for growth represents the energy required for tissue accretion associated with live weight gain.
-Species-specific formulations follow IPCC Tier 2 guidelines.
+This function follows the IPCC Tier 2 energy partitioning
+approach and applies species-specific equations for growth energy requirements.
 
+In general, growth energy is computed only for growing cohorts (\code{FJ}, \code{FS}, \code{MJ}, \code{MS});
+for adult cohorts (\code{FA}, \code{MA}) growth is set to 0 in this implementation.
+
+\strong{Species-specific approach:}
 \itemize{
+\item \strong{CTL and BFL} (NRC, 1996; IPCC, 2006; IPCC, 2019)
 
-\item\strong{CTL and BFL} — NRC (1996); IPCC (2006, 2019).
+Growth energy is computed using a growth coefficient \eqn{cgro} that differs between
+castrated and intact males. For male cohorts, \eqn{cgro} is calculated as a weighted average
+using \code{offtake_rate}, assuming that animals removed from the herd are castrated and
+animals remaining in the cohort are intact.
 
-The equation uses a growth coefficient (\eqn{cgro}) that differs between
-castrated and intact males. For male cohorts, the code calculates
-\eqn{cgro} as a \strong{weighted average} using \code{offtake_rate}, assuming that
-animals removed from the herd are castrated and animals remaining in the
-cohort are intact.
+\item \strong{SHP and GTS} (Gibbs et al., 2002; AFRC, 1993; AFRC, 1995; IPCC, 2006; IPCC, 2019)
 
-\item\strong{SHP and GTS} — Gibbs et al. (2002); AFRC (1993, 1995); IPCC (2006, 2019).
+For sheep and goats, growth energy is calculated using a linear formulation with coefficients
+\eqn{a} and \eqn{b} (MJ/kg live weight). For male cohorts, the coefficients differ between
+castrated and intact males; the model computes a weighted average using \code{offtake_rate},
+assuming that offtaken animals are castrated.
 
-For sheep, the coefficients \eqn{a} and \eqn{b} (MJ kg\eqn{^{-1}}) differ
-between castrated and intact males. The code calculates a \strong{weighted average}
-using \code{offtake_rate}, assuming that offtaken animals are castrated.
+\item \strong{CML} (Al-Jassim, 2019)
 
-\item\strong{CML} — Al-Jassim (2019).
+Growth energy is represented using a simplified linear relationship with daily weight gain.
 
-Growth energy is represented using a simplified linear relationship with
-daily weight gain.
+\item \strong{PGS} (NRC, 1998)
 
-\item\strong{PGS} — NRC (1998)
+For pigs, growth is assumed to consist exclusively of protein tissue and fat tissue, and
+growth energy requirements are expressed as metabolizable energy (ME).
 
-For pigs, growth is assumed to consist exclusively of \strong{protein tissue}
-and \strong{fat tissue}, and growth energy requirements are expressed as
-\strong{metabolizable energy (ME)}.
-
-A growth energy coefficient (\eqn{cgro}, MJ kg\eqn{^{-1}} LW) is calculated as:
+The growth energy coefficient \eqn{cgro} (MJ/kg live weight) is calculated as:
 
 \eqn{
-cgro =
-\mathrm{prot\_tissue\_frac} \times \mathrm{meat\_protein} \times \mathrm{meat\_protein\_energy}
-+ (1 - \mathrm{prot\_tissue\_frac}) \times \mathrm{fat\_adipose\_tissue\_frac} \times \mathrm{meat\_fat\_energy}
-}
+    cgro =
+    prot\_tissue\_frac \times meat\_protein \times meat\_protein\_energy
+    + (1 - prot\_tissue\_frac) \times fat\_adipose\_tissue_frac \times meat\_fat\_energy
+  }
 
 Total metabolizable energy required for growth is then:
 
-\eqn{ME_{growth} = DWG \times cgro}
+\eqn{energy\_requirement\_growth = daily\_weight\_gain \times cgro}
 
 where:
 \itemize{
-\item \eqn{cgro} is the growth energy coefficient
-(MJ kg\eqn{^{-1}} live weight),
+\item \eqn{cgro} is the growth energy coefficient (MJ/kg live weight),
 \item \code{prot_tissue_frac = 0.65} is the fraction of protein tissue in daily weight gain,
 \item \code{meat_protein = 0.23} is the fraction of protein in protein tissue,
-\item \code{meat_protein_energy = 54.0} is the metabolizable energy cost of protein deposition
-(MJ kg protein\eqn{^{-1}}),
+\item \code{meat_protein_energy = 54.0} is the ME cost of protein deposition (MJ/kg protein),
 \item \code{fat_adipose_tissue_frac = 0.90} is the fraction of fat in adipose tissue,
-\item \code{meat_fat_energy = 52.3} is the metabolizable energy cost of fat deposition
-(MJ kg fat\eqn{^{-1}}).
+\item \code{meat_fat_energy = 52.3} is the ME cost of fat deposition (MJ/kg fat).
 }
+
 }
 }
 \references{
@@ -152,4 +148,9 @@ Chapter 10: Emissions from Livestock and Manure Management, Equation 10.6 and 10
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
 from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
+}
+\seealso{
+\code{\link{calc_cohort_weights}}
+\code{\link{calc_avg_weights}}
+\code{\link{calc_daily_weight_gain}}
 }

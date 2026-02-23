@@ -37,7 +37,7 @@ validate_maintenance_inputs <- function(
 #' Validate inputs for calc_net_energy_activity
 #'
 #' Activity is used for all species/cohorts that receive activity energy; both
-#' fractions and their sum (in [0, 1]) are validated.
+#' fractions and their sum are validated.
 #'
 #' @noRd
 validate_activity_inputs <- function(

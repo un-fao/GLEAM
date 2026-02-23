@@ -20,7 +20,6 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
-\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
@@ -38,73 +37,78 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of
-energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost.
+\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed
+to keep the animal in equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{draught_work_hours_female}{Numeric. Average daily working time per adult females for CTL, BFL and
-CML, expressed as hours worked per head per day (hours/head/day).}
+\item{draught_work_hours_female}{Numeric. Average daily working time per adult female (hours/head/day). Required only for species = CML, CTL and BFL.}
 
-\item{draught_work_hours_male}{Numeric. Average daily working time per adult males for CTL, BFL and CML,
-expressed as hours worked per head per day (hours/head/day).}
+\item{draught_work_hours_male}{Numeric. Average daily working time per adult male (hours/head/day). Required only for species = CML, CTL and BFL.}
 
-\item{draught_fraction_female}{Numeric. Fraction of adult females involved in draught work (fraction).}
+\item{draught_fraction_female}{Numeric. Fraction of adult females involved in draught work (fraction). Required only for species = CML, CTL and BFL.}
 
-\item{draught_fraction_male}{Numeric. Fraction of adult males involved in draught work (fraction).}
+\item{draught_fraction_male}{Numeric. Fraction of adult males involved in draught work (fraction). Required only for species = CML, CTL and BFL.}
 }
 \value{
-Numeric. Energy required for work (\code{energy_requirement_work}), used to estimate the energy
-required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day).
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
+Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the \strong{energy requirement for work} (MJ/head/day), defined as the
-energy required for draft power. This approach follows the IPCC Tier 2 partitioning method and applies
-species-specific coefficients.
+Computes the energy requirement for work (MJ/head/day),  defined as the
+additional energy required to support draught power and work-related physical activity.
 }
 \details{
-Energy for work (\code{energy_work}) represents the additional energy required
-to support \strong{draught power generation} by working animals.
+This approach follows the IPCC Tier 2 partitioning method and applies
+species-specific coefficients for draught work.
 
-This component is applied only to draught-capable species and is scaled by
-the fraction of adult animals involved in draught work (\code{draught_fraction})
-and their average daily working time (\code{work_hours}).
+This energy component is calculated only for adult cohorts of draught-capable species
+(\code{CTL}, \code{BFL}, and \code{CML}; i.e. \code{FA} and \code{MA}). It is scaled by
+the fraction of adult animals involved in draught work
+(\code{draught_fraction_female}, \code{draught_fraction_male}) and their average
+daily working time (\code{draught_work_hours_female}, \code{draught_work_hours_male}).
 
-\strong{CTL and BFL} - Bamualim & Kartiarso (1985); IPCC (2006, 2019).
-For cattle and buffalo, draught work energy is expressed as a proportion of
+\strong{Species-specific approach:}
+
+\strong{CTL and BFL} - (Bamualim & Kartiarso, 1985; IPCC, 2006; IPCC 2019).
+Draught work energy is expressed as a proportion of
 net energy for maintenance:
 
 \eqn{
-energy\_work = 0.1 \times NEm \times work\_hours \times draught\_fraction
+energy\_requirement\_work = 0.1 \times energy\_requirement\_maintenance \times work\_hours \times draught\_fraction
 }
 
 where:
 \itemize{
-\item \eqn{energy\_work} is net energy required for maintenance (MJ head\eqn{^{-1}} day\eqn{^{-1}}),
+\item \eqn{energy\_requirement\_maintenance} is net energy required for maintenance (MJ/head/day) and can be calculated using
+\code{\link{calc_net_energy_maintenance}()},
 \item \eqn{0.1} represents a 10\% increase in maintenance energy per hour of work,
-\item \eqn{work\_hours} is the mean number of hours worked per animal per day,
-\item \eqn{draught\_fraction} is the fraction of adult males performing draught work.
+\item \eqn{work\_hours} is the mean number of hours worked per animal per day -
+(\code{draught_work_hours_female}) for \code{FA} and (\code{draught_work_hours_male}) for \code{MA} and,
+\item \eqn{draught\_fraction} is the fraction of adult animals performing draught work -
+(\code{draught_fraction_female}) for \code{FA} and (\code{draught_fraction_male}) for \code{MA}
 }
 
-\strong{CML} -  Wilson (1989)
-For camels, draught work energy is calculated using a fixed metabolizable
+\strong{CML} -  (Wilson, 1989)
+Draught work energy is calculated using a fixed metabolizable
 energy cost per hour of work:
 
 \deqn{
-energy\_work = 4 \times work\_hours \times draught\_fraction
+energy\_requirement\_work = 4 \times work\_hours \times draught\_fraction
 }
 
 where:
 \itemize{
 \item \eqn{4} is the metabolizable energy requirement for draught work
-(MJ head\eqn{^{-1}} hour\eqn{^{-1}}),
-\item \eqn{work\_hours} is the mean daily working time per animal,
-\item \eqn{draught\_fraction} is the fraction of adult males involved in draught work.
+(MJ/hour),
+\item \eqn{work\_hours} is the mean number of hours worked per animal per day -
+(\code{draught_work_hours_female}) for (\code{FA}) and (\code{draught_work_hours_male}) for (\code{MA}) and,
+\item \eqn{draught\_fraction} is the fraction of adult animals performing draught work -
+(\code{draught_fraction_female}) for (\code{FA}) and (\code{draught_fraction_male}) for (\code{MA})
 }
 }
 \references{
 Bamualim A., Kartiarso (1985). \emph{Nutrition of draught animals with special reference to Indonesia}.
-In:Draught Animal Power for Production. Australian Centre for International agricultural Research (ACIAR),
+In: Draught Animal Power for Production. Australian Centre for International agricultural Research (ACIAR),
 Proceedings Series No. 10, ed. JW Copland. Canberra, A.C.T., Australia: ACIAR.
 
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
@@ -116,4 +120,7 @@ from Livestock and Manure Management, Equation 10.11.
 Wilson (1989). \emph{The nutritional requirements of camel}.
 In: Tisserand J.-L. (ed.). Séminaire sur la digestion, la nutrition et l'alimentation du dromadaire.
 Zaragoza : CIHEAM. (1989). p. 171-179 (Options Méditerranéennes : Série A. Séminaires Méditerranéens; n. 2)
+}
+\seealso{
+\code{\link{calc_net_energy_maintenance}}
 }

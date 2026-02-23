@@ -26,7 +26,6 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
-\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
@@ -44,57 +43,55 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{lactating_females_fraction}{Numeric. Share of adult females lactating within the assessment
-duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).}
+\item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction).
+Required only for species = CML, CTL, BFL, SHP, and GTS.}
 
-\item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment
-duration (kg/head/day). This value can be calculated by dividing the total milk destinated to human
-consumption produced per milk-producing animal over the assessment duration by the length of the
-assessment period.}
+\item{milk_yield_day}{Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day).
+This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals during the assessment period,
+divided by the number of milk-producing animals, and the length of the assessment period (days).
+Required only for species = CML, CTL, BFL, SHP, and GTS.}
 
-\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat / kg milk).}
+\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat/kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 
-\item{non_productive_duration}{Numeric. Period during which the animal is not performing any productive
-physiological function such as pregnancy or lactation (days).}
+\item{non_productive_duration}{Numeric. Period during which the animal is not performing
+any productive physiological function such as pregnancy or lactation (days). Required only for PGS.}
 
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 
-\item{litter_size}{Numeric. Average number of offspring born per parturition (#). This value can be
-calculated as the total number of offspring born divided by the total number of parturitions during
-the year.}
+\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition).
+This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
-\item{death_rate_juvenile}{Numeric. Percentage of deaths in a herd over a year for juvenile cohorts
-(i.e. FJ and MJ) (fraction).}
+\item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
 
 \item{birth_weight}{Numeric. Live body weight of the animal at birth (kg).}
 
 \item{weaning_weight}{Numeric. Live body weight of the animal at weaning (kg).}
 
-\item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during
-which the animal is lactating (days).}
+\item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).
+Required only for PGS.}
 
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (#). A herd-level
-reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring
-during a year divided by the number of adult females potentially able to give birth during that year.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year).
+A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
 }
 \value{
-Numeric. Energy required for lactation (\code{energy_requirement_lactation}). Expressed as net
-energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the \strong{energy requirement for lactation} (MJ/head/day), defined as the
+Computes the energy requirement for lactation by cohort (MJ/head/day), defined as the
 energy needed to support milk production by lactating females.
-This approach follows the IPCC Tier 2 partitioning method and applies
-species-specific equations for lactation energy requirements.
 }
 \details{
-Energy for lactation (\code{energy_lactation}) represents the additional
-energy required to support \strong{milk synthesis} during lactation. Following
-IPCC Tier 2 guidelines, lactation energy is calculated as a function of the
-\strong{quantity of milk produced} and a \strong{species-specific energy cost per unit
-of milk}.
+This approach follows the IPCC Tier 2 partitioning method and applies
+species-specific equations for lactation energy requirements as a function of the
+quantity of milk produced and a species-specific energy cost per unit of milk.
 
-\strong{For CTL, BFL, CML, SHP and GTS}:
+Requirements are calculated only for cohort = \code{FA} (adult females) and are scaled
+by the proportion of lactating animals (\code{lactating_females_fraction}) or reproducing
+females (\code{parturition_rate}) within the cohort.
+
+\strong{Species-specific approach:}
+
+\strong{CTL, BFL, CML, SHP and GTS}:
 
 Total milk production includes:
 \itemize{
@@ -102,57 +99,51 @@ Total milk production includes:
 \item milk consumed directly by offspring (\code{milk_for_offspring})
 }
 
-Lactation energy requirements are applied \strong{only to adult females} and are
-scaled by the proportion of milked (\code{milking_fraction}) or lactating
-(\code{parturition_rate}) animals within the cohort.
-
 In general form, lactation energy is computed as:
 
 \deqn{
-energy\_lactation =
-(milk\_yield \times milking\_fraction + milk\_for\_offspring)
+energy\_requirement\_lactation =
+(milk\_yield \times lactating\_females\_fraction + milk\_for\_offspring)
 \times energy\_milk
-
 }
 
 where:
 
 \code{energy_milk} is a species-specific coefficient representing the
-net energy cost of producing one kilogram of milk (MJ kg\eqn{^{-1}})
+net energy cost of producing one kilogram of milk (MJ/kg milk).
 
 Species-specific values of \code{energy_milk} are:
 \itemize{
 \item \code{CTL}, \code{BFL}: estimated as a function of milk fat content,
-\eqn{1.47 + 0.40 \times (milk\_fat \times 100)} (NRC 1989),
-\item \code{CML}: 4.063 (Wardeh, 2004),
-\item \code{SHP}: 4.6 (AFRC, 1993; AFRC, 1995),
-\item \code{GTS}: 3.0 (AFRC, 1998).
+\eqn{1.47 + 0.40 \times (milk\_fat\_fraction \times 100)} (NRC, 1989),
+\item \code{CML}: \eqn{4.063} (Wardeh, 2004),
+\item \code{SHP}: \eqn{4.6} (AFRC, 1993; AFRC, 1995),
+\item \code{GTS}: \eqn{3.0} (AFRC, 1998).
 }
 
-\code{milk_for_offspring} is the daily amount of milk required to rear offspring across the year (kg day\eqn{^{-1}}).
-It is calculated assuming that \strong{5 kg of milk are required for each kilogram of live-weight gain up to
-weaning}, using the equation below.
+\code{milk_for_offspring} is the daily amount of milk required to rear offspring
+across the year (kg/day). It is calculated assuming that \strong{5 kg of milk are
+required for each kilogram of live-weight gain up to weaning}:
 
 \deqn{
 milk\_for\_offspring =
-\frac{parturition\_rate \times 5 \times (wkg - ckg)}
-{365} \code(AFRC, 1990)
+\frac{parturition\_rate \times 5 \times (weaning\_weight - birth\_weight)}{365}
 }
 
-For \code{SHP} and \code{GTS}, \code{milk_for_offspring} also accounts for
-the average number of offspring per birth by multiplying by \code{litsize}.
+For \code{SHP} and \code{GTS}, \code{milk_for_offspring} is multiplied by
+\code{litsize} to account for multiple offspring per birth.
 
-\strong{For PGS} — NRC (1998):
+\strong{PGS} (NRC, 1998):
 
-For pigs, lactation energy accounts only for the milk consumed directly by offspring (\code{milk_for_offspring})
-adjusted by the fraction of the reproductive cycle spent in lactation (\code{cadj}),
-and is calculated as follows:
+Lactation energy accounts only for the milk consumed directly by offspring
+(\code{milk_for_offspring}), adjusted by the fraction of the reproductive cycle spent
+in lactation (\code{cadj}):
 
 \deqn{
-energy\_lactation =
-litsize \times (1 - 0.5 \times dr1)
+energy\_requirement\_lactation =
+litter\_size \times (1 - 0.5 \times death\_rate\_juvenile)
 \times \left(
-\frac{0.02059 \times (wkg - ckg) \times 1000}{lact}
+\frac{0.02059 \times (weaning\_weight - birth\_weight) \times 1000}{lactation\_duration}
 - \frac{0.3766}{0.67}
 \right)
 \times cadj
@@ -161,20 +152,15 @@ litsize \times (1 - 0.5 \times dr1)
 where:
 \itemize{
 \item \eqn{0.02059} is the coefficient for lactation energy requirement
-(MJ g live-weight\eqn{^{-1}}),
+(MJ/g live weight),
 \item \eqn{0.3766} is the coefficient for sow weight loss during lactation
-(\eqn{C_{wloss}}, MJ head\eqn{^{-1}} day\eqn{^{-1}}),
-\item \eqn{0.67} is the efficiency of conversion of dietary intake to milk
-energy (\eqn{C_{conv}}, fraction),
-\item \code{litsize} is litter size,
-\item \code{dr1} is the proportion of stillborn piglets,
-\item \eqn{wkg} and \eqn{ckg} are live weights at weaning and at birth,
-respectively (kg),
-\item \eqn{cadj} is the fraction of the reproductive cycle spent in lactation calculated as
+(MJ/head/day),
+\item \eqn{0.67} is the efficiency of conversion of dietary intake to milk energy (fraction),
+\item \eqn{cadj} is the fraction of the reproductive cycle spent in lactation:
 
 \deqn{
-   cadj = \frac{lact}{idle + gest + lact}
-   }
+  cadj = \frac{lactation\_duration}{non\_productive\_duration + pregnancy\_duration + lactation\_duration}
+  }
 }
 }
 \references{
