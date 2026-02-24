@@ -1,4 +1,4 @@
-> ⚠️ **Process Requirement**
+> [!IMPORTANT]
 >
 > This template is mandatory.  
 > All sections must be thoughtfully completed before requesting review.  
@@ -26,6 +26,7 @@ _The developer is responsible for performing vigilant QA testing before requesti
 
 - [ ] App / software runs locally without error
 - [ ] Feature manually tested end-to-end
+- [ ] The business logic aligns with the corresponding ticket acceptance criteria
 - [ ] No visual breaks (layout, spacing, responsiveness, etc.) (if applicable)
 - [ ] Existing related features were tested and are not impacted
 - [ ] No unintended side effects observed during exploratory testing
@@ -65,12 +66,15 @@ _The developer must critically review their own code before requesting review.
 This is a quality gate, not a formality.  
 If any box cannot be confidently checked, the PR is not ready._
 
-- [ ] Naming follows [Applitics conventions](https://github.com/APPLITICS/R-Shiny-Standards/blob/main/coding-standards.md)
-- [ ] No dead code or debug artifacts
+- [ ] Naming and coding style follows [Applitics conventions](https://github.com/APPLITICS/applitics-delivery-system/blob/main/coding_standards.md)
+- [ ] No merge conflicts, and if conflicts occurred, they have been properly resolved and do not introduce regressions
+- [ ] No dead code, dead datasets or debug artifacts
 - [ ] Errors are validated and handled clearly
 - [ ] No hardcoded secrets or paths
 - [ ] Structure is modular and readable
 - [ ] No unnecessary complexity introduced
+- [ ] Code is self-explanatory and properly documented
+- [ ] No error or avoidable warning messages are returned in the terminal (warnings must be properly addressed, not suppressed)
 
 ---
 
@@ -82,6 +86,5 @@ Do not leave this section empty if the PR contains non-trivial logic._
 
 **Please focus specifically on (e.g., logic in X, edge cases around Y, perf in Z):**
 
-- A
-- B
-- C
+> [!IMPORTANT]
+> Reviewers must follow the official Applitics Code Review Checklist before approving this PR: [Reviewer Checklist](https://github.com/APPLITICS/applitics-delivery-system/blob/main/qa_code_review_governance.md)
