@@ -40,8 +40,8 @@ production stage of the animals. Supported values include:
 for the share of offtaken animals within the cohort, using their slaughter weight, and the potential
 final weight of animals that remain in the cohort (kg).}
 
-\item{lactating_females_fraction}{Numeric. Share of adult females lactating within
-the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).}
+\item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction).
+Required only for species = CML, CTL, BFL, SHP, and GTS.}
 
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for
 each sex-age cohort (fraction).}
@@ -50,14 +50,14 @@ each sex-age cohort (fraction).}
 }
 \value{
 Numeric. Energy required for maintenance, defined as the amount of energy needed to
-keep the animal in equilibrium such that body energy is neither gained nor lost.
+keep the animal at equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
 CML and PGS (MJ/head/day).
 }
 \description{
-Computes the energy requirement for maintenance by cohort (MJ/head/day), which is
-defined as the energy required to maintain body functions in equilibrium
-(i.e. no net gain or loss of body energy).
+Computes the energy requirement for maintenance by cohort (MJ/head/day),
+defined as the energy required to maintain basal physiological functions at equilibrium,
+with no net gain or loss of body energy.
 }
 \details{
 This approach follows the IPCC Tier 2 partitioning method and applies:

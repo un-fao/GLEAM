@@ -41,7 +41,7 @@ production stage of the animals. Supported values include:
 }}
 
 \item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed
-to keep the animal in equilibrium such that body energy is neither gained nor lost.
+to keep the animal at equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
 \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year).
@@ -81,8 +81,8 @@ of maintenance energy and are adjusted to reflect reproductive activity within
 the cohort:
 \itemize{
 \item For \code{FA}, requirements are scaled by the annual parturition rate
-(\code{parturition_rate}) and (when applicable) by the fraction of the year
-spent in gestation (\code{pregnancy_duration/365}).
+(\code{parturition_rate}) and (when applicable) by the fraction of the reproductive cycle
+spent in gestation (\code{pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)}).
 \item For \code{FS}, only a fraction of animals is assumed to reach reproductive
 age within the cohort; requirements are therefore scaled by the proportion
 remaining in the cohort (\eqn{1 - offtake\_rate}) and by the share of the

@@ -63,9 +63,9 @@ This value can be calculated as the total number of offspring born divided by th
 
 \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
 
-\item{birth_weight}{Numeric. Live body weight of the animal at birth (kg).}
+\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
 
-\item{weaning_weight}{Numeric. Live body weight of the animal at weaning (kg).}
+\item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
 
 \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).
 Required only for PGS.}
@@ -131,7 +131,7 @@ milk\_for\_offspring =
 }
 
 For \code{SHP} and \code{GTS}, \code{milk_for_offspring} is multiplied by
-\code{litsize} to account for multiple offspring per birth.
+\code{litter_size} to account for multiple offspring per birth.
 
 \strong{PGS} (NRC, 1998):
 

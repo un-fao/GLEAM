@@ -39,14 +39,10 @@ Computes daily feed intake as dry matter intake (DMI) per animal (kg DM/head/day
 animal's daily energy requirement and the diet energy density.
 }
 \details{
-This function follows the IPCC Tier 2, logic.
-Dry matter intake is calculated by dividing the appropriate daily energy requirement by the
-corresponding diet energy density (MJ per kg DM).
-
 This function follows the IPCC Tier 2 framework.
 DMI is computed
 by dividing the appropriate daily energy requirement by the corresponding
-diet energy density (MJ/kg DM).
+diet energy content (MJ/kg DM).
 
 \itemize{
 \item \strong{Energy expressed as gross energy intake requirement -
