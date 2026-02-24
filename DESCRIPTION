@@ -70,9 +70,9 @@ Authors@R: c(
            family = "BMELH",
            role = c( "fnd"),
            comment = "Funding support"))
-Description: GLEAM-X is the official R implementation of FAO’s Global Livestock Environmental 
-Assessment Model (GLEAM). The package provides a modular, transparent framework for simulating 
-livestock production systems and quantifying their environmental impacts.
+Description: GLEAM-X is the official R implementation of FAO’s Global Livestock Environmental
+  Assessment Model (GLEAM). The package provides a modular, transparent framework for
+  simulating livestock production systems and quantifying their environmental impacts.
 License: AGPL-3
 URL: https://github.com/APPLITICS/gleam/, https://www.fao.org/gleam/en/
 BugReports: https://github.com/APPLITICS/gleam/issues
