@@ -132,7 +132,7 @@
 #' \dontrun{
 #' # Load feed rations inputs (cohort-level shares and feed parameters)
 #' feed_rations_chrt_dt <- data.table::fread(system.file(
-#'   "extdata/examples/feed_rations_share_chrt_data.csv",
+#'   "extdata/run_modules_examples/feed_rations_share_chrt_data.csv",
 #'   package = "gleam"
 #' ))
 #' feed_params_dt <- data.table::fread(system.file(

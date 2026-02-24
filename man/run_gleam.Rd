@@ -6,46 +6,27 @@
 \usage{
 run_gleam(
   has_herd_structure = FALSE,
-  herd_structure = NULL,
-  herd_simulation_args,
-  weights_args,
-  feed_rations_args,
-  energy_requirements_args,
+  cohort_level_data,
+  herd_level_data,
+  feed_rations,
+  feed_params,
   show_indicator = TRUE
 )
 }
 \arguments{
-\item{has_herd_structure}{Logical. If TRUE, use \code{herd_structure} directly as the
-cohort-level input for the weights module; if FALSE, run herd simulation first.}
+\item{has_herd_structure}{Logical. If TRUE, use \code{cohort_level_data} directly
+as the cohort-level input for the weights module (skip herd simulation). If FALSE,
+run herd simulation first using \code{cohort_level_data} and \code{herd_level_data}.}
 
-\item{herd_structure}{data.table or NULL. Cohort-level table used when
-\code{has_herd_structure} is TRUE. Required when \code{has_herd_structure} is TRUE;
-ignored otherwise. Must have one row per cohort (6 cohorts per herd: FJ, FS,
-FA, MJ, MS, MA) and at least these required columns:
-\describe{
-\item{\code{herd_id}}{Character or numeric. Herd identifier (one value per herd).}
-\item{\code{cohort_short}}{Character. Cohort code: one of \code{FJ}, \code{FS},
-\code{FA}, \code{MJ}, \code{MS}, \code{MA}.}
-\item{\code{cohort_duration_days}}{Numeric. Time spent in the cohort (days).}
-\item{\code{offtake_rate}}{Numeric. Annual proportion of animals removed from the
-cohort (fraction, 0--1).}
-}
-Additional columns (e.g. \code{cohort_stock_size}, \code{offtake_heads_assessment})
-are allowed and will be passed through the pipeline.}
+\item{cohort_level_data}{data.table. Cohort-level master table. Must have one row
+per cohort (6 cohorts per herd: FJ, FS, FA, MJ, MS, MA). Data should not
+include columns that GLEAM calculates (validation will block them).}
 
-\item{herd_simulation_args}{List. Arguments passed to \code{run_herd_simulation()} when
-\code{has_herd_structure} is FALSE.}
+\item{herd_level_data}{data.table. Herd-level master table (one row per herd).}
 
-\item{weights_args}{List. Arguments passed to \code{run_weights_calculations()}.}
+\item{feed_rations}{data.table. Feed ration shares by cohort (see \code{\link{run_feed_rations}}).}
 
-\item{feed_rations_args}{List. Arguments passed to \code{run_feed_rations()}.}
-
-\item{energy_requirements_args}{List. Arguments passed to \code{run_energy_requirements()}.
-Must include \code{herd_level_data}. May include \code{cohort_level_data}: cohort-level
-columns not produced by the pipeline (e.g. \code{low_activity_fraction},
-\code{high_activity_fraction} are merged in by \code{herd_id}
-and \code{cohort_short} before the energy step. If omitted, those columns must already
-exist in the pipeline data.}
+\item{feed_params}{data.table. Feed nutritional parameters (see \code{\link{run_feed_rations}}).}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during the pipeline run.}
 }
@@ -55,125 +36,65 @@ modules executed within this pipeline call.
 }
 \description{
 Runs the core sequence of model modules to generate cohort-level outputs for a
-livestock production system.
+livestock production system. Accepts primary inputs only: one cohort-level
+master table, one herd-level master table, feed rations and feed parameters.
 }
 \examples{
-# Example 1: run pipeline when you don't have herd structure (herd simulation runs first).
+# Example 1: You do NOT have herd structure — use cohort input for herd simulation.
+# Pipeline runs herd simulation first, then the rest of the pipeline.
 \dontrun{
-# Load herd simulation inputs (cohort and herd-level)
-herd_simulation_chrt_dt <- data.table::fread(system.file(
-  "extdata/examples/herd_simulation_input_chrt_data.csv",
-  package = "gleam"
-))
-herd_simulation_hrd_dt <- data.table::fread(system.file(
-  "extdata/examples/herd_simulation_input_hrd_data.csv",
-  package = "gleam"
-))
+path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 
-# Load weights herd-level inputs
-weights_hrd_dt <- data.table::fread(system.file(
-  "extdata/examples/weights_input_hrd_data.csv",
-  package = "gleam"
+cohort_no_structure_dt <- data.table::fread(file.path(
+  path_run_gleam_examples, "master_chrt_lvl_no_structure_data.csv"
 ))
-
-# Load feed rations inputs (cohort-level shares and feed parameters)
-feed_rations_chrt_dt <- data.table::fread(system.file(
-  "extdata/examples/feed_rations_share_chrt_data.csv",
-  package = "gleam"
-))
+master_herd_dt <- data.table::fread(
+file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
+)
+feed_rations_dt <- data.table::fread(
+file.path(path_run_gleam_examples, "feed_rations_share_chrt_data.csv")
+)
 feed_params_dt <- data.table::fread(system.file(
   "extdata/Parameters/feed/feed_params.csv",
   package = "gleam"
 ))
 
-# Define argument lists for each pipeline step
-herd_simulation_args <- list(
-  cohort_level_data = herd_simulation_chrt_dt,
-  herd_level_data = herd_simulation_hrd_dt
-)
-weights_args <- list(
-  herd_level_data = weights_hrd_dt
-)
-feed_rations_args <- list(
-  feed_rations = feed_rations_chrt_dt,
-  feed_params = feed_params_dt
-)
-energy_requirements_hrd_dt <- data.table::fread(system.file(
-  "extdata/examples/energy_requirements_input_hrd_data.csv",
-  package = "gleam"
-))
-energy_requirements_chrt_dt <- data.table::fread(system.file(
-  "extdata/examples/energy_requirements_input_chrt_data.csv",
-  package = "gleam"
-))
-energy_requirements_args <- list(
-  herd_level_data = energy_requirements_hrd_dt,
-  cohort_level_data = energy_requirements_chrt_dt
-)
-
-# Run GLEAM using herd simulation outputs
 results <- run_gleam(
   has_herd_structure = FALSE,
-  herd_simulation_args = herd_simulation_args,
-  weights_args = weights_args,
-  feed_rations_args = feed_rations_args,
-  energy_requirements_args = energy_requirements_args
+  cohort_level_data = cohort_no_structure_dt,
+  herd_level_data = master_herd_dt,
+  feed_rations = feed_rations_dt,
+  feed_params = feed_params_dt
 )
-
-# Access results
 print(results)
 }
 
-# Example 2: run pipeline when you already have cohort-level herd structure (skip herd simulation).
+# Example 2: You already HAVE herd structure — use cohort table and skip herd simulation.
+# Pipeline skips herd simulation and uses this as the starting cohort table.
 \dontrun{
-# Load pre-aggregated herd structure (cohort-level, with required columns for the rest of pipeline)
-herd_structure_dt <- data.table::fread(system.file(
-  "extdata/examples/herd_structure_chrt_data.csv",
-  package = "gleam"
-))
+path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 
-# Load weights and feed inputs (same as above)
-weights_hrd_dt <- data.table::fread(system.file(
-  "extdata/examples/weights_input_hrd_data.csv",
-  package = "gleam"
+cohort_structure_dt <- data.table::fread(file.path(
+  path_run_gleam_examples, "master_chrt_lvl_structure_data.csv"
 ))
-feed_rations_chrt_dt <- data.table::fread(system.file(
-  "extdata/examples/feed_rations_share_chrt_data.csv",
-  package = "gleam"
-))
+master_herd_dt <- data.table::fread(
+file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
+)
+feed_rations_dt <- data.table::fread(
+file.path(path_run_gleam_examples, "feed_rations_share_chrt_data.csv")
+)
 feed_params_dt <- data.table::fread(system.file(
   "extdata/Parameters/feed/feed_params.csv",
   package = "gleam"
 ))
 
-weights_args <- list(herd_level_data = weights_hrd_dt)
-feed_rations_args <- list(
-  feed_rations = feed_rations_chrt_dt,
-  feed_params = feed_params_dt
-)
-energy_requirements_hrd_dt <- data.table::fread(system.file(
-  "extdata/examples/energy_requirements_input_hrd_data.csv",
-  package = "gleam"
-))
-energy_requirements_chrt_dt <- data.table::fread(system.file(
-  "extdata/examples/energy_requirements_input_chrt_data.csv",
-  package = "gleam"
-))
-energy_requirements_args <- list(
-  herd_level_data = energy_requirements_hrd_dt,
-  cohort_level_data = energy_requirements_chrt_dt
-)
-
-# Run GLEAM using provided herd structure (skip herd simulation)
 results <- run_gleam(
   has_herd_structure = TRUE,
-  herd_structure = herd_structure_dt,
-  herd_simulation_args = list(),
-  weights_args = weights_args,
-  feed_rations_args = feed_rations_args,
-  energy_requirements_args = energy_requirements_args
+  cohort_level_data = cohort_structure_dt,
+  herd_level_data = master_herd_dt,
+  feed_rations = feed_rations_dt,
+  feed_params = feed_params_dt
 )
-
 print(results)
 }
 }

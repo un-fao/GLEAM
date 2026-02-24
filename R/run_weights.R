@@ -76,11 +76,11 @@
 #' \dontrun{
 #' # Load weights inputs (cohort- and herd-level)
 #' weights_chrt_dt <- data.table::fread(system.file(
-#'   "extdata/examples/weights_input_chrt_data.csv",
+#'   "extdata/run_modules_examples/weights_input_chrt_data.csv",
 #'   package = "gleam"
 #' ))
 #' weights_hrd_dt <- data.table::fread(system.file(
-#'   "extdata/examples/weights_input_hrd_data.csv",
+#'   "extdata/run_modules_examples/weights_input_hrd_data.csv",
 #'   package = "gleam"
 #' ))
 #'

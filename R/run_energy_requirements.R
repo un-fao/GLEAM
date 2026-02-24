@@ -144,11 +144,11 @@
 #' \dontrun{
 #' # Load energy requirements inputs (cohort and herd-level)
 #' energy_requirements_chrt_dt <- data.table::fread(system.file(
-#'   "extdata/examples/energy_requirements_input_chrt_data.csv",
+#'   "extdata/run_modules_examples/energy_requirements_input_chrt_data.csv",
 #'   package = "gleam"
 #' ))
 #' energy_requirements_hrd_dt <- data.table::fread(system.file(
-#'   "extdata/examples/energy_requirements_input_hrd_data.csv",
+#'   "extdata/run_modules_examples/energy_requirements_input_hrd_data.csv",
 #'   package = "gleam"
 #' ))
 #'
