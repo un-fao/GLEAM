@@ -76,7 +76,7 @@ For selected cohorts, \eqn{cmain} is computed as a weighted average to account f
 
 \strong{Specific coefficients by species and cohort:}
 
-\strong{CTL and BFL} (NRC, 1996; AFRC, 1993; AFRC, 1995):
+\strong{CTL and BFL} (NRC, 1996; AFRC, 1993):
 \itemize{
 \item \code{FA}:
 \eqn{cmain = 0.386 \times lactating\_females\_fraction + 0.322 \times (1 - lactating\_females\_fraction)}
@@ -92,13 +92,13 @@ For selected cohorts, \eqn{cmain} is computed as a weighted average to account f
 \eqn{cmain = 0.435}
 }
 
-\strong{GTS} (AFRC, 1993; AFRC, 1995):
+\strong{GTS} (AFRC, 1993):
 \itemize{
 \item All cohorts:
 \eqn{cmain = 0.315}
 }
 
-\strong{SHP} (AFRC, 1993; AFRC, 1995):
+\strong{SHP} (AFRC, 1993):
 \itemize{
 \item \code{FA}:
 \eqn{cmain = 0.217}
@@ -128,10 +128,7 @@ NRC (1998). \emph{Nutrient Requirements of Swine},
 NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
 7th Revised Edition. National Academies Press, Washington, DC.
 
-AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
-CAB International, Wallingford, UK.
-
-AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.}
 CAB International, Wallingford, UK.
 
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National
@@ -142,7 +139,7 @@ IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories
 Chapter 10: Emissions from Livestock and Manure Management, Equation 10.3; Table 10.4.
 
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
-Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 }
 \seealso{

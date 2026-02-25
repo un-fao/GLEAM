@@ -198,7 +198,7 @@ IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories
 from Livestock and Manure Management, Equation 10.13; Table 10.7.
 
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
-Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 }
 \seealso{

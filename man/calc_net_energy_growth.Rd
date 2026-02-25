@@ -82,7 +82,7 @@ castrated and intact males. For male cohorts, \eqn{cgro} is calculated as a weig
 using \code{offtake_rate}, assuming that animals removed from the herd are castrated and
 animals remaining in the cohort are intact.
 
-\item \strong{SHP and GTS} (Gibbs et al., 2002; AFRC, 1993; AFRC, 1995; IPCC, 2006; IPCC, 2019)
+\item \strong{SHP and GTS} (Gibbs et al., 2002; AFRC, 1993; IPCC, 2006; IPCC, 2019)
 
 For sheep and goats, growth energy is calculated using a linear formulation with coefficients
 \eqn{a} and \eqn{b} (MJ/kg live weight). For male cohorts, the coefficients differ between
@@ -132,10 +132,7 @@ NRC (1998). \emph{Nutrient Requirements of Swine},
 NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
 7th Revised Edition. National Academies Press, Washington, DC.
 
-AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
-CAB International, Wallingford, UK.
-
-AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.}
 CAB International, Wallingford, UK.
 
 Gibbs, M.J., Conneely, D., Johnson, D., Lassey, K.R. and Ulyatt, M.J. (2002).

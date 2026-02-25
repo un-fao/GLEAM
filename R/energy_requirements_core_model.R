@@ -56,7 +56,7 @@
 #'
 #' \strong{Specific coefficients by species and cohort:}
 #'
-#' \strong{CTL and BFL} (NRC, 1996; AFRC, 1993; AFRC, 1995):
+#' \strong{CTL and BFL} (NRC, 1996; AFRC, 1993):
 #' \itemize{
 #'   \item \code{FA}:
 #'     \eqn{cmain = 0.386 \times lactating\_females\_fraction + 0.322 \times (1 - lactating\_females\_fraction)}
@@ -72,13 +72,13 @@
 #'     \eqn{cmain = 0.435}
 #' }
 #'
-#' \strong{GTS} (AFRC, 1993; AFRC, 1995):
+#' \strong{GTS} (AFRC, 1993):
 #' \itemize{
 #'   \item All cohorts:
 #'     \eqn{cmain = 0.315}
 #' }
 #'
-#' \strong{SHP} (AFRC, 1993; AFRC, 1995):
+#' \strong{SHP} (AFRC, 1993):
 #' \itemize{
 #'   \item \code{FA}:
 #'     \eqn{cmain = 0.217}
@@ -111,10 +111,7 @@
 #' NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
 #' 7th Revised Edition. National Academies Press, Washington, DC.
 #'
-#' AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
-#' CAB International, Wallingford, UK.
-#'
-#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.} 
 #' CAB International, Wallingford, UK.
 #'
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National
@@ -125,7 +122,7 @@
 #' Chapter 10: Emissions from Livestock and Manure Management, Equation 10.3; Table 10.4.
 #'
 #' Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
-#' Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+#' Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
 #' @export
@@ -254,7 +251,7 @@ calc_net_energy_maintenance <- function(
 #' 
 #' \strong{Specific coefficients by species and cohort:}
 #'
-#' \strong{CTL, BFL} (NRC, 1996; AFRC, 1993; AFRC, 1995):
+#' \strong{CTL, BFL} (NRC, 1996; AFRC, 1993):
 #' \itemize{
 #'   \item \code{low_activity_fraction}: \eqn{cact = 0.17}
 #'   \item \code{high_activity_fraction}: \eqn{cact = 0.36}
@@ -263,12 +260,12 @@ calc_net_energy_maintenance <- function(
 #' \itemize{
 #'   \item \code{all activity levels}: \eqn{cact = 0.1}
 #'   }
-#'\strong{GTS} (AFRC, 1993; AFRC, 1995):
+#'\strong{GTS} (AFRC, 1993):
 #' \itemize{
 #'   \item \code{low_activity_fraction}: \eqn{cact = 0.019}
 #'   \item \code{high_activity_fraction}: \eqn{cact = 0.024}
 #'   }
-#' \strong{SHP} (AFRC, 1993; AFRC, 1995):
+#' \strong{SHP} (AFRC, 1993):
 #' \itemize{
 #'   \item \code{low_activity_fraction}: \eqn{cact = 0.0107}
 #'   \item \code{high_activity_fraction}: \eqn{cact = 0.024}
@@ -289,7 +286,7 @@ calc_net_energy_maintenance <- function(
 #' NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
 #' 7th Revised Edition. National Academies Press, Washington, DC.
 #'
-#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.} 
 #' CAB International, Wallingford, UK.
 #'
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
@@ -299,7 +296,7 @@ calc_net_energy_maintenance <- function(
 #'   from Livestock and Manure Management, Equation 10.4; Table 10.5.
 #'
 #' Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
-#' Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+#' Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
 #' @export
@@ -396,7 +393,7 @@ calc_net_energy_activity <- function(
 #'   using \code{offtake_rate}, assuming that animals removed from the herd are castrated and
 #'   animals remaining in the cohort are intact.
 #'   
-#'   \item \strong{SHP and GTS} (Gibbs et al., 2002; AFRC, 1993; AFRC, 1995; IPCC, 2006; IPCC, 2019)
+#'   \item \strong{SHP and GTS} (Gibbs et al., 2002; AFRC, 1993; IPCC, 2006; IPCC, 2019)
 #'
 #'   For sheep and goats, growth energy is calculated using a linear formulation with coefficients
 #'   \eqn{a} and \eqn{b} (MJ/kg live weight). For male cohorts, the coefficients differ between
@@ -451,10 +448,7 @@ calc_net_energy_activity <- function(
 #' NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
 #' 7th Revised Edition. National Academies Press, Washington, DC.
 #'
-#' AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
-#' CAB International, Wallingford, UK.
-#'
-#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.} 
 #' CAB International, Wallingford, UK.
 #'
 #' Gibbs, M.J., Conneely, D., Johnson, D., Lassey, K.R. and Ulyatt, M.J. (2002).
@@ -637,7 +631,7 @@ calc_net_energy_growth <- function(
 #'   \item \code{CTL}, \code{BFL}: estimated as a function of milk fat content,
 #'     \eqn{1.47 + 0.40 \times (milk\_fat\_fraction \times 100)} (NRC, 1989),
 #'   \item \code{CML}: \eqn{4.063} (Wardeh, 2004),
-#'   \item \code{SHP}: \eqn{4.6} (AFRC, 1993; AFRC, 1995),
+#'   \item \code{SHP}: \eqn{4.6} (AFRC, 1993),
 #'   \item \code{GTS}: \eqn{3.0} (AFRC, 1998).
 #' }
 #'
@@ -684,17 +678,11 @@ calc_net_energy_growth <- function(
 #' }
 #'
 #' @references
-#' AFRC (1998) \emph{The Nutrition of Goats. Wallingford: CAB International}.
-#' Animut G., Puchala R., Goetsch A.L., Patra A.K., Sahlu T., Varel V.H., Wells J.
-#'
-#' AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+#' AFRC (1998) \emph{The Nutrition of Goats.}
 #' CAB International, Wallingford, UK.
 #'
-#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.} 
 #' CAB International, Wallingford, UK.
-#'
-#' AFRC (1990). \emph{Nutritive Requirements of Ruminant Animals: Energy.}
-#' Rep. 5. Wallingford, UK: CAB International.
 #'
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
 #'   Chapter 10: Emissions from Livestock and Manure Management, Equation 10.8-10.10.
@@ -709,7 +697,7 @@ calc_net_energy_growth <- function(
 #' 6th Ed. . Washington, D.C. U.S.A: National Academy Press.
 #'
 #' Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
-#' Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+#' Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
 #' @export
@@ -1008,7 +996,7 @@ calc_net_energy_work <- function(
 #'
 #' \itemize{
 #'
-#' \item \strong{SHP and GTS} (AFRC, 1995; IPCC, 2006; IPCC, 2019):
+#' \item \strong{SHP and GTS} (IPCC, 2006; IPCC, 2019):
 #'
 #' For sheep and goats, fibre production energy is calculated assuming a fixed
 #' net energy cost of \eqn{24} MJ per kilogram of fibre produced. Annual fibre
@@ -1062,10 +1050,10 @@ calc_net_energy_work <- function(
 #'
 #' @references
 #'
-#' AFRC (1998) \emph{The Nutrition of Goats. Wallingford: CAB International}.
-#' Animut G., Puchala R., Goetsch A.L., Patra A.K., Sahlu T., Varel V.H., Wells J.
+#' AFRC (1998) \emph{The Nutrition of Goats.}
+#' CAB International, Wallingford, UK.
 #'
-#' AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+#' AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.} 
 #' CAB International, Wallingford, UK.
 #'
 #' Cannas, A., Atzori, A. S., Boe, F., & Teixeira, I. (2007).
@@ -1281,7 +1269,7 @@ calc_net_energy_fibre <- function(
 #'   from Livestock and Manure Management, Equation 10.13; Table 10.7.
 #'
 #' Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
-#' Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+#' Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
 #' @export

@@ -49,7 +49,7 @@ only to fibre-producing species and relevant cohorts, which are assumed to be \c
 
 \itemize{
 
-\item \strong{SHP and GTS} (AFRC, 1995; IPCC, 2006; IPCC, 2019):
+\item \strong{SHP and GTS} (IPCC, 2006; IPCC, 2019):
 
 For sheep and goats, fibre production energy is calculated assuming a fixed
 net energy cost of \eqn{24} MJ per kilogram of fibre produced. Annual fibre
@@ -102,10 +102,10 @@ guidance and the synthesis by Cannas et al. (2007).
 }
 }
 \references{
-AFRC (1998) \emph{The Nutrition of Goats. Wallingford: CAB International}.
-Animut G., Puchala R., Goetsch A.L., Patra A.K., Sahlu T., Varel V.H., Wells J.
+AFRC (1998) \emph{The Nutrition of Goats.}
+CAB International, Wallingford, UK.
 
-AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.}
 CAB International, Wallingford, UK.
 
 Cannas, A., Atzori, A. S., Boe, F., & Teixeira, I. (2007).
