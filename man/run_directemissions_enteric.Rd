@@ -4,10 +4,10 @@
 \alias{run_directemissions_enteric}
 \title{Run Enteric Methane (CH₄) Direct Emissions}
 \usage{
-run_directemissions_enteric(data, show_indicator = TRUE)
+run_directemissions_enteric(cohort_level_data, show_indicator = TRUE)
 }
 \arguments{
-\item{data}{data.table. Cohort-level input table with the following data requirement:
+\item{cohort_level_data}{data.table. Cohort-level input table with the following data requirement:
 \describe{
 \item{animal}{Character. Livestock category name used to map to a species short code via an
 internal lookup table. Supported values include:
@@ -54,8 +54,8 @@ A \code{data.table} with the original input columns plus the following new varia
 }
 }
 \description{
-Computes daily enteric methane emissions (kg CH₄/head/day) by cohort by applying species-, cohort- and diet- specific methane conversion factors (ym),
-using a Tier 2 approach.
+Computes daily enteric methane emissions (kg CH₄/head/day) by cohort by applying species-,
+cohort- and diet- specific methane conversion factors (ym), using a Tier 2 approach.
 }
 \details{
 This function performs the following calculation sequence:

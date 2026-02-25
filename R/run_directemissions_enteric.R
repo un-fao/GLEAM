@@ -1,9 +1,9 @@
 #' Run Enteric Methane (CH₄) Direct Emissions
 #'
-#' Computes daily enteric methane emissions (kg CH₄/head/day) by cohort by applying species-, cohort- and diet- specific methane conversion factors (ym),
-#' using a Tier 2 approach.
-#' 
-#' @param data data.table. Cohort-level input table with the following data requirement:
+#' Computes daily enteric methane emissions (kg CH₄/head/day) by cohort by applying species-,
+#' cohort- and diet- specific methane conversion factors (ym), using a Tier 2 approach.
+#'
+#' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
 #'   \describe{
 #'     \item{animal}{Character. Livestock category name used to map to a species short code via an
 #'       internal lookup table. Supported values include:
@@ -39,7 +39,7 @@
 #'
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'   Defaults to \code{TRUE}.
-#'   
+#'
 #' @return A \code{data.table} with the original input columns plus the following new variables:
 #'   \describe{
 #'   \item{ch4_conversion_factor_ym}{Added by the function if not provided as input.}
@@ -47,7 +47,7 @@
 #'     \item{ch4_enteric}{Numeric. Average daily enteric methane emissions (kg CH₄/head/day).}
 #'     \item{ch4_mitigation_factor}{}
 #'   }
-#'   
+#'
 #' @details
 #' This function performs the following calculation sequence:
 #' \enumerate{
@@ -81,10 +81,13 @@
 #' }
 #'
 #' @importFrom data.table :=
-run_directemissions_enteric <- function(data, show_indicator = TRUE) {
+run_directemissions_enteric <- function(
+    cohort_level_data,
+    show_indicator = TRUE
+) {
 
   # --- Step 1: Validate inputs ------------------------------------------------
-  validate_run_directemissions_enteric_inputs(data)
+  validate_run_directemissions_enteric_inputs(cohort_level_data)
 
   # Show progress indicator if requested
   if (show_indicator) {
@@ -92,7 +95,7 @@ run_directemissions_enteric <- function(data, show_indicator = TRUE) {
   }
 
   # --- Step 2: Create working copy --------------------------------------------
-  enteric_results <- data.table::copy(data)
+  enteric_results <- data.table::copy(cohort_level_data)
 
   # --- Step 3: Map full animal names to species_short ------------------------
   enteric_results <- merge(
