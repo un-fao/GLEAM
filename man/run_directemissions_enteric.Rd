@@ -67,12 +67,11 @@ multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10\% red
 \dontrun{
 # Load example input (6 herd_ids, cohort-level; only required columns)
 input_path <- system.file(
-  "extdata/examples/directemissions_enteric_input_chrt_data.csv",
+  "extdata/run_modules_examples/directemissions_enteric_input_chrt_data.csv",
   package = "gleam"
 )
-dt <- data.table::fread(input_path)
-result <- run_directemissions_enteric(dt)
-head(result[, .(animal, cohort_short, ch4_conversion_factor_ym, ch4_enteric)])
+directemissions_enteric_input_chrt_data <- data.table::fread(input_path)
+results <- run_directemissions_enteric(directemissions_enteric_input_chrt_data)
 }
 
 }

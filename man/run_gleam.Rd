@@ -20,9 +20,12 @@ run herd simulation first using \code{cohort_level_data} and \code{herd_level_da
 
 \item{cohort_level_data}{data.table. Cohort-level master table. Must have one row
 per cohort (6 cohorts per herd: FJ, FS, FA, MJ, MS, MA). Data should not
-include columns that GLEAM calculates (validation will block them).}
+include columns that GLEAM calculates (validation will block them). May
+optionally include \code{ch4_mitigation_factor} (fraction of baseline enteric
+CH4 remaining after mitigation, 1 = no mitigation).}
 
-\item{herd_level_data}{data.table. Herd-level master table (one row per herd).}
+\item{herd_level_data}{data.table. Herd-level master table (one row per herd).
+Must include \code{animal} (full species name, e.g. Cattle, Buffalo).}
 
 \item{feed_rations}{data.table. Feed ration shares by cohort (see \code{\link{run_feed_rations}}).}
 
@@ -36,8 +39,10 @@ modules executed within this pipeline call.
 }
 \description{
 Runs the core sequence of model modules to generate cohort-level outputs for a
-livestock production system. Accepts primary inputs only: one cohort-level
-master table, one herd-level master table, feed rations and feed parameters.
+livestock production system: herd simulation (optional), weights, feed rations,
+energy requirements and DMI, and enteric methane direct emissions. Accepts
+primary inputs only: one cohort-level master table, one herd-level master table,
+feed rations and feed parameters.
 }
 \examples{
 # Example 1: You do NOT have herd structure — use cohort input for herd simulation.

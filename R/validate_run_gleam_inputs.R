@@ -67,7 +67,9 @@ validate_run_gleam_inputs <- function(
     "energy_requirement_fibre_production", "energy_requirement_pregnancy",
     "net_energy_maintenance_digestible_energy_ratio",
     "net_energy_growth_digestible_energy_ratio",
-    "energy_requirement_total", "dry_matter_intake"
+    "energy_requirement_total", "dry_matter_intake",
+    # Enteric direct emissions (cohort)
+    "ch4_conversion_factor_ym", "ch4_enteric"
   )
   # When has_herd_structure is TRUE, the provided herd structure should structure inputs.
   cohort_blocklist <- if (has_herd_structure) {
