@@ -37,7 +37,7 @@ production stage of the animals. Supported values include:
 }}
 
 \item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to
-keep the animal in equilibrium such that body energy is neither gained nor lost.
+keep the animal at equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
 CML and PGS (MJ/head/day).}
 
@@ -56,7 +56,7 @@ Numeric. Energy required for activity, defined as the amount of energy needed to
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the energy requirement for activity by cohort (MJ/head/day), which is
+Computes the energy requirement for activity by cohort (MJ/head/day),
 defined as the amount of energy needed to support animal movement and physical activity.
 }
 \details{
@@ -70,8 +70,8 @@ For \code{SHP} and \code{GTS}, activity energy is calculated as:
 
 where
 
-\eqn{cact} is an activity coefficient (MJ/day/kg live weight for \code{CTL}, \code{BFL}, \code{GTS};
-MJ/day/kg for \code{SHP}) that reflects the animal’s feeding and management conditions.
+\eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS};
+MJ/day/kg for \code{SHP},  \code{GTS}) that reflects the animal’s feeding and management conditions.
 \code{energy_requirement_maintenance} can be calculated using
 \code{\link{calc_net_energy_maintenance}()}.
 

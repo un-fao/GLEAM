@@ -19,10 +19,10 @@ Supported values include:
 }}
 
 \item{diet_digestibility_fraction}{Numeric. Average digestibility of
-the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{
-Numeric. Ratio of net energy available in the diet for maintenance to digestible energy consumed (fraction).
+Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).
 }
 \description{
 Computes the ratio of net energy available in the diet for maintenance to digestible energy.

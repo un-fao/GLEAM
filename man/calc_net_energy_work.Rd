@@ -38,7 +38,7 @@ production stage of the animals. Supported values include:
 }}
 
 \item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed
-to keep the animal in equilibrium such that body energy is neither gained nor lost.
+to keep the animal at equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
 \item{draught_work_hours_female}{Numeric. Average daily working time per adult female (hours/head/day). Required only for species = CML, CTL and BFL.}
@@ -61,8 +61,8 @@ additional energy required to support draught power and work-related physical ac
 This approach follows the IPCC Tier 2 partitioning method and applies
 species-specific coefficients for draught work.
 
-This energy component is calculated only for adult cohorts of draught-capable species
-(\code{CTL}, \code{BFL}, and \code{CML}; i.e. \code{FA} and \code{MA}). It is scaled by
+This energy component is calculated only for adult cohorts ( \code{FA} and \code{MA}) of draught-capable species
+(\code{CTL}, \code{BFL}, and \code{CML}). It is scaled by
 the fraction of adult animals involved in draught work
 (\code{draught_fraction_female}, \code{draught_fraction_male}) and their average
 daily working time (\code{draught_work_hours_female}, \code{draught_work_hours_male}).
@@ -83,9 +83,9 @@ where:
 \code{\link{calc_net_energy_maintenance}()},
 \item \eqn{0.1} represents a 10\% increase in maintenance energy per hour of work,
 \item \eqn{work\_hours} is the mean number of hours worked per animal per day -
-(\code{draught_work_hours_female}) for \code{FA} and (\code{draught_work_hours_male}) for \code{MA} and,
+\code{draught_work_hours_female} (for \code{FA}) and \code{draught_work_hours_male} (for \code{MA}) and,
 \item \eqn{draught\_fraction} is the fraction of adult animals performing draught work -
-(\code{draught_fraction_female}) for \code{FA} and (\code{draught_fraction_male}) for \code{MA}
+\code{draught_fraction_female} (for \code{FA}) and \code{draught_fraction_male} (for \code{MA})
 }
 
 \strong{CML} -  (Wilson, 1989)
@@ -101,9 +101,9 @@ where:
 \item \eqn{4} is the metabolizable energy requirement for draught work
 (MJ/hour),
 \item \eqn{work\_hours} is the mean number of hours worked per animal per day -
-(\code{draught_work_hours_female}) for (\code{FA}) and (\code{draught_work_hours_male}) for (\code{MA}) and,
+\code{draught_work_hours_female} (for \code{FA}) and \code{draught_work_hours_male} (for \code{MA}) and,
 \item \eqn{draught\_fraction} is the fraction of adult animals performing draught work -
-(\code{draught_fraction_female}) for (\code{FA}) and (\code{draught_fraction_male}) for (\code{MA})
+\code{draught_fraction_female} (for \code{FA}) and \code{draught_fraction_male} (for \code{MA})
 }
 }
 \references{

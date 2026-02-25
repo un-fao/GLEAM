@@ -13,7 +13,7 @@ run_energy_requirements(
 \arguments{
 \item{cohort_level_data}{data.table. Cohort-level input table with the following data requirement:
 \describe{
-\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd. Used to join cohort- and herd-level inputs.}
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -39,7 +39,7 @@ run_energy_requirements(
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
 \describe{
-\item{herd_id}{Character. Unique identifier for the herd (primary key). Used to join herd-level attributes to each cohort.}
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 \item{animal}{Character. Livestock category name used to map to a species short code via an
 internal lookup table. Supported values include:
 \itemize{
@@ -77,7 +77,7 @@ Defaults to \code{TRUE}.}
 \value{
 A \code{data.table} with the original cohort-level input columns plus the following new variables:
 \describe{
-\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost.
+\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 \item{energy_requirement_activity}{Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
@@ -89,21 +89,21 @@ Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GT
 Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 \item{energy_requirement_pregnancy}{Numeric. Energy required for pregnancy for pregnant females (MJ/head/day).
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-\item{net_energy_maintenance_digestible_energy_ratio}{Numeric. Ratio of net energy available in the diet for maintenance to digestible energy consumed (fraction).}
-\item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in a diet to digestible energy consumed (fraction).}
+\item{net_energy_maintenance_digestible_energy_ratio}{Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).}
+\item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).}
 \item{energy_requirement_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
 For CML and PGS the function returns the summed daily metabolizable energy requirement.}
 \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 }
 }
 \description{
-Computes cohort-level daily energy requirements (MJ/head/day) and dry matter intake (kg DM/head/day)
+Computes cohort-level daily energy requirements (MJ/head/day) and feed dry matter intake (kg DM/head/day)
 by applying the IPCC Tier 2 energy partitioning functions.
 }
 \details{
 This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
 maps \code{animal} to a species short code (\code{species_short}) via \code{abbr_animals},
-and computes IPCC Tier 2 energy partition components and derived intake metrics by cohort.
+and computes IPCC Tier 2 energy partition components and derived feed intake metrics by cohort.
 
 Energy requirements are expressed as:
 \itemize{
@@ -141,11 +141,11 @@ The following calculation sequence is applied:
 \dontrun{
 # Load energy requirements inputs (cohort and herd-level)
 energy_requirements_chrt_dt <- data.table::fread(system.file(
-  "extdata/examples/energy_requirements_input_chrt_data.csv",
+  "extdata/run_modules_examples/energy_requirements_input_chrt_data.csv",
   package = "gleam"
 ))
 energy_requirements_hrd_dt <- data.table::fread(system.file(
-  "extdata/examples/energy_requirements_input_hrd_data.csv",
+  "extdata/run_modules_examples/energy_requirements_input_hrd_data.csv",
   package = "gleam"
 ))
 

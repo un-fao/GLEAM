@@ -22,7 +22,7 @@ Supported values include:
 expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{
-Numeric. Ratio of net energy available for growth in a diet to digestible energy consumed (fraction).
+Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).
 }
 \description{
 Computes the ratio of net energy available for growth to digestible

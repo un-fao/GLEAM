@@ -62,16 +62,16 @@ biological and management conditions (kg).}
 Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the energy requirement for growth by cohort (MJ/head/day), which is defined
-as the energy required for body weight gain (tissue accretion)
-associated with live weight gain.
+Computes the energy requirement for growth by cohort (MJ/head/day), defined
+as the energy required for body tissue accretion, corresponding to the retained energy
+component of live weight gain.
 }
 \details{
 This function follows the IPCC Tier 2 energy partitioning
 approach and applies species-specific equations for growth energy requirements.
 
 In general, growth energy is computed only for growing cohorts (\code{FJ}, \code{FS}, \code{MJ}, \code{MS});
-for adult cohorts (\code{FA}, \code{MA}) growth is set to 0 in this implementation.
+in this implementation, growth is set to 0 for adult cohorts (\code{FA}, \code{MA}).
 
 \strong{Species-specific approach:}
 \itemize{

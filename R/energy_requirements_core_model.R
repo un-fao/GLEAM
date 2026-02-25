@@ -1,8 +1,8 @@
 #' Calculate Energy for Maintenance
 #'
-#' Computes the energy requirement for maintenance by cohort (MJ/head/day), which is
-#' defined as the energy required to maintain body functions in equilibrium
-#' (i.e. no net gain or loss of body energy).
+#' Computes the energy requirement for maintenance by cohort (MJ/head/day), 
+#' defined as the energy required to maintain basal physiological functions at equilibrium,
+#' with no net gain or loss of body energy.
 #' 
 #'
 #' @param species_short Character. Code identifying the livestock species.
@@ -28,14 +28,14 @@
 #' @param live_weight_cohort_average Numeric. Average live weight over the cohort stage. Computed by accounting 
 #' for the share of offtaken animals within the cohort, using their slaughter weight, and the potential 
 #' final weight of animals that remain in the cohort (kg).
-#' @param lactating_females_fraction Numeric. Share of adult females lactating within
-#'  the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
+#' @param lactating_females_fraction Numeric. Proportion of adult females that are lactating during the assessment period (fraction). 
+#' Required only for species = CML, CTL, BFL, SHP, and GTS.
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for
 #'  each sex-age cohort (fraction).
 #' @param age_first_parturition Numeric. Age at first parturition for female breeding animals (days)
 #'
 #' @return Numeric. Energy required for maintenance, defined as the amount of energy needed to 
-#' keep the animal in equilibrium such that body energy is neither gained nor lost. 
+#' keep the animal at equilibrium such that body energy is neither gained nor lost. 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for 
 #' CML and PGS (MJ/head/day).
 #'
@@ -192,7 +192,7 @@ calc_net_energy_maintenance <- function(
 
 #' Calculate Energy for Activity
 #'
-#' Computes the energy requirement for activity by cohort (MJ/head/day), which is 
+#' Computes the energy requirement for activity by cohort (MJ/head/day), 
 #' defined as the amount of energy needed to support animal movement and physical activity.
 #'
 #' @param species_short Character. Code identifying the livestock species.
@@ -216,7 +216,7 @@ calc_net_energy_maintenance <- function(
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
 #' @param energy_requirement_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed to 
-#' keep the animal in equilibrium such that body energy is neither gained nor lost. 
+#' keep the animal at equilibrium such that body energy is neither gained nor lost. 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for 
 #' CML and PGS (MJ/head/day).
 #' @param live_weight_cohort_average Numeric. Average live weight over the cohort stage. Computed by accounting 
@@ -241,8 +241,8 @@ calc_net_energy_maintenance <- function(
 #' 
 #' where 
 #' 
-#' \eqn{cact} is an activity coefficient (MJ/day/kg live weight for \code{CTL}, \code{BFL}, \code{GTS};
-#' MJ/day/kg for \code{SHP}) that reflects the animal’s feeding and management conditions.
+#' \eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS};
+#' MJ/day/kg for \code{SHP},  \code{GTS}) that reflects the animal’s feeding and management conditions.
 #' \code{energy_requirement_maintenance} can be calculated using
 #' \code{\link{calc_net_energy_maintenance}()}.
 #' 
@@ -338,9 +338,9 @@ calc_net_energy_activity <- function(
 
 #' Calculate Energy for Growth
 #'
-#' Computes the energy requirement for growth by cohort (MJ/head/day), which is defined 
-#' as the energy required for body weight gain (tissue accretion)
-#' associated with live weight gain. 
+#' Computes the energy requirement for growth by cohort (MJ/head/day), defined 
+#' as the energy required for body tissue accretion, corresponding to the retained energy 
+#' component of live weight gain. 
 #'
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
@@ -382,7 +382,7 @@ calc_net_energy_activity <- function(
 #' approach and applies species-specific equations for growth energy requirements.
 #' 
 #' In general, growth energy is computed only for growing cohorts (\code{FJ}, \code{FS}, \code{MJ}, \code{MS});
-#'   for adult cohorts (\code{FA}, \code{MA}) growth is set to 0 in this implementation.
+#'   in this implementation, growth is set to 0 for adult cohorts (\code{FA}, \code{MA}).
 #'
 #' \strong{Species-specific approach:}
 #' \itemize{
@@ -585,8 +585,8 @@ calc_net_energy_growth <- function(
 #' @param litter_size Numeric. Average number of offspring born per parturition (# offsprings/parturition). 
 #' This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
 #' @param death_rate_juvenile Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).
-#' @param birth_weight Numeric. Live body weight of the animal at birth (kg).
-#' @param weaning_weight Numeric. Live body weight of the animal at weaning (kg).
+#' @param birth_weight Numeric. Live weight of the animal at birth (kg).
+#' @param weaning_weight Numeric. Live weight of the animal at weaning (kg).
 #' @param lactation_duration Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). 
 #' Required only for PGS.
 #' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
@@ -645,7 +645,7 @@ calc_net_energy_growth <- function(
 #' }
 #'
 #' For \code{SHP} and \code{GTS}, \code{milk_for_offspring} is multiplied by
-#' \code{litsize} to account for multiple offspring per birth.
+#' \code{litter_size} to account for multiple offspring per birth.
 #'
 #' \strong{PGS} (NRC, 1998):
 #'
@@ -837,7 +837,7 @@ calc_net_energy_eggs <- function(
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
 #' @param energy_requirement_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed 
-#' to keep the animal in equilibrium such that body energy is neither gained nor lost. 
+#' to keep the animal at equilibrium such that body energy is neither gained nor lost. 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param draught_work_hours_female Numeric. Average daily working time per adult female (hours/head/day). Required only for species = CML, CTL and BFL.
 #' @param draught_work_hours_male Numeric. Average daily working time per adult male (hours/head/day). Required only for species = CML, CTL and BFL.
@@ -851,8 +851,8 @@ calc_net_energy_eggs <- function(
 #' This approach follows the IPCC Tier 2 partitioning method and applies
 #' species-specific coefficients for draught work.
 #'
-#' This energy component is calculated only for adult cohorts of draught-capable species
-#' (\code{CTL}, \code{BFL}, and \code{CML}; i.e. \code{FA} and \code{MA}). It is scaled by
+#' This energy component is calculated only for adult cohorts ( \code{FA} and \code{MA}) of draught-capable species
+#' (\code{CTL}, \code{BFL}, and \code{CML}). It is scaled by
 #' the fraction of adult animals involved in draught work
 #' (\code{draught_fraction_female}, \code{draught_fraction_male}) and their average
 #' daily working time (\code{draught_work_hours_female}, \code{draught_work_hours_male}).
@@ -873,9 +873,9 @@ calc_net_energy_eggs <- function(
 #'   \code{\link{calc_net_energy_maintenance}()},
 #'   \item \eqn{0.1} represents a 10% increase in maintenance energy per hour of work,
 #'   \item \eqn{work\_hours} is the mean number of hours worked per animal per day - 
-#'   (\code{draught_work_hours_female}) for \code{FA} and (\code{draught_work_hours_male}) for \code{MA} and,
+#'   \code{draught_work_hours_female} (for \code{FA}) and \code{draught_work_hours_male} (for \code{MA}) and,
 #'   \item \eqn{draught\_fraction} is the fraction of adult animals performing draught work -
-#'   (\code{draught_fraction_female}) for \code{FA} and (\code{draught_fraction_male}) for \code{MA}
+#'   \code{draught_fraction_female} (for \code{FA}) and \code{draught_fraction_male} (for \code{MA})
 #' }
 #'
 #' \strong{CML} -  (Wilson, 1989)
@@ -891,9 +891,9 @@ calc_net_energy_eggs <- function(
 #'   \item \eqn{4} is the metabolizable energy requirement for draught work
 #'     (MJ/hour),
 #'   \item \eqn{work\_hours} is the mean number of hours worked per animal per day - 
-#'   (\code{draught_work_hours_female}) for (\code{FA}) and (\code{draught_work_hours_male}) for (\code{MA}) and,
+#'   \code{draught_work_hours_female} (for \code{FA}) and \code{draught_work_hours_male} (for \code{MA}) and,
 #'   \item \eqn{draught\_fraction} is the fraction of adult animals performing draught work -
-#'   (\code{draught_fraction_female}) for (\code{FA}) and (\code{draught_fraction_male}) for (\code{MA})
+#'   \code{draught_fraction_female} (for \code{FA}) and \code{draught_fraction_male} (for \code{MA})
 #'   }
 #'
 #'@seealso
@@ -1121,7 +1121,7 @@ calc_net_energy_fibre <- function(
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
 #' @param energy_requirement_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed 
-#' to keep the animal in equilibrium such that body energy is neither gained nor lost. 
+#' to keep the animal at equilibrium such that body energy is neither gained nor lost. 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
 #' A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during 
@@ -1149,8 +1149,8 @@ calc_net_energy_fibre <- function(
 #' the cohort:
 #' \itemize{
 #'   \item For \code{FA}, requirements are scaled by the annual parturition rate
-#'     (\code{parturition_rate}) and (when applicable) by the fraction of the year
-#'     spent in gestation (\code{pregnancy_duration/365}).
+#'     (\code{parturition_rate}) and (when applicable) by the fraction of the reproductive cycle
+#'     spent in gestation (\code{pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)}).
 #'   \item For \code{FS}, only a fraction of animals is assumed to reach reproductive
 #'     age within the cohort; requirements are therefore scaled by the proportion
 #'     remaining in the cohort (\eqn{1 - offtake\_rate}) and by the share of the
@@ -1371,9 +1371,9 @@ calc_net_energy_pregnancy <- function(
 #'     \item \code{GTS}: goats
 #'   }
 #' @param diet_digestibility_fraction Numeric. Average digestibility of 
-#' the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
+#' the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #'
-#' @return Numeric. Ratio of net energy available in the diet for maintenance to digestible energy consumed (fraction). 
+#' @return Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction). 
 #'
 #' @details
 #' This component follows the IPCC Tier 2 partitioning approach and it returns the value for
@@ -1446,7 +1446,7 @@ calc_rem_maintenance <- function(
 #' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, 
 #' expressed as ratio of digestible to gross energy content (fraction).
 #'
-#' @return Numeric. Ratio of net energy available for growth in a diet to digestible energy consumed (fraction).
+#' @return Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).
 #'   
 #' @details
 #' This component follows the IPCC Tier 2 partitioning approach and returns REG for
@@ -1513,7 +1513,7 @@ calc_reg_growth <- function(
 #'     \item \code{GTS}: goats
 #'   }
 #' @param energy_requirement_maintenance Numeric. Energy required for maintenance, defined as the amount of 
-#' energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost (MJ/head/day). 
+#' energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 #' @param energy_requirement_activity Numeric. Energy required for activity, defined as the amount of energy 
 #' needed to support animal movement and physical activity (MJ/head/day). Expressed as net energy for 
@@ -1525,13 +1525,13 @@ calc_reg_growth <- function(
 #' @param energy_requirement_pregnancy Numeric. Energy required for pregnancy for pregnant females (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 #' @param net_energy_maintenance_digestible_energy_ratio Ratio of net energy available for maintenance in
-#'   diet to digestible energy consumed (fraction).
+#'   the diet to digestible energy consumed (fraction).
 #' @param energy_requirement_growth Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 #' @param energy_requirement_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species (MJ/head/day).
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param energy_requirement_egg_deposition Numeric. Net energy for egg production (MJ/head/day).
-#' @param net_energy_growth_digestible_energy_ratio Numeric. Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)
+#' @param net_energy_growth_digestible_energy_ratio Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction)
 #' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #' 
 #' @return Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
@@ -1704,10 +1704,6 @@ calc_total_energy_requirement <- function(
 #' Computes daily feed intake as dry matter intake (DMI) per animal (kg DM/head/day) from the
 #' animal's daily energy requirement and the diet energy density.
 #'
-#' This function follows the IPCC Tier 2, logic.
-#' Dry matter intake is calculated by dividing the appropriate daily energy requirement by the
-#' corresponding diet energy density (MJ per kg DM).
-#'
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
@@ -1730,7 +1726,7 @@ calc_total_energy_requirement <- function(
 #' This function follows the IPCC Tier 2 framework. 
 #' DMI is computed
 #' by dividing the appropriate daily energy requirement by the corresponding
-#' diet energy density (MJ/kg DM).
+#' diet energy content (MJ/kg DM).
 #'
 #' \itemize{
 #'   \item \strong{Energy expressed as gross energy intake requirement - 

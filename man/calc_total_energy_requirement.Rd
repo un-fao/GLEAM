@@ -32,7 +32,7 @@ Supported values include:
 }}
 
 \item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of
-energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost (MJ/head/day).
+energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost (MJ/head/day).
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 
 \item{energy_requirement_activity}{Numeric. Energy required for activity, defined as the amount of energy
@@ -49,7 +49,7 @@ Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GT
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 
 \item{net_energy_maintenance_digestible_energy_ratio}{Ratio of net energy available for maintenance in
-diet to digestible energy consumed (fraction).}
+the diet to digestible energy consumed (fraction).}
 
 \item{energy_requirement_growth}{Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day).
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
@@ -59,7 +59,7 @@ Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for C
 
 \item{energy_requirement_egg_deposition}{Numeric. Net energy for egg production (MJ/head/day).}
 
-\item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in a diet to digestible energy consumed (fraction)}
+\item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction)}
 
 \item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 }
