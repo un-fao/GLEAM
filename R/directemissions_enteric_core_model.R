@@ -26,15 +26,15 @@
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param diet_digestibility_fraction Numeric. Average digestibility of the feed
-#'   ration, expressed as ratio of digestible to gross energy content (fraction).
+#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).
 #'
-#' @return Numeric. Methane conversion factor (ch4_conversion_factor_ym),
-#'   representing the share of gross energy of the feed ration that is converted
-#'   to CH₄ (percentage).
+#' @return Numeric. Methane (CH₄) conversion factor (ym), representing the percentage of  gross energy of the feed ration that is converted to CH₄ (percentage).
 #'
 #'@details
-#' ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013).
+#' ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013). 
+#' 
+#' \code{diet_digestibility_fraction} can be calculated with
+#' \code{\link{calc_diet_digestibility}} - see also \code{\link{run_feed_rations}}.
 #'
 #' \itemize{
 #'   \item \strong{For \code{CTL} and \code{BFL}:}
@@ -55,21 +55,29 @@
 #' }
 #'
 #' ym is returned as 0 for juvenile cohorts (\code{JF}, \code{JM}), assuming negligible enteric methane production before weaning/rumen development.
-#'
+#' 
+#' @seealso
+#'   \code{\link{calc_diet_digestibility}},
+#'   \code{\link{run_feed_rations}}
 #'
 #' @references
 #' Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
 #' MacLeod, M., Vellinga, T., Henderson, B. & Steinfeld, H. (2013).
-#' *Greenhouse gas emissions from ruminant supply chains – A global life cycle assessment*. Food and Agriculture Organization of the United Nations (FAO), Rome.
+#' \emph{Greenhouse gas emissions from ruminant supply chains – A global life cycle assessment}.
+#' Food and Agriculture Organization of the United Nations (FAO), Rome.
 #'
-#' Jørgensen, H., Theil, P.K. and Knudsen, K.E.B., (2011).
-#' *Enteric methane emission from pigs*. In Planet Earth 2011-Global Warming Challenges and Opportunities for Policy and Practice (p. 610 - Table 2). InTech.
+#' Jørgensen, H., Theil, P. K. & Knudsen, K. E. B. (2011).
+#' \emph{Enteric methane emission from pigs}.
+#' In: Planet Earth 2011 – Global Warming Challenges and Opportunities for Policy and Practice
+#' (p. 610; Table 2). InTech.
 #'
-#' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
-#' Livestock and Manure Management, Equation 10.21.
+#' IPCC. (2019).
+#' \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+#' Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 #'
-#' IPCC. (2006). *2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
-#' Livestock and Manure Management, Equation 10.21.
+#' IPCC. (2006).
+#' \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+#' Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 #'
 #' @export
 compute_methane_conversion_factor <- function(
@@ -124,35 +132,45 @@ compute_methane_conversion_factor <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#'
-#' @param ch4_conversion_factor_ym Numeric. Methane conversion factor (ym),
-#'   representing the percentage of gross energy of the feed ration that is
-#'   converted to CH₄ (percentage).
-#' @param ch4_mitigation_factor Numeric. Dimensionless fraction of baseline
-#'   enteric methane emissions remaining after mitigation (1 = no mitigation,
-#'   0.9 = 10% reduction). Default = 1.
-#' @param diet_gross_energy Numeric. Average gross energy content of the diet
-#'   (MJ/kg DM).
-#' @param dry_matter_intake Numeric. Average daily dry matter intake of feed
-#'   (kg DM/head/day).
+#' @param ch4_conversion_factor_ym Numeric. Methane (CH₄) conversion factor (ym), 
+#' representing the percentage of  gross energy of the feed ration that is converted to CH₄ (percentage)
+#' @param ch4_mitigation_factor Numeric. Optional. Multiplicative mitigation factor applied to
+#'     baseline enteric methane (CH₄) emissions (dimensionless). If not provided, a default
+#'     value of \code{1} (no mitigation) is used. Values lower than 1 represent proportional
+#'     reductions (e.g., \code{0.90} = 10% reduction). This factor can represent mitigation
+#'     measures with a direct effect on enteric methane emissions, such as the use of feed
+#'     additives or methane inhibitors.
+#' @param diet_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
+#' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #'
 #' @return Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
 #'
 #'@details
 #' The formula used to estimate daily enteric methane emissions is:
 #'
-#' \deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake \times \frac{ch4\_conversion\_factor\_ym}{100}}{55.65}}
-#'
+#' \deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake \times ch4\_conversion\_factor\_ym}{55.65 \times 100}}
+#' 
 #' where 55.65 MJ/kg is the energy content of methane.
+#' 
+#' \code{diet_gross_energy} and \code{dry_matter_intake} can be calculated with
+#' \code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} - see also \code{\link{run_feed_rations}}.
+#' 
 #'
 #' The function returns `0` for chickens.
 #'
-#' @references
-#' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
-#' Livestock and Manure Management, Equation 10.21.
+#' @seealso
+#'   \code{\link{calc_diet_gross_energy}},
+#'   \code{\link{calc_dry_matter_intake}},
+#'   \code{\link{run_feed_rations}}
 #'
-#' IPCC. (2006). *2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
-#' Livestock and Manure Management, Equation 10.21.
+#' @references
+#' IPCC. (2019).
+#' \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+#' Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
+#'
+#' IPCC. (2006).
+#' \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+#' Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 #'
 #'
 #' @export
