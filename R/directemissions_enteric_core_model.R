@@ -3,7 +3,7 @@
 #' Calculates the methane conversion factor (ym, % of dietary gross energy in feed converted to methane)
 #' for a given species and cohort based on diet digestibility. Implements species- and cohort-specific
 #' rules consistent with IPCC Tier 2 approach.
-#' 
+#'
 #'
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
@@ -15,7 +15,7 @@
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#'   
+#'
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
@@ -53,7 +53,7 @@
 #'        \item \code{FS} and \code{MS} cohorts: \deqn{ym = 0.39}
 #'     }
 #' }
-#' 
+#'
 #' ym is returned as 0 for juvenile cohorts (\code{JF}, \code{JM}), assuming negligible enteric methane production before weaning/rumen development.
 #'
 #'
@@ -61,13 +61,13 @@
 #' Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
 #' MacLeod, M., Vellinga, T., Henderson, B. & Steinfeld, H. (2013).
 #' *Greenhouse gas emissions from ruminant supply chains – A global life cycle assessment*. Food and Agriculture Organization of the United Nations (FAO), Rome.
-#' 
-#' Jørgensen, H., Theil, P.K. and Knudsen, K.E.B., (2011). 
+#'
+#' Jørgensen, H., Theil, P.K. and Knudsen, K.E.B., (2011).
 #' *Enteric methane emission from pigs*. In Planet Earth 2011-Global Warming Challenges and Opportunities for Policy and Practice (p. 610 - Table 2). InTech.
 #'
 #' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
 #' Livestock and Manure Management, Equation 10.21.
-#' 
+#'
 #' IPCC. (2006). *2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
 #' Livestock and Manure Management, Equation 10.21.
 #'
@@ -150,10 +150,10 @@ compute_methane_conversion_factor <- function(
 #' @references
 #' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
 #' Livestock and Manure Management, Equation 10.21.
-#' 
+#'
 #' IPCC. (2006). *2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from
 #' Livestock and Manure Management, Equation 10.21.
-#' 
+#'
 #'
 #' @export
 compute_daily_enteric_emissions <- function(
@@ -169,11 +169,11 @@ compute_daily_enteric_emissions <- function(
   )
 
   if (species_short %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
-    ch4_enteric_value <- diet_gross_energy * dry_matter_intake *
+    ch4_enteric <- diet_gross_energy * dry_matter_intake *
       (ch4_conversion_factor_ym / 100) * ch4_mitigation_factor / 55.65
   } else if (species_short == "CHK") {
-    ch4_enteric_value <- NA_real_
+    ch4_enteric <- 0
   }
 
-  return(ch4_enteric_value)
+  return(ch4_enteric)
 }
