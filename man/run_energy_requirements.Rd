@@ -2,35 +2,171 @@
 % Please edit documentation in R/run_energy_requirements.R
 \name{run_energy_requirements}
 \alias{run_energy_requirements}
-\title{Run Energy Requirements and Dry Matter Intake Calculation (Internal)}
+\title{Run Energy Requirements and Dry Matter Intake Calculation}
 \usage{
-run_energy_requirements(data)
+run_energy_requirements(
+  cohort_level_data,
+  herd_level_data,
+  show_indicator = TRUE
+)
 }
 \arguments{
-\item{data}{A \code{data.table} or \code{data.frame} containing all required columns for energy requirements
-(see core model functions documentation for required fields).}
+\item{cohort_level_data}{data.table. Cohort-level input table with the following data requirement:
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
+\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
+\item{low_activity_fraction}{Numeric. Proportion of the assessment period during which the animal performs low-intensity movement typical of stall-feeding or near-field grazing, characterized by minimal walking distances and flat terrain  (fraction).}
+\item{high_activity_fraction}{Numeric. Proportion of the assessment period during which the animal engages in sustained locomotion associated with herding or long-distance grazing, typically involving extended walking distances and/or uneven or hilly terrain (fraction).}
+\item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
+\item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
+\item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+\item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{diet_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
+}}
+
+\item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{animal}{Character. Livestock category name used to map to a species short code via an
+internal lookup table. Supported values include:
+\itemize{
+\item \code{Cattle}
+\item \code{Buffalo}
+\item \code{Sheep}
+\item \code{Goats}
+\item \code{Chicken}
+\item \code{Pigs}
+\item \code{Camels}
+}}
+\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
+\item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_yield_day}{Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals during the assessment period, divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat / kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{non_productive_duration}{Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days). Required only for PGS.}
+\item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
+\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
+\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
+\item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
+\item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance
+indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+\item{draught_work_hours_female}{Numeric. Average daily working time per adult female (hours/head/day). Required only for species = CML, CTL, and BFL.}
+\item{draught_work_hours_male}{Numeric. Average daily working time per adult male (hours/head/day). Required only for species = CML, CTL, and BFL.}
+\item{draught_fraction_female}{Numeric. Fraction of adult females involved in draught work (fraction). Required only for species = CML, CTL, and BFL.}
+\item{draught_fraction_male}{Numeric. Fraction of adult males involved in draught work (fraction). Required only for species = CML, CTL, and BFL.}
+\item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year). Required only for species = CML, SHP, and GTS.}
+}}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during simulation.
+Defaults to \code{TRUE}.}
 }
 \value{
-The input data with new columns: nemain, neact, negrow, nelact, nework,
-nefibre, nepreg, rem, reg, getot, dmi.
+A \code{data.table} with the original cohort-level input columns plus the following new variables:
+\describe{
+\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost.
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_activity}{Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{energy_requirement_growth}{Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{energy_requirement_lactation}{Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
+Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
+Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_pregnancy}{Numeric. Energy required for pregnancy for pregnant females (MJ/head/day).
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{net_energy_maintenance_digestible_energy_ratio}{Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).}
+\item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).}
+\item{energy_requirement_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
+For CML and PGS the function returns the summed daily metabolizable energy requirement.}
+\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+}
 }
 \description{
-Computes energy requirements and dry matter intake (DMI) for each row of input data
-using the GLEAM core model functions. This function is intended for internal workflows
-and does not perform any file I/O.
+Computes cohort-level daily energy requirements (MJ/head/day) and feed dry matter intake (kg DM/head/day)
+by applying the IPCC Tier 2 energy partitioning functions.
 }
 \details{
-It adds columns for net energy for maintenance (nemain), activity (neact), growth (negrow),
-lactation (nelact), work (nework), fibre production (nefibre), pregnancy (nepreg), diet net energy
-fractions (rem, reg), total metabolizable energy requirement (getot) and dry matter intake (dmi).
+This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
+maps \code{animal} to a species short code (\code{species_short}) via \code{abbr_animals},
+and computes IPCC Tier 2 energy partition components and derived feed intake metrics by cohort.
+
+Energy requirements are expressed as:
+\itemize{
+\item \strong{Net energy} for:
+\itemize{
+\item \code{CTL} (cattle)
+\item \code{BFL} (buffalo)
+\item \code{SHP} (sheep)
+\item \code{GTS} (goats)
+}
+\item \strong{Metabolizable energy} for:
+\itemize{
+\item \code{CML} (camels)
+\item \code{PGS} (pigs)
+}
+}
+
+The following calculation sequence is applied:
+\enumerate{
+\item Maintenance energy is computed using \code{\link{calc_net_energy_maintenance}}.
+\item Activity energy is computed using \code{\link{calc_net_energy_activity}}.
+\item Growth energy is computed using \code{\link{calc_net_energy_growth}}.
+\item Lactation energy is computed using \code{\link{calc_net_energy_lactation}}.
+\item Work energy is computed using \code{\link{calc_net_energy_work}}.
+\item Fibre production energy is computed using \code{\link{calc_net_energy_fibre}}.
+\item Pregnancy energy is computed using \code{\link{calc_net_energy_pregnancy}}.
+\item Diet net energy ratios are computed using \code{\link{calc_rem_maintenance}} and
+\code{\link{calc_reg_growth}} (ruminants only).
+\item Total daily energy requirement is computed using
+\code{\link{calc_total_energy_requirement}}.
+\item Daily dry matter intake is computed using \code{\link{calc_dry_matter_intake}}.
+}
 }
 \examples{
 \dontrun{
-# Load example input from the package and run the function
-input_path <- system.file("extdata/GLEAM_input_energyrequirements.csv", package = "gleam")
-data <- data.table::fread(input_path)
-energy_results <- run_energy_requirements(data)
+# Load energy requirements inputs (cohort and herd-level)
+energy_requirements_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/energy_requirements_input_chrt_data.csv",
+  package = "gleam"
+))
+energy_requirements_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/energy_requirements_input_hrd_data.csv",
+  package = "gleam"
+))
+
+# Run energy requirement and DMI calculations
+energy_results <- run_energy_requirements(
+  cohort_level_data = energy_requirements_chrt_dt,
+  herd_level_data = energy_requirements_hrd_dt
+)
 }
 
 }
-\keyword{internal}
+\seealso{
+\code{\link{calc_net_energy_maintenance}},
+\code{\link{calc_net_energy_activity}},
+\code{\link{calc_net_energy_growth}},
+\code{\link{calc_net_energy_lactation}},
+\code{\link{calc_net_energy_work}},
+\code{\link{calc_net_energy_fibre}},
+\code{\link{calc_net_energy_pregnancy}},
+\code{\link{calc_rem_maintenance}},
+\code{\link{calc_reg_growth}},
+\code{\link{calc_total_energy_requirement}},
+\code{\link{calc_dry_matter_intake}}
+}

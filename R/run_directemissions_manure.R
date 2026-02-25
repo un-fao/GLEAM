@@ -203,15 +203,15 @@
 #' \dontrun{
 #' # Load direct emissions manure inputs (cohort-level and system lookups)
 #' directemissions_manure_input_chrt_data <- data.table::fread(system.file(
-#'   "extdata/examples/directemissions_manure_input_chrt_data.csv",
+#'   "extdata/run_modules_examples/directemissions_manure_input_chrt_data.csv",
 #'   package = "gleam"
 #' ))
 #' manure_management_system_factors <- data.table::fread(system.file(
-#'   "extdata/examples/manure_management_system_factors.csv",
+#'   "extdata/run_modules_examples/manure_management_system_factors.csv",
 #'   package = "gleam"
 #' ))
 #' manure_management_system_fraction <- data.table::fread(system.file(
-#'   "extdata/examples/manure_management_system_fraction.csv",
+#'   "extdata/run_modules_examples/manure_management_system_fraction.csv",
 #'   package = "gleam"
 #' ))
 #'

@@ -1,382 +1,431 @@
-#' Validate animal species code
-#'
-#' Ensures that the animal code is valid for energy requirements calculations.
-#'
-#' @param animal Character. The animal species code to validate.
-#'
-#' @noRd
-validate_animal_species <- function(animal) {
-  validate_scalar_character(animal, "animal")
-  valid_species <- c("CTL", "BFL", "SHP", "GTS", "PGS", "CHK", "CML")
-  if (!animal %in% valid_species) {
-    cli::cli_abort(
-      "{.arg animal} must be one of: {cli::format_inline('{valid_species}')}"
-    )
-  }
-}
-
-#' Validate cohort code
-#'
-#' Ensures that the cohort code is valid for energy requirements calculations.
-#'
-#' @param cohort Character. The cohort code to validate.
-#'
-#' @noRd
-validate_cohort_code <- function(cohort) {
-  validate_scalar_character(cohort, "cohort")
-  valid_cohorts <- c("FA", "FS", "FJ", "MA", "MS", "MJ")
-  if (!cohort %in% valid_cohorts) {
-    cli::cli_abort(
-      "{.arg cohort} must be one of: {cli::format_inline('{valid_cohorts}')}"
-    )
-  }
-}
-
-
-
 #' Validate inputs for calc_net_energy_maintenance
+#'
+#' Maintenance always uses live_weight_cohort_average. Optional args (lactating
+#' fraction, offtake rate, age at first parturition) are only required and
+#' validated when the species/cohort branch uses them.
 #'
 #' @noRd
 validate_maintenance_inputs <- function(
-    animal,
-    cohort,
-    average_weight,
-    milking_fraction = NA_real_,
+    species_short,
+    cohort_short,
+    live_weight_cohort_average,
+    lactating_females_fraction = NA_real_,
     offtake_rate = NA_real_,
-    afc = NA_real_
+    age_first_parturition = NA_real_
 ) {
-  validate_animal_species(animal)
-  validate_cohort_code(cohort)
-  validate_positive_numeric(average_weight, "average_weight")
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
+  validate_positive_numeric(live_weight_cohort_average, "live_weight_cohort_average")
 
-  # Validate optional parameters based on animal/cohort combinations
-
-  if (animal %in% c("CTL", "BFL") && cohort == "FA") {
-    if (!is.na(milking_fraction)) validate_scalar_numeric(milking_fraction, "milking_fraction")
+  if (species_short %in% c("CTL", "BFL") && cohort_short == "FA") {
+    validate_param_range(lactating_females_fraction, "lactating_females_fraction")
   }
 
-  if (animal %in% c("CTL", "BFL") && cohort %in% c("MA", "MS")) {
-    if (!is.na(offtake_rate)) validate_scalar_numeric(offtake_rate, "offtake_rate")
+  if (species_short %in% c("CTL", "BFL") && cohort_short %in% c("MA", "MS")) {
+    validate_param_range(offtake_rate, "offtake_rate")
   }
 
-  if (animal == "SHP" && cohort == "FS") {
-    if (!is.na(afc)) validate_positive_numeric(afc, "afc")
+  if (species_short == "SHP" && cohort_short == "FS") {
+    validate_param_range(age_first_parturition, "age_first_parturition")
   }
 
-  if (animal == "SHP" && cohort %in% c("MA", "MS", "MJ")) {
-    if (!is.na(offtake_rate)) validate_scalar_numeric(offtake_rate, "offtake_rate")
+  if (species_short == "SHP" && cohort_short %in% c("MA", "MS", "MJ")) {
+    validate_param_range(offtake_rate, "offtake_rate")
   }
 }
 
 #' Validate inputs for calc_net_energy_activity
 #'
+#' Activity is used for all species/cohorts that receive activity energy; both
+#' fractions and their sum are validated.
+#'
 #' @noRd
 validate_activity_inputs <- function(
-    animal,
-    cohort,
-    nemain,
-    average_weight,
-    activity_fraction ,
+    species_short,
+    cohort_short,
+    energy_requirement_maintenance,
+    live_weight_cohort_average,
+    low_activity_fraction,
     high_activity_fraction
 ) {
-  validate_animal_species(animal)
-  validate_cohort_code(cohort)
-  validate_positive_numeric(nemain, "nemain")
-  validate_positive_numeric(average_weight, "average_weight")
-  validate_scalar_numeric(activity_fraction, "activity_fraction")
-  validate_scalar_numeric(high_activity_fraction, "high_activity_fraction")
- 
-  validate_fraction(activity_fraction, "activity_fraction")
-  validate_fraction(high_activity_fraction, "high_activity_fraction")
-  
-  if ((activity_fraction + high_activity_fraction) > 1) {
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
+  validate_positive_numeric(energy_requirement_maintenance, "energy_requirement_maintenance")
+  validate_positive_numeric(live_weight_cohort_average, "live_weight_cohort_average")
+
+  validate_param_range(low_activity_fraction, "low_activity_fraction")
+  validate_param_range(high_activity_fraction, "high_activity_fraction")
+
+  activity_sum <- low_activity_fraction + high_activity_fraction
+  if (activity_sum < 0 || activity_sum > 1) {
     cli::cli_abort(
-      "Sum of {.field activity_fraction} + {.field high_activity_fraction} must be between 0 and 1."
+      "Sum of {.field low_activity_fraction} + {.field high_activity_fraction} must be >= 0 and <= 1."
     )
   }
-
-  
-  }
+}
 
 #' Validate inputs for calc_net_energy_growth
 #'
+#' Only the arguments used for the given species and cohort are required and validated.
+#' Growth is zero for adult cohorts (FA, MA) in all species; other args may be NA when not used.
+#'
 #' @noRd
 validate_growth_inputs <- function(
-    animal,
-    cohort,
-    average_weight,
-    final_weight,
-    initial_weight,
-    adult_weight,
-    dwg,
+    species_short,
+    cohort_short,
+    live_weight_cohort_average,
+    live_weight_cohort_final,
+    live_weight_cohort_initial,
+    mature_weight,
+    daily_weight_gain,
     offtake_rate,
-    duration
+    cohort_duration_days
 ) {
-  validate_animal_species(animal)
-  validate_cohort_code(cohort)
-  validate_positive_numeric(average_weight, "average_weight")
-  validate_positive_numeric(final_weight, "final_weight")
-  validate_positive_numeric(initial_weight, "initial_weight")
-  validate_positive_numeric(initial_weight, "adult_weight")
-  validate_scalar_numeric(dwg, "dwg")
-  validate_scalar_numeric(offtake_rate, "offtake_rate")
-  validate_positive_numeric(duration, "duration")
-  
-  if (initial_weight > final_weight) {
-    cli::cli_abort("final_weight cannot be higher than initial_weight")
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
+
+  # --- Cattle and buffalo: growth only for FS, FJ, MS, MJ ---
+  if (species_short %in% c("CTL", "BFL") && cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+    validate_param_range(live_weight_cohort_average, "live_weight_cohort_average")
+    validate_param_range(live_weight_cohort_final, "live_weight_cohort_final")
+    validate_param_range(live_weight_cohort_initial, "live_weight_cohort_initial")
+    validate_param_range(mature_weight, "mature_weight")
+    validate_param_range(daily_weight_gain, "daily_weight_gain")
+    validate_param_range(cohort_duration_days, "cohort_duration_days")
+    if (cohort_short %in% c("MS", "MJ")) {
+      validate_param_range(offtake_rate, "offtake_rate")
+    }
+    if (live_weight_cohort_initial > live_weight_cohort_average) {
+      cli::cli_abort("live_weight_cohort_average cannot be lower than live_weight_cohort_initial.")
+    }
+    if (live_weight_cohort_average > live_weight_cohort_final) {
+      cli::cli_abort("live_weight_cohort_average cannot be higher than live_weight_cohort_final.")
+    }
+    return()
   }
-  
-  
-  if (initial_weight > average_weight) {
-    cli::cli_abort("final_weight cannot be higher than average_weight")
+
+  # --- Camels: growth only for FS, FJ, MS, MJ; only daily_weight_gain is used ---
+  if (species_short == "CML" && cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+    validate_param_range(daily_weight_gain, "daily_weight_gain")
+    return()
   }
-  
-  
-  if (average_weight > final_weight) {
-    cli::cli_abort("average_weight cannot be higher than final_weight")
+
+  # --- Sheep: growth for FS, FJ, MS, MJ; linear formula uses weights and duration ---
+  if (species_short == "SHP" && cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+    validate_param_range(live_weight_cohort_final, "live_weight_cohort_final")
+    validate_param_range(live_weight_cohort_initial, "live_weight_cohort_initial")
+    validate_param_range(cohort_duration_days, "cohort_duration_days")
+    if (cohort_short %in% c("MS", "MJ")) {
+      validate_param_range(offtake_rate, "offtake_rate")
+    }
+    if (live_weight_cohort_initial > live_weight_cohort_final) {
+      cli::cli_abort("live_weight_cohort_final cannot be lower than live_weight_cohort_initial.")
+    }
+    return()
   }
-  
-  if (duration < 10) {
-    cli::cli_warn(
-      "{.field duration} is less than 10 days. Results might not be reliable."
-    )
+
+  # --- Goats: same as sheep but no offtake_rate in formula ---
+  if (species_short == "GTS" && cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+    validate_param_range(live_weight_cohort_final, "live_weight_cohort_final")
+    validate_param_range(live_weight_cohort_initial, "live_weight_cohort_initial")
+    validate_param_range(cohort_duration_days, "cohort_duration_days")
+    if (live_weight_cohort_initial > live_weight_cohort_final) {
+      cli::cli_abort("live_weight_cohort_final cannot be lower than live_weight_cohort_initial.")
+    }
+    return()
   }
-  
+
+  # --- Pigs: growth only for FS, FJ, MS, MJ; only daily_weight_gain is used ---
+  if (species_short == "PGS" && cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+    validate_param_range(daily_weight_gain, "daily_weight_gain")
+    return()
   }
+}
 
 #' Validate inputs for calc_net_energy_lactation
 #'
+#' Lactation is computed only for cohort FA. Only the arguments used for that species
+#' are required and validated; others may be NA.
+#'
 #' @noRd
 validate_lactation_inputs <- function(
-    animal,
-    cohort,
-    milking_fraction,
-    milk_yield,
-    milk_fat,
-    idle,
-    gest,
-    litsize,
-    dr1,
-    ckg,
-    wkg,
-    lact,
+    species_short,
+    cohort_short,
+    lactating_females_fraction,
+    milk_yield_day,
+    milk_fat_fraction,
+    non_productive_duration,
+    pregnancy_duration,
+    litter_size,
+    death_rate_juvenile,
+    birth_weight,
+    weaning_weight,
+    lactation_duration,
     parturition_rate
 ) {
-  validate_animal_species(animal)
-  validate_cohort_code(cohort)
-  validate_scalar_numeric(milking_fraction, "milking_fraction")
-  validate_scalar_numeric(milk_yield, "milk_yield")
-  validate_scalar_numeric(milk_fat, "milk_fat")
-  validate_positive_numeric(parturition_rate, "parturition_rate")
-  validate_fraction(milking_fraction, "milking_fraction")
-  validate_fraction(milk_fat, "milk_fat")
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
 
-  
-  # Logical validations
-  if (ckg > wkg) {
-    cli::cli_abort("ckg cannot be higher than wkg")
-  }
-  
+  # Lactation is only computed for adult females (FA)
+  if (cohort_short != "FA") return()
 
-  # Validate animal-specific parameters
-  if (animal == "PGS") {
-    if (!is.na(idle)) validate_scalar_numeric(idle, "idle")
-    if (!is.na(gest)) validate_scalar_numeric(gest, "gest")
-    if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")
-    if (!is.na(dr1)) validate_scalar_numeric(dr1, "dr1")
-    if (!is.na(ckg)) validate_positive_numeric(ckg, "ckg")
-    if (!is.na(wkg)) validate_positive_numeric(wkg, "wkg")
-    if (!is.na(lact)) validate_scalar_numeric(lact, "lact")
-  }
-
-  if (animal %in% c("SHP", "GTS")) {
-    if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")
-    if (!is.na(ckg)) validate_positive_numeric(ckg, "ckg")
-    if (!is.na(wkg)) validate_positive_numeric(wkg, "wkg")
-    
+  # --- Cattle, buffalo, camels: milk yield, fat, parturition, birth/weaning weights ---
+  if (species_short %in% c("CTL", "BFL", "CML")) {
+    validate_param_range(lactating_females_fraction, "lactating_females_fraction")
+    validate_param_range(milk_yield_day, "milk_yield_day")
+    validate_param_range(milk_fat_fraction, "milk_fat_fraction")
+    validate_param_range(parturition_rate, "parturition_rate")
+    validate_param_range(birth_weight, "birth_weight")
+    validate_param_range(weaning_weight, "weaning_weight")
+    if (birth_weight >= weaning_weight) {
+      cli::cli_abort("{.arg birth_weight} must be strictly less than {.arg weaning_weight}.")
     }
-
-  if (animal %in% c("CTL", "BFL", "CML")) {
-    if (!is.na(ckg)) validate_positive_numeric(ckg, "ckg")
-    if (!is.na(wkg)) validate_positive_numeric(wkg, "wkg")
+    return()
   }
-  
+
+  # --- Sheep and goats: same as above plus litter_size ---
+  if (species_short %in% c("SHP", "GTS")) {
+    validate_param_range(lactating_females_fraction, "lactating_females_fraction")
+    validate_param_range(milk_yield_day, "milk_yield_day")
+    validate_param_range(milk_fat_fraction, "milk_fat_fraction")
+    validate_param_range(parturition_rate, "parturition_rate")
+    validate_param_range(litter_size, "litter_size")
+    validate_param_range(birth_weight, "birth_weight")
+    validate_param_range(weaning_weight, "weaning_weight")
+    if (birth_weight >= weaning_weight) {
+      cli::cli_abort("{.arg birth_weight} must be strictly less than {.arg weaning_weight}.")
+    }
+    return()
+  }
+
+  # --- Pigs: litter size, death rate, birth/weaning weights, reproductive durations ---
+  if (species_short == "PGS") {
+    validate_param_range(litter_size, "litter_size")
+    validate_fraction(death_rate_juvenile, "death_rate_juvenile")
+    validate_param_range(birth_weight, "birth_weight")
+    validate_param_range(weaning_weight, "weaning_weight")
+    validate_positive_numeric(lactation_duration, "lactation_duration")
+    validate_positive_numeric(non_productive_duration, "non_productive_duration")
+    validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+    if (birth_weight >= weaning_weight) {
+      cli::cli_abort("{.arg birth_weight} must be strictly less than {.arg weaning_weight}.")
+    }
+    return()
+  }
 }
 
 #' Validate inputs for calc_net_energy_work
 #'
+#' Work energy is computed only for CTL, BFL, CML and only for adult cohorts (MA, FA).
+#' Other species/cohorts return 0; draught args may be NA when not used.
+#'
 #' @noRd
 validate_work_inputs <- function(
-    animal,
-    cohort,
-    nemain,
-    work_hours_female,
-    work_hours_male,
+    species_short,
+    cohort_short,
+    energy_requirement_maintenance,
+    draught_work_hours_female,
+    draught_work_hours_male,
     draught_fraction_female,
     draught_fraction_male
 ) {
-  validate_animal_species(animal)
-  validate_cohort_code(cohort)
-  validate_positive_numeric(nemain, "nemain")
-  validate_scalar_numeric(work_hours_female, "work_hours_female")
-  validate_scalar_numeric(work_hours_male, "work_hours_male")
-  validate_scalar_numeric(draught_fraction_female, "draught_fraction_female")
-  validate_fraction(draught_fraction_female, "draught_fraction_female")
-  validate_scalar_numeric(draught_fraction_male, "draught_fraction_male")
-  validate_fraction(draught_fraction_male, "draught_fraction_male")
-  
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
 
-  if (work_hours_female < 0 || work_hours_female > 24) {
-    cli::cli_abort("{.arg work_hours_female} must be between 0 and 24.")
+  # Work is only computed for draught species (CTL, BFL, CML) and adult cohorts (MA, FA)
+  if (!species_short %in% c("CTL", "BFL", "CML") || !cohort_short %in% c("MA", "FA")) return()
+
+  # Cattle and buffalo: use maintenance and draught hours/fractions (sex-specific)
+  if (species_short %in% c("CTL", "BFL")) {
+    validate_positive_numeric(energy_requirement_maintenance, "energy_requirement_maintenance")
+    if (cohort_short == "MA") {
+      validate_param_range(draught_work_hours_male, "draught_work_hours_male")
+      validate_param_range(draught_fraction_male, "draught_fraction_male")
+    } else {
+      validate_param_range(draught_work_hours_female, "draught_work_hours_female")
+      validate_param_range(draught_fraction_female, "draught_fraction_female")
+    }
+    return()
   }
-  
-  if (draught_fraction_male < 0 || draught_fraction_male > 24) {
-    cli::cli_abort("{.arg draught_fraction_male} must be between 0 and 24.")
+
+  # Camels: draught hours and fractions only (no maintenance in formula)
+  if (cohort_short == "MA") {
+    validate_param_range(draught_work_hours_male, "draught_work_hours_male")
+    validate_param_range(draught_fraction_male, "draught_fraction_male")
+  } else {
+    validate_param_range(draught_work_hours_female, "draught_work_hours_female")
+    validate_param_range(draught_fraction_female, "draught_fraction_female")
   }
 }
 
 #' Validate inputs for calc_net_energy_fibre
 #'
+#' Fibre is only computed for SHP, GTS, CML and only for cohorts FA, FS, MA, MS.
+#' For those cases fibre_yield_year is required and must be >= 0.
+#' For non-fibre species (CTL, BFL, PGS, CHK) fibre_yield_year must be NA.
+#' For fibre species but juvenile cohorts (FJ, MJ) fibre is not used; NA is allowed.
+#'
 #' @noRd
 validate_fibre_inputs <- function(
-    animal,
-    cohort,
-    fibre_prod
+    species_short,
+    cohort_short,
+    fibre_yield_year
 ) {
-  validate_animal_species(animal)
-  validate_cohort_code(cohort)
-  validate_scalar_numeric(fibre_prod, "fibre_prod")
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
 
-  if (fibre_prod < 0) {
-    cli::cli_abort("{.arg fibre_prod} must be non-negative.")
-  }
+  # Non-fibre species: fibre_yield_year must be NA (not applicable)
+  if (!species_short %in% c("SHP", "GTS", "CML")) return()
+
+  # Fibre species but juvenile cohorts: fibre not computed; no further validation
+  if (!cohort_short %in% c("FA", "FS", "MA", "MS")) return()
+
+  # Fibre-producing cohort: require and validate fibre_yield_year
+  validate_param_range(fibre_yield_year, "fibre_yield_year")
 }
 
 #' Validate inputs for calc_net_energy_pregnancy
 #'
+#' Pregnancy is computed only for female cohorts (FA, FS) and only for CTL, BFL, CML, SHP, GTS, PGS.
+#' CHK is not applicable. Only the arguments used for that species and cohort are required and validated.
+#'
 #' @noRd
 validate_pregnancy_inputs <- function(
-    animal,
-    cohort,
-    nemain,
+    species_short,
+    cohort_short,
+    energy_requirement_maintenance,
     parturition_rate,
-    litsize,
-    gest,
-    idle,
-    lact,
-    duration,
+    litter_size,
+    pregnancy_duration,
+    non_productive_duration,
+    lactation_duration,
+    cohort_duration_days,
     offtake_rate
 ) {
-  validate_animal_species(animal)
-  validate_cohort_code(cohort)
-  validate_positive_numeric(nemain, "nemain")
-  validate_positive_numeric(parturition_rate, "parturition_rate")
-  validate_positive_numeric(duration, "duration")
-  validate_scalar_numeric(offtake_rate, "offtake_rate")
-  
-  if (duration < 10) {
-    cli::cli_warn(
-      "{.field duration} is less than 10 days. This may indicate an unrealistic input."
-    )
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
+
+  if (species_short == "CHK") return()
+  if (!cohort_short %in% c("FA", "FS")) return()
+
+  # --- Cattle and buffalo: FA uses parturition + pregnancy duration; FS uses duration + offtake ---
+  if (species_short %in% c("CTL", "BFL")) {
+    validate_positive_numeric(energy_requirement_maintenance, "energy_requirement_maintenance")
+    validate_param_range(parturition_rate, "parturition_rate")
+    validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+    if (cohort_short == "FA") return()
+    validate_param_range(cohort_duration_days, "cohort_duration_days")
+    validate_param_range(offtake_rate, "offtake_rate")
+    return()
   }
 
-  # Validate animal-specific parameters
-  if (animal == "PGS") {
-    if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")
-    if (!is.na(gest)) validate_scalar_numeric(gest, "gest")
-    if (!is.na(gest)) validate_scalar_numeric(idle, "idle")
-    if (!is.na(gest)) validate_scalar_numeric(lact, "lact")
+  # --- Camels: FA uses maintenance + parturition; FS uses maintenance + duration + offtake ---
+  if (species_short == "CML") {
+    validate_positive_numeric(energy_requirement_maintenance, "energy_requirement_maintenance")
+    if (cohort_short == "FA") {
+      validate_param_range(parturition_rate, "parturition_rate")
+      return()
+    }
+    validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+    validate_param_range(cohort_duration_days, "cohort_duration_days")
+    validate_param_range(offtake_rate, "offtake_rate")
+    return()
   }
-  
-  
 
-  if (animal %in% c("SHP", "GTS")) {
-    if (!is.na(litsize)) validate_positive_numeric(litsize, "litsize")
+  # --- Sheep and goats: FA uses maintenance + parturition + litter + pregnancy; FS uses duration + offtake ---
+  if (species_short %in% c("SHP", "GTS")) {
+    validate_positive_numeric(energy_requirement_maintenance, "energy_requirement_maintenance")
+    if (cohort_short == "FA") {
+      validate_param_range(parturition_rate, "parturition_rate")
+      validate_param_range(litter_size, "litter_size")
+      validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+      return()
+    }
+    validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+    validate_param_range(cohort_duration_days, "cohort_duration_days")
+    validate_param_range(offtake_rate, "offtake_rate")
+    return()
+  }
+
+  # --- Pigs: FA uses litter + gest/lact/idle durations; FS also uses cohort_duration and offtake ---
+  if (species_short == "PGS") {
+    validate_param_range(litter_size, "litter_size")
+    validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+    validate_positive_numeric(non_productive_duration, "non_productive_duration")
+    validate_positive_numeric(lactation_duration, "lactation_duration")
+    if (cohort_short == "FA") return()
+    validate_param_range(cohort_duration_days, "cohort_duration_days")
+    validate_param_range(offtake_rate, "offtake_rate")
+    return()
   }
 }
 
 #' Validate inputs for calc_rem_maintenance
 #'
+#' diet_digestibility_fraction is only used (and required) for ruminants (CTL, BFL, SHP, GTS).
+#' For PGS, CHK, CML the function returns NA and the argument may be NA.
+#'
 #' @noRd
 validate_rem_inputs <- function(
-    animal,
-    diet_dig
+    species_short,
+    diet_digestibility_fraction
 ) {
-  validate_animal_species(animal)
-  validate_scalar_numeric(diet_dig, "diet_dig")
-  validate_fraction(diet_dig, "diet_dig")
-  
-  
-  if (diet_dig < 0.5) {
-    cli::cli_warn(
-      "{.field diet_dig} is below 0.5. This may indicate an unrealistic input."
-    )
-  }
-  
+  validate_animal_species(species_short)
+  if (!species_short %in% c("CTL", "BFL", "SHP", "GTS")) return()
+  validate_param_range(diet_digestibility_fraction, "diet_digestibility_fraction")
 }
 
 #' Validate inputs for calc_reg_growth
 #'
+#' diet_digestibility_fraction is only used (and required) for ruminants (CTL, BFL, SHP, GTS).
+#' For PGS, CHK, CML the function returns NA and the argument may be NA.
+#'
 #' @noRd
 validate_reg_inputs <- function(
-    animal,
-    diet_dig
+    species_short,
+    diet_digestibility_fraction
 ) {
-  validate_animal_species(animal)
-  validate_scalar_numeric(diet_dig, "diet_dig")
-  validate_fraction(diet_dig, "diet_dig")
-  if (diet_dig < 0.5) {
-    cli::cli_warn(
-      "{.field diet_dig} is below 0.5. The results might not be reliable."
-    )
-  }
+  validate_animal_species(species_short)
+  if (!species_short %in% c("CTL", "BFL", "SHP", "GTS")) return()
+  validate_param_range(diet_digestibility_fraction, "diet_digestibility_fraction")
 }
 
 #' Validate inputs for calc_total_energy_requirement
 #'
 #' @noRd
 validate_total_energy_inputs <- function(
-    animal,
-    nemain,
-    neact,
-    nelact,
-    nework,
-    nepreg,
-    rem,
-    negrow,
-    nefibre,
-    neegg,
-    reg,
-    diet_dig
+    species_short,
+    energy_requirement_maintenance,
+    energy_requirement_activity,
+    energy_requirement_lactation,
+    energy_requirement_work,
+    energy_requirement_pregnancy,
+    net_energy_maintenance_digestible_energy_ratio,
+    energy_requirement_growth,
+    energy_requirement_fibre_production,
+    energy_requirement_egg_deposition,
+    net_energy_growth_digestible_energy_ratio,
+    diet_digestibility_fraction
 ) {
-  validate_animal_species(animal)
-  validate_scalar_numeric(nemain, "nemain")
-  validate_scalar_numeric(neact, "neact")
-  validate_scalar_numeric(nelact, "nelact")
-  validate_scalar_numeric(nework, "nework")
-  validate_scalar_numeric(nepreg, "nepreg")
-  validate_scalar_numeric(negrow, "negrow")
-  validate_scalar_numeric(nefibre, "nefibre")
-  #validate_scalar_numeric(neegg, "neegg")
-  validate_scalar_numeric(diet_dig, "diet_dig")
-  validate_fraction(diet_dig, "diet_dig")
-  
-  if (diet_dig < 0.5) {
-    cli::cli_warn(
-      "{.field diet_dig} is below 0.5. The results might not be reliable."
-    )
-  }
+  validate_animal_species(species_short)
+  validate_scalar_numeric(energy_requirement_maintenance, "energy_requirement_maintenance")
+  validate_scalar_numeric(energy_requirement_activity, "energy_requirement_activity")
+  validate_scalar_numeric(energy_requirement_lactation, "energy_requirement_lactation")
+  validate_scalar_numeric(energy_requirement_work, "energy_requirement_work")
+  validate_scalar_numeric(energy_requirement_pregnancy, "energy_requirement_pregnancy")
+  validate_scalar_numeric(energy_requirement_growth, "energy_requirement_growth")
+  validate_scalar_numeric(energy_requirement_fibre_production, "energy_requirement_fibre_production")
+  validate_param_range(diet_digestibility_fraction, "diet_digestibility_fraction")
 
-  # Validate REM and REG based on animal type
-  if (animal %in% c("CTL", "BFL", "SHP", "GTS")) {
-    if (is.na(rem)) {
-      cli::cli_abort("{.arg rem} must be provided for ruminants ({animal}).")
-    }
-    if (is.na(reg)) {
-      cli::cli_abort("{.arg reg} must be provided for ruminants ({animal}).")
-    }
-    validate_scalar_numeric(rem, "rem")
-    validate_scalar_numeric(reg, "reg")
+  if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
+    validate_scalar_numeric(
+      net_energy_maintenance_digestible_energy_ratio,
+      "net_energy_maintenance_digestible_energy_ratio"
+    )
+    validate_scalar_numeric(
+      net_energy_growth_digestible_energy_ratio,
+      "net_energy_growth_digestible_energy_ratio"
+    )
   }
 }
 
@@ -384,26 +433,13 @@ validate_total_energy_inputs <- function(
 #'
 #' @noRd
 validate_dmi_inputs <- function(
-    animal,
-    total_energy,
-    diet_ge,
-    diet_me
+    species_short,
+    energy_requirement_total,
+    diet_gross_energy,
+    diet_metabolizable_energy
 ) {
-  validate_animal_species(animal)
-  validate_positive_numeric(total_energy, "total_energy")
-  validate_positive_numeric(diet_ge, "diet_ge")
-  validate_positive_numeric(diet_me, "diet_me")
-  
-  if (diet_me < 4) {
-    cli::cli_warn(
-      "{.field diet_me} is below 4 MJ/kg DM. This is a low value and may indicate an unrealistic input."
-    )
-  }
-  
-  # Warn for implausibly low gross energy
-  if (diet_ge < 10) {
-    cli::cli_warn(
-      "{.field diet_ge} is below 10 MJ/kg DM. This is a low value and may indicate an unrealistic input."
-    )
-  }
+  validate_animal_species(species_short)
+  validate_positive_numeric(energy_requirement_total, "energy_requirement_total")
+  validate_param_range(diet_gross_energy, "diet_gross_energy")
+  validate_param_range(diet_metabolizable_energy, "diet_metabolizable_energy")
 }

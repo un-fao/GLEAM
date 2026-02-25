@@ -169,11 +169,11 @@ These outputs are subsequently used to project one year of population dynamics
 \dontrun{
 # Load herd simulation inputs (cohort- and herd-level)
 herd_simulation_chrt_dt <- data.table::fread(system.file(
-  "extdata/examples/herd_simulation_input_chrt_data.csv",
+  "extdata/run_modules_examples/herd_simulation_input_chrt_data.csv",
   package = "gleam"
 ))
 herd_simulation_hrd_dt <- data.table::fread(system.file(
-  "extdata/examples/herd_simulation_input_hrd_data.csv",
+  "extdata/run_modules_examples/herd_simulation_input_hrd_data.csv",
   package = "gleam"
 ))
 

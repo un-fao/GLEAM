@@ -189,3 +189,37 @@ validate_param_range <- function(
     )
   }
 }
+
+#' Validate species short code
+#'
+#' Ensures that the species short code is valid for energy requirements calculations.
+#'
+#' @param species_short Character. The species short code to validate.
+#'
+#' @noRd
+validate_animal_species <- function(species_short) {
+  validate_scalar_character(species_short, "species_short")
+  valid_species <- c("CTL", "BFL", "SHP", "GTS", "PGS", "CHK", "CML")
+  if (!species_short %in% valid_species) {
+    cli::cli_abort(
+      "{.arg species_short} must be one of: {cli::format_inline('{valid_species}')}"
+    )
+  }
+}
+
+#' Validate cohort short code
+#'
+#' Ensures that the cohort short code is valid for energy requirements calculations.
+#'
+#' @param cohort_short Character. The cohort short code to validate.
+#'
+#' @noRd
+validate_cohort_code <- function(cohort_short) {
+  validate_scalar_character(cohort_short, "cohort_short")
+  valid_cohorts <- c("FA", "FS", "FJ", "MA", "MS", "MJ")
+  if (!cohort_short %in% valid_cohorts) {
+    cli::cli_abort(
+      "{.arg cohort_short} must be one of: {cli::format_inline('{valid_cohorts}')}"
+    )
+  }
+}
