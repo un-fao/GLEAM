@@ -19,7 +19,6 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
-\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
@@ -37,43 +36,73 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of
-energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to
+keep the animal at equilibrium such that body energy is neither gained nor lost.
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
+CML and PGS (MJ/head/day).}
 
-\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by
-accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the
-potential final weight of animals that remain in the cohort (kg).}
+\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting
+for the share of offtaken animals within the cohort, using their slaughter weight, and the potential
+final weight of animals that remain in the cohort (kg).}
 
 \item{low_activity_fraction}{Numeric. Proportion of the assessment period during which the animal performs
-low-intensity movement typical of stall-feeding or near-field grazing, characterized by minimal walking
-distances and flat terrain (fraction).}
+low-intensity movement typical of stall-feeding or near-field grazing, characterized by minimal walking distances and flat terrain  (fraction).}
 
-\item{high_activity_fraction}{Numeric. Proportion of the assessment period during which the animal engages
-in sustained locomotion associated with herding or long-distance grazing, typically involving extended
-walking distances and/or uneven or hilly terrain (fraction).}
+\item{high_activity_fraction}{Numeric. Proportion of the assessment period during which the animal engages in sustained locomotion associated
+with herding or long-distance grazing, typically involving extended walking distances and/or uneven or hilly terrain (fraction).}
 }
 \value{
-Numeric. Energy required for activity (\code{energy_requirement_activity}), defined as the amount of
-energy needed to obtain food, water and
-shelter (example stall, grazing large areas). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable
-energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the \strong{energy requirement for activity} (MJ/head/day).
-This approach follows the IPCC Tier 2 energy partitioning method and applies
-the following general equation:
-energy_activity = cact * energy_maintenance
-(except for sheep: cact * average_weight)
-where cact is an activity coefficient reflecting the animal’s feeding
-and management situation. (MJ d^-1 kg^-1).
+Computes the energy requirement for activity by cohort (MJ/head/day),
+defined as the amount of energy needed to support animal movement and physical activity.
 }
 \details{
-The activity coefficient \code{cact} reflects the animal’s feeding and management conditions.
-For CTL, BFL, SHP, and GTS, \code{cact} is calculated as a \strong{weighted average} of the different
-activity levels over the assessment period.
-Reference coefficients are derived from NRC (1996) and AFRC (1993) for CTL, BFL, SHP, and GTS; NRC (1998)
-for PGS; and Wardeh (2004) for CML.
+This approach follows the IPCC Tier 2 energy partitioning method and applies:
+
+\eqn{energy\_requirement\_activity = cact \times energy\_requirement\_maintenance}
+
+For \code{SHP} and \code{GTS}, activity energy is calculated as:
+
+\eqn{energy\_requirement\_activity = cact \times live\_weight\_cohort\_average}
+
+where
+
+\eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS};
+MJ/day/kg for \code{SHP},  \code{GTS}) that reflects the animal’s feeding and management conditions.
+\code{energy_requirement_maintenance} can be calculated using
+\code{\link{calc_net_energy_maintenance}()}.
+
+For \code{CTL, BFL, SHP} and \code{GTS}, \eqn{cact} is computed as a \emph{weighted average} of activity levels
+over the assessment period to account for variation in management and grazing intensity.
+
+\strong{Specific coefficients by species and cohort:}
+
+\strong{CTL, BFL} (NRC, 1996; AFRC, 1993; AFRC, 1995):
+\itemize{
+\item \code{low_activity_fraction}: \eqn{cact = 0.17}
+\item \code{high_activity_fraction}: \eqn{cact = 0.36}
+}
+\strong{CML} (Wardeh, 2004):
+\itemize{
+\item \code{all activity levels}: \eqn{cact = 0.1}
+}
+\strong{GTS} (AFRC, 1993; AFRC, 1995):
+\itemize{
+\item \code{low_activity_fraction}: \eqn{cact = 0.019}
+\item \code{high_activity_fraction}: \eqn{cact = 0.024}
+}
+\strong{SHP} (AFRC, 1993; AFRC, 1995):
+\itemize{
+\item \code{low_activity_fraction}: \eqn{cact = 0.0107}
+\item \code{high_activity_fraction}: \eqn{cact = 0.024}
+}
+\strong{PGS} (NRC, 1998):
+\itemize{
+\item \code{all activity levels}: \eqn{cact = 0.125}
+}
 }
 \references{
 NRC (1998). \emph{Nutrient Requirements of Swine},
@@ -94,4 +123,8 @@ from Livestock and Manure Management, Equation 10.4; Table 10.5.
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
 Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+}
+\seealso{
+\code{\link{calc_net_energy_maintenance}}
+\code{\link{calc_avg_weights}}
 }

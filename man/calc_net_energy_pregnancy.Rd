@@ -40,131 +40,150 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of
-energy needed to keep the animal in equilibrium such that body energy is neither gained nor lost.
+\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed
+to keep the animal at equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (#). A herd-level
-reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring
-during a year divided by the number of adult females potentially able to give birth during that year.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year).
+A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during
+a year divided by the number of adult females potentially able to give birth during that year.}
 
-\item{litter_size}{Numeric. Average number of offspring born per parturition (#). This value can be
-calculated as the total number of offspring born divided by the total number of parturitions during the
-year.}
+\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be
+calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 
-\item{non_productive_duration}{Numeric. Period during which the animal is not performing any productive
-physiological function such as pregnancy or lactation (days).}
+\item{non_productive_duration}{Numeric. Period during which the animal is not performing any productive physiological
+function such as pregnancy or lactation (days). Required only for PGS.}
 
-\item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during
-which the animal is lactating (days).}
+\item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal
+is lactating (days). Required only for PGS.}
 
 \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 
-\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort
-(fraction).}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 }
 \value{
-Numeric. Energy required for pregnancy (\code{energy_requirement_pregnancy}) for pregnant adult
-females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML
-and PGS (MJ/head/day).
+Numeric. Energy required for pregnancy for pregnant females (MJ/head/day).
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the \strong{energy requirement for pregnancy} (MJ/head/day) for pregnant
-females. This approach follows the IPCC Tier 2 partitioning framework and is applied
-only to \strong{female cohorts}.
+Computes the energy requirement for pregnancy by cohort (MJ/head/day) for pregnant
+females, defined as the additional energy needed to support gestation.
 }
 \details{
-Pregnancy energy is calculated \strong{only for female cohorts}
-(i.e., \code{FA} and \code{FS}) and represents the additional
-energy required to support gestation.
+This component follows the IPCC Tier 2 partitioning framework and is applied
+only to \strong{female cohorts} (\code{FA} and \code{FS}).
 
-For \code{FA}, pregnancy energy requirements are adjusted to account
-for the proportion of time animals spend in gestation.
+Pregnancy energy (\code{energy_requirement_pregnancy}) represents the additional
+energy required to support gestation. Requirements are computed as a fraction
+of maintenance energy and are adjusted to reflect reproductive activity within
+the cohort:
+\itemize{
+\item For \code{FA}, requirements are scaled by the annual parturition rate
+(\code{parturition_rate}) and (when applicable) by the fraction of the reproductive cycle
+spent in gestation (\code{pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)}).
+\item For \code{FS}, only a fraction of animals is assumed to reach reproductive
+age within the cohort; requirements are therefore scaled by the proportion
+remaining in the cohort (\eqn{1 - offtake\_rate}) and by the share of the
+cohort duration spent pregnant (\code{pregnancy_duration/cohort_duration_days}).
+}
 
-For \code{FS}, only a fraction of animals is assumed to be of reproductive age;
-pregnancy energy requirements are therefore scaled accordingly.
+\strong{General form}
+\deqn{
+energy\_requirement\_pregnancy =
+energy\_requirement\_maintenance \times c_{preg} \times S
+}
+
+where
+\itemize{
+\item \eqn{c_{preg}} is a species-specific pregnancy coefficient,
+\item \eqn{S} is a scaling term that depends on cohort (\code{FA} vs \code{FS}).
+\item \eqn{energy\_requirement\_maintenance} can be calculated using \code{\link{calc_net_energy_maintenance}()}
+}
+
+\strong{Specific coefficients by species and cohort:}
 
 \itemize{
-\item For \strong{CTL and BFL} — IPCC (2006, 2019):
-
-Pregnancy energy is approximated as 10\% of maintenance energy.
+\item \strong{CTL and BFL} (IPCC, 2006, 2019):
+Pregnancy energy is approximated as \eqn{10\%} of maintenance energy.
 \itemize{
 \item \code{FA}:
 \deqn{
-      energy\_pregnancy =
-      0.10 \times nemain \times parturition\_rate \times \frac{gest}{365}
-      }
+  energy\_requirement\_pregnancy =
+  0.10 \times energy\_requirement\_maintenance \times parturition\_rate \times
+  \frac{pregnancy\_duration}{365}
+  }
 \item \code{FS}:
 \deqn{
-      energy\_pregnancy =
-      0.10 \times nemain \times \frac{gest}{duration}
-      \times (1 - offtake\_rate)
-      }
+  energy\_requirement\_pregnancy =
+  0.10 \times energy\_requirement\_maintenance \times
+  \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
+  }
 }
 
-\item For \strong{CML} — Wardeh (2004):
-
-Pregnancy energy is estimated as 12\% of maintenance energy.
+\item \strong{CML} (Wardeh, 2004):
+Pregnancy energy is estimated as \eqn{12\%} of maintenance energy.
 \itemize{
 \item \code{FA}:
 \deqn{
-      energy\_pregnancy =
-      0.12 \times nemain \times parturition\_rate
-      }
+  energy\_requirement\_pregnancy =
+  0.12 \times energy\_requirement\_maintenance \times parturition\_rate
+  }
 \item \code{FS}:
 \deqn{
-      energy\_pregnancy =
-      0.12 \times nemain \times \frac{gest}{duration}
-      \times (1 - offtake\_rate)
-      }
+  energy\_requirement\_pregnancy =
+  0.12 \times energy\_requirement\_maintenance \times
+  \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
+  }
 }
 
-\item For \strong{SHP and GTS} — IPCC (2006, 2019):
-
-Pregnancy energy is calculated as a litter-size–dependent fraction
-of maintenance energy.
+\item \strong{SHP and GTS} (IPCC 2006; 2019):
+Pregnancy energy is calculated as a litter-size-dependent fraction of
+maintenance energy (\eqn{c_{preg}}).
 \itemize{
 \item \code{FA}:
 \deqn{
-      energy\_pregnancy =
-      nemain \times cpreg \times parturition\_rate \times \frac{gest}{365}
-      }
-where \eqn{cpreg} is defined as:
-\itemize{
-\item If \eqn{1 \le litsize \le 2}:
+  energy\_requirement\_pregnancy =
+  energy\_requirement\_maintenance \times c_{preg} \times parturition\_rate \times
+  \frac{pregnancy\_duration}{365}
+  }
+where \eqn{c_{preg}} is:
 \deqn{
-          cpreg = 0.077 \times (2 - litsize) + 0.126 \times (litsize - 1)
-          }
-\item If \eqn{litsize > 2}:
-\deqn{cpreg = 0.150}
-}
-\item \code{FS} -
-Pregnancy energy is calculated using the single-birth coefficient
-and scaled to the proportion of reproductive individuals in the cohort.
+  c_{preg} =
+  \left\{
+  \begin{array}{ll}
+  0.077 \times (2 - litter\_size) + 0.126 \times (litter\_size - 1), & 1 \le litter\_size \le 2 \\
+  0.150, & litter\_size > 2
+  \end{array}
+  \right.
+  }
+\item \code{FS}:
+A single-birth coefficient is used (\eqn{c_{preg}=0.077}) and scaled by the
+proportion of reproductive individuals in the cohort:
 \deqn{
-      energy\_pregnancy =
-      0.077 \times nemain \times \frac{gest}{duration}
-      \times (1 - offtake\_rate)
-      }
+  energy\_requirement\_pregnancy =
+  0.077 \times energy\_requirement\_maintenance \times
+  \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
+  }
 }
 
-\item For \strong{PGS} — NRC (1998):
-
+\item \strong{PGS} (NRC, 1998):
+Pregnancy energy is expressed using a gestation coefficient \eqn{c_{gest}}
+(MJ/piglet), with default \eqn{c_{gest}=0.14985}.
 \itemize{
 \item \code{FA}:
 \deqn{
-      energy\_pregnancy = cgest \times litsize \times \frac{gest}{lact + gest + idle}
-      }
+  energy\_requirement\_pregnancy =
+  c_{gest} \times litter\_size \times
+  \frac{pregnancy\_duration}{non\_productive\_duration + pregnancy\_duration + lactation\_duration}
+  }
 \item \code{FS}:
 \deqn{
-      energy\_pregnancy =
-      cgest \times litsize \times \frac{gest}{duration}
-      \times (1 - offtake\_rate)
-      }
-The default value for the gestation coefficient is
-\eqn{cgest = 0.14985} MJ piglet\eqn{^{-1}}.
+  energy\_requirement\_pregnancy =
+  c_{gest} \times litter\_size \times
+  \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
+  }
 }
 }
 }
@@ -181,4 +200,7 @@ from Livestock and Manure Management, Equation 10.13; Table 10.7.
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
 Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+}
+\seealso{
+\code{\link{calc_net_energy_maintenance}}
 }

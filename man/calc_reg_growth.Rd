@@ -2,7 +2,7 @@
 % Please edit documentation in R/energy_requirements_core_model.R
 \name{calc_reg_growth}
 \alias{calc_reg_growth}
-\title{Calculate REG (Net Energy for Growth / Digestible Energy)}
+\title{Calculate the Ratio of Net Energy Available for Growth in the Diet (REG – Net Energy for Growth / Digestible Energy)}
 \usage{
 calc_reg_growth(species_short, diet_digestibility_fraction = NA_real_)
 }
@@ -18,18 +18,26 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of
-digestible to gross energy content (fraction).}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration,
+expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{
-Ratio of net energy available for growth in a diet to digestible energy consumed
-(\code{net_energy_growth_digestible_energy_ratio}), REG (fraction)
+Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).
 }
 \description{
-Computes the ratio of \strong{net energy available for growth} to \strong{digestible
-energy consumed} (REG). REG represents the efficiency with which digestible
-energy in the diet is converted into net energy retained as body tissue
-(and wool growth where applicable).
+Computes the ratio of net energy available for growth to digestible
+energy consumed (fraction), which represents the efficiency with which digestible
+energy in the diet is converted into net energy retained as body tissue.
+}
+\details{
+This component follows the IPCC Tier 2 partitioning approach and returns REG for
+ruminants (\code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}) as:
+\deqn{
+net\_energy\_growth\_digestible\_energy\_ratio = 1.164 - 0.005160 \times diet\_digestibility\_fraction \times 100 + 0.00001308 \times (diet\_digestibility\_fraction \times 100)^2 - \frac{37.4}{diet\_digestibility\_fraction \times 100}
+}
+
+For Other species REG is not applicable and the function
+returns \code{NA_real_}.
 }
 \references{
 Gibbs M.J., Johnson D.E. (1993) \emph{Livestock Emissions}.
@@ -41,4 +49,9 @@ Chapter 10: Emissions from Livestock and Manure Management, Equation 10.15.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
 from Livestock and Manure Management, Equation 10.15.
+}
+\seealso{
+\code{\link{calc_diet_digestibility}}
+\code{\link{calc_total_energy_requirement}}
+\code{\link{calc_dry_matter_intake}}
 }

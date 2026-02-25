@@ -17,48 +17,47 @@ Supported values include:
 \itemize{
 \item \code{PGS}: pigs
 \item \code{CML}: camels
-\item \code{CHK}: chickens
 \item \code{CTL}: cattle
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
 }}
 
-\item{energy_requirement_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP
-and GTS this is expressed as \strong{gross energy intake requirement (GE)}. For CML and PGS the function
-returns the summed daily metabolizable energy requirement.}
+\item{energy_requirement_total}{Numeric. Total daily energy requirement (MJ/head/day).
+For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
+For CML and PGS the function returns the summed daily metabolizable energy requirement.}
 
 \item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 
 \item{diet_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
 }
 \value{
-Numeric. Daily dry matter intake of feed (\code{dry_matter_intake}, kg DM/head/day).
+Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 }
 \description{
-Computes feed intake, expressed as \strong{daily dry matter intake (DMI)} per animal (kg DM/head/day) from the
+Computes daily feed intake as dry matter intake (DMI) per animal (kg DM/head/day) from the
 animal's daily energy requirement and the diet energy density.
 }
 \details{
-This function follows the IPCC Tier 2, logic.
-Dry matter intake is calculated by dividing the appropriate daily energy requirement by the
-corresponding diet energy density (MJ per kg DM).
-
-The function applies one of two analogous intake calculations, depending on how the
-upstream energy requirement is expressed:
+This function follows the IPCC Tier 2 framework.
+DMI is computed
+by dividing the appropriate daily energy requirement by the corresponding
+diet energy content (MJ/kg DM).
 
 \itemize{
-\item \strong{total_energy expressed as total gross energy - (CTL, BFL, SHP, GTS):}
+\item \strong{Energy expressed as gross energy intake requirement -
+\code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}}:
 
-Upstream calculations provide total energy as \strong{gross energy intake requirement}
-(\eqn{GE}, MJ/head/day). Dry matter intake is:
-\deqn{DMI = \frac{GE}{diet\_ge}}
+\deqn{
+    dry\_matter\_intake = \frac{energy\_requirement\_total}{diet\_gross\_energy}
+  }
 
-\item \strong{total_energy expressed as total metabolizable energy and camelids - (PGS, CML):}
+\item \strong{Energy expressed as metabolizable energy requirement -
+\code{CML}, \code{PGS}, \code{CHK}}:
 
-Upstream calculations provide total energy as \strong{metabolizable energy requirement}
-(\eqn{ME}, MJ/head/day). Dry matter intake is:
-\deqn{DMI = \frac{ME}{diet\_me}}
+\deqn{
+    dry\_matter\_intake = \frac{energy\_requirement\_total}{diet\_metabolizable\_energy}
+  }
 }
 }
 \references{
@@ -67,4 +66,9 @@ Volume 4 (AFOLU), Chapter 10: \emph{Emissions from Livestock and Manure Manageme
 
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
 Volume 4 (AFOLU), Chapter 10: \emph{Emissions from Livestock and Manure Management}.
+}
+\seealso{
+\code{\link{calc_total_energy_requirement}}
+\code{\link{calc_diet_gross_energy}}
+\code{\link{calc_diet_metabolizable_energy}}
 }
