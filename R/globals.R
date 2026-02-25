@@ -148,7 +148,7 @@ utils::globalVariables(c(
   "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
   "feed_emissions_kgGas", "feed_share",
   # Columns added by run_directemissions_enteric
-  "ym", "ch4_enteric", "ch4_mitigation_factor", "ch4_conversion_factor_ym",
+  "ch4_enteric", "ch4_mitigation_factor", "ch4_conversion_factor_ym",
   "species_short", "cohort_short", "diet_digestibility_fraction",
   "diet_gross_energy", "dry_matter_intake",
   # Columns used in run_aggregation
