@@ -52,7 +52,7 @@ The formula used to estimate daily enteric methane emissions is:
 
 where 55.65 MJ/kg is the energy content of methane.
 
-The function returns \code{NA} for chickens.
+The function returns \code{0} for chickens.
 }
 \references{
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from

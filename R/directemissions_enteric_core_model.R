@@ -102,7 +102,7 @@ compute_methane_conversion_factor <- function(
       ch4_conversion_factor_ym <- 1.01
     }
   } else if (species_short == "CHK") {
-    ch4_conversion_factor_ym <- NA_real_
+    ch4_conversion_factor_ym <- 0
   }
 
   return(ch4_conversion_factor_ym)
@@ -145,7 +145,7 @@ compute_methane_conversion_factor <- function(
 #'
 #' where 55.65 MJ/kg is the energy content of methane.
 #'
-#' The function returns `NA` for chickens.
+#' The function returns `0` for chickens.
 #'
 #' @references
 #' IPCC. (2019). *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories*, Chapter 10: Emissions from

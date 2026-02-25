@@ -15,7 +15,7 @@
 #'   \code{Sheep}, \code{Goats}, \code{Camels}, \code{Pigs}). Used to derive
 #'   \code{species_short} via the internal \code{abbr_animals} lookup.
 #'
-#' param cohort_short Character Sex- and age-specific cohort code describing the
+#' - `cohort_short`: Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)

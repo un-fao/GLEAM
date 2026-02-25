@@ -39,9 +39,7 @@ Input data must at minimum include the following columns:
 \item \code{animal}: Character. Full species name (e.g. \code{Cattle}, \code{Buffalo},
 \code{Sheep}, \code{Goats}, \code{Camels}, \code{Pigs}). Used to derive
 \code{species_short} via the internal \code{abbr_animals} lookup.
-}
-
-param cohort_short Character Sex- and age-specific cohort code describing the
+\item \code{cohort_short}: Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -51,7 +49,6 @@ production stage of the animals. Supported values include:
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
 }
-\itemize{
 \item \code{diet_digestibility_fraction}: Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 \item \code{diet_gross_energy}: Numeric. Average gross energy content of the diet (MJ/kg DM).
 \item \code{dry_matter_intake}: Numeric. Daily dry matter intake of feed (kg DM/head/day).

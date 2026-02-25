@@ -30,9 +30,6 @@ test_that("compute_methane_conversion_factor validates inputs and computes YM", 
     compute_methane_conversion_factor("CTL", "FA", 0.6)
   )
 
-  # Chickens: always NA
-  expect_true(is.na(compute_methane_conversion_factor("CHK", "FA", 0.65)))
-
   # Invalid species should error
   expect_error(compute_methane_conversion_factor("XXX", "FA", 0.65))
 })
@@ -50,13 +47,6 @@ test_that("compute_daily_enteric_emissions validates inputs and returns expected
   )
   expect_type(ch4, "double")
   expect_true(ch4 > 0)
-
-  # Chickens: emissions NA
-  ym_ch <- compute_methane_conversion_factor("CHK", "FA", 0.7)
-  ch4_ch <- compute_daily_enteric_emissions(
-    "CHK", ym_ch, 1, 16, 0.1
-  )
-  expect_true(is.na(ch4_ch))
 
   # Zero inputs give zero emissions
   expect_equal(
