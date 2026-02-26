@@ -39,7 +39,7 @@ additives or methane inhibitors.}
 \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 }
 \value{
-Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
+Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).
 }
 \description{
 Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross
@@ -53,7 +53,7 @@ The formula used to estimate daily enteric methane emissions is:
 where 55.65 MJ/kg is the energy content of methane.
 
 \code{diet_gross_energy} and \code{dry_matter_intake} can be calculated with
-\code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} - see also \code{\link{run_feed_rations}}.
+\code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} - see also \code{\link{run_feed_rations}} and \code{\link{run_energy_requirements}}.
 
 The function returns \code{0} for chickens.
 }
@@ -70,4 +70,5 @@ Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 \code{\link{calc_diet_gross_energy}},
 \code{\link{calc_dry_matter_intake}},
 \code{\link{run_feed_rations}}
+\code{\link{run_energy_requirements}}
 }

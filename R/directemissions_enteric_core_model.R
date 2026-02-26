@@ -54,7 +54,7 @@
 #'     }
 #' }
 #'
-#' ym is returned as 0 for juvenile cohorts (\code{JF}, \code{JM}), assuming negligible enteric methane production before weaning/rumen development.
+#' ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming negligible enteric methane production before weaning/rumen development.
 #' 
 #' @seealso
 #'   \code{\link{calc_diet_digestibility}},
@@ -143,7 +143,7 @@ compute_methane_conversion_factor <- function(
 #' @param diet_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
 #' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #'
-#' @return Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
+#' @return Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).
 #'
 #'@details
 #' The formula used to estimate daily enteric methane emissions is:
@@ -153,7 +153,7 @@ compute_methane_conversion_factor <- function(
 #' where 55.65 MJ/kg is the energy content of methane.
 #' 
 #' \code{diet_gross_energy} and \code{dry_matter_intake} can be calculated with
-#' \code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} - see also \code{\link{run_feed_rations}}.
+#' \code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} - see also \code{\link{run_feed_rations}} and \code{\link{run_energy_requirements}}.
 #' 
 #'
 #' The function returns `0` for chickens.
@@ -162,6 +162,7 @@ compute_methane_conversion_factor <- function(
 #'   \code{\link{calc_diet_gross_energy}},
 #'   \code{\link{calc_dry_matter_intake}},
 #'   \code{\link{run_feed_rations}}
+#'   \code{\link{run_energy_requirements}}
 #'
 #' @references
 #' IPCC. (2019).

@@ -1,7 +1,8 @@
 #' Run Enteric Methane (CH₄) Direct Emissions
 #'
-#' Computes daily enteric methane emissions (kg CH₄/head/day) by cohort by applying species-,
-#' cohort- and diet- specific methane conversion factors (ym), using a Tier 2 approach.
+#' Computes daily enteric methane emissions by cohort (kg CH₄/head/day) using a Tier 2
+#'  IPCC approach, by applying species-, cohort- and diet-specific methane 
+#'  conversion factors (ym).
 #'
 #' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
 #'   \describe{
@@ -42,10 +43,9 @@
 #'
 #' @return A \code{data.table} with the original input columns plus the following new variables:
 #'   \describe{
-#'   \item{ch4_conversion_factor_ym}{Added by the function if not provided as input.}
+#'   \item{ch4_mitigation_factor}{Added by the function if not provided as input.}
 #'     \item{ch4_conversion_factor_ym}{Numeric. Methane (CH₄) conversion factor (ym), representing the percentage of  gross energy of the feed ration that is converted to CH₄ (percentage).}
-#'     \item{ch4_enteric}{Numeric. Average daily enteric methane emissions (kg CH₄/head/day).}
-#'     \item{ch4_mitigation_factor}{}
+#'     \item{ch4_enteric}{Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).}
 #'   }
 #'
 #' @details

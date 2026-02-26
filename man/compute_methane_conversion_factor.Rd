@@ -67,7 +67,7 @@ ym is assigned fixed values by cohort:
 }
 }
 
-ym is returned as 0 for juvenile cohorts (\code{JF}, \code{JM}), assuming negligible enteric methane production before weaning/rumen development.
+ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming negligible enteric methane production before weaning/rumen development.
 }
 \references{
 Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
