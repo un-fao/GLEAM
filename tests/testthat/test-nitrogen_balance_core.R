@@ -9,15 +9,16 @@ test_that("compute_nitrogen_intake produces expected results", {
 
 # ---- test compute_nitrogen_retention (cattle) ----
 test_that("retention for cattle: milk + growth add up correctly", {
+  # milk_protein_fraction is kg protein/kg milk (0-1); 0.032 = 3.2%
   base <- compute_nitrogen_retention(
     "CTL", "FA",
-    milk_protein_fraction = 32, milk_yield_day = 20,
+    milk_protein_fraction = 0.032, milk_yield_day = 20,
     daily_weight_gain = 0, fibre_yield_year = 0,
     litter_size = 1, parturition_rate = 1
   )
   with_growth <- compute_nitrogen_retention(
     "CTL", "FA",
-    milk_protein_fraction = 32, milk_yield_day = 20,
+    milk_protein_fraction = 0.032, milk_yield_day = 20,
     daily_weight_gain = 0.5, fibre_yield_year = 0,
     litter_size = 1, parturition_rate = 1
   )
@@ -25,11 +26,11 @@ test_that("retention for cattle: milk + growth add up correctly", {
 
   none <- compute_nitrogen_retention(
     "CTL", "FA",
-    milk_protein_fraction = 32, milk_yield_day = 0,
+    milk_protein_fraction = 0.032, milk_yield_day = 0,
     daily_weight_gain = 0, fibre_yield_year = 0,
     litter_size = 1, parturition_rate = 1
   )
-  expect_equal(base - none, 20 * (32 / 6.25), tolerance = 1e-12)
+  expect_equal(base - none, 20 * (0.032 / 6.25), tolerance = 1e-12)
   expect_gt(base, 0)
 })
 
@@ -111,7 +112,10 @@ test_that("excretion returns NA for chickens", {
   expect_true(is.na(val))
 })
 
-test_that("excretion handles zero and negative results", {
+test_that("excretion handles zero retention and errors when intake < retention", {
   expect_equal(compute_nitrogen_excretion("CTL", 0.5, 0), 0.5)
-  expect_equal(compute_nitrogen_excretion("CTL", 0, 0.2), -0.2)
+  expect_error(
+    compute_nitrogen_excretion("CTL", 0, 0.2),
+    "nitrogen_intake.*must be greater than or equal to.*nitrogen_retention"
+  )
 })
