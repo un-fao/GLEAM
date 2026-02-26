@@ -33,10 +33,12 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of
+digestible (or metabolizable, for poultry) to gross energy content (fraction).}
 }
 \value{
-Numeric. Methane (CH₄) conversion factor (ym), representing the percentage of  gross energy of the feed ration that is converted to CH₄ (percentage).
+Numeric. Methane (CH₄) conversion factor (ym), representing the percentage of  gross energy
+of the feed ration that is converted to CH₄ (percentage).
 }
 \description{
 Calculates the methane conversion factor (ym, \% of dietary gross energy in feed converted to methane)
@@ -55,8 +57,10 @@ ym is computed using species- and cohort-specific default relationships with die
 
 \item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
 \itemize{
-\item \code{FA} and \code{MA} cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
-\item \code{FS} and \code{MS} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+\item \code{FA} and \code{MA} cohorts:
+\deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+\item \code{FS} and \code{MS} cohorts:
+\deqn{ym = 7.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
 }
 
 \item \strong{For \code{PGS}:}
@@ -67,7 +71,8 @@ ym is assigned fixed values by cohort:
 }
 }
 
-ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming negligible enteric methane production before weaning/rumen development.
+ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming
+negligible enteric methane production before weaning/rumen development.
 }
 \references{
 Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,

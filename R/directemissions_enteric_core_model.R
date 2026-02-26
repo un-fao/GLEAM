@@ -26,9 +26,11 @@
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).
+#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of 
+#' digestible (or metabolizable, for poultry) to gross energy content (fraction).
 #'
-#' @return Numeric. Methane (CH₄) conversion factor (ym), representing the percentage of  gross energy of the feed ration that is converted to CH₄ (percentage).
+#' @return Numeric. Methane (CH₄) conversion factor (ym), representing the percentage of  gross energy 
+#' of the feed ration that is converted to CH₄ (percentage).
 #'
 #'@details
 #' ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013). 
@@ -42,8 +44,10 @@
 #'
 #'   \item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
 #'     \itemize{
-#'       \item \code{FA} and \code{MA} cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
-#'       \item \code{FS} and \code{MS} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+#'       \item \code{FA} and \code{MA} cohorts: 
+#'       \deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+#'       \item \code{FS} and \code{MS} cohorts: 
+#'       \deqn{ym = 7.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
 #'     }
 #'
 #'   \item \strong{For \code{PGS}:}
@@ -54,7 +58,8 @@
 #'     }
 #' }
 #'
-#' ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming negligible enteric methane production before weaning/rumen development.
+#' ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming 
+#' negligible enteric methane production before weaning/rumen development.
 #' 
 #' @seealso
 #'   \code{\link{calc_diet_digestibility}},
@@ -148,12 +153,14 @@ compute_methane_conversion_factor <- function(
 #'@details
 #' The formula used to estimate daily enteric methane emissions is:
 #'
-#' \deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake \times ch4\_conversion\_factor\_ym}{55.65 \times 100}}
+#' \deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake 
+#' \times ch4\_conversion\_factor\_ym}{55.65 \times 100}}
 #' 
 #' where 55.65 MJ/kg is the energy content of methane.
 #' 
 #' \code{diet_gross_energy} and \code{dry_matter_intake} can be calculated with
-#' \code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} - see also \code{\link{run_feed_rations}} and \code{\link{run_energy_requirements}}.
+#' \code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} - 
+#' see also \code{\link{run_feed_rations}} and \code{\link{run_energy_requirements}}.
 #' 
 #'
 #' The function returns `0` for chickens.

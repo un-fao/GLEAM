@@ -48,12 +48,14 @@ energy intake, methane conversion factor (ym), and dry matter intake.
 \details{
 The formula used to estimate daily enteric methane emissions is:
 
-\deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake \times ch4\_conversion\_factor\_ym}{55.65 \times 100}}
+\deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake 
+\times ch4\_conversion\_factor\_ym}{55.65 \times 100}}
 
 where 55.65 MJ/kg is the energy content of methane.
 
 \code{diet_gross_energy} and \code{dry_matter_intake} can be calculated with
-\code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} - see also \code{\link{run_feed_rations}} and \code{\link{run_energy_requirements}}.
+\code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} -
+see also \code{\link{run_feed_rations}} and \code{\link{run_energy_requirements}}.
 
 The function returns \code{0} for chickens.
 }
