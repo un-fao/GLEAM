@@ -2,20 +2,22 @@
 % Please edit documentation in R/run_nitrogen_balance.R
 \name{run_nitrogen_balance}
 \alias{run_nitrogen_balance}
-\title{Run Nitrogen Balance (Internal)}
+\title{Run Nitrogen Balance}
 \usage{
-run_nitrogen_balance(data)
+run_nitrogen_balance(cohort_level_data, herd_level_data, show_indicator = TRUE)
 }
 \arguments{
-\item{data}{A \code{data.table} containing cohort-level inputs for nitrogen balance.}
+\item{cohort_level_data}{data.table. Cohort-level inputs (one row per herd-cohort).}
+
+\item{herd_level_data}{data.table. Herd-level inputs (one row per herd).}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during
+calculations.}
 }
 \value{
-A \code{data.table} with three additional columns:
-\itemize{
-\item n_intake: daily nitrogen intake (kg N/head/day)
-\item n_retention: daily nitrogen retention (kg N/head/day)
-\item n_excretion: daily nitrogen excretion (kg N/head/day)
-}
+A \code{data.table} with cohort-level data plus three columns:
+\code{nitrogen_intake}, \code{nitrogen_retention}, \code{nitrogen_excretion}
+(kg N/head/day).
 }
 \description{
 Computes cohort-level nitrogen intake, retention, and excretion (kg N/head/day)
@@ -23,16 +25,35 @@ for each row of input data. This wrapper applies the core nitrogen balance
 functions to the provided dataset and appends results.
 }
 \details{
-Input data must include the columns required by the underlying functions:
-dmi, diet_nitrogen, Animal_short, cohort, milk_protein, milk_yield,
-dwg, fibre_prod, litsize, parturition_rate, wkg, ckg, and afc.
+Cohort-level data must include \code{herd_id}, \code{cohort_short},
+\code{dry_matter_intake}, \code{diet_nitrogen}, and \code{daily_weight_gain}.
+Herd-level data must include \code{herd_id}, \code{animal} (full name, e.g.
+\code{Cattle}, \code{Pigs}), and \code{milk_protein_fraction}, \code{milk_yield_day},
+\code{fibre_yield_year}, \code{litter_size}, \code{parturition_rate},
+\code{weaning_weight}, \code{birth_weight}, \code{age_first_parturition}.
+\code{animal} is mapped to a species short code via \code{abbr_animals}.
 }
 \examples{
 \dontrun{
-input_path <- system.file("extdata/GLEAM_input_directemissions_manure.csv", package = "gleam")
-data <- data.table::fread(input_path)
-results <- run_nitrogen_balance(data)
+# Load nitrogen balance inputs (cohort and herd-level)
+nitrogen_balance_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/nitrogen_balance_input_chrt_data.csv",
+  package = "gleam"
+))
+nitrogen_balance_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/nitrogen_balance_input_hrd_data.csv",
+  package = "gleam"
+))
+
+# Run nitrogen balance calculations
+nitrogen_results <- run_nitrogen_balance(
+  cohort_level_data = nitrogen_balance_chrt_dt,
+  herd_level_data = nitrogen_balance_hrd_dt
+)
 }
 
 }
-\keyword{internal}
+\seealso{
+\code{\link{compute_nitrogen_intake}}, \code{\link{compute_nitrogen_retention}},
+\code{\link{compute_nitrogen_excretion}}
+}

@@ -34,7 +34,7 @@
 #'   calculated variables. Must include:
 #'   \describe{
 #'     \item{**Feed variables**:}{`dmi` (dry matter intake)}
-#'     \item{**Nitrogen balance**:}{`n_intake`, `n_retention`, `n_excretion`}
+#'     \item{**Nitrogen balance**:}{`nitrogen_intake`, `nitrogen_retention`, `nitrogen_excretion`}
 #'     \item{**Production**:}{`output_milk_*`, `output_meat_*`, `output_fibre_production`}
 #'     \item{**Emissions**:}{`ch4_enteric`, `ch4_manure_*`, `direct_n2o_manure_*`,
 #'       `indirect_n2o_manure_*`}
@@ -133,7 +133,7 @@ run_aggregation <- function(
 
   # --- Step 1: Define variable groups ---------------------------------------
   feed_vars <- c("dmi")
-  nitrogen_balance_vars <- c("dmi", "n_intake", "n_retention", "n_excretion")
+  nitrogen_balance_vars <- c("dry_matter_intake", "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion")
   production_vars <- c(
     "output_milk_mass_production", "output_milk_protein_production",
     "output_milk_fpcm_production",
@@ -346,9 +346,9 @@ run_aggregation <- function(
     indirect_n2o_manure_pasture = "ManureIndirect-pasture",
     indirect_n2o_manure_other = "ManureIndirect-other",
     dmi = "DryMatterIntake",
-    n_intake = "NitrogenIntake",
-    n_retention = "NitrogenRetention",
-    n_excretion = "NitrogenExcretion",
+    nitrogen_intake = "NitrogenIntake",
+    nitrogen_retention = "NitrogenRetention",
+    nitrogen_excretion = "NitrogenExcretion",
     output_milk_mass_production = "MilkRaw",
     output_milk_protein_production = "MilkProtein",
     output_milk_fpcm_production = "MilkFatProteinCorrected",

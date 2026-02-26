@@ -5,21 +5,21 @@
 \title{Compute Daily Nitrogen Retention}
 \usage{
 compute_nitrogen_retention(
-  animal,
-  cohort,
-  milk_protein = NA_real_,
-  milk_yield = NA_real_,
-  dwg = NA_real_,
-  fibre_prod = NA_real_,
-  litsize = NA_real_,
+  species_short,
+  cohort_short,
+  milk_protein_fraction = NA_real_,
+  milk_yield_day = NA_real_,
+  daily_weight_gain = NA_real_,
+  fibre_yield_year = NA_real_,
+  litter_size = NA_real_,
   parturition_rate = NA_real_,
-  wkg = NA_real_,
-  ckg = NA_real_,
-  afc = NA_real_
+  weaning_weight = NA_real_,
+  birth_weight = NA_real_,
+  age_first_parturition = NA_real_
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -30,7 +30,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -41,23 +41,23 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{milk_protein}{Numeric. Milk protein fraction (kg protein / kg milk).}
+\item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein / kg milk).}
 
-\item{milk_yield}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
+\item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
 
-\item{dwg}{Numeric. Average live weight of the cohort over the cohort stage (kg/head/day).}
+\item{daily_weight_gain}{Numeric. Average daily live weight gain of the cohort over the cohort stage (kg/head/day).}
 
-\item{fibre_prod}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
+\item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
 
-\item{litsize}{Numeric. Average number of offspring born per parturition. This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{litter_size}{Numeric. Average number of offspring born per parturition. This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
 \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.}
 
-\item{wkg}{Numeric. Live weight of the animal at weaning (kg).}
+\item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
 
-\item{ckg}{Numeric. Live weight of the animal at birth (kg).}
+\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
 
-\item{afc}{Numeric. Age at first parturition for female breeding animals (days)}
+\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
 }
 \value{
 Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)

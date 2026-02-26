@@ -93,7 +93,11 @@ utils::globalVariables(c(
   "area", "climate_zone", "soil_carbon_reference", "soil_type",
   "management_start", "management_end", "SOC1", "SOC2", "dSOC",
   # Columns used in nitrogen_balance
-  "n_intake", "n_retention", "n_excretion", "fibre_prod", "milk_protein",
+  "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion",
+  "dry_matter_intake", "diet_nitrogen", "daily_weight_gain",
+  "species_short", "cohort_short", "milk_protein_fraction", "milk_yield_day",
+  "fibre_yield_year", "litter_size", "parturition_rate", "weaning_weight",
+  "birth_weight", "age_first_parturition",
   "Item_Name", "dmi", "milk_yield",
   # Columns used in run_production_cohort
   "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",

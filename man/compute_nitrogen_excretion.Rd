@@ -4,10 +4,10 @@
 \alias{compute_nitrogen_excretion}
 \title{Compute Daily Nitrogen Excretion}
 \usage{
-compute_nitrogen_excretion(animal, n_intake, n_retention)
+compute_nitrogen_excretion(species_short, nitrogen_intake, nitrogen_retention)
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -18,9 +18,9 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{n_intake}{Numeric. Daily nitrogen intake (kg N/head/day)}
+\item{nitrogen_intake}{Numeric. Daily nitrogen intake (kg N/head/day).}
 
-\item{n_retention}{Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)}
+\item{nitrogen_retention}{Numeric. Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day).}
 }
 \value{
 Numeric. Daily nitrogen excretion (kg N/head/day).

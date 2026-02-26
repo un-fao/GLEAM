@@ -1,14 +1,15 @@
 #' Compute Daily Nitrogen Intake
 #'
-#' Calculates the daily nitrogen intake per head as the product of dry matter intake (DMI) and diet nitrogen content.
-#' The approach follows the Tier 2 IPCC guidelines (IPCC 2006, 2019). 
+#' Calculates the daily nitrogen intake per head as the product of dry matter
+#' intake (DMI) and diet nitrogen content. The approach follows the Tier 2 IPCC
+#' guidelines (IPCC 2006, 2019).
 #'
-#' @param dmi Numeric. Daily dry matter intake of feed (kg DM/head/day).
+#' @param dry_matter_intake Numeric. Daily dry matter intake of feed (kg DM/head/day).
 #' @param diet_nitrogen Numeric. Average nitrogen content of diet (kg N/kg DM).
 #'
-#' @return Numeric. Daily nitrogen intake (kg N/head/day)
+#' @return Numeric. Daily nitrogen intake (kg N/head/day).
 #'
-#'@references
+#' @references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.32.
 #'
@@ -16,10 +17,13 @@
 #' Livestock and Manure Management. Equation 10.32.
 #'
 #' @export
-compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
+compute_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
   # Validate inputs
-  validate_nitrogen_intake_inputs(dmi, diet_nitrogen)
-  return(dmi * diet_nitrogen)
+  validate_nitrogen_intake_inputs(dry_matter_intake, diet_nitrogen)
+
+  nitrogen_intake <- dry_matter_intake * diet_nitrogen
+
+  return(nitrogen_intake)
 }
 
 #' Compute Daily Nitrogen Retention
@@ -29,7 +33,7 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #' incorporated into animal products or body tissues.
 #' The approach follows the Tier 2 IPCC guidelines (IPCC 2006, 2019).
 #'
-#' @param animal Character. Code identifying the livestock species.
+#' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
@@ -39,7 +43,7 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param cohort Character. Sex- and age-specific cohort code describing the
+#' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -49,23 +53,23 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param milk_protein Numeric. Milk protein fraction (kg protein / kg milk).
-#' @param milk_yield Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.
-#' @param dwg Numeric. Average live weight of the cohort over the cohort stage (kg/head/day).
-#' @param fibre_prod Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
-#' @param litsize Numeric. Average number of offspring born per parturition. This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
+#' @param milk_protein_fraction Numeric. Milk protein fraction (kg protein / kg milk).
+#' @param milk_yield_day Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.
+#' @param daily_weight_gain Numeric. Average daily live weight gain of the cohort over the cohort stage (kg/head/day).
+#' @param fibre_yield_year Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
+#' @param litter_size Numeric. Average number of offspring born per parturition. This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
 #' @param parturition_rate Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.
-#' @param wkg Numeric. Live weight of the animal at weaning (kg).
-#' @param ckg Numeric. Live weight of the animal at birth (kg).
-#' @param afc Numeric. Age at first parturition for female breeding animals (days)
+#' @param weaning_weight Numeric. Live weight of the animal at weaning (kg).
+#' @param birth_weight Numeric. Live weight of the animal at birth (kg).
+#' @param age_first_parturition Numeric. Age at first parturition for female breeding animals (days).
 #'
 #' @return Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)
-#' 
+#'
 #' @details
 #' Species-specific calculations are performed.
 #'
 #' \strong{For CTL, BFL, SHP, GTS and CML}
-#' 
+#'
 #' Nitrogen retained in products and tissues is
 #' computed consistent with the process described in the Technical paper
 #' from MPI (Ministry for Primary Industries (MPI), 2025).
@@ -96,7 +100,7 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #' }
 #'
 #' \strong{For PGS}
-#' 
+#'
 #' Nitrogen retention is calculated following the IPCC 2019 equations
 #' for swine (Equations 10.33A and 10.33B).
 #'
@@ -120,71 +124,70 @@ compute_nitrogen_intake <- function(dmi, diet_nitrogen) {
 #' \emph{Detailed methodologies for agricultural greenhouse gas emission calculation:
 #' Methodology for calculation of New Zealand’s agricultural greenhouse gas emissions}
 #' (Version 11). MPI Technical Paper, Wellington, New Zealand. Chapter 5.
-#' 
+#'
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.33A, 10.33B.
 #'
 #' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.33.
-#' 
+#'
 #' @export
-
 compute_nitrogen_retention <- function(
-    animal,
-    cohort,
-    milk_protein = NA_real_,
-    milk_yield = NA_real_,
-    dwg = NA_real_,
-    fibre_prod = NA_real_,
-    litsize = NA_real_,
+    species_short,
+    cohort_short,
+    milk_protein_fraction = NA_real_,
+    milk_yield_day = NA_real_,
+    daily_weight_gain = NA_real_,
+    fibre_yield_year = NA_real_,
+    litter_size = NA_real_,
     parturition_rate = NA_real_,
-    wkg = NA_real_,
-    ckg = NA_real_,
-    afc = NA_real_
+    weaning_weight = NA_real_,
+    birth_weight = NA_real_,
+    age_first_parturition = NA_real_
 ) {
   # Validate inputs
   validate_nitrogen_retention_inputs(
-    animal, cohort, milk_protein, milk_yield,
-    dwg, fibre_prod, litsize, parturition_rate,
-    wkg, ckg, afc
+    species_short, cohort_short, milk_protein_fraction, milk_yield_day,
+    daily_weight_gain, fibre_yield_year, litter_size, parturition_rate,
+    weaning_weight, birth_weight, age_first_parturition
   )
 
-  if (animal %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
-    tissue_n <- ifelse(animal %in% c("CTL", "BFL"), 0.0326, 0.026)
-    milk_n <- milk_protein / 6.25
+  if (species_short %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
+    tissue_n <- ifelse(species_short %in% c("CTL", "BFL"), 0.0326, 0.026)
+    milk_n <- milk_protein_fraction / 6.25
     fibre_n <- 0.134
 
-    milk_comp <- if (!is.na(milk_yield) && cohort == "FA" && milk_yield > 0) milk_yield * milk_n else 0
-    growth_comp <- if (!is.na(dwg) && dwg > 0) dwg * tissue_n else 0
-    fibre_comp <- if (!is.na(fibre_prod) &&  cohort %in% c("FA", "FS", "MA", "MS") && animal %in% c("SHP", "GTS", "CML") && fibre_prod > 0) fibre_prod / 365 * fibre_n else 0
+    milk_comp <- if (!is.na(milk_yield_day) && cohort_short == "FA" && milk_yield_day > 0) milk_yield_day * milk_n else 0
+    growth_comp <- if (!is.na(daily_weight_gain) && daily_weight_gain > 0) daily_weight_gain * tissue_n else 0
+    fibre_comp <- if (!is.na(fibre_yield_year) && cohort_short %in% c("FA", "FS", "MA", "MS") && species_short %in% c("SHP", "GTS", "CML") && fibre_yield_year > 0) fibre_yield_year / 365 * fibre_n else 0
 
     return(milk_comp + growth_comp + fibre_comp)
 
-  } else if (animal == "PGS") {
-    if (cohort == "FA") {
+  } else if (species_short == "PGS") {
+    if (cohort_short == "FA") {
       return(
-        (0.025 * litsize * parturition_rate * (wkg - ckg) / 0.98 +
-           0.025 * litsize * parturition_rate * ckg) / 365
+        (0.025 * litter_size * parturition_rate * (weaning_weight - birth_weight) / 0.98 +
+           0.025 * litter_size * parturition_rate * birth_weight) / 365
       )
-    } else if (cohort == "FS") {
+    } else if (cohort_short == "FS") {
       return(
-        0.025 * dwg +
-          (365 / afc) * (
-            (0.025 * litsize * parturition_rate * (wkg - ckg) / 0.98 +
-               0.025 * litsize * parturition_rate * ckg) / 365
+        0.025 * daily_weight_gain +
+          (365 / age_first_parturition) * (
+            (0.025 * litter_size * parturition_rate * (weaning_weight - birth_weight) / 0.98 +
+               0.025 * litter_size * parturition_rate * birth_weight) / 365
           )
       )
     } else {
-      return(0.025 * dwg)
+      return(0.025 * daily_weight_gain)
     }
 
-  } else if (animal == "CHK") {
+  } else if (species_short == "CHK") {
     return(NA_real_)  # not implemented yet
   }
 }
 
 #' Compute Daily Nitrogen Excretion
-#' 
+#'
 #' Calculates daily nitrogen excretion per animal (kg N/head/day) as the difference between
 #' nitrogen intake and nitrogen retention.
 #'
@@ -194,7 +197,7 @@ compute_nitrogen_retention <- function(
 #' nitrous oxide \code{N₂O} emissions from manure management and agricultural soils.
 #' The approach follows the IPCC 2019 guidelines.
 #'
-#' @param animal Character. Code identifying the livestock species.
+#' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
@@ -204,26 +207,26 @@ compute_nitrogen_retention <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param n_intake Numeric. Daily nitrogen intake (kg N/head/day)
-#' @param n_retention Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)
+#' @param nitrogen_intake Numeric. Daily nitrogen intake (kg N/head/day).
+#' @param nitrogen_retention Numeric. Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day).
 #'
 #' @return Numeric. Daily nitrogen excretion (kg N/head/day).
-#' 
+#'
 #' @references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.31A.
-#' 
+#'
 #' @export
 compute_nitrogen_excretion <- function(
-    animal,
-    n_intake,
-    n_retention
+    species_short,
+    nitrogen_intake,
+    nitrogen_retention
 ) {
   # Validate inputs
-  validate_nitrogen_excretion_inputs(animal, n_intake, n_retention)
+  validate_nitrogen_excretion_inputs(species_short, nitrogen_intake, nitrogen_retention)
 
-  if (animal %in% c("CTL", "BFL", "CML", "GTS", "SHP", "PGS")) {
-    return(n_intake - n_retention)
+  if (species_short %in% c("CTL", "BFL", "CML", "GTS", "SHP", "PGS")) {
+    return(nitrogen_intake - nitrogen_retention)
   } else {
     return(NA_real_)
   }
