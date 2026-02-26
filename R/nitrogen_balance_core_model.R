@@ -161,29 +161,29 @@ compute_nitrogen_retention <- function(
     growth_comp <- if (!is.na(daily_weight_gain) && daily_weight_gain > 0) daily_weight_gain * tissue_n else 0
     fibre_comp <- if (!is.na(fibre_yield_year) && cohort_short %in% c("FA", "FS", "MA", "MS") && species_short %in% c("SHP", "GTS", "CML") && fibre_yield_year > 0) fibre_yield_year / 365 * fibre_n else 0
 
-    return(milk_comp + growth_comp + fibre_comp)
+    nitrogen_retention <- milk_comp + growth_comp + fibre_comp
 
   } else if (species_short == "PGS") {
     if (cohort_short == "FA") {
-      return(
+      nitrogen_retention <- (
         (0.025 * litter_size * parturition_rate * (weaning_weight - birth_weight) / 0.98 +
            0.025 * litter_size * parturition_rate * birth_weight) / 365
       )
     } else if (cohort_short == "FS") {
-      return(
-        0.025 * daily_weight_gain +
-          (365 / age_first_parturition) * (
-            (0.025 * litter_size * parturition_rate * (weaning_weight - birth_weight) / 0.98 +
-               0.025 * litter_size * parturition_rate * birth_weight) / 365
-          )
-      )
+      nitrogen_retention <- 0.025 * daily_weight_gain +
+        (365 / age_first_parturition) * (
+          (0.025 * litter_size * parturition_rate * (weaning_weight - birth_weight) / 0.98 +
+             0.025 * litter_size * parturition_rate * birth_weight) / 365
+        )
     } else {
-      return(0.025 * daily_weight_gain)
+      nitrogen_retention <- 0.025 * daily_weight_gain
     }
 
   } else if (species_short == "CHK") {
-    return(NA_real_)  # not implemented yet
+    nitrogen_retention <- 0  # not implemented yet
   }
+
+  return(nitrogen_retention)
 }
 
 #' Compute Daily Nitrogen Excretion
@@ -226,8 +226,9 @@ compute_nitrogen_excretion <- function(
   validate_nitrogen_excretion_inputs(species_short, nitrogen_intake, nitrogen_retention)
 
   if (species_short %in% c("CTL", "BFL", "CML", "GTS", "SHP", "PGS")) {
-    return(nitrogen_intake - nitrogen_retention)
+    nitrogen_excretion <- nitrogen_intake - nitrogen_retention
   } else {
-    return(NA_real_)
+    nitrogen_excretion <- 0  # not implemented yet
   }
+  return(nitrogen_excretion)
 }

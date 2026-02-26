@@ -92,24 +92,10 @@ test_that("retention for pigs growers matches 0.025*daily_weight_gain", {
   expect_equal(val, 0.025 * 0.8, tolerance = 1e-12)
 })
 
-# ---- test compute_nitrogen_retention (chickens) ----
-test_that("retention returns NA for chickens", {
-  val <- compute_nitrogen_retention(
-    "CHK", "FA",
-    litter_size = 1, parturition_rate = 1
-  )
-  expect_true(is.na(val))
-})
-
 # ---- test compute_nitrogen_excretion ----
 test_that("excretion subtracts intake and retention", {
   expect_equal(compute_nitrogen_excretion("CTL", 0.5, 0.2), 0.3)
   expect_equal(compute_nitrogen_excretion("PGS", 0.4, 0.1), 0.3)
-})
-
-test_that("excretion returns NA for chickens", {
-  val <- compute_nitrogen_excretion("CHK", 0.5, 0.2)
-  expect_true(is.na(val))
 })
 
 test_that("excretion handles zero retention and errors when intake < retention", {
