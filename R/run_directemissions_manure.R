@@ -6,7 +6,7 @@
 #'   input table with the following minimum data requirement:
 #'   \describe{
 #'   \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'   \item{cohort}{Character. Sex- and age-specific cohort code describing the
+#'   \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -27,7 +27,7 @@
 #'   with:
 #'   \describe{
 #'   \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'   \item{cohort}{Character. Sex- and age-specific cohort code describing the
+#'   \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -237,7 +237,8 @@
 run_directemissions_manure <- function(
     cohort_level_data,
     manure_management_system_fraction,
-    manure_management_system_factors
+    manure_management_system_factors,
+    show_indicator = TRUE
 ) {
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_directemissions_manure_inputs(
@@ -245,6 +246,11 @@ run_directemissions_manure <- function(
     manure_management_system_fraction = manure_management_system_fraction,
     manure_management_system_factors = manure_management_system_factors
   )
+
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Calculating direct emissions from manure management systems\u2026")
+  }
 
   # --- Step 2: Prepare inputs -------------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
@@ -300,8 +306,8 @@ run_directemissions_manure <- function(
     ) := {
       # Select MMS records for this herd/cohort (fractions + factors).
       current_herd_id <- herd_id
-      current_cohort <- cohort
-      mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
+      current_cohort <- cohort_short
+      mms_rows <- mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
 
       # Build the list expected by calc_ch4_emissions(...)
       mms_list <- build_mms_list(
@@ -336,8 +342,8 @@ run_directemissions_manure <- function(
     ) := {
       # Select MMS records for this herd/cohort (fractions + factors).
       current_herd_id <- herd_id
-      current_cohort <- cohort
-      mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
+      current_cohort <- cohort_short
+      mms_rows <- mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
 
       # Build the list expected by calc_direct_n2o_emissions(...)
       mms_list <- build_mms_list(mms_rows, c("manure_management_system_fraction", "n2o_ef3"))
@@ -368,8 +374,8 @@ run_directemissions_manure <- function(
     ) := {
       # Select MMS records for this herd/cohort (fractions + factors).
       current_herd_id <- herd_id
-      current_cohort <- cohort
-      mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
+      current_cohort <- cohort_short
+      mms_rows <- mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
 
       # Build the list expected by calc_n2o_from_volatilization(...)
       mms_list <- build_mms_list(
@@ -402,8 +408,8 @@ run_directemissions_manure <- function(
     ) := {
       # Select MMS records for this herd/cohort (fractions + factors).
       current_herd_id <- herd_id
-      current_cohort <- cohort
-      mms_rows <- mms_data[herd_id == current_herd_id & cohort == current_cohort]
+      current_cohort <- cohort_short
+      mms_rows <- mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
 
       # Build the list expected by calc_n2o_from_leaching(...)
       mms_list <- build_mms_list(
@@ -458,6 +464,12 @@ run_directemissions_manure <- function(
     },
     by = .I
   ]
+
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Direct emissions from manure management calculation complete.")
+  }
 
   return(cohort_level_data)
 }

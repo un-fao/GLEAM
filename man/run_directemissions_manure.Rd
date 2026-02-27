@@ -7,7 +7,8 @@
 run_directemissions_manure(
   cohort_level_data,
   manure_management_system_fraction,
-  manure_management_system_factors
+  manure_management_system_factors,
+  show_indicator = TRUE
 )
 }
 \arguments{
@@ -15,7 +16,7 @@ run_directemissions_manure(
 input table with the following minimum data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -36,7 +37,7 @@ production stage of the animals. Supported values include:
 with:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
