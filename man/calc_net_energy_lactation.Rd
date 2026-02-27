@@ -117,7 +117,7 @@ Species-specific values of \code{energy_milk} are:
 \item \code{CTL}, \code{BFL}: estimated as a function of milk fat content,
 \eqn{1.47 + 0.40 \times (milk\_fat\_fraction \times 100)} (NRC, 1989),
 \item \code{CML}: \eqn{4.063} (Wardeh, 2004),
-\item \code{SHP}: \eqn{4.6} (AFRC, 1993; AFRC, 1995),
+\item \code{SHP}: \eqn{4.6} (AFRC, 1993),
 \item \code{GTS}: \eqn{3.0} (AFRC, 1998).
 }
 
@@ -164,17 +164,11 @@ where:
 }
 }
 \references{
-AFRC (1998) \emph{The Nutrition of Goats. Wallingford: CAB International}.
-Animut G., Puchala R., Goetsch A.L., Patra A.K., Sahlu T., Varel V.H., Wells J.
-
-AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+AFRC (1998) \emph{The Nutrition of Goats.}
 CAB International, Wallingford, UK.
 
-AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.}
 CAB International, Wallingford, UK.
-
-AFRC (1990). \emph{Nutritive Requirements of Ruminant Animals: Energy.}
-Rep. 5. Wallingford, UK: CAB International.
 
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
 Chapter 10: Emissions from Livestock and Manure Management, Equation 10.8-10.10.
@@ -189,6 +183,6 @@ NRC (1989) \emph{Nutrient Requirements of Dairy Cattle},
 6th Ed. . Washington, D.C. U.S.A: National Academy Press.
 
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
-Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 }

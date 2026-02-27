@@ -1,27 +1,32 @@
+# GLEAM-X R Package
 
-# GLEAM R Package
+**Official R package of FAO's Global Livestock Environmental Assessment Model (GLEAM).**
 
-**Official R package of the FAO Global Livestock Environmental Assessment Model (GLEAM).**
-
-This package provides a complete, modular implementation of GLEAM for quantifying greenhouse gas emissions from livestock systems. It models herd structures, feed allocation, energy requirements, and emissions across countries, species, and production systems.
+This package provides a modular implementation of GLEAM to quantify environmental impacts from livestock agrifood systems. 
+The model simulates herd dynamics and quantifies key metrics, including animal-sourced food production, energy requirements and 
+feed intake, nitrogen balance, and greenhouse gas emissions from enteric fermentation, manure management, and upstream feed production.
+The package also allocates estimated emissions to major animal products and services. 
 
 ## Purpose
 
-The package supports the **official GLEAM workflow**, allowing users to:
+This package supports the sustainable transformation of livestock systems by enabling evidence-based decision-making through 
+a transparent and reproducible modeling framework.
 
-- Simulate steady-state herd dynamics by species, cohort, and production system
-- Estimate cohort-specific population sizes, offtake, and mortality
-- Compute liveweight development, durations, and daily weight gain
-- Allocate feed rations and calculate nutritional contributions per cohort
-- Estimate energy requirements for maintenance, growth, lactation, pregnancy, work, and fiber
-- Calculate dry matter intake and direct CH₄ emissions from enteric fermentation and manure
-- Output detailed results at the sex-age cohort level, structured by species, system, and country
+The **official GLEAM workflow** allows users to:
+
+- Simulate steady-state herd dynamics to disaggreate animal herds into age and sex-specific cohorts
+- Compute annual production of animal products and herd growth rate
+- Estimate animal energy requirements for maintenance, activity, growth, lactation, pregnancy, work, eggs, and fiber production
+- Compute nutritional contributions of user-defined feed rations per cohort
+- Estimate dry matter intake and nitrogen balance
+- Estimate methane (CH~4~) emissions from enteric fermentation
+- Estimate CH~4~ and nitrous oxide (N~2~O) emissions from manure management
+- Estimate carbon dioxide (CO~2~), CH~4~, and N~2~O emission related to the production, processing and transport of feed 
+- Allocate estimated emissions to major animal products and services
 
 ## Model Coverage
 
-- **Species**: Cattle, Buffalo, Sheep, Goats, Pigs, Chickens, Camels  
-- **Systems**: Based on GLEAM's production systems (e.g. grazing, mixed, industrial)  
-- **Emissions**: CH₄ (enteric + manure), N₂O (manure pathways), energy-related components  
+The model currently considers cattle, buffalo, camels, chicken, goats, pigs, and sheep.   
 
 ## Installation
 
@@ -37,11 +42,18 @@ devtools::install_git("https://github.com/APPLITICS/gleam.git")
 
 ## Help & Contact
 
-For documentation, internal guidance, or technical questions, please contact the GLEAM development team:
+We kindly ask users to inform us of your usage, as this helps us track the tool’s impact and guide future improvements. Please also get in touch with the GLEAM development team for  documentation, internal guidance, or technical questions. 
+
 
 - 📧 Info-GLEAM@fao.org
 - 🌐 [GLEAM Website](https://www.fao.org/gleam/en/)
 
+
 ## License
 
-This package is licensed under the MIT License.
+This package is licensed under the AGPL-3 license which permits free use, modification, and sharing of the software. Under AGPL-3.0, any modifications to the code must be made publicly available by creating a new branch on GitHub. The software cannot be relicensed under more restrictive terms without adhering to the AGPL-3.0 guidelines. Developers may anonymize or remove any sensitive or identifiable data (customizations) before resubmitting code. 
+
+## Acknowledgement
+
+The development of this package was supported by the German Federal Ministry of Agriculture, Food and Regional Identity.
+

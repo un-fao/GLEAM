@@ -80,7 +80,7 @@ over the assessment period to account for variation in management and grazing in
 
 \strong{Specific coefficients by species and cohort:}
 
-\strong{CTL, BFL} (NRC, 1996; AFRC, 1993; AFRC, 1995):
+\strong{CTL, BFL} (NRC, 1996; AFRC, 1993):
 \itemize{
 \item \code{low_activity_fraction}: \eqn{cact = 0.17}
 \item \code{high_activity_fraction}: \eqn{cact = 0.36}
@@ -89,12 +89,12 @@ over the assessment period to account for variation in management and grazing in
 \itemize{
 \item \code{all activity levels}: \eqn{cact = 0.1}
 }
-\strong{GTS} (AFRC, 1993; AFRC, 1995):
+\strong{GTS} (AFRC, 1993):
 \itemize{
 \item \code{low_activity_fraction}: \eqn{cact = 0.019}
 \item \code{high_activity_fraction}: \eqn{cact = 0.024}
 }
-\strong{SHP} (AFRC, 1993; AFRC, 1995):
+\strong{SHP} (AFRC, 1993):
 \itemize{
 \item \code{low_activity_fraction}: \eqn{cact = 0.0107}
 \item \code{high_activity_fraction}: \eqn{cact = 0.024}
@@ -111,7 +111,7 @@ NRC (1998). \emph{Nutrient Requirements of Swine},
 NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
 7th Revised Edition. National Academies Press, Washington, DC.
 
-AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
+AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.}
 CAB International, Wallingford, UK.
 
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
@@ -121,7 +121,7 @@ IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories
 from Livestock and Manure Management, Equation 10.4; Table 10.5.
 
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
-Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 }
 \seealso{
