@@ -90,7 +90,7 @@ computed consistent with the process described in the Technical paper
 from MPI (Ministry for Primary Industries (MPI), 2025), where nitrogen retention is calculated as the sum of:
 \itemize{
 \item nitrogen secreted in milk,
-\item nitrogen retained in liveweight gain (tissue),
+\item nitrogen retained in live weight gain (tissue),
 \item nitrogen retained in fibre (for fibre-producing species).
 }
 
@@ -114,30 +114,31 @@ The following constants are used:
 \itemize{
 \item \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS} and \code{CML}:
 derived from \code{milk_protein_fraction} using a protein-to-nitrogen conversion factor
-of \strong{6.25 kg milk protein/kg nitrogen}
+of \strong{6.25 kg protein/kg nitrogen}
 }
 }
 
 \strong{For PGS}
 
-Nitrogen retention is calculated following the IPCC 2019 equations
+Nitrogen retention is calculated following the IPCC (2019) Tier 2 equations
 for swine (Equations 10.33A and 10.33B).
 
 Nitrogen retention includes nitrogen retained in:
 \itemize{
-\item body growth,
+\item live weight gain (tissue),
 \item reproductive outputs (conceptus and weaned offspring).
 }
 
 In this implementation:
 \itemize{
-\item Nitrogen content of live weight gain:
+\item Nitrogen content of live weight gain is assumed to be
 \strong{\code{0.025} kg N/kg live weight}
-\item Protein digestibility fraction:
+\item Protein digestibility fraction is assumed to be
 \strong{ \code{0.98} (dimensionless)}
-\item Reproductive component for breeding cohorts:
-annual nitrogen retention in conceptus and weaned offspring
-converted to a daily equivalent.
+\item For breeding cohorts, the reproductive component is represented by
+annual nitrogen retention in conceptus and weaned offspring,
+expressed as a daily average by distributing the annual value uniformly
+over the year (365 days)
 }
 }
 \references{

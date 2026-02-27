@@ -15,7 +15,7 @@ compute_nitrogen_intake(dry_matter_intake, diet_nitrogen)
 Numeric. Daily nitrogen intake (kg N/head/day).
 }
 \description{
-Calculates the daily nitrogen intake per head (kg N/head/day) as the product of dry matter
+Calculates the daily nitrogen intake per head (kg N/head/day) as the product of feed dry matter
 intake (DMI) and diet nitrogen content.
 }
 \details{
