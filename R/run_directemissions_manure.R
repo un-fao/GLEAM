@@ -108,6 +108,9 @@
 #'     }
 #'   }
 #'
+#' @param show_indicator Logical. Whether to display progress indicators during
+#'   the calculation. Defaults to \code{TRUE}.
+#'
 #' @return cohort_level_data data.table. Input cohort table with added manure
 #'   emissions columns:
 #'   \describe{

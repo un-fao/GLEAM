@@ -117,6 +117,9 @@ dimensionless fraction (0–1). Default values are provided in Table 10.22
 of IPCC Guidelines (IPCC 2006, 2019).
 }
 }}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during
+the calculation. Defaults to \code{TRUE}.}
 }
 \value{
 cohort_level_data data.table. Input cohort table with added manure

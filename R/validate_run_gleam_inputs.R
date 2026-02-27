@@ -2,7 +2,8 @@
 #'
 #' Validates \code{has_herd_structure} (boolean), requires direct input tables
 #' (\code{cohort_level_data}, \code{herd_level_data}, \code{feed_rations},
-#' \code{feed_params}), and ensures cohort/herd/feed_rations share the same
+#' \code{feed_params}, \code{manure_management_system_fraction},
+#' \code{manure_management_system_factors}), and ensures all inputs share the same
 #' \code{herd_id} set. Ensures input tables do not contain columns that GLEAM
 #' calculates internally (e.g. \code{cohort_stock_size}, \code{daily_weight_gain}).
 #' Schema checks for cohort/herd data are done in the respective run_* functions.
@@ -13,6 +14,9 @@
 #' @param herd_level_data data.table. Herd-level master table.
 #' @param feed_rations data.table. Feed ration shares by cohort.
 #' @param feed_params data.table. Feed nutritional parameters.
+#' @param manure_management_system_fraction data.table. Cohort-level manure
+#'   management system fractions.
+#' @param manure_management_system_factors data.table. manure management system factors.
 #'
 #' @noRd
 validate_run_gleam_inputs <- function(
@@ -20,7 +24,9 @@ validate_run_gleam_inputs <- function(
     cohort_level_data,
     herd_level_data,
     feed_rations,
-    feed_params
+    feed_params,
+    manure_management_system_fraction,
+    manure_management_system_factors
 ) {
 
   # --- has_herd_structure: must be a single boolean ---------------------------
@@ -48,6 +54,12 @@ validate_run_gleam_inputs <- function(
   if (is.null(feed_params) || !is.data.frame(feed_params)) {
     cli::cli_abort("{.arg feed_params} must be a data frame (e.g. data.table).")
   }
+  if (is.null(manure_management_system_fraction) || !is.data.frame(manure_management_system_fraction)) {
+    cli::cli_abort("{.arg manure_management_system_fraction} must be a data frame (e.g. data.table).")
+  }
+  if (is.null(manure_management_system_factors) || !is.data.frame(manure_management_system_factors)) {
+    cli::cli_abort("{.arg manure_management_system_factors} must be a data frame (e.g. data.table).")
+  }
 
   # --- Block calculated (intermediate) variables in input tables ---------------
   # Columns that GLEAM computes; users must not provide them as inputs.
@@ -71,7 +83,18 @@ validate_run_gleam_inputs <- function(
     # Nitrogen balance (cohort)
     "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion",
     # Enteric direct emissions (cohort)
-    "ch4_conversion_factor_ym", "ch4_enteric"
+    "ch4_conversion_factor_ym", "ch4_enteric",
+    # Manure direct emissions (cohort)
+    "volatile_solids",
+    "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other", "ch4_manure_all_noburn",
+    "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
+    "n2o_manure_all_noburn_direct",
+    "n2o_vol_manure_pasture", "n2o_vol_manure_burned", "n2o_vol_manure_other",
+    "n2o_vol_manure_all_noburn",
+    "n2o_leach_manure_pasture", "n2o_leach_manure_burned", "n2o_leach_manure_other",
+    "n2o_leach_manure_all_noburn",
+    "n2o_manure_pasture_indirect", "n2o_manure_burned_indirect", "n2o_manure_other_indirect",
+    "n2o_manure_pasture_total", "n2o_manure_burned_total", "n2o_manure_other_total"
   )
   # When has_herd_structure is TRUE, the provided herd structure should structure inputs.
   cohort_blocklist <- if (has_herd_structure) {
@@ -97,6 +120,8 @@ validate_run_gleam_inputs <- function(
   check_no_calculated_columns(cohort_level_data, "cohort_level_data", blocklist = cohort_blocklist)
   check_no_calculated_columns(herd_level_data, "herd_level_data")
   check_no_calculated_columns(feed_rations, "feed_rations")
+  check_no_calculated_columns(manure_management_system_fraction, "manure_management_system_fraction")
+  check_no_calculated_columns(manure_management_system_factors, "manure_management_system_factors")
 
   # --- Herd ID consistency: same length and content across all inputs ---------
   # Helper: extract sorted unique herd_id from a table, or NULL if missing/empty.
@@ -120,6 +145,16 @@ validate_run_gleam_inputs <- function(
   # Weights and feed inputs
   herd_ids_feed <- unique_herd_ids(feed_rations)
   if (!is.null(herd_ids_feed)) herd_id_sets[["feed_rations"]] <- herd_ids_feed
+
+  herd_ids_mms_fraction <- unique_herd_ids(manure_management_system_fraction)
+  if (!is.null(herd_ids_mms_fraction)) {
+    herd_id_sets[["manure_management_system_fraction"]] <- herd_ids_mms_fraction
+  }
+
+  herd_ids_mms_factors <- unique_herd_ids(manure_management_system_factors)
+  if (!is.null(herd_ids_mms_factors)) {
+    herd_id_sets[["manure_management_system_factors"]] <- herd_ids_mms_factors
+  }
 
   # At least one input must supply a non-empty herd_id set.
   if (length(herd_id_sets) == 0L) {

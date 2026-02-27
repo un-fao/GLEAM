@@ -98,6 +98,10 @@ utils::globalVariables(c(
   "species_short", "cohort_short", "milk_protein_fraction", "milk_yield_day",
   "fibre_yield_year", "litter_size", "parturition_rate", "weaning_weight",
   "birth_weight", "age_first_parturition",
+  # data.table join prefixes used in run_nitrogen_balance
+  "x.species_short", "x.milk_protein_fraction", "x.milk_yield_day",
+  "x.fibre_yield_year", "x.litter_size", "x.parturition_rate",
+  "x.weaning_weight", "x.birth_weight", "x.age_first_parturition",
   "Item_Name", "dmi", "milk_yield",
   # Columns used in run_production_cohort
   "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",
