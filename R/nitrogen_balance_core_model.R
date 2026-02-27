@@ -142,13 +142,16 @@ compute_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
 #' In this implementation:
 #' \itemize{
 #'   \item Nitrogen content of live weight gain is assumed to be
-#'     \strong{\code{0.025} kg N/kg live weight}
+#'     \strong{\code{0.025} kg N/kg live weight}.
 #'   \item Protein digestibility fraction is assumed to be
-#'    \strong{ \code{0.98} (dimensionless)}
+#'    \strong{ \code{0.98} (dimensionless)}.
 #'   \item For breeding cohorts, the reproductive component is represented by 
 #'     annual nitrogen retention in conceptus and weaned offspring,
 #'     expressed as a daily average by distributing the annual value uniformly 
-#'     over the year (365 days)
+#'     over the year (365 days). 
+#'   \item A constant factor of \strong{ \code{0.806} (dimensionless)} 
+#'     is applied to piglets' live weight gain to correct for their higher nitrogen 
+#'     content per unit of live weight gain, following IPCC (2019).  
 #' }
 #'
 #'@references
