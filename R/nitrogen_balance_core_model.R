@@ -1,19 +1,31 @@
 #' Compute Daily Nitrogen Intake
 #'
-#' Calculates the daily nitrogen intake per head as the product of dry matter
-#' intake (DMI) and diet nitrogen content. The approach follows the Tier 2 IPCC
-#' guidelines (IPCC 2006, 2019).
+#' Calculates the daily nitrogen intake per head (kg N/head/day) as the product of dry matter
+#' intake (DMI) and diet nitrogen content. 
 #'
-#' @param dry_matter_intake Numeric. Daily dry matter intake of feed (kg DM/head/day).
+#' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #' @param diet_nitrogen Numeric. Average nitrogen content of diet (kg N/kg DM).
 #'
 #' @return Numeric. Daily nitrogen intake (kg N/head/day).
+#' 
+#' @details
+#' This approach follows the IPCC Tier 2 approach and estimates \code{dry_matter_intake}  as follows:
+#'
+#' \eqn{nitrogen\_intake = dry\_matter\_intake \times diet\_nitrogen}
+#' 
+#' @seealso
+#' \code{\link{calc_dry_matter_intake}}, 
+#' \code{\link{run_energy_requirements}},
+#' \code{\link{calc_diet_nitrogen_content}}, 
+#' \code{\link{run_feed_rations}}
 #'
 #' @references
-#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, 
+#' Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.32.
 #'
-#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, 
+#' Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.32.
 #'
 #' @export
@@ -28,10 +40,9 @@ compute_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
 
 #' Compute Daily Nitrogen Retention
 #'
-#' Calculates daily nitrogen retention per animal by species and cohort.
+#' Calculates daily nitrogen retention per animal by species and cohort (kg N/head/day).
 #' Nitrogen retention represents the portion of consumed nitrogen that is
 #' incorporated into animal products or body tissues.
-#' The approach follows the Tier 2 IPCC guidelines (IPCC 2006, 2019).
 #'
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
@@ -53,52 +64,69 @@ compute_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param milk_protein_fraction Numeric. Milk protein fraction (kg protein / kg milk).
-#' @param milk_yield_day Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.
-#' @param daily_weight_gain Numeric. Average daily live weight gain of the cohort over the cohort stage (kg/head/day).
-#' @param fibre_yield_year Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
-#' @param litter_size Numeric. Average number of offspring born per parturition. This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
-#' @param parturition_rate Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.
+#' @param milk_protein_fraction Numeric. Milk protein fraction (kg protein / kg milk). 
+#' Required only for species = CML, CTL, BFL, SHP, and GTS.
+#' @param milk_yield_day Numeric. Average milk yield per milk-producing animal during 
+#' the assessment duration (kg/head/day). This value is calculated as the total quantity 
+#' of milk produced for human consumption by milk-producing animals during the assessment period, 
+#' divided by the number of milk-producing animals, and the length of the assessment period (days). 
+#' Required only for species = CML, CTL, BFL, SHP, and GTS.
+#' @param daily_weight_gain Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).
+#' @param fibre_yield_year Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year). 
+#' Required only for species = CML, SHP, and GTS.
+#' @param litter_size Numeric. Average number of offspring born per parturition (# offsprings/parturition). 
+#' This value can be calculated as the total number of offspring born divided
+#' by the total number of parturitions during the year.
+#' @param parturition_rate Numeric. Average annual number of parturitions per
+#' female animal (# parturitions/adult female/year).
+#' A herd-level reproductive performance indicator calculated as the total
+#' number of parturitions (deliveries) occurring during
+#' a year divided by the number of adult females potentially able to give birth during that year.
 #' @param weaning_weight Numeric. Live weight of the animal at weaning (kg).
 #' @param birth_weight Numeric. Live weight of the animal at birth (kg).
 #' @param age_first_parturition Numeric. Age at first parturition for female breeding animals (days).
 #'
-#' @return Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)
+#' @return Numeric. Daily nitrogen retention in animal body tissues and products
+#' (e.g., growth, pregnancy, milk...) (kg N/head/day)
 #'
 #' @details
-#' Species-specific calculations are performed.
+#' Species-specific nitrogen retention calculations are applied.
 #'
-#' \strong{For CTL, BFL, SHP, GTS and CML}
+#' \strong{For CTL, BFL, SHP, GTS, and CML}:
 #'
 #' Nitrogen retained in products and tissues is
 #' computed consistent with the process described in the Technical paper
-#' from MPI (Ministry for Primary Industries (MPI), 2025).
-#'
-#' Nitrogen retention is calculated as the sum of:
+#' from MPI (Ministry for Primary Industries (MPI), 2025), where nitrogen retention is calculated as the sum of:
 #' \itemize{
 #'   \item nitrogen secreted in milk,
 #'   \item nitrogen retained in liveweight gain (tissue),
 #'   \item nitrogen retained in fibre (for fibre-producing species).
 #' }
 #'
-#' Coefficients for nitrogen content of deposited tissue, fibre, and milk are
-#' derived from Chapter 5 (Nitrogen excretion) of the MPI inventory methodology.
+#' Coefficients for nitrogen content of deposited tissue, fibre, and milk
+#' are derived from Chapter 5 (Nitrogen Excretion) of the MPI Technical paper.
 #'
 #' The following constants are used:
 #' \itemize{
-#'   \item \strong{Tissue nitrogen content (\code{tissue_n})}:
+#'   \item \strong{Tissue nitrogen content (\code{tissue_n})}
 #'     \itemize{
-#'       \item Cattle (\code{CTL}, \code{BFL}): \strong{0.0326 kg N per kg live weight}
-#'       \item Sheep (\code{SHP}), goats (\code{GTS}) and camelids (\code{CML}):
-#'       \strong{0.026 kg N per kg live weight}
+#'       \item \code{CTL} and \code{BFL}: \strong{0.0326 kg N/kg live weight}
+#'       \item \code{SHP}, \code{GTS} and \code{CML}:
+#'         \strong{0.026 kg N/kg live weight}
 #'     }
-#'   \item \strong{Fibre nitrogen content (\code{fibre_n})}:
-#'   \strong{0.134 kg N per kg fibre}
+#'   \item \strong{Fibre nitrogen content (\code{fibre_n})}
+#'     \itemize{
+#'       \item \code{SHP}, \code{GTS} and \code{CML}:
+#'       \strong{0.134 kg N/kg fibre}
+#'      } 
 #'   \item \strong{Milk nitrogen content (\code{milk_n})}:
-#'   Milk nitrogen is derived from milk protein using a protein-to-nitrogen
-#'   conversion factor of \strong{6.25}
-#' }
-#'
+#'     \itemize{
+#'       \item \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS} and \code{CML}:
+#'     derived from \code{milk_protein_fraction} using a protein-to-nitrogen conversion factor
+#'     of \strong{6.25 kg milk protein/kg nitrogen}
+#'     }
+#'     }
+#' 
 #' \strong{For PGS}
 #'
 #' Nitrogen retention is calculated following the IPCC 2019 equations
@@ -110,13 +138,15 @@ compute_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
 #'   \item reproductive outputs (conceptus and weaned offspring).
 #' }
 #'
-#' Calculations are expressed on a daily basis. In this implementation:
+#' In this implementation:
 #' \itemize{
-#'   \item \code{0.025} represents the nitrogen content of liveweight gain
-#'   (kg N per kg gain),
-#'   \item \code{0.98} is the protein digestibility fraction,
-#'   \item breeding cohorts include an annual reproductive component that is
-#'   converted to a daily rate.
+#'   \item Nitrogen content of live weight gain:
+#'     \strong{\code{0.025} kg N/kg live weight}
+#'   \item Protein digestibility fraction:
+#'    \strong{ \code{0.98} (dimensionless)}
+#'   \item Reproductive component for breeding cohorts:
+#'     annual nitrogen retention in conceptus and weaned offspring
+#'     converted to a daily equivalent.
 #' }
 #'
 #'@references
@@ -125,7 +155,8 @@ compute_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
 #' Methodology for calculation of New Zealand’s agricultural greenhouse gas emissions}
 #' (Version 11). MPI Technical Paper, Wellington, New Zealand. Chapter 5.
 #'
-#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National
+#' Greenhouse Gas Inventories}, Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.33A, 10.33B.
 #'
 #' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
@@ -157,9 +188,21 @@ compute_nitrogen_retention <- function(
     milk_n <- milk_protein_fraction / 6.25
     fibre_n <- 0.134
 
-    milk_comp <- if (!is.na(milk_yield_day) && cohort_short == "FA" && milk_yield_day > 0) milk_yield_day * milk_n else 0
+    milk_comp <- if (!is.na(milk_yield_day) &&
+      cohort_short == "FA" && milk_yield_day > 0) {
+      milk_yield_day * milk_n
+    } else {
+      0
+    }
     growth_comp <- if (!is.na(daily_weight_gain) && daily_weight_gain > 0) daily_weight_gain * tissue_n else 0
-    fibre_comp <- if (!is.na(fibre_yield_year) && cohort_short %in% c("FA", "FS", "MA", "MS") && species_short %in% c("SHP", "GTS", "CML") && fibre_yield_year > 0) fibre_yield_year / 365 * fibre_n else 0
+    fibre_comp <- if (!is.na(fibre_yield_year) &&
+      cohort_short %in% c("FA", "FS", "MA", "MS") &&
+      species_short %in% c("SHP", "GTS", "CML") &&
+      fibre_yield_year > 0) {
+      fibre_yield_year / 365 * fibre_n
+    } else {
+      0
+    }
 
     nitrogen_retention <- milk_comp + growth_comp + fibre_comp
 
@@ -191,12 +234,6 @@ compute_nitrogen_retention <- function(
 #' Calculates daily nitrogen excretion per animal (kg N/head/day) as the difference between
 #' nitrogen intake and nitrogen retention.
 #'
-#' Nitrogen excretion represents the fraction of consumed nitrogen that is not
-#' retained in animal products or body tissues and is therefore excreted in urine
-#' and dung. This quantity forms the basis for subsequent calculations of
-#' nitrous oxide \code{N₂O} emissions from manure management and agricultural soils.
-#' The approach follows the IPCC 2019 guidelines.
-#'
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
@@ -208,13 +245,35 @@ compute_nitrogen_retention <- function(
 #'     \item \code{GTS}: goats
 #'   }
 #' @param nitrogen_intake Numeric. Daily nitrogen intake (kg N/head/day).
-#' @param nitrogen_retention Numeric. Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day).
+#' @param nitrogen_retention Numeric. Daily nitrogen retention in animal body
+#' tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day).
 #'
 #' @return Numeric. Daily nitrogen excretion (kg N/head/day).
+#' 
+#' @details
+#' Nitrogen excretion represents the fraction of consumed nitrogen that is not
+#' retained in animal tissues or products and is therefore excreted in urine
+#' and dung.
+#'
+#' Nitrogen excretion is calculated as:
+#'
+#' \eqn{nitrogen\_excretion = nitrogen\_intake - nitrogen\_retention}
+#'
+#' where all quantities are expressed in kg N/head/day.
+#'
+#' This quantity forms the basis for subsequent calculations of nitrous oxide
+#' (N₂O) emissions from manure management under
+#' the IPCC Tier 2 methodology.
+#' 
 #'
 #' @references
-#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+#' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National
+#' Greenhouse Gas Inventories}, Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.31A.
+#'
+#' @seealso
+#' \code{\link{compute_nitrogen_intake}}, 
+#' \code{\link{compute_nitrogen_retention}}
 #'
 #' @export
 compute_nitrogen_excretion <- function(
