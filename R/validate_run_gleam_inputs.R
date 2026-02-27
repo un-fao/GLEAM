@@ -68,6 +68,8 @@ validate_run_gleam_inputs <- function(
     "net_energy_maintenance_digestible_energy_ratio",
     "net_energy_growth_digestible_energy_ratio",
     "energy_requirement_total", "dry_matter_intake",
+    # Nitrogen balance (cohort)
+    "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion",
     # Enteric direct emissions (cohort)
     "ch4_conversion_factor_ym", "ch4_enteric"
   )

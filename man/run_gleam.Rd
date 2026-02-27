@@ -40,8 +40,8 @@ modules executed within this pipeline call.
 \description{
 Runs the core sequence of model modules to generate cohort-level outputs for a
 livestock production system: herd simulation (optional), weights, feed rations,
-energy requirements and DMI, and enteric methane direct emissions. Accepts
-primary inputs only: one cohort-level master table, one herd-level master table,
+energy requirements and DMI, enteric methane direct emissions, and nitrogen balance.
+Accepts primary inputs only: one cohort-level master table, one herd-level master table,
 feed rations and feed parameters.
 }
 \examples{

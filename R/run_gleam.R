@@ -2,8 +2,8 @@
 #'
 #' Runs the core sequence of model modules to generate cohort-level outputs for a
 #' livestock production system: herd simulation (optional), weights, feed rations,
-#' energy requirements and DMI, and enteric methane direct emissions. Accepts
-#' primary inputs only: one cohort-level master table, one herd-level master table,
+#' energy requirements and DMI, enteric methane direct emissions, and nitrogen balance.
+#' Accepts primary inputs only: one cohort-level master table, one herd-level master table,
 #' feed rations and feed parameters.
 #'
 #' @param has_herd_structure Logical. If TRUE, use \code{cohort_level_data} directly
@@ -146,10 +146,17 @@ run_gleam <- function(
     show_indicator = show_indicator
   )
 
-  # --- Step 6: Run enteric methane direct emissions ----------------------------
+  # --- Step 6: Run enteric methane direct emissions ---------------------------
   # ch4_mitigation_factor is optional cohort-level input
   gleam_chrt_data <- run_directemissions_enteric(
     data = gleam_chrt_data,
+    show_indicator = show_indicator
+  )
+
+  # --- Step 7: Run nitrogen balance -------------------------------------------
+  gleam_chrt_data <- run_nitrogen_balance(
+    cohort_level_data = gleam_chrt_data,
+    herd_level_data = herd_level_data,
     show_indicator = show_indicator
   )
 
