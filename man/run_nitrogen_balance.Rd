@@ -23,6 +23,7 @@ Supported values include:
 \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 \item{diet_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 }}
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with
@@ -61,7 +62,7 @@ number of parturitions (deliveries) occurring during
 a year divided by the number of adult females potentially able to give birth during that year.}
 \item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
 \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
-\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
+\item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 }}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during simulation.

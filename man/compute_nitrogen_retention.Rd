@@ -15,7 +15,8 @@ compute_nitrogen_retention(
   parturition_rate = NA_real_,
   weaning_weight = NA_real_,
   birth_weight = NA_real_,
-  age_first_parturition = NA_real_
+  pregnancy_duration = NA_real_,
+  cohort_duration_days = NA_real_
 )
 }
 \arguments{
@@ -69,7 +70,9 @@ a year divided by the number of adult females potentially able to give birth dur
 
 \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
 
-\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
+\item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
+
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 }
 \value{
 Numeric. Daily nitrogen retention in animal body tissues and products

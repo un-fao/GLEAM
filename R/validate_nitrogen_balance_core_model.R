@@ -20,7 +20,8 @@ validate_nitrogen_retention_inputs <- function(
     parturition_rate = NA_real_,
     weaning_weight = NA_real_,
     birth_weight = NA_real_,
-    age_first_parturition = NA_real_
+    pregnancy_duration = NA_real_,
+    cohort_duration_days = NA_real_
 ) {
   # Character inputs
   validate_scalar_character(species_short, "species_short")
@@ -53,7 +54,7 @@ validate_nitrogen_retention_inputs <- function(
       validate_param_range(birth_weight, "birth_weight")
     } else if (cohort_short == "FS") {
       validate_param_range(daily_weight_gain, "daily_weight_gain")
-      validate_param_range(age_first_parturition, "age_first_parturition")
+      validate_param_range(cohort_duration_days, "cohort_duration_days")
       validate_param_range(litter_size, "litter_size")
       validate_param_range(parturition_rate, "parturition_rate")
       validate_param_range(weaning_weight, "weaning_weight")

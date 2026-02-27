@@ -62,32 +62,43 @@ test_that("retention for sheep with only fibre is positive", {
   expect_gt(val, 0)
 })
 
-# ---- test compute_nitrogen_retention (pigs AF) ----
-test_that("retention for pigs FA cohort is positive", {
+# ---- test compute_nitrogen_retention (pigs FA) ----
+test_that("retention for pigs FA cohort matches reproductive formula", {
   val <- compute_nitrogen_retention(
     "PGS", "FA",
     litter_size = 10, parturition_rate = 2,
-    weaning_weight = 30, birth_weight = 1, daily_weight_gain = 1
+    weaning_weight = 30, birth_weight = 1
   )
-  expect_gt(val, 0)
+
+  expected <- (
+    (0.025 * 10 * 2 * (30 - 1) / 0.98) +
+      (0.025 * 10 * 2 * 1)
+  ) / 365
+
+  expect_equal(val, expected, tolerance = 1e-12)
 })
 
 # ---- test compute_nitrogen_retention (pigs FS) ----
-test_that("retention for pigs FS cohort includes growth and reproductive", {
+test_that("retention for pigs FS cohort matches reproductive formula", {
   val <- compute_nitrogen_retention(
     "PGS", "FS",
     daily_weight_gain = 0.5,
     litter_size = 12, parturition_rate = 2.2,
-    weaning_weight = 20, birth_weight = 1, age_first_parturition = 365
+    weaning_weight = 20, birth_weight = 1,
+    pregnancy_duration = 115, cohort_duration_days = 200
   )
-  expect_gt(val, 0)
+
+  expected <- 0.025 * 0.5 +
+    (0.025 * 12 * (115 / 200) * 1 / 0.806) / 365
+
+  expect_equal(val, expected, tolerance = 1e-12)
 })
 
 # ---- test compute_nitrogen_retention (pigs growers) ----
 test_that("retention for pigs growers matches 0.025*daily_weight_gain", {
   val <- compute_nitrogen_retention(
     "PGS", "MS",
-    daily_weight_gain = 0.8, litter_size = 1, parturition_rate = 1
+    daily_weight_gain = 0.8
   )
   expect_equal(val, 0.025 * 0.8, tolerance = 1e-12)
 })

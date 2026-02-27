@@ -19,6 +19,7 @@
 #'     \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'     \item{diet_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 #'     \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
+#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 #'   }
 #' 
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with 
@@ -57,7 +58,7 @@
 #'     a year divided by the number of adult females potentially able to give birth during that year.}
 #'     \item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
-#'     \item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
+#'     \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 #'   } 
 #'   
 #' @param show_indicator Logical. Whether to display progress indicators during simulation.
@@ -162,7 +163,8 @@ run_nitrogen_balance <- function(
       parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
       weaning_weight = herd_level_data[.SD, on = "herd_id", x.weaning_weight],
       birth_weight = herd_level_data[.SD, on = "herd_id", x.birth_weight],
-      age_first_parturition = herd_level_data[.SD, on = "herd_id", x.age_first_parturition]
+      pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
+      cohort_duration_days = cohort_duration_days
     ),
     by = .I
   ]

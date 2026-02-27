@@ -84,7 +84,8 @@ compute_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
 #' a year divided by the number of adult females potentially able to give birth during that year.
 #' @param weaning_weight Numeric. Live weight of the animal at weaning (kg).
 #' @param birth_weight Numeric. Live weight of the animal at birth (kg).
-#' @param age_first_parturition Numeric. Age at first parturition for female breeding animals (days).
+#' @param pregnancy_duration Numeric. Duration of pregnancy period (days).
+#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days).
 #'
 #' @return Numeric. Daily nitrogen retention in animal body tissues and products
 #' (e.g., growth, pregnancy, milk...) (kg N/head/day)
@@ -175,13 +176,15 @@ compute_nitrogen_retention <- function(
     parturition_rate = NA_real_,
     weaning_weight = NA_real_,
     birth_weight = NA_real_,
-    age_first_parturition = NA_real_
+    pregnancy_duration = NA_real_,
+    cohort_duration_days = NA_real_
+    
 ) {
   # Validate inputs
   validate_nitrogen_retention_inputs(
     species_short, cohort_short, milk_protein_fraction, milk_yield_day,
     daily_weight_gain, fibre_yield_year, litter_size, parturition_rate,
-    weaning_weight, birth_weight, age_first_parturition
+    weaning_weight, birth_weight, pregnancy_duration, cohort_duration_days
   )
 
   if (species_short %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
@@ -215,10 +218,7 @@ compute_nitrogen_retention <- function(
       )
     } else if (cohort_short == "FS") {
       nitrogen_retention <- 0.025 * daily_weight_gain +
-        (365 / age_first_parturition) * (
-          (0.025 * litter_size * parturition_rate * (weaning_weight - birth_weight) / 0.98 +
-             0.025 * litter_size * parturition_rate * birth_weight) / 365
-        )
+            (0.025 * litter_size *  (pregnancy_duration / cohort_duration_days)  * birth_weight / 0.806) / 365
     } else {
       nitrogen_retention <- 0.025 * daily_weight_gain
     }
