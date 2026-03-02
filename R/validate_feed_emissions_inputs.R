@@ -74,7 +74,7 @@ validate_feed_indirect_emissions_inputs <- function(
   
   # --- Rations_share key uniqueness -------------------------------------------
   # Prevent duplicate feed lines within a herd/cohort (and animal).
-  # Expected grain: one row per feed per herd_id × animal × cohort_short.
+  # Expected grain: one row per feed per herd_id x animal x cohort_short.
   ration_scope <- c("herd_id", "animal", "cohort_short")
   
   # 1) feed_id must be unique within herd/animal/cohort
@@ -155,7 +155,7 @@ validate_feed_indirect_emissions_inputs <- function(
       cli::cli_abort(c(
         "{.arg feed_emissions$feed_name} must be unique.",
         "i" = "Duplicated feed_name(s): {.val {dup_feed_names}}",
-        "i" = "feed_name → feed_id mapping (first 10 names):",
+        "i" = "feed_name -> feed_id mapping (first 10 names):",
         "x" = paste(capture.output(print(preview)), collapse = "\n")
       ))
     }
