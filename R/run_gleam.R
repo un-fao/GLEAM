@@ -91,7 +91,7 @@ run_gleam <- function(
     show_indicator = TRUE
 ) {
 
-  # --- Step 1: Validate inputs -----------------------------------------------
+  # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_gleam_inputs(
     has_herd_structure = has_herd_structure,
     cohort_level_data = cohort_level_data,
@@ -146,7 +146,7 @@ run_gleam <- function(
     show_indicator = show_indicator
   )
 
-  # --- Step 6: Run enteric methane direct emissions ----------------------------
+  # --- Step 6: Run enteric methane direct emissions ---------------------------
   # ch4_mitigation_factor is optional cohort-level input
   gleam_chrt_data <- run_directemissions_enteric(
     cohort_level_data = gleam_chrt_data,
