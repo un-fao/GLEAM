@@ -54,6 +54,7 @@ validate_nitrogen_retention_inputs <- function(
       validate_param_range(birth_weight, "birth_weight")
     } else if (cohort_short == "FS") {
       validate_param_range(daily_weight_gain, "daily_weight_gain")
+      validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
       validate_param_range(cohort_duration_days, "cohort_duration_days")
       validate_param_range(litter_size, "litter_size")
       validate_param_range(parturition_rate, "parturition_rate")
