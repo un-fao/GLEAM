@@ -5,16 +5,16 @@
 \title{Calculate Energy for Maintenance}
 \usage{
 calc_net_energy_maintenance(
-  animal,
-  cohort,
-  average_weight,
-  milking_fraction = NA_real_,
+  species_short,
+  cohort_short,
+  live_weight_cohort_average,
+  lactating_females_fraction = NA_real_,
   offtake_rate = NA_real_,
-  afc = NA_real_
+  age_first_parturition = NA_real_
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -25,7 +25,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -36,42 +36,50 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{average_weight}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
+\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting
+for the share of offtaken animals within the cohort, using their slaughter weight, and the potential
+final weight of animals that remain in the cohort (kg).}
 
-\item{milking_fraction}{Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).}
+\item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction).
+Required only for species = CML, CTL, BFL, SHP, and GTS.}
 
-\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for
+each sex-age cohort (fraction).}
 
-\item{afc}{Numeric. Age at first parturition for female breeding animals (days)}
+\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days)}
 }
 \value{
-Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal
-in equilibrium such that body energy is neither gained nor lost.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for maintenance, defined as the amount of energy needed to
+keep the animal at equilibrium such that body energy is neither gained nor lost.
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
+CML and PGS (MJ/head/day).
 }
 \description{
-Computes the \strong{energy requirement for maintenance} (MJ/head/day).
-This approach follows the IPCC Tier 2 partitioning method, and applies this general equation:
-energy_maintenance = cmain * average_weight^0.75
-where cmain is a category-specific coefficient (MJ d^-1 kg^-1).
+Computes the energy requirement for maintenance by cohort (MJ/head/day),
+defined as the energy required to maintain basal physiological functions at equilibrium,
+with no net gain or loss of body energy.
 }
 \details{
-The maintenance coefficient \eqn{cmain} reflects basal metabolic requirements and differs
-by species, physiological status, and sex. For selected cohorts it is computed as a
-weighted average to account for:
+This approach follows the IPCC Tier 2 partitioning method and applies:
 
+\eqn{energy\_requirement\_maintenance = cmain \times average\_weight^{0.75}}
+
+where \eqn{cmain} is a category-specific coefficient (MJ/day/kg\eqn{^{0.75}}) that reflects
+basal metabolic requirements and varies by species, physiological status, and sex.
+
+For selected cohorts, \eqn{cmain} is computed as a weighted average to account for:
 \itemize{
-\item lactating vs. non-lactating females (CTL, BFL),
-\item intact vs. castrated males (CTL, BFL, SHP). Offtaken animals are assumed castrated,
-\item animals below vs. above one year of age (SHP).
+\item \code{CTL, BFL}: lactating vs. non-lactating females
+\item \code{CTL, BFL, SHP}: intact vs. castrated males - Offtaken animals assumed castrated
+\item \code{SHP}: animals below vs. above one year of age
 }
 
-\strong{Specific cofficients by species and cohort:}
+\strong{Specific coefficients by species and cohort:}
 
-\strong{CTL and BFL} (NRC, 1996; AFRC, 1993, 1995):
+\strong{CTL and BFL} (NRC, 1996; AFRC, 1993):
 \itemize{
 \item \code{FA}:
-\eqn{cmain = 0.386 \times milking\_fraction + 0.322 \times (1 - milking\_fraction)}
+\eqn{cmain = 0.386 \times lactating\_females\_fraction + 0.322 \times (1 - lactating\_females\_fraction)}
 \item \code{FS}, \code{FJ}, \code{MJ}:
 \eqn{cmain = 0.322}
 \item \code{MA}, \code{MS}:
@@ -84,33 +92,33 @@ weighted average to account for:
 \eqn{cmain = 0.435}
 }
 
-\strong{GTS} (AFRC, 1993, 1995):
+\strong{GTS} (AFRC, 1993):
 \itemize{
 \item All cohorts:
 \eqn{cmain = 0.315}
 }
 
-\strong{SHP} (AFRC, 1993, 1995):
+\strong{SHP} (AFRC, 1993):
 \itemize{
 \item \code{FA}:
 \eqn{cmain = 0.217}
 \item \code{FJ}:
 \eqn{cmain = 0.236}
 \item \code{FS}:
-\eqn{cmain = 0.236 \times (365/afc) + 0.217 \times ((afc - 365)/afc)}
+\eqn{cmain = 0.236 \times (365/age\_first\_parturition) +
+         0.217 \times ((age\_first\_parturition - 365)/age\_first\_parturition)}
 \item \code{MA}:
 \eqn{cmain = 0.217 \times offtake\_rate + (0.217 \times 1.15) \times (1 - offtake\_rate)}
 \item \code{MJ}:
 \eqn{cmain = 0.236 \times offtake\_rate + (0.236 \times 1.15) \times (1 - offtake\_rate)}
 \item \code{MS}:
-A weighted average of juvenile and adult male coefficients using \code{afc},
-with an additional intact-male adjustment (multiplied by 1.15) weighted by \code{offtake\_rate}.
+\eqn{cmain =
+      (0.217 \times offtake\_rate + (0.217 \times 1.15) \times (1 - offtake\_rate)) \times ((age\_first\_parturition - 365)/age\_first\_parturition) +
+      (0.236 \times offtake\_rate + (0.236 \times 1.15) \times (1 - offtake\_rate)) \times (365/age\_first\_parturition)}
 }
-
 \strong{PGS} (NRC, 1998):
 \itemize{
-\item All cohorts:
-\deqn{cmain = 0.4435}
+\item All cohorts: \eqn{cmain = 0.4435}
 }
 }
 \references{
@@ -120,19 +128,20 @@ NRC (1998). \emph{Nutrient Requirements of Swine},
 NRC (1996). \emph{Nutrient Requirements of Beef Cattle},
 7th Revised Edition. National Academies Press, Washington, DC.
 
-AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.}
 CAB International, Wallingford, UK.
 
-AFRC (1993). \emph{Energy and Protein Requirements of Ruminants}.
-CAB International, Wallingford, UK.
-
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National
+Greenhouse Gas Inventories}. Chapter 10: Emissions from
 Livestock and Manure Management, Equation 10.3; Table 10.4.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.3; Table 10.4.
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.3; Table 10.4.
 
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
-Journal of Camel Science. 2004;1:37–45. The Camel Applied Research and Development Network (CARDN),
+Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+}
+\seealso{
+\code{\link{calc_avg_weights}}
 }

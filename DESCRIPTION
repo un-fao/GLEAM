@@ -1,13 +1,81 @@
+Type: Package
 Package: gleam
-Title: GLEAM Herd Simulation and Livestock Dynamics
+Title: Global Livestock Environmental Assessment Model (GLEAM-X)
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: Implements steady-state herd simulation components used in the Global Livestock 
-    Environmental Assessment Model (GLEAM), including population structure, offtake 
-    flows, demographic transitions, and cohort-level weight metrics. Designed to be 
-    modular, testable, and integrated with downstream feed and emissions models.
-License: file LICENSE
+Authors@R: c(
+    person(given = "Ahmed",
+           family = "Jou",
+           email = "ahmed@applitics.fr",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0002-2309-4583", 
+                       "https://applitics.fr")),
+    person(given = "Yassine",
+           family = "Elaouni",
+           email = "yassine@applitics.fr",
+           role = c("aut"),
+           comment = "https://applitics.fr"),
+    person(given = "Dominik",
+           family = "Wisser",
+           email = "dominik.wisser@fao.org",
+           role = c("aut"),
+           comment = c(ORCID = "0000-0001-8368-3801",
+                       "GLEAM team lead, FAO")),
+    person(given = "Lydia",
+           family = "Lanzoni",
+           email = "lydia.lanzoni@fao.org",
+           role = c("aut"),
+           comment = c(ORCID = "0000-0002-4488-4368",
+           "Livestock and climate change specialist, FAO")),
+    person(given = "Giuseppe",
+           family = "Tempio",
+           email = "giuseppe.tempio@fao.org",
+           role = c("aut"),
+           comment = c(ORCID = "0009-0004-2272-0794",
+                        "Livestock environmental impact analyst, FAO")),
+    person(given = "Phyllis",
+           family = "Ndungu'",
+           email = "Phyllis.Ndungu@fao.org",
+           role = c("ctb"),
+           comment = "Livestock and climate change specialist, FAO"),
+    person(given = "Yushan",
+           family = "Li",
+           email = "Yushan.Li@fao.org",
+           role = c("ctb"),
+           comment = "Livestock and sustainability specialist, FAO"),
+    person(given = "Manling",
+           family = "Xu",
+           email = "Manling.Xu@fao.org",
+           role = c("ctb"),
+           comment = "Livestock data intern, FAO"),
+    person(given = "Zixin",
+           family = "Wang",
+           email = "Zixin.Wang@fao.org",
+           role = c("ctb"),
+           comment = "Livestock data intern, FAO"),
+    person(given = "Narindra",
+           family = "Rakotovao",
+           email = "Narindra.Rakotovao@fao.org",
+           role = c("ctb"),
+           comment = "Livestock policy officer, FAO"),
+    person(given = "Stewart",
+           family = "Chikoloma",
+           email = "Stewart.Chikomola@fao.org",
+           role = c("ctb"),
+           comment= "Livestock data specialist, FAO"),
+    person(given = "Food and Agriculture Organization of the United Nations",
+           family = "FAO",
+           role = c("cph"),
+           comment = "Original GLEAM model framework"),
+    person(given = "Federal Ministry of Agriculture, Food and Regional Identity of Germany",
+           family = "BMELH",
+           role = c( "fnd"),
+           comment = "Funding support"))
+Description: GLEAM-X is the official R implementation of FAO’s Global Livestock Environmental
+  Assessment Model (GLEAM). The package provides a modular, transparent framework for
+  simulating livestock production systems and quantifying their environmental impacts.
+License: AGPL-3
+URL: https://github.com/APPLITICS/gleam/, https://www.fao.org/gleam/en/
+BugReports: https://github.com/APPLITICS/gleam/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

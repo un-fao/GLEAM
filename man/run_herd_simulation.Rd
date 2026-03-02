@@ -7,18 +7,18 @@
 run_herd_simulation(
   cohort_level_data,
   herd_level_data,
-  initial_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
-  max_years = 100,
-  lambda_threshold = 1e-09,
+  initial_herd_structure = c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30),
+  max_simulation_years = 100,
+  min_lambda_change = 1e-09,
   show_indicator = TRUE,
-  assessment_duration = 365
+  simulation_duration = 365
 )
 }
 \arguments{
-\item{cohort_level_data}{A \code{data.table} with mandatory columns:
+\item{cohort_level_data}{A \code{data.table} with the one row per herd and cohort, and the following mandatory columns::
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{\code{cohort}}{"Character scalar. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+\item{\code{cohort_short}}{"Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -28,57 +28,50 @@ run_herd_simulation(
 \item \code{MJ}: juvenile males (from birth to weaning)
 }
 }
-\item{\code{duration}}{Numeric vector of legth 6. Amount of time that each animal spends in a specific cohort (days).}
+\item{\code{cohort_duration_days}}{Numeric vector of legth 6. Amount of time that each animal spends in a specific cohort (days).}
 \item{\code{offtake_rate}}{Numeric vector of legth 6. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
-\item{\code{mort_rate}}{Numeric vector of legth 6. Fraction of deaths in a herd over a year for each sex-age class (fraction).}
+\item{\code{death_rate}}{Numeric vector of legth 6. Fraction of deaths in a herd over a year for each sex-age cohort (fraction).}
 }}
 
-\item{herd_level_data}{A \code{data.table} with one row per herd and mandatory columns:
+\item{herd_level_data}{A \code{data.table} with one row per herd, and the following mandatory columns:
 \describe{
-\item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd. Must match \code{herd_id} values in \code{cohort_level_data}.}
-\item{\code{parturition_rate}}{Numeric. Average annual number of parturitions per female animal (# parturitions/reproductive female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
-\item{\code{litsize}}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
-\item{\code{female_birth_fraction}}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
-\item{\code{size_total}}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
+\item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{\code{parturition_rate}}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+\item{\code{litter_size}}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{\code{birth_fraction_female}}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
+\item{\code{herd_size_total}}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
 }}
 
-\item{initial_structure}{A named numeric vector of initial population values used to
-bootstrap the steady-state simulation. Must be named with cohort codes:
-\code{c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30)}. These values are used
-as starting points for the iterative simulation and do not affect the final steady-state
-results (only convergence speed).}
+\item{initial_herd_structure}{Named numeric vector of length 6. Initial number of individuals in each of the 6 sex-age cohorts used
+to bootstrap the steady-state simulation (# heads).These values are used as starting points for the iterative simulation and
+do not affect the final steady-state results (only convergence speed). Default is \code{c(FJ = 100, FS = 50, FA = 30, MJ = 100, MS = 50, MA = 30)}.}
 
-\item{max_years}{Integer. Maximum number of simulation years to run when seeking a
-steady-state population structure. The simulation will stop earlier if convergence
-is detected. Defaults to \code{100}.}
+\item{max_simulation_years}{Numeric. Maximum number of years to simulate (years). Defaults to \code{100}.}
 
-\item{lambda_threshold}{Numeric. Tolerance threshold for detecting convergence in
-population growth rate. When the change in growth rate (lambda) across consecutive
-time steps falls below this threshold for all cohorts, steady-state is considered
-reached. Defaults to \code{1e-9}.}
+\item{min_lambda_change}{Numeric. Convergence threshold for changes in cohort-specific growth rates of sex–age cohort proportions (lambda).
+Iterations of the herd simulation stop when the absolute change in lambda between successive iterations falls below this threshold. Defaults to \code{1e-9}.}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during simulation.
 Defaults to \code{TRUE}.}
 
-\item{assessment_duration}{Numeric. Length of the assessment period (days).}
+\item{simulation_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
 A named list with two elements:
 \describe{
-\item{\code{cohort_level_results}}{A \code{data.table} with one row per cohort containing all original
+\item{\code{cohort_level_results}}{A \code{data.table} with one row per herd and cohort containing all original
 \code{cohort_level_data} columns plus the following simulation results:
 \itemize{
-\item \code{size} - Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts (cohorts = (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})) (# heads).
-This corresponds to \code{size_start} returned by \code{\link{project_population_size}}, as it reflects the size of the population by cohort while preserving the total population size (\code{size_total}) provided in the inputs.
-\item \code{offtake_number} - Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (cohorts = (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})) (heads/year).
-\item \code{offtake_number_assessment} - Numeric vector of legth 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})) (heads/assessment period).
-\item \code{prob_growth} - Numeric vector of length 6. Probability of growing into the next age class for 6 cohorts (cohorts = (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})) (fraction).
+\item \code{cohort_stock_size} - Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts (# heads) (cohorts = (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})).
+This corresponds to \code{cohort_stock_start} returned by \code{\link{project_population_size}}, as it reflects the size of the population by cohort while preserving the total population size (\code{herd_size_total}) provided in the inputs.
+\item \code{offtake_heads} - Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
+\item \code{offtake_heads_assessment} - Numeric vector of legth 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
 }
 }
 \item{\code{herd_level_results}}{A \code{data.table} with one row per herd containing all original
 \code{herd_level_data} columns plus the following herd-level simulation results:
 \itemize{
-\item \code{growth_rate_pop} - Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).
+\item \code{growth_rate_herd} - Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).
 }
 }
 }
@@ -88,11 +81,13 @@ This function takes herd- and cohort-level demographic inputs and estimates a st
 sex–age herd structure compatible with downstream calculations in the Global Livestock
 Environmental Assessment Model (GLEAM). In addition to cohort population sizes, it derives
 population growth rates, and offtake numbers.
+The steady state is defined as a constant sex–age cohort structure over time,
+with population size potentially growing or declining at a constant rate.
 }
 \details{
 The function operates under a \strong{steady-state assumption}: demographic parameters
 are constant over time, so the population converges to a stable cohort composition and
-a constant annual growth rate (\eqn{\lambda}). Once this regime is reached, the model
+a constant annual growth rate. Once this regime is reached, the model
 computes cohort population sizes (start/end/average), cohort shares, and offtake totals.
 
 A key feature of this implementation is that it applies demography at a \strong{daily}
@@ -112,34 +107,35 @@ represented by six cohorts:
 }
 
 Only adult females (\code{FA}) contribute to reproduction. Births are distributed between
-females and males using \code{female_birth_fraction}. Reproduction is assumed to be
-distributed over time (no birth pulse).
+females and males using \code{birth_fraction_female}. Reproduction is assumed to be
+distributed over time (no birth pulse). Daily fecundity rates are computed in
+\code{\link{compute_fecundity_rates}}.
 }
 
 \subsection{Dynamics and parameters}{
 
 Herd dynamics result from:
 \itemize{
-\item births (driven by \code{parturition_rate} and \code{litsize})
-\item natural deaths (driven by \code{mort_rate})
+\item births (driven by \code{parturition_rate} and \code{litter_size})
+\item natural deaths (driven by \code{death_rate})
 \item removals by offtake (driven by \code{offtake_rate})
-\item cohort aging / growth transitions (driven by \code{duration})
+\item cohort aging / growth transitions (driven by \code{cohort_duration_days})
 }
 
 As in Dynmod, \code{offtake_rate} is interpreted as a \emph{net removal rate} for the cohort
-(e.g. slaughter), while \code{mort_rate} represents
+(e.g. slaughter), while \code{death_rate} represents
 natural mortality excluding offtake.
 }
 
 \subsection{Competing risks and conversion to daily probabilities}{
 
 Mortality and offtake are treated as \strong{competing risks} within each cohort: at any time an
-animal can survive, die, or be offtaken. Annual inputs are converted to daily hazards and then
-daily probabilities to avoid bias from interference between processes.
+animal can survive, die, or be offtaken.Annual inputs are converted to daily hazards and then
+daily transition probabilities in \code{\link{compute_transition_probabilities}}.
 
 Internally, the model:
 \enumerate{
-\item Converts annual mortality (\code{mort_rate}) into a daily mortality hazard.
+\item Converts annual mortality (\code{death_rate}) into a daily mortality hazard.
 \item Solves for the daily offtake hazard such that the implied offtake probability matches
 \code{offtake_rate} under competing risks.
 \item Computes daily probabilities of death, offtake, and survival from the hazards.
@@ -149,41 +145,43 @@ Internally, the model:
 \subsection{Steady state}{
 
 Under constant parameters, the cohort structure converges to a stable composition and a
-stable population growth rate (\eqn{\lambda}). This function seeks that steady state by
-iterating the demographic system starting from \code{initial_structure} until changes in
-\eqn{\lambda} fall below \code{lambda_threshold}, or until \code{max_years} is reached.
-
-Once steady state is reached, the model projects cohort sizes over the assessment period and
-returns:
-\itemize{
-\item cohort shares (\code{share})
-\item cohort sizes at start/end/average (\code{size}, \code{size_end}, \code{size_avg})
-\item cohort offtake totals (\code{offtake_number}) and assessment-scaled totals
-(\code{offtake_number_assessment})
-\item daily transition probabilities (\code{prob_death}, \code{prob_offtake}, \code{prob_survival},
-\code{prob_growth})
+stable population growth rate. This function seeks that steady state by
+iterating the demographic system (see \code{\link{simulate_steady_state_structure}}) starting from \code{initial_herd_structure} until changes
+in cohort-specific growth rates of sex–age cohort proportions (\eqn{\lambda}) fall below \code{min_lambda_change},
+or until \code{max_simulation_years} is reached.
 }
+
+\subsection{Projection of population size}{
+
+The steady-state solution obtained here provides:
+\itemize{
+\item cohort shares used to scale herd-level population sizes,
+\item a stable annual herd growth rate,
+\item internally consistent death, offtake, and survival probabilities.
+}
+
+These outputs are subsequently used to project one year of population dynamics
+(\code{\link{project_population_size}}) and to summarise annual offtake and stock variation
+(\code{\link{summarise_offtake}}).
 }
 }
 \examples{
 \dontrun{
-# Load example input data from the package
-cohort_path <- system.file(
-  "extdata/examples/herd_simulation_input_cohort_level_data.csv",
+# Load herd simulation inputs (cohort- and herd-level)
+herd_simulation_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/herd_simulation_input_chrt_data.csv",
   package = "gleam"
-)
-herd_level_path <- system.file(
-  "extdata/examples/herd_simulation_input_herd_level_data.csv",
+))
+herd_simulation_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/herd_simulation_input_hrd_data.csv",
   package = "gleam"
-)
-cohort_level_data <- data.table::fread(cohort_path)
-herd_level_data <- data.table::fread(herd_level_path)
+))
 
 # Run herd simulation
 results <- run_herd_simulation(
-  cohort_level_data = cohort_level_data,
-  herd_level_data = herd_level_data,
-  assessment_duration = 200
+  cohort_level_data = herd_simulation_chrt_dt,
+  herd_level_data = herd_simulation_hrd_dt,
+  simulation_duration = 200
 )
 
 # Access results
@@ -195,4 +193,11 @@ print(results$herd_level_results)
 \references{
 Lesnoff, M. (2013). \emph{DYNMOD: A spreadsheet interface for demographic projections of tropical
 livestock populations, User’s manual}. CIRAD, Montpellier, France.
+}
+\seealso{
+\code{\link{compute_fecundity_rates}},
+\code{\link{compute_transition_probabilities}},
+\code{\link{simulate_steady_state_structure}},
+\code{\link{project_population_size}},
+\code{\link{summarise_offtake}}
 }

@@ -4,27 +4,36 @@
 \alias{compute_transition_probabilities}
 \title{Compute Transition Probabilities for Sex-Age Classes}
 \usage{
-compute_transition_probabilities(duration, offtake_rate, mort_rate)
+compute_transition_probabilities(
+  cohort_duration_days,
+  offtake_rate,
+  death_rate
+)
 }
 \arguments{
-\item{duration}{Numeric vector of length 6. Duration (in days) of each sex-age class.}
+\item{cohort_duration_days}{Numeric vector of length 6. Amount of time that each animal spends in a specific cohort (days).}
 
-\item{offtake_rate}{Numeric vector of length 6. Annual offtake rate for each sex-age class.}
+\item{offtake_rate}{Numeric vector of length 6. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 
-\item{mort_rate}{Numeric vector of length 6. Annual death rate for each sex-age class.}
+\item{death_rate}{Numeric vector of length 6. Fraction of deaths in a herd over a year for each sex-age cohort (fraction)}
 }
 \value{
 A named list with:
 \describe{
-\item{hazard_death}{Instantaneous mortality hazard rate for 6 sex-age classes.}
-\item{hazard_offtake}{Instantaneous offtake hazard rate for 6 sex-age classes.}
-\item{prob_death}{Daily death probability for 10 cohorts.}
-\item{prob_offtake}{Daily offtake probability for 10 cohorts.}
-\item{prob_survival}{Daily survival probability for 10 cohorts.}
-\item{prob_growth}{Probability of growing into the next age class for 10 cohorts.}
+\item{hazard_death}{Numeric vector of length 6. Instantaneous mortality hazard rate for the 6 sex–age cohorts. Represents the  risk of death per unit time (day⁻¹) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
+\item{hazard_offtake}{Numeric vector of length 6. Instantaneous offtake hazard rate for the 6 sex-age cohorts. Represents the risk to leave the herd through planned removals per unit of time (day⁻¹) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
+\item{probability_death}{Named numeric vector of length 10. Probability of animal dying within the model time interval for 10 cohorts (fraction).
+(cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
+\item{probability_offtake}{Named numeric vector of length 10. Probability that an animal will be removed from the herd within the model time interval for 10 cohorts (fraction).
+(cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
+\item{probability_survival}{Named numeric vector of length 10. Probability that an animal remains alive in the herd within the model time interval for 10 cohorts (fraction).
+(cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
+\item{probability_growth}{Named numeric vector of length 10. Probability of growing into the next age class for 10 cohorts (fraction)
+(cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 }
 }
 \description{
 Calculates hazard rates and daily transition probabilities (death, offtake, survival, and growth)
-across 10 cohorts derived from 6 sex-age classes.
+across different sex-age cohorts. Converts annual inputs to daily hazards, then derives daily probabilities
+from those hazards.
 }

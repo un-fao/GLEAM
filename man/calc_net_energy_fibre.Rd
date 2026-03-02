@@ -4,10 +4,10 @@
 \alias{calc_net_energy_fibre}
 \title{Calculate Energy for Fibre Production}
 \usage{
-calc_net_energy_fibre(animal, cohort, fibre_prod)
+calc_net_energy_fibre(species_short, cohort_short, fibre_yield_year = NA_real_)
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -18,7 +18,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -29,88 +29,91 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{fibre_prod}{Numeric. Annual fibre production yield (kg/head/year).}
+\item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
+Required only for species = CML, SHP, and GTS.}
 }
 \value{
-Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
+Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
-Computes the \strong{energy requirement for fibre production} (MJ/head/day),
-defined as the energy needed to produce animal fibres such as wool or hair.
-This component follows the IPCC Tier 2 partitioning approach and is applied
-only to fibre-producing species and relevant cohorts, which are assumed by the model to be = ("FA", "FS", "MA", "MS").
+Computes the energy requirement for fibre production (MJ/head/day),
+defined as the additional energy required for the synthesis of animal fibre
+(e.g. wool or hair).
 }
 \details{
+This component follows the IPCC Tier 2 partitioning approach and is applied
+only to fibre-producing species and relevant cohorts, which are assumed to be \code{FA}, \code{FS}, \code{MA}, and \code{MS}.
+
+\strong{Species-specific approach:}
+
 \itemize{
 
-\item\strong{SHP and GTS} - (AFRC 1995); IPCC (2006, 2019):
+\item \strong{SHP and GTS} (IPCC, 2006; IPCC, 2019):
 
 For sheep and goats, fibre production energy is calculated assuming a fixed
 net energy cost of \eqn{24} MJ per kilogram of fibre produced. Annual fibre
 production is converted to a daily requirement as:
 
 \deqn{
-energy\_fibre =
-\frac{24 \times fibre\_prod}{365}
+energy\_requirement\_fibre =
+\frac{24 \times fibre\_yield\_year}{365}
 }
 
 where:
 \itemize{
-\item \eqn{fibre\_prod} is annual fibre production
-(kg head\eqn{^{-1}} year\eqn{^{-1}}),
+\item \eqn{fibre\_yield\_year} is annual fibre production
+(kg/head/year),
 \item \eqn{24} is the net energy requirement per kilogram of fibre
-(MJ kg fibre\eqn{^{-1}}).
+(MJ/kg fibre),
+\item division by \eqn{365} converts annual production to a daily basis.
 }
 
-\item\strong{CML} - (AFRC, 1998; Cannas et al, 2007):
+\item \strong{CML} (AFRC, 1998; Cannas et al., 2007):
 
-For camels, energy requirements for fibre production are first calculated on
-a \strong{net energy (NE)} basis and then converted to \strong{metabolizable energy (ME)}
-using a net-to-metabolizable energy efficiency coefficient.
-
-Fibre energy requirements are calculated as:
+For camels, fibre energy requirements are first calculated on a
+\strong{net energy} basis and then converted to
+\strong{metabolizable energy} using a net-to-metabolizable energy
+efficiency coefficient:
 
 \deqn{
-energy\_fibre =
+energy\_requirement\_fibre =
 \frac{24}{0.43}
 \times
-\frac{fibre\_prod}{365}
+\frac{fibre\_yield\_year}{365}
 }
 
 where:
 \itemize{
 \item \eqn{24} is the net energy requirement per kilogram of fibre
-(MJ kg fibre\eqn{^{-1}}),
+(MJ/kg fibre),
 \item \eqn{0.43} is the efficiency of conversion from metabolizable energy
-to net energy for fibre production (dimensionless fraction),
-\item \code{fibre_prod} is the annual fibre production per animal
-(kg head\eqn{^{-1}} year\eqn{^{-1}}),
-\item division by \eqn{365} converts annual fibre production to a
-daily basis.
+to net energy for fibre production (fraction),
+\item \eqn{fibre\_prod} is annual fibre production per animal
+(kg/head/year),
+\item \eqn{365} to convert annual production to a daily basis.
 }
 
-The efficiency coefficient of 0.43 is adopted by analogy with goats, assuming
-a dietary metabolizability of approximately 0.55, following AFRC guidance and
-subsequent synthesis by Cannas et al. (2007).
+The efficiency coefficient of \eqn{0.43} is adopted by analogy with goats,
+assuming a dietary metabolizability of approximately 0.55, following AFRC
+guidance and the synthesis by Cannas et al. (2007).
 
-\item\strong{Other species}
-Fibre production energy is assumed to be zero for cattle, buffalo, pigs, and
-poultry.
+\item\strong{Other species}: Fibre production energy is assumed to be zero.
 }
 }
 \references{
-AFRC (1998) \emph{The Nutrition of Goats. Wallingford: CAB International}.
-Animut G., Puchala R., Goetsch A.L., Patra A.K., Sahlu T., Varel V.H., Wells J.
+AFRC (1998) \emph{The Nutrition of Goats.}
+CAB International, Wallingford, UK.
 
-AFRC (1995). \emph{Energy and Protein Requirements of Ruminants}.
+AFRC (1993). \emph{Energy and Protein Requirements of Ruminants. An Advisory Manual Prepared by the AFRC Technical Committee on Responses to Nutrients.}
 CAB International, Wallingford, UK.
 
 Cannas, A., Atzori, A. S., Boe, F., & Teixeira, I. (2007).
 \emph{Energy and protein requirements of goats}.
 In: Dairy sheep nutrition (pp. 31-49). CAB International, Wallingford, UK.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.12.
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.12.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
 Livestock and Manure Management, Equation 10.12.

@@ -4,26 +4,26 @@
 \alias{compute_fecundity_rates}
 \title{Compute Daily Fecundity Rates}
 \usage{
-compute_fecundity_rates(parturition_rate, litsize, fem_birth_fraction)
+compute_fecundity_rates(parturition_rate, litter_size, birth_fraction_female)
 }
 \arguments{
-\item{parturition_rate}{Numeric. Parturition rate (probability of an adult female to give birth).}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
 
-\item{litsize}{Numeric. Prolificacy rate (mean number of offspring per parturition).}
+\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
-\item{fem_birth_fraction}{Numeric. Female birth ratio (probability that an offspring is female).}
+\item{birth_fraction_female}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
 }
 \value{
 A named list with two elements:
 \describe{
-\item{fem_fec}{Daily number of female offspring per adult female.}
-\item{mal_fec}{Daily number of male offspring per adult female.}
+\item{fecundity_female}{Numeric. Daily number of female offspring per adult female (# offspring/day)}
+\item{fecundity_male}{Numeric. Daily number of male offspring per adult female (# offspring/day)}
 }
 }
 \description{
 Calculates the daily number of male and female offspring produced per adult female.
 }
 \examples{
-compute_fecundity_rates(parturition_rate = 0.8, litsize = 2, fem_birth_fraction = 0.5)
+compute_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)
 
 }

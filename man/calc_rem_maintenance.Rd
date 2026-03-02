@@ -2,12 +2,12 @@
 % Please edit documentation in R/energy_requirements_core_model.R
 \name{calc_rem_maintenance}
 \alias{calc_rem_maintenance}
-\title{Calculate REM (Net Energy for Maintenance / Digestible Energy)}
+\title{Calculate Ratio of Net Energy available for Maintenance in the diet (REM - Net Energy for Maintenance / Digestible Energy)}
 \usage{
-calc_rem_maintenance(animal, diet_dig)
+calc_rem_maintenance(species_short, diet_digestibility_fraction = NA_real_)
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -18,21 +18,42 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{diet_dig}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of
+the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{
-Ratio of net energy available in diet for maintenance to digestible energy consumed, REM (fraction)
+Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).
 }
 \description{
 Computes the ratio of net energy available in the diet for maintenance to digestible energy.
 }
+\details{
+This component follows the IPCC Tier 2 partitioning approach and it returns the value for
+ruminants (\code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}) calculated as follows:
+
+\deqn{
+net\_energy\_maintenance\_digestible\_energy\_ratio =
+1.123 - 0.004092 \times (diet\_digestibility\_fraction \times 100) +
+0.00001126 \times (diet\_digestibility\_fraction \times 100)^2 -
+\frac{25.4}{diet\_digestibility\_fraction \times 100}
+}
+
+For the Other species REM is not applicable and the function
+returns \code{NA_real_}.
+}
 \references{
 Gibbs M.J., Johnson D.E. (1993) \emph{Livestock Emissions}.
-In: International Methane Emissions. Washington, D.C., U.S.A: US Environmental Protection Agency, Climate Change Division.
+In: International Methane Emissions. Washington, D.C., U.S.A: US Environmental Protection Agency,
+Climate Change Division.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.14.
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.14.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.14.
+IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
+from Livestock and Manure Management, Equation 10.14.
+}
+\seealso{
+\code{\link{calc_diet_digestibility}}
+\code{\link{calc_total_energy_requirement}}
+\code{\link{calc_dry_matter_intake}}
 }

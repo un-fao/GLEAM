@@ -2,16 +2,20 @@
 % Please edit documentation in R/run_weights.R
 \name{run_weights_calculations}
 \alias{run_weights_calculations}
-\title{Run Weight Calculations}
+\title{Run weight calculations}
 \usage{
-run_weights_calculations(data)
+run_weights_calculations(
+  cohort_level_data,
+  herd_level_data,
+  show_indicator = TRUE
+)
 }
 \arguments{
-\item{data}{A \code{data.table} in long format (one row per cohort) with mandatory columns:
+\item{cohort_level_data}{A \code{data.table} in long format with one row per
+herd \eqn{\times} cohort. Must include:
 \describe{
-\item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{\code{cohort}}{Character scalar. Sex- and age-specific cohort code describing the
-production stage of the animals. Supported values include:
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -20,47 +24,90 @@ production stage of the animals. Supported values include:
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
-\item{\code{duration}}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
-\item{\code{Animal_short}}{Character. Code identifying the livestock species.
-Supported values include:
-\itemize{
-\item \code{PGS}: pigs
-\item \code{CML}: camels
-\item \code{CTL}: cattle
-\item \code{BFL}: buffalo
-\item \code{SHP}: sheep
-\item \code{GTS}: goats
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 }}
-\item{\code{offtake_rate}}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
-}
-Additional required columns for weight calculations:
+
+\item{herd_level_data}{A \code{data.table} with one row per herd. Must include:
 \itemize{
-\item \code{AFKG} - Numeric. Live weight of adult females (kg)
-\item \code{AMKG} - Numeric. Live weight of adult males (kg)
-\item \code{ckg} - Numeric. Live weight of the animal at birth (kg).
-\item \code{MFSKG} - Numeric. Slaughter weight of female sub-adult animals (kg).
-\item \code{MMSKG} - Numeric. Slaughter weight of male sub-adult animals (kg).
-\item \code{wkg} - Numeric. Live weight of the animal at weaning (kg)
-\item \code{afc} - Numeric. Age at first parturition for female breeding animals (years)
-\item \code{WA} - Numeric. Average age of the juvenile animals at weaning (days)
+\item \code{live_weight_female_adult} Numeric. Live weight of adult females (kg)
+\item \code{live_weight_male_adult} Numeric. Live weight of adult males (kg)
+\item \code{birth_weight} Numeric. Live weight of the animal at birth (kg).
+\item \code{weaning_weight} Numeric. Live weight of the animal at weaning (kg)
+\item \code{slaughter_weight_female} Numeric. Slaughter weight of female sub-adult animals (kg)
+\item \code{slaughter_weight_male} Numeric. Slaughter weight of male sub-adult animals (kg)
 }}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
 }
 \value{
-A \code{data.table} with the same structure as input, with the following
-weight-related columns appended:
+A named list with two \code{data.table}s:
 \describe{
-\item{\code{initial_weight}}{Numeric. Live weight at the beginning of the cohort stage (kg).}
-\item{\code{potential_final_weight}}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
-\item{\code{slaughter_weight}}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
-\item{\code{average_weight}}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
-\item{\code{final_weight}}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed in the GLEAM pipeline as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
-\item{\code{adult_weight}}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
-\item{\code{dwg}}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
+\item{cohort_level_results}{The input \code{cohort_level_data} with these
+additional columns:
+\describe{
+\item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+\item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
+\item{live_weight_cohort_potential_final}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
+\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
+\item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
+\item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
+}}
+\item{herd_level_results}{A copy of the input \code{herd_level_data}.}
 }
 }
 \description{
-Applies weight calculations on a long-format table and returns the same table
-with weight-related columns appended. This function orchestrates the calculation
-of initial weights, potential final weights, slaughter weights, average weights,
-final weights, and daily weight gain for each cohort.
+Computes cohort-level live weight metrics by combining cohort-level inputs with
+herd-level biological parameters. The function appends cohort weights
+(initial, potential final, slaughter), then derives average and final live
+weights accounting for offtake, and finally computes average daily live weight
+gain over each cohort stage.
+}
+\details{
+The calculation pipeline is composed of the following steps:
+
+\enumerate{
+\item \strong{Cohort-stage weight assignment} using \code{\link{calc_cohort_weights}}.
+Herd-level biological parameters are matched to each cohort row by
+\code{herd_id} via \code{data.table} joins.
+
+\item \strong{Calculation of average and final live weights (accounting for offtake)} using
+\code{\link{calc_avg_weights}}.
+
+\item \strong{Calculation of average daily live weight gain} using
+\code{\link{calc_daily_weight_gain}}.
+}
+
+All cohort-level computations are evaluated row-wise using
+\code{by = .I} from \pkg{data.table}.
+}
+\examples{
+\dontrun{
+# Load weights inputs (cohort- and herd-level)
+weights_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/weights_input_chrt_data.csv",
+  package = "gleam"
+))
+weights_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/weights_input_hrd_data.csv",
+  package = "gleam"
+))
+
+# Run weight calculations
+results <- run_weights_calculations(
+  cohort_level_data = weights_chrt_dt,
+  herd_level_data = weights_hrd_dt
+)
+
+# Access results
+print(results$cohort_level_results)
+print(results$herd_level_results)
+}
+
+}
+\seealso{
+\code{\link{calc_cohort_weights}},
+\code{\link{calc_avg_weights}},
+\code{\link{calc_daily_weight_gain}},
 }
