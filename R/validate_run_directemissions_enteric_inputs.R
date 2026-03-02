@@ -8,7 +8,7 @@
 #' @noRd
 validate_run_directemissions_enteric_inputs <- function(data) {
 
-  # --- Basic type and structure checks ---------------------------------------
+  # --- Basic type and structure checks ----------------------------------------
   if (!data.table::is.data.table(data)) {
     cli::cli_abort("{.arg data} must be a data.table.")
   }
@@ -17,7 +17,7 @@ validate_run_directemissions_enteric_inputs <- function(data) {
     cli::cli_abort("{.arg data} must contain at least one row.")
   }
 
-  # --- Required columns validation -------------------------------------------
+  # --- Required columns validation --------------------------------------------
   required_cols <- c(
     "herd_id", "animal", "cohort_short", "diet_digestibility_fraction",
     "diet_gross_energy", "dry_matter_intake"

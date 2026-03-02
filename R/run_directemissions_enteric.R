@@ -99,7 +99,7 @@ run_directemissions_enteric <- function(
   # --- Step 2: Create working copy --------------------------------------------
   enteric_results <- data.table::copy(cohort_level_data)
 
-  # --- Step 3: Map full animal names to species_short ------------------------
+  # --- Step 3: Map full animal names to species_short -------------------------
   enteric_results <- merge(
     enteric_results,
     abbr_animals,
