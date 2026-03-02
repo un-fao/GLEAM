@@ -116,7 +116,7 @@ run_gleam <- function(
     show_indicator = TRUE
 ) {
 
-  # --- Step 1: Validate inputs -----------------------------------------------
+  # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_gleam_inputs(
     has_herd_structure = has_herd_structure,
     cohort_level_data = cohort_level_data,

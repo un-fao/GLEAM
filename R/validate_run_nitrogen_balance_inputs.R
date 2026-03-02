@@ -38,7 +38,7 @@ validate_run_nitrogen_balance_inputs <- function(cohort_level_data, herd_level_d
     )
   }
 
-  # --- Required columns: herd (herd_id, animal, herd-level vars) ---------------
+  # --- Required columns: herd (herd_id, animal, herd-level vars) --------------
   required_herd_cols <- c(
     "herd_id", "animal",
     "milk_protein_fraction", "milk_yield_day", "fibre_yield_year",
