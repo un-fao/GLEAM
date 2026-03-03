@@ -2,21 +2,28 @@
 % Please edit documentation in R/feed_emissions_core_model.R
 \name{calc_diet_co2_feed_luc_peat}
 \alias{calc_diet_co2_feed_luc_peat}
-\title{Calculate diet Carbon dioxide (CO₂) from land-use change (peat) for feed production}
+\title{Calculate a ration component's contribution to carbon dioxide (CO₂) emissions from peatland drainage}
 \usage{
 calc_diet_co2_feed_luc_peat(feed_ration_fraction, co2_feed_luc_peat)
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). Within each herd_id and cohort, proportions should sum to 1.}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the total
+ration, expressed as its fraction of diet dry matter intake (fraction). Within
+each herd_id and cohort, proportions should sum to 1.}
 
-\item{co2_feed_luc_peat}{Numeric. Carbon dioxide (CO₂) emission factor from peatland land-use change in feed production, calculated per kg of dry matter intake (g CO₂/kg DM).}
+\item{co2_feed_luc_peat}{Numeric. Carbon dioxide (CO₂) emission factor of a feed component,
+representing CO₂ emissions from peatland drainage in feed production,
+expressed per kilogram of dry matter intake (g CO₂/kg DM).}
 }
 \value{
-Numeric. Average carbon dioxide (CO₂) emission factor from peatland land-use change in feed production of the diet (g CO₂/kg DM).
+Numeric. Contribution of an individual feed component to the diet-level
+average carbon dioxide (CO₂) emission factor from  peatland drainage in feed
+production (g CO₂/kg DM).
 }
 \description{
-Computes the weighted contribution of Carbon dioxide (CO₂) emissions from peatland conversion
-associated with feed production for a feed ration component.
+Computes the contribution of an individual feed component to carbon dioxide (CO₂)
+emissions from peatland drainage in feed production,
+using feed-specific emission factors weighted by the component's share in the ration.
 }
 \details{
 The contribution is computed as:

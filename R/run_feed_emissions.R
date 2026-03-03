@@ -1,101 +1,138 @@
-#' Run diet greenhouse gas (GHG) emissions factor calculation
+#' Calculate cohort-level average greenhouse gas (GHG) emission factors for feed rations
 #'
-#' Computes cohort-level greenhouse gas (GHG) emissions from feed production by
-#' weighting feed item emission factors by diet composition (`feed_ration_fraction`).
-#' Returns the average feed-production GHG emission factors of the diet by gas and source for each cohort.
+#' Computes cohort-level average greenhouse gas (GHG) emission factors from feed production by
+#' weighting emission factors of individual feed components by diet composition.
+#' Returns diet-level average GHG emission factors by gas and emission source for each cohort.
 #'
-#' @param rations_share A `data.table` with feed shares by cohort. Must include:
+#' @param rations_share data.table. Cohort-level feed ration composition shares with the
+#'   following minimum data requirement:
 #'   \describe{
-#'   \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'   \item{animal}{Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }}
-#'   \item{cohort_short}{Character Sex- and age-specific cohort code describing the
-#'   production stage of the animals. Supported values include:
-#'   \itemize{
+#'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each
+#'     cohort belonging to the same herd.}
+#'     \item{animal}{
+#'     Character. Livestock category name used to map to a species short code via an
+#'     internal lookup table. Supported values include:
+#'     \itemize{
+#'     \item \code{Cattle}
+#'     \item \code{Buffalo}
+#'     \item \code{Sheep}
+#'     \item \code{Goats}
+#'     \item \code{Chicken}
+#'     \item \code{Pigs}
+#'     \item \code{Camels}
+#'     }
+#'     }
+#'     \item{cohort_short}{
+#'     Character. Sex- and age-specific cohort code describing the production stage
+#'     of the animals. Supported values include:
+#'     \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
-#'   }}
-#'   \item{feed_id}{Character. Unique identifier for the feed item.}
-#'   \item{feed_name}{Character. Name of the feed item.}
-#'   \item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). Within each herd_id and cohort, proportions should sum to 1.}
 #'   }
-#'   The following column is optional:
-#'   \describe{
-#'     \item{category}{Character. Feed category (e.g., cereals, fodder crops, by-products, crop residues, animal products).}
 #'   }
-#'
-#' @param feed_emissions A `data.table` with feed item emission factors. Must include:
-#'   \describe{
-#'   \item{feed_id}{Character. Unique identifier for the feed item.}
-#'   \item{feed_name}{Character. Name of the feed item.}
-#'   \item{co2_feed_fertilizer}{Numeric. Carbon dioxide (CO₂) emission factor from fertilizer use in feed production, calculated per kg of dry matter intake (g CO₂/kg DM).}
-#'   \item{co2_feed_pesticides}{Numeric. Carbon dioxide (CO₂) emission factor from pesticide use in feed production, calculated per kg of dry matter intake (g CO₂/kg DM).}
-#'   \item{co2_feed_crop_operations}{Numeric. Carbon dioxide (CO₂) emission factor from land-use change excluding peat in feed production, calculated per kg of dry matter intake (g CO₂/kg DM).}
-#'   \item{co2_feed_luc_nopeat}{Numeric. Carbon dioxide (CO₂) emission factor from land-use change excluding peat in feed production, calculated per kg of dry matter intake (g CO₂/kg DM).}
-#'   \item{co2_feed_luc_peat}{Numeric. Carbon dioxide (CO₂) emission factor from peatland land-use change in feed production, calculated per kg of dry matter intake (g CO₂/kg DM).}
-#'   \item{n2o_feed_fertilizer}{Numeric. Nitrous oxide (N₂O) emission factor from fertilizer use in feed production, calculated per kg of dry matter intake (g N₂O/kg DM).}
-#'   \item{n2o_feed_manure_applied}{Numeric. Nitrous oxide (N₂O) emission factor from manure applied to cropland in feed production, calculated per kg of dry matter intake (g N₂O/kg DM).}
-#'   \item{n2o_feed_crop_residues}{Numeric. Nitrous oxide (N₂O) emission factor from crop residues in feed production, calculated per kg of dry matter intake (g N₂O/kg DM).}
-#'   \item{ch4_feed_rice}{Numeric. Methane (CH₄) emission factor from rice cultivation in feed production, calculated per kg of dry matter intake (g CH₄/kg DM).}
-#'   }
-#'   The following column is optional:
-#'   \describe{
-#'     \item{category}{Character. Feed category (e.g., cereals, fodder crops, by-products, crop residues, animal products).}
+#'     \item{feed_id}{Character. Unique identifier for the feed component, used 
+#'     to join feed ration data with feed parameter tables.}
+#'     \item{feed_name}{Character. Feed component name (optional, for readability and
+#'     reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
+#'     \item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the total ration, expressed as its fraction of diet dry matter intake (fraction).
+#'     Within each herd_id and cohort, proportions should sum to 1.}
 #'   }
 #'
-#'#' @return A `data.table` summarized at the cohort level with the following columns:
+#' @param feed_emissions data.table. Emission factors of individual feed components with the 
+#'   following data requirement:
+#'   \describe{
+#'     \item{feed_id}{Character. Unique identifier for the feed component, used 
+#'     to join feed ration data with feed parameter tables.}
+#'     \item{feed_name}{Character. Feed component name (optional, for readability and
+#'     reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
+#'     \item{co2_feed_fertilizer}{Numeric. Carbon dioxide (CO₂) emission factor of a 
+#'     feed component, representing CO₂ emissions from fertilizer manufacture in feed 
+#'     production, expressed per kilogram of dry matter intake (g CO₂/kg DM).}
+#'     \item{co2_feed_pesticides}{Numeric. Carbon dioxide (CO₂) emission factor of a 
+#'     feed component, representing CO₂ emissions from pesticide manufacture in feed 
+#'     production, expressed per kilogram of dry matter intake (g CO₂/kg DM).}
+#'     \item{co2_feed_crop_operations}{Numeric. Carbon dioxide (CO₂) emission factor of a 
+#'     feed component, representing CO₂ emissions from on-field agricultural activities in 
+#'     feed production, expressed per kilogram of dry matter intake (kg CO₂/kg DM).}
+#'     \item{co2_feed_luc_nopeat}{Numeric. Carbon dioxide (CO₂) emission factor of a 
+#'     feed component, representing CO₂ emissions from land-use change in feed production 
+#'     (excluding peatland drainage), expressed per kilogram of dry matter intake (g CO₂/kg DM).}
+#'     \item{co2_feed_luc_peat}{Numeric. Carbon dioxide (CO₂) emission factor of a 
+#'     feed component, representing CO₂ emissions from peatland drainage in feed production, 
+#'     expressed per kilogram of dry matter intake (g CO₂/kg DM).}
+#'     \item{n2o_feed_fertilizer}{Numeric. Nitrous oxide (N₂O) emission factor of a 
+#'     feed component, representing N₂O emissions from fertilizer use in feed production, 
+#'     expressed per kg of dry matter intake (g N₂O/kg DM).}
+#'     \item{n2o_feed_manure_applied}{Numeric. Nitrous oxide (N₂O) emission factor of a 
+#'     feed component, representing N₂O emissions from manure applied to or deposited 
+#'     on soil in feed production, expressed per kg of dry matter intake (g N₂O/kg DM).}
+#'     \item{n2o_feed_crop_residues}{Numeric. Nitrous oxide (N₂O) emission factor of a 
+#'     feed component, representing N₂O emissions from crop residues decomposition in 
+#'     feed production, expressed per kg of dry matter intake (g N₂O/kg DM).}
+#'     \item{ch4_feed_rice}{Numeric. Methane (CH₄) emission factor of a feed component, 
+#'     representing CH₄ emissions from rice cultivation in feed production, 
+#'     expressed per kg of dry matter intake (g CH₄/kg DM).}
+#'   }
+#'
+#' @return data.table. Cohort-level emission factors summarized by \code{herd_id},
+#'   \code{animal}, and \code{cohort_short} with the following columns:
 #'   \describe{
 #'     \item{diet_co2_feed_fertilizer}{
-#'       Numeric. Average carbon dioxide (CO₂) emission factor from fertilizer use in feed production of the diet (g CO₂/kg DM).
+#'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from 
+#'       fertilizer manufacture in feed production (g CO₂/kg DM).
 #'     }
 #'     \item{diet_co2_feed_pesticides}{
-#'       Numeric. Average carbon dioxide (CO₂) emission factor from pesticide use in feed production of the diet (g CO₂/kg DM).
+#'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from 
+#'       pesticide manufacture in feed production (g CO₂/kg DM).
 #'     }
 #'     \item{diet_co2_feed_crop_operations}{
-#'       Numeric. Average carbon dioxide (CO₂) emission factor from crop operations in feed production of the diet (g CO₂/kg DM).
+#'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from 
+#'       on-field agricultural activities in feed production (g CO₂/kg DM).
 #'     }
 #'     \item{diet_co2_feed_luc_nopeat}{
-#'       Numeric. Average carbon dioxide (CO₂) emission factor from land‑use change excluding peat in feed production of the diet (g CO₂/kg DM).
+#'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from 
+#'       land-use change (excluding peatland drainage) in feed production (g CO₂/kg DM).
 #'     }
 #'     \item{diet_co2_feed_luc_peat}{
-#'       Numeric. Average carbon dioxide (CO₂) emission factor from peatland land‑use change in feed production of the diet (g CO₂/kg DM).
+#'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from  
+#'       peatland drainage in feed production (g CO₂/kg DM).
 #'     }
 #'     \item{diet_n2o_feed_fertilizer}{
-#'       Numeric. Average nitrous oxide (N₂O) emission factor from fertilizer use in feed production of the diet (g N₂O/kg DM).
+#'       Numeric. Diet-level average nitrous oxide (N₂O) emission factor from 
+#'       fertilizer use in feed production (g N₂O/kg DM).
 #'     }
 #'     \item{diet_n2o_feed_manure_applied}{
-#'       Numeric. Average nitrous oxide (N₂O) emission factor from manure applied to cropland in feed production of the diet (g N₂O/kg DM).
+#'       Numeric. Diet-level average nitrous oxide (N₂O) emission factor from 
+#'       manure applied to or deposited on soil in feed production (g N₂O/kg DM).
 #'     }
 #'     \item{diet_n2o_feed_crop_residues}{
-#'       Numeric. Average nitrous oxide (N₂O) emission factor from crop residues in feed production of the diet (g N₂O/kg DM).
+#'       Numeric. Diet-level average nitrous oxide (N₂O) emission factor from 
+#'       crop residues decomposition in feed production (g N₂O/kg DM).
 #'     }
 #'     \item{diet_ch4_feed_rice}{
-#'       Numeric. Average methane (CH₄) emission factor from rice cultivation in feed production of the diet (g CH₄/kg DM).
+#'       Numeric. Diet-level average methane (CH₄) emission factor from 
+#'       rice cultivation in feed production (g CH₄/kg DM).
 #'     }
 #'   }
 #'   
 #' @details
-#' The calculation pipeline is:
+#' This function joins \code{rations_share} with \code{feed_emissions} by \code{feed_id},
+#' maps \code{animal} to a species short code, and computes ration-weighted emission
+#' factors by cohort.
 #'
+#' The following calculation sequence is applied:
 #' \enumerate{
 #'
-#'   \item \strong{Merge ration shares with emission factors} using \code{\link[base]{merge}} on
-#'   \code{feed_id} (left join: \code{all.x = TRUE}), creating a feed-item–level table.
+#'   \item \strong{Merge ration shares with emission factors} at the feed-component level using \code{\link[base]{merge}} on
+#'   \code{feed_id} (left join: \code{all.x = TRUE}).
 #'
-#'   \item \strong{Compute feed-item contributions} (row-wise) for each emission source by
-#'   multiplying \code{feed_ration_fraction} by the corresponding feed emission factor.
+#'   \item \strong{Compute feed-component contributions} (row-wise) for each emission source by
+#'   multiplying the ration share of each feed component (\code{feed_ration_fraction}) 
+#'   by the corresponding feed emission factor.
 #'   Each contribution is computed using the specific helper below (called with \code{by = .I}):
 #'   \itemize{
 #'     \item CO₂ fertilizer: \code{\link{calc_diet_co2_feed_fertilizer}}
@@ -109,9 +146,8 @@
 #'     \item CH₄ rice cultivation: \code{\link{calc_diet_ch4_feed_rice}}
 #'   }
 #'
-#'   \item \strong{Aggregate to cohort-level diet factors} by summing feed-item contributions
-#'   across all feeds within each \code{(herd_id, animal, cohort_short)} group
-#'   (using \code{sum(..., na.rm = TRUE)}).
+#'   \item \strong{Aggregate to cohort-level diet emission factors} by summing feed-component contributions
+#'   across all feeds within each group \code{(herd_id, animal, cohort_short)}.
 #' }
 #'
 #' For each emission source, cohort-level dietary emission factors are computed as:
@@ -141,18 +177,23 @@
 #' \dontrun{
 #' # Load cleaned example input from the package and compute the calculation of feed emission factors
 #' 
-#' # Load table with feed emission factors
-#' feed_emissions <- data.table::fread(
-#'   system.file("extdata/Parameters/feed/feed_emission_factors.csv", package = "gleam")
-#' )
-#'
 #' # Load table with ration shares
-#' rations_share <- data.table::fread(
-#'   system.file("extdata/examples/feed_rations_share_example.csv", package = "gleam")
-#' )
+#' rations_share <- data.table::fread(system.file(
+#'   "extdata/examples/feed_rations_share_example.csv", 
+#'   package = "gleam"
+#' ))
+#'
+#' # Load table with feed emission factors
+#' feed_emissions <- data.table::fread(system.file(
+#'   "extdata/Parameters/feed/feed_emission_factors.csv", 
+#'   package = "gleam"
+#' ))
 #'
 #' # Run the code
-#' result <- run_feed_emissions(rations_share = rations_share, feed_emissions = feed_emissions)
+#' result <- run_feed_emissions(
+#'   rations_share = rations_share, 
+#'   feed_emissions = feed_emissions
+#' )
 #' }
 #' @export
 

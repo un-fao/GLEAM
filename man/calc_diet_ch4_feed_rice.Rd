@@ -2,21 +2,27 @@
 % Please edit documentation in R/feed_emissions_core_model.R
 \name{calc_diet_ch4_feed_rice}
 \alias{calc_diet_ch4_feed_rice}
-\title{Calculate diet Methane (CH₄) from rice cultivation for feed production}
+\title{Calculate a ration component's contribution to methane (CH₄) emissions from rice cultivation}
 \usage{
 calc_diet_ch4_feed_rice(feed_ration_fraction, ch4_feed_rice)
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). Within each herd_id and cohort, proportions should sum to 1.}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the total
+ration, expressed as its fraction of diet dry matter intake (fraction). Within
+each herd_id and cohort, proportions should sum to 1.}
 
-\item{ch4_feed_rice}{Numeric. Methane (CH₄) emission factor from rice cultivation in feed production, calculated per kg of dry matter intake (g CH₄/kg DM).}
+\item{ch4_feed_rice}{Numeric. Methane (CH₄) emission factor of a feed component,
+representing CH₄ emissions from rice cultivation in feed production,
+expressed per kg of dry matter intake (g CH₄/kg DM).}
 }
 \value{
-Numeric. Average methane (CH₄) emission factor from rice cultivation in feed production of the diet (g CH₄/kg DM).
+Numeric. Contribution of an individual feed component to the diet-level
+average methane (CH₄) emission factor from rice cultivation in feed production (g CH₄/kg DM).
 }
 \description{
-Computes the weighted contribution of Methane (CH₄) emissions from flooded rice cultivation
-associated with feed production for a feed ration component.
+Computes the contribution of an individual feed component to methane (CH₄)
+emissions from rice cultivation in feed production,
+using feed-specific emission factors weighted by the component's share in the ration.
 }
 \details{
 The contribution is computed as:

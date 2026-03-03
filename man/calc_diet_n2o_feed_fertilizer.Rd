@@ -2,21 +2,28 @@
 % Please edit documentation in R/feed_emissions_core_model.R
 \name{calc_diet_n2o_feed_fertilizer}
 \alias{calc_diet_n2o_feed_fertilizer}
-\title{Calculate diet nitrous oxide (N₂O) from fertilizer use for feed production}
+\title{Calculate a ration component's contribution to nitrous oxide (N₂O) emissions from fertilizer use}
 \usage{
 calc_diet_n2o_feed_fertilizer(feed_ration_fraction, n2o_feed_fertilizer)
 }
 \arguments{
-\item{feed_ration_fraction}{Numeric. Proportion of a specific feed item in the total ration, expressed as its fraction of diet dry matter (fraction). Within each herd_id and cohort, proportions should sum to 1.}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the total
+ration, expressed as its fraction of diet dry matter intake (fraction). Within
+each herd_id and cohort, proportions should sum to 1.}
 
-\item{n2o_feed_fertilizer}{Numeric. Nitrous oxide (N₂O) emission factor from fertilizer use in feed production, calculated per kg of dry matter intake (g N₂O/kg DM).}
+\item{n2o_feed_fertilizer}{Numeric. Nitrous oxide (N₂O) emission factor of a feed component,
+representing N₂O emissions from fertilizer use in feed production,
+expressed per kg of dry matter intake (g N₂O/kg DM).}
 }
 \value{
-Numeric. Average nitrous oxide (N₂O) emission factor from fertilizer use in feed production of the diet (g N₂O/kg DM).
+Numeric. Contribution of an individual feed component to the diet-level
+average nitrous oxide (N₂O) emission factor from fertilizer use in feed
+production (g N₂O/kg DM).
 }
 \description{
-Computes the weighted contribution of nitrous oxide (N₂O) emissions from fertilizer application
-associated with feed production for a feed ration component.
+Computes the contribution of an individual feed component to nitrous oxide (N₂O)
+emissions from synthetic fertilizer in feed production,
+using feed-specific emission factors weighted by the component's share in the ration.
 }
 \details{
 The contribution is computed as:
