@@ -6,6 +6,7 @@
 #'
 #' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
 #'   \describe{
+#'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 #'     \item{animal}{Character. Livestock category name used to map to a species short code via an
 #'       internal lookup table. Supported values include:
 #'       \itemize{
