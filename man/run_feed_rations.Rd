@@ -37,8 +37,9 @@ of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }
 }
-\item{feed_id}{Character. Unique identifier for the feed component, used to join feed ration data (\code{rations_share}) with feed nutritional parameters table (\code{feed_params}). Must be unique.}
-\item{feed_name}{Character. feed component name (optional, for readability and
+\item{feed_id}{Character. Unique identifier for the feed component, used
+to join feed ration data with feed parameter tables.}
+\item{feed_name}{Character. Feed component name (optional, for readability and
 reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
 \item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the total ration, expressed as its fraction of diet dry matter intake (fraction).
 Within each herd_id and cohort, proportions should sum to 1.}
@@ -47,7 +48,8 @@ Within each herd_id and cohort, proportions should sum to 1.}
 \item{feed_params}{data.table. Feed nutritional parameters with the following
 minimum data requirement:
 \describe{
-\item{feed_id}{Character. Unique identifier for the feed component, used to join feed ration data (\code{rations_share}) with feed nutritional parameters table (\code{feed_params}). Must be unique.}
+\item{feed_id}{Character. Unique identifier for the feed component, used
+to join feed ration data with feed parameter tables.}
 \item{feed_gross_energy}{Numeric. Gross energy content of a feed component,
 representing the total chemical energy released upon complete combustion of
 the feed (MJ/kg DM).}
@@ -76,7 +78,7 @@ that is excreted in urine for pigs (fraction).}
 as a fraction of the dry matter intake (g ash/100g DM).}
 \item{category}{Character. Feed category (optional). If provided, it should be
 used consistently  with \code{feed_id}, for a coherent result.}
-\item{feed_name}{Character. feed component name (optional, for readability and
+\item{feed_name}{Character. Feed component name (optional, for readability and
 reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
 }}
 
