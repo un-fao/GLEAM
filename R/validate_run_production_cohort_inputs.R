@@ -40,7 +40,7 @@ validate_run_production_cohort_inputs <- function(
 
   # --- Required columns: herd level -------------------------------------------
   required_herd_cols <- c(
-    "herd_id",
+    "herd_id", "animal",
     "milk_yield_day", "lactating_females_fraction",
     "milk_protein_fraction", "milk_fat_fraction", "milk_lactose_fraction",
     "milk_protein_fraction_standard", "milk_fat_fraction_standard", "milk_lactose_fraction_standard",

@@ -5,6 +5,7 @@
 \title{Compute Fibre Production}
 \usage{
 compute_fibre_output(
+  species_short,
   cohort_short,
   fibre_yield_year,
   simulation_duration,
@@ -12,6 +13,17 @@ compute_fibre_output(
 )
 }
 \arguments{
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
+
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{

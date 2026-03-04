@@ -5,6 +5,7 @@
 #'
 #' @noRd
 validate_milk_outputs_inputs <- function(
+    species_short,
     cohort_short,
     milk_yield_day,
     simulation_duration,
@@ -17,10 +18,11 @@ validate_milk_outputs_inputs <- function(
     milk_fat_fraction_standard,
     milk_lactose_fraction_standard
 ) {
-
+  validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
-
-  if (cohort_short == "FA") {
+  
+  if (species_short %in% c("CTL", "BFL", "GTS", "SHP", "CML")) {
+    if (cohort_short == "FA") {
     # Scalar numeric inputs (only used for FA)
     validate_scalar_numeric(simulation_duration, "simulation_duration")
     validate_scalar_numeric(cohort_stock_size, "cohort_stock_size")
@@ -34,6 +36,7 @@ validate_milk_outputs_inputs <- function(
     validate_param_range(milk_protein_fraction_standard, "milk_protein_fraction_standard")
     validate_param_range(milk_fat_fraction_standard, "milk_fat_fraction_standard")
     validate_param_range(milk_lactose_fraction_standard, "milk_lactose_fraction_standard")
+    }
   }
 }
 
@@ -44,6 +47,7 @@ validate_milk_outputs_inputs <- function(
 #'
 #' @noRd
 validate_fibre_output_inputs <- function(
+    species_short,
     cohort_short,
     fibre_yield_year,
     simulation_duration,
@@ -51,15 +55,17 @@ validate_fibre_output_inputs <- function(
 ) {
 
   validate_cohort_code(cohort_short)
-
-  if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
+  
+  if (species_short %in% c("GTS", "SHP", "CML")) {
+    if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
     # Scalar numeric inputs (only used for fibre-producing cohorts)
     validate_scalar_numeric(simulation_duration, "simulation_duration")
     validate_scalar_numeric(cohort_stock_size, "cohort_stock_size")
 
     # Range checks via parameter_ranges
     validate_param_range(fibre_yield_year, "fibre_yield_year")
-  }
+    }
+    }
 }
 
 #' Validate inputs for compute_meat_outputs

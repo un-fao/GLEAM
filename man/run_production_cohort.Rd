@@ -15,8 +15,16 @@ run_production_cohort(
 \item{cohort_level_data}{data.table. Cohort-level production inputs (one row per herd-cohort)
 with columns:
 \describe{
-\item{herd_id}{Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{cohort_short}{Sex- and age-specific cohort code (FJ, FS, FA, MJ, MS, MA).}
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 \item{cohort_stock_size}{Population size in each of the 6 sex–age cohorts at the start of the year (heads).}
 \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA) (heads/year).}
 \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
@@ -24,16 +32,27 @@ with columns:
 
 \item{herd_level_data}{data.table. Herd-level inputs (one row per \code{herd_id}) with columns:
 \describe{
-\item{herd_id}{Unique identifier for the herd.}
-\item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day).}
-\item{lactating_females_fraction}{Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).}
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{animal}{Character. Livestock category name used to map to a species short code via an
+internal lookup table. Supported values include:
+\itemize{
+\item \code{Cattle}
+\item \code{Buffalo}
+\item \code{Sheep}
+\item \code{Goats}
+\item \code{Chicken}
+\item \code{Pigs}
+\item \code{Camels}
+}}
+\item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals during the assessment period, divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein/kg milk).}
-\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat/kg milk).}
+\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat / kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 \item{milk_lactose_fraction}{Numeric. Milk lactose fraction (kg lactose/kg milk).}
 \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk used for FPCM (kg protein/kg milk). Default 0.033.}
 \item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk used for FPCM (kg fat/kg milk). Default 0.04.}
 \item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk used for FPCM (kg lactose/kg milk). Default 0.048.}
-\item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
+\item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year). Required only for species = CML, SHP, and GTS.}
 \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).}
 \item{bone_free_meat_fraction}{Numeric. Ratio of bone-free-meat to carcass weight (fraction).}
 \item{meat_protein_fraction}{Numeric. Protein content of bone-free-meat (fraction).}

@@ -1,6 +1,7 @@
 # ---- test compute_milk_outputs ----
 test_that("compute_milk_outputs returns expected output structure", {
   result <- compute_milk_outputs(
+    species_short = "CTL",
     cohort_short = "FA",
     milk_yield_day = 10,
     simulation_duration = 365,
@@ -24,6 +25,7 @@ test_that("compute_milk_outputs returns expected output structure", {
 
 test_that("compute_milk_outputs calculates milk mass production correctly", {
   result <- compute_milk_outputs(
+    species_short = "BFL",
     cohort_short = "FA",
     milk_yield_day = 20,
     simulation_duration = 365,
@@ -43,6 +45,7 @@ test_that("compute_milk_outputs calculates milk mass production correctly", {
 
 test_that("compute_milk_outputs calculates milk protein production correctly", {
   result <- compute_milk_outputs(
+    species_short = "SHP",
     cohort_short = "FA",
     milk_yield_day = 15,
     simulation_duration = 365,
@@ -63,6 +66,7 @@ test_that("compute_milk_outputs calculates milk protein production correctly", {
 
 test_that("compute_milk_outputs calculates FPCM using energy ratio", {
   result <- compute_milk_outputs(
+    species_short = "SHP",
     cohort_short = "FA",
     milk_yield_day = 12,
     simulation_duration = 365,
@@ -83,6 +87,7 @@ test_that("compute_milk_outputs calculates FPCM using energy ratio", {
 
 test_that("compute_milk_outputs calculates FPCM correctly with different composition", {
   result <- compute_milk_outputs(
+    species_short = "GTS",
     cohort_short = "FA",
     milk_yield_day = 12,
     simulation_duration = 365,
@@ -109,6 +114,7 @@ test_that("compute_milk_outputs calculates FPCM correctly with different composi
 test_that("compute_milk_outputs handles higher fat content correctly", {
   # Higher fat should result in higher FPCM (energy ratio > 1)
   standard_result <- compute_milk_outputs(
+    species_short = "GTS",
     cohort_short = "FA",
     milk_yield_day = 10,
     simulation_duration = 365,
@@ -123,6 +129,7 @@ test_that("compute_milk_outputs handles higher fat content correctly", {
   )
 
   high_fat_result <- compute_milk_outputs(
+    species_short = "GTS",
     cohort_short = "FA",
     milk_yield_day = 10,
     simulation_duration = 365,
@@ -141,6 +148,7 @@ test_that("compute_milk_outputs handles higher fat content correctly", {
 
 test_that("compute_milk_outputs handles zero size", {
   result <- compute_milk_outputs(
+    species_short = "CTL",
     cohort_short = "FA",
     milk_yield_day = 10,
     simulation_duration = 365,
@@ -161,6 +169,7 @@ test_that("compute_milk_outputs handles zero size", {
 
 test_that("compute_milk_outputs handles zero milking fraction", {
   result <- compute_milk_outputs(
+    species_short = "CTL",
     cohort_short = "FA",
     milk_yield_day = 10,
     simulation_duration = 365,
@@ -182,6 +191,7 @@ test_that("compute_milk_outputs handles zero milking fraction", {
 test_that("compute_milk_outputs handles validation errors", {
   expect_error(
     compute_milk_outputs(
+      species_short = "CTL",
       cohort_short = "FA",
       milk_yield_day = -10, simulation_duration = 365, cohort_stock_size = 100,
       lactating_females_fraction = 0.8, milk_protein_fraction = 0.033, milk_fat_fraction = 0.04,
@@ -193,6 +203,7 @@ test_that("compute_milk_outputs handles validation errors", {
 
   expect_error(
     compute_milk_outputs(
+      species_short = "CTL",
       cohort_short = "FA",
       milk_yield_day = 10, simulation_duration = 365, cohort_stock_size = 100,
       lactating_females_fraction = 1.5, milk_protein_fraction = 0.033, milk_fat_fraction = 0.04,
@@ -204,6 +215,7 @@ test_that("compute_milk_outputs handles validation errors", {
 
   expect_error(
     compute_milk_outputs(
+      species_short = "CTL",
       cohort_short = "FA",
       milk_yield_day = 10, simulation_duration = 365, cohort_stock_size = 100,
       lactating_females_fraction = 0.8, milk_protein_fraction = 0.033, milk_fat_fraction = 1.5,
@@ -214,10 +226,37 @@ test_that("compute_milk_outputs handles validation errors", {
   )
 })
 
+test_that("compute_milk_outputs returns zeros for PGS", {
+  result <- compute_milk_outputs(
+    species_short = "PGS",
+    cohort_short = "FA",
+    milk_yield_day = 10,
+    simulation_duration = 365,
+    cohort_stock_size = 100,
+    lactating_females_fraction = 0.8,
+    milk_protein_fraction = 0.033,
+    milk_fat_fraction = 0.04,
+    milk_lactose_fraction = 0.048,
+    milk_protein_fraction_standard = 0.033,
+    milk_fat_fraction_standard = 0.04,
+    milk_lactose_fraction_standard = 0.048
+  )
+  
+  expect_named(result, c(
+    "milk_production_mass_cohort",
+    "milk_production_protein_cohort",
+    "milk_production_fpcm_cohort"
+  ))
+  expect_equal(result$milk_production_mass_cohort, 0)
+  expect_equal(result$milk_production_protein_cohort, 0)
+  expect_equal(result$milk_production_fpcm_cohort, 0)
+})
+
 
 # ---- test compute_fibre_output ----
 test_that("compute_fibre_output returns expected value", {
   result <- compute_fibre_output(
+    species_short = "SHP",
     cohort_short = "FS",
     fibre_yield_year = 0.1,
     simulation_duration = 365,
@@ -230,6 +269,7 @@ test_that("compute_fibre_output returns expected value", {
 
 test_that("compute_fibre_output handles zero fibre yield", {
   result <- compute_fibre_output(
+    species_short = "SHP",
     cohort_short = "FS",
     fibre_yield_year = 0,
     simulation_duration = 365,
@@ -241,6 +281,7 @@ test_that("compute_fibre_output handles zero fibre yield", {
 
 test_that("compute_fibre_output handles zero size", {
   result <- compute_fibre_output(
+    species_short = "SHP",
     cohort_short = "FA",
     fibre_yield_year = 0.1,
     simulation_duration = 365,
@@ -252,6 +293,7 @@ test_that("compute_fibre_output handles zero size", {
 
 test_that("compute_fibre_output handles different assessment durations", {
   result_365 <- compute_fibre_output(
+    species_short = "GTS",
     cohort_short = "MA",
     fibre_yield_year = 0.1,
     simulation_duration = 365,
@@ -259,6 +301,7 @@ test_that("compute_fibre_output handles different assessment durations", {
   )
 
   result_180 <- compute_fibre_output(
+    species_short = "CML",
     cohort_short = "MA",
     fibre_yield_year = 0.1,
     simulation_duration = 180,
@@ -270,6 +313,7 @@ test_that("compute_fibre_output handles different assessment durations", {
 
 test_that("compute_fibre_output handles large values", {
   result <- compute_fibre_output(
+    species_short = "CML",
     cohort_short = "MS",
     fibre_yield_year = 5.0,
     simulation_duration = 365,
@@ -280,9 +324,37 @@ test_that("compute_fibre_output handles large values", {
   expect_equal(result, expected)
 })
 
+test_that("compute_fibre_output returns zero for non-fibre animals", {
+  result <- compute_fibre_output(
+    species_short = "PGS",
+    cohort_short = "MS",
+    fibre_yield_year = 1,
+    simulation_duration = 365,
+    cohort_stock_size = 1000
+  )
+  
+  expected <- 0
+  expect_equal(result, expected)
+})
+
+
+test_that("compute_fibre_output returns zero for non-fibre animals", {
+  result <- compute_fibre_output(
+    species_short = "CTL",
+    cohort_short = "MS",
+    fibre_yield_year = 1,
+    simulation_duration = 365,
+    cohort_stock_size = 1000
+  )
+  
+  expected <- 0
+  expect_equal(result, expected)
+})
+
+
 test_that("compute_fibre_output handles validation errors", {
   expect_error(
-    compute_fibre_output(cohort_short = "MA", fibre_yield_year = -0.1, simulation_duration = 365, cohort_stock_size = 100),
+    compute_fibre_output(species_short = "SHP", cohort_short = "MA", fibre_yield_year = -0.1, simulation_duration = 365, cohort_stock_size = 100),
     "fibre_yield_year"
   )
 })

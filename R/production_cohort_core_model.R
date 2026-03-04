@@ -7,7 +7,17 @@
 #'
 #' FPCM is calculated using Equation 10 of the International Dairy Federation
 #' (IDF) Global Carbon Footprint Standard for the Dairy Sector (IDF, 2022).
-#'
+#' 
+#' @param species_short Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
@@ -56,6 +66,7 @@
 #' @export
 
 compute_milk_outputs <- function(
+    species_short,  
     cohort_short,
     milk_yield_day,
     simulation_duration,
@@ -69,6 +80,7 @@ compute_milk_outputs <- function(
     milk_lactose_fraction_standard
 ) {
   validate_milk_outputs_inputs(
+    species_short = species_short,
     cohort_short = cohort_short,
     milk_yield_day = milk_yield_day,
     simulation_duration = simulation_duration,
@@ -81,8 +93,13 @@ compute_milk_outputs <- function(
     milk_fat_fraction_standard = milk_fat_fraction_standard,
     milk_lactose_fraction_standard = milk_lactose_fraction_standard
   )
-
-  if (cohort_short == "FA") {
+  
+  milk_production <- 0
+  milk_protein_production <- 0
+  fpcm_production <- 0
+  
+  if (species_short %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
+    if (cohort_short == "FA") {
 
     # Energy content of standard milk (Mcal/kg) - IDF 2022 formula
     energy_standard <- (
@@ -109,13 +126,8 @@ compute_milk_outputs <- function(
     # FPCM production using energy ratio
     energy_ratio <- energy_milk / energy_standard
     fpcm_production <- energy_ratio * milk_production
-
-  } else {
-    milk_production <- 0
-    milk_protein_production <- 0
-    fpcm_production <- 0
+    } 
   }
-
   return(list(
     milk_production_mass_cohort = milk_production,
     milk_production_protein_cohort = milk_protein_production,
@@ -128,7 +140,17 @@ compute_milk_outputs <- function(
 #' Computes fibre production for producing cohorts (\code{FA}, \code{MA}, \code{FS}, \code{MS}) by scaling
 #' per-animal fibre yield to the assessment period and cohort size.
 #' The output is expressed in kg per cohort per assessment period.
-#'
+#' 
+#' @param species_short Character. Code identifying the livestock species.
+#'   Supported values include:
+#'   \itemize{
+#'     \item \code{PGS}: pigs
+#'     \item \code{CML}: camels
+#'     \item \code{CTL}: cattle
+#'     \item \code{BFL}: buffalo
+#'     \item \code{SHP}: sheep
+#'     \item \code{GTS}: goats
+#'   }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
@@ -154,28 +176,31 @@ compute_milk_outputs <- function(
 #'
 #' @export
 compute_fibre_output <- function(
+    species_short,
     cohort_short,
     fibre_yield_year,
     simulation_duration,
     cohort_stock_size
 ) {
   validate_fibre_output_inputs(
+    species_short = species_short,
     cohort_short = cohort_short,
     fibre_yield_year = fibre_yield_year,
     simulation_duration = simulation_duration,
     cohort_stock_size = cohort_stock_size
   )
-
-  if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
+  
+  fibre_production_cohort <- 0
+  
+  if (species_short %in% c("GTS", "SHP", "CML")) {
+    if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
 
     fibre_production_cohort <- (
       fibre_yield_year / 365 * simulation_duration * cohort_stock_size
     )
-
-  } else {
-    fibre_production_cohort <- 0
+    }
   }
-
+  
   return(fibre_production_cohort)
 }
 

@@ -12,8 +12,16 @@
 #' @param cohort_level_data data.table. Cohort-level production inputs (one row per herd-cohort)
 #'   with columns:
 #'   \describe{
-#'     \item{herd_id}{Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'     \item{cohort_short}{Sex- and age-specific cohort code (FJ, FS, FA, MJ, MS, MA).}
+#'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'     \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'       }}
 #'     \item{cohort_stock_size}{Population size in each of the 6 sex–age cohorts at the start of the year (heads).}
 #'     \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA) (heads/year).}
 #'     \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
@@ -21,9 +29,20 @@
 #'
 #' @param herd_level_data data.table. Herd-level inputs (one row per \code{herd_id}) with columns:
 #'   \describe{
-#'     \item{herd_id}{Unique identifier for the herd.}
 #'     \item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day).}
 #'     \item{lactating_females_fraction}{Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).}
+#'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'     \item{animal}{Character. Livestock category name used to map to a species short code via an
+#'     internal lookup table. Supported values include:
+#'     \itemize{
+#'     \item \code{Cattle}
+#'     \item \code{Buffalo}
+#'     \item \code{Sheep}
+#'     \item \code{Goats}
+#'     \item \code{Chicken}
+#'     \item \code{Pigs}
+#'     \item \code{Camels}
+#'     }}
 #'     \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein/kg milk).}
 #'     \item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat/kg milk).}
 #'     \item{milk_lactose_fraction}{Numeric. Milk lactose fraction (kg lactose/kg milk).}
@@ -101,6 +120,14 @@ run_production_cohort <- function(
 
   # --- Step 2: Create working copy --------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
+  
+  # --- Step 3: Map full animal names to species_short ------------------------
+  herd_level_data <- merge(
+    herd_level_data,
+    abbr_animals,
+    by = "animal",
+    all.x = TRUE
+  )
 
   # --- Step 3: Compute milk production outputs --------------------------------
   milk_output_cols <- c(
@@ -112,6 +139,7 @@ run_production_cohort <- function(
   cohort_level_data[
     ,
     (milk_output_cols) := compute_milk_outputs(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       milk_yield_day = herd_level_data[.SD, on = "herd_id", x.milk_yield_day],
       simulation_duration = simulation_duration,
@@ -132,6 +160,7 @@ run_production_cohort <- function(
   cohort_level_data[
     ,
     fibre_production_cohort := compute_fibre_output(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       fibre_yield_year = herd_level_data[.SD, on = "herd_id", x.fibre_yield_year],
       simulation_duration = simulation_duration,
