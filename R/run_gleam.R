@@ -23,6 +23,9 @@
 #'   system fractions (see \code{\link{run_directemissions_manure}}).
 #' @param manure_management_system_factors data.table. Manure management
 #'   system factors (see \code{\link{run_directemissions_manure}}).
+#' @param simulation_duration Numeric. Length of the assessment period (days). Used by the herd
+#'   simulation module (when \code{has_herd_structure} is FALSE) and by the production module
+#'   (milk, fibre, meat). Defaults to \code{365}.
 #' @param show_indicator Logical. Whether to display progress indicators during the pipeline run.
 #'
 #' @return A cohort-level \code{data.table} containing the outputs produced by the
@@ -62,7 +65,8 @@
 #'   feed_rations = feed_rations_chrt_dt,
 #'   feed_params = feed_params_dt,
 #'   manure_management_system_fraction = manure_management_system_fraction_dt,
-#'   manure_management_system_factors = manure_management_system_factors_dt
+#'   manure_management_system_factors = manure_management_system_factors_dt,
+#'   simulation_duration = 365
 #' )
 #' print(results)
 #' }
@@ -100,7 +104,8 @@
 #'   feed_rations = feed_rations_chrt_dt,
 #'   feed_params = feed_params_dt,
 #'   manure_management_system_fraction = manure_management_system_fraction_dt,
-#'   manure_management_system_factors = manure_management_system_factors_dt
+#'   manure_management_system_factors = manure_management_system_factors_dt,
+#'   simulation_duration = 365
 #' )
 #' print(results)
 #' }
@@ -113,6 +118,7 @@ run_gleam <- function(
     feed_params,
     manure_management_system_fraction,
     manure_management_system_factors,
+    simulation_duration = 365,
     show_indicator = TRUE
 ) {
 
@@ -124,7 +130,8 @@ run_gleam <- function(
     feed_rations = feed_rations,
     feed_params = feed_params,
     manure_management_system_fraction = manure_management_system_fraction,
-    manure_management_system_factors = manure_management_system_factors
+    manure_management_system_factors = manure_management_system_factors,
+    simulation_duration = simulation_duration
   )
 
   # Show progress indicator if requested
@@ -139,6 +146,7 @@ run_gleam <- function(
     herd_results <- run_herd_simulation(
       cohort_level_data = cohort_level_data,
       herd_level_data = herd_level_data,
+      simulation_duration = simulation_duration,
       show_indicator = show_indicator
     )
     gleam_chrt_data <- herd_results$cohort_level_results
@@ -199,7 +207,7 @@ run_gleam <- function(
   gleam_chrt_data <- run_production_cohort(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = herd_level_data,
-    simulation_duration = 365L,
+    simulation_duration = simulation_duration,
     show_indicator = show_indicator
   )
 

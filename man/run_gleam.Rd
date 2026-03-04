@@ -12,6 +12,7 @@ run_gleam(
   feed_params,
   manure_management_system_fraction,
   manure_management_system_factors,
+  simulation_duration = 365,
   show_indicator = TRUE
 )
 }
@@ -38,6 +39,10 @@ system fractions (see \code{\link{run_directemissions_manure}}).}
 
 \item{manure_management_system_factors}{data.table. Manure management
 system factors (see \code{\link{run_directemissions_manure}}).}
+
+\item{simulation_duration}{Numeric. Length of the assessment period (days). Used by the herd
+simulation module (when \code{has_herd_structure} is FALSE) and by the production module
+(milk, fibre, meat). Defaults to \code{365}.}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during the pipeline run.}
 }
@@ -87,7 +92,8 @@ results <- run_gleam(
   feed_rations = feed_rations_chrt_dt,
   feed_params = feed_params_dt,
   manure_management_system_fraction = manure_management_system_fraction_dt,
-  manure_management_system_factors = manure_management_system_factors_dt
+  manure_management_system_factors = manure_management_system_factors_dt,
+  simulation_duration = 365
 )
 print(results)
 }
@@ -125,7 +131,8 @@ results <- run_gleam(
   feed_rations = feed_rations_chrt_dt,
   feed_params = feed_params_dt,
   manure_management_system_fraction = manure_management_system_fraction_dt,
-  manure_management_system_factors = manure_management_system_factors_dt
+  manure_management_system_factors = manure_management_system_factors_dt,
+  simulation_duration = 365
 )
 print(results)
 }

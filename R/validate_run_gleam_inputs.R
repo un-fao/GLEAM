@@ -17,6 +17,7 @@
 #' @param manure_management_system_fraction data.table. Cohort-level manure
 #'   management system fractions.
 #' @param manure_management_system_factors data.table. manure management system factors.
+#' @param simulation_duration Numeric. Length of the assessment period (days).
 #'
 #' @noRd
 validate_run_gleam_inputs <- function(
@@ -26,8 +27,21 @@ validate_run_gleam_inputs <- function(
     feed_rations,
     feed_params,
     manure_management_system_fraction,
-    manure_management_system_factors
+    manure_management_system_factors,
+    simulation_duration
 ) {
+
+  # --- simulation_duration: must be a single positive numeric ------------------
+  if (
+    !is.numeric(simulation_duration) ||
+    length(simulation_duration) != 1L ||
+    is.na(simulation_duration)
+  ) {
+    cli::cli_abort("{.arg simulation_duration} must be a single numeric value.")
+  }
+  if (simulation_duration <= 0) {
+    cli::cli_abort("{.arg simulation_duration} must be positive (days).")
+  }
 
   # --- has_herd_structure: must be a single boolean ---------------------------
   if (!is.logical(has_herd_structure) || length(has_herd_structure) != 1L) {
