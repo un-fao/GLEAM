@@ -105,13 +105,12 @@ utils::globalVariables(c(
   "Item_Name", "dmi", "milk_yield",
   # Columns used in run_production_cohort (cohort-level + outputs)
   "cohort_stock_size", "offtake_heads_assessment", "slaughter_weight_cohort",
-  "carcass_dressing_fraction", "bone_free_meat_fraction", "meat_protein_fraction",
   "fibre_production_cohort",
   # data.table join prefixes used in run_production_cohort (herd-level lookups)
-  "x.milk_yield_day", "x.simulation_duration", "x.lactating_females_fraction",
+  "x.milk_yield_day", "x.lactating_females_fraction",
   "x.milk_protein_fraction", "x.milk_fat_fraction", "x.milk_lactose_fraction",
   "x.milk_protein_fraction_standard", "x.milk_fat_fraction_standard", "x.milk_lactose_fraction_standard",
-  "x.fibre_yield_year"
+  "x.fibre_yield_year", "x.carcass_dressing_fraction", "x.bone_free_meat_fraction", "x.meat_protein_fraction"
 ))
 
 utils::globalVariables(c(

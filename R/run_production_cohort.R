@@ -17,9 +17,6 @@
 #'     \item{cohort_stock_size}{Population size in each of the 6 sex–age cohorts at the start of the year (heads).}
 #'     \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA) (heads/year).}
 #'     \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
-#'     \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).}
-#'     \item{bone_free_meat_fraction}{Numeric. Ratio of bone-free-meat to carcass weight (fraction).}
-#'     \item{meat_protein_fraction}{Numeric. Protein content of bone-free-meat (fraction).}
 #'   }
 #'
 #' @param herd_level_data data.table. Herd-level inputs (one row per \code{herd_id}) with columns:
@@ -34,6 +31,9 @@
 #'     \item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk used for FPCM (kg fat/kg milk). Default 0.04.}
 #'     \item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk used for FPCM (kg lactose/kg milk). Default 0.048.}
 #'     \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
+#'     \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).}
+#'     \item{bone_free_meat_fraction}{Numeric. Ratio of bone-free-meat to carcass weight (fraction).}
+#'     \item{meat_protein_fraction}{Numeric. Protein content of bone-free-meat (fraction).}
 #'   }
 #'
 #' @param simulation_duration Numeric. Length of the assessment period (days). Defaults to \code{365}.
@@ -153,9 +153,9 @@ run_production_cohort <- function(
     (meat_output_cols) := compute_meat_outputs(
       offtake_heads_assessment = offtake_heads_assessment,
       slaughter_weight_cohort = slaughter_weight_cohort,
-      carcass_dressing_fraction = carcass_dressing_fraction,
-      bone_free_meat_fraction = bone_free_meat_fraction,
-      meat_protein_fraction = meat_protein_fraction
+      carcass_dressing_fraction = herd_level_data[.SD, on = "herd_id", x.carcass_dressing_fraction],
+      bone_free_meat_fraction = herd_level_data[.SD, on = "herd_id", x.bone_free_meat_fraction],
+      meat_protein_fraction = herd_level_data[.SD, on = "herd_id", x.meat_protein_fraction]
     ),
     by = .I
   ]

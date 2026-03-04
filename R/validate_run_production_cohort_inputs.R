@@ -29,8 +29,7 @@ validate_run_production_cohort_inputs <- function(
   # --- Required columns: cohort level ------------------------------------------
   required_cohort_cols <- c(
     "herd_id", "cohort_short", "cohort_stock_size",
-    "offtake_heads_assessment", "slaughter_weight_cohort", "carcass_dressing_fraction",
-    "bone_free_meat_fraction", "meat_protein_fraction"
+    "offtake_heads_assessment", "slaughter_weight_cohort"
   )
   missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
   if (length(missing_cohort_cols) > 0) {
@@ -45,7 +44,8 @@ validate_run_production_cohort_inputs <- function(
     "milk_yield_day", "lactating_females_fraction",
     "milk_protein_fraction", "milk_fat_fraction", "milk_lactose_fraction",
     "milk_protein_fraction_standard", "milk_fat_fraction_standard", "milk_lactose_fraction_standard",
-    "fibre_yield_year"
+    "fibre_yield_year",
+    "carcass_dressing_fraction", "bone_free_meat_fraction", "meat_protein_fraction"
   )
   missing_herd_cols <- setdiff(required_herd_cols, names(herd_level_data))
   if (length(missing_herd_cols) > 0) {
