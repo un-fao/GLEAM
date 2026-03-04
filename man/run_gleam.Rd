@@ -49,7 +49,7 @@ modules executed within this pipeline call.
 Runs the core sequence of model modules to generate cohort-level outputs for a
 livestock production system: herd simulation (optional), weights, feed rations,
 energy requirements and DMI, enteric methane direct emissions, nitrogen balance,
-and direct emissions from manure management systems.
+direct emissions from manure management systems, and production (milk, fibre, meat).
 Accepts primary inputs only: one cohort-level master table, one herd-level master table,
 feed rations and feed parameters, and manure management system tables.
 }

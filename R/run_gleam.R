@@ -3,7 +3,7 @@
 #' Runs the core sequence of model modules to generate cohort-level outputs for a
 #' livestock production system: herd simulation (optional), weights, feed rations,
 #' energy requirements and DMI, enteric methane direct emissions, nitrogen balance,
-#' and direct emissions from manure management systems.
+#' direct emissions from manure management systems, and production (milk, fibre, meat).
 #' Accepts primary inputs only: one cohort-level master table, one herd-level master table,
 #' feed rations and feed parameters, and manure management system tables.
 #'
@@ -192,6 +192,14 @@ run_gleam <- function(
     cohort_level_data = gleam_chrt_data,
     manure_management_system_fraction = manure_management_system_fraction,
     manure_management_system_factors = manure_management_system_factors,
+    show_indicator = show_indicator
+  )
+
+  # --- Step 9: Run production (milk, fibre, meat) at cohort level --------------
+  gleam_chrt_data <- run_production_cohort(
+    cohort_level_data = gleam_chrt_data,
+    herd_level_data = herd_level_data,
+    simulation_duration = 365L,
     show_indicator = show_indicator
   )
 

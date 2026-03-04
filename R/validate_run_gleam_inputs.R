@@ -70,6 +70,11 @@ validate_run_gleam_inputs <- function(
     "mature_weight", "live_weight_cohort_initial", "live_weight_cohort_potential_final",
     "slaughter_weight_cohort", "live_weight_cohort_average", "live_weight_cohort_final",
     "daily_weight_gain",
+    # Production cohort (cohort-level outputs)
+    "milk_production_mass_cohort", "milk_production_protein_cohort", "milk_production_fpcm_cohort",
+    "fibre_production_cohort",
+    "meat_production_live_weight_cohort", "meat_production_carcass_weight_cohort",
+    "meat_production_bone_free_meat_cohort", "meat_production_protein_cohort",
     # Feed rations (cohort-level outputs merged into pipeline)
     "diet_gross_energy", "diet_metabolizable_energy", "diet_nitrogen",
     "diet_digestibility_fraction", "urinary_energy_fraction", "diet_ash",
