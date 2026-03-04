@@ -35,7 +35,7 @@
 #'   \describe{
 #'     \item{**Feed variables**:}{`dmi` (dry matter intake)}
 #'     \item{**Nitrogen balance**:}{`nitrogen_intake`, `nitrogen_retention`, `nitrogen_excretion`}
-#'     \item{**Production**:}{`output_milk_*`, `output_meat_*`, `output_fibre_production`}
+#'     \item{**Production**:}{`milk_production_*_cohort`, `meat_production_*_cohort`, `fibre_production_cohort`}
 #'     \item{**Emissions**:}{`ch4_enteric`, `ch4_manure_*`, `direct_n2o_manure_*`,
 #'       `indirect_n2o_manure_*`}
 #'   }
@@ -135,11 +135,11 @@ run_aggregation <- function(
   feed_vars <- c("dmi")
   nitrogen_balance_vars <- c("dry_matter_intake", "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion")
   production_vars <- c(
-    "output_milk_mass_production", "output_milk_protein_production",
-    "output_milk_fpcm_production",
-    "output_meat_production_liveweight", "output_meat_production_carcassweight",
-    "output_meat_production_meat", "output_meat_production_protein",
-    "output_fibre_production"
+    "milk_production_mass_cohort", "milk_production_protein_cohort",
+    "milk_production_fpcm_cohort",
+    "meat_production_live_weight_cohort", "meat_production_carcass_weight_cohort",
+    "meat_production_bone_free_meat_cohort", "meat_production_protein_cohort",
+    "fibre_production_cohort"
   )
   emissions_vars <- c(
     "ch4_enteric", "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other",
@@ -272,21 +272,21 @@ run_aggregation <- function(
   # 12.1 Production
   results_herd[
     , unit := data.table::fcase(
-      variable_name %in% c("output_milk_mass_production", "output_fibre_production"), "kg",
-      variable_name %in% c("output_milk_protein_production", "output_meat_production_protein"), "kg protein",
-      variable_name %in% c("output_milk_fpcm_production"), "kg fat-protein corrected",
-      variable_name %in% c("output_meat_production_liveweight"), "kg live weight",
-      variable_name %in% c("output_meat_production_carcassweight"), "kg carcass weight",
-      variable_name %in% c("output_meat_production_meat"), "kg bone-free meat",
+      variable_name %in% c("milk_production_mass_cohort", "fibre_production_cohort"), "kg",
+      variable_name %in% c("milk_production_protein_cohort", "meat_production_protein_cohort"), "kg protein",
+      variable_name %in% c("milk_production_fpcm_cohort"), "kg fat-protein corrected",
+      variable_name %in% c("meat_production_live_weight_cohort"), "kg live weight",
+      variable_name %in% c("meat_production_carcass_weight_cohort"), "kg carcass weight",
+      variable_name %in% c("meat_production_bone_free_meat_cohort"), "kg bone-free meat",
       default = unit
     )
   ]
 
   results_herd[
     , commodity_name := data.table::fcase(
-      variable_name %in% c("output_milk_mass_production", "output_milk_protein_production", "output_milk_fpcm_production"), "Milk",
-      variable_name %in% c("output_meat_production_liveweight", "output_meat_production_carcassweight", "output_meat_production_meat", "output_meat_production_protein"), "Meat",
-      variable_name == "output_fibre_production", "Fibre",
+      variable_name %in% c("milk_production_mass_cohort", "milk_production_protein_cohort", "milk_production_fpcm_cohort"), "Milk",
+      variable_name %in% c("meat_production_live_weight_cohort", "meat_production_carcass_weight_cohort", "meat_production_bone_free_meat_cohort", "meat_production_protein_cohort"), "Meat",
+      variable_name == "fibre_production_cohort", "Fibre",
       default = commodity_name
     )
   ][
@@ -349,14 +349,14 @@ run_aggregation <- function(
     nitrogen_intake = "NitrogenIntake",
     nitrogen_retention = "NitrogenRetention",
     nitrogen_excretion = "NitrogenExcretion",
-    output_milk_mass_production = "MilkRaw",
-    output_milk_protein_production = "MilkProtein",
-    output_milk_fpcm_production = "MilkFatProteinCorrected",
-    output_meat_production_liveweight = "MeatLiveWeight",
-    output_meat_production_carcassweight = "MeatCarcassWeight",
-    output_meat_production_meat = "MeatBoneFree",
-    output_meat_production_protein = "MeatProtein",
-    output_fibre_production = "Fibre"
+    milk_production_mass_cohort = "MilkRaw",
+    milk_production_protein_cohort = "MilkProtein",
+    milk_production_fpcm_cohort = "MilkFatProteinCorrected",
+    meat_production_live_weight_cohort = "MeatLiveWeight",
+    meat_production_carcass_weight_cohort = "MeatCarcassWeight",
+    meat_production_bone_free_meat_cohort = "MeatBoneFree",
+    meat_production_protein_cohort = "MeatProtein",
+    fibre_production_cohort = "Fibre"
   )[levels(results_herd$variable_name)]
 
   # --- Step 14: Variables order ----------------------------------------------

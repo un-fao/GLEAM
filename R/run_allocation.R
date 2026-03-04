@@ -63,8 +63,8 @@ run_allocation <- function(
     "slaughterLW",
     "initialLW",
     "ckg",
-    "output_meat_production_liveweight",
-    "output_milk_fpcm_production",
+    "meat_production_live_weight_cohort",
+    "milk_production_fpcm_cohort",
     "nefibre",
     "nework"
   )
@@ -80,7 +80,7 @@ run_allocation <- function(
   # --- Calculate cohort-level energy allocations
   # Milk energy allocation: based on FPCM (fat- and protein-corrected milk) output
   allocation_inputs[, energy_allocation_milk := calc_energy_allocation_milk(
-    milk_fpcm_output = output_milk_fpcm_production,
+    milk_fpcm_output = milk_production_fpcm_cohort,
     standard_protein = standard_protein,
     standard_fat = standard_fat,
     standard_lactose = standard_lactose
@@ -92,7 +92,7 @@ run_allocation <- function(
     cohort_code = cohort,
     slaughter_liveweight = slaughterLW,
     birth_liveweight = ckg,
-    output_meat_production_liveweight = output_meat_production_liveweight,
+    output_meat_production_liveweight = meat_production_live_weight_cohort,
     ratio_ne_to_me = ratio_ne_me_camelids
   ), by = .I]
 

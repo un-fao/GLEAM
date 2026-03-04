@@ -103,17 +103,21 @@ utils::globalVariables(c(
   "x.fibre_yield_year", "x.litter_size", "x.parturition_rate",
   "x.weaning_weight", "x.birth_weight", "x.age_first_parturition",
   "Item_Name", "dmi", "milk_yield",
-  # Columns used in run_production_cohort
-  "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",
-  "milk_fat", "fibre_cohorts_size", "fibre_prod",
-  "output_fibre_production", "offtake_number", "carcass_dressing_percentage",
-  "bone_free_meat_fraction", "meat_protein"
+  # Columns used in run_production_cohort (cohort-level + outputs)
+  "cohort_stock_size", "offtake_heads_assessment", "slaughter_weight_cohort",
+  "carcass_dressing_fraction", "bone_free_meat_fraction", "meat_protein_fraction",
+  "fibre_production_cohort",
+  # data.table join prefixes used in run_production_cohort (herd-level lookups)
+  "x.milk_yield_day", "x.simulation_duration", "x.lactating_females_fraction",
+  "x.milk_protein_fraction", "x.milk_fat_fraction", "x.milk_lactose_fraction",
+  "x.milk_protein_fraction_standard", "x.milk_fat_fraction_standard", "x.milk_lactose_fraction_standard",
+  "x.fibre_yield_year"
 ))
 
 utils::globalVariables(c(
   # Columns used in run_allocation
-  "slaughterLW", "initialLW", "output_meat_production_liveweight",
-  "output_milk_fpcm_production", "nefibre", "nework",
+  "slaughterLW", "initialLW", "meat_production_live_weight_cohort",
+  "milk_production_fpcm_cohort", "nefibre", "nework",
   "energy_allocation_milk", "energy_allocation_meat",
   "energy_allocation_fibre", "energy_allocation_work", "energy_allocation_eggs",
   "total_allocation_energy", "allocation_share_meat", "allocation_share_milk",

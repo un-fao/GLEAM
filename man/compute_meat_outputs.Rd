@@ -5,30 +5,38 @@
 \title{Compute Meat Production Outputs}
 \usage{
 compute_meat_outputs(
-  offtake_number_assessment,
-  slaughter_weight,
-  carcass_dressing_percentage,
+  offtake_heads_assessment,
+  slaughter_weight_cohort,
+  carcass_dressing_fraction,
   bone_free_meat_fraction,
-  meat_protein
+  meat_protein_fraction
 )
 }
 \arguments{
-\item{offtake_number_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) (heads/year).}
+\item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the
+assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA)
+(heads/year).}
 
-\item{slaughter_weight}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the
+cohort (kg).}
 
-\item{carcass_dressing_percentage}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).}
+\item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its
+live weight (fraction).}
 
 \item{bone_free_meat_fraction}{Numeric. Ratio of bone-free-meat to carcass weight (fraction).}
 
-\item{meat_protein}{Numeric. Protein content of bone-free-meat (kg protein/kg bone-free-meat).}
+\item{meat_protein_fraction}{Numeric. Protein content of bone-free-meat (fraction).}
 }
 \value{
 Named list containing:
-\item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
-\item{output_meat_production_carcassweight}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
-\item{output_meat_production_meat}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg/cohort/assessment period)}
-\item{output_meat_production_protein}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/assessment period).}
+\item{meat_production_live_weight_cohort}{Numeric. Total meat produced expressed as live weight
+removed via offtake (kg live weight / cohort / assessment period).}
+\item{meat_production_carcass_weight_cohort}{Numeric. Total carcass weight produced after
+dressing (kg carcass weight / cohort / assessment period).}
+\item{meat_production_bone_free_meat_cohort}{Numeric. Total bone-free meat produced (kg meat /
+cohort / assessment period).}
+\item{meat_production_protein_cohort}{Numeric. Total meat protein produced (kg protein / cohort
+/ assessment period).}
 
 Cohorts with no offtake during the assessment period should return
 zero outputs through upstream parameterisation (e.g. \code{offtake_number = 0}).
