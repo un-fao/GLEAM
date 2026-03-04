@@ -31,7 +31,8 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals.
+Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -41,34 +42,48 @@ Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{milk_yield_day}{{Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day).
-This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals during the assessment period,
-divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for species = CML, CTL, BFL, SHP, and GTS.}}
+\item{milk_yield_day}{{Numeric. Average milk yield per milk-producing animal during the assessment duration
+(kg/head/day).
+This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals
+during the assessment period,
+divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for
+species = CML, CTL, BFL, SHP, and GTS.}}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
 
-\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
+\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
+FS, FA, MJ, MS, MA).}
 
-\item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction). Required only for species: CML, CTL, BFL, SHP, and GTS.}
+\item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment
+period (fraction). Required only for species: CML, CTL, BFL, SHP, and GTS.}
 
-\item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein/kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein/kg milk). Required only for species = CML,
+CTL, BFL, SHP, and GTS.}
 
-\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat/kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat/kg milk). Required only for species = CML, CTL, BFL, SHP,
+and GTS.}
 
-\item{milk_lactose_fraction}{Numeric. Milk lactose fraction (kg lactose/kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_lactose_fraction}{Numeric. Milk lactose fraction (kg lactose/kg milk). Required only for species = CML,
+CTL, BFL, SHP, and GTS.}
 
-\item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}
+\item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
+Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}
 
-\item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg fat/kg milk). Suggested value = 0.04.}
+\item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
+(FPCM), (kg fat/kg milk). Suggested value = 0.04.}
 
-\item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk). Suggested value = 0.048.}
+\item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate
+Fat-protein-corrected milk (FPCM), (kg lactose/kg milk). Suggested value = 0.048.}
 }
 \value{
 A named list with:
 \describe{
-\item{milk_production_mass_cohort}{Numeric. Total milk production produced over the assessment period (kg/cohort/assessment period).}
-\item{milk_production_protein_cohort}{Numeric. Total milk protein production produced over the assessment period (kg protein/cohort/assessment period).}
-\item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment period (kg/cohort/assessment period).}
+\item{milk_production_mass_cohort}{Numeric. Total milk production produced over the assessment period
+(kg/cohort/assessment period).}
+\item{milk_production_protein_cohort}{Numeric. Total milk protein production produced over the assessment period (kg
+protein/cohort/assessment period).}
+\item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
+period (kg/cohort/assessment period).}
 }
 }
 \description{

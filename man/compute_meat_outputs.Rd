@@ -13,11 +13,13 @@ compute_meat_outputs(
 )
 }
 \arguments{
-\item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).}
+\item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period,
+aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).}
 
 \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 
-\item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).}
+\item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
+(fraction).}
 
 \item{bone_free_meat_fraction}{Numeric. Ratio of bone-free-meat to carcass weight (fraction).}
 
@@ -26,11 +28,15 @@ compute_meat_outputs(
 \value{
 A named list with:
 \describe{
-\item{meat_production_live_weight_cohort}{Numeric . Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
-\item{meat_production_carcass_weight_cohort}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
-\item{meat_production_bone_free_meat_cohort}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal)
+\item{meat_production_live_weight_cohort}{Numeric . Total meat produced as live weight over the assessment period by
+cohort (kg/cohort/assessment period).}
+\item{meat_production_carcass_weight_cohort}{Numeric. Total meat as carcass weight (excluding organs, and other
+by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_bone_free_meat_cohort}{Numeric. Total bone-free-meat (excluding bones, organs, and other
+by-products after dressing and bone removal)
 produced over the assessment period by cohort (kg/cohort/assessment period).}
-\item{meat_production_protein_cohort}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced
+\item{meat_production_protein_cohort}{Numeric. Total meat protein (excluding bones, organs, and other by-products
+after dressing and bone removal) produced
 over the assessment period by cohort (kg protein/cohort/assessment period).}
 }
 }

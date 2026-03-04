@@ -2,7 +2,7 @@
 #'
 #' Computes cohort-level production outputs over the assessment period by combining
 #' cohort-level herd structure inputs with herd-level production parameters.
-#' The function returns annualised milk, fibre, and meat outputs for each cohort.
+#' The function returns milk, fibre, and meat outputs for each cohort.
 #'
 #' @param cohort_level_data data.table. Cohort-level input table (one row per herd-cohort) with the
 #'   following data requirement:
@@ -59,7 +59,7 @@
 #' \item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
 #' (FPCM), (kg fat/kg milk). Suggested value = 0.04.}
 #' \item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate
-#' Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk). Suggested value = 0.048.}
+#' Fat-protein-corrected milk (FPCM), (kg lactose/kg milk). Suggested value = 0.048.}
 #' \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
 #' Required only for species = CML, SHP, and GTS.}
 #' \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
@@ -69,7 +69,7 @@
 #'   }
 #'
 #' @param simulation_duration Numeric. Length of the assessment period (days).
-#' @param show_indicator Logical.Logical. Whether to display progress indicators during simulation.
+#' @param show_indicator Logical. Whether to display progress indicators during simulation.
 #'   Defaults to `TRUE`.
 #'
 #' @return A `data.table` with the original cohort-level input columns plus the following new variables:

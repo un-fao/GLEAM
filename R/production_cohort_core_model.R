@@ -47,7 +47,7 @@
 #' @param milk_fat_fraction_standard Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
 #' (FPCM), (kg fat/kg milk). Suggested value = 0.04.
 #' @param milk_lactose_fraction_standard Numeric. Standard lactose content of milk, used to calculate
-#' Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk). Suggested value = 0.048.
+#' Fat-protein-corrected milk (FPCM), (kg lactose/kg milk). Suggested value = 0.048.
 #'
 #' @return A named list with:
 #' \describe{
