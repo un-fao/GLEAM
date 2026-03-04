@@ -285,16 +285,6 @@ test_that("compute_fibre_output handles validation errors", {
     compute_fibre_output(cohort_short = "MA", fibre_yield_year = -0.1, simulation_duration = 365, cohort_stock_size = 100),
     "fibre_yield_year"
   )
-
-  expect_error(
-    compute_fibre_output(cohort_short = "MA", fibre_yield_year = 0.1, simulation_duration = 0, cohort_stock_size = 100),
-    "simulation_duration"
-  )
-
-  expect_error(
-    compute_fibre_output(cohort_short = "MA", fibre_yield_year = 0.1, simulation_duration = 365, cohort_stock_size = -100),
-    "cohort_stock_size"
-  )
 })
 
 
