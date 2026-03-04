@@ -35,24 +35,26 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair
-(kg/head/year).}
+\item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year). Required only for species = CML, SHP, and GTS.}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
 
-\item{cohort_stock_size}{Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA),
-sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile
-males (MJ) at the start of the year (heads).}
+\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
 }
 \value{
-Numeric. Total fibre produced over the assessment period (kg fibre / cohort / assessment
-period).
-
-Cohorts that do not produce fibre should return zero output through
-upstream parameterisation.
+Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).
 }
 \description{
-Computes fibre production for producing cohorts (\code{FA}, \code{MA}, \code{FS}, \code{MS}) by scaling
-per-animal fibre yield to the assessment period and cohort size.
-The output is expressed in kg per cohort per assessment period.
+Computes fibre production for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
+of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}) over the assessment period
+(kg/cohort/assessment period).
+}
+\details{
+Fibre production outputs are computed as follows:
+
+\eqn{fibre\_production =
+  \frac{fibre\_yield\_year}{365} \times simulation\_duration \times cohort\_stock\_size}
+
+Non-zero fibre outputs are only expected for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
+of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}).
 }

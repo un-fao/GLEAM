@@ -12,8 +12,8 @@ run_production_cohort(
 )
 }
 \arguments{
-\item{cohort_level_data}{data.table. Cohort-level production inputs (one row per herd-cohort)
-with columns:
+\item{cohort_level_data}{data.table. Cohort-level input table (one row per herd-cohort) with the
+following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
@@ -25,12 +25,12 @@ with columns:
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
-\item{cohort_stock_size}{Population size in each of the 6 sex–age cohorts at the start of the year (heads).}
-\item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA) (heads/year).}
+\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
+\item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).}
 \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 }}
 
-\item{herd_level_data}{data.table. Herd-level inputs (one row per \code{herd_id}) with columns:
+\item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 \item{animal}{Character. Livestock category name used to map to a species short code via an
@@ -44,52 +44,60 @@ internal lookup table. Supported values include:
 \item \code{Pigs}
 \item \code{Camels}
 }}
-\item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals during the assessment period, divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for species = CML, CTL, BFL, SHP, and GTS.}
-\item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction). Required only for species = CML, CTL, BFL, SHP, and GTS.}
-\item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein/kg milk).}
-\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat / kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
-\item{milk_lactose_fraction}{Numeric. Milk lactose fraction (kg lactose/kg milk).}
-\item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk used for FPCM (kg protein/kg milk). Default 0.033.}
-\item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk used for FPCM (kg fat/kg milk). Default 0.04.}
-\item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk used for FPCM (kg lactose/kg milk). Default 0.048.}
+\item{milk_yield_day}{Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day).
+This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals during the assessment period,
+divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction). Required only for species: CML, CTL, BFL, SHP, and GTS.}
+\item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein/kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat/kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_lactose_fraction}{Numeric. Milk lactose fraction (kg lactose/kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}
+\item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg fat/kg milk). Suggested value = 0.04.}
+\item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk). Suggested value = 0.048.}
 \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year). Required only for species = CML, SHP, and GTS.}
 \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).}
 \item{bone_free_meat_fraction}{Numeric. Ratio of bone-free-meat to carcass weight (fraction).}
-\item{meat_protein_fraction}{Numeric. Protein content of bone-free-meat (fraction).}
+\item{meat_protein_fraction}{Numeric. Protein content of bone-free-meat (kg protein/kg bone-free-meat).}
 }}
 
-\item{simulation_duration}{Numeric. Length of the assessment period (days). Defaults to \code{365}.}
+\item{simulation_duration}{Numeric. Length of the assessment period (days).}
 
-\item{show_indicator}{Logical. Whether to display progress indicators during the calculation.
+\item{show_indicator}{Logical.Logical. Whether to display progress indicators during simulation.
 Defaults to \code{TRUE}.}
 }
 \value{
-data.table. The input \code{cohort_level_data} with the following columns appended:
-
-\strong{Milk production outputs}
-\item{milk_production_mass_cohort}{Total milk produced over the assessment period (kg milk / cohort / assessment period).}
-\item{milk_production_protein_cohort}{Total milk protein produced over the assessment period (kg protein / cohort / assessment period).}
-\item{milk_production_fpcm_cohort}{Total fat-protein-corrected milk (FPCM) produced over the assessment period, calculated using IDF (2022) energy-based correction with standard composition (kg FPCM / cohort / assessment period).}
-
-\strong{Fibre production outputs}
-\item{fibre_production_cohort}{Total fibre produced over the assessment period (kg fibre / cohort / assessment period).}
-
-\strong{Meat production outputs}
-\item{meat_production_live_weight_cohort}{Total meat produced expressed as live weight removed via offtake (kg live weight / cohort / assessment period).}
-\item{meat_production_carcass_weight_cohort}{Total carcass weight produced after dressing (kg carcass weight / cohort / assessment period).}
-\item{meat_production_bone_free_meat_cohort}{Total bone-free meat produced (kg meat / cohort / assessment period).}
-\item{meat_production_protein_cohort}{Total meat protein produced (kg protein / cohort / assessment period).}
+A \code{data.table} with the original cohort-level input columns plus the following new variables:
+\describe{
+\item{milk_production_mass_cohort}{Numeric. Total milk production produced over the assessment period (kg/cohort/assessment period).}
+\item{milk_production_protein_cohort}{Numeric. Total milk protein production produced over the assessment period (kg protein/cohort/assessment period).}
+\item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment period (kg/cohort/assessment period).}
+\item{fibre_production_cohort}{Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).}
+\item{meat_production_live_weight_cohort}{Numeric . Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_carcass_weight_cohort}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_bone_free_meat_cohort}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal)
+produced over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_protein_cohort}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced
+over the assessment period by cohort (kg protein/cohort/assessment period).}
+}
 }
 \description{
-Drives the production cohort workflow to translate cohort-level and herd-level
-inputs into annualised milk, fibre, and meat outputs for each cohort row.
-Validates the two input tables, computes the three production streams with the
-core helpers, and writes the derived columns back into the cohort data.table.
+Computes cohort-level production outputs over the assessment period by combining
+cohort-level herd structure inputs with herd-level production parameters.
+The function returns annualised milk, fibre, and meat outputs for each cohort.
 }
 \details{
-Input data must be loaded beforehand. Package examples live under
-\code{inst/extdata/run_modules_examples} and can be accessed via
-\code{system.file()} together with \code{data.table::fread()}.
+This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
+maps \code{animal} to a species short code (\code{species_short}) via \code{abbr_animals},
+and computes production outputs by cohort.
+
+The following calculation sequence is applied:
+\enumerate{
+\item Milk outputs are computed using \code{\link{compute_milk_outputs}}
+\item Fibre outputs are computed using \code{\link{compute_fibre_output}}
+\item Meat outputs are computed using \code{\link{compute_meat_outputs}}
+}
+
+For species/cohorts where milk or fibre production is not applicable, outputs are returned as zero.
 }
 \examples{
 \dontrun{
@@ -110,4 +118,9 @@ results <- run_production_cohort(
   simulation_duration = 365
 )
 }
+}
+\seealso{
+\code{\link{compute_milk_outputs}},
+\code{\link{compute_fibre_output}},
+\code{\link{compute_meat_outputs}}
 }
