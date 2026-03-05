@@ -1,7 +1,7 @@
 #' Run Enteric Methane (CH₄) Direct Emissions
 #'
 #' Computes daily enteric methane emissions by cohort (kg CH₄/head/day) using a Tier 2
-#'  IPCC approach, by applying species-, cohort- and diet-specific methane 
+#'  IPCC approach, by applying species-, cohort- and diet-specific methane
 #'  conversion factors (ym).
 #'
 #' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
@@ -28,7 +28,7 @@
 #'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
 #'       }}
-#'     \item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as 
+#'     \item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as
 #'     ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).}
 #'     \item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 #'     \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
@@ -46,7 +46,7 @@
 #' @return A \code{data.table} with the original input columns plus the following new variables:
 #'   \describe{
 #'   \item{ch4_mitigation_factor}{Added by the function if not provided as input.}
-#'     \item{ch4_conversion_factor_ym}{Numeric. Methane (CH₄) conversion factor (ym), 
+#'     \item{ch4_conversion_factor_ym}{Numeric. Methane (CH₄) conversion factor (ym),
 #'     representing the percentage of  gross energy of the feed ration that is converted to CH₄ (percentage).}
 #'     \item{ch4_enteric}{Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).}
 #'   }
@@ -80,7 +80,9 @@
 #'   package = "gleam"
 #' )
 #' directemissions_enteric_input_chrt_data <- data.table::fread(input_path)
-#' results <- run_directemissions_enteric(directemissions_enteric_input_chrt_data)
+#' results <- run_directemissions_enteric(
+#' cohort_level_data = directemissions_enteric_input_chrt_data
+#' )
 #' }
 #'
 #' @importFrom data.table :=
