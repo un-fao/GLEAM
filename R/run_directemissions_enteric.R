@@ -143,5 +143,8 @@ run_directemissions_enteric <- function(
     cli::cli_alert_success("Enteric methane emissions calculation complete.")
   }
 
+  # Drop species_short (internal scientific layer only, never user-facing)
+  enteric_results[, species_short := NULL]
+
   return(enteric_results)
 }
