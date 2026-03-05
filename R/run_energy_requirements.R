@@ -3,7 +3,6 @@
 #' Computes cohort-level daily energy requirements (MJ/head/day) and feed dry matter intake (kg DM/head/day)
 #' by applying the IPCC Tier 2 energy partitioning functions.
 #'
-#'
 #' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
@@ -55,7 +54,7 @@
 #'     \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.}
-#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance 
+#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance
 #'     indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
 #'     \item{draught_work_hours_female}{Numeric. Average daily working time per adult female (hours/head/day). Required only for species = CML, CTL, and BFL.}
 #'     \item{draught_work_hours_male}{Numeric. Average daily working time per adult male (hours/head/day). Required only for species = CML, CTL, and BFL.}
@@ -63,38 +62,36 @@
 #'     \item{draught_fraction_male}{Numeric. Fraction of adult males involved in draught work (fraction). Required only for species = CML, CTL, and BFL.}
 #'     \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year). Required only for species = CML, SHP, and GTS.}
 #'   }
-#'     
-#'   
+#'
 #' @param show_indicator Logical. Whether to display progress indicators during simulation.
 #'   Defaults to `TRUE`.
 #'
 #' @return A `data.table` with the original cohort-level input columns plus the following new variables:
 #'   \describe{
-#'     \item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost. 
+#'     \item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost.
 #'     Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
-#'     \item{energy_requirement_activity}{Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day). 
+#'     \item{energy_requirement_activity}{Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
 #'     Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 #'     \item{energy_requirement_growth}{Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 #'     \item{energy_requirement_lactation}{Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 #'     \item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
 #'     Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-#'     \item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. 
+#'     \item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 #'     Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
-#'     \item{energy_requirement_pregnancy}{Numeric. Energy required for pregnancy for pregnant females (MJ/head/day). 
+#'     \item{energy_requirement_pregnancy}{Numeric. Energy required for pregnancy for pregnant females (MJ/head/day).
 #'     Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 #'     \item{net_energy_maintenance_digestible_energy_ratio}{Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).}
 #'     \item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).}
-#'     \item{energy_requirement_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
+#'     \item{energy_requirement_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
 #'     For CML and PGS the function returns the summed daily metabolizable energy requirement.}
 #'     \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'   }
-#' 
-#' 
+#'
 #' @details
 #' This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
 #' maps \code{animal} to a species short code (\code{species_short}) via \code{abbr_animals},
 #' and computes IPCC Tier 2 energy partition components and derived feed intake metrics by cohort.
-#' 
+#'
 #' Energy requirements are expressed as:
 #' \itemize{
 #'   \item \strong{Net energy} for:
@@ -153,7 +150,7 @@
 #' ))
 #'
 #' # Run energy requirement and DMI calculations
-#' energy_results <- run_energy_requirements(
+#' results <- run_energy_requirements(
 #'   cohort_level_data = energy_requirements_chrt_dt,
 #'   herd_level_data = energy_requirements_hrd_dt
 #' )
@@ -180,13 +177,8 @@ run_energy_requirements <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
-  # --- Step 3: Map full animal names to species_short (herd table only) -------
-  herd_level_data <- merge(
-    herd_level_data,
-    abbr_animals,
-    by = "animal",
-    all.x = TRUE
-  )
+  # --- Step 3: Map full animal names to species_short -------------------------
+  herd_level_data[abbr_animals, species_short := i.species_short, on = "animal"]
 
   # --- Step 4: Maintenance energy (MJ/day) ------------------------------------
   cohort_level_data[

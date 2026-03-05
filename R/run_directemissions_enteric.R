@@ -103,12 +103,7 @@ run_directemissions_enteric <- function(
   enteric_results <- data.table::copy(cohort_level_data)
 
   # --- Step 3: Map full animal names to species_short -------------------------
-  enteric_results <- merge(
-    enteric_results,
-    abbr_animals,
-    by = "animal",
-    all.x = TRUE
-  )
+  enteric_results[abbr_animals, species_short := i.species_short, on = "animal"]
 
   # Use mitigation factor from data if present; otherwise default to 1.
   if (!"ch4_mitigation_factor" %in% names(enteric_results)) {
