@@ -218,7 +218,7 @@
 #'   package = "gleam"
 #' ))
 #'
-#' result <- run_directemissions_manure(
+#' results <- run_directemissions_manure(
 #'   cohort_level_data = directemissions_manure_input_chrt_data,
 #'   manure_management_system_fraction = manure_management_system_fraction,
 #'   manure_management_system_factors = manure_management_system_factors

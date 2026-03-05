@@ -109,7 +109,7 @@ nitrogen_balance_hrd_dt <- data.table::fread(system.file(
 ))
 
 # Run nitrogen balance calculations
-nitrogen_results <- run_nitrogen_balance(
+results <- run_nitrogen_balance(
   cohort_level_data = nitrogen_balance_chrt_dt,
   herd_level_data = nitrogen_balance_hrd_dt
 )

@@ -1,12 +1,12 @@
 #' Run Nitrogen Balance
 #'
 #' Computes cohort-level daily nitrogen intake, retention, and excretion (kg N/head/day)
-#' by applying IPCC Tier 2 approach. 
+#' by applying IPCC Tier 2 approach.
 #'
 #' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
 #'  \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'     \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. 
+#'     \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals.
 #'     Supported values include:
 #'       \itemize{
 #'         \item \code{FA}: adult females (from age at first parturition)
@@ -21,8 +21,8 @@
 #'     \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 #'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 #'   }
-#' 
-#' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with 
+#'
+#' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with
 #' the following data requirement:
 #'   \describe{
 #'    \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
@@ -38,17 +38,17 @@
 #'        \item \code{Pigs}
 #'        \item \code{Camels}
 #'        }}
-#'    \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein / kg milk). 
+#'    \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein / kg milk).
 #'    Required only for species = CML, CTL, BFL, SHP, and GTS.}
-#'     \item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during 
-#'     the assessment duration (kg/head/day). This value is calculated as the total quantity 
-#'     of milk produced for human consumption by milk-producing animals during the assessment period, 
-#'     divided by the number of milk-producing animals, and the length of the assessment period (days). 
+#'     \item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during
+#'     the assessment duration (kg/head/day). This value is calculated as the total quantity
+#'     of milk produced for human consumption by milk-producing animals during the assessment period,
+#'     divided by the number of milk-producing animals, and the length of the assessment period (days).
 #'     Required only for species = CML, CTL, BFL, SHP, and GTS.}
 #'     \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as
 #'     wool, cashmere, mohair (kg/head/year).
 #'     Required only for species = CML, SHP, and GTS.}
-#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). 
+#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition).
 #'     This value can be calculated as the total number of offspring born divided
 #'     by the total number of parturitions during the year.}
 #'     \item{parturition_rate}{Numeric. Average annual number of parturitions per
@@ -59,8 +59,8 @@
 #'     \item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
-#'   } 
-#'   
+#'   }
+#'
 #' @param show_indicator Logical. Whether to display progress indicators during simulation.
 #'   Defaults to `TRUE`.
 #'
@@ -71,7 +71,7 @@
 #'     tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)}
 #'     \item{nitrogen_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
 #'   }
-#'   
+#'
 #' @details
 #' This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
 #' maps \code{animal} to species short code (\code{species_short}) via \code{abbr_animals},
@@ -86,10 +86,10 @@
 #'   \item Daily nitrogen excretion is computed using \code{\link{compute_nitrogen_excretion}}
 #'   as intake minus retention (species-specific validation applied).
 #' }
-#' 
+#'
 #'
 #' @seealso
-#' \code{\link{compute_nitrogen_intake}}, 
+#' \code{\link{compute_nitrogen_intake}},
 #' \code{\link{compute_nitrogen_retention}},
 #' \code{\link{compute_nitrogen_excretion}}
 #'
@@ -106,7 +106,7 @@
 #' ))
 #'
 #' # Run nitrogen balance calculations
-#' nitrogen_results <- run_nitrogen_balance(
+#' results <- run_nitrogen_balance(
 #'   cohort_level_data = nitrogen_balance_chrt_dt,
 #'   herd_level_data = nitrogen_balance_hrd_dt
 #' )
