@@ -25,7 +25,7 @@ test_that("calc_diet_co2_feed_fertilizer rejects invalid co2_feed_fertilizer typ
 test_that("calc_diet_co2_feed_fertilizer rejects NA feed_ration_fraction", {
   expect_error(
     calc_diet_co2_feed_fertilizer(NA_real_, 10),
-    "must be a single numeric"
+    "must not contain missing values"
   )
 })
 

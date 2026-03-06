@@ -6,13 +6,7 @@ validate_diet_co2_feed_fertilizer_inputs <- function(
     co2_feed_fertilizer
 ) {
   validate_param_range(feed_ration_fraction)
-
-  if (!is.na(co2_feed_fertilizer) && (!is.numeric(co2_feed_fertilizer) || length(co2_feed_fertilizer) != 1)) {
-    cli::cli_abort("{.arg co2_feed_fertilizer} must be a single numeric (scalar). NA is allowed.")
-  }
-  if (!is.na(co2_feed_fertilizer) && co2_feed_fertilizer < 0) {
-    cli::cli_abort("{.arg co2_feed_fertilizer} must be >= 0.")
-  }
+  validate_scalar_numeric_or_na(co2_feed_fertilizer, min_val = 0)
 }
 
 #' Validate inputs for calc_diet_co2_feed_pesticides
@@ -23,13 +17,7 @@ validate_diet_co2_feed_pesticides_inputs <- function(
     co2_feed_pesticides
 ) {
   validate_param_range(feed_ration_fraction)
-
-  if (!is.na(co2_feed_pesticides) && (!is.numeric(co2_feed_pesticides) || length(co2_feed_pesticides) != 1)) {
-    cli::cli_abort("{.arg co2_feed_pesticides} must be a single numeric (scalar). NA is allowed.")
-  }
-  if (!is.na(co2_feed_pesticides) && co2_feed_pesticides < 0) {
-    cli::cli_abort("{.arg co2_feed_pesticides} must be >= 0.")
-  }
+  validate_scalar_numeric_or_na(co2_feed_pesticides, min_val = 0)
 }
 
 #' Validate inputs for calc_diet_co2_feed_crop_operations
@@ -40,13 +28,7 @@ validate_diet_co2_feed_crop_operations_inputs <- function(
     co2_feed_crop_operations
 ) {
   validate_param_range(feed_ration_fraction)
-
-  if (!is.na(co2_feed_crop_operations) && (!is.numeric(co2_feed_crop_operations) || length(co2_feed_crop_operations) != 1)) {
-    cli::cli_abort("{.arg co2_feed_crop_operations} must be a single numeric (scalar). NA is allowed.")
-  }
-  if (!is.na(co2_feed_crop_operations) && co2_feed_crop_operations < 0) {
-    cli::cli_abort("{.arg co2_feed_crop_operations} must be >= 0.")
-  }
+  validate_scalar_numeric_or_na(co2_feed_crop_operations, min_val = 0)
 }
 
 #' Validate inputs for calc_diet_co2_feed_luc_nopeat
@@ -57,10 +39,7 @@ validate_diet_co2_feed_luc_nopeat_inputs <- function(
     co2_feed_luc_nopeat
 ) {
   validate_param_range(feed_ration_fraction)
-
-  if (!is.na(co2_feed_luc_nopeat) && (!is.numeric(co2_feed_luc_nopeat) || length(co2_feed_luc_nopeat) != 1)) {
-    cli::cli_abort("{.arg co2_feed_luc_nopeat} must be a single numeric (scalar). NA is allowed.")
-  }
+  validate_scalar_numeric_or_na(co2_feed_luc_nopeat, min_val = -Inf)
 }
 
 #' Validate inputs for calc_diet_co2_feed_luc_peat
@@ -71,10 +50,7 @@ validate_diet_co2_feed_luc_peat_inputs <- function(
     co2_feed_luc_peat
 ) {
   validate_param_range(feed_ration_fraction)
-
-  if (!is.na(co2_feed_luc_peat) && (!is.numeric(co2_feed_luc_peat) || length(co2_feed_luc_peat) != 1)) {
-    cli::cli_abort("{.arg co2_feed_luc_peat} must be a single numeric (scalar). NA is allowed.")
-  }
+  validate_scalar_numeric_or_na(co2_feed_luc_peat, min_val = -Inf)
 }
 
 #' Validate inputs for calc_diet_n2o_feed_fertilizer
@@ -85,13 +61,7 @@ validate_diet_n2o_feed_fertilizer_inputs <- function(
     n2o_feed_fertilizer
 ) {
   validate_param_range(feed_ration_fraction)
-
-  if (!is.na(n2o_feed_fertilizer) && (!is.numeric(n2o_feed_fertilizer) || length(n2o_feed_fertilizer) != 1)) {
-    cli::cli_abort("{.arg n2o_feed_fertilizer} must be a single numeric (scalar). NA is allowed.")
-  }
-  if (!is.na(n2o_feed_fertilizer) && n2o_feed_fertilizer < 0) {
-    cli::cli_abort("{.arg n2o_feed_fertilizer} must be >= 0.")
-  }
+  validate_scalar_numeric_or_na(n2o_feed_fertilizer, min_val = 0)
 }
 
 #' Validate inputs for calc_diet_n2o_feed_manure_applied
@@ -102,13 +72,7 @@ validate_diet_n2o_feed_manure_applied_inputs <- function(
     n2o_feed_manure_applied
 ) {
   validate_param_range(feed_ration_fraction)
-
-  if (!is.na(n2o_feed_manure_applied) && (!is.numeric(n2o_feed_manure_applied) || length(n2o_feed_manure_applied) != 1)) {
-    cli::cli_abort("{.arg n2o_feed_manure_applied} must be a single numeric (scalar). NA is allowed.")
-  }
-  if (!is.na(n2o_feed_manure_applied) && n2o_feed_manure_applied < 0) {
-    cli::cli_abort("{.arg n2o_feed_manure_applied} must be >= 0.")
-  }
+  validate_scalar_numeric_or_na(n2o_feed_manure_applied, min_val = 0)
 }
 
 #' Validate inputs for calc_diet_n2o_feed_crop_residues
@@ -119,13 +83,7 @@ validate_diet_n2o_feed_crop_residues_inputs <- function(
     n2o_feed_crop_residues
 ) {
   validate_param_range(feed_ration_fraction)
-
-  if (!is.na(n2o_feed_crop_residues) && (!is.numeric(n2o_feed_crop_residues) || length(n2o_feed_crop_residues) != 1)) {
-    cli::cli_abort("{.arg n2o_feed_crop_residues} must be a single numeric (scalar). NA is allowed.")
-  }
-  if (!is.na(n2o_feed_crop_residues) && n2o_feed_crop_residues < 0) {
-    cli::cli_abort("{.arg n2o_feed_crop_residues} must be >= 0.")
-  }
+  validate_scalar_numeric_or_na(n2o_feed_crop_residues, min_val = 0)
 }
 
 #' Validate inputs for calc_diet_ch4_feed_rice
@@ -136,11 +94,5 @@ validate_diet_ch4_feed_rice_inputs <- function(
     ch4_feed_rice
 ) {
   validate_param_range(feed_ration_fraction)
-
-  if (!is.na(ch4_feed_rice) && (!is.numeric(ch4_feed_rice) || length(ch4_feed_rice) != 1)) {
-    cli::cli_abort("{.arg ch4_feed_rice} must be a single numeric (scalar). NA is allowed.")
-  }
-  if (!is.na(ch4_feed_rice) && ch4_feed_rice < 0) {
-    cli::cli_abort("{.arg ch4_feed_rice} must be >= 0.")
-  }
+  validate_scalar_numeric_or_na(ch4_feed_rice, min_val = 0)
 }
