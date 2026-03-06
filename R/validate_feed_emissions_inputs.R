@@ -18,20 +18,20 @@ validate_feed_indirect_emissions_inputs <- function(
   if (!data.table::is.data.table(feed_emissions)) {
     cli::cli_abort("{.arg feed_emissions} must be a data.table.")
   }
-  
+
   if (nrow(rations_share) == 0) {
     cli::cli_abort("{.arg rations_share} must contain at least one row.")
   }
   if (nrow(feed_emissions) == 0) {
     cli::cli_abort("{.arg feed_emissions} must contain at least one row.")
   }
-  
+
   # --- Required columns validation --------------------------------------------
   required_rations_cols <- c(
     "herd_id", "animal", "feed_name", "feed_id", "cohort_short",
     "feed_ration_fraction"
   )
-  
+
   required_emissions_cols <- c(
     "feed_id",
     "co2_feed_fertilizer",
@@ -44,21 +44,21 @@ validate_feed_indirect_emissions_inputs <- function(
     "n2o_feed_crop_residues",
     "ch4_feed_rice"
   )
-  
+
   missing_rations_cols <- setdiff(required_rations_cols, names(rations_share))
   if (length(missing_rations_cols) > 0) {
     cli::cli_abort(
       "Missing required columns in {.arg rations_share}: {.val {missing_rations_cols}}"
     )
   }
-  
+
   missing_emissions_cols <- setdiff(required_emissions_cols, names(feed_emissions))
   if (length(missing_emissions_cols) > 0) {
     cli::cli_abort(
       "Missing required columns in {.arg feed_emissions}: {.val {missing_emissions_cols}}"
     )
   }
-  
+
   # --- Ration share consistency ------------------------------------------------
   ration_sums <- rations_share[
     ,
@@ -68,15 +68,15 @@ validate_feed_indirect_emissions_inputs <- function(
   invalid_ration_sums <- ration_sums[abs(feed_ration_sum - 1) > 1e-6]
   if (nrow(invalid_ration_sums) > 0) {
     cli::cli_abort(
-      "Feed rations must sum to 1 within each herd_id, animal, and cohort_short."
+      "Feed emissions fractions must sum to 1 within each herd_id, animal, and cohort_short."
     )
   }
-  
+
   # --- Rations_share key uniqueness -------------------------------------------
   # Prevent duplicate feed lines within a herd/cohort (and animal).
   # Expected grain: one row per feed per herd_id x animal x cohort_short.
   ration_scope <- c("herd_id", "animal", "cohort_short")
-  
+
   # 1) feed_id must be unique within herd/animal/cohort
   dup_feed_id_rows <- rations_share[
     duplicated(rations_share[, c(ration_scope, "feed_id"), with = FALSE]) |
@@ -84,7 +84,7 @@ validate_feed_indirect_emissions_inputs <- function(
     c(ration_scope, "feed_id"),
     with = FALSE
   ]
-  
+
   if (nrow(dup_feed_id_rows) > 0) {
     preview <- utils::head(unique(dup_feed_id_rows), 10)
     cli::cli_abort(c(
@@ -94,7 +94,7 @@ validate_feed_indirect_emissions_inputs <- function(
       "x" = paste(capture.output(print(preview)), collapse = "\n")
     ))
   }
-  
+
   # 2) feed_name must be unique within herd/animal/cohort
   dup_feed_name_rows <- rations_share[
     duplicated(rations_share[, c(ration_scope, "feed_name"), with = FALSE]) |
@@ -102,7 +102,7 @@ validate_feed_indirect_emissions_inputs <- function(
     c(ration_scope, "feed_name"),
     with = FALSE
   ]
-  
+
   if (nrow(dup_feed_name_rows) > 0) {
     preview <- utils::head(unique(dup_feed_name_rows), 10)
     cli::cli_abort(c(
@@ -111,19 +111,19 @@ validate_feed_indirect_emissions_inputs <- function(
       "i" = "Duplicate keys (first 10):",
       "x" = paste(capture.output(print(preview)), collapse = "\n")
     ))
-  
+
   }
   # --- Feed emissions integrity checks ----------------------------------------
   dup_feed_ids <- feed_emissions[
     duplicated(feed_id) | duplicated(feed_id, fromLast = TRUE),
     unique(feed_id)
   ]
-  
+
   if (length(dup_feed_ids) > 0) {
     cols_to_show <- intersect(c("feed_id", "feed_name"), names(feed_emissions))
     dup_rows <- unique(feed_emissions[feed_id %in% dup_feed_ids, ..cols_to_show])
     preview <- utils::head(dup_rows, 10)
-    
+
     cli::cli_abort(c(
       "{.arg feed_emissions$feed_id} must be unique.",
       "i" = "Duplicated feed_id(s): {.val {dup_feed_ids}}",
@@ -131,16 +131,16 @@ validate_feed_indirect_emissions_inputs <- function(
       "x" = paste(capture.output(print(preview)), collapse = "\n")
     ))
   }
-  
+
   # 2) If feed_name is provided, it must be unique (show which ids share a name)
   if ("feed_name" %in% names(feed_emissions)) {
-    
+
     dup_feed_names <- feed_emissions[
       !is.na(feed_name) &
         (duplicated(feed_name) | duplicated(feed_name, fromLast = TRUE)),
       unique(feed_name)
     ]
-    
+
     if (length(dup_feed_names) > 0) {
       # Summarize which feed_ids each duplicated feed_name maps to
       dup_map <- feed_emissions[
@@ -149,9 +149,9 @@ validate_feed_indirect_emissions_inputs <- function(
           n_ids = data.table::uniqueN(feed_id)),
         by = feed_name
       ][order(-n_ids, feed_name)]
-      
+
       preview <- utils::head(dup_map, 10)
-      
+
       cli::cli_abort(c(
         "{.arg feed_emissions$feed_name} must be unique.",
         "i" = "Duplicated feed_name(s): {.val {dup_feed_names}}",
@@ -169,22 +169,22 @@ validate_feed_indirect_emissions_inputs <- function(
       all.x = TRUE,
       suffixes = c("_input", "_emissions")
     )
-    
+
     mismatched_feed_names <- feed_name_check[
       is.na(feed_name_emissions) | feed_name_input != feed_name_emissions,
       unique(feed_id)
     ]
-    
+
     if (length(mismatched_feed_names) > 0) {
       cli::cli_abort(
         "feed_id values with missing or mismatched feed_name in {.arg feed_emissions}: {.val {mismatched_feed_names}}"
       )
     }
   }
-  
+
   # --- Emissions value validation (type + range) ------------------------------
   emissions_value_cols <- setdiff(required_emissions_cols, "feed_id")
-  
+
   # 1) Type checks: must be numeric. NA allowed.
   for (col in emissions_value_cols) {
     x <- feed_emissions[[col]]
@@ -192,7 +192,7 @@ validate_feed_indirect_emissions_inputs <- function(
       cli::cli_abort("{.arg {col}} must be a single numeric (scalar). NA is allowed.")
     }
   }
-  
+
   # 2) Range checks: must be >= 0. NA allowed.
   for (col in emissions_value_cols) {
     x <- feed_emissions[[col]]
