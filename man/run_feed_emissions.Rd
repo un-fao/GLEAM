@@ -177,19 +177,19 @@ For each emission source, cohort-level dietary emission factors are computed as:
 
 # Load table with ration shares
 rations_share <- data.table::fread(system.file(
-  "extdata/examples/feed_rations_share_example.csv", 
+  "extdata/run_modules_examples/feed_rations_share_chrt_data.csv",
   package = "gleam"
 ))
 
 # Load table with feed emission factors
 feed_emissions <- data.table::fread(system.file(
-  "extdata/Parameters/feed/feed_emission_factors.csv", 
+  "extdata/Parameters/feed/feed_emission_factors.csv",
   package = "gleam"
 ))
 
 # Run the code
 result <- run_feed_emissions(
-  rations_share = rations_share, 
+  rations_share = rations_share,
   feed_emissions = feed_emissions
 )
 }
