@@ -78,6 +78,8 @@
 #'     expressed per kg of dry matter intake (g CH₄/kg DM).}
 #'   }
 #'
+#' @param show_indicator Logical. Whether to display progress indicators during calculations.
+#'
 #' @return data.table. Cohort-level emission factors summarized by \code{herd_id},
 #'   \code{animal}, and \code{cohort_short} with the following columns:
 #'   \describe{
@@ -199,15 +201,22 @@
 
 run_feed_emissions <- function(
     rations_share,
-    feed_emissions
+    feed_emissions,
+    show_indicator = TRUE
 ) {
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_feed_indirect_emissions_inputs(rations_share, feed_emissions)
 
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Aggregating feed emissions, please wait\U2026")
+  }
+
+  # --- Step 2: Create working copies ------------------------------------------
   rations_share <- data.table::copy(rations_share)
   feed_emissions <- data.table::copy(feed_emissions)
 
-  # --- Step 2: Merge ration shares with feed emission parameters --------------
+  # --- Step 3: Merge ration shares with feed emission parameters --------------
   feed_emissions_detailed <- merge(
     rations_share,
     feed_emissions,
@@ -215,7 +224,7 @@ run_feed_emissions <- function(
     all.x = TRUE
   )
 
-  # --- Step 3: Calculate cohort feed contributions ----------------------------
+  # --- Step 4: Calculate cohort feed contributions ----------------------------
   feed_emissions_detailed[
     ,
     diet_co2_feed_fertilizer := calc_diet_co2_feed_fertilizer(
@@ -297,7 +306,7 @@ run_feed_emissions <- function(
     by = .I
   ]
 
-  # --- Step 4: Summarize dietary emissions at cohort level --------------------
+  # --- Step 5: Summarize dietary emissions at cohort level --------------------
   feed_emissions_summary <- feed_emissions_detailed[
     ,
     .(
@@ -313,6 +322,12 @@ run_feed_emissions <- function(
     ),
     by = .(herd_id, animal, cohort_short)
   ]
+
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Feed emissions aggregation complete.")
+  }
 
   return(feed_emissions_summary)
 }

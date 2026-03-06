@@ -4,7 +4,7 @@
 \alias{run_feed_emissions}
 \title{Calculate cohort-level average greenhouse gas (GHG) emission factors for feed rations}
 \usage{
-run_feed_emissions(rations_share, feed_emissions)
+run_feed_emissions(rations_share, feed_emissions, show_indicator = TRUE)
 }
 \arguments{
 \item{rations_share}{data.table. Cohort-level feed ration composition shares with the
@@ -80,6 +80,8 @@ feed production, expressed per kg of dry matter intake (g N₂O/kg DM).}
 representing CH₄ emissions from rice cultivation in feed production,
 expressed per kg of dry matter intake (g CH₄/kg DM).}
 }}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
 }
 \value{
 data.table. Cohort-level emission factors summarized by \code{herd_id},
