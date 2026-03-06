@@ -21,7 +21,7 @@ test_that("no function is defined more than once across R/ files", {
     duplicated(all_definitions$fn) | duplicated(all_definitions$fn, fromLast = TRUE),
   ]
 
-  if (nrow(dupes) > 0) {
+  if (NROW(dupes) > 0) {
     dupe_report <- tapply(dupes$file, dupes$fn, paste, collapse = ", ")
     msg <- paste(
       mapply(
@@ -33,5 +33,5 @@ test_that("no function is defined more than once across R/ files", {
     fail(paste("Duplicate function definitions found:\n", msg))
   }
 
-  expect_true(nrow(dupes) == 0)
+  expect_true(NROW(dupes) == 0)
 })
