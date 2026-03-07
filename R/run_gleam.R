@@ -11,9 +11,10 @@
 #'   as the cohort-level input for the weights module (skip herd simulation). If FALSE,
 #'   run herd simulation first using \code{cohort_level_data} and \code{herd_level_data}.
 #' @param cohort_level_data data.table. Cohort-level master table. Must have one row
-#'   per cohort (6 cohorts per herd: FJ, FS, FA, MJ, MS, MA). Data should not
-#'   include columns that GLEAM calculates (validation will block them). May
-#'   optionally include \code{ch4_mitigation_factor} (fraction of baseline enteric
+#'   per cohort (6 cohorts per herd: FJ, FS, FA, MJ, MS, MA) and must include
+#'   \code{animal} (full species name, e.g. Cattle, Buffalo) for each cohort. Data
+#'   should not include columns that GLEAM calculates (validation will block them).
+#'   May optionally include \code{ch4_mitigation_factor} (fraction of baseline enteric
 #'   CH4 remaining after mitigation, 1 = no mitigation).
 #' @param herd_level_data data.table. Herd-level master table (one row per herd).
 #'   Must include \code{animal} (full species name, e.g. Cattle, Buffalo).
@@ -171,7 +172,7 @@ run_gleam <- function(
   gleam_chrt_data <- merge(
     gleam_chrt_data,
     feed_rations_summary,
-    by = c("herd_id", "cohort_short")
+    by = c("herd_id", "animal", "cohort_short")
   )
 
   # --- Step 5: Run energy requirements and DMI --------------------------------

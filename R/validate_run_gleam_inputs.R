@@ -75,6 +75,16 @@ validate_run_gleam_inputs <- function(
     cli::cli_abort("{.arg manure_management_system_factors} must be a data frame (e.g. data.table).")
   }
 
+  # --- Required columns in cohort_level_data ----------------------------------
+  required_cohort_cols <- c("herd_id", "animal", "cohort_short")
+  missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
+  if (length(missing_cohort_cols) > 0L) {
+    cli::cli_abort(
+      "Missing required columns in {.arg cohort_level_data}: {.val {missing_cohort_cols}}.
+      {.var animal} (e.g. Cattle, Buffalo) must be present for each cohort."
+    )
+  }
+
   # --- Block calculated (intermediate) variables in input tables ---------------
   # Columns that GLEAM computes; users must not provide them as inputs.
   gleam_calculated_columns <- c(
