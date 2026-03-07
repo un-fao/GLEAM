@@ -121,7 +121,7 @@ utils::globalVariables(c(
   "energy_allocation_fibre", "energy_allocation_work", "energy_allocation_eggs",
   "total_allocation_energy", "allocation_share_meat", "allocation_share_milk",
   "allocation_share_work", "allocation_share_fibre", "allocation_share_eggs",
-  "allocation_share_other", "allocation_herd_long_all",  # Variables used in run_allocation
+  "allocation_share_other",  # Variables used in run_allocation
   "commodity_name", "commodity_type", "V1"
 ))
 

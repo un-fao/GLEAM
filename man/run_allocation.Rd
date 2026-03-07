@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_allocation.R
 \name{run_allocation}
 \alias{run_allocation}
-\title{Allocation Pipeline (Internal)}
+\title{Allocation Pipeline}
 \usage{
 run_allocation(
   allocation_inputs,
@@ -12,7 +12,8 @@ run_allocation(
   standard_fat = 0.04,
   standard_lactose = 0.048,
   ratio_ne_me_camelids = 0.43,
-  assessment_duration = 365
+  assessment_duration = 365,
+  show_indicator = TRUE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ run_allocation(
 \item{ratio_ne_me_camelids}{Numeric scalar for the net-to-metabolizable energy conversion for camelids.}
 
 \item{assessment_duration}{Numeric scalar. Length of the assessment period (days).}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during the pipeline run.}
 }
 \value{
 A named list of three \code{data.table} objects:
@@ -52,12 +55,11 @@ following the IDF (2022) global carbon footprint standard for the dairy sector.
 # Load example input from the package and run allocation calculation
 input_path <- system.file("extdata/GLEAM_input_allocation.csv", package = "gleam")
 allocation_data <- data.table::fread(input_path)
-result <- run_allocation(allocation_data)
+results <- run_allocation(allocation_data)
 # View herd-level allocation shares
-head(result$herd_summary[, .(Animal_short, allocation_share_meat, allocation_share_milk)])
+head(results$herd_summary[, .(Animal_short, allocation_share_meat, allocation_share_milk)])
 # View long-format allocation
-head(result$allocation_long)
+head(results$allocation_long)
 }
 
 }
-\keyword{internal}

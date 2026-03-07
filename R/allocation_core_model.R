@@ -526,7 +526,12 @@ calc_energy_allocation_work <- function(
 #'
 #' @return A `data.table` at herd scale, in which selected cohort-level variables have been summed across all cohorts belonging to the same herd, as defined by id_herd.
 #' @export
-aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) {
+aggregate_cohort_to_herd <- function(
+    data_cohort,
+    id_cols,
+    vars_to_sum,
+    cohort
+) {
 
   # Aggregate over cohorts
   data_herd <- data_cohort[
@@ -537,7 +542,10 @@ aggregate_cohort_to_herd <- function(data_cohort, id_cols, vars_to_sum, cohort) 
   ]
 
   # Add cohort = "ALL"
-  data_herd[, (cohort) := "ALL"]
+  data_herd[
+    ,
+    (cohort) := "ALL"
+  ]
 
   return(data_herd)
 }
@@ -647,25 +655,25 @@ calc_allocation_shares <- function(
   )
 
   if (animal == "PGS") {
-    allocation_share_meat  <- 1
-    allocation_share_milk  <- 0
+    allocation_share_meat <- 1
+    allocation_share_milk <- 0
     allocation_share_fibre <- 0
-    allocation_share_work  <- 0
-    allocation_share_eggs  <- 0
+    allocation_share_work <- 0
+    allocation_share_eggs <- 0
   } else {
-    allocation_share_meat  <- ifelse(is.na(energy_allocation_meat), 0, energy_allocation_meat / total_energy)
-    allocation_share_milk  <- ifelse(is.na(energy_allocation_milk), 0, energy_allocation_milk / total_energy)
-    allocation_share_fibre  <- ifelse(is.na(energy_allocation_fibre), 0, energy_allocation_fibre / total_energy)
-    allocation_share_work  <- ifelse(is.na(energy_allocation_work), 0, energy_allocation_work / total_energy)
-    allocation_share_eggs  <- ifelse(is.na(energy_allocation_eggs), 0, energy_allocation_eggs / total_energy)
+    allocation_share_meat <- ifelse(is.na(energy_allocation_meat), 0, energy_allocation_meat / total_energy)
+    allocation_share_milk <- ifelse(is.na(energy_allocation_milk), 0, energy_allocation_milk / total_energy)
+    allocation_share_fibre <- ifelse(is.na(energy_allocation_fibre), 0, energy_allocation_fibre / total_energy)
+    allocation_share_work <- ifelse(is.na(energy_allocation_work), 0, energy_allocation_work / total_energy)
+    allocation_share_eggs <- ifelse(is.na(energy_allocation_eggs), 0, energy_allocation_eggs / total_energy)
 
   }
   list(
-    allocation_share_meat  = allocation_share_meat,
-    allocation_share_milk  = allocation_share_milk,
+    allocation_share_meat = allocation_share_meat,
+    allocation_share_milk = allocation_share_milk,
     allocation_share_fibre = allocation_share_fibre,
-    allocation_share_work  = allocation_share_work,
-    allocation_share_eggs  = allocation_share_eggs
+    allocation_share_work = allocation_share_work,
+    allocation_share_eggs = allocation_share_eggs
   )
 }
 
@@ -757,15 +765,20 @@ assign_allocation_to_emissions <- function(
   )
 
   # 3) Excluded vars → 100% to Other, 0% to others
-  out[variable_name %in% excluded_vars & get(commodity_col) == "Other",
-      (allocation_col) := 1]
-
-  out[variable_name %in% excluded_vars & get(commodity_col) != "Other",
-      (allocation_col) := 0]
+  out[
+    variable_name %in% excluded_vars & get(commodity_col) == "Other",
+    (allocation_col) := 1
+  ]
+  out[
+    variable_name %in% excluded_vars & get(commodity_col) != "Other",
+    (allocation_col) := 0
+  ]
 
   # 4) Non-excluded vars → Other = 0
-  out[!(variable_name %in% excluded_vars) & get(commodity_col) == "Other",
-      (allocation_col) := 0]
+  out[
+    !(variable_name %in% excluded_vars) & get(commodity_col) == "Other",
+    (allocation_col) := 0
+  ]
 
   return(out)
 }
