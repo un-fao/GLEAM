@@ -27,11 +27,21 @@ test_that("calc_energy_allocation_milk handles zero milk output", {
 
 test_that("calc_energy_allocation_milk validates bounds", {
   expect_error(
-    calc_energy_allocation_milk(milk_production_fpcm_cohort = -10, milk_protein_fraction_standard = 0.033, milk_fat_fraction_standard = 0.04, milk_lactose_fraction_standard = 0.048),
+    calc_energy_allocation_milk(
+      milk_production_fpcm_cohort = -10,
+      milk_protein_fraction_standard = 0.033,
+      milk_fat_fraction_standard = 0.04,
+      milk_lactose_fraction_standard = 0.048
+    ),
     "is out of range"
   )
   expect_error(
-    calc_energy_allocation_milk(milk_production_fpcm_cohort = 100, milk_protein_fraction_standard = 1.5, milk_fat_fraction_standard = 0.04, milk_lactose_fraction_standard = 0.048),
+    calc_energy_allocation_milk(
+      milk_production_fpcm_cohort = 100,
+      milk_protein_fraction_standard = 1.5,
+      milk_fat_fraction_standard = 0.04,
+      milk_lactose_fraction_standard = 0.048
+    ),
     "is out of range"
   )
 })
@@ -270,15 +280,33 @@ test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
 
 test_that("calc_energy_allocation_fibre validates inputs", {
   expect_error(
-    calc_energy_allocation_fibre(species_short = "INVALID", cohort_stock_size = 100, energy_requirement_fibre_production = 5, ratio_me_to_ne = 1 / 0.43, simulation_duration = 365),
+    calc_energy_allocation_fibre(
+      species_short = "INVALID",
+      cohort_stock_size = 100,
+      energy_requirement_fibre_production = 5,
+      ratio_me_to_ne = 1 / 0.43,
+      simulation_duration = 365
+    ),
     "must be one of"
   )
   expect_error(
-    calc_energy_allocation_fibre(species_short = "SHP", cohort_stock_size = 100, energy_requirement_fibre_production = -5, ratio_me_to_ne = 1 / 0.43, simulation_duration = 365),
+    calc_energy_allocation_fibre(
+      species_short = "SHP",
+      cohort_stock_size = 100,
+      energy_requirement_fibre_production = -5,
+      ratio_me_to_ne = 1 / 0.43,
+      simulation_duration = 365
+    ),
     "must be non-negative"
   )
   expect_error(
-    calc_energy_allocation_fibre(species_short = "SHP", cohort_stock_size = 100, energy_requirement_fibre_production = 5, ratio_me_to_ne = -0.1, simulation_duration = 365),
+    calc_energy_allocation_fibre(
+      species_short = "SHP",
+      cohort_stock_size = 100,
+      energy_requirement_fibre_production = 5,
+      ratio_me_to_ne = -0.1,
+      simulation_duration = 365
+    ),
     "must be positive"
   )
 })
@@ -328,19 +356,43 @@ test_that("calc_energy_allocation_work handles zero energy requirement", {
 
 test_that("calc_energy_allocation_work validates inputs", {
   expect_error(
-    calc_energy_allocation_work(species_short = "INVALID", cohort_stock_size = 100, energy_requirement_work = 10, ratio_me_to_ne = 1 / 0.43, simulation_duration = 365),
+    calc_energy_allocation_work(
+      species_short = "INVALID",
+      cohort_stock_size = 100,
+      energy_requirement_work = 10,
+      ratio_me_to_ne = 1 / 0.43,
+      simulation_duration = 365
+    ),
     "must be one of"
   )
   expect_error(
-    calc_energy_allocation_work(species_short = "CML", cohort_stock_size = 100, energy_requirement_work = -5, ratio_me_to_ne = 1 / 0.43, simulation_duration = 365),
+    calc_energy_allocation_work(
+      species_short = "CML",
+      cohort_stock_size = 100,
+      energy_requirement_work = -5,
+      ratio_me_to_ne = 1 / 0.43,
+      simulation_duration = 365
+    ),
     "must be non-negative"
   )
   expect_error(
-    calc_energy_allocation_work(species_short = "CML", cohort_stock_size = 100, energy_requirement_work = 10, ratio_me_to_ne = -0.1, simulation_duration = 365),
+    calc_energy_allocation_work(
+      species_short = "CML",
+      cohort_stock_size = 100,
+      energy_requirement_work = 10,
+      ratio_me_to_ne = -0.1,
+      simulation_duration = 365
+    ),
     "must be positive"
   )
   expect_error(
-    calc_energy_allocation_work(species_short = "CML", cohort_stock_size = 100, energy_requirement_work = 10, ratio_me_to_ne = 1 / 0.43, simulation_duration = 5000),
+    calc_energy_allocation_work(
+      species_short = "CML",
+      cohort_stock_size = 100,
+      energy_requirement_work = 10,
+      ratio_me_to_ne = 1 / 0.43,
+      simulation_duration = 5000
+    ),
     "must be between 0 and 3650"
   )
 })
