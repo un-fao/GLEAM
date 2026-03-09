@@ -288,8 +288,8 @@ calc_energy_allocation_meat <- function(
     ) / slaughter_weight_cohort
 
   } else if (species_short == "PGS") {
-    # Pigs: not calculated (returns NA)
-    specific_energy_meat <- NA_real_
+    # Pigs: not calculated (returns 0)
+    specific_energy_meat <- 0
   }
 
   # Multiply specific energy by meat output to get total energy allocation
