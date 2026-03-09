@@ -114,15 +114,25 @@ utils::globalVariables(c(
 ))
 
 utils::globalVariables(c(
-  # Columns used in run_allocation
-  "slaughterLW", "initialLW", "meat_production_live_weight_cohort",
-  "milk_production_fpcm_cohort", "nefibre", "nework",
+  # Columns used in run_allocation (cohort-level)
+  "herd_id", "cohort_short", "milk_production_fpcm_cohort", "slaughter_weight_cohort",
+  "meat_production_live_weight_cohort", "energy_requirement_fibre_production",
+  "cohort_stock_size", "energy_requirement_work",
+  # herd-level lookups (x.* from herd_level_data[.SD, on = "herd_id", x.col])
+  "x.milk_protein_fraction_standard", "x.milk_fat_fraction_standard", "x.milk_lactose_fraction_standard",
+  "x.birth_weight", "x.ratio_me_to_ne", "x.species_short",
+  # direct column references also used
+  "milk_protein_fraction_standard", "milk_fat_fraction_standard", "milk_lactose_fraction_standard",
+  "birth_weight", "ratio_me_to_ne", "simulation_duration", "species_short",
+  # energy allocation results
   "energy_allocation_milk", "energy_allocation_meat",
   "energy_allocation_fibre", "energy_allocation_work", "energy_allocation_eggs",
-  "total_allocation_energy", "allocation_share_meat", "allocation_share_milk",
+  # allocation shares
+  "allocation_share_meat", "allocation_share_milk",
   "allocation_share_work", "allocation_share_fibre", "allocation_share_eggs",
-  "allocation_share_other",  # Variables used in run_allocation
-  "commodity_name", "commodity_type", "V1"
+  "allocation_share_other",
+  # reshape and output columns
+  "commodity_name", "commodity_type", "allocation_type", "V1"
 ))
 
 utils::globalVariables(c(

@@ -2,16 +2,16 @@
 #'
 #' Calculates the net energy demand required to produce total fat-protein-corrected milk (FPCM) over a defined assessment period.
 #'
-#' @param milk_fpcm_output Numeric scalar. Total fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/assessment period).
+#' @param milk_production_fpcm_cohort Numeric scalar. Total fat-protein-corrected milk (FPCM) produced over the assessment period  (kg/assessment period).
 #' Default fat and protein content=0.04 and 0.033.
 #'
-#' @param standard_protein Numeric. Standard protein content of milk, used to calculate fat-protein-corrected milk (FPCM), (kg protein/kg milk).
+#' @param milk_protein_fraction_standard Numeric. Standard protein content of milk, used to calculate fat-protein-corrected milk (FPCM), (kg protein/kg milk).
 #' Default used=0.033.
 #'
-#' @param standard_fat Numeric. Standard fat content of milk, used to calculate fat-protein-corrected milk (FPCM), (kg fat/kg milk).
+#' @param milk_fat_fraction_standard Numeric. Standard fat content of milk, used to calculate fat-protein-corrected milk (FPCM), (kg fat/kg milk).
 #' Default used=0.04.
 #'
-#' @param standard_lactose Numeric. Standard lactose content of milk, used to calculate fat-protein-corrected milk (FPCM) , (kg lactose/kg milk).
+#' @param milk_lactose_fraction_standard Numeric. Standard lactose content of milk, used to calculate fat-protein-corrected milk (FPCM) , (kg lactose/kg milk).
 #' Default used=0.048.
 #'
 #' @return Numeric scalar. Energy required to produce total milk output over the assessment period (MJ/cohort/assessment period).
@@ -36,7 +36,7 @@
 #' be used to derive allocation factors among co-products.
 #'
 #' The total energy required for milk production over the assessment period is calculated as:
-#' \code{energy_allocation_milk = energy_standard * milk_fpcm_output}
+#' \code{energy_allocation_milk = energy_standard * milk_production_fpcm_cohort}
 #'
 #' where:
 #'
@@ -76,26 +76,29 @@
 #'
 #' @export
 calc_energy_allocation_milk <- function(
-    milk_fpcm_output,
-    standard_protein,
-    standard_fat,
-    standard_lactose
+    milk_production_fpcm_cohort,
+    milk_protein_fraction_standard,
+    milk_fat_fraction_standard,
+    milk_lactose_fraction_standard
 ) {
   validate_allocation_milk_inputs(
-    milk_fpcm_output, standard_protein, standard_fat, standard_lactose
+    milk_production_fpcm_cohort,
+    milk_protein_fraction_standard,
+    milk_fat_fraction_standard,
+    milk_lactose_fraction_standard
   )
 
   # Calculate energy content of standard milk (MJ/kg milk)
   # Coefficients from IDF (2022): kcal per 100 g milk per 1% unit of fat/protein/lactose
   # Formula: (0.0929 * fat + 0.0547 * protein + 0.0395 * lactose) * 4.184 * 100
   energy_standard <- (
-    0.0929 * standard_fat +
-      0.0547 * standard_protein +
-      0.0395 * standard_lactose
+    0.0929 * milk_fat_fraction_standard +
+      0.0547 * milk_protein_fraction_standard +
+      0.0395 * milk_lactose_fraction_standard
   ) * 4.184 * 100
 
   # Total energy for milk production
-  energy_allocation_milk <- energy_standard * milk_fpcm_output
+  energy_allocation_milk <- energy_standard * milk_production_fpcm_cohort
 
   return(energy_allocation_milk)
 }
@@ -106,7 +109,7 @@ calc_energy_allocation_milk <- function(
 #' liveweight output) over the assessment period for a given species and cohort.
 #'
 #'
-#' @param animal Character. Code identifying the livestock species.
+#' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
@@ -116,7 +119,7 @@ calc_energy_allocation_milk <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param cohort_code Character scalar.Sex- and age-specific cohort code describing the
+#' @param cohort_short Character scalar. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -126,10 +129,10 @@ calc_energy_allocation_milk <- function(
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param slaughter_liveweight Numeric scalar. Live weight at slaughter for animals removed from the cohort (kg).
-#' @param birth_liveweight Numeric scalar. Live weight of the animal at birth (kg).
-#' @param output_meat_production_liveweight Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).
-#' @param ratio_ne_to_me Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.
+#' @param slaughter_weight_cohort Numeric scalar. Live weight at slaughter for animals removed from the cohort (kg).
+#' @param birth_weight Numeric scalar. Live weight of the animal at birth (kg).
+#' @param meat_production_live_weight_cohort Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).
+#' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy to net energy (ME/NE). Used for CML.
 #'
 #' @return Numeric scalar. Energy required by a given sex–age cohort for total meat output by cohort over
 #' the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period).
@@ -163,7 +166,7 @@ calc_energy_allocation_milk <- function(
 #' Total energy required for meat production over the assessment period is then
 #' calculated as:
 #'
-#'\code{energy_allocation_meat = specific_energy_meat * output_meat_production_liveweight}
+#'\code{energy_allocation_meat = specific_energy_meat * meat_production_live_weight_cohort}
 #'
 #'
 #' where
@@ -172,7 +175,7 @@ calc_energy_allocation_milk <- function(
 #' net energy required to produce one kilogram of liveweight gain, accounting
 #' for differences in growth efficiency, reflecting species and cohort specific growth characteristics (MJ/kg live weight).
 #'
-#' \code{output_meat_production_liveweight} is the total liveweight of
+#' \code{meat_production_live_weight_cohort} is the total liveweight of
 #' animals sold for meat during the assessment period, which is calculated with a species-specific approach:
 #'
 #' \itemize{
@@ -217,51 +220,51 @@ calc_energy_allocation_milk <- function(
 #'
 #' @export
 calc_energy_allocation_meat <- function(
-    animal,
-    cohort_code,
-    slaughter_liveweight,
-    birth_liveweight,
-    output_meat_production_liveweight,
-    ratio_ne_to_me
+    species_short,
+    cohort_short,
+    slaughter_weight_cohort,
+    birth_weight,
+    meat_production_live_weight_cohort,
+    ratio_me_to_ne
 ) {
   validate_allocation_meat_inputs(
-    animal, cohort_code,
-    slaughter_liveweight, birth_liveweight, output_meat_production_liveweight, ratio_ne_to_me
+    species_short, cohort_short,
+    slaughter_weight_cohort, birth_weight, meat_production_live_weight_cohort, ratio_me_to_ne
   )
 
   # Default fallback
   specific_energy_meat <- NA_real_
 
   # Check for valid weights
-  if (is.na(animal) || is.na(slaughter_liveweight) || is.na(birth_liveweight)) {
+  if (is.na(species_short) || is.na(slaughter_weight_cohort) || is.na(birth_weight)) {
     energy_allocation_meat <- NA_real_
-  } else if (animal %in% c("CTL", "BFL")) {
+  } else if (species_short %in% c("CTL", "BFL")) {
     # Cattle and Buffalo: use growth efficiency factor based on cohort
-    if (cohort_code %in% c("FA", "FS", "FJ")) {
+    if (cohort_short %in% c("FA", "FS", "FJ")) {
       growth_efficiency_factor <- 0.8
-    } else if (cohort_code %in% c("MA", "MS", "MJ")) {
+    } else if (cohort_short %in% c("MA", "MS", "MJ")) {
       growth_efficiency_factor <- 1
     } else {
       growth_efficiency_factor <- NA_real_
     }
     if (!is.na(growth_efficiency_factor)) {
       specific_energy_meat <- (
-        22.02 * (((slaughter_liveweight - birth_liveweight) / 2) /
-                   (growth_efficiency_factor * slaughter_liveweight))^0.75 *
-          (slaughter_liveweight - birth_liveweight)^1.097
-      ) / slaughter_liveweight
+        22.02 * (((slaughter_weight_cohort - birth_weight) / 2) /
+                   (growth_efficiency_factor * slaughter_weight_cohort))^0.75 *
+          (slaughter_weight_cohort - birth_weight)^1.097
+      ) / slaughter_weight_cohort
     }
 
-  } else if (animal == "CML") {
+  } else if (species_short == "CML") {
+    # Camelids: convert ME to NE using ratio_me_to_ne (ME/NE)
+    specific_energy_meat <- (41.8 * (slaughter_weight_cohort - birth_weight) / slaughter_weight_cohort) / ratio_me_to_ne
 
-    specific_energy_meat <- (41.8 * ratio_ne_to_me * (slaughter_liveweight - birth_liveweight)) / slaughter_liveweight
-
-  } else if (animal == "SHP") {
+  } else if (species_short == "SHP") {
     # Sheep: coefficients vary by cohort (female vs male)
-    if (cohort_code %in% c("FA", "FS", "FJ")) {
+    if (cohort_short %in% c("FA", "FS", "FJ")) {
       a <- 2.1
       b <- 0.45
-    } else if (cohort_code %in% c("MA", "MS", "MJ")) {
+    } else if (cohort_short %in% c("MA", "MS", "MJ")) {
       a <- 4.4
       b <- 0.32
     } else {
@@ -270,27 +273,27 @@ calc_energy_allocation_meat <- function(
     }
     if (!is.na(a) && !is.na(b)) {
       specific_energy_meat <- (
-        (slaughter_liveweight - birth_liveweight) *
-          (a + 0.5 * b * (birth_liveweight + slaughter_liveweight))
-      ) / slaughter_liveweight
+        (slaughter_weight_cohort - birth_weight) *
+          (a + 0.5 * b * (birth_weight + slaughter_weight_cohort))
+      ) / slaughter_weight_cohort
     }
 
-  } else if (animal == "GTS") {
+  } else if (species_short == "GTS") {
     # Goats: fixed coefficients
     a <- 5
     b <- 0.33
     specific_energy_meat <- (
-      (slaughter_liveweight - birth_liveweight) *
-        (a + 0.5 * b * (birth_liveweight + slaughter_liveweight))
-    ) / slaughter_liveweight
+      (slaughter_weight_cohort - birth_weight) *
+        (a + 0.5 * b * (birth_weight + slaughter_weight_cohort))
+    ) / slaughter_weight_cohort
 
-  } else if (animal == "PGS") {
+  } else if (species_short == "PGS") {
     # Pigs: not calculated (returns NA)
     specific_energy_meat <- NA_real_
   }
 
   # Multiply specific energy by meat output to get total energy allocation
-  energy_allocation_meat <- specific_energy_meat * output_meat_production_liveweight
+  energy_allocation_meat <- specific_energy_meat * meat_production_live_weight_cohort
 
   return(energy_allocation_meat)
 }
@@ -300,7 +303,7 @@ calc_energy_allocation_meat <- function(
 #' Calculates the net energy demand associated with fibre production over the
 #' assessment period for fibre-producing species and cohorts.
 #'
-#' @param animal Character. Code identifying the livestock species.
+#' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
@@ -310,12 +313,10 @@ calc_energy_allocation_meat <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
-
-#' @param fibre_energy_requirement Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy for CML (MJ/head/day).
-#' @param ratio_ne_to_me Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.
-#' @param assessment_duration Numeric. Length of the assessment period (days).
-#' @param size Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).
+#' @param cohort_stock_size Numeric. Population size in the cohort at the start of the assessment period (heads).
+#' @param energy_requirement_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy for CML (MJ/head/day).
+#' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy to net energy (ME/NE). Used for CML.
+#' @param simulation_duration Numeric. Length of the assessment period (days).
 #'
 #' @return Numeric scalar. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).
 #'
@@ -389,22 +390,23 @@ calc_energy_allocation_meat <- function(
 #'
 #' @export
 calc_energy_allocation_fibre <- function(
-    animal,
-    size,
-    fibre_energy_requirement,
-    ratio_ne_to_me,
-    assessment_duration
+    species_short,
+    cohort_stock_size,
+    energy_requirement_fibre_production,
+    ratio_me_to_ne,
+    simulation_duration
 ) {
   validate_allocation_fibre_inputs(
-    animal, size, fibre_energy_requirement, ratio_ne_to_me, assessment_duration
+    species_short, cohort_stock_size,
+    energy_requirement_fibre_production, ratio_me_to_ne, simulation_duration
   )
 
-  if (animal %in% c("GTS", "SHP")) {
+  if (species_short %in% c("GTS", "SHP")) {
     # Sheep and goats: direct NE calculation
-    energy_allocation_fibre <- fibre_energy_requirement * assessment_duration * size
-  } else if (animal == "CML") {
-    # Camelids: convert ME to NE using ratio
-    energy_allocation_fibre <- fibre_energy_requirement * ratio_ne_to_me * assessment_duration * size
+    energy_allocation_fibre <- energy_requirement_fibre_production * simulation_duration * cohort_stock_size
+  } else if (species_short == "CML") {
+    # Camelids: convert ME to NE using ratio_me_to_ne (ME/NE)
+    energy_allocation_fibre <- (energy_requirement_fibre_production / ratio_me_to_ne) * simulation_duration * cohort_stock_size
   } else {
     # Other species: no fibre production
     energy_allocation_fibre <- 0
@@ -418,7 +420,7 @@ calc_energy_allocation_fibre <- function(
 #' Calculates the net energy demand associated with animal work over the
 #' assessment period for animals involved in draught power generation.
 #'
-#' @param animal Character. Code identifying the livestock species.
+#' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
@@ -428,12 +430,10 @@ calc_energy_allocation_fibre <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#'
-#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
-#' @param work_energy_requirement Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#' @param ratio_ne_to_me Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.
-#' @param assessment_duration Numeric. Length of the assessment period (days).
-#' @param size Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).
+#' @param cohort_stock_size Numeric. Population size in the cohort at the start of the assessment period (heads).
+#' @param energy_requirement_work Numeric. Energy required for work/draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL and BFL and as metabolizable energy for CML (MJ/head/day).
+#' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy to net energy (ME/NE). Used for CML.
+#' @param simulation_duration Numeric. Length of the assessment period (days).
 #'
 #' @return Numeric scalar. Energy required to provide all draught power (traction/work) over the assessment period (MJ/cohort/assessment period).
 #'
@@ -493,22 +493,22 @@ calc_energy_allocation_fibre <- function(
 #'
 #' @export
 calc_energy_allocation_work <- function(
-    animal,
-    size,
-    work_energy_requirement,
-    ratio_ne_to_me,
-    assessment_duration
+    species_short,
+    cohort_stock_size,
+    energy_requirement_work,
+    ratio_me_to_ne,
+    simulation_duration
 ) {
   validate_allocation_work_inputs(
-    animal, size, work_energy_requirement, ratio_ne_to_me, assessment_duration
+    species_short, cohort_stock_size, energy_requirement_work, ratio_me_to_ne, simulation_duration
   )
 
-  if (animal == "CML") {
-    # Camelids: convert ME to NE using ratio
-    energy_allocation_work <- work_energy_requirement * ratio_ne_to_me * assessment_duration * size
+  if (species_short == "CML") {
+    # Camelids: convert ME to NE using ratio_me_to_ne (ME/NE)
+    energy_allocation_work <- (energy_requirement_work * simulation_duration * cohort_stock_size) / ratio_me_to_ne
   } else {
     # Other species: direct calculation
-    energy_allocation_work <- work_energy_requirement * assessment_duration * size
+    energy_allocation_work <- energy_requirement_work * simulation_duration * cohort_stock_size
   }
 
   return(energy_allocation_work)
@@ -522,7 +522,7 @@ calc_energy_allocation_work <- function(
 #' @param data_cohort A `data.table` at cohort-level containing energy allocation variables and herd identifiers. Each row corresponds to a single sex–age cohort within a herd.
 #' @param id_cols Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.
 #' @param vars_to_sum Character vector. Names of numeric cohort-level variables to be summed across cohorts to produce herd-level totals (e.g., energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre, energy_allocation_work, energy_allocation_eggs).
-#' @param cohort Character. Name of the column identifying the sex–age cohort (e.g. FJ, FA, MJ, etc.).
+#' @param cohort_short Character. Name of the column identifying the sex–age cohort (e.g. FJ, FA, MJ, etc.).
 #'
 #' @return A `data.table` at herd scale, in which selected cohort-level variables have been summed across all cohorts belonging to the same herd, as defined by id_herd.
 #' @export
@@ -530,7 +530,7 @@ aggregate_cohort_to_herd <- function(
     data_cohort,
     id_cols,
     vars_to_sum,
-    cohort
+    cohort_short
 ) {
 
   # Aggregate over cohorts
@@ -541,10 +541,10 @@ aggregate_cohort_to_herd <- function(
     .SDcols = vars_to_sum
   ]
 
-  # Add cohort = "ALL"
+  # Add cohort_short = "ALL"
   data_herd[
     ,
-    (cohort) := "ALL"
+    (cohort_short) := "ALL"
   ]
 
   return(data_herd)
@@ -555,7 +555,7 @@ aggregate_cohort_to_herd <- function(
 #' Calculates biophysical allocation fractions for commodities (meat, milk, fibre, work,
 #' eggs) based on their total energy requirements.
 #'
-#' @param animal Character. Code identifying the livestock species.
+#' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
@@ -638,7 +638,7 @@ aggregate_cohort_to_herd <- function(
 #' @export
 #'
 calc_allocation_shares <- function(
-    animal,
+    species_short,
     energy_allocation_meat,
     energy_allocation_milk,
     energy_allocation_fibre,
@@ -651,29 +651,43 @@ calc_allocation_shares <- function(
       energy_allocation_milk,
       energy_allocation_fibre,
       energy_allocation_work,
-      energy_allocation_eggs)
+      energy_allocation_eggs),
+    na.rm = TRUE
   )
 
-  if (animal == "PGS") {
+  if (species_short == "PGS") {
     allocation_share_meat <- 1
     allocation_share_milk <- 0
     allocation_share_fibre <- 0
     allocation_share_work <- 0
     allocation_share_eggs <- 0
   } else {
-    allocation_share_meat <- ifelse(is.na(energy_allocation_meat), 0, energy_allocation_meat / total_energy)
-    allocation_share_milk <- ifelse(is.na(energy_allocation_milk), 0, energy_allocation_milk / total_energy)
-    allocation_share_fibre <- ifelse(is.na(energy_allocation_fibre), 0, energy_allocation_fibre / total_energy)
-    allocation_share_work <- ifelse(is.na(energy_allocation_work), 0, energy_allocation_work / total_energy)
-    allocation_share_eggs <- ifelse(is.na(energy_allocation_eggs), 0, energy_allocation_eggs / total_energy)
+    allocation_share_meat <- ifelse(
+      is.na(energy_allocation_meat), 0, energy_allocation_meat / total_energy
+    )
+    allocation_share_milk <- ifelse(
+      is.na(energy_allocation_milk), 0, energy_allocation_milk / total_energy
+    )
+    allocation_share_fibre <- ifelse(
+      is.na(energy_allocation_fibre), 0, energy_allocation_fibre / total_energy
+    )
+    allocation_share_work <- ifelse(
+      is.na(energy_allocation_work), 0, energy_allocation_work / total_energy
+    )
+    allocation_share_eggs <- ifelse(
+      is.na(energy_allocation_eggs), 0, energy_allocation_eggs / total_energy
+    )
 
   }
-  list(
-    allocation_share_meat = allocation_share_meat,
-    allocation_share_milk = allocation_share_milk,
-    allocation_share_fibre = allocation_share_fibre,
-    allocation_share_work = allocation_share_work,
-    allocation_share_eggs = allocation_share_eggs
+
+  return(
+    list(
+      allocation_share_meat = allocation_share_meat,
+      allocation_share_milk = allocation_share_milk,
+      allocation_share_fibre = allocation_share_fibre,
+      allocation_share_work = allocation_share_work,
+      allocation_share_eggs = allocation_share_eggs
+    )
   )
 }
 
@@ -757,28 +771,29 @@ assign_allocation_to_emissions <- function(
     unique = TRUE
   )
 
-  # 2) Expand allocation table by emission variables
-  out <- merge(
+  # 2) Expand allocation table by emission variables (many-to-many: herds × emission vars)
+  allocation_herd_long <- merge(
     allocation_herd_long,
     grid,
-    by = commodity_col
+    by = commodity_col,
+    allow.cartesian = TRUE
   )
 
   # 3) Excluded vars → 100% to Other, 0% to others
-  out[
+  allocation_herd_long[
     variable_name %in% excluded_vars & get(commodity_col) == "Other",
     (allocation_col) := 1
   ]
-  out[
+  allocation_herd_long[
     variable_name %in% excluded_vars & get(commodity_col) != "Other",
     (allocation_col) := 0
   ]
 
   # 4) Non-excluded vars → Other = 0
-  out[
+  allocation_herd_long[
     !(variable_name %in% excluded_vars) & get(commodity_col) == "Other",
     (allocation_col) := 0
   ]
 
-  return(out)
+  return(allocation_herd_long)
 }

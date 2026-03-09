@@ -5,7 +5,7 @@
 \title{Calculate Energy Allocation Shares for Livestock Commodities}
 \usage{
 calc_allocation_shares(
-  animal,
+  species_short,
   energy_allocation_meat,
   energy_allocation_milk,
   energy_allocation_fibre,
@@ -14,7 +14,7 @@ calc_allocation_shares(
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs

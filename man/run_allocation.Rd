@@ -5,38 +5,62 @@
 \title{Allocation Pipeline}
 \usage{
 run_allocation(
-  allocation_inputs,
+  cohort_level_data,
+  herd_level_data,
+  simulation_duration = 365,
   allocation_type = "biophysical-energy",
-  group_by_keys = c("ADM0_CODE", "HerdType_short", "Animal_short", "LPS_short"),
-  standard_protein = 0.033,
-  standard_fat = 0.04,
-  standard_lactose = 0.048,
-  ratio_ne_me_camelids = 0.43,
-  assessment_duration = 365,
   show_indicator = TRUE
 )
 }
 \arguments{
-\item{allocation_inputs}{Cohort-level input table provided as data.frame or data.table.}
+\item{cohort_level_data}{data.table. Cohort-level input table with the following data requirement:
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
+\item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment period by cohort (kg/cohort/assessment period).}
+\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
+\item{energy_requirement_fibre_production}{Numeric. Energy required for fibre synthesis (MJ/head/day). Used for SHP, GTS, CML. Assumed 0 for other species.}
+\item{cohort_stock_size}{Numeric. Population size in the cohort at the start of the assessment period (heads).}
+\item{energy_requirement_work}{Numeric. Energy required for work/draught power (MJ/head/day). Used for CTL, BFL, CML. Assumed 0 for other species.}
+}}
+
+\item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd.}
+\item{animal}{Character. Livestock category name used to map to a species short code via an internal lookup table. Supported values include:
+\itemize{
+\item \code{Cattle}
+\item \code{Buffalo}
+\item \code{Sheep}
+\item \code{Goats}
+\item \code{Chicken}
+\item \code{Pigs}
+\item \code{Camels}
+}}
+\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
+\item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk for FPCM calculation (kg protein/kg milk). Default 0.033.}
+\item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk for FPCM calculation (kg fat/kg milk). Default 0.04.}
+\item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk for FPCM calculation (kg lactose/kg milk). Default 0.048.}
+\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy to net energy (ME/NE). Used for camelid energy conversion.}
+}}
+
+\item{simulation_duration}{Numeric. Length of the assessment period (days). Defaults to \code{365}.}
 
 \item{allocation_type}{Character vector that defines the allocation methodology in use. Default= "biophysical-energy"}
-
-\item{group_by_keys}{Character vector that lists the columns used for herd aggregation.}
-
-\item{standard_protein}{Numeric scalar for reference milk protein content (g per 100 g milk).}
-
-\item{standard_fat}{Numeric scalar for reference milk fat content (g per 100 g milk).}
-
-\item{standard_lactose}{Numeric scalar for reference milk lactose content (g per 100 g milk).}
-
-\item{ratio_ne_me_camelids}{Numeric scalar for the net-to-metabolizable energy conversion for camelids.}
-
-\item{assessment_duration}{Numeric scalar. Length of the assessment period (days).}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during the pipeline run.}
 }
 \value{
-A named list of three \code{data.table} objects:
+A named list of two \code{data.table} objects:
 \itemize{
 \item \code{cohort_allocation_inputs}: Cohort-level inputs to estimate allocation shares at herd-level.
 \item \code{allocation_long}: Herd-level, long-format representation of allocation shares with commodity labels.
@@ -52,13 +76,19 @@ following the IDF (2022) global carbon footprint standard for the dairy sector.
 }
 \examples{
 \dontrun{
-# Load example input from the package and run allocation calculation
-input_path <- system.file("extdata/GLEAM_input_allocation.csv", package = "gleam")
-allocation_data <- data.table::fread(input_path)
-results <- run_allocation(allocation_data)
-# View herd-level allocation shares
-head(results$herd_summary[, .(Animal_short, allocation_share_meat, allocation_share_milk)])
-# View long-format allocation
+# Load allocation inputs (cohort and herd-level)
+allocation_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/allocation_input_chrt_data.csv",
+  package = "gleam"
+))
+allocation_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/allocation_input_hrd_data.csv",
+  package = "gleam"
+))
+results <- run_allocation(
+cohort_level_data = allocation_chrt_dt,
+herd_level_data = allocation_hrd_dt
+)
 head(results$allocation_long)
 }
 

@@ -5,16 +5,16 @@
 \title{Meat Energy Requirement for Allocation}
 \usage{
 calc_energy_allocation_meat(
-  animal,
-  cohort_code,
-  slaughter_liveweight,
-  birth_liveweight,
-  output_meat_production_liveweight,
-  ratio_ne_to_me
+  species_short,
+  cohort_short,
+  slaughter_weight_cohort,
+  birth_weight,
+  meat_production_live_weight_cohort,
+  ratio_me_to_ne
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -25,7 +25,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort_code}{Character scalar.Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character scalar. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -36,13 +36,13 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{slaughter_liveweight}{Numeric scalar. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{slaughter_weight_cohort}{Numeric scalar. Live weight at slaughter for animals removed from the cohort (kg).}
 
-\item{birth_liveweight}{Numeric scalar. Live weight of the animal at birth (kg).}
+\item{birth_weight}{Numeric scalar. Live weight of the animal at birth (kg).}
 
-\item{output_meat_production_liveweight}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
 
-\item{ratio_ne_to_me}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.}
+\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy to net energy (ME/NE). Used for CML.}
 }
 \value{
 Numeric scalar. Energy required by a given sex–age cohort for total meat output by cohort over
@@ -80,7 +80,7 @@ to grow from birth weight to slaughter weight for each species and cohort.
 Total energy required for meat production over the assessment period is then
 calculated as:
 
-\code{energy_allocation_meat = specific_energy_meat * output_meat_production_liveweight}
+\code{energy_allocation_meat = specific_energy_meat * meat_production_live_weight_cohort}
 
 where
 
@@ -88,7 +88,7 @@ where
 net energy required to produce one kilogram of liveweight gain, accounting
 for differences in growth efficiency, reflecting species and cohort specific growth characteristics (MJ/kg live weight).
 
-\code{output_meat_production_liveweight} is the total liveweight of
+\code{meat_production_live_weight_cohort} is the total liveweight of
 animals sold for meat during the assessment period, which is calculated with a species-specific approach:
 
 \itemize{

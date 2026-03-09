@@ -17,28 +17,28 @@
 #'
 #' @noRd
 validate_allocation_milk_inputs <- function(
-    milk_fpcm_output,
-    standard_protein,
-    standard_fat,
-    standard_lactose
+    milk_production_fpcm_cohort,
+    milk_protein_fraction_standard,
+    milk_fat_fraction_standard,
+    milk_lactose_fraction_standard
 ) {
-  validate_scalar_numeric(milk_fpcm_output, "milk_fpcm_output")
-  validate_scalar_numeric(standard_protein, "standard_protein")
-  validate_scalar_numeric(standard_fat, "standard_fat")
-  validate_scalar_numeric(standard_lactose, "standard_lactose")
+  validate_scalar_numeric(milk_production_fpcm_cohort, "milk_production_fpcm_cohort")
+  validate_scalar_numeric(milk_protein_fraction_standard, "milk_protein_fraction_standard")
+  validate_scalar_numeric(milk_fat_fraction_standard, "milk_fat_fraction_standard")
+  validate_scalar_numeric(milk_lactose_fraction_standard, "milk_lactose_fraction_standard")
 
   # Basic bounds: all should be non-negative
-  if (milk_fpcm_output < 0) {
-    cli::cli_abort("{.arg milk_fpcm_output} must be non-negative.")
+  if (milk_production_fpcm_cohort < 0) {
+    cli::cli_abort("{.arg milk_production_fpcm_cohort} must be non-negative.")
   }
-  if (standard_protein < 0 || standard_protein > 1) {
-    cli::cli_abort("{.arg standard_protein} must be between 0 and 1 (g per 100 g milk).")
+  if (milk_protein_fraction_standard < 0 || milk_protein_fraction_standard > 1) {
+    cli::cli_abort("{.arg milk_protein_fraction_standard} must be between 0 and 1 (g per 100 g milk).")
   }
-  if (standard_fat < 0 || standard_fat > 1) {
-    cli::cli_abort("{.arg standard_fat} must be between 0 and 1 (g per 100 g milk).")
+  if (milk_fat_fraction_standard < 0 || milk_fat_fraction_standard > 1) {
+    cli::cli_abort("{.arg milk_fat_fraction_standard} must be between 0 and 1 (g per 100 g milk).")
   }
-  if (standard_lactose < 0 || standard_lactose > 1) {
-    cli::cli_abort("{.arg standard_lactose} must be between 0 and 1 (g per 100 g milk).")
+  if (milk_lactose_fraction_standard < 0 || milk_lactose_fraction_standard > 1) {
+    cli::cli_abort("{.arg milk_lactose_fraction_standard} must be between 0 and 1 (g per 100 g milk).")
   }
 }
 
@@ -66,51 +66,48 @@ validate_allocation_milk_inputs <- function(
 #'
 #' @noRd
 validate_allocation_meat_inputs <- function(
-    animal,
-    cohort_code,
-    slaughter_liveweight,
-    birth_liveweight,
-    output_meat_production_liveweight,
-    ratio_ne_to_me
+    species_short,
+    cohort_short,
+    slaughter_weight_cohort,
+    birth_weight,
+    meat_production_live_weight_cohort,
+    ratio_me_to_ne
 ) {
-  validate_scalar_character(animal, "animal")
-  validate_scalar_character(cohort_code, "cohort_code")
-  validate_scalar_numeric(slaughter_liveweight, "slaughter_liveweight")
-  validate_scalar_numeric(birth_liveweight, "birth_liveweight")
-  validate_scalar_numeric(output_meat_production_liveweight, "output_meat_production_liveweight")
-  validate_scalar_numeric(ratio_ne_to_me, "ratio_ne_to_me")
-  
+  validate_scalar_character(species_short, "species_short")
+  validate_scalar_character(cohort_short, "cohort_short")
+  validate_scalar_numeric(slaughter_weight_cohort, "slaughter_weight_cohort")
+  validate_scalar_numeric(birth_weight, "birth_weight")
+  validate_scalar_numeric(meat_production_live_weight_cohort, "meat_production_live_weight_cohort")
+  validate_scalar_numeric(ratio_me_to_ne, "ratio_me_to_ne")
 
   # Validate animal species
-  # Note: Allocation module uses these specific species codes
   valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "PGS", "CHK")
-  if (!animal %in% valid_animals) {
+  if (!species_short %in% valid_animals) {
     cli::cli_abort(
-      "{.arg animal} must be one of: {cli::format_inline('{valid_animals}')}"
+      "{.arg species_short} must be one of: {cli::format_inline('{valid_animals}')}"
     )
   }
 
   # Validate cohort codes
-  # Note: Allocation module uses a subset of cohort codes (FA, MA, FS, MS, FJ, MJ)
   valid_cohorts <- c("FA", "MA", "FS", "MS", "FJ", "MJ")
-  if (!cohort_code %in% valid_cohorts) {
+  if (!cohort_short %in% valid_cohorts) {
     cli::cli_abort(
-      "{.arg cohort_code} must be one of: {cli::format_inline('{valid_cohorts}')}"
+      "{.arg cohort_short} must be one of: {cli::format_inline('{valid_cohorts}')}"
     )
   }
 
   # Basic bounds: weights should be non-negative and reasonable
-  if (slaughter_liveweight < 0 || slaughter_liveweight > 2000) {
-    cli::cli_abort("{.arg slaughter_liveweight} must be between 0 and 2000 kg.")
+  if (slaughter_weight_cohort < 0 || slaughter_weight_cohort > 2000) {
+    cli::cli_abort("{.arg slaughter_weight_cohort} must be between 0 and 2000 kg.")
   }
-  if (ratio_ne_to_me < 0 || ratio_ne_to_me > 1) {
-    cli::cli_abort("{.arg ratio_ne_to_me} must be between 0 and 1.")
+  if (ratio_me_to_ne <= 0) {
+    cli::cli_abort("{.arg ratio_me_to_ne} must be positive (ME/NE).")
   }
-  if (birth_liveweight < 0 || birth_liveweight > 200) {
-    cli::cli_abort("{.arg birth_liveweight} must be between 0 and 200 kg.")
+  if (birth_weight < 0 || birth_weight > 200) {
+    cli::cli_abort("{.arg birth_weight} must be between 0 and 200 kg.")
   }
-  if (output_meat_production_liveweight < 0) {
-    cli::cli_abort("{.arg output_meat_production_liveweight} must be non-negative.")
+  if (meat_production_live_weight_cohort < 0) {
+    cli::cli_abort("{.arg meat_production_live_weight_cohort} must be non-negative.")
   }
 }
 
@@ -138,40 +135,37 @@ validate_allocation_meat_inputs <- function(
 #'
 #' @noRd
 validate_allocation_fibre_inputs <- function(
-    animal,
-    size,
-    fibre_energy_requirement,
-    ratio_ne_to_me,
-    assessment_duration
+    species_short,
+    cohort_stock_size,
+    energy_requirement_fibre_production,
+    ratio_me_to_ne,
+    simulation_duration
 ) {
-  validate_scalar_character(animal, "animal")
-  validate_scalar_numeric(fibre_energy_requirement, "fibre_energy_requirement")
-  validate_scalar_numeric(ratio_ne_to_me, "ratio_ne_to_me")
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
-  validate_scalar_numeric(size, "size")
+  validate_scalar_character(species_short, "species_short")
+  validate_scalar_numeric(energy_requirement_fibre_production, "energy_requirement_fibre_production")
+  validate_scalar_numeric(ratio_me_to_ne, "ratio_me_to_ne")
+  validate_scalar_numeric(simulation_duration, "simulation_duration")
+  validate_scalar_numeric(cohort_stock_size, "cohort_stock_size")
 
-  # Validate animal species
-  # Note: Allocation module uses these specific species codes
   valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "PGS", "CHK")
-  if (!animal %in% valid_animals) {
+  if (!species_short %in% valid_animals) {
     cli::cli_abort(
-      "{.arg animal} must be one of: {cli::format_inline('{valid_animals}')}"
+      "{.arg species_short} must be one of: {cli::format_inline('{valid_animals}')}"
     )
   }
 
-  # Basic bounds
-  if (fibre_energy_requirement < 0) {
-    cli::cli_abort("{.arg fibre_energy_requirement} must be non-negative.")
+  if (energy_requirement_fibre_production < 0) {
+    cli::cli_abort("{.arg energy_requirement_fibre_production} must be non-negative.")
   }
-  if (ratio_ne_to_me < 0 || ratio_ne_to_me > 1) {
-    cli::cli_abort("{.arg ratio_ne_to_me} must be between 0 and 1.")
+  if (ratio_me_to_ne <= 0) {
+    cli::cli_abort("{.arg ratio_me_to_ne} must be positive (ME/NE).")
   }
-  if (assessment_duration <= 0 || assessment_duration > 3650) {
-    cli::cli_abort("{.arg assessment_duration} must be between 0 and 3650 days.")
+  if (simulation_duration <= 0 || simulation_duration > 3650) {
+    cli::cli_abort("{.arg simulation_duration} must be between 0 and 3650 days.")
   }
-  if (size < 0) {
-  cli::cli_abort("{.arg size} must be non-negative.")
-    }
+  if (cohort_stock_size < 0) {
+    cli::cli_abort("{.arg cohort_stock_size} must be non-negative.")
+  }
 }
 
 #' Validate inputs for calc_energy_allocation_work
@@ -199,39 +193,35 @@ validate_allocation_fibre_inputs <- function(
 #'
 #' @noRd
 validate_allocation_work_inputs <- function(
-    animal,
-    size,
-    work_energy_requirement,
-    ratio_ne_to_me,
-    assessment_duration
-    
+    species_short,
+    cohort_stock_size,
+    energy_requirement_work,
+    ratio_me_to_ne,
+    simulation_duration
 ) {
-  validate_scalar_character(animal, "animal")
-  validate_scalar_numeric(work_energy_requirement, "work_energy_requirement")
-  validate_scalar_numeric(ratio_ne_to_me, "ratio_ne_to_me")
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
-  validate_scalar_numeric(size, "size")
+  validate_scalar_character(species_short, "species_short")
+  validate_scalar_numeric(energy_requirement_work, "energy_requirement_work")
+  validate_scalar_numeric(ratio_me_to_ne, "ratio_me_to_ne")
+  validate_scalar_numeric(simulation_duration, "simulation_duration")
+  validate_scalar_numeric(cohort_stock_size, "cohort_stock_size")
 
-  # Validate animal species
-  # Note: Allocation module uses these specific species codes
   valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "PGS", "CHK")
-  if (!animal %in% valid_animals) {
+  if (!species_short %in% valid_animals) {
     cli::cli_abort(
-      "{.arg animal} must be one of: {cli::format_inline('{valid_animals}')}"
+      "{.arg species_short} must be one of: {cli::format_inline('{valid_animals}')}"
     )
   }
 
-  # Basic bounds
-  if (work_energy_requirement < 0) {
-    cli::cli_abort("{.arg work_energy_requirement} must be non-negative.")
+  if (energy_requirement_work < 0) {
+    cli::cli_abort("{.arg energy_requirement_work} must be non-negative.")
   }
-  if (ratio_ne_to_me < 0 || ratio_ne_to_me > 1) {
-    cli::cli_abort("{.arg ratio_ne_to_me} must be between 0 and 1.")
+  if (ratio_me_to_ne <= 0) {
+    cli::cli_abort("{.arg ratio_me_to_ne} must be positive (ME/NE).")
   }
-  if (assessment_duration <= 0 || assessment_duration > 3650) {
-    cli::cli_abort("{.arg assessment_duration} must be between 0 and 3650 days.")
+  if (simulation_duration <= 0 || simulation_duration > 3650) {
+    cli::cli_abort("{.arg simulation_duration} must be between 0 and 3650 days.")
   }
-  if (size < 0) {
-    cli::cli_abort("{.arg size} must be non-negative.")
+  if (cohort_stock_size < 0) {
+    cli::cli_abort("{.arg cohort_stock_size} must be non-negative.")
   }
 }

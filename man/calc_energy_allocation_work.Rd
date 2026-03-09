@@ -5,15 +5,15 @@
 \title{Work Energy Requirement for Allocation}
 \usage{
 calc_energy_allocation_work(
-  animal,
-  size,
-  work_energy_requirement,
-  ratio_ne_to_me,
-  assessment_duration
+  species_short,
+  cohort_stock_size,
+  energy_requirement_work,
+  ratio_me_to_ne,
+  simulation_duration
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -24,13 +24,13 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{size}{Numeric. Population size in each of the 6 sex–age cohorts: adult females (FA), sub-adult females (FS), juvenile females (FJ), adult males (MA), sub-adult males (MS), and juvenile males (MJ) at the start of the year (heads).}
+\item{cohort_stock_size}{Numeric. Population size in the cohort at the start of the assessment period (heads).}
 
-\item{work_energy_requirement}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{energy_requirement_work}{Numeric. Energy required for work/draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL and BFL and as metabolizable energy for CML (MJ/head/day).}
 
-\item{ratio_ne_to_me}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for CML.}
+\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy to net energy (ME/NE). Used for CML.}
 
-\item{assessment_duration}{Numeric. Length of the assessment period (days).}
+\item{simulation_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
 Numeric scalar. Energy required to provide all draught power (traction/work) over the assessment period (MJ/cohort/assessment period).

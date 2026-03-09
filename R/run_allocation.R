@@ -6,124 +6,160 @@
 #' The function implements biophysical allocation based on energy requirements to produce different products,
 #' following the IDF (2022) global carbon footprint standard for the dairy sector.
 #'
-#' @param allocation_inputs Cohort-level input table provided as data.frame or data.table.
+#' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
+#'   \describe{
+#'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'     \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'       }}
+#'     \item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment period by cohort (kg/cohort/assessment period).}
+#'     \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+#'     \item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
+#'     \item{energy_requirement_fibre_production}{Numeric. Energy required for fibre synthesis (MJ/head/day). Used for SHP, GTS, CML. Assumed 0 for other species.}
+#'     \item{cohort_stock_size}{Numeric. Population size in the cohort at the start of the assessment period (heads).}
+#'     \item{energy_requirement_work}{Numeric. Energy required for work/draught power (MJ/head/day). Used for CTL, BFL, CML. Assumed 0 for other species.}
+#'   }
+#'
+#' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
+#'   \describe{
+#'     \item{herd_id}{Character. Unique identifier for the herd.}
+#'     \item{animal}{Character. Livestock category name used to map to a species short code via an internal lookup table. Supported values include:
+#'       \itemize{
+#'         \item \code{Cattle}
+#'         \item \code{Buffalo}
+#'         \item \code{Sheep}
+#'         \item \code{Goats}
+#'         \item \code{Chicken}
+#'         \item \code{Pigs}
+#'         \item \code{Camels}
+#'       }}
+#'     \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
+#'     \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk for FPCM calculation (kg protein/kg milk). Default 0.033.}
+#'     \item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk for FPCM calculation (kg fat/kg milk). Default 0.04.}
+#'     \item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk for FPCM calculation (kg lactose/kg milk). Default 0.048.}
+#'     \item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy to net energy (ME/NE). Used for camelid energy conversion.}
+#'   }
+#'
+#' @param simulation_duration Numeric. Length of the assessment period (days). Defaults to \code{365}.
 #' @param allocation_type Character vector that defines the allocation methodology in use. Default= "biophysical-energy"
-#' @param group_by_keys Character vector that lists the columns used for herd aggregation.
-#' @param standard_protein Numeric scalar for reference milk protein content (g per 100 g milk).
-#' @param standard_fat Numeric scalar for reference milk fat content (g per 100 g milk).
-#' @param standard_lactose Numeric scalar for reference milk lactose content (g per 100 g milk).
-#' @param ratio_ne_me_camelids Numeric scalar for the net-to-metabolizable energy conversion for camelids.
-#' @param assessment_duration Numeric scalar. Length of the assessment period (days).
 #' @param show_indicator Logical. Whether to display progress indicators during the pipeline run.
 #'
-#' @return A named list of three `data.table` objects:
+#' @return A named list of two `data.table` objects:
 #'   * `cohort_allocation_inputs`: Cohort-level inputs to estimate allocation shares at herd-level.
 #'   * `allocation_long`: Herd-level, long-format representation of allocation shares with commodity labels.
 #'
 #' @examples
 #' \dontrun{
-#' # Load example input from the package and run allocation calculation
-#' input_path <- system.file("extdata/GLEAM_input_allocation.csv", package = "gleam")
-#' allocation_data <- data.table::fread(input_path)
-#' results <- run_allocation(allocation_data)
-#' # View herd-level allocation shares
-#' head(results$herd_summary[, .(Animal_short, allocation_share_meat, allocation_share_milk)])
-#' # View long-format allocation
+#' # Load allocation inputs (cohort and herd-level)
+#' allocation_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/allocation_input_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#' allocation_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/allocation_input_hrd_data.csv",
+#'   package = "gleam"
+#' ))
+#' results <- run_allocation(
+#' cohort_level_data = allocation_chrt_dt,
+#' herd_level_data = allocation_hrd_dt
+#' )
 #' head(results$allocation_long)
 #' }
 #'
 #' @export
 #'
-#' @importFrom data.table := .I melt patterns fifelse setcolorder
+#' @importFrom data.table := .I melt
 run_allocation <- function(
-    allocation_inputs,
-    allocation_type = "biophysical-energy", #Temporary here set as default allocation_type. It defines the methodology. At the moment only 1 is implemented, but in future developments other approaches will be implemented.
-    group_by_keys = c(
-      "ADM0_CODE",
-      "HerdType_short",
-      "Animal_short",
-      "LPS_short"
-    ),
-    standard_protein = 0.033,
-    standard_fat = 0.04,
-    standard_lactose = 0.048,
-    ratio_ne_me_camelids = 0.43,
-    assessment_duration = 365,
+    cohort_level_data,
+    herd_level_data,
+    simulation_duration = 365,
+    allocation_type = "biophysical-energy",
     show_indicator = TRUE
 ) {
   # --- Step 1: Coerce and validate inputs -------------------------------------
-  allocation_inputs <- data.table::as.data.table(allocation_inputs)
-  validate_run_allocation_inputs(allocation_inputs, group_by_keys)
+  cohort_level_data <- data.table::as.data.table(cohort_level_data)
+  herd_level_data <- data.table::as.data.table(herd_level_data)
+  validate_run_allocation_inputs(cohort_level_data, herd_level_data)
 
   # Show progress indicator if requested
   if (show_indicator) {
     cli::cli_status("\U1F552 Computing allocation shares, please wait\U2026")
   }
 
-  # --- Step 2: Create working copy ---------------------------------------------
-  allocation_inputs <- data.table::copy(allocation_inputs)
+  # --- Step 2: Create working copies ------------------------------------------
+  cohort_level_data <- data.table::copy(cohort_level_data)
+  herd_level_data <- data.table::copy(herd_level_data)
 
-  # --- Step 3: Calculate cohort-level energy allocations ----------------------
+  # --- Step 3: Map animal to species_short in herd table ----------------------
+  herd_level_data[abbr_animals, species_short := i.species_short, on = "animal"]
+
+  # --- Step 4: Calculate cohort-level energy allocations ----------------------
   # Milk energy allocation: based on FPCM (fat- and protein-corrected milk) output
-  allocation_inputs[
+  cohort_level_data[
     ,
     energy_allocation_milk := calc_energy_allocation_milk(
-      milk_fpcm_output = milk_production_fpcm_cohort,
-      standard_protein = standard_protein,
-      standard_fat = standard_fat,
-      standard_lactose = standard_lactose
+      milk_production_fpcm_cohort = milk_production_fpcm_cohort,
+      milk_protein_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction_standard],
+      milk_fat_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction_standard],
+      milk_lactose_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_lactose_fraction_standard]
     ),
     by = .I
   ]
 
   # Meat energy allocation: species- and cohort-specific formulas
-  allocation_inputs[
+  cohort_level_data[
     ,
     energy_allocation_meat := calc_energy_allocation_meat(
-      animal = Animal_short,
-      cohort_code = cohort,
-      slaughter_liveweight = slaughterLW,
-      birth_liveweight = ckg,
-      output_meat_production_liveweight = meat_production_live_weight_cohort,
-      ratio_ne_to_me = ratio_ne_me_camelids
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      slaughter_weight_cohort = slaughter_weight_cohort,
+      birth_weight = herd_level_data[.SD, on = "herd_id", x.birth_weight],
+      meat_production_live_weight_cohort = meat_production_live_weight_cohort,
+      ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne]
     ),
     by = .I
   ]
 
   # Fibre energy allocation: applies camelid conversion factor when needed
-  allocation_inputs[
+  cohort_level_data[
     ,
     energy_allocation_fibre := calc_energy_allocation_fibre(
-      animal = Animal_short,
-      size = size,
-      fibre_energy_requirement = nefibre,
-      ratio_ne_to_me = ratio_ne_me_camelids,
-      assessment_duration = assessment_duration
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_stock_size = cohort_stock_size,
+      energy_requirement_fibre_production = energy_requirement_fibre_production,
+      ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne],
+      simulation_duration = simulation_duration
     ),
     by = .I
   ]
 
   # Work energy allocation: applies camelid conversion factor when needed
-  allocation_inputs[
+  cohort_level_data[
     ,
     energy_allocation_work := calc_energy_allocation_work(
-      animal = Animal_short,
-      size = size,
-      work_energy_requirement = nework,
-      ratio_ne_to_me = ratio_ne_me_camelids,
-      assessment_duration = assessment_duration
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_stock_size = cohort_stock_size,
+      energy_requirement_work = energy_requirement_work,
+      ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne],
+      simulation_duration = simulation_duration
     ),
     by = .I
   ]
 
   # Eggs energy allocation: placeholder (not currently implemented)
-  allocation_inputs[, energy_allocation_eggs := 0]
+  cohort_level_data[, energy_allocation_eggs := 0]
 
-  # --- Step 4: Aggregate from cohort to herd level ----------------------------
-  # Sum energy allocations by grouping keys to get herd-level totals
+  # --- Step 5: Aggregate from cohort to herd level --------------------------
+  # Sum energy allocations by herd_id to get herd-level totals
   allocation_herd <- aggregate_cohort_to_herd(
-    data_cohort = allocation_inputs,
-    id_cols = group_by_keys,
+    data_cohort = cohort_level_data,
+    id_cols = "herd_id",
     vars_to_sum = c(
       "energy_allocation_meat",
       "energy_allocation_milk",
@@ -131,11 +167,17 @@ run_allocation <- function(
       "energy_allocation_work",
       "energy_allocation_eggs"
     ),
-    cohort = "cohort"
+    cohort = "cohort_short"
   )
 
-  # --- Step 5: Calculate allocation shares per commodity ----------------------
-  # Calculate allocation shares to each commodity
+  # Add species_short and animal for downstream --------------------------------
+  allocation_herd[
+    herd_level_data,
+    `:=`(species_short = i.species_short, animal = i.animal),
+    on = "herd_id"
+  ]
+
+  # --- Step 6: Calculate allocation shares per commodity ----------------------
   allocation_herd[
     ,
     c(
@@ -145,7 +187,7 @@ run_allocation <- function(
       "allocation_share_work",
       "allocation_share_eggs"
     ) := calc_allocation_shares(
-      animal = Animal_short,
+      species_short = species_short,
       energy_allocation_meat = energy_allocation_meat,
       energy_allocation_milk = energy_allocation_milk,
       energy_allocation_fibre = energy_allocation_fibre,
@@ -160,10 +202,8 @@ run_allocation <- function(
     allocation_share_other := NA_real_
   ]
 
-  # --- Step 6: Reshape to long format -----------------------------------------
+  # --- Step 7: Reshape to long format ----------------------------------------
   # Convert allocation shares from wide to long format for downstream processing
-  # Note: id_vars (group_by_keys) order matches legacy: ADM0_CODE, Animal_short, LPS_short, HerdType_short
-  # @Yassine: this should be replaced with record ID
   measure_cols <- c(
     "allocation_share_meat",
     "allocation_share_milk",
@@ -176,7 +216,7 @@ run_allocation <- function(
   # Reshape allocation shares from wide to long
   allocation_herd_long <- data.table::melt(
     allocation_herd,
-    id.vars = group_by_keys,
+    id.vars = c("herd_id", "species_short"),
     measure.vars = measure_cols,
     variable.name = "commodity_name",
     value.name = "allocation_share"
@@ -206,7 +246,7 @@ run_allocation <- function(
     commodity_type := "Non-Edible"
   ]
 
-  # --- Step 7: Assigning allocation to emission sources ----------------------
+  # --- Step 8: Assigning allocation to emission sources -----------------------
   allocation_herd_long <- assign_allocation_to_emissions(
     allocation_herd_long = allocation_herd_long,
     emissions_vars = c(
@@ -229,6 +269,14 @@ run_allocation <- function(
     allocation_type := allocation_type
   ]
 
+  # Reorder columns for clarity
+  data.table::setcolorder(
+    allocation_herd_long,
+    c("herd_id", "species_short",
+      "variable_name", "commodity_name", "commodity_type",
+      "allocation_share", "allocation_type")
+  )
+
   # Clear progress indicator if it was shown
   if (show_indicator) {
     cli::cli_status_clear()
@@ -237,7 +285,7 @@ run_allocation <- function(
 
   return(
     list(
-      cohort_allocation_inputs = allocation_inputs,
+      cohort_allocation_inputs = cohort_level_data,
       allocation_long = allocation_herd_long
     )
   )
