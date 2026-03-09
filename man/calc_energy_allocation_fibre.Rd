@@ -24,22 +24,22 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort_stock_size}{Numeric. Population size in the cohort at the start of the assessment period (heads).}
+\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
 
-\item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy for CML (MJ/head/day).}
+\item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for SHP and GTS and as metabolizable energy for CML.}
 
-\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy to net energy (ME/NE). Used for CML.}
+\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for species_short = CML.}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
-Numeric scalar. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).
-
+Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).
 Non-zero values are expected only for fibre-producing species (CML, SHP, GTS) and applicable cohorts ("FA", "FS", "MA", "MS")
 }
 \description{
-Calculates the net energy demand associated with fibre production over the
-assessment period for fibre-producing species and cohorts.
+Computes the energy required for fibre production over the assessment period
+(MJ/cohort/assessment period), based on the daily energy requirement for fibre
+production, cohort size, and assessment duration.
 }
 \details{
 This function provides the fibre-related energy term used in a biophysical
@@ -62,46 +62,50 @@ fibre-producing species (\code{CML}, \code{SHP},
 \code{GTS}) and applicable cohorts (\code{"FA"}, \code{"FS"}, \code{"MA"},
 \code{"MS"}).
 
-The fibre-related energy over the assessment period is calculated as:
+The \code{energy_allocation_fibre} is calculated as follows:
 
-\itemize{
-\item For sheep (\code{SHP}) and goats (\code{GTS}):
+\eqn{energy\_allocation\_fibre =
+\frac{energy\_requirement\_fibre\_production}{ratio\_me\_to\_ne}
+\times simulation\_duration \times cohort\_stock\_size}
 
-\code{energy_allocation_fibre =
-  fibre_energy_requirement * assessment_duration * size}
+for camels (\code{CML}), and:
 
-\item For camels (\code{CML}):
+\eqn{energy\_allocation\_fibre =
+energy\_requirement\_fibre\_production \times simulation\_duration \times cohort\_stock\_size}
 
-\code{energy_allocation_fibre =
-  fibre_energy_requirement * ratio_me_to_ne * assessment_duration * size}
+for sheep (\code{SHP}) and goats (\code{GTS}).
 
-}
-
-where \code{fibre_energy_requirement} represents the daily energy requirement
-for fibre production (MJ/head/day) and is obtained from
-\code{\link[gleam]{calc_net_energy_fibre}}.
+where \code{energy_requirement_fibre_production} can be computed using
+\code{\link{calc_net_energy_fibre}} (see also
+\code{\link{run_energy_requirements}}).
 }
 \references{
-ISO. 2006. Environmental management — Life cycle assessment — Requirements and
-guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
+ISO. (2006). \emph{Environmental management — Life cycle assessment —
+Requirements and guidelines (ISO 14044:2006)}. International Organization for
+Standardization, Geneva.
 
-IDF. 2022. The IDF Global Carbon Footprint Standard for the Dairy Sector.
-Bulletin of the IDF No. 520/2022. International Dairy Federation, Brussels.
+IDF. (2022). \emph{The IDF Global Carbon Footprint Standard for the Dairy
+Sector}. Bulletin of the IDF No. 520/2022. International Dairy Federation,
+Brussels.
 
-Thoma, G., and T. Nemecek. 2020. Allocation between milk and meat in dairy LCA:
-Critical discussion of the IDF’s standard methodology. Proceedings of the
-12th International Conference on Life Cycle Assessment of Food (LCAFood 2020),
-pp. 83–89, 13–16 October, Berlin, Germany.
+Thoma, G., and Nemecek, T. (2020). Allocation between milk and meat in dairy
+LCA: Critical discussion of the IDF’s standard methodology. In
+\emph{Proceedings of the 12th International Conference on Life Cycle Assessment
+of Food (LCAFood 2020)} (pp. 83--89), 13--16 October, Berlin, Germany.
 
-FAO. 2016a. Environmental performance of large ruminant supply chains:
-Guidelines for assessment. Livestock Environmental Assessment and Performance
+FAO. (2016a). \emph{Environmental performance of large ruminant supply chains:
+Guidelines for assessment}. Livestock Environmental Assessment and Performance
 (LEAP) Partnership. FAO, Rome, Italy.
 
-FAO. 2016b. Greenhouse gas emissions and fossil energy use from small ruminant
-supply chains: Guidelines for assessment. Livestock Environmental Assessment
-and Performance (LEAP) Partnership. FAO, Rome, Italy.
+FAO. (2016b). \emph{Greenhouse gas emissions and fossil energy use from small
+ruminant supply chains: Guidelines for assessment}. Livestock Environmental
+Assessment and Performance (LEAP) Partnership. FAO, Rome, Italy.
 
-FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
-chains: Guidelines for assessment. Livestock Environmental Assessment and
-Performance (LEAP) Partnership. FAO, Rome, Italy.
+FAO. (2016c). \emph{Greenhouse gas emissions and fossil energy use from poultry
+supply chains: Guidelines for assessment}. Livestock Environmental Assessment
+and Performance (LEAP) Partnership. FAO, Rome, Italy.
+}
+\seealso{
+\code{\link{calc_net_energy_fibre}},
+\code{\link{run_energy_requirements}}
 }

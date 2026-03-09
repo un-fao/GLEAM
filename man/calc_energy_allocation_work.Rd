@@ -26,20 +26,20 @@ Supported values include:
 
 \item{cohort_stock_size}{Numeric. Population size in the cohort at the start of the assessment period (heads).}
 
-\item{energy_requirement_work}{Numeric. Energy required for work/draught power for CTL, BFL and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL and BFL and as metabolizable energy for CML (MJ/head/day).}
+\item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 
-\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy to net energy (ME/NE). Used for CML.}
+\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction).}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
-Numeric scalar. Energy required to provide all draught power (traction/work) over the assessment period (MJ/cohort/assessment period).
-
-Non-zero values are expected only for draught or work-producing species (CTL, BFL CML) and applicable cohorts (MA).
+Numeric. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).
+Non-zero values are expected only for draught or work-producing species (CTL, BFL CML).
 }
 \description{
-Calculates the net energy demand associated with animal work over the
-assessment period for animals involved in draught power generation.
+Computes the energy required for animal work over the assessment period
+(MJ/cohort/assessment period), based on the daily energy requirement for work,
+cohort size, and assessment duration.
 }
 \details{
 This function provides the work-related energy term used in a biophysical
@@ -58,38 +58,52 @@ resulting process remains multifunctional, these energy terms may subsequently
 be used to derive allocation factors among co-products.
 
 Total work-related energy is computed for species (\code{CTL}, \code{BFL}, \code{CML})
-and cohorts (\code{MA}) assumed to be potentially involved in draught power generation, and
-is calculated as follows:
+and cohorts (\code{MA}) assumed to be potentially involved in draught power generation.
 
-\itemize{
-\item \code{energy_allocation_work = work_energy_requirement * assessment_duration * size}
-}
+The \code{energy_allocation_work} is calculated as follows:
 
-where \code{work_energy_requirement} represents the daily energy requirement for
-animal work (MJ/head/day) and is obtained from
-\code{\link[gleam]{calc_net_energy_work}}.
+\eqn{energy\_allocation\_work =
+energy\_requirement\_work \times simulation\_duration \times cohort\_stock\_size}
+
+for cattle (\code{CTL}) and buffalo (\code{BFL}), and:
+
+\eqn{energy\_allocation\_work =
+\frac{energy\_requirement\_work \times simulation\_duration \times cohort\_stock\_size}
+{ratio\_me\_to\_ne}}
+
+for camels (\code{CML}).
+
+where \code{energy_requirement_work} can be computed using
+\code{\link{calc_net_energy_work}} (see also
+\code{\link{run_energy_requirements}}).
 }
 \references{
-ISO. 2006. Environmental management — Life cycle assessment — Requirements and
-guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
+ISO. (2006). \emph{Environmental management — Life cycle assessment —
+Requirements and guidelines (ISO 14044:2006)}. International Organization for
+Standardization, Geneva.
 
-IDF. 2022. The IDF Global Carbon Footprint Standard for the Dairy Sector.
-Bulletin of the IDF No. 520/2022. International Dairy Federation, Brussels.
+IDF. (2022). \emph{The IDF Global Carbon Footprint Standard for the Dairy
+Sector}. Bulletin of the IDF No. 520/2022. International Dairy Federation,
+Brussels.
 
-Thoma, G., and T. Nemecek. 2020. Allocation between milk and meat in dairy LCA:
-Critical discussion of the IDF’s standard methodology. Proceedings of the
-12th International Conference on Life Cycle Assessment of Food (LCAFood 2020),
-pp. 83–89, 13–16 October, Berlin, Germany.
+Thoma, G., and Nemecek, T. (2020). Allocation between milk and meat in dairy
+LCA: Critical discussion of the IDF’s standard methodology. In
+\emph{Proceedings of the 12th International Conference on Life Cycle Assessment
+of Food (LCAFood 2020)} (pp. 83--89), 13--16 October, Berlin, Germany.
 
-FAO. 2016a. Environmental performance of large ruminant supply chains:
-Guidelines for assessment. Livestock Environmental Assessment and Performance
+FAO. (2016a). \emph{Environmental performance of large ruminant supply chains:
+Guidelines for assessment}. Livestock Environmental Assessment and Performance
 (LEAP) Partnership. FAO, Rome, Italy.
 
-FAO. 2016b. Greenhouse gas emissions and fossil energy use from small ruminant
-supply chains: Guidelines for assessment. Livestock Environmental Assessment
-and Performance (LEAP) Partnership. FAO, Rome, Italy.
+FAO. (2016b). \emph{Greenhouse gas emissions and fossil energy use from small
+ruminant supply chains: Guidelines for assessment}. Livestock Environmental
+Assessment and Performance (LEAP) Partnership. FAO, Rome, Italy.
 
-FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
-chains: Guidelines for assessment. Livestock Environmental Assessment and
-Performance (LEAP) Partnership. FAO, Rome, Italy.
+FAO. (2016c). \emph{Greenhouse gas emissions and fossil energy use from poultry
+supply chains: Guidelines for assessment}. Livestock Environmental Assessment
+and Performance (LEAP) Partnership. FAO, Rome, Italy.
+}
+\seealso{
+\code{\link{calc_net_energy_work}},
+\code{\link{run_energy_requirements}}
 }
