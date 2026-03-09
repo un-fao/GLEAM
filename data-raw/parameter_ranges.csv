@@ -82,3 +82,4 @@ energy_allocation_work,0,TRUE,Inf,TRUE
 energy_allocation_meat,0,TRUE,Inf,TRUE
 energy_allocation_eggs,0,TRUE,Inf,TRUE
 meat_production_live_weight_cohort,0,TRUE,Inf,TRUE
+ratio_me_to_ne, 0, TRUE, 1, TRUE
