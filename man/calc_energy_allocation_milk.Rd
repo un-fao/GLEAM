@@ -12,21 +12,26 @@ calc_energy_allocation_milk(
 )
 }
 \arguments{
-\item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment period (kg/cohort/assessment period).
+\item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
+period (kg/cohort/assessment period).
 Suggest standard fat and protein contents = 0.04 and 0.033.}
 
-\item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg protein/kg milk).
+\item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
+Fat-protein-corrected milk (FPCM), (kg protein/kg milk).
 Suggested value = 0.033.}
 
-\item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg fat/kg milk).
+\item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
+(FPCM), (kg fat/kg milk).
 Suggested value = 0.04.}
 
-\item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk).
+\item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate
+Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk).
 Suggested value = 0.048.}
 }
 \value{
 Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment period).
-Non-zero values are applicable only to milk-producing species and cohorts (species = CTL, BFL, CML, SHP, GTS; cohorts=AF).
+Non-zero values are applicable only to milk-producing species and cohorts (species = CTL, BFL, CML, SHP, GTS;
+cohorts=AF).
 All other species–cohort combinations are assigned a value of 0.
 }
 \description{

@@ -40,13 +40,17 @@ production stage of the animals. Supported values include:
 
 \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
 
-\item{meat_production_live_weight_cohort}{Numeric . Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by
+cohort (kg/cohort/assessment period).}
 
-\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for species_short = CML.}
+\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
+species_short = CML.}
 }
 \value{
-Numeric. Energy required by a given sex–age cohort for total meat output by cohort during the assessment period,
-equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period).
+Numeric. Energy required by a given sex–age cohort for total meat output by cohort during the assessment
+period,
+equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment
+period).
 Non-zero values are applicable to all species/cohorts where growth is modelled. For
 pigs (\code{PGS}), the function returns \code{0} by design.
 }

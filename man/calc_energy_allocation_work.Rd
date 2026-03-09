@@ -26,14 +26,17 @@ Supported values include:
 
 \item{cohort_stock_size}{Numeric. Population size in the cohort at the start of the assessment period (heads).}
 
-\item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught
+power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
+SHP, GTS and as metabolizable energy for CML and PGS.}
 
 \item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction).}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
-Numeric. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).
+Numeric. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment
+period).
 Non-zero values are expected only for draught or work-producing species (CTL, BFL CML).
 }
 \description{

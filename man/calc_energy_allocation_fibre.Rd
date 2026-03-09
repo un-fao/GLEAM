@@ -24,17 +24,22 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
+\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
+FS, FA, MJ, MS, MA).}
 
-\item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for SHP and GTS and as metabolizable energy for CML.}
+\item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
+Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
+for CML.}
 
-\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for species_short = CML.}
+\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
+species_short = CML.}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
 Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).
-Non-zero values are expected only for fibre-producing species (CML, SHP, GTS) and applicable cohorts ("FA", "FS", "MA", "MS")
+Non-zero values are expected only for fibre-producing species (CML, SHP, GTS) and applicable cohorts ("FA", "FS",
+"MA", "MS")
 }
 \description{
 Computes the energy required for fibre production over the assessment period

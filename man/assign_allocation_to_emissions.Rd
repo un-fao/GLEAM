@@ -14,17 +14,26 @@ assign_allocation_to_emissions(
 )
 }
 \arguments{
-\item{allocation_herd_long}{Long-format \code{data.table} containing herd-level emissions and allocation information. Each row represents an emission source–commodity combination or an unallocated emission source prior to allocation.}
+\item{allocation_herd_long}{Long-format \code{data.table} containing herd-level emissions and allocation information. Each
+row represents an emission source–commodity combination or an unallocated emission source prior to allocation.}
 
-\item{emissions_vars}{Character. Names of emission variables to which allocation should be applied (e.g., "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",         "direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other", "indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other", "diet_co2_feed_fertilizer", "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", "diet_n2o_feed_fertilizer",  "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice").}
+\item{emissions_vars}{Character. Names of emission variables to which allocation should be applied (e.g.,
+"ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",
+"direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other",
+"indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other", "diet_co2_feed_fertilizer",
+"diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
+"diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice").}
 
-\item{commodities}{Character. List of commodity categories to which emissions may be allocated. List=c("Other","Milk","Meat","Fibre","Work","Eggs").}
+\item{commodities}{Character. List of commodity categories to which emissions may be allocated.
+List=c("Other","Milk","Meat","Fibre","Work","Eggs").}
 
-\item{excluded_vars}{Character. Emission variables that should not be allocated across commodities, even if they appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").}
+\item{excluded_vars}{Character. Emission variables that should not be allocated across commodities, even if they
+appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").}
 
 \item{commodity_col}{Character. Name of the column in \code{allocation_herd_long} identifying the commodity category.}
 
-\item{allocation_col}{Character. Name of the column in \code{allocation_herd_long} containing the allocation share to be applied.}
+\item{allocation_col}{Character. Name of the column in \code{allocation_herd_long} containing the allocation share to be
+applied.}
 }
 \value{
 A \code{data.table} equal to \code{allocation_herd_long} expanded over all \code{emissions_vars},

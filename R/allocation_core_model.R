@@ -4,17 +4,22 @@
 #' (MJ/cohort/assessment period), based on total fat- and protein-corrected milk
 #' (FPCM) produced by the cohort.
 #' 
-#' @param milk_production_fpcm_cohort Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment period (kg/cohort/assessment period).
+#' @param milk_production_fpcm_cohort Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
+#' period (kg/cohort/assessment period).
 #' Suggest standard fat and protein contents = 0.04 and 0.033.
-#' @param milk_protein_fraction_standard Numeric. Standard protein content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg protein/kg milk). 
+#' @param milk_protein_fraction_standard Numeric. Standard protein content of milk, used to calculate
+#' Fat-protein-corrected milk (FPCM), (kg protein/kg milk).
 #' Suggested value = 0.033.
-#' @param milk_fat_fraction_standard Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk (FPCM), (kg fat/kg milk). 
+#' @param milk_fat_fraction_standard Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
+#' (FPCM), (kg fat/kg milk).
 #' Suggested value = 0.04.
-#' @param milk_lactose_fraction_standard Numeric. Standard lactose content of milk, used to calculate Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk). 
+#' @param milk_lactose_fraction_standard Numeric. Standard lactose content of milk, used to calculate
+#' Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk).
 #' Suggested value = 0.048.
 #'
 #' @return Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment period). 
-#' Non-zero values are applicable only to milk-producing species and cohorts (species = CTL, BFL, CML, SHP, GTS; cohorts=AF). 
+#' Non-zero values are applicable only to milk-producing species and cohorts (species = CTL, BFL, CML, SHP, GTS;
+#' cohorts=AF).
 #' All other species–cohort combinations are assigned a value of 0.
 #'
 #' @details
@@ -99,7 +104,7 @@ calc_energy_allocation_milk <- function(
 
   # Calculate energy content of standard milk (MJ/kg milk)
   # Coefficients from IDF (2022): kcal per 100 g milk per 1% unit of fat/protein/lactose
-  # Formula: (0.0929 * fat + 0.0547 * protein + 0.0395 * lactose) * 4.184 * 100
+  # Apply IDF coefficients to fat, protein, and lactose components.
   energy_standard <- (
     0.0929 * milk_fat_fraction_standard +
       0.0547 * milk_protein_fraction_standard +
@@ -140,11 +145,15 @@ calc_energy_allocation_milk <- function(
 #'   }
 #' @param slaughter_weight_cohort Numeric. Live weight at slaughter for animals removed from the cohort (kg).
 #' @param birth_weight Numeric. Live weight of the animal at birth (kg).
-#' @param meat_production_live_weight_cohort Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).
-#' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for species_short = CML.
+#' @param meat_production_live_weight_cohort Numeric. Total meat produced as live weight over the assessment period by
+#' cohort (kg/cohort/assessment period).
+#' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
+#' species_short = CML.
 #'
-#' @return Numeric. Energy required by a given sex–age cohort for total meat output by cohort during the assessment period, 
-#' equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period). 
+#' @return Numeric. Energy required by a given sex–age cohort for total meat output by cohort during the assessment
+#' period,
+#' equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment
+#' period).
 #' Non-zero values are applicable to all species/cohorts where growth is modelled. For
 #' pigs (\code{PGS}), the function returns \code{0} by design.
 #'
@@ -320,13 +329,18 @@ calc_energy_allocation_meat <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
-#' @param energy_requirement_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for SHP and GTS and as metabolizable energy for CML.
-#' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for species_short = CML.
+#' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
+#' FS, FA, MJ, MS, MA).
+#' @param energy_requirement_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
+#' Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
+#' for CML.
+#' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
+#' species_short = CML.
 #' @param simulation_duration Numeric. Length of the assessment period (days).
 #'
 #' @return Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).
-#' Non-zero values are expected only for fibre-producing species (CML, SHP, GTS) and applicable cohorts ("FA", "FS", "MA", "MS")
+#' Non-zero values are expected only for fibre-producing species (CML, SHP, GTS) and applicable cohorts ("FA", "FS",
+#' "MA", "MS")
 #'
 #' @details
 #' This function provides the fibre-related energy term used in a biophysical
@@ -411,10 +425,12 @@ calc_energy_allocation_fibre <- function(
 
   if (species_short %in% c("GTS", "SHP")) {
     # Sheep and goats: direct NE calculation
-    energy_allocation_fibre <- energy_requirement_fibre_production * simulation_duration * cohort_stock_size
+    energy_allocation_fibre <- energy_requirement_fibre_production *
+      simulation_duration * cohort_stock_size
   } else if (species_short == "CML") {
     # Camelids: convert ME to NE using ratio_me_to_ne (ME/NE)
-    energy_allocation_fibre <- (energy_requirement_fibre_production / ratio_me_to_ne) * simulation_duration * cohort_stock_size
+    energy_allocation_fibre <- (energy_requirement_fibre_production / ratio_me_to_ne) *
+      simulation_duration * cohort_stock_size
   } else {
     # Other species: no fibre production
     energy_allocation_fibre <- 0
@@ -440,11 +456,14 @@ calc_energy_allocation_fibre <- function(
 #'     \item \code{GTS}: goats
 #'   }
 #' @param cohort_stock_size Numeric. Population size in the cohort at the start of the assessment period (heads).
-#' @param energy_requirement_work Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+#' @param energy_requirement_work Numeric. Energy required for work, used to estimate the energy required for draught
+#' power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
+#' SHP, GTS and as metabolizable energy for CML and PGS.
 #' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy converted to net energy (fraction).
 #' @param simulation_duration Numeric. Length of the assessment period (days).
 #'
-#' @return Numeric. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).
+#' @return Numeric. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment
+#' period).
 #' Non-zero values are expected only for draught or work-producing species (CTL, BFL CML).
 #'
 #' @details
@@ -544,12 +563,16 @@ calc_energy_allocation_work <- function(
 #' This function aggregates a dataset from cohort level to herd level by summing
 #' specified variables over the defined 'id' columns.
 #'
-#' @param data_cohort Cohort-level dataset containing energy allocation variables and herd identifiers. Each row corresponds to a single sex–age cohort within a herd.
+#' @param data_cohort Cohort-level dataset containing energy allocation variables and herd identifiers. Each row
+#' corresponds to a single sex–age cohort within a herd.
 #' @param id_cols Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.
-#' @param vars_to_sum Character vector. Names of numeric cohort-level variables to be summed across cohorts to produce herd-level totals (e.g., energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre, energy_allocation_work, energy_allocation_eggs)
+#' @param vars_to_sum Character vector. Names of numeric cohort-level variables to be summed across cohorts to produce
+#' herd-level totals (e.g., energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre,
+#' energy_allocation_work, energy_allocation_eggs)
 #' @param cohort_short Character. Name of the column identifying the sex–age cohort (e.g. FJ, FA, MJ, etc.).
 #'
-#' @return A `data.table` at herd scale, in which selected cohort-level variables have been summed across all cohorts belonging to the same herd, as defined by id_herd.
+#' @return A `data.table` at herd scale, in which selected cohort-level variables have been summed across all cohorts
+#' belonging to the same herd, as defined by id_herd.
 #' @export
 aggregate_cohort_to_herd <- function(
     data_cohort,
@@ -590,11 +613,18 @@ aggregate_cohort_to_herd <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param energy_allocation_meat Numeric. Energy required by a given sex–age cohort for total meat output by cohort during the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period).
-#' @param energy_allocation_milk Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment period). Non-zero values are applicable only to milk-producing species and cohorts (species=CTL, BFL, CML, SHP, GTS; cohorts=AF). All other species–cohort combinations are assigned a value of 0.
-#' @param energy_allocation_fibre Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).
-#' @param energy_allocation_work Numeric vector. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).
-#' @param energy_allocation_eggs Numeric vector. Energy required to produce all eggs during the assessment period (MJ/cohort/assessment period).
+#' @param energy_allocation_meat Numeric. Energy required by a given sex–age cohort for total meat output by cohort
+#' during the assessment period, equal to the energy needed to produce all live-weight gain to reach the target
+#' slaughter weight (MJ/cohort/assessment period).
+#' @param energy_allocation_milk Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
+#' period). Non-zero values are applicable only to milk-producing species and cohorts (species=CTL, BFL, CML, SHP, GTS;
+#' cohorts=AF). All other species–cohort combinations are assigned a value of 0.
+#' @param energy_allocation_fibre Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
+#' period).
+#' @param energy_allocation_work Numeric vector. Energy required to provide all draught power (traction/work) by cohort
+#' (MJ/cohort/assessment period).
+#' @param energy_allocation_eggs Numeric vector. Energy required to produce all eggs during the assessment period
+#' (MJ/cohort/assessment period).
 #'
 #' @return A named list of numeric vectors with same length as input, containing:
 #' \describe{
@@ -726,12 +756,21 @@ calc_allocation_shares <- function(
 #' The function enforces the allocation of emissions from manure burned as fuel and deposited on pasture
 #' to be **100% to the commodity "Other"**.
 #'
-#' @param allocation_herd_long Long-format `data.table` containing herd-level emissions and allocation information. Each row represents an emission source–commodity combination or an unallocated emission source prior to allocation.
-#' @param emissions_vars Character. Names of emission variables to which allocation should be applied (e.g., "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",         "direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other", "indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other", "diet_co2_feed_fertilizer", "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", "diet_n2o_feed_fertilizer",  "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice").
-#' @param commodities Character. List of commodity categories to which emissions may be allocated. List=c("Other","Milk","Meat","Fibre","Work","Eggs").
-#' @param excluded_vars Character. Emission variables that should not be allocated across commodities, even if they appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").
+#' @param allocation_herd_long Long-format `data.table` containing herd-level emissions and allocation information. Each
+#' row represents an emission source–commodity combination or an unallocated emission source prior to allocation.
+#' @param emissions_vars Character. Names of emission variables to which allocation should be applied (e.g.,
+#' "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",
+#' "direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other",
+#' "indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other", "diet_co2_feed_fertilizer",
+#' "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
+#' "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice").
+#' @param commodities Character. List of commodity categories to which emissions may be allocated.
+#' List=c("Other","Milk","Meat","Fibre","Work","Eggs").
+#' @param excluded_vars Character. Emission variables that should not be allocated across commodities, even if they
+#' appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").
 #' @param commodity_col Character. Name of the column in `allocation_herd_long` identifying the commodity category.
-#' @param allocation_col Character. Name of the column in `allocation_herd_long` containing the allocation share to be applied.
+#' @param allocation_col Character. Name of the column in `allocation_herd_long` containing the allocation share to be
+#' applied.
 #'
 #' @return A `data.table` equal to `allocation_herd_long` expanded over all `emissions_vars`,
 #' with enforced allocation rules:
