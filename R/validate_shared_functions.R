@@ -107,6 +107,33 @@ validate_positive_numeric <- function(x, arg_name) {
   }
 }
 
+#' Validate scalar numeric or NA
+#'
+#' Ensures the input is a single value that is either NA or a numeric >= min_val.
+#'
+#' @param x The object to validate.
+#' @param arg_name String. The name of the argument to use in the error message.
+#' @param min_val Numeric. Minimum allowed value when not NA (default 0).
+#'
+#' @noRd
+validate_scalar_numeric_or_na <- function(
+    x,
+    arg_name = deparse(substitute(x)),
+    min_val = 0
+) {
+  if (length(x) != 1L) {
+    cli::cli_abort("{.arg {arg_name}} must be a single numeric (scalar). NA is allowed.")
+  }
+  if (!is.na(x)) {
+    if (!is.numeric(x)) {
+      cli::cli_abort("{.arg {arg_name}} must be a single numeric (scalar). NA is allowed.")
+    }
+    if (x < min_val) {
+      cli::cli_abort("{.arg {arg_name}} must be >= {min_val}.")
+    }
+  }
+}
+
 #' Validate a numeric parameter (scalar or vector) against predefined bounds
 #'
 #' Look up `arg_name` in the internal data.table `parameter_ranges`
@@ -135,7 +162,7 @@ validate_param_range <- function(
   if (anyNA(x)) {
     cli::cli_abort("{.arg {arg_name}} must not contain missing values.")
   }
-  
+
   # Look up the single rule row
   rule_row <- parameter_ranges_data[variable_name == arg_name]
   if (nrow(rule_row) != 1L) {
