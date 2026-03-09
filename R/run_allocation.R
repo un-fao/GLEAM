@@ -305,7 +305,7 @@ run_allocation <- function(
       "energy_allocation_work",
       "energy_allocation_eggs"
     ),
-    cohort = "cohort_short"
+    cohort_short = "cohort_short"
   )
 
   # Add species_short and animal for downstream --------------------------------
