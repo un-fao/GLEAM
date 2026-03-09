@@ -11,7 +11,7 @@ run_aggregation(data_cohort, allocation_herd_long, gwp = "AR6")
 calculated variables. Must include:
 \describe{
 \item{\strong{Feed variables}:}{\code{dmi} (dry matter intake)}
-\item{\strong{Nitrogen balance}:}{\code{n_intake}, \code{n_retention}, \code{n_excretion}}
+\item{\strong{Nitrogen balance}:}{\code{nitrogen_intake}, \code{nitrogen_retention}, \code{nitrogen_excretion}}
 \item{\strong{Production}:}{\verb{output_milk_*}, \verb{output_meat_*}, \code{output_fibre_production}}
 \item{\strong{Emissions}:}{\code{ch4_enteric}, \verb{ch4_manure_*}, \verb{direct_n2o_manure_*},
 \verb{indirect_n2o_manure_*}}

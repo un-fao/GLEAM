@@ -1,0 +1,7 @@
+herd_id,animal,milk_protein_fraction,milk_yield_day,fibre_yield_year,litter_size,parturition_rate,weaning_weight,birth_weight,pregnancy_duration
+1,Cattle,0.032,10,0,1,1.89,200,35,283
+2,Buffalo,0.032,8,0,1,1.62,20,1.5,300
+3,Sheep,0.048,1.5,3,1.5,1.5,20,3.5,150
+4,Goats,0.04,1.2,2,1.6,1.6,18,3,150
+5,Camels,0.032,5,1,1,0.6,180,35,390
+6,Pigs,0,0,0,10,2.2,25,1.5,115
