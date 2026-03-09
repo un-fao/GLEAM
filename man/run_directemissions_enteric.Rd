@@ -2,45 +2,27 @@
 % Please edit documentation in R/run_directemissions_enteric.R
 \name{run_directemissions_enteric}
 \alias{run_directemissions_enteric}
-\title{Run Enteric Methane Direct Emissions}
+\title{Run Enteric Methane (CH₄) Direct Emissions}
 \usage{
-run_directemissions_enteric(data, show_indicator = TRUE)
+run_directemissions_enteric(cohort_level_data, show_indicator = TRUE)
 }
 \arguments{
-\item{data}{A \code{data.table} with cohort-level nutritional and demographic inputs.}
-
-\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
-}
-\value{
-The same \code{data.table} with new columns \code{ch4_conversion_factor_ym} and \code{ch4_enteric}.
-
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.21.
-
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.21.
-}
-\description{
-Computes daily enteric methane emissions (kg CH₄/head/day) for each
-cohort record by applying species-, cohort- and diet- specific methane conversion factors (ym),
-using a Tier 2 approach (IPCC 2006, 2019)
-}
-\details{
-This function is intended for internal workflows and does not perform any file I/O.
-
-It adds two columns:
+\item{cohort_level_data}{data.table. Cohort-level input table with the following data requirement:
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{animal}{Character. Livestock category name used to map to a species short code via an
+internal lookup table. Supported values include:
 \itemize{
-\item \code{ch4_conversion_factor_ym}: Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).
-\item \code{ch4_enteric}: Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
-}
-
-Input data must at minimum include the following columns:
-\itemize{
-\item \code{animal}: Character. Full species name (e.g. \code{Cattle}, \code{Buffalo},
-\code{Sheep}, \code{Goats}, \code{Camels}, \code{Pigs}). Used to derive
-\code{species_short} via the internal \code{abbr_animals} lookup.
-\item \code{cohort_short}: Character. Sex- and age-specific cohort code describing the
-production stage of the animals. Supported values include:
+\item \code{Cattle}
+\item \code{Buffalo}
+\item \code{Sheep}
+\item \code{Goats}
+\item \code{Chicken}
+\item \code{Pigs}
+\item \code{Camels}
+}}
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage
+of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -48,16 +30,42 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
-}
-\item \code{diet_digestibility_fraction}: Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).
-\item \code{diet_gross_energy}: Numeric. Average gross energy content of the diet (MJ/kg DM).
-\item \code{dry_matter_intake}: Numeric. Daily dry matter intake of feed (kg DM/head/day).
-}
+}}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as
+ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).}
+\item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+\item{ch4_mitigation_factor}{Numeric. Optional. Multiplicative mitigation factor applied to
+baseline enteric methane (CH₄) emissions (dimensionless). If not provided, a default
+value of \code{1} (no mitigation) is used. Values lower than 1 represent proportional
+reductions (e.g., \code{0.90} = 10\% reduction). This factor can represent mitigation
+measures with a direct effect on enteric methane emissions, such as the use of feed
+additives or methane inhibitors.}
+}}
 
-Optional input data include:
-\itemize{
-\item \code{ch4_mitigation_factor}: Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
-multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10\% reduction). Set to 1 by default.
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.
+Defaults to \code{TRUE}.}
+}
+\value{
+A \code{data.table} with the original input columns plus the following new variables:
+\describe{
+\item{ch4_mitigation_factor}{Added by the function if not provided as input.}
+\item{ch4_conversion_factor_ym}{Numeric. Methane (CH₄) conversion factor (ym),
+representing the percentage of  gross energy of the feed ration that is converted to CH₄ (percentage).}
+\item{ch4_enteric}{Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).}
+}
+}
+\description{
+Computes daily enteric methane emissions by cohort (kg CH₄/head/day) using a Tier 2
+IPCC approach, by applying species-, cohort- and diet-specific methane
+conversion factors (ym).
+}
+\details{
+This function performs the following calculation sequence:
+\enumerate{
+\item If \code{ch4_mitigation_factor} is not provided in the input data, it is set to \code{1} (no mitigation).
+\item The methane conversion factor (ym) is computed using \code{\link{compute_methane_conversion_factor}}.
+\item Daily enteric methane emissions are computed using \code{\link{compute_daily_enteric_emissions}}.
 }
 }
 \examples{
@@ -71,4 +79,16 @@ directemissions_enteric_input_chrt_data <- data.table::fread(input_path)
 results <- run_directemissions_enteric(directemissions_enteric_input_chrt_data)
 }
 
+}
+\seealso{
+\code{\link{compute_methane_conversion_factor}},
+\code{\link{compute_daily_enteric_emissions}}
+
+IPCC. (2019).
+\emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
+
+IPCC. (2006).
+\emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 }

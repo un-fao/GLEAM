@@ -176,7 +176,7 @@ run_gleam <- function(
   # --- Step 6: Run enteric methane direct emissions ---------------------------
   # ch4_mitigation_factor is optional cohort-level input
   gleam_chrt_data <- run_directemissions_enteric(
-    data = gleam_chrt_data,
+    cohort_level_data = gleam_chrt_data,
     show_indicator = show_indicator
   )
 

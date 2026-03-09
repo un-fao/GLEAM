@@ -33,13 +33,12 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed
-ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of
+digestible (or metabolizable, for poultry) to gross energy content (fraction).}
 }
 \value{
-Numeric. Methane conversion factor (ch4_conversion_factor_ym),
-representing the share of gross energy of the feed ration that is converted
-to CH₄ (percentage).
+Numeric. Methane (CH₄) conversion factor (ym), representing the percentage of  gross energy
+of the feed ration that is converted to CH₄ (percentage).
 }
 \description{
 Calculates the methane conversion factor (ym, \% of dietary gross energy in feed converted to methane)
@@ -49,14 +48,19 @@ rules consistent with IPCC Tier 2 approach.
 \details{
 ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013).
 
+\code{diet_digestibility_fraction} can be calculated with
+\code{\link{calc_diet_digestibility}} - see also \code{\link{run_feed_rations}}.
+
 \itemize{
 \item \strong{For \code{CTL} and \code{BFL}:}
 \deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
 
 \item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
 \itemize{
-\item \code{FA} and \code{MA} cohorts: \deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
-\item \code{FS} and \code{MS} cohorts: \deqn{ym = 7.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+\item \code{FA} and \code{MA} cohorts:
+\deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+\item \code{FS} and \code{MS} cohorts:
+\deqn{ym = 7.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
 }
 
 \item \strong{For \code{PGS}:}
@@ -67,19 +71,29 @@ ym is assigned fixed values by cohort:
 }
 }
 
-ym is returned as 0 for juvenile cohorts (\code{JF}, \code{JM}), assuming negligible enteric methane production before weaning/rumen development.
+ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming
+negligible enteric methane production before weaning/rumen development.
 }
 \references{
 Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
 MacLeod, M., Vellinga, T., Henderson, B. & Steinfeld, H. (2013).
-\emph{Greenhouse gas emissions from ruminant supply chains – A global life cycle assessment}. Food and Agriculture Organization of the United Nations (FAO), Rome.
+\emph{Greenhouse gas emissions from ruminant supply chains – A global life cycle assessment}.
+Food and Agriculture Organization of the United Nations (FAO), Rome.
 
-Jørgensen, H., Theil, P.K. and Knudsen, K.E.B., (2011).
-\emph{Enteric methane emission from pigs}. In Planet Earth 2011-Global Warming Challenges and Opportunities for Policy and Practice (p. 610 - Table 2). InTech.
+Jørgensen, H., Theil, P. K. & Knudsen, K. E. B. (2011).
+\emph{Enteric methane emission from pigs}.
+In: Planet Earth 2011 – Global Warming Challenges and Opportunities for Policy and Practice
+(p. 610; Table 2). InTech.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.21.
+IPCC. (2019).
+\emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.21.
+IPCC. (2006).
+\emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
+}
+\seealso{
+\code{\link{calc_diet_digestibility}},
+\code{\link{run_feed_rations}}
 }
