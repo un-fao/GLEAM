@@ -5,15 +5,15 @@
 \title{Compute Daily Enteric Methane Emissions}
 \usage{
 compute_daily_enteric_emissions(
-  animal,
-  ym,
+  species_short,
+  ch4_conversion_factor_ym,
   ch4_mitigation_factor,
-  diet_ge,
-  dmi
+  diet_gross_energy,
+  dry_matter_intake
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -24,35 +24,53 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{ym}{Numeric. Methane conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH₄ (percentage).}
+\item{ch4_conversion_factor_ym}{Numeric. Methane (CH₄) conversion factor (ym),
+representing the percentage of  gross energy of the feed ration that is converted to CH₄ (percentage)}
 
-\item{ch4_mitigation_factor}{Numeric. Dimensionless fraction of baseline enteric methane emissions remaining after mitigation. Applied as a
-multiplicative factor to calculated emissions (1 = no mitigation, 0.9 = 10\% reduction). Default = 1.}
+\item{ch4_mitigation_factor}{Numeric. Optional. Multiplicative mitigation factor applied to
+baseline enteric methane (CH₄) emissions (dimensionless). If not provided, a default
+value of \code{1} (no mitigation) is used. Values lower than 1 represent proportional
+reductions (e.g., \code{0.90} = 10\% reduction). This factor can represent mitigation
+measures with a direct effect on enteric methane emissions, such as the use of feed
+additives or methane inhibitors.}
 
-\item{diet_ge}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 
-\item{dmi}{Numeric. Average daily dry matter intake of feed (kg dry matter/head/day).}
+\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 }
 \value{
-Numeric. Average daily enteric methane emissions (kg CH₄/head/day).
+Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).
 }
 \description{
-Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross energy intake,
-methane conversion factor (ym), and dry matter intake (dmi).
+Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross
+energy intake, methane conversion factor (ym), and dry matter intake.
 }
 \details{
 The formula used to estimate daily enteric methane emissions is:
 
-\deqn{CH_4 = \frac{diet\_ge \times dmi \times \frac{ym}{100}}{55.65}}
+\deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake 
+\times ch4\_conversion\_factor\_ym}{55.65 \times 100}}
 
 where 55.65 MJ/kg is the energy content of methane.
 
-The function returns \code{NA} for chickens.
+\code{diet_gross_energy} and \code{dry_matter_intake} can be calculated with
+\code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} -
+see also \code{\link{run_feed_rations}} and \code{\link{run_energy_requirements}}.
+
+The function returns \code{0} for chickens.
 }
 \references{
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.21.
+IPCC. (2019).
+\emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 
-IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
-Livestock and Manure Management, Equation 10.21.
+IPCC. (2006).
+\emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
+Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
+}
+\seealso{
+\code{\link{calc_diet_gross_energy}},
+\code{\link{calc_dry_matter_intake}},
+\code{\link{run_feed_rations}}
+\code{\link{run_energy_requirements}}
 }

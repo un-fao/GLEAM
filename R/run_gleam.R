@@ -1,16 +1,21 @@
 #' Run the GLEAM pipeline
 #'
 #' Runs the core sequence of model modules to generate cohort-level outputs for a
-#' livestock production system. Accepts primary inputs only: one cohort-level
-#' master table, one herd-level master table, feed rations and feed parameters.
+#' livestock production system: herd simulation (optional), weights, feed rations,
+#' energy requirements and DMI, and enteric methane direct emissions. Accepts
+#' primary inputs only: one cohort-level master table, one herd-level master table,
+#' feed rations and feed parameters.
 #'
 #' @param has_herd_structure Logical. If TRUE, use \code{cohort_level_data} directly
 #'   as the cohort-level input for the weights module (skip herd simulation). If FALSE,
 #'   run herd simulation first using \code{cohort_level_data} and \code{herd_level_data}.
 #' @param cohort_level_data data.table. Cohort-level master table. Must have one row
 #'   per cohort (6 cohorts per herd: FJ, FS, FA, MJ, MS, MA). Data should not
-#'   include columns that GLEAM calculates (validation will block them).
+#'   include columns that GLEAM calculates (validation will block them). May
+#'   optionally include \code{ch4_mitigation_factor} (fraction of baseline enteric
+#'   CH4 remaining after mitigation, 1 = no mitigation).
 #' @param herd_level_data data.table. Herd-level master table (one row per herd).
+#'   Must include \code{animal} (full species name, e.g. Cattle, Buffalo).
 #' @param feed_rations data.table. Feed ration shares by cohort (see \code{\link{run_feed_rations}}).
 #' @param feed_params data.table. Feed nutritional parameters (see \code{\link{run_feed_rations}}).
 #' @param show_indicator Logical. Whether to display progress indicators during the pipeline run.
@@ -86,7 +91,7 @@ run_gleam <- function(
     show_indicator = TRUE
 ) {
 
-  # --- Step 1: Validate inputs -----------------------------------------------
+  # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_gleam_inputs(
     has_herd_structure = has_herd_structure,
     cohort_level_data = cohort_level_data,
@@ -138,6 +143,13 @@ run_gleam <- function(
   gleam_chrt_data <- run_energy_requirements(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = herd_level_data,
+    show_indicator = show_indicator
+  )
+
+  # --- Step 6: Run enteric methane direct emissions ---------------------------
+  # ch4_mitigation_factor is optional cohort-level input
+  gleam_chrt_data <- run_directemissions_enteric(
+    cohort_level_data = gleam_chrt_data,
     show_indicator = show_indicator
   )
 

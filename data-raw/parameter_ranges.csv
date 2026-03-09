@@ -63,3 +63,5 @@ nitrogen_fracgas,0,TRUE,1,TRUE
 n2o_ef5,0,TRUE,1,TRUE
 nitrogen_fracleach,0,TRUE,1,TRUE
 manure_management_system_fraction,0,TRUE,1,TRUE
+ch4_conversion_factor_ym,0,TRUE,20,TRUE
+ch4_mitigation_factor,0,TRUE,1,TRUE
