@@ -1,7 +1,7 @@
 herd_id,animal,birth_weight,milk_protein_fraction_standard,milk_fat_fraction_standard,milk_lactose_fraction_standard,ratio_me_to_ne
-1,Cattle,35,0.033,0.04,0.048,2.33
-2,Buffalo,40,0.033,0.045,0.048,2.33
-3,Sheep,3.5,0.033,0.06,0.048,2.33
-4,Goats,3.0,0.033,0.05,0.048,2.33
-5,Camels,35,0.033,0.04,0.048,2.33
-6,Pigs,1.5,0.033,0.04,0.048,2.33
+1,Cattle,35,0.033,0.04,0.048,0.43
+2,Buffalo,40,0.033,0.045,0.048,0.43
+3,Sheep,3.5,0.033,0.06,0.048,0.43
+4,Goats,3,0.033,0.05,0.048,0.43
+5,Camels,35,0.033,0.04,0.048,0.43
+6,Pigs,1.5,0.033,0.04,0.048,0.43
