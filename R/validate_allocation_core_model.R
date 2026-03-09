@@ -98,7 +98,7 @@ validate_allocation_meat_inputs <- function(
 #' * All numeric inputs must be numeric scalars (length 1, not NA).
 #' * `animal` must be one of the supported species codes for allocation.
 #' * `fibre_energy_requirement` must be non-negative (MJ per head per day).
-#' * `ratio_ne_to_me` must be between 0 and 1 (used for camelid conversion).
+#' * `ratio_me_to_ne` must be between 0 and 1 (used for camelid conversion).
 #' * `assessment_duration` must be between 0 and 3650 days.
 #'
 #' Valid animal species for allocation: `CTL`, `BFL`, `CML`, `SHP`, `GTS`, `PGS`, `CHK`.
@@ -109,7 +109,7 @@ validate_allocation_meat_inputs <- function(
 #'
 #' @param animal Character scalar. Species code (e.g., "GTS", "SHP", "CML").
 #' @param fibre_energy_requirement Numeric scalar. Fibre energy demand (MJ per head per day).
-#' @param ratio_ne_to_me Numeric scalar. Net-to-metabolizable energy conversion ratio (used for camelids).
+#' @param ratio_me_to_ne Numeric scalar. Net-to-metabolizable energy conversion ratio (used for camelids).
 #' @param assessment_duration Numeric scalar. Assessment duration (days).
 #'
 #' @noRd
@@ -156,11 +156,11 @@ validate_allocation_fibre_inputs <- function(
 #' * All numeric inputs must be numeric scalars (length 1, not NA).
 #' * `animal` must be one of the supported species codes for allocation.
 #' * `work_energy_requirement` must be non-negative (MJ per head per day).
-#' * `ratio_ne_to_me` must be between 0 and 1 (used for camelid conversion).
+#' * `ratio_me_to_ne` must be between 0 and 1 (used for camelid conversion).
 #' * `assessment_duration` must be between 0 and 3650 days.
 #'
 #' Valid animal species for allocation: `CTL`, `BFL`, `CML`, `SHP`, `GTS`, `PGS`, `CHK`.
-#' Note: Camelids (CML) require the `ratio_ne_to_me` conversion factor,
+#' Note: Camelids (CML) require the `ratio_me_to_ne` conversion factor,
 #' while other species use direct calculation.
 #'
 #' This validator is designed for internal use in
@@ -168,7 +168,7 @@ validate_allocation_fibre_inputs <- function(
 #'
 #' @param animal Character scalar. Species code (e.g., "CML" for camelids).
 #' @param work_energy_requirement Numeric scalar. Work energy demand (MJ per head per day).
-#' @param ratio_ne_to_me Numeric scalar. Net-to-metabolizable energy conversion ratio (used for camelids).
+#' @param ratio_me_to_ne Numeric scalar. Net-to-metabolizable energy conversion ratio (used for camelids).
 #' @param assessment_duration Numeric scalar. Assessment duration (days).
 #'
 #' @noRd

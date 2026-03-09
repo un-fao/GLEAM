@@ -355,7 +355,7 @@ calc_energy_allocation_meat <- function(
 #'   \item For camels (\code{CML}):
 #'
 #'   \code{energy_allocation_fibre =
-#'   fibre_energy_requirement * ratio_ne_to_me * assessment_duration * size}
+#'   fibre_energy_requirement * ratio_me_to_ne * assessment_duration * size}
 #'
 #'
 #' }
