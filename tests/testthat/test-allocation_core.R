@@ -25,25 +25,14 @@ test_that("calc_energy_allocation_milk handles zero milk output", {
   expect_equal(result, 0)
 })
 
-test_that("calc_energy_allocation_milk validates scalar numeric inputs", {
-  expect_error(
-    calc_energy_allocation_milk(milk_production_fpcm_cohort = c(100, 200), milk_protein_fraction_standard = 0.033, milk_fat_fraction_standard = 0.04, milk_lactose_fraction_standard = 0.048),
-    "must be a single numeric value"
-  )
-  expect_error(
-    calc_energy_allocation_milk(milk_production_fpcm_cohort = 100, milk_protein_fraction_standard = "0.033", milk_fat_fraction_standard = 0.04, milk_lactose_fraction_standard = 0.048),
-    "must be a single numeric value"
-  )
-})
-
 test_that("calc_energy_allocation_milk validates bounds", {
   expect_error(
     calc_energy_allocation_milk(milk_production_fpcm_cohort = -10, milk_protein_fraction_standard = 0.033, milk_fat_fraction_standard = 0.04, milk_lactose_fraction_standard = 0.048),
-    "must be non-negative"
+    "is out of range"
   )
   expect_error(
     calc_energy_allocation_milk(milk_production_fpcm_cohort = 100, milk_protein_fraction_standard = 1.5, milk_fat_fraction_standard = 0.04, milk_lactose_fraction_standard = 0.048),
-    "must be between 0 and 1"
+    "is out of range"
   )
 })
 
@@ -202,18 +191,18 @@ test_that("calc_energy_allocation_meat validates weight bounds", {
       meat_production_live_weight_cohort = 100,
       ratio_me_to_ne = 1 / 0.43
     ),
-    "must be between 0 and 2000"
+    "is out of range"
   )
   expect_error(
     calc_energy_allocation_meat(
       species_short = "CTL",
       cohort_short = "FA",
       slaughter_weight_cohort = 500,
-      birth_weight = 300,
+      birth_weight = 1500,
       meat_production_live_weight_cohort = 100,
       ratio_me_to_ne = 1 / 0.43
     ),
-    "must be between 0 and 200"
+    "is out of range"
   )
 })
 

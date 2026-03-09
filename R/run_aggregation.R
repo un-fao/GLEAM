@@ -47,7 +47,7 @@
 #'   \describe{
 #'     \item{**Grouping**:}{`herd_id`, `Animal_short`}
 #'     \item{**Allocation**:}{`commodity_name` (e.g., "Meat", "Milk", "Fibre"),
-#'       `allocation_share` (numeric, 0-1).
+#'       `allocation_share` (numeric, 0-1).}
 #'     \item{**Emission source**:}{`variable_name` (emission variable names)}
 #'   }
 #' @param gwp Character scalar specifying the 100-year Global Warming Potential

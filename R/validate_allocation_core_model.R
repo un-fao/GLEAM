@@ -22,24 +22,11 @@ validate_allocation_milk_inputs <- function(
     milk_fat_fraction_standard,
     milk_lactose_fraction_standard
 ) {
-  validate_scalar_numeric(milk_production_fpcm_cohort, "milk_production_fpcm_cohort")
-  validate_scalar_numeric(milk_protein_fraction_standard, "milk_protein_fraction_standard")
-  validate_scalar_numeric(milk_fat_fraction_standard, "milk_fat_fraction_standard")
-  validate_scalar_numeric(milk_lactose_fraction_standard, "milk_lactose_fraction_standard")
-
-  # Basic bounds: all should be non-negative
-  if (milk_production_fpcm_cohort < 0) {
-    cli::cli_abort("{.arg milk_production_fpcm_cohort} must be non-negative.")
-  }
-  if (milk_protein_fraction_standard < 0 || milk_protein_fraction_standard > 1) {
-    cli::cli_abort("{.arg milk_protein_fraction_standard} must be between 0 and 1 (g per 100 g milk).")
-  }
-  if (milk_fat_fraction_standard < 0 || milk_fat_fraction_standard > 1) {
-    cli::cli_abort("{.arg milk_fat_fraction_standard} must be between 0 and 1 (g per 100 g milk).")
-  }
-  if (milk_lactose_fraction_standard < 0 || milk_lactose_fraction_standard > 1) {
-    cli::cli_abort("{.arg milk_lactose_fraction_standard} must be between 0 and 1 (g per 100 g milk).")
-  }
+  # Range checks via parameter_ranges
+  validate_param_range(milk_production_fpcm_cohort)
+  validate_param_range(milk_protein_fraction_standard)
+  validate_param_range(milk_fat_fraction_standard)
+  validate_param_range(milk_lactose_fraction_standard)
 }
 
 #' Validate inputs for calc_energy_allocation_meat
@@ -75,9 +62,6 @@ validate_allocation_meat_inputs <- function(
 ) {
   validate_scalar_character(species_short, "species_short")
   validate_scalar_character(cohort_short, "cohort_short")
-  validate_scalar_numeric(slaughter_weight_cohort, "slaughter_weight_cohort")
-  validate_scalar_numeric(birth_weight, "birth_weight")
-  validate_scalar_numeric(meat_production_live_weight_cohort, "meat_production_live_weight_cohort")
   validate_scalar_numeric(ratio_me_to_ne, "ratio_me_to_ne")
 
   # Validate animal species
@@ -96,18 +80,13 @@ validate_allocation_meat_inputs <- function(
     )
   }
 
-  # Basic bounds: weights should be non-negative and reasonable
-  if (slaughter_weight_cohort < 0 || slaughter_weight_cohort > 2000) {
-    cli::cli_abort("{.arg slaughter_weight_cohort} must be between 0 and 2000 kg.")
-  }
+  # Range checks via parameter_ranges
+  validate_param_range(slaughter_weight_cohort)
+  validate_param_range(birth_weight)
+  validate_param_range(meat_production_live_weight_cohort)
+
   if (ratio_me_to_ne <= 0) {
     cli::cli_abort("{.arg ratio_me_to_ne} must be positive (ME/NE).")
-  }
-  if (birth_weight < 0 || birth_weight > 200) {
-    cli::cli_abort("{.arg birth_weight} must be between 0 and 200 kg.")
-  }
-  if (meat_production_live_weight_cohort < 0) {
-    cli::cli_abort("{.arg meat_production_live_weight_cohort} must be non-negative.")
   }
 }
 

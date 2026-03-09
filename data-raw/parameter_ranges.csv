@@ -75,3 +75,10 @@ meat_protein_fraction,0,TRUE,1,TRUE
 milk_protein_fraction_standard,0,TRUE,1,TRUE
 milk_fat_fraction_standard,0,TRUE,1,TRUE
 milk_lactose_fraction_standard,0,TRUE,1,TRUE
+milk_production_fpcm_cohort,0,TRUE,Inf,TRUE
+energy_allocation_milk,0,TRUE,Inf,TRUE
+energy_allocation_fibre,0,TRUE,Inf,TRUE
+energy_allocation_work,0,TRUE,Inf,TRUE
+energy_allocation_meat,0,TRUE,Inf,TRUE
+energy_allocation_eggs,0,TRUE,Inf,TRUE
+meat_production_live_weight_cohort,0,TRUE,Inf,TRUE
