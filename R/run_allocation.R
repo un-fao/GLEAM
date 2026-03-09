@@ -47,7 +47,6 @@
 #'   }
 #'
 #' @param simulation_duration Numeric. Length of the assessment period (days). Defaults to \code{365}.
-#' @param allocation_type Character vector that defines the allocation methodology in use. Default= "biophysical-energy"
 #' @param show_indicator Logical. Whether to display progress indicators during the pipeline run.
 #'
 #' @return A named list of two `data.table` objects:
@@ -79,7 +78,6 @@ run_allocation <- function(
     cohort_level_data,
     herd_level_data,
     simulation_duration = 365,
-    allocation_type = "biophysical-energy",
     show_indicator = TRUE
 ) {
   # --- Step 1: Coerce and validate inputs -------------------------------------
@@ -264,17 +262,12 @@ run_allocation <- function(
     allocation_col = "allocation_share"
   )
 
-  allocation_herd_long[
-    ,
-    allocation_type := allocation_type
-  ]
-
   # Reorder columns for clarity
   data.table::setcolorder(
     allocation_herd_long,
     c("herd_id", "species_short",
       "variable_name", "commodity_name", "commodity_type",
-      "allocation_share", "allocation_type")
+      "allocation_share")
   )
 
   # Clear progress indicator if it was shown

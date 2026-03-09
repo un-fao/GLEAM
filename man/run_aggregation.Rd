@@ -19,15 +19,6 @@ calculated variables. Must include:
 Required grouping columns: \code{herd_id}, \code{Animal_short},
 \code{cohort}, \code{assessment_duration}, \code{size}.}
 
-\item{allocation_herd_long}{A \code{data.table} in long format, typically the
-output of \code{\link[=run_allocation]{run_allocation()}}. Must include columns:
-\describe{
-\item{\strong{Grouping}:}{\code{herd_id}, \code{Animal_short}}
-\item{\strong{Allocation}:}{\code{commodity_name} (e.g., "Meat", "Milk", "Fibre"),
-\code{allocation_share} (numeric, 0-1), \code{allocation_type} (character)}
-\item{\strong{Emission source}:}{\code{variable_name} (emission variable names)}
-}}
-
 \item{gwp}{Character scalar specifying the 100-year Global Warming Potential
 (GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
 Must be one of:
@@ -54,7 +45,7 @@ A named list containing:
 }
 Columns include: \code{herd_id}, \code{Animal_short},
 \code{cohort} (set to "ALL"), \code{variable_type}, \code{variable_name}, \code{unit}, \code{gas},
-\code{gwp}, \code{allocation_type}, \code{allocation_share}, \code{commodity_type}, \code{commodity_name},
+\code{gwp}, \code{allocation_share}, \code{commodity_type}, \code{commodity_name},
 \code{value_total}.
 }
 }

@@ -1,7 +1,7 @@
 #' Aggregation Pipeline: Final Herd-Level Results
 #'
 #' This function represents the final step of the Global Livestock Environmental
-#' Assessment Model (GLEAM) computational pipeline. 
+#' Assessment Model (GLEAM) computational pipeline.
 #' It consolidates cohort-level outputs into standardized herd-level totals for reporting.
 #' The function (i) scales per-head-per-day variables to cohort totals over the assessment
 #' period, (ii) aggregates cohorts to herd level, (iii) allocates emissions to commodities
@@ -41,13 +41,13 @@
 #'   }
 #'   Required grouping columns: `herd_id`, `Animal_short`,
 #'    `cohort`, `assessment_duration`, `size`.
-#'    
+#'
 #' @param allocation_herd_long A `data.table` in long format, typically the
 #'   output of [run_allocation()]. Must include columns:
 #'   \describe{
 #'     \item{**Grouping**:}{`herd_id`, `Animal_short`}
 #'     \item{**Allocation**:}{`commodity_name` (e.g., "Meat", "Milk", "Fibre"),
-#'       `allocation_share` (numeric, 0-1), `allocation_type` (character)}
+#'       `allocation_share` (numeric, 0-1).
 #'     \item{**Emission source**:}{`variable_name` (emission variable names)}
 #'   }
 #' @param gwp Character scalar specifying the 100-year Global Warming Potential
@@ -75,7 +75,7 @@
 #'     }
 #'     Columns include: `herd_id`, `Animal_short`,
 #'     `cohort` (set to "ALL"), `variable_type`, `variable_name`, `unit`, `gas`,
-#'     `gwp`, `allocation_type`, `allocation_share`, `commodity_type`, `commodity_name`,
+#'     `gwp`, `allocation_share`, `commodity_type`, `commodity_name`,
 #'     `value_total`.
 #'   }
 #' }
@@ -252,7 +252,7 @@ run_aggregation <- function(
       herd_id, Animal_short,
       variable_name, gas, variable_type, commodity_name,
       allocation_share, commodity_type, value_total = value_allocated_co2e,
-      allocation_type, gwp
+      gwp
     )
   ]
   subset_allocatedco2e[, unit := "kg co2eq"]
@@ -317,11 +317,6 @@ run_aggregation <- function(
 
   results_herd[
     !variable_type %in% c("Emissions"),
-    allocation_type := NA
-  ]
-
-  results_herd[
-    !variable_type %in% c("Emissions"),
     gwp := 1
   ]
 
@@ -369,7 +364,6 @@ run_aggregation <- function(
     "unit",
     "gas",
     "gwp",
-    "allocation_type",
     "allocation_share",
     "commodity_type",
     "commodity_name",

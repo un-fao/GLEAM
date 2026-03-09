@@ -132,7 +132,7 @@ utils::globalVariables(c(
   "allocation_share_work", "allocation_share_fibre", "allocation_share_eggs",
   "allocation_share_other",
   # reshape and output columns
-  "commodity_name", "commodity_type", "allocation_type", "V1"
+  "commodity_name", "commodity_type", "V1"
 ))
 
 utils::globalVariables(c(
@@ -175,7 +175,7 @@ utils::globalVariables(c(
   # Columns used in run_aggregation
   "value", "value_total", "value_allocated", "value_allocated_co2e", "gwp_factor",
   "variable_type", "variable_name", "unit", "gas", "allocation_share",
-  "allocation_type", "commodity_name", "commodity_type",
+  "commodity_name", "commodity_type",
   "assessment_duration"  # Variable used in run_aggregation
 ))
 

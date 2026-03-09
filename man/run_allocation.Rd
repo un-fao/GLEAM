@@ -8,7 +8,6 @@ run_allocation(
   cohort_level_data,
   herd_level_data,
   simulation_duration = 365,
-  allocation_type = "biophysical-energy",
   show_indicator = TRUE
 )
 }
@@ -54,8 +53,6 @@ run_allocation(
 }}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days). Defaults to \code{365}.}
-
-\item{allocation_type}{Character vector that defines the allocation methodology in use. Default= "biophysical-energy"}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during the pipeline run.}
 }
