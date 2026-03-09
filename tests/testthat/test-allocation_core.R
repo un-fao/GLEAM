@@ -452,20 +452,6 @@ test_that("calc_allocation_shares shares sum to 1", {
   expect_equal(result$allocation_share_fibre, 0.6)
 })
 
-test_that("calc_allocation_shares treats NA energy term as 0 in share", {
-  result <- calc_allocation_shares(
-    species_short = "CTL",
-    energy_allocation_meat = NA,
-    energy_allocation_milk = 1000,
-    energy_allocation_fibre = 0,
-    energy_allocation_work = 0,
-    energy_allocation_eggs = 0
-  )
-
-  expect_equal(result$allocation_share_meat, 0)
-  expect_equal(result$allocation_share_milk, 1)
-})
-
 test_that("calc_allocation_shares returns a named list with 5 elements", {
   result <- calc_allocation_shares(
     species_short = "CTL",

@@ -228,55 +228,44 @@ calc_energy_allocation_meat <- function(
     ratio_me_to_ne
 ) {
   validate_allocation_meat_inputs(
-    species_short, cohort_short,
-    slaughter_weight_cohort, birth_weight, meat_production_live_weight_cohort, ratio_me_to_ne
+    species_short, cohort_short, slaughter_weight_cohort, birth_weight,
+    meat_production_live_weight_cohort, ratio_me_to_ne
   )
 
-  # Default fallback
-  specific_energy_meat <- NA_real_
-
-  # Check for valid weights
-  if (is.na(species_short) || is.na(slaughter_weight_cohort) || is.na(birth_weight)) {
-    energy_allocation_meat <- NA_real_
-  } else if (species_short %in% c("CTL", "BFL")) {
+  if (species_short %in% c("CTL", "BFL")) {
     # Cattle and Buffalo: use growth efficiency factor based on cohort
     if (cohort_short %in% c("FA", "FS", "FJ")) {
       growth_efficiency_factor <- 0.8
-    } else if (cohort_short %in% c("MA", "MS", "MJ")) {
-      growth_efficiency_factor <- 1
     } else {
-      growth_efficiency_factor <- NA_real_
+      growth_efficiency_factor <- 1
     }
-    if (!is.na(growth_efficiency_factor)) {
-      specific_energy_meat <- (
-        22.02 * (((slaughter_weight_cohort - birth_weight) / 2) /
-                   (growth_efficiency_factor * slaughter_weight_cohort))^0.75 *
-          (slaughter_weight_cohort - birth_weight)^1.097
-      ) / slaughter_weight_cohort
-    }
+
+    specific_energy_meat <- (
+      22.02 * (((slaughter_weight_cohort - birth_weight) / 2) /
+                 (growth_efficiency_factor * slaughter_weight_cohort))^0.75 *
+        (slaughter_weight_cohort - birth_weight)^1.097
+    ) / slaughter_weight_cohort
 
   } else if (species_short == "CML") {
     # Camelids: convert ME to NE using ratio_me_to_ne (ME/NE)
-    specific_energy_meat <- (41.8 * (slaughter_weight_cohort - birth_weight) / slaughter_weight_cohort) / ratio_me_to_ne
+    specific_energy_meat <- (
+      41.8 * (slaughter_weight_cohort - birth_weight) / slaughter_weight_cohort
+    ) / ratio_me_to_ne
 
   } else if (species_short == "SHP") {
     # Sheep: coefficients vary by cohort (female vs male)
     if (cohort_short %in% c("FA", "FS", "FJ")) {
       a <- 2.1
       b <- 0.45
-    } else if (cohort_short %in% c("MA", "MS", "MJ")) {
+    } else {
       a <- 4.4
       b <- 0.32
-    } else {
-      a <- NA_real_
-      b <- NA_real_
     }
-    if (!is.na(a) && !is.na(b)) {
-      specific_energy_meat <- (
-        (slaughter_weight_cohort - birth_weight) *
-          (a + 0.5 * b * (birth_weight + slaughter_weight_cohort))
-      ) / slaughter_weight_cohort
-    }
+
+    specific_energy_meat <- (
+      (slaughter_weight_cohort - birth_weight) *
+        (a + 0.5 * b * (birth_weight + slaughter_weight_cohort))
+    ) / slaughter_weight_cohort
 
   } else if (species_short == "GTS") {
     # Goats: fixed coefficients
@@ -500,12 +489,15 @@ calc_energy_allocation_work <- function(
     simulation_duration
 ) {
   validate_allocation_work_inputs(
-    species_short, cohort_stock_size, energy_requirement_work, ratio_me_to_ne, simulation_duration
+    species_short, cohort_stock_size, energy_requirement_work,
+    ratio_me_to_ne, simulation_duration
   )
 
   if (species_short == "CML") {
     # Camelids: convert ME to NE using ratio_me_to_ne (ME/NE)
-    energy_allocation_work <- (energy_requirement_work * simulation_duration * cohort_stock_size) / ratio_me_to_ne
+    energy_allocation_work <- (
+      energy_requirement_work * simulation_duration * cohort_stock_size
+    ) / ratio_me_to_ne
   } else {
     # Other species: direct calculation
     energy_allocation_work <- energy_requirement_work * simulation_duration * cohort_stock_size
@@ -662,22 +654,11 @@ calc_allocation_shares <- function(
     allocation_share_work <- 0
     allocation_share_eggs <- 0
   } else {
-    allocation_share_meat <- ifelse(
-      is.na(energy_allocation_meat), 0, energy_allocation_meat / total_energy
-    )
-    allocation_share_milk <- ifelse(
-      is.na(energy_allocation_milk), 0, energy_allocation_milk / total_energy
-    )
-    allocation_share_fibre <- ifelse(
-      is.na(energy_allocation_fibre), 0, energy_allocation_fibre / total_energy
-    )
-    allocation_share_work <- ifelse(
-      is.na(energy_allocation_work), 0, energy_allocation_work / total_energy
-    )
-    allocation_share_eggs <- ifelse(
-      is.na(energy_allocation_eggs), 0, energy_allocation_eggs / total_energy
-    )
-
+    allocation_share_meat <- energy_allocation_meat / total_energy
+    allocation_share_milk <- energy_allocation_milk / total_energy
+    allocation_share_fibre <- energy_allocation_fibre / total_energy
+    allocation_share_work <- energy_allocation_work / total_energy
+    allocation_share_eggs <- energy_allocation_eggs / total_energy
   }
 
   return(
@@ -690,7 +671,6 @@ calc_allocation_shares <- function(
     )
   )
 }
-
 
 #' Assign Allocation Shares to Emission Variables by Commodity
 #'
