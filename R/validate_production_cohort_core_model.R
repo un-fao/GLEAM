@@ -1,131 +1,88 @@
 #' Validate inputs for compute_milk_outputs
 #'
+#' Milk calculations are only used for cohort FA (adult females). Validation of
+#' milk-related parameters and ranges is performed only when cohort_short == "FA".
+#'
 #' @noRd
 validate_milk_outputs_inputs <- function(
-    cohort,
-    milk_yield,
-    assessment_duration,
-    size,
-    milking_fraction,
-    milk_protein,
-    milk_fat,
-    lactose,
-    standard_protein,
-    standard_fat,
-    standard_lactose
+    species_short,
+    cohort_short,
+    milk_yield_day,
+    simulation_duration,
+    cohort_stock_size,
+    lactating_females_fraction,
+    milk_protein_fraction,
+    milk_fat_fraction,
+    milk_lactose_fraction,
+    milk_protein_fraction_standard,
+    milk_fat_fraction_standard,
+    milk_lactose_fraction_standard
 ) {
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
   
-  validate_cohort_code(cohort)
-  
-  # Scalar numeric inputs
-  validate_scalar_numeric(milk_yield, "milk_yield")
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
-  validate_scalar_numeric(size, "size")
-  validate_scalar_numeric(milking_fraction, "milking_fraction")
-  validate_scalar_numeric(milk_protein, "milk_protein")
-  validate_scalar_numeric(milk_fat, "milk_fat")
-  validate_scalar_numeric(lactose, "lactose")
-  validate_scalar_numeric(standard_protein, "standard_protein")
-  validate_scalar_numeric(standard_fat, "standard_fat")
-  validate_scalar_numeric(standard_lactose, "standard_lactose")
+  if (species_short %in% c("CTL", "BFL", "GTS", "SHP", "CML")) {
+    if (cohort_short == "FA") {
+    # Scalar numeric inputs (only used for FA)
+    validate_scalar_numeric(simulation_duration, "simulation_duration")
+    validate_scalar_numeric(cohort_stock_size, "cohort_stock_size")
 
-  # Basic range checks for milk composition (fractions)
-  if (milk_protein < 0 || milk_protein > 1) {
-    cli::cli_abort("{.arg milk_protein} must be between 0 and 1 (fraction).")
-  }
-  if (milk_fat < 0 || milk_fat > 1) {
-    cli::cli_abort("{.arg milk_fat} must be between 0 and 1 (fraction).")
-  }
-  if (lactose < 0 || lactose > 1) {
-    cli::cli_abort("{.arg lactose} must be between 0 and 1 (fraction).")
-  }
-  if (milking_fraction < 0 || milking_fraction > 1) {
-    cli::cli_abort("{.arg milking_fraction} must be between 0 and 1 (fraction).")
-  }
-  if (standard_protein < 0 || standard_protein > 1) {
-    cli::cli_abort("{.arg standard_protein} must be between 0 and 1 (fraction).")
-  }
-  if (standard_fat < 0 || standard_fat > 1) {
-    cli::cli_abort("{.arg standard_fat} must be between 0 and 1 (fraction).")
-  }
-  if (standard_lactose < 0 || standard_lactose > 1) {
-    cli::cli_abort("{.arg standard_lactose} must be between 0 and 1 (fraction).")
-  }
-
-  # Non-negative checks
-  if (milk_yield < 0) {
-    cli::cli_abort("{.arg milk_yield} must be non-negative.")
-  }
-  if (assessment_duration <= 0) {
-    cli::cli_abort("{.arg assessment_duration} must be positive.")
-  }
-  if (size < 0) {
-    cli::cli_abort("{.arg size} must be non-negative.")
+    # Range checks via parameter_ranges
+    validate_param_range(milk_yield_day, "milk_yield_day")
+    validate_param_range(lactating_females_fraction, "lactating_females_fraction")
+    validate_param_range(milk_protein_fraction, "milk_protein_fraction")
+    validate_param_range(milk_fat_fraction, "milk_fat_fraction")
+    validate_param_range(milk_lactose_fraction, "milk_lactose_fraction")
+    validate_param_range(milk_protein_fraction_standard, "milk_protein_fraction_standard")
+    validate_param_range(milk_fat_fraction_standard, "milk_fat_fraction_standard")
+    validate_param_range(milk_lactose_fraction_standard, "milk_lactose_fraction_standard")
+    }
   }
 }
 
 #' Validate inputs for compute_fibre_output
 #'
+#' Fibre calculations are only used for cohorts FA, FS, MA, MS. Validation of
+#' fibre-related parameters and ranges is performed only for those cohorts.
+#'
 #' @noRd
 validate_fibre_output_inputs <- function(
-    cohort,
-    fibre_prod,
-    assessment_duration,
-    size
+    species_short,
+    cohort_short,
+    fibre_yield_year,
+    simulation_duration,
+    cohort_stock_size
 ) {
-  
-  validate_cohort_code(cohort)
-  
-  # Scalar numeric inputs
-  validate_scalar_numeric(fibre_prod, "fibre_prod")
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
-  validate_scalar_numeric(size, "size")
 
-  # Non-negative checks
-  if (fibre_prod < 0) {
-    cli::cli_abort("{.arg fibre_prod} must be non-negative.")
-  }
-  if (assessment_duration <= 0) {
-    cli::cli_abort("{.arg assessment_duration} must be positive.")
-  }
-  if (size < 0) {
-    cli::cli_abort("{.arg size} must be non-negative.")
-  }
+  validate_cohort_code(cohort_short)
+  
+  if (species_short %in% c("GTS", "SHP", "CML")) {
+    if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
+    # Scalar numeric inputs (only used for fibre-producing cohorts)
+    validate_scalar_numeric(simulation_duration, "simulation_duration")
+    validate_scalar_numeric(cohort_stock_size, "cohort_stock_size")
+
+    # Range checks via parameter_ranges
+    validate_param_range(fibre_yield_year, "fibre_yield_year")
+    }
+    }
 }
 
 #' Validate inputs for compute_meat_outputs
 #'
 #' @noRd
 validate_meat_outputs_inputs <- function(
-    offtake_number_assessment,
-    slaughter_weight,
-    carcass_dressing_percentage,
+    offtake_heads_assessment,
+    slaughter_weight_cohort,
+    carcass_dressing_fraction,
     bone_free_meat_fraction,
-    meat_protein
+    meat_protein_fraction
 ) {
-  # Scalar numeric inputs
-  validate_scalar_numeric(offtake_number_assessment, "offtake_number_assessment")
-  validate_scalar_numeric(slaughter_weight, "slaughter_weight")
-  validate_scalar_numeric(carcass_dressing_percentage, "carcass_dressing_percentage")
-  validate_scalar_numeric(bone_free_meat_fraction, "bone_free_meat_fraction")
-  validate_scalar_numeric(meat_protein, "meat_protein")
 
-  # Non-negative checks
-  if (offtake_number_assessment < 0) {
-    cli::cli_abort("{.arg offtake_number_assessment} must be non-negative.")
-  }
-  if (slaughter_weight < 0) {
-    cli::cli_abort("{.arg slaughter_weight} must be non-negative.")
-  }
-
-  # Fraction checks (0-1 range)
-  if (carcass_dressing_percentage < 0 || carcass_dressing_percentage > 1) {
-    cli::cli_abort("{.arg carcass_dressing_percentage} must be between 0 and 1 (fraction).")
-  }
-  if (bone_free_meat_fraction < 0 || bone_free_meat_fraction > 1) {
-    cli::cli_abort("{.arg bone_free_meat_fraction} must be between 0 and 1 (fraction).")
-  }
-  if (meat_protein < 0 || meat_protein > 1) {
-    cli::cli_abort("{.arg meat_protein} must be between 0 and 1 (fraction).")
-  }
+  # Range checks via parameter_ranges
+  validate_param_range(offtake_heads_assessment, "offtake_heads_assessment")
+  validate_param_range(slaughter_weight_cohort, "slaughter_weight_cohort")
+  validate_param_range(carcass_dressing_fraction, "carcass_dressing_fraction")
+  validate_param_range(bone_free_meat_fraction, "bone_free_meat_fraction")
+  validate_param_range(meat_protein_fraction, "meat_protein_fraction")
 }

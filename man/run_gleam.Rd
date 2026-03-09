@@ -12,6 +12,7 @@ run_gleam(
   feed_params,
   manure_management_system_fraction,
   manure_management_system_factors,
+  simulation_duration = 365,
   show_indicator = TRUE
 )
 }
@@ -21,9 +22,10 @@ as the cohort-level input for the weights module (skip herd simulation). If FALS
 run herd simulation first using \code{cohort_level_data} and \code{herd_level_data}.}
 
 \item{cohort_level_data}{data.table. Cohort-level master table. Must have one row
-per cohort (6 cohorts per herd: FJ, FS, FA, MJ, MS, MA). Data should not
-include columns that GLEAM calculates (validation will block them). May
-optionally include \code{ch4_mitigation_factor} (fraction of baseline enteric
+per cohort (6 cohorts per herd: FJ, FS, FA, MJ, MS, MA) and must include
+\code{animal} (full species name, e.g. Cattle, Buffalo) for each cohort. Data
+should not include columns that GLEAM calculates (validation will block them).
+May optionally include \code{ch4_mitigation_factor} (fraction of baseline enteric
 CH4 remaining after mitigation, 1 = no mitigation).}
 
 \item{herd_level_data}{data.table. Herd-level master table (one row per herd).
@@ -39,6 +41,10 @@ system fractions (see \code{\link{run_directemissions_manure}}).}
 \item{manure_management_system_factors}{data.table. Manure management
 system factors (see \code{\link{run_directemissions_manure}}).}
 
+\item{simulation_duration}{Numeric. Length of the assessment period (days). Used by the herd
+simulation module (when \code{has_herd_structure} is FALSE) and by the production module
+(milk, fibre, meat). Defaults to \code{365}.}
+
 \item{show_indicator}{Logical. Whether to display progress indicators during the pipeline run.}
 }
 \value{
@@ -49,7 +55,7 @@ modules executed within this pipeline call.
 Runs the core sequence of model modules to generate cohort-level outputs for a
 livestock production system: herd simulation (optional), weights, feed rations,
 energy requirements and DMI, enteric methane direct emissions, nitrogen balance,
-and direct emissions from manure management systems.
+direct emissions from manure management systems, and production (milk, fibre, meat).
 Accepts primary inputs only: one cohort-level master table, one herd-level master table,
 feed rations and feed parameters, and manure management system tables.
 }
@@ -87,7 +93,8 @@ results <- run_gleam(
   feed_rations = feed_rations_chrt_dt,
   feed_params = feed_params_dt,
   manure_management_system_fraction = manure_management_system_fraction_dt,
-  manure_management_system_factors = manure_management_system_factors_dt
+  manure_management_system_factors = manure_management_system_factors_dt,
+  simulation_duration = 365
 )
 print(results)
 }
@@ -125,7 +132,8 @@ results <- run_gleam(
   feed_rations = feed_rations_chrt_dt,
   feed_params = feed_params_dt,
   manure_management_system_fraction = manure_management_system_fraction_dt,
-  manure_management_system_factors = manure_management_system_factors_dt
+  manure_management_system_factors = manure_management_system_factors_dt,
+  simulation_duration = 365
 )
 print(results)
 }

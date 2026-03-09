@@ -67,3 +67,11 @@ ch4_conversion_factor_ym,0,TRUE,20,TRUE
 ch4_mitigation_factor,0,TRUE,1,TRUE
 diet_nitrogen,0,TRUE,0.1,TRUE
 milk_protein_fraction,0,TRUE,1,TRUE
+milk_lactose_fraction,0,TRUE,1,TRUE
+offtake_heads_assessment,0,TRUE,Inf,TRUE
+carcass_dressing_fraction,0,TRUE,1,TRUE
+bone_free_meat_fraction,0,TRUE,1,TRUE
+meat_protein_fraction,0,TRUE,1,TRUE
+milk_protein_fraction_standard,0,TRUE,1,TRUE
+milk_fat_fraction_standard,0,TRUE,1,TRUE
+milk_lactose_fraction_standard,0,TRUE,1,TRUE

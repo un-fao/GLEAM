@@ -1,159 +1,237 @@
-#' Run Production Cohort (Internal)
+#' Run Production Cohort
 #'
-#' Drives the production cohort workflow to translate cohort-level herd inputs into
-#' annualised milk, fibre, and meat outputs for each table row. The routine validates
-#' the source tables, computes the three production streams with the core helpers, and
-#' writes the derived columns back into the supplied data.table as an output.
+#' Computes cohort-level production outputs over the assessment period by combining
+#' cohort-level herd structure inputs with herd-level production parameters.
+#' The function returns milk, fibre, and meat outputs for each cohort.
 #'
-#' Input data must be loaded beforehand. Package examples live under `inst/extdata` and can
-#' be accessed via [system.file()] together with [data.table::fread()].
+#' @param cohort_level_data data.table. Cohort-level input table (one row per herd-cohort) with the
+#'   following data requirement:
+#'   \describe{
+#'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#' \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals.
+#' Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'       }}
+#' \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
+#' FS, FA, MJ, MS, MA).}
+#' \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period,
+#' aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).}
+#'     \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+#'   }
 #'
-#' @param data data.table. Cohort-level production inputs (per country/animal/LPS) containing:
+#' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with the following data
+#' requirement:
+#'   \describe{
+#'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'     \item{animal}{Character. Livestock category name used to map to a species short code via an
+#'     internal lookup table. Supported values include:
+#'     \itemize{
+#'     \item \code{Cattle}
+#'     \item \code{Buffalo}
+#'     \item \code{Sheep}
+#'     \item \code{Goats}
+#'     \item \code{Chicken}
+#'     \item \code{Pigs}
+#'     \item \code{Camels}
+#'     }}
+#' \item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment duration
+#' (kg/head/day).
+#' This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals
+#' during the assessment period,
+#' divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for
+#' species = CML, CTL, BFL, SHP, and GTS.}
+#' \item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment
+#' period (fraction). Required only for species: CML, CTL, BFL, SHP, and GTS.}
+#' \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein/kg milk). Required only for species = CML,
+#' CTL, BFL, SHP, and GTS.}
+#' \item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat/kg milk). Required only for species = CML, CTL, BFL, SHP,
+#' and GTS.}
+#' \item{milk_lactose_fraction}{Numeric. Milk lactose fraction (kg lactose/kg milk). Required only for species = CML,
+#' CTL, BFL, SHP, and GTS.}
+#' \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
+#' Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}
+#' \item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
+#' (FPCM), (kg fat/kg milk). Suggested value = 0.04.}
+#' \item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate
+#' Fat-protein-corrected milk (FPCM), (kg lactose/kg milk). Suggested value = 0.048.}
+#' \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
+#' Required only for species = CML, SHP, and GTS.}
+#' \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
+#' (fraction).}
+#'     \item{bone_free_meat_fraction}{Numeric. Ratio of bone-free-meat to carcass weight (fraction).}
+#'     \item{meat_protein_fraction}{Numeric. Protein content of bone-free-meat (kg protein/kg bone-free-meat).}
+#'   }
 #'
-#' - `size`: Numeric. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA)
+#' @param simulation_duration Numeric. Length of the assessment period (days).
+#' @param show_indicator Logical. Whether to display progress indicators during simulation.
+#'   Defaults to `TRUE`.
 #'
-#' #' **Milk production**
-#' - `milk_yield`: Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day).
-#' - `milking_fraction`: Numeric. Share of adult females lactating within the assessment duration. Applies to species = CML, CTL, BFL, SHP, GTS. (fraction).
-#' - `milk_protein`: Numeric. Milk protein fraction (kg protein/kg milk).
-#' - `milk_fat`: Numeric. Milk fat fraction (kg fat/kg milk).
-#' - `lactose`: Numeric. Milk lactose fraction (kg lactose/kg milk).
+#' @return A `data.table` with the original cohort-level input columns plus the following new variables:
+#'  \describe{
+#' \item{milk_production_mass_cohort}{Numeric. Total milk production produced over the assessment period
+#' (kg/cohort/assessment period).}
+#' \item{milk_production_protein_cohort}{Numeric. Total milk protein production produced over the assessment period (kg
+#' protein/cohort/assessment period).}
+#' \item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
+#' period (kg/cohort/assessment period).}
+#' \item{fibre_production_cohort}{Numeric. Total fibre produced over the assessment period by cohort (kg
+#' /cohort/assessment period).}
+#' \item{meat_production_live_weight_cohort}{Numeric . Total meat produced as live weight over the assessment period by
+#' cohort (kg/cohort/assessment period).}
+#' \item{meat_production_carcass_weight_cohort}{Numeric. Total meat as carcass weight (excluding organs, and other
+#' by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
+#' \item{meat_production_bone_free_meat_cohort}{Numeric. Total bone-free-meat (excluding bones, organs, and other
+#' by-products after dressing and bone removal)
+#'   produced over the assessment period by cohort (kg/cohort/assessment period).}
+#' \item{meat_production_protein_cohort}{Numeric. Total meat protein (excluding bones, organs, and other by-products
+#' after dressing and bone removal) produced
+#'   over the assessment period by cohort (kg protein/cohort/assessment period).}
+#'   }
 #'
-#' **Fibre production**
-#' - `fibre_prod`: Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
+#' @details
+#' This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
+#' maps \code{animal} to a species short code (\code{species_short}) via \code{abbr_animals},
+#' and computes production outputs by cohort.
 #'
-#' **Meat production**
-#' - `offtake_number_assessment`: Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (cohorts = FJ, FS, FA, MJ, MS, MA) (heads/year)
-#' - `slaughter_weight`: Numeric. Live weight at slaughter for animals removed from the cohort (kg).
-#' - `carcass_dressing_percentage`: Numeric. Ratio of a slaughtered animal's carcass weight to its live weight (fraction).
-#' - `bone_free_meat_fraction`: Numeric. Ratio of bone-free-meat to carcass weight (fraction).
-#' - `meat_protein`: Numeric. Protein content of bone-free-meat (fraction).
+#' The following calculation sequence is applied:
+#' \enumerate{
+#'   \item Milk outputs are computed using \code{\link{compute_milk_outputs}} 
+#'   \item Fibre outputs are computed using \code{\link{compute_fibre_output}} 
+#'   \item Meat outputs are computed using \code{\link{compute_meat_outputs}} 
+#' }
 #'
-#' @param assessment_duration Numeric. Length of the assessment period (days).
+#' For species/cohorts where milk or fibre production is not applicable, outputs are returned as zero.
 #'
-#' @return data.table.  The input data with the following columns appended:
-#'
-#' **Milk production outputs**
-#' - `output_milk_mass_production`
-#'   Total milk produced over the assessment period (kg milk / cohort / assessment period).
-#'
-#' - `output_milk_protein_production`
-#'   Total milk protein produced over the assessment period  (kg protein / cohort / assessment period).
-#'
-#' - `output_milk_fpcm_production`
-#'   Total fat-protein-corrected milk (FPCM) produced over the assessment period, calculated using IDF (2022) energy-based correction with standard composition
-#'   (kg FPCM / cohort / assessment period).
-#'
-#' **Fibre production outputs**
-#' - `output_fibre_production`
-#'   Total fibre produced over the assessment period
-#'   (kg fibre / cohort / assessment period).
-#'
-#' **Meat production outputs**
-#' - `output_meat_production_liveweight`
-#'   Total meat produced expressed as live weight removed via offtake
-#'   (kg live weight / cohort / assessment period).
-#'
-#' - `output_meat_production_carcassweight`
-#'   Total carcass weight produced after dressing
-#'   (kg carcass weight / cohort / assessment period).
-#'
-#' - `output_meat_production_meat`
-#'   Total bone-free meat produced
-#'   (kg meat / cohort / assessment period).
-#'
-#' - `output_meat_production_protein`
-#'   Total meat protein produced
-#'   (kg protein / cohort / assessment period).
+#' @seealso
+#' \code{\link{compute_milk_outputs}},
+#' \code{\link{compute_fibre_output}},
+#' \code{\link{compute_meat_outputs}}
 #'
 #' @examples
 #' \dontrun{
-#' input_path <- system.file("extdata/GLEAM_input_production.csv", package = "gleam")
-#' data <- data.table::fread(input_path)
+#' # Load production cohort inputs (cohort and herd-level)
+#' production_cohort_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/production_cohort_input_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#' production_cohort_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/production_cohort_input_hrd_data.csv",
+#'   package = "gleam"
+#' ))
 #'
-#' run_production_cohort(data)
+#' # Run production cohort calculations
+#' results <- run_production_cohort(
+#'   cohort_level_data = production_cohort_chrt_dt,
+#'   herd_level_data = production_cohort_hrd_dt,
+#'   simulation_duration = 365
+#' )
 #' }
-#'
-#' @keywords internal
+#' @export
 #'
 #' @importFrom data.table := .I
 run_production_cohort <- function(
-    data,
-    assessment_duration = 365
+    cohort_level_data,
+    herd_level_data,
+    simulation_duration = 365,
+    show_indicator = TRUE
 ) {
-  # --- Step 1: Validate inputs -------------------------------------------------
-  if (!inherits(data, "data.frame") || nrow(data) == 0) {
-    cli::cli_abort("Input must be a non-empty data.frame or data.table.")
+  cohort_level_data <- data.table::as.data.table(cohort_level_data)
+  herd_level_data <- data.table::as.data.table(herd_level_data)
+
+  # --- Step 1: Validate inputs ------------------------------------------------
+  validate_run_production_cohort_inputs(cohort_level_data, herd_level_data)
+  validate_scalar_numeric(simulation_duration, "simulation_duration")
+  if (simulation_duration <= 0) {
+    cli::cli_abort("{.arg simulation_duration} must be positive.")
   }
 
-  required_data <- unique(c(
-    "Animal_short", "cohort", "milk_yield", "size", "milking_fraction",
-    "milk_protein", "milk_fat", "fibre_prod", "offtake_number_assessment",
-    "slaughter_weight", "carcass_dressing_percentage",
-    "bone_free_meat_fraction", "meat_protein"
-  ))
-  miss_data <- setdiff(required_data, names(data))
-  if (length(miss_data)) {
-    cli::cli_abort("Missing required columns in {.arg data}: {miss_data}.")
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Calculating production (milk, fibre, meat), please wait\U2026")
   }
 
+  # --- Step 2: Create working copy --------------------------------------------
+  cohort_level_data <- data.table::copy(cohort_level_data)
+  
+  # --- Step 3: Map full animal names to species_short ------------------------
+  herd_level_data <- merge(
+    herd_level_data,
+    abbr_animals,
+    by = "animal",
+    all.x = TRUE
+  )
 
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
-
-  # --- Step 2: Compute milk production outputs --------------------------------
+  # --- Step 3: Compute milk production outputs --------------------------------
   milk_output_cols <- c(
-    "output_milk_mass_production",
-    "output_milk_protein_production",
-    "output_milk_fpcm_production"
+    "milk_production_mass_cohort",
+    "milk_production_protein_cohort",
+    "milk_production_fpcm_cohort"
   )
 
-  # Standard composition constants reflect IDF 2022 guidance and must remain fixed to
-  # reproduce the historical FPCM values distributed with GLEAM.
-  data[ , (milk_output_cols) := compute_milk_outputs(
-    cohort = cohort,
-    milk_yield = milk_yield,
-    assessment_duration = assessment_duration,
-    size = size,
-    milking_fraction = milking_fraction,
-    milk_protein = milk_protein,
-    milk_fat = milk_fat,
-    lactose = lactose,
-    standard_protein = 0.033,
-    standard_fat = 0.04,
-    standard_lactose = 0.048
-  ),
-  by = .I
+  cohort_level_data[
+    ,
+    (milk_output_cols) := compute_milk_outputs(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      milk_yield_day = herd_level_data[.SD, on = "herd_id", x.milk_yield_day],
+      simulation_duration = simulation_duration,
+      cohort_stock_size = cohort_stock_size,
+      lactating_females_fraction = herd_level_data[.SD, on = "herd_id", x.lactating_females_fraction],
+      milk_protein_fraction = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction],
+      milk_fat_fraction = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction],
+      milk_lactose_fraction = herd_level_data[.SD, on = "herd_id", x.milk_lactose_fraction],
+      milk_protein_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction_standard],
+      milk_fat_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction_standard],
+      milk_lactose_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_lactose_fraction_standard]
+    ),
+    by = .I
   ]
 
-
-  # --- Step 3: Aggregate fibre production ------------------------------------
+  # --- Step 4: Aggregate fibre production -------------------------------------
   # The downstream energy requirements module expects annual fibre tonnage at the cohort level.
-  data[ , output_fibre_production := compute_fibre_output(
-    cohort = cohort,
-    fibre_prod = fibre_prod,
-    assessment_duration = assessment_duration,
-    size = size
-  ),
-  by = .I
+  cohort_level_data[
+    ,
+    fibre_production_cohort := compute_fibre_output(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      fibre_yield_year = herd_level_data[.SD, on = "herd_id", x.fibre_yield_year],
+      simulation_duration = simulation_duration,
+      cohort_stock_size = cohort_stock_size
+    ),
+    by = .I
   ]
 
-  # --- Step 4: Compute meat production outputs --------------------------------
+  # --- Step 5: Compute meat production outputs --------------------------------
   meat_output_cols <- c(
-    "output_meat_production_liveweight",
-    "output_meat_production_carcassweight",
-    "output_meat_production_meat",
-    "output_meat_production_protein"
+    "meat_production_live_weight_cohort",
+    "meat_production_carcass_weight_cohort",
+    "meat_production_bone_free_meat_cohort",
+    "meat_production_protein_cohort"
   )
 
-  data[ , (meat_output_cols) := compute_meat_outputs(
-    offtake_number_assessment = offtake_number_assessment,
-    slaughter_weight = slaughter_weight,
-    carcass_dressing_percentage = carcass_dressing_percentage,
-    bone_free_meat_fraction = bone_free_meat_fraction,
-    meat_protein = meat_protein
-  ),
-  by = .I
+  cohort_level_data[
+    ,
+    (meat_output_cols) := compute_meat_outputs(
+      offtake_heads_assessment = offtake_heads_assessment,
+      slaughter_weight_cohort = slaughter_weight_cohort,
+      carcass_dressing_fraction = herd_level_data[.SD, on = "herd_id", x.carcass_dressing_fraction],
+      bone_free_meat_fraction = herd_level_data[.SD, on = "herd_id", x.bone_free_meat_fraction],
+      meat_protein_fraction = herd_level_data[.SD, on = "herd_id", x.meat_protein_fraction]
+    ),
+    by = .I
   ]
 
-  return(data)
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Production cohort calculations completed.")
+  }
+
+  return(cohort_level_data)
 }

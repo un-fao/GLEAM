@@ -17,6 +17,7 @@
 #' @param manure_management_system_fraction data.table. Cohort-level manure
 #'   management system fractions.
 #' @param manure_management_system_factors data.table. manure management system factors.
+#' @param simulation_duration Numeric. Length of the assessment period (days).
 #'
 #' @noRd
 validate_run_gleam_inputs <- function(
@@ -26,8 +27,21 @@ validate_run_gleam_inputs <- function(
     feed_rations,
     feed_params,
     manure_management_system_fraction,
-    manure_management_system_factors
+    manure_management_system_factors,
+    simulation_duration
 ) {
+
+  # --- simulation_duration: must be a single positive numeric ------------------
+  if (
+    !is.numeric(simulation_duration) ||
+    length(simulation_duration) != 1L ||
+    is.na(simulation_duration)
+  ) {
+    cli::cli_abort("{.arg simulation_duration} must be a single numeric value.")
+  }
+  if (simulation_duration <= 0) {
+    cli::cli_abort("{.arg simulation_duration} must be positive (days).")
+  }
 
   # --- has_herd_structure: must be a single boolean ---------------------------
   if (!is.logical(has_herd_structure) || length(has_herd_structure) != 1L) {
@@ -61,6 +75,16 @@ validate_run_gleam_inputs <- function(
     cli::cli_abort("{.arg manure_management_system_factors} must be a data frame (e.g. data.table).")
   }
 
+  # --- Required columns in cohort_level_data ----------------------------------
+  required_cohort_cols <- c("herd_id", "animal", "cohort_short")
+  missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
+  if (length(missing_cohort_cols) > 0L) {
+    cli::cli_abort(
+      "Missing required columns in {.arg cohort_level_data}: {.val {missing_cohort_cols}}.
+      {.var animal} (e.g. Cattle, Buffalo) must be present for each cohort."
+    )
+  }
+
   # --- Block calculated (intermediate) variables in input tables ---------------
   # Columns that GLEAM computes; users must not provide them as inputs.
   gleam_calculated_columns <- c(
@@ -70,6 +94,11 @@ validate_run_gleam_inputs <- function(
     "mature_weight", "live_weight_cohort_initial", "live_weight_cohort_potential_final",
     "slaughter_weight_cohort", "live_weight_cohort_average", "live_weight_cohort_final",
     "daily_weight_gain",
+    # Production cohort (cohort-level outputs)
+    "milk_production_mass_cohort", "milk_production_protein_cohort", "milk_production_fpcm_cohort",
+    "fibre_production_cohort",
+    "meat_production_live_weight_cohort", "meat_production_carcass_weight_cohort",
+    "meat_production_bone_free_meat_cohort", "meat_production_protein_cohort",
     # Feed rations (cohort-level outputs merged into pipeline)
     "diet_gross_energy", "diet_metabolizable_energy", "diet_nitrogen",
     "diet_digestibility_fraction", "urinary_energy_fraction", "diet_ash",
