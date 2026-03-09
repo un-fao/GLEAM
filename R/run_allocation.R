@@ -250,7 +250,10 @@ run_allocation <- function(
     emissions_vars = c(
       "ch4_enteric", "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other",
       "direct_n2o_manure_pasture", "direct_n2o_manure_burned", "direct_n2o_manure_other",
-      "indirect_n2o_manure_burned", "indirect_n2o_manure_pasture", "indirect_n2o_manure_other"
+      "indirect_n2o_manure_burned", "indirect_n2o_manure_pasture", "indirect_n2o_manure_other",
+      "diet_co2_feed_fertilizer", "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations",
+      "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", "diet_n2o_feed_fertilizer",
+      "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice"
     ),
     commodities = c("Other", "Milk", "Meat", "Fibre", "Work", "Eggs"),
     excluded_vars = c(
