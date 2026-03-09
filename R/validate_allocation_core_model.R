@@ -125,6 +125,7 @@ validate_allocation_fibre_inputs <- function(
   validate_scalar_numeric(ratio_me_to_ne, "ratio_me_to_ne")
   validate_scalar_numeric(simulation_duration, "simulation_duration")
   validate_scalar_numeric(cohort_stock_size, "cohort_stock_size")
+  validate_param_range(ratio_me_to_ne)
 
   valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "PGS", "CHK")
   if (!species_short %in% valid_animals) {
@@ -183,6 +184,7 @@ validate_allocation_work_inputs <- function(
   validate_scalar_numeric(ratio_me_to_ne, "ratio_me_to_ne")
   validate_scalar_numeric(simulation_duration, "simulation_duration")
   validate_scalar_numeric(cohort_stock_size, "cohort_stock_size")
+  validate_param_range(ratio_me_to_ne)
 
   valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "PGS", "CHK")
   if (!species_short %in% valid_animals) {

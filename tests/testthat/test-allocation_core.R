@@ -55,7 +55,7 @@ test_that("calc_energy_allocation_meat returns correct value for cattle female",
     slaughter_weight_cohort = 500,
     birth_weight = 40,
     meat_production_live_weight_cohort = 100,
-    ratio_me_to_ne = 1 / 0.43
+    ratio_me_to_ne = 0.43
   )
 
   expect_type(result, "double")
@@ -74,7 +74,7 @@ test_that("calc_energy_allocation_meat returns correct value for cattle male", {
     slaughter_weight_cohort = 600,
     birth_weight = 45,
     meat_production_live_weight_cohort = 150,
-    ratio_me_to_ne = 1 / 0.43
+    ratio_me_to_ne = 0.43
   )
 
   expect_type(result, "double")
@@ -90,13 +90,13 @@ test_that("calc_energy_allocation_meat returns correct value for camelids", {
     slaughter_weight_cohort = 450,
     birth_weight = 35,
     meat_production_live_weight_cohort = 80,
-    ratio_me_to_ne = 1 / 0.43
+    ratio_me_to_ne = 0.43
   )
 
   expect_type(result, "double")
   expect_true(!is.na(result))
   # For CML: specific_energy = (41.8 * (slaughter - birth) / slaughter) / ratio_me_to_ne
-  expected_specific <- (41.8 * (450 - 35) / 450) / (1 / 0.43)
+  expected_specific <- (41.8 * (450 - 35) / 450) / (0.43)
   expect_equal(result, expected_specific * 80)
 })
 
@@ -107,7 +107,7 @@ test_that("calc_energy_allocation_meat returns correct value for sheep female", 
     slaughter_weight_cohort = 60,
     birth_weight = 4,
     meat_production_live_weight_cohort = 20,
-    ratio_me_to_ne = 1 / 0.43
+    ratio_me_to_ne = 0.43
   )
 
   expect_type(result, "double")
@@ -125,7 +125,7 @@ test_that("calc_energy_allocation_meat returns correct value for sheep male", {
     slaughter_weight_cohort = 70,
     birth_weight = 4.5,
     meat_production_live_weight_cohort = 25,
-    ratio_me_to_ne = 1 / 0.43
+    ratio_me_to_ne = 0.43
   )
 
   expect_type(result, "double")
@@ -140,7 +140,7 @@ test_that("calc_energy_allocation_meat returns correct value for goats", {
     slaughter_weight_cohort = 50,
     birth_weight = 3.5,
     meat_production_live_weight_cohort = 15,
-    ratio_me_to_ne = 1 / 0.43
+    ratio_me_to_ne = 0.43
   )
 
   expect_type(result, "double")
@@ -157,10 +157,10 @@ test_that("calc_energy_allocation_meat returns NA for pigs", {
     slaughter_weight_cohort = 150,
     birth_weight = 1.5,
     meat_production_live_weight_cohort = 100,
-    ratio_me_to_ne = 1 / 0.43
+    ratio_me_to_ne = 0.43
   )
 
-  expect_true(is.na(result))
+  expect_equal(result, 0)
 })
 
 test_that("calc_energy_allocation_meat validates animal species", {
@@ -171,7 +171,7 @@ test_that("calc_energy_allocation_meat validates animal species", {
       slaughter_weight_cohort = 500,
       birth_weight = 40,
       meat_production_live_weight_cohort = 100,
-      ratio_me_to_ne = 1 / 0.43
+      ratio_me_to_ne = 0.43
     ),
     "must be one of"
   )
@@ -185,7 +185,7 @@ test_that("calc_energy_allocation_meat validates cohort codes", {
       slaughter_weight_cohort = 500,
       birth_weight = 40,
       meat_production_live_weight_cohort = 100,
-      ratio_me_to_ne = 1 / 0.43
+      ratio_me_to_ne = 0.43
     ),
     "must be one of"
   )
@@ -199,7 +199,7 @@ test_that("calc_energy_allocation_meat validates weight bounds", {
       slaughter_weight_cohort = -10,
       birth_weight = 40,
       meat_production_live_weight_cohort = 100,
-      ratio_me_to_ne = 1 / 0.43
+      ratio_me_to_ne = 0.43
     ),
     "is out of range"
   )
@@ -210,7 +210,7 @@ test_that("calc_energy_allocation_meat validates weight bounds", {
       slaughter_weight_cohort = 500,
       birth_weight = 1500,
       meat_production_live_weight_cohort = 100,
-      ratio_me_to_ne = 1 / 0.43
+      ratio_me_to_ne = 0.43
     ),
     "is out of range"
   )
@@ -223,7 +223,7 @@ test_that("calc_energy_allocation_fibre returns correct value for sheep", {
     species_short = "SHP",
     cohort_stock_size = 100,
     energy_requirement_fibre_production = 5,
-    ratio_me_to_ne = 1 / 0.43,
+    ratio_me_to_ne = 0.43,
     simulation_duration = 365
   )
 
@@ -237,7 +237,7 @@ test_that("calc_energy_allocation_fibre returns correct value for goats", {
     species_short = "GTS",
     cohort_stock_size = 100,
     energy_requirement_fibre_production = 4,
-    ratio_me_to_ne = 1 / 0.43,
+    ratio_me_to_ne = 0.43,
     simulation_duration = 365
   )
 
@@ -249,13 +249,13 @@ test_that("calc_energy_allocation_fibre returns correct value for camelids", {
     species_short = "CML",
     cohort_stock_size = 100,
     energy_requirement_fibre_production = 6,
-    ratio_me_to_ne = 1 / 0.43,
+    ratio_me_to_ne = 0.43,
     simulation_duration = 365
   )
 
   expect_type(result, "double")
   # For camelids: (energy_requirement / ratio_me_to_ne) * simulation_duration * cohort_stock_size
-  expect_equal(result, (6 / (1 / 0.43)) * 365 * 100)
+  expect_equal(result, (6 / (0.43)) * 365 * 100)
 })
 
 test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
@@ -263,7 +263,7 @@ test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
     species_short = "CTL",
     cohort_stock_size = 100,
     energy_requirement_fibre_production = 10,
-    ratio_me_to_ne = 1 / 0.43,
+    ratio_me_to_ne = 0.43,
     simulation_duration = 365
   )
   expect_equal(result_cattle, 0)
@@ -272,7 +272,7 @@ test_that("calc_energy_allocation_fibre returns zero for non-fibre species", {
     species_short = "PGS",
     cohort_stock_size = 100,
     energy_requirement_fibre_production = 10,
-    ratio_me_to_ne = 1 / 0.43,
+    ratio_me_to_ne = 0.43,
     simulation_duration = 365
   )
   expect_equal(result_pigs, 0)
@@ -284,7 +284,7 @@ test_that("calc_energy_allocation_fibre validates inputs", {
       species_short = "INVALID",
       cohort_stock_size = 100,
       energy_requirement_fibre_production = 5,
-      ratio_me_to_ne = 1 / 0.43,
+      ratio_me_to_ne = 0.43,
       simulation_duration = 365
     ),
     "must be one of"
@@ -294,7 +294,7 @@ test_that("calc_energy_allocation_fibre validates inputs", {
       species_short = "SHP",
       cohort_stock_size = 100,
       energy_requirement_fibre_production = -5,
-      ratio_me_to_ne = 1 / 0.43,
+      ratio_me_to_ne = 0.43,
       simulation_duration = 365
     ),
     "must be non-negative"
@@ -307,7 +307,7 @@ test_that("calc_energy_allocation_fibre validates inputs", {
       ratio_me_to_ne = -0.1,
       simulation_duration = 365
     ),
-    "must be positive"
+    "is out of range"
   )
 })
 
@@ -318,14 +318,14 @@ test_that("calc_energy_allocation_work returns correct value for camelids", {
     species_short = "CML",
     cohort_stock_size = 100,
     energy_requirement_work = 10,
-    ratio_me_to_ne = 1 / 0.43,
+    ratio_me_to_ne = 0.43,
     simulation_duration = 365
   )
 
   expect_type(result, "double")
   expect_length(result, 1)
   # For camelids: (work_energy * simulation_duration * cohort_stock_size) / ratio_me_to_ne
-  expect_equal(result, (10 * 365 * 100) / (1 / 0.43))
+  expect_equal(result, (10 * 365 * 100) / (0.43))
 })
 
 test_that("calc_energy_allocation_work returns correct value for non-camelids", {
@@ -333,7 +333,7 @@ test_that("calc_energy_allocation_work returns correct value for non-camelids", 
     species_short = "CTL",
     cohort_stock_size = 100,
     energy_requirement_work = 8,
-    ratio_me_to_ne = 1 / 0.43,
+    ratio_me_to_ne = 0.43,
     simulation_duration = 365
   )
 
@@ -347,7 +347,7 @@ test_that("calc_energy_allocation_work handles zero energy requirement", {
     species_short = "CTL",
     cohort_stock_size = 100,
     energy_requirement_work = 0,
-    ratio_me_to_ne = 1 / 0.43,
+    ratio_me_to_ne = 0.43,
     simulation_duration = 365
   )
 
@@ -360,7 +360,7 @@ test_that("calc_energy_allocation_work validates inputs", {
       species_short = "INVALID",
       cohort_stock_size = 100,
       energy_requirement_work = 10,
-      ratio_me_to_ne = 1 / 0.43,
+      ratio_me_to_ne = 0.43,
       simulation_duration = 365
     ),
     "must be one of"
@@ -370,7 +370,7 @@ test_that("calc_energy_allocation_work validates inputs", {
       species_short = "CML",
       cohort_stock_size = 100,
       energy_requirement_work = -5,
-      ratio_me_to_ne = 1 / 0.43,
+      ratio_me_to_ne = 0.43,
       simulation_duration = 365
     ),
     "must be non-negative"
@@ -383,14 +383,14 @@ test_that("calc_energy_allocation_work validates inputs", {
       ratio_me_to_ne = -0.1,
       simulation_duration = 365
     ),
-    "must be positive"
+    "is out of range"
   )
   expect_error(
     calc_energy_allocation_work(
       species_short = "CML",
       cohort_stock_size = 100,
       energy_requirement_work = 10,
-      ratio_me_to_ne = 1 / 0.43,
+      ratio_me_to_ne = 0.43,
       simulation_duration = 5000
     ),
     "must be between 0 and 3650"
