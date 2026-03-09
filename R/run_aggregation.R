@@ -34,7 +34,7 @@
 #'   calculated variables. Must include:
 #'   \describe{
 #'     \item{**Feed variables**:}{`dmi` (dry matter intake)}
-#'     \item{**Nitrogen balance**:}{`n_intake`, `n_retention`, `n_excretion`}
+#'     \item{**Nitrogen balance**:}{`nitrogen_intake`, `nitrogen_retention`, `nitrogen_excretion`}
 #'     \item{**Production**:}{`output_milk_*`, `output_meat_*`, `output_fibre_production`}
 #'     \item{**Emissions**:}{`ch4_enteric`, `ch4_manure_*`, `direct_n2o_manure_*`,
 #'       `indirect_n2o_manure_*`}
@@ -133,7 +133,7 @@ run_aggregation <- function(
 
   # --- Step 1: Define variable groups ---------------------------------------
   feed_vars <- c("dmi")
-  nitrogen_balance_vars <- c("dmi", "n_intake", "n_retention", "n_excretion")
+  nitrogen_balance_vars <- c("dry_matter_intake", "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion")
   production_vars <- c(
     "output_milk_mass_production", "output_milk_protein_production",
     "output_milk_fpcm_production",
@@ -144,7 +144,16 @@ run_aggregation <- function(
   emissions_vars <- c(
     "ch4_enteric", "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other",
     "direct_n2o_manure_pasture", "direct_n2o_manure_burned", "direct_n2o_manure_other",
-    "indirect_n2o_manure_burned", "indirect_n2o_manure_pasture", "indirect_n2o_manure_other"
+    "indirect_n2o_manure_burned", "indirect_n2o_manure_pasture", "indirect_n2o_manure_other",
+    "diet_co2_feed_fertilizer",
+    "diet_co2_feed_pesticides",
+    "diet_co2_feed_crop_operations",
+    "diet_co2_feed_luc_nopeat",
+    "diet_co2_feed_luc_peat",
+    "diet_n2o_feed_fertilizer",
+    "diet_n2o_feed_manure_applied",
+    "diet_n2o_feed_crop_residues",
+    "diet_ch4_feed_rice"
   )
 
   # Check that required variables exist in data_cohort
@@ -335,20 +344,29 @@ run_aggregation <- function(
 
   levels(results_herd$variable_name) <- c(
     size = "LivestockNumbers",
-    ch4_enteric = "Enteric",
-    ch4_manure_pasture = "Manure-pasture",
-    ch4_manure_burned = "Manure-burned",
-    ch4_manure_other = "Manure-other",
-    direct_n2o_manure_pasture = "ManureDirect-pasture",
-    direct_n2o_manure_burned = "ManureDirect-burned",
-    direct_n2o_manure_other = "ManureDirect-other",
-    indirect_n2o_manure_burned = "ManureIndirect-burned",
-    indirect_n2o_manure_pasture = "ManureIndirect-pasture",
-    indirect_n2o_manure_other = "ManureIndirect-other",
+    ch4_enteric = "Enteric_CH4",
+    ch4_manure_pasture = "Manure-Pasture_CH4",
+    ch4_manure_burned = "Manure-Burned_CH4",
+    ch4_manure_other = "Manure-Other_CH4",
+    direct_n2o_manure_pasture = "ManureDirect-Pasture_N2O",
+    direct_n2o_manure_burned = "ManureDirect-Burned_N2O",
+    direct_n2o_manure_other = "ManureDirect-Other_N2O",
+    indirect_n2o_manure_burned = "ManureIndirect-Burned_N2O",
+    indirect_n2o_manure_pasture = "ManureIndirect-Pasture_N2O",
+    indirect_n2o_manure_other = "ManureIndirect-Other_N2O",
+    diet_co2_feed_fertilizer = "Feed-Fertilizer_CO2",
+    diet_co2_feed_pesticides = "Feed-Pesticides_CO2",
+    diet_co2_feed_crop_operations = "Feed-CropOperations_CO2",
+    diet_co2_feed_luc_nopeat = "Feed-LandUseChange_CO2",
+    diet_co2_feed_luc_peat = "Feed-PeatDrainage_CO2",
+    diet_n2o_feed_fertilizer = "Feed-Fertilizer_N2O",
+    diet_n2o_feed_manure_applied = "Feed-ManureApplication_N2O",
+    diet_n2o_feed_crop_residues = "Feed-CropResidues_N2O",
+    diet_ch4_feed_rice = "Feed-Rice_CH4",
     dmi = "DryMatterIntake",
-    n_intake = "NitrogenIntake",
-    n_retention = "NitrogenRetention",
-    n_excretion = "NitrogenExcretion",
+    nitrogen_intake = "NitrogenIntake",
+    nitrogen_retention = "NitrogenRetention",
+    nitrogen_excretion = "NitrogenExcretion",
     output_milk_mass_production = "MilkRaw",
     output_milk_protein_production = "MilkProtein",
     output_milk_fpcm_production = "MilkFatProteinCorrected",

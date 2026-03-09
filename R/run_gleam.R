@@ -1,18 +1,28 @@
 #' Run the GLEAM pipeline
 #'
 #' Runs the core sequence of model modules to generate cohort-level outputs for a
-#' livestock production system. Accepts primary inputs only: one cohort-level
-#' master table, one herd-level master table, feed rations and feed parameters.
+#' livestock production system: herd simulation (optional), weights, feed rations,
+#' energy requirements and DMI, enteric methane direct emissions, nitrogen balance,
+#' and direct emissions from manure management systems.
+#' Accepts primary inputs only: one cohort-level master table, one herd-level master table,
+#' feed rations and feed parameters, and manure management system tables.
 #'
 #' @param has_herd_structure Logical. If TRUE, use \code{cohort_level_data} directly
 #'   as the cohort-level input for the weights module (skip herd simulation). If FALSE,
 #'   run herd simulation first using \code{cohort_level_data} and \code{herd_level_data}.
 #' @param cohort_level_data data.table. Cohort-level master table. Must have one row
 #'   per cohort (6 cohorts per herd: FJ, FS, FA, MJ, MS, MA). Data should not
-#'   include columns that GLEAM calculates (validation will block them).
+#'   include columns that GLEAM calculates (validation will block them). May
+#'   optionally include \code{ch4_mitigation_factor} (fraction of baseline enteric
+#'   CH4 remaining after mitigation, 1 = no mitigation).
 #' @param herd_level_data data.table. Herd-level master table (one row per herd).
+#'   Must include \code{animal} (full species name, e.g. Cattle, Buffalo).
 #' @param feed_rations data.table. Feed ration shares by cohort (see \code{\link{run_feed_rations}}).
 #' @param feed_params data.table. Feed nutritional parameters (see \code{\link{run_feed_rations}}).
+#' @param manure_management_system_fraction data.table. Cohort-level manure management
+#'   system fractions (see \code{\link{run_directemissions_manure}}).
+#' @param manure_management_system_factors data.table. Manure management
+#'   system factors (see \code{\link{run_directemissions_manure}}).
 #' @param show_indicator Logical. Whether to display progress indicators during the pipeline run.
 #'
 #' @return A cohort-level \code{data.table} containing the outputs produced by the
@@ -38,12 +48,21 @@
 #'   package = "gleam"
 #' ))
 #'
+#' manure_management_system_fraction_dt <- data.table::fread(
+#'   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
+#' )
+#' manure_management_system_factors_dt <- data.table::fread(
+#'   file.path(path_run_gleam_examples, "manure_management_system_factors.csv")
+#' )
+#'
 #' results <- run_gleam(
 #'   has_herd_structure = FALSE,
 #'   cohort_level_data = master_chrt_lvl_no_structure_dt,
 #'   herd_level_data = master_hrd_lvl_dt,
 #'   feed_rations = feed_rations_chrt_dt,
-#'   feed_params = feed_params_dt
+#'   feed_params = feed_params_dt,
+#'   manure_management_system_fraction = manure_management_system_fraction_dt,
+#'   manure_management_system_factors = manure_management_system_factors_dt
 #' )
 #' print(results)
 #' }
@@ -67,12 +86,21 @@
 #'   package = "gleam"
 #' ))
 #'
+#' manure_management_system_fraction_dt <- data.table::fread(
+#'   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
+#' )
+#' manure_management_system_factors_dt <- data.table::fread(
+#'   file.path(path_run_gleam_examples, "manure_management_system_factors.csv")
+#' )
+#'
 #' results <- run_gleam(
 #'   has_herd_structure = TRUE,
 #'   cohort_level_data = master_chrt_lvl_structure_dt,
 #'   herd_level_data = master_hrd_lvl_dt,
 #'   feed_rations = feed_rations_chrt_dt,
-#'   feed_params = feed_params_dt
+#'   feed_params = feed_params_dt,
+#'   manure_management_system_fraction = manure_management_system_fraction_dt,
+#'   manure_management_system_factors = manure_management_system_factors_dt
 #' )
 #' print(results)
 #' }
@@ -83,16 +111,20 @@ run_gleam <- function(
     herd_level_data,
     feed_rations,
     feed_params,
+    manure_management_system_fraction,
+    manure_management_system_factors,
     show_indicator = TRUE
 ) {
 
-  # --- Step 1: Validate inputs -----------------------------------------------
+  # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_gleam_inputs(
     has_herd_structure = has_herd_structure,
     cohort_level_data = cohort_level_data,
     herd_level_data = herd_level_data,
     feed_rations = feed_rations,
-    feed_params = feed_params
+    feed_params = feed_params,
+    manure_management_system_fraction = manure_management_system_fraction,
+    manure_management_system_factors = manure_management_system_factors
   )
 
   # Show progress indicator if requested
@@ -138,6 +170,28 @@ run_gleam <- function(
   gleam_chrt_data <- run_energy_requirements(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = herd_level_data,
+    show_indicator = show_indicator
+  )
+
+  # --- Step 6: Run enteric methane direct emissions ---------------------------
+  # ch4_mitigation_factor is optional cohort-level input
+  gleam_chrt_data <- run_directemissions_enteric(
+    cohort_level_data = gleam_chrt_data,
+    show_indicator = show_indicator
+  )
+
+  # --- Step 7: Run nitrogen balance -------------------------------------------
+  gleam_chrt_data <- run_nitrogen_balance(
+    cohort_level_data = gleam_chrt_data,
+    herd_level_data = herd_level_data,
+    show_indicator = show_indicator
+  )
+
+  # --- Step 8: Run direct emissions from manure management systems ------------
+  gleam_chrt_data <- run_directemissions_manure(
+    cohort_level_data = gleam_chrt_data,
+    manure_management_system_fraction = manure_management_system_fraction,
+    manure_management_system_factors = manure_management_system_factors,
     show_indicator = show_indicator
   )
 

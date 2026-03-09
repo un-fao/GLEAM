@@ -1,140 +1,116 @@
 #' Validate inputs for compute_nitrogen_intake
 #'
 #' @noRd
-validate_nitrogen_intake_inputs <- function(dmi, diet_nitrogen) {
-  validate_scalar_numeric(dmi, "dmi")
-  validate_scalar_numeric(diet_nitrogen, "diet_nitrogen")
-
-  # Basic range checks for nitrogen balance parameters
-  if (dmi < 0) {
-    cli::cli_abort("{.arg dmi} must be non-negative.")
-  }
-  if (diet_nitrogen < 0 || diet_nitrogen > 0.1) {
-    cli::cli_abort("{.arg diet_nitrogen} must be between 0 and 0.1.")
-  }
+validate_nitrogen_intake_inputs <- function(dry_matter_intake, diet_nitrogen) {
+  validate_param_range(dry_matter_intake, "dry_matter_intake")
+  validate_param_range(diet_nitrogen, "diet_nitrogen")
 }
 
 #' Validate inputs for compute_nitrogen_retention
 #'
 #' @noRd
 validate_nitrogen_retention_inputs <- function(
-    animal,
-    cohort,
-    milk_protein = NA_real_,
-    milk_yield = NA_real_,
-    dwg = NA_real_,
-    fibre_prod = NA_real_,
-    litsize = NA_real_,
+    species_short,
+    cohort_short,
+    milk_protein_fraction = NA_real_,
+    milk_yield_day = NA_real_,
+    daily_weight_gain = NA_real_,
+    fibre_yield_year = NA_real_,
+    litter_size = NA_real_,
     parturition_rate = NA_real_,
-    wkg = NA_real_,
-    ckg = NA_real_,
-    afc = NA_real_
+    weaning_weight = NA_real_,
+    birth_weight = NA_real_,
+    pregnancy_duration = NA_real_,
+    cohort_duration_days = NA_real_
 ) {
   # Character inputs
-  validate_scalar_character(animal, "animal")
-  validate_scalar_character(cohort, "cohort")
+  validate_scalar_character(species_short, "species_short")
+  validate_scalar_character(cohort_short, "cohort_short")
 
   # Validate animal species
-  valid_animals <- c("PGS", "CML", "CTL", "BFL", "SHP", "GTS", "CHK")
-  if (!animal %in% valid_animals) {
+  valid_species <- c("PGS", "CML", "CTL", "BFL", "SHP", "GTS", "CHK")
+  if (!species_short %in% valid_species) {
     cli::cli_abort(
-      "{.arg animal} must be one of: {cli::format_inline('{valid_animals}')}"
+      "{.arg species_short} must be one of: {cli::format_inline('{valid_species}')}"
     )
   }
 
   # Validate cohort
-  valid_cohorts <- c("FJ", "FS", "FA", "FC", "MJ", "MS", "MA", "MC")
-  if (!cohort %in% valid_cohorts) {
+  valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  if (!cohort_short %in% valid_cohorts) {
     cli::cli_abort(
-      "{.arg cohort} must be one of: {cli::format_inline('{valid_cohorts}')}"
+      "{.arg cohort_short} must be one of: {cli::format_inline('{valid_cohorts}')}"
     )
   }
 
-  # Validate requested variables for pigs only
-  if (animal == "PGS") {
-    if (is.na(dwg)) {
-      cli::cli_abort("`dwg` must be supplied for pigs.")
+  # Range checks: only for args used by this species/cohort
+  if (species_short == "CHK") {
+    # nothing to validate
+  } else if (species_short == "PGS") {
+    if (cohort_short == "FA") {
+      validate_param_range(litter_size, "litter_size")
+      validate_param_range(parturition_rate, "parturition_rate")
+      validate_param_range(weaning_weight, "weaning_weight")
+      validate_param_range(birth_weight, "birth_weight")
+    } else if (cohort_short == "FS") {
+      validate_param_range(daily_weight_gain, "daily_weight_gain")
+      validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+      validate_param_range(cohort_duration_days, "cohort_duration_days")
+      validate_param_range(litter_size, "litter_size")
+      validate_param_range(parturition_rate, "parturition_rate")
+      validate_param_range(weaning_weight, "weaning_weight")
+      validate_param_range(birth_weight, "birth_weight")
+    } else {
+      validate_param_range(daily_weight_gain, "daily_weight_gain")
     }
-    if (is.na(litsize)) {
-      cli::cli_abort("`litsize` must be supplied for pigs.")
-    }
-    if (is.na(parturition_rate)) {
-      cli::cli_abort("`parturition_rate` must be supplied for pigs.")
+  } else if (species_short %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
+    if (cohort_short == "FA") {
+      if (!is.na(milk_protein_fraction)) validate_param_range(milk_protein_fraction, "milk_protein_fraction")
+      if (!is.na(milk_yield_day)) validate_param_range(milk_yield_day, "milk_yield_day")
+      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain, "daily_weight_gain")
+      if (species_short %in% c("SHP", "GTS", "CML") && !is.na(fibre_yield_year)) {
+        validate_param_range(fibre_yield_year, "fibre_yield_year")
+      }
+    } else if (cohort_short %in% c("FS", "MA", "MS")) {
+      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain, "daily_weight_gain")
+      if (species_short %in% c("SHP", "GTS", "CML") && !is.na(fibre_yield_year)) {
+        validate_param_range(fibre_yield_year, "fibre_yield_year")
+      }
+    } else {
+      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain, "daily_weight_gain")
     }
   }
 
-  # Numeric inputs (allow NA)
-  args <- list(
-    milk_protein = milk_protein,
-    milk_yield = milk_yield,
-    dwg = dwg,
-    fibre_prod = fibre_prod,
-    litsize = litsize,
-    parturition_rate = parturition_rate,
-    wkg = wkg,
-    ckg = ckg,
-    afc = afc
-  )
-
-  for (arg_name in names(args)) {
-    val <- args[[arg_name]]
-    if (!is.numeric(val) || length(val) != 1) {
-      cli::cli_abort("{.arg {arg_name}} must be a single numeric (scalar). NA is allowed.")
-    }
+  # Birth weight must be strictly below weaning weight when both are provided
+  if (!is.na(birth_weight) && !is.na(weaning_weight) && birth_weight >= weaning_weight) {
+    cli::cli_abort(
+      "{.arg birth_weight} must be strictly less than {.arg weaning_weight}."
+    )
   }
-
-  # Basic range checks for non-NA values
-  if (!is.na(milk_protein) && (milk_protein < 0 || milk_protein > 100)) {
-    cli::cli_abort("{.arg milk_protein} must be between 0 and 100.")
-  }
-  if (!is.na(milk_yield) && (milk_yield < 0 || milk_yield > 100)) {
-    cli::cli_abort("{.arg milk_yield} must be between 0 and 100.")
-  }
-  if (!is.na(dwg) && (dwg < 0 || dwg > 5)) {
-    cli::cli_abort("{.arg dwg} must be between 0 and 5.")
-  }
-  if (!is.na(fibre_prod) && (fibre_prod < 0 || fibre_prod > 100)) {
-    cli::cli_abort("{.arg fibre_prod} must be between 0 and 100.")
-  }
-  if (!is.na(wkg) && (wkg < 0 || wkg > 1000)) {
-    cli::cli_abort("{.arg wkg} must be between 0 and 1000.")
-  }
-  if (!is.na(ckg) && (ckg < 0 || ckg > 100)) {
-    cli::cli_abort("{.arg ckg} must be between 0 and 100.")
-  }
-  if (!is.na(afc) && (afc < 110 || afc > 3300)) {
-    cli::cli_abort("{.arg afc} must be between 110 and 3300")
-  }
-
-  # Enforce configured bounds
-  validate_param_range(parturition_rate)
-  validate_param_range(litsize)
 }
 
 #' Validate inputs for compute_nitrogen_excretion
 #'
 #' @noRd
-validate_nitrogen_excretion_inputs <- function(animal, n_intake, n_retention) {
+validate_nitrogen_excretion_inputs <- function(species_short, nitrogen_intake, nitrogen_retention) {
   # Character input
-  validate_scalar_character(animal, "animal")
+  validate_scalar_character(species_short, "species_short")
 
   # Validate animal species
-  valid_animals <- c("CTL", "BFL", "CML", "GTS", "SHP", "PGS", "CHK")
-  if (!animal %in% valid_animals) {
+  valid_species <- c("CTL", "BFL", "CML", "GTS", "SHP", "PGS", "CHK")
+  if (!species_short %in% valid_species) {
     cli::cli_abort(
-      "{.arg animal} must be one of: {cli::format_inline('{valid_animals}')}"
+      "{.arg species_short} must be one of: {cli::format_inline('{valid_species}')}"
     )
   }
 
-  # Numeric inputs (allow NA)
-  validate_scalar_numeric(n_intake, "n_intake")
-  validate_scalar_numeric(n_retention, "n_retention")
+  validate_scalar_numeric(nitrogen_intake, "nitrogen_intake")
+  validate_scalar_numeric(nitrogen_retention, "nitrogen_retention")
 
-  # Basic range checks
-  if (n_intake < 0 || n_intake > 10) {
-    cli::cli_abort("{.arg n_intake} must be between 0 and 10.")
-  }
-  if (n_retention < 0 || n_retention > 10) {
-    cli::cli_abort("{.arg n_retention} must be between 0 and 10.")
+  # Excretion = intake - retention; expect nitrogen_intake >= nitrogen_retention for valid excretion
+  if (species_short != "CHK" && nitrogen_intake < nitrogen_retention) {
+    cli::cli_abort(
+      "{.arg nitrogen_intake} must be greater than or equal to {.arg nitrogen_retention}."
+    )
   }
 }

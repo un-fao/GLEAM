@@ -93,7 +93,15 @@ utils::globalVariables(c(
   "area", "climate_zone", "soil_carbon_reference", "soil_type",
   "management_start", "management_end", "SOC1", "SOC2", "dSOC",
   # Columns used in nitrogen_balance
-  "n_intake", "n_retention", "n_excretion", "fibre_prod", "milk_protein",
+  "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion",
+  "dry_matter_intake", "diet_nitrogen", "daily_weight_gain",
+  "species_short", "cohort_short", "milk_protein_fraction", "milk_yield_day",
+  "fibre_yield_year", "litter_size", "parturition_rate", "weaning_weight",
+  "birth_weight", "age_first_parturition",
+  # data.table join prefixes used in run_nitrogen_balance
+  "x.species_short", "x.milk_protein_fraction", "x.milk_yield_day",
+  "x.fibre_yield_year", "x.litter_size", "x.parturition_rate",
+  "x.weaning_weight", "x.birth_weight", "x.age_first_parturition",
   "Item_Name", "dmi", "milk_yield",
   # Columns used in run_production_cohort
   "Value", "lactose", "milk_yield", "size", "milking_fraction", "milk_protein",
@@ -148,7 +156,9 @@ utils::globalVariables(c(
   "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
   "feed_emissions_kgGas", "feed_share",
   # Columns added by run_directemissions_enteric
-  "ym", "ch4_enteric",
+  "ch4_enteric", "ch4_mitigation_factor", "ch4_conversion_factor_ym",
+  "species_short", "cohort_short", "diet_digestibility_fraction",
+  "diet_gross_energy", "dry_matter_intake",
   # Columns used in run_aggregation
   "value", "value_total", "value_allocated", "value_allocated_co2e", "gwp_factor",
   "variable_type", "variable_name", "unit", "gas", "allocation_share",

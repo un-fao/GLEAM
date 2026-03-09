@@ -1,33 +1,38 @@
-> [!IMPORTANT]
->
-> This template is mandatory.  
-> All sections must be thoughtfully completed before requesting review.  
-> Skipping any section requires explicit approval from the Delivery Manager.
+<!--
+IMPORTANT:
+This template is mandatory.
+All sections must be thoughtfully completed before requesting review.
+Skipping any section requires explicit approval from the Delivery Manager.
+
+Refer to inline comments for guidance on how to complete each section.
+-->
 
 ### 1. Summary
 
-**Context / Ticket link:**  
-_Reference the issue or explain business context briefly_
+**Context / Ticket link:** 
 
 **What does this PR change?**
 
-_Describe the change at feature level (not code level)_
+<!--
+Describe the changes at feature level (not code level).
+Focus on business/scientific impact, not implementation details.
+-->
 
 - Functional change:
-- UI change (if any):
-- Backend logic change:
 - Data impact (if any):
 
 ---
 
 ### 2. Testing
 
-_The developer is responsible for performing vigilant QA testing before requesting review_
+<!--
+The developer is responsible for performing vigilant QA testing before requesting review.
+This is a quality gate, not a formality.
+-->
 
-- [ ] App / software runs locally without error
+- [ ] R Package runs locally without errors
 - [ ] Feature manually tested end-to-end
 - [ ] The business logic aligns with the corresponding ticket acceptance criteria
-- [ ] No visual breaks (layout, spacing, responsiveness, etc.) (if applicable)
 - [ ] Existing related features were tested and are not impacted
 - [ ] No unintended side effects observed during exploratory testing
 - [ ] Possible edge cases considered and tested
@@ -35,56 +40,69 @@ _The developer is responsible for performing vigilant QA testing before requesti
 
 **Manual test steps**
 
-_Describe exactly how you validated the feature QA_
+<!--
+Clearly describe how you validated the feature.
+Be specific enough for a reviewer to reproduce.
+-->
 
 | Scenario | Action / Input | Expected Result | Result |
 |----------|---------------|----------------|--------|
 |          |               |                |        |
 |          |               |                |        |
 
-_Evidence (screenshots / gif / logs if relevant)_
+<!--
+Attach screenshots, GIFs, logs or console outputs if relevant.
+-->
 
 ---
 
-### 3. Risk & Impact
+### 3. Risk & Impact (if relevant)
 
-_The developer must assess potential risks introduced by this PR and explicitly evaluate impact across critical areas. Be conservative and justify any medium/high risk._
+<!--
+Indicate whether this PR introduces any functional, architectural, data or performance risk.
+If any box is checked, briefly justify below.
+-->
 
-| Area | Risk (Low / Medium / High) | Notes (if relevant) |
-|------|----------------------------|---------------------|
-| UI (if applicable) | | |
-| Server Logic | | |
-| Data Layer | | |
-| Performance | | |
-| Authentication / Security | | |
+Does this PR introduce any risk regarding:
+
+- [ ] Business / Scientific Logic
+- [ ] Data integrity
+- [ ] Performance
+- [ ] Security / Authentication
+
+If yes, briefly explain:
 
 ---
 
 ### 4. Code Quality Self-Check
 
-_The developer must critically review their own code before requesting review.  
-This is a quality gate, not a formality.  
-If any box cannot be confidently checked, the PR is not ready._
+<!--
+This is a self-review gate.
+If any box cannot be confidently checked,
+the PR is not ready for review.
+-->
 
-- [ ] Naming and coding style follows [Applitics conventions](https://github.com/APPLITICS/applitics-delivery-system/blob/main/coding_standards.md)
-- [ ] No merge conflicts, and if conflicts occurred, they have been properly resolved and do not introduce regressions
-- [ ] No dead code, dead datasets or debug artifacts
-- [ ] Errors are validated and handled clearly
-- [ ] No hardcoded secrets or paths
-- [ ] Structure is modular and readable
-- [ ] No unnecessary complexity introduced
-- [ ] Code is self-explanatory and properly documented
-- [ ] No error or avoidable warning messages are returned in the terminal (warnings must be properly addressed, not suppressed)
+- [ ] Naming and coding style strictly follows [Applitics conventions](https://github.com/APPLITICS/applitics-delivery-system/blob/main/coding_standards.md)
+- [ ] No unresolved merge conflicts; any resolved conflicts were carefully validated and do not introduce regression
+- [ ] No dead code, unused datasets, or debug artifacts remain
+- [ ] Errors are explicitly validated and handled with clear messaging
+- [ ] No hardcoded secrets, credentials, or environment-specific paths
+- [ ] Code structure is modular, readable, and logically organized
+- [ ] No unnecessary complexity or over-engineering introduced
+- [ ] Code is self-explanatory and appropriately documented
+- [ ] No avoidable warnings or errors appear in the terminal (warnings are addressed, not suppressed)
 
 ---
 
 ### 5. Reviewer Focus
 
-_The developer must explicitly indicate where deeper review is needed.  
-Highlight areas of uncertainty, complexity, or architectural sensitivity.  
-Do not leave this section empty if the PR contains non-trivial logic._
+<!--
+Indicate where deeper review is needed.
+Highlight uncertainty, complexity, or sensitive logic.
+Do not leave empty if PR contains non-trivial logic.
+-->
 
-**Please focus specifically on (e.g., logic in X, edge cases around Y, perf in Z):**
+**Please focus specifically on:**
 
-> [!IMPORTANT]
-> Reviewers must follow the official Applitics Code Review Checklist before approving this PR: [Reviewer Checklist](https://github.com/APPLITICS/applitics-delivery-system/blob/main/qa_code_review_governance.md)
+🔎 Reviewers: please ensure the Applitics Code Review Checklist is followed before approval.
+[Reviewer Checklist](https://github.com/APPLITICS/applitics-delivery-system/blob/main/qa_code_review_governance.md)

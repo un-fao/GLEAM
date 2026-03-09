@@ -4,10 +4,10 @@
 \alias{compute_nitrogen_excretion}
 \title{Compute Daily Nitrogen Excretion}
 \usage{
-compute_nitrogen_excretion(animal, n_intake, n_retention)
+compute_nitrogen_excretion(species_short, nitrogen_intake, nitrogen_retention)
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -18,9 +18,10 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{n_intake}{Numeric. Daily nitrogen intake (kg N/head/day)}
+\item{nitrogen_intake}{Numeric. Daily nitrogen intake (kg N/head/day).}
 
-\item{n_retention}{Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)}
+\item{nitrogen_retention}{Numeric. Daily nitrogen retention in animal body
+tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day).}
 }
 \value{
 Numeric. Daily nitrogen excretion (kg N/head/day).
@@ -31,12 +32,25 @@ nitrogen intake and nitrogen retention.
 }
 \details{
 Nitrogen excretion represents the fraction of consumed nitrogen that is not
-retained in animal products or body tissues and is therefore excreted in urine
-and dung. This quantity forms the basis for subsequent calculations of
-nitrous oxide \code{N₂O} emissions from manure management and agricultural soils.
-The approach follows the IPCC 2019 guidelines.
+retained in animal tissues or products and is therefore excreted in urine
+and dung.
+
+Nitrogen excretion is calculated as:
+
+\eqn{nitrogen\_excretion = nitrogen\_intake - nitrogen\_retention}
+
+where all quantities are expressed in kg N/head/day.
+
+This quantity forms the basis for subsequent calculations of nitrous oxide
+(N₂O) emissions from manure management under
+the IPCC Tier 2 methodology.
 }
 \references{
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National
+Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.31A.
+}
+\seealso{
+\code{\link{compute_nitrogen_intake}},
+\code{\link{compute_nitrogen_retention}}
 }

@@ -5,21 +5,22 @@
 \title{Compute Daily Nitrogen Retention}
 \usage{
 compute_nitrogen_retention(
-  animal,
-  cohort,
-  milk_protein = NA_real_,
-  milk_yield = NA_real_,
-  dwg = NA_real_,
-  fibre_prod = NA_real_,
-  litsize = NA_real_,
+  species_short,
+  cohort_short,
+  milk_protein_fraction = NA_real_,
+  milk_yield_day = NA_real_,
+  daily_weight_gain = NA_real_,
+  fibre_yield_year = NA_real_,
+  litter_size = NA_real_,
   parturition_rate = NA_real_,
-  wkg = NA_real_,
-  ckg = NA_real_,
-  afc = NA_real_
+  weaning_weight = NA_real_,
+  birth_weight = NA_real_,
+  pregnancy_duration = NA_real_,
+  cohort_duration_days = NA_real_
 )
 }
 \arguments{
-\item{animal}{Character. Code identifying the livestock species.
+\item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
 \item \code{PGS}: pigs
@@ -30,7 +31,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -41,85 +42,109 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{milk_protein}{Numeric. Milk protein fraction (kg protein / kg milk).}
+\item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein / kg milk).
+Required only for species = CML, CTL, BFL, SHP, and GTS.}
 
-\item{milk_yield}{Numeric. Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value can be calculated by dividing the total milk destined to human consumption produced per milk-producing animal over the assessment duration by the length of the assessment period.}
+\item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during
+the assessment duration (kg/head/day). This value is calculated as the total quantity
+of milk produced for human consumption by milk-producing animals during the assessment period,
+divided by the number of milk-producing animals, and the length of the assessment period (days).
+Required only for species = CML, CTL, BFL, SHP, and GTS.}
 
-\item{dwg}{Numeric. Average live weight of the cohort over the cohort stage (kg/head/day).}
+\item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 
-\item{fibre_prod}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).}
+\item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
+Required only for species = CML, SHP, and GTS.}
 
-\item{litsize}{Numeric. Average number of offspring born per parturition. This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition).
+This value can be calculated as the total number of offspring born divided
+by the total number of parturitions during the year.}
 
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (fraction). At herd level, calculated as offspring delivered divided by the number of adult females.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per
+female animal (# parturitions/adult female/year).
+A herd-level reproductive performance indicator calculated as the total
+number of parturitions (deliveries) occurring during
+a year divided by the number of adult females potentially able to give birth during that year.}
 
-\item{wkg}{Numeric. Live weight of the animal at weaning (kg).}
+\item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
 
-\item{ckg}{Numeric. Live weight of the animal at birth (kg).}
+\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
 
-\item{afc}{Numeric. Age at first parturition for female breeding animals (days)}
+\item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
+
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 }
 \value{
-Numeric.  Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)
+Numeric. Daily nitrogen retention in animal body tissues and products
+(e.g., growth, pregnancy, milk...) (kg N/head/day)
 }
 \description{
-Calculates daily nitrogen retention per animal by species and cohort.
+Calculates daily nitrogen retention per animal by species and cohort (kg N/head/day).
 Nitrogen retention represents the portion of consumed nitrogen that is
 incorporated into animal products or body tissues.
-The approach follows the Tier 2 IPCC guidelines (IPCC 2006, 2019).
 }
 \details{
-Species-specific calculations are performed.
+Species-specific nitrogen retention calculations are applied.
 
-\strong{For CTL, BFL, SHP, GTS and CML}
+\strong{For CTL, BFL, SHP, GTS, and CML}:
 
 Nitrogen retained in products and tissues is
 computed consistent with the process described in the Technical paper
-from MPI (Ministry for Primary Industries (MPI), 2025).
-
-Nitrogen retention is calculated as the sum of:
+from MPI (Ministry for Primary Industries (MPI), 2025), where nitrogen retention is calculated as the sum of:
 \itemize{
 \item nitrogen secreted in milk,
-\item nitrogen retained in liveweight gain (tissue),
+\item nitrogen retained in live weight gain (tissue),
 \item nitrogen retained in fibre (for fibre-producing species).
 }
 
-Coefficients for nitrogen content of deposited tissue, fibre, and milk are
-derived from Chapter 5 (Nitrogen excretion) of the MPI inventory methodology.
+Coefficients for nitrogen content of deposited tissue, fibre, and milk
+are derived from Chapter 5 (Nitrogen Excretion) of the MPI Technical paper.
 
 The following constants are used:
 \itemize{
-\item \strong{Tissue nitrogen content (\code{tissue_n})}:
+\item \strong{Tissue nitrogen content (\code{tissue_n})}
 \itemize{
-\item Cattle (\code{CTL}, \code{BFL}): \strong{0.0326 kg N per kg live weight}
-\item Sheep (\code{SHP}), goats (\code{GTS}) and camelids (\code{CML}):
-\strong{0.026 kg N per kg live weight}
+\item \code{CTL} and \code{BFL}: \strong{0.0326 kg N/kg live weight}
+\item \code{SHP}, \code{GTS} and \code{CML}:
+\strong{0.026 kg N/kg live weight}
 }
-\item \strong{Fibre nitrogen content (\code{fibre_n})}:
-\strong{0.134 kg N per kg fibre}
+\item \strong{Fibre nitrogen content (\code{fibre_n})}
+\itemize{
+\item \code{SHP}, \code{GTS} and \code{CML}:
+\strong{0.134 kg N/kg fibre}
+}
 \item \strong{Milk nitrogen content (\code{milk_n})}:
-Milk nitrogen is derived from milk protein using a protein-to-nitrogen
-conversion factor of \strong{6.25}
+\itemize{
+\item \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS} and \code{CML}:
+derived from \code{milk_protein_fraction} using a protein-to-nitrogen conversion factor
+of \strong{6.25 kg protein/kg nitrogen}
+}
 }
 
 \strong{For PGS}
 
-Nitrogen retention is calculated following the IPCC 2019 equations
+Nitrogen retention is calculated following the IPCC (2019) Tier 2 equations
 for swine (Equations 10.33A and 10.33B).
 
 Nitrogen retention includes nitrogen retained in:
 \itemize{
-\item body growth,
+\item live weight gain (tissue),
 \item reproductive outputs (conceptus and weaned offspring).
 }
 
-Calculations are expressed on a daily basis. In this implementation:
+In this implementation:
 \itemize{
-\item \code{0.025} represents the nitrogen content of liveweight gain
-(kg N per kg gain),
-\item \code{0.98} is the protein digestibility fraction,
-\item breeding cohorts include an annual reproductive component that is
-converted to a daily rate.
+\item Nitrogen content of live weight gain is assumed to be
+\strong{\code{0.025} kg N/kg live weight}.
+\item Protein digestibility fraction is assumed to be
+\strong{ \code{0.98} (dimensionless)}.
+\item For breeding cohorts, the reproductive component is represented by
+annual nitrogen retention in conceptus and weaned offspring,
+expressed as a daily average by distributing the annual value uniformly
+over the year (365 days).
+\item A constant factor of \strong{ \code{0.806} (dimensionless)}
+is applied to piglets' live weight gain to correct for their higher nitrogen
+content per unit of live weight gain, following IPCC (2019).
 }
 }
 \references{
@@ -128,7 +153,8 @@ Ministry for Primary Industries (MPI). (2025).
 Methodology for calculation of New Zealand’s agricultural greenhouse gas emissions}
 (Version 11). MPI Technical Paper, Wellington, New Zealand. Chapter 5.
 
-IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
+IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National
+Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.33A, 10.33B.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
