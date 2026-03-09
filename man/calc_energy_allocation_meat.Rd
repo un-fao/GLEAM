@@ -25,7 +25,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort_short}{Character scalar. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -36,24 +36,24 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{slaughter_weight_cohort}{Numeric scalar. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 
-\item{birth_weight}{Numeric scalar. Live weight of the animal at birth (kg).}
+\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
 
-\item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_live_weight_cohort}{Numeric . Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
 
-\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy to net energy (ME/NE). Used for CML.}
+\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for species_short = CML.}
 }
 \value{
-Numeric scalar. Energy required by a given sex–age cohort for total meat output by cohort over
-the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period).
-
+Numeric. Energy required by a given sex–age cohort for total meat output by cohort during the assessment period,
+equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period).
 Non-zero values are applicable to all species/cohorts where growth is modelled. For
-pigs (\code{PGS}), the function returns \code{NA} by design.
+pigs (\code{PGS}), the function returns \code{0} by design.
 }
 \description{
-Calculates the net energy demand associated with meat production (expressed as
-liveweight output) over the assessment period for a given species and cohort.
+Computes the energy required for meat production over the assessment period
+(MJ/cohort/assessment period), based on total live weight produced by the
+cohort.
 }
 \details{
 This function provides the meat-related energy term used in a biophysical
@@ -63,43 +63,47 @@ in multifunctional livestock production systems.
 The approach implements the IDF (2022) standard, adapted from Thoma and Nemecek (2020), and is consistent with
 FAO LEAP livestock LCA guidelines (FAO, 2016a, 2016b, 2016c) and with ISO 14044:2006 (Section 4.3.4.2, Step 2).
 
-In accordance with ISO 14044:2006
-(Section 4.3.4.2, Step 2), known processing or biophysical relationships may be
-used to assign shared inputs and outputs of a single production unit to
-individual products or sub-units. In livestock systems, this includes
-apportioning shared feed and energy use according to physiological energy
-requirements (e.g., net energy for lactation or growth). If the process
-remains multifunctional after such assignment, the resulting energy terms
-may be used to derive allocation factors among co-products.
+In accordance with ISO 14044:2006, known biophysical relationships may be used
+to assign shared inputs and outputs of a production system to individual
+products or sub-units. In livestock systems, this includes apportioning shared
+feed and energy use according to physiological energy requirements such as
+growth, lactation, and maintenance. If the resulting process remains
+multifunctional, these energy terms may subsequently be used to derive
+allocation factors among co-products.
 
-The objective of this function is to estimate the net
-energy required to produce meat, as live-weight growth of animal slaughtered during the assessment period.
-This is achieved by quantifying the physiological energy required for animals
-to grow from birth weight to slaughter weight for each species and cohort.
+The \code{energy_allocation_meat} is calculated as follows:
 
-Total energy required for meat production over the assessment period is then
-calculated as:
-
-\code{energy_allocation_meat = specific_energy_meat * meat_production_live_weight_cohort}
+\eqn{energy\_allocation\_meat = specific\_energy\_meat \times meat\_production\_live\_weight\_cohort}
 
 where
+\itemize{
 
-\code{specific_energy_meat} is the average
-net energy required to produce one kilogram of liveweight gain, accounting
-for differences in growth efficiency, reflecting species and cohort specific growth characteristics (MJ/kg live weight).
+\item \code{specific_energy_meat} is the average energy required to produce
+one kilogram of live weight, accounting for species- and cohort-specific
+growth characteristics (MJ/kg live weight).
 
-\code{meat_production_live_weight_cohort} is the total liveweight of
-animals sold for meat during the assessment period, which is calculated with a species-specific approach:
+\item \code{meat_production_live_weight_cohort} is the total live weight of
+animals sold for meat over the assessment period
+
+\eqn{specific\_energy\_meat}, reflecting differences in growth physiology and
+efficiency.
+
+\item \code{meat_production_live_weight_cohort} can be computed using
+\code{\link{compute_meat_outputs}} (see also
+\code{\link{run_production}}).
+}
+
+\strong{Specific approaches by species:}
 
 \itemize{
-\item \strong{For (\code{CTL}, \code{BFL}, \code{CML},
-\code{SHP}, \code{GTS})}:
+\item \strong{For \code{CTL}, \code{BFL}, \code{CML},
+\code{SHP}, \code{GTS}}:
 
 Growth energy is calculated using species- and
 cohort-specific biophysical relationships adapted from established growth
-energy formulations (further details in \code{\link[gleam]{calc_net_energy_growth}}).
+energy formulations (further details in \code{\link{calc_net_energy_growth}}).
 
-\item \strong{For (\code{PGS})}:
+\item \strong{For \code{PGS}}:
 
 Growth energy is not calculated in this
 function and \code{NA} is returned. In downstream processing,
@@ -108,26 +112,33 @@ edible meat commodity for pig systems.
 }
 }
 \references{
-ISO. 2006. Environmental management — Life cycle assessment — Requirements and
-guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
+ISO. (2006). \emph{Environmental management — Life cycle assessment —
+Requirements and guidelines (ISO 14044:2006)}. International Organization for
+Standardization, Geneva.
 
-IDF. 2022. The IDF Global Carbon Footprint Standard for the Dairy Sector.
-Bulletin of the IDF No. 520/2022. International Dairy Federation, Brussels.
+IDF. (2022). \emph{The IDF Global Carbon Footprint Standard for the Dairy
+Sector}. Bulletin of the IDF No. 520/2022. International Dairy Federation,
+Brussels.
 
-Thoma, G., and T. Nemecek. 2020. Allocation between milk and meat in dairy LCA:
-Critical discussion of the IDF’s standard methodology. Proceedings of the
-12th International Conference on Life Cycle Assessment of Food (LCAFood 2020),
-pp. 83–89, 13–16 October, Berlin, Germany.
+Thoma, G., and Nemecek, T. (2020). Allocation between milk and meat in dairy
+LCA: Critical discussion of the IDF’s standard methodology. In
+\emph{Proceedings of the 12th International Conference on Life Cycle Assessment
+of Food (LCAFood 2020)} (pp. 83--89), 13--16 October, Berlin, Germany.
 
-FAO. 2016a. Environmental performance of large ruminant supply chains:
-Guidelines for assessment. Livestock Environmental Assessment and Performance
+FAO. (2016a). \emph{Environmental performance of large ruminant supply chains:
+Guidelines for assessment}. Livestock Environmental Assessment and Performance
 (LEAP) Partnership. FAO, Rome, Italy.
 
-FAO. 2016b. Greenhouse gas emissions and fossil energy use from small ruminant
-supply chains: Guidelines for assessment. Livestock Environmental Assessment
-and Performance (LEAP) Partnership. FAO, Rome, Italy.
+FAO. (2016b). \emph{Greenhouse gas emissions and fossil energy use from small
+ruminant supply chains: Guidelines for assessment}. Livestock Environmental
+Assessment and Performance (LEAP) Partnership. FAO, Rome, Italy.
 
-FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
-chains: Guidelines for assessment. Livestock Environmental Assessment and
-Performance (LEAP) Partnership. FAO, Rome, Italy.
+FAO. (2016c). \emph{Greenhouse gas emissions and fossil energy use from poultry
+supply chains: Guidelines for assessment}. Livestock Environmental Assessment
+and Performance (LEAP) Partnership. FAO, Rome, Italy.
+}
+\seealso{
+\code{\link{compute_meat_outputs}},
+\code{\link{run_production}},
+\code{\link{calc_allocation_shares}}
 }

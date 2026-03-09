@@ -2,7 +2,7 @@
 % Please edit documentation in R/allocation_core_model.R
 \name{assign_allocation_to_emissions}
 \alias{assign_allocation_to_emissions}
-\title{Assign Allocation Shares to Emission Variables by Commodity}
+\title{Assign Allocation shares to emission variables by commodity}
 \usage{
 assign_allocation_to_emissions(
   allocation_herd_long,
@@ -14,13 +14,13 @@ assign_allocation_to_emissions(
 )
 }
 \arguments{
-\item{allocation_herd_long}{A \code{data.table} containing a commodity column (levels=Eggs, Milk, Meat, Work, Fibre..) and an allocation share column.}
+\item{allocation_herd_long}{Long-format \code{data.table} containing herd-level emissions and allocation information. Each row represents an emission source–commodity combination or an unallocated emission source prior to allocation.}
 
-\item{emissions_vars}{Character vector. Names of emission variables to which allocation should be applied (e.g., "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",         "direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other", "indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other")}
+\item{emissions_vars}{Character. Names of emission variables to which allocation should be applied (e.g., "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",         "direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other", "indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other", "diet_co2_feed_fertilizer", "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", "diet_n2o_feed_fertilizer",  "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice").}
 
-\item{commodities}{Character vector. List of commodity categories to which emissions may be allocated. List=c("Other","Milk","Meat","Fibre","Work","Eggs")}
+\item{commodities}{Character. List of commodity categories to which emissions may be allocated. List=c("Other","Milk","Meat","Fibre","Work","Eggs").}
 
-\item{excluded_vars}{Character vector. Emission variables that should not be allocated across commodities, even if they appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").}
+\item{excluded_vars}{Character. Emission variables that should not be allocated across commodities, even if they appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").}
 
 \item{commodity_col}{Character. Name of the column in \code{allocation_herd_long} identifying the commodity category.}
 
@@ -35,8 +35,8 @@ with enforced allocation rules:
 }
 }
 \description{
-This function operationalizes commodity-level allocation of emissions by combining each commodity with each emission source
-and applying predefined allocation rules.
+Expands commodity-level allocation shares across emission variables and applies
+predefined allocation rules for excluded emission sources.
 }
 \details{
 The function enforces the allocation of emissions from manure burned as fuel and deposited on pasture
@@ -65,18 +65,19 @@ already account for this source.
 }
 }
 \references{
-IDF. 2022. The IDF Global Carbon Footprint Standard for the Dairy Sector.
-Bulletin of the IDF No. 520/2022. International Dairy Federation, Brussels.
+IDF. (2022). \emph{The IDF Global Carbon Footprint Standard for the Dairy
+Sector}. Bulletin of the IDF No. 520/2022. International Dairy Federation,
+Brussels.
 
-FAO. 2016a. Environmental performance of large ruminant supply chains:
-Guidelines for assessment. Livestock Environmental Assessment and Performance
+FAO. (2016a). \emph{Environmental performance of large ruminant supply chains:
+Guidelines for assessment}. Livestock Environmental Assessment and Performance
 (LEAP) Partnership. FAO, Rome, Italy.
 
-FAO. 2016b. Greenhouse gas emissions and fossil energy use from small ruminant
-supply chains: Guidelines for assessment. Livestock Environmental Assessment
-and Performance (LEAP) Partnership. FAO, Rome, Italy.
+FAO. (2016b). \emph{Greenhouse gas emissions and fossil energy use from small
+ruminant supply chains: Guidelines for assessment}. Livestock Environmental
+Assessment and Performance (LEAP) Partnership. FAO, Rome, Italy.
 
-FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
-chains: Guidelines for assessment. Livestock Environmental Assessment and
-Performance (LEAP) Partnership. FAO, Rome, Italy.
+FAO. (2016c). \emph{Greenhouse gas emissions and fossil energy use from poultry
+supply chains: Guidelines for assessment}. Livestock Environmental Assessment
+and Performance (LEAP) Partnership. FAO, Rome, Italy.
 }

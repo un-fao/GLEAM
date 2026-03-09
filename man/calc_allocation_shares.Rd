@@ -2,7 +2,7 @@
 % Please edit documentation in R/allocation_core_model.R
 \name{calc_allocation_shares}
 \alias{calc_allocation_shares}
-\title{Calculate Energy Allocation Shares for Livestock Commodities}
+\title{Calculate Energy Allocation shares for livestock commodities}
 \usage{
 calc_allocation_shares(
   species_short,
@@ -69,8 +69,14 @@ energy requirements (e.g., net energy for lactation, growth..etc.). If the
 resulting process remains multifunctional, these energy terms may subsequently
 be used to derive allocation factors among co-products.
 
-This function calculates biophysical allocation
-fractions for commodities (meat, milk, fibre, work, eggs) for all species.
+This function calculates biophysical allocation fractions for commodities
+(meat, milk, fibre, work, eggs) for all species. The allocation is based on
+commodity-specific energy requirements calculated using
+\code{\link{calc_energy_allocation_meat}},
+\code{\link{calc_energy_allocation_milk}},
+\code{\link{calc_energy_allocation_fibre}},
+\code{\link{calc_energy_allocation_work}}, and
+\code{\link{calc_energy_allocation_eggs}}.
 
 \strong{Pig systems (\code{PGS}).} For pigs, allocation is not based on energy
 partitioning because pig production is treated as functionally single-output
@@ -79,26 +85,35 @@ commodity (meat share = 1; all other commodity shares = 0), independent of the
 energy inputs.
 }
 \references{
-ISO. 2006. Environmental management — Life cycle assessment — Requirements and
-guidelines (ISO 14044:2006). International Organization for Standardization, Geneva.
+ISO. (2006). \emph{Environmental management — Life cycle assessment —
+Requirements and guidelines (ISO 14044:2006)}. International Organization for
+Standardization, Geneva.
 
-IDF. 2022. The IDF Global Carbon Footprint Standard for the Dairy Sector.
-Bulletin of the IDF No. 520/2022. International Dairy Federation, Brussels.
+IDF. (2022). \emph{The IDF Global Carbon Footprint Standard for the Dairy
+Sector}. Bulletin of the IDF No. 520/2022. International Dairy Federation,
+Brussels.
 
-Thoma, G., and T. Nemecek. 2020. Allocation between milk and meat in dairy LCA:
-Critical discussion of the IDF’s standard methodology. Proceedings of the
-12th International Conference on Life Cycle Assessment of Food (LCAFood 2020),
-pp. 83–89, 13–16 October, Berlin, Germany.
+Thoma, G., and Nemecek, T. (2020). Allocation between milk and meat in dairy
+LCA: Critical discussion of the IDF’s standard methodology. In
+\emph{Proceedings of the 12th International Conference on Life Cycle Assessment
+of Food (LCAFood 2020)} (pp. 83--89), 13--16 October, Berlin, Germany.
 
-FAO. 2016a. Environmental performance of large ruminant supply chains:
-Guidelines for assessment. Livestock Environmental Assessment and Performance
+FAO. (2016a). \emph{Environmental performance of large ruminant supply chains:
+Guidelines for assessment}. Livestock Environmental Assessment and Performance
 (LEAP) Partnership. FAO, Rome, Italy.
 
-FAO. 2016b. Greenhouse gas emissions and fossil energy use from small ruminant
-supply chains: Guidelines for assessment. Livestock Environmental Assessment
-and Performance (LEAP) Partnership. FAO, Rome, Italy.
+FAO. (2016b). \emph{Greenhouse gas emissions and fossil energy use from small
+ruminant supply chains: Guidelines for assessment}. Livestock Environmental
+Assessment and Performance (LEAP) Partnership. FAO, Rome, Italy.
 
-FAO. 2016c. Greenhouse gas emissions and fossil energy use from poultry supply
-chains: Guidelines for assessment. Livestock Environmental Assessment and
-Performance (LEAP) Partnership. FAO, Rome, Italy.
+FAO. (2016c). \emph{Greenhouse gas emissions and fossil energy use from poultry
+supply chains: Guidelines for assessment}. Livestock Environmental Assessment
+and Performance (LEAP) Partnership. FAO, Rome, Italy.
+}
+\seealso{
+\code{\link{calc_energy_allocation_meat}},
+\code{\link{calc_energy_allocation_milk}},
+\code{\link{calc_energy_allocation_fibre}},
+\code{\link{calc_energy_allocation_work}},
+\code{\link{calc_energy_allocation_eggs}}
 }
