@@ -51,14 +51,24 @@ simulation module (when \code{has_herd_structure} is FALSE) and by the productio
 \item{show_indicator}{Logical. Whether to display progress indicators during the pipeline run.}
 }
 \value{
-A cohort-level \code{data.table} containing the outputs produced by the
-modules executed within this pipeline call.
+A named list containing:
+\describe{
+\item{cohort_level_results}{Cohort-level \code{data.table} with all computed
+outputs.}
+\item{herd_level_results}{Herd-level \code{data.table} (one row per herd).
+When \code{has_herd_structure} is FALSE, includes herd simulation outputs
+such as \code{growth_rate_herd}; otherwise returns the input
+\code{herd_level_data}.}
+\item{allocation_long}{Herd-level \code{data.table} in long format (one row
+per herd, emission variable, and commodity) with allocation shares.}
+}
 }
 \description{
 Runs the core sequence of model modules to generate cohort-level outputs for a
 livestock production system: herd simulation (optional), weights, feed rations,
 energy requirements and DMI, enteric methane direct emissions, nitrogen balance,
-direct emissions from manure management systems, feed emissions, and production (milk, fibre, meat).
+direct emissions from manure management systems, feed emissions, production (milk, fibre, meat),
+and allocation shares.
 Accepts primary inputs only: one cohort-level master table, one herd-level master table,
 feed rations, feed parameters, feed emissions, and manure management system tables.
 }
@@ -104,7 +114,8 @@ results <- run_gleam(
   manure_management_system_factors = manure_management_system_factors_dt,
   simulation_duration = 365
 )
-print(results)
+print(results$cohort_level_results)
+print(results$allocation_long)
 }
 
 # Example 2: You already HAVE herd structure — use cohort table and skip herd simulation.
@@ -148,6 +159,7 @@ results <- run_gleam(
   manure_management_system_factors = manure_management_system_factors_dt,
   simulation_duration = 365
 )
-print(results)
+print(results$cohort_level_results)
+print(results$allocation_long)
 }
 }

@@ -107,6 +107,9 @@ validate_run_gleam_inputs <- function(
     # Feed rations (cohort-level outputs merged into pipeline)
     "diet_gross_energy", "diet_metabolizable_energy", "diet_nitrogen",
     "diet_digestibility_fraction", "urinary_energy_fraction", "diet_ash",
+    # Allocation (cohort-level energy allocation terms)
+    "energy_allocation_milk", "energy_allocation_meat", "energy_allocation_fibre",
+    "energy_allocation_work", "energy_allocation_eggs",
     # Feed emissions (cohort-level diet emission factors)
     "diet_co2_feed_fertilizer", "diet_co2_feed_pesticides",
     "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",

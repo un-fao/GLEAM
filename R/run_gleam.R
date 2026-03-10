@@ -3,7 +3,8 @@
 #' Runs the core sequence of model modules to generate cohort-level outputs for a
 #' livestock production system: herd simulation (optional), weights, feed rations,
 #' energy requirements and DMI, enteric methane direct emissions, nitrogen balance,
-#' direct emissions from manure management systems, feed emissions, and production (milk, fibre, meat).
+#' direct emissions from manure management systems, feed emissions, production (milk, fibre, meat),
+#' and allocation shares.
 #' Accepts primary inputs only: one cohort-level master table, one herd-level master table,
 #' feed rations, feed parameters, feed emissions, and manure management system tables.
 #'
@@ -30,8 +31,17 @@
 #'   (milk, fibre, meat). Defaults to \code{365}.
 #' @param show_indicator Logical. Whether to display progress indicators during the pipeline run.
 #'
-#' @return A cohort-level \code{data.table} containing the outputs produced by the
-#'   modules executed within this pipeline call.
+#' @return A named list containing:
+#'   \describe{
+#'     \item{cohort_level_results}{Cohort-level \code{data.table} with all computed
+#'       outputs.}
+#'     \item{herd_level_results}{Herd-level \code{data.table} (one row per herd).
+#'       When \code{has_herd_structure} is FALSE, includes herd simulation outputs
+#'       such as \code{growth_rate_herd}; otherwise returns the input
+#'       \code{herd_level_data}.}
+#'     \item{allocation_long}{Herd-level \code{data.table} in long format (one row
+#'       per herd, emission variable, and commodity) with allocation shares.}
+#'   }
 #'
 #' @examples
 #' # Example 1: You do NOT have herd structure — use cohort input for herd simulation.
@@ -75,7 +85,8 @@
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365
 #' )
-#' print(results)
+#' print(results$cohort_level_results)
+#' print(results$allocation_long)
 #' }
 #'
 #' # Example 2: You already HAVE herd structure — use cohort table and skip herd simulation.
@@ -119,7 +130,8 @@
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365
 #' )
-#' print(results)
+#' print(results$cohort_level_results)
+#' print(results$allocation_long)
 #' }
 #' @export
 run_gleam <- function(
@@ -156,6 +168,7 @@ run_gleam <- function(
   # --- Step 2: Run herd simulation (or use provided structure) ----------------
   if (has_herd_structure) {
     gleam_chrt_data <- data.table::as.data.table(cohort_level_data)
+    gleam_hrd_data <- data.table::as.data.table(herd_level_data)
   } else {
     herd_results <- run_herd_simulation(
       cohort_level_data = cohort_level_data,
@@ -164,6 +177,7 @@ run_gleam <- function(
       show_indicator = show_indicator
     )
     gleam_chrt_data <- herd_results$cohort_level_results
+    gleam_hrd_data <- herd_results$herd_level_results
   }
 
   # --- Step 3: Run weights at cohort level ------------------------------------
@@ -237,6 +251,15 @@ run_gleam <- function(
     show_indicator = show_indicator
   )
 
+  # --- Step 11: Run allocation (energy allocation terms and commodity shares) ----
+  allocation_results <- run_allocation(
+    cohort_level_data = gleam_chrt_data,
+    herd_level_data = gleam_hrd_data,
+    simulation_duration = simulation_duration,
+    show_indicator = show_indicator
+  )
+  gleam_chrt_data <- allocation_results$cohort_allocation_inputs
+
   # Clear progress indicator if it was shown
   if (show_indicator) {
     cli::cli_status_clear()
@@ -244,5 +267,11 @@ run_gleam <- function(
     cli::cli_alert_success("{.strong GLEAM pipeline complete.}")
   }
 
-  return(gleam_chrt_data)
+  return(
+    list(
+      cohort_level_results = gleam_chrt_data,
+      herd_level_results = gleam_hrd_data,
+      allocation_long = allocation_results$allocation_long
+    )
+  )
 }
