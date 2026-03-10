@@ -16,7 +16,7 @@ utils::globalVariables(c(
   ".", ":=", ".I", ".N", ".SD", "..cols_to_drop", "..final_cols", "ADM0_CODE", "AFKG", "AMKG", "Animal_short",
   "animal_short", "size",
   "COUNTRY", "HerdType_short", "LPS_short", "MFSKG", "MMSKG", "WA", "afc", "ckg",
-  "cohort", "count", "daily_weight_gain", "duration", "duration.FA", "duration.FJ", "duration.FS",
+  "count", "daily_weight_gain", "duration", "duration.FA", "duration.FJ", "duration.FS",
   "cohort_duration_days", "death_rate",
   "duration.MA", "duration.MJ", "duration.MS", "dwg", "female_birth_fraction", "fem_fec",
   "birth_fraction_female", "litter_size", "herd_size_total",

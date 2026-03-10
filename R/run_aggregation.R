@@ -1,7 +1,7 @@
 #' Aggregation Pipeline: Final Herd-Level Results
 #'
 #' This function represents the final step of the Global Livestock Environmental
-#' Assessment Model (GLEAM) computational pipeline. 
+#' Assessment Model (GLEAM) computational pipeline.
 #' It consolidates cohort-level outputs into standardized herd-level totals for reporting.
 #' The function (i) scales per-head-per-day variables to cohort totals over the assessment
 #' period, (ii) aggregates cohorts to herd level, (iii) allocates emissions to commodities
@@ -41,7 +41,7 @@
 #'   }
 #'   Required grouping columns: `herd_id`, `Animal_short`,
 #'    `cohort`, `assessment_duration`, `size`.
-#'    
+#'
 #' @param allocation_herd_long A `data.table` in long format, typically the
 #'   output of [run_allocation()]. Must include columns:
 #'   \describe{
@@ -216,7 +216,7 @@ run_aggregation <- function(
       "variable_name"
     ),
     vars_to_sum = "value_total",
-    cohort = "cohort"
+    cohort_short = "cohort_short"
   )
 
   # --- Step 6: Merge emissions with allocation data --------------------------
