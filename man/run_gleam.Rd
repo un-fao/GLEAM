@@ -10,6 +10,7 @@ run_gleam(
   herd_level_data,
   feed_rations,
   feed_params,
+  feed_emissions,
   manure_management_system_fraction,
   manure_management_system_factors,
   simulation_duration = 365,
@@ -35,6 +36,8 @@ Must include \code{animal} (full species name, e.g. Cattle, Buffalo).}
 
 \item{feed_params}{data.table. Feed nutritional parameters (see \code{\link{run_feed_rations}}).}
 
+\item{feed_emissions}{data.table. Feed production emission factors (see \code{\link{run_feed_emissions}}).}
+
 \item{manure_management_system_fraction}{data.table. Cohort-level manure management
 system fractions (see \code{\link{run_directemissions_manure}}).}
 
@@ -55,9 +58,9 @@ modules executed within this pipeline call.
 Runs the core sequence of model modules to generate cohort-level outputs for a
 livestock production system: herd simulation (optional), weights, feed rations,
 energy requirements and DMI, enteric methane direct emissions, nitrogen balance,
-direct emissions from manure management systems, and production (milk, fibre, meat).
+direct emissions from manure management systems, feed emissions, and production (milk, fibre, meat).
 Accepts primary inputs only: one cohort-level master table, one herd-level master table,
-feed rations and feed parameters, and manure management system tables.
+feed rations, feed parameters, feed emissions, and manure management system tables.
 }
 \examples{
 # Example 1: You do NOT have herd structure — use cohort input for herd simulation.
@@ -78,6 +81,10 @@ feed_params_dt <- data.table::fread(system.file(
   "extdata/Parameters/feed/feed_params.csv",
   package = "gleam"
 ))
+feed_emissions_dt <- data.table::fread(system.file(
+  "extdata/Parameters/feed/feed_emission_factors.csv",
+  package = "gleam"
+))
 
 manure_management_system_fraction_dt <- data.table::fread(
   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
@@ -92,6 +99,7 @@ results <- run_gleam(
   herd_level_data = master_hrd_lvl_dt,
   feed_rations = feed_rations_chrt_dt,
   feed_params = feed_params_dt,
+  feed_emissions = feed_emissions_dt,
   manure_management_system_fraction = manure_management_system_fraction_dt,
   manure_management_system_factors = manure_management_system_factors_dt,
   simulation_duration = 365
@@ -117,6 +125,10 @@ feed_params_dt <- data.table::fread(system.file(
   "extdata/Parameters/feed/feed_params.csv",
   package = "gleam"
 ))
+feed_emissions_dt <- data.table::fread(system.file(
+  "extdata/Parameters/feed/feed_emission_factors.csv",
+  package = "gleam"
+))
 
 manure_management_system_fraction_dt <- data.table::fread(
   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
@@ -131,6 +143,7 @@ results <- run_gleam(
   herd_level_data = master_hrd_lvl_dt,
   feed_rations = feed_rations_chrt_dt,
   feed_params = feed_params_dt,
+  feed_emissions = feed_emissions_dt,
   manure_management_system_fraction = manure_management_system_fraction_dt,
   manure_management_system_factors = manure_management_system_factors_dt,
   simulation_duration = 365

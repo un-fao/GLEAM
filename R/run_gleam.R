@@ -3,9 +3,9 @@
 #' Runs the core sequence of model modules to generate cohort-level outputs for a
 #' livestock production system: herd simulation (optional), weights, feed rations,
 #' energy requirements and DMI, enteric methane direct emissions, nitrogen balance,
-#' direct emissions from manure management systems, and production (milk, fibre, meat).
+#' direct emissions from manure management systems, feed emissions, and production (milk, fibre, meat).
 #' Accepts primary inputs only: one cohort-level master table, one herd-level master table,
-#' feed rations and feed parameters, and manure management system tables.
+#' feed rations, feed parameters, feed emissions, and manure management system tables.
 #'
 #' @param has_herd_structure Logical. If TRUE, use \code{cohort_level_data} directly
 #'   as the cohort-level input for the weights module (skip herd simulation). If FALSE,
@@ -20,6 +20,7 @@
 #'   Must include \code{animal} (full species name, e.g. Cattle, Buffalo).
 #' @param feed_rations data.table. Feed ration shares by cohort (see \code{\link{run_feed_rations}}).
 #' @param feed_params data.table. Feed nutritional parameters (see \code{\link{run_feed_rations}}).
+#' @param feed_emissions data.table. Feed production emission factors (see \code{\link{run_feed_emissions}}).
 #' @param manure_management_system_fraction data.table. Cohort-level manure management
 #'   system fractions (see \code{\link{run_directemissions_manure}}).
 #' @param manure_management_system_factors data.table. Manure management
@@ -51,6 +52,10 @@
 #'   "extdata/Parameters/feed/feed_params.csv",
 #'   package = "gleam"
 #' ))
+#' feed_emissions_dt <- data.table::fread(system.file(
+#'   "extdata/Parameters/feed/feed_emission_factors.csv",
+#'   package = "gleam"
+#' ))
 #'
 #' manure_management_system_fraction_dt <- data.table::fread(
 #'   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
@@ -65,6 +70,7 @@
 #'   herd_level_data = master_hrd_lvl_dt,
 #'   feed_rations = feed_rations_chrt_dt,
 #'   feed_params = feed_params_dt,
+#'   feed_emissions = feed_emissions_dt,
 #'   manure_management_system_fraction = manure_management_system_fraction_dt,
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365
@@ -90,6 +96,10 @@
 #'   "extdata/Parameters/feed/feed_params.csv",
 #'   package = "gleam"
 #' ))
+#' feed_emissions_dt <- data.table::fread(system.file(
+#'   "extdata/Parameters/feed/feed_emission_factors.csv",
+#'   package = "gleam"
+#' ))
 #'
 #' manure_management_system_fraction_dt <- data.table::fread(
 #'   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
@@ -104,6 +114,7 @@
 #'   herd_level_data = master_hrd_lvl_dt,
 #'   feed_rations = feed_rations_chrt_dt,
 #'   feed_params = feed_params_dt,
+#'   feed_emissions = feed_emissions_dt,
 #'   manure_management_system_fraction = manure_management_system_fraction_dt,
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365
@@ -117,6 +128,7 @@ run_gleam <- function(
     herd_level_data,
     feed_rations,
     feed_params,
+    feed_emissions,
     manure_management_system_fraction,
     manure_management_system_factors,
     simulation_duration = 365,
@@ -130,6 +142,7 @@ run_gleam <- function(
     herd_level_data = herd_level_data,
     feed_rations = feed_rations,
     feed_params = feed_params,
+    feed_emissions = feed_emissions,
     manure_management_system_fraction = manure_management_system_fraction,
     manure_management_system_factors = manure_management_system_factors,
     simulation_duration = simulation_duration
@@ -204,7 +217,19 @@ run_gleam <- function(
     show_indicator = show_indicator
   )
 
-  # --- Step 9: Run production (milk, fibre, meat) at cohort level --------------
+  # --- Step 9: Run feed emissions (diet-level emission factors) ----------------
+  feed_emissions_summary <- run_feed_emissions(
+    rations_share = feed_rations,
+    feed_emissions = feed_emissions,
+    show_indicator = show_indicator
+  )
+  gleam_chrt_data <- merge(
+    gleam_chrt_data,
+    feed_emissions_summary,
+    by = c("herd_id", "animal", "cohort_short")
+  )
+
+  # --- Step 10: Run production (milk, fibre, meat) at cohort level ---------------
   gleam_chrt_data <- run_production_cohort(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = herd_level_data,

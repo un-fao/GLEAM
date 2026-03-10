@@ -14,6 +14,7 @@
 #' @param herd_level_data data.table. Herd-level master table.
 #' @param feed_rations data.table. Feed ration shares by cohort.
 #' @param feed_params data.table. Feed nutritional parameters.
+#' @param feed_emissions data.table. Feed production emission factors.
 #' @param manure_management_system_fraction data.table. Cohort-level manure
 #'   management system fractions.
 #' @param manure_management_system_factors data.table. manure management system factors.
@@ -26,6 +27,7 @@ validate_run_gleam_inputs <- function(
     herd_level_data,
     feed_rations,
     feed_params,
+    feed_emissions,
     manure_management_system_fraction,
     manure_management_system_factors,
     simulation_duration
@@ -68,6 +70,9 @@ validate_run_gleam_inputs <- function(
   if (is.null(feed_params) || !is.data.frame(feed_params)) {
     cli::cli_abort("{.arg feed_params} must be a data frame (e.g. data.table).")
   }
+  if (is.null(feed_emissions) || !is.data.frame(feed_emissions)) {
+    cli::cli_abort("{.arg feed_emissions} must be a data frame (e.g. data.table).")
+  }
   if (is.null(manure_management_system_fraction) || !is.data.frame(manure_management_system_fraction)) {
     cli::cli_abort("{.arg manure_management_system_fraction} must be a data frame (e.g. data.table).")
   }
@@ -102,6 +107,11 @@ validate_run_gleam_inputs <- function(
     # Feed rations (cohort-level outputs merged into pipeline)
     "diet_gross_energy", "diet_metabolizable_energy", "diet_nitrogen",
     "diet_digestibility_fraction", "urinary_energy_fraction", "diet_ash",
+    # Feed emissions (cohort-level diet emission factors)
+    "diet_co2_feed_fertilizer", "diet_co2_feed_pesticides",
+    "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
+    "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues",
+    "diet_ch4_feed_rice",
     # Energy requirements (cohort)
     "energy_requirement_maintenance", "energy_requirement_activity", "energy_requirement_growth",
     "energy_requirement_lactation", "energy_requirement_work",
@@ -149,6 +159,7 @@ validate_run_gleam_inputs <- function(
   check_no_calculated_columns(cohort_level_data, "cohort_level_data", blocklist = cohort_blocklist)
   check_no_calculated_columns(herd_level_data, "herd_level_data")
   check_no_calculated_columns(feed_rations, "feed_rations")
+  check_no_calculated_columns(feed_emissions, "feed_emissions")
   check_no_calculated_columns(manure_management_system_fraction, "manure_management_system_fraction")
   check_no_calculated_columns(manure_management_system_factors, "manure_management_system_factors")
 
