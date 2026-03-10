@@ -4,7 +4,6 @@
 #' defined as the energy required to maintain basal physiological functions at equilibrium,
 #' with no net gain or loss of body energy.
 #' 
-#'
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{

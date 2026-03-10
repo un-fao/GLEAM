@@ -4,19 +4,23 @@
 \alias{aggregate_cohort_to_herd}
 \title{Aggregate Cohort-Level Data to Herd-Level}
 \usage{
-aggregate_cohort_to_herd(data_cohort, id_cols, vars_to_sum, cohort)
+aggregate_cohort_to_herd(data_cohort, id_cols, vars_to_sum, cohort_short)
 }
 \arguments{
-\item{data_cohort}{A \code{data.table} at cohort-level containing energy allocation variables and herd identifiers. Each row corresponds to a single sex–age cohort within a herd.}
+\item{data_cohort}{Cohort-level dataset containing energy allocation variables and herd identifiers. Each row
+corresponds to a single sex–age cohort within a herd.}
 
 \item{id_cols}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 
-\item{vars_to_sum}{Character vector. Names of numeric cohort-level variables to be summed across cohorts to produce herd-level totals (e.g., energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre, energy_allocation_work, energy_allocation_eggs).}
+\item{vars_to_sum}{Character vector. Names of numeric cohort-level variables to be summed across cohorts to produce
+herd-level totals (e.g., energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre,
+energy_allocation_work, energy_allocation_eggs)}
 
-\item{cohort}{Character. Name of the column identifying the sex–age cohort (e.g. FJ, FA, MJ, etc.).}
+\item{cohort_short}{Character. Name of the column identifying the sex–age cohort (e.g. FJ, FA, MJ, etc.).}
 }
 \value{
-A \code{data.table} at herd scale, in which selected cohort-level variables have been summed across all cohorts belonging to the same herd, as defined by id_herd.
+A \code{data.table} at herd scale, in which selected cohort-level variables have been summed across all cohorts
+belonging to the same herd, as defined by id_herd.
 }
 \description{
 This function aggregates a dataset from cohort level to herd level by summing

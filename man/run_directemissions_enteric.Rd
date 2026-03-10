@@ -76,7 +76,9 @@ input_path <- system.file(
   package = "gleam"
 )
 directemissions_enteric_input_chrt_data <- data.table::fread(input_path)
-results <- run_directemissions_enteric(directemissions_enteric_input_chrt_data)
+results <- run_directemissions_enteric(
+cohort_level_data = directemissions_enteric_input_chrt_data
+)
 }
 
 }

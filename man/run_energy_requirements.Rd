@@ -150,7 +150,7 @@ energy_requirements_hrd_dt <- data.table::fread(system.file(
 ))
 
 # Run energy requirement and DMI calculations
-energy_results <- run_energy_requirements(
+results <- run_energy_requirements(
   cohort_level_data = energy_requirements_chrt_dt,
   herd_level_data = energy_requirements_hrd_dt
 )
