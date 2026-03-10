@@ -140,7 +140,7 @@ inputs and outputs of a production system to individual products or sub-units.
 
 The pipeline consists of the following steps:
 
-\itemize{
+\enumerate{
 \item Calculation of cohort-level energy allocation terms for meat, milk,
 fibre, work, and eggs using
 \code{\link{calc_energy_allocation_meat}},

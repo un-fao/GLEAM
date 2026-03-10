@@ -18,19 +18,19 @@
 #'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
 #'       }}
-#' \item{milk_production_fpcm_cohort}{NNumeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
-#' period (kg/cohort/assessment period). Suggest standard fat and protein contents = 0.04 and 0.033.}
-#'     \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
-#' \item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by
-#' cohort (kg/cohort/assessment period).}
-#' \item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
-#' Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
-#' for CML.}
-#' \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
-#' FS, FA, MJ, MS, MA).}
-#' \item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught
-#' power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
-#' SHP, GTS and as metabolizable energy for CML and PGS.}
+#'       \item{milk_production_fpcm_cohort}{NNumeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
+#'       period (kg/cohort/assessment period). Suggest standard fat and protein contents = 0.04 and 0.033.}
+#'       \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+#'       \item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by
+#'       cohort (kg/cohort/assessment period).}
+#'       \item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
+#'       Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
+#'       for CML.}
+#'       \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
+#'       FS, FA, MJ, MS, MA).}
+#'       \item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught
+#'       power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
+#'       SHP, GTS and as metabolizable energy for CML and PGS.}
 #'   }
 #'
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with the following data
@@ -50,14 +50,14 @@
 #'        \item \code{Camels}
 #'        }}
 #'     \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
-#' \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
-#' Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}
-#' \item{milk_fat_fraction_standard}{umeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
-#' (FPCM), (kg fat/kg milk). Suggested value = 0.04.}
-#' \item{milk_lactose_fraction_standard}{ Numeric. Standard lactose content of milk, used to calculate
-#' Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk). Suggested value = 0.048.}
-#' \item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
-#' species_short = CML.}
+#'     \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
+#'     Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}
+#'     \item{milk_fat_fraction_standard}{umeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
+#'     (FPCM), (kg fat/kg milk). Suggested value = 0.04.}
+#'     \item{milk_lactose_fraction_standard}{ Numeric. Standard lactose content of milk, used to calculate
+#'     Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk). Suggested value = 0.048.}
+#'     \item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
+#'     species_short = CML.}
 #'   }
 #'
 #' @param simulation_duration Numeric. Length of the assessment period (days).
@@ -69,18 +69,18 @@
 #'     \item{cohort_allocation_inputs}{A `data.table` with the original
 #'     cohort-level input columns plus the following new variables:
 #'       \describe{
-#' \item{energy_allocation_milk}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
-#' period). }
-#' \item{energy_allocation_meat}{Numeric. Energy required by a given sex–age cohort for total meat output by cohort
-#' during the assessment period,
-#' equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment
-#' period). }
-#' \item{energy_allocation_fibre}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
-#' period).}
-#' \item{energy_allocation_work}{Numeric. Energy required to provide all draught power (traction/work) by cohort
-#' (MJ/cohort/assessment period).}
-#'         \item{energy_allocation_eggs}{Numeric. Energy required for egg production over the assessment period
-#'         (MJ/cohort/assessment period). Currently set to 0.}
+#'       \item{energy_allocation_milk}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
+#'       period). }
+#'       \item{energy_allocation_meat}{Numeric. Energy required by a given sex–age cohort for total meat output by cohort
+#'       during the assessment period,
+#'       equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment
+#'       period). }
+#'       \item{energy_allocation_fibre}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
+#'       period).}
+#'       \item{energy_allocation_work}{Numeric. Energy required to provide all draught power (traction/work) by cohort
+#'       (MJ/cohort/assessment period).}
+#'       \item{energy_allocation_eggs}{Numeric. Energy required for egg production over the assessment period
+#'       (MJ/cohort/assessment period). Currently set to 0.}
 #'       }}
 #'     \item{allocation_long}{A herd-level `data.table` in long format with one
 #'     row per herd, commodity, and emission variable combination, containing the
@@ -97,14 +97,14 @@
 #'         \item \code{SHP}: sheep
 #'         \item \code{GTS}: goats
 #'         }}
-#' \item{variable_name}{Character. Names of emission variables to which allocation should be applied (e.g.,
-#' "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",
-#' "direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other",
-#' "indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other", "diet_co2_feed_fertilizer",
-#' "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
-#' "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice")}
-#' \item{commodity_name}{Character. List of commodity categories to which emissions may be allocated.
-#' List=c("Other","Milk","Meat","Fibre","Work","Eggs")}
+#'         \item{variable_name}{Character. Names of emission variables to which allocation should be applied (e.g.,
+#'         "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",
+#'         "direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other",
+#'         "indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other", "diet_co2_feed_fertilizer",
+#'         "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
+#'         "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice")}
+#'         \item{commodity_name}{Character. List of commodity categories to which emissions may be allocated.
+#'         List=c("Other","Milk","Meat","Fibre","Work","Eggs")}
 #'         \item{commodity_type}{Character. Commodity (commodity_name) grouping, either
 #'         \code{"Edible"} or \code{"Non-Edible"}.}
 #'         \item{allocation_share}{Numeric. Allocation share assigned to the
@@ -124,7 +124,7 @@
 #'
 #' The pipeline consists of the following steps:
 #'
-#' \itemize{
+#' \enumerate{
 #'   \item Calculation of cohort-level energy allocation terms for meat, milk,
 #'   fibre, work, and eggs using
 #'   \code{\link{calc_energy_allocation_meat}},
