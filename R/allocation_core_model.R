@@ -586,12 +586,6 @@ aggregate_cohort_to_herd <- function(
     .SDcols = vars_to_sum
   ]
 
-  # Add cohort_short = "ALL"
-  data_herd[
-    ,
-    (cohort_short) := "ALL"
-  ]
-
   return(data_herd)
 }
 
