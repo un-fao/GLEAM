@@ -434,7 +434,6 @@ run_aggregation <- function(
   # --- Return results ---------------------------------------------------------
   return(
     list(
-      cohort_level_results = cohort_level_data,
       results_emissions = data_herd_long_emissions,
       results_feed = data_herd_long_feed,
       results_production = data_herd_long_production,
