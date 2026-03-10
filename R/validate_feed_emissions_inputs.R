@@ -91,7 +91,7 @@ validate_feed_indirect_emissions_inputs <- function(
       "{.arg rations_share} contains duplicated {.arg feed_id} within herd/cohort/animal.",
       "i" = "Expected unique rows by: {.val {c(ration_scope, 'feed_id')}}",
       "i" = "Duplicate keys (first 10):",
-      "x" = paste(capture.output(print(preview)), collapse = "\n")
+      "x" = paste(utils::capture.output(print(preview)), collapse = "\n")
     ))
   }
 
@@ -109,7 +109,7 @@ validate_feed_indirect_emissions_inputs <- function(
       "{.arg rations_share} contains duplicated {.arg feed_name} within herd/cohort/animal.",
       "i" = "Expected unique rows by: {.val {c(ration_scope, 'feed_name')}}",
       "i" = "Duplicate keys (first 10):",
-      "x" = paste(capture.output(print(preview)), collapse = "\n")
+      "x" = paste(utils::capture.output(print(preview)), collapse = "\n")
     ))
 
   }
@@ -128,7 +128,7 @@ validate_feed_indirect_emissions_inputs <- function(
       "{.arg feed_emissions$feed_id} must be unique.",
       "i" = "Duplicated feed_id(s): {.val {dup_feed_ids}}",
       "i" = "Offending rows (first 10):",
-      "x" = paste(capture.output(print(preview)), collapse = "\n")
+      "x" = paste(utils::capture.output(print(preview)), collapse = "\n")
     ))
   }
 
@@ -156,7 +156,7 @@ validate_feed_indirect_emissions_inputs <- function(
         "{.arg feed_emissions$feed_name} must be unique.",
         "i" = "Duplicated feed_name(s): {.val {dup_feed_names}}",
         "i" = "feed_name -> feed_id mapping (first 10 names):",
-        "x" = paste(capture.output(print(preview)), collapse = "\n")
+        "x" = paste(utils::capture.output(print(preview)), collapse = "\n")
       ))
     }
   }

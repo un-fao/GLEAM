@@ -75,7 +75,7 @@ utils::globalVariables(c(
   "manure_management_system", "mms_list", "mms_list_fraction", "mms_list_factors",
   "unique_mms_sets",
   # Variables used with .. for validation
-  "..numeric_cols_feed", "..numeric_cols_rations",
+  "..numeric_cols_feed", "..numeric_cols_rations", "..cols_to_show",
   # Columns used in run_directemissions_manure
   "dmi", "n_excretion", "ef4", "ef5", "urinary_energy_fraction", "diet_ash",
   "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
@@ -110,7 +110,17 @@ utils::globalVariables(c(
   "x.milk_yield_day", "x.lactating_females_fraction",
   "x.milk_protein_fraction", "x.milk_fat_fraction", "x.milk_lactose_fraction",
   "x.milk_protein_fraction_standard", "x.milk_fat_fraction_standard", "x.milk_lactose_fraction_standard",
-  "x.fibre_yield_year", "x.carcass_dressing_fraction", "x.bone_free_meat_fraction", "x.meat_protein_fraction"
+  "x.fibre_yield_year", "x.carcass_dressing_fraction", "x.bone_free_meat_fraction", "x.meat_protein_fraction",
+  # Columns used in run_feed_emissions and validate_feed_emissions_inputs
+  "ch4_feed_rice", "co2_feed_crop_operations", "co2_feed_fertilizer", "co2_feed_luc_nopeat",
+  "co2_feed_luc_peat", "co2_feed_pesticides",
+  "diet_ch4_feed_rice", "diet_co2_feed_crop_operations", "diet_co2_feed_fertilizer",
+  "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", "diet_co2_feed_pesticides",
+  "diet_n2o_feed_crop_residues", "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied",
+  "n2o_feed_crop_residues", "n2o_feed_fertilizer", "n2o_feed_manure_applied",
+  "feed_name_emissions", "feed_name_input", "n_ids",
+  # data.table join prefixes used in run_allocation
+  "i.animal", "i.species_short", "x.ratio_me_to_ne"
 ))
 
 utils::globalVariables(c(
