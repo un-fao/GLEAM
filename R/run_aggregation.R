@@ -126,7 +126,7 @@ run_aggregation <- function(
     allocation_herd_long,
     gwp = "AR6"
 ) {
-  # --- Input validation -----------------------------------------------------
+  # --- Input validation -------------------------------------------------------
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
   if (nrow(cohort_level_data) == 0) {
     cli::cli_abort("{.arg cohort_level_data} must be a non-empty data.table.")
@@ -161,7 +161,7 @@ run_aggregation <- function(
     )
   }
 
-  # --- Step 1: Define variable groups ---------------------------------------
+  # --- Step 1: Define variable groups -----------------------------------------
   feed_vars <- c("dry_matter_intake")
   nitrogen_balance_vars <- c("nitrogen_intake", "nitrogen_retention", "nitrogen_excretion")
   production_vars <- c(
@@ -173,17 +173,11 @@ run_aggregation <- function(
   )
   emissions_vars <- c(
     "ch4_enteric", "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other",
-    "direct_n2o_manure_pasture", "direct_n2o_manure_burned", "direct_n2o_manure_other",
-    "indirect_n2o_manure_burned", "indirect_n2o_manure_pasture", "indirect_n2o_manure_other",
-    "diet_co2_feed_fertilizer",
-    "diet_co2_feed_pesticides",
-    "diet_co2_feed_crop_operations",
-    "diet_co2_feed_luc_nopeat",
-    "diet_co2_feed_luc_peat",
-    "diet_n2o_feed_fertilizer",
-    "diet_n2o_feed_manure_applied",
-    "diet_n2o_feed_crop_residues",
-    "diet_ch4_feed_rice"
+    "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
+    "n2o_manure_burned_indirect", "n2o_manure_pasture_indirect", "n2o_manure_other_indirect",
+    "diet_co2_feed_fertilizer", "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations",
+    "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", "diet_n2o_feed_fertilizer",
+    "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice"
   )
 
   # Check that required variables exist in cohort_level_data
@@ -197,7 +191,7 @@ run_aggregation <- function(
     )
   }
 
-  # --- Step 2: Reshape cohort_level_data to long format --------------------
+  # --- Step 2: Reshape cohort_level_data to long format -----------------------
   data_cohort_long <- data.table::melt(
     cohort_level_data,
     id.vars = c(
@@ -212,7 +206,7 @@ run_aggregation <- function(
     value.name = "value"
   )
 
-  # --- Step 3: Classify variables by type ----------------------------------
+  # --- Step 3: Classify variables by type -------------------------------------
   data_cohort_long[
     , variable_type := data.table::fcase(
       variable_name %in% feed_vars, "Feed",
@@ -223,7 +217,7 @@ run_aggregation <- function(
     )
   ]
 
-  # --- Step 4: Calculate totals by cohort -----------------------------------
+  # --- Step 4: Calculate totals by cohort -------------------------------------
   # Scale per-head-per-day values to cohort totals over assessment duration
   data_cohort_long[
     , value_total := calc_totals_by_cohort(
@@ -235,7 +229,7 @@ run_aggregation <- function(
     by = .I
   ]
 
-  # --- Step 5: Aggregate from cohort to herd level --------------------------
+  # --- Step 5: Aggregate from cohort to herd level ----------------------------
   # Sum all cohort values to get herd-level totals
   data_herd_long <- aggregate_cohort_to_herd(
     data_cohort = data_cohort_long,
@@ -249,7 +243,7 @@ run_aggregation <- function(
     cohort_short = "cohort_short"
   )
 
-  # --- Step 6: Merge emissions with allocation data --------------------------
+  # --- Step 6: Merge emissions with allocation data ---------------------------
   # Only emissions need allocation; other variables are assigned to "ALL"
   data_herd_long_allocation <- merge(
     data_herd_long[variable_type == "Emissions", ],
@@ -257,7 +251,7 @@ run_aggregation <- function(
     by = c("herd_id", "species_short", "variable_name")
   )
 
-  # --- Step 7: Allocate emissions to commodities -----------------------------
+  # --- Step 7: Allocate emissions to commodities ------------------------------
   data_herd_long_allocation[
     , value_allocated := calc_allocated_emissions(
       value = value_total,
@@ -266,7 +260,7 @@ run_aggregation <- function(
     by = .I
   ]
 
-  # --- Step 8: Identify gas type for GWP conversion -------------------------
+  # --- Step 8: Identify gas type for GWP conversion ---------------------------
   data_herd_long_allocation[
     , gas := data.table::fcase(
       grepl("^ch4", variable_name, ignore.case = TRUE), "CH4",
@@ -275,7 +269,7 @@ run_aggregation <- function(
     )
   ]
 
-  # --- Step 9: Convert to CO2-equivalents ------------------------------------
+  # --- Step 9: Convert to CO2-equivalents -------------------------------------
   data_herd_long_allocation[
     , c("value_allocated_co2e", "gwp") := calc_co2eq(
       gas = gas,
@@ -285,9 +279,9 @@ run_aggregation <- function(
     by = .I
   ]
 
-  # --- Step 10: Cleaning-up emissions variables ------------------------------
+  # --- Step 10: Cleaning-up emissions variables -------------------------------
   subset_allocatedco2e <- data_herd_long_allocation[
-    variable_type == "Emissions",
+    ,
     .(
       herd_id, species_short,
       variable_name, gas, variable_type, commodity_name,
@@ -307,7 +301,7 @@ run_aggregation <- function(
     fill = TRUE
   )
 
-  # --- Step 12: Cleaning-up the table ----------------------------------------
+  # --- Step 12: Cleaning-up the table -----------------------------------------
 
   # 12.1 Production
   results_herd[
@@ -362,7 +356,7 @@ run_aggregation <- function(
 
   results_herd[, cohort_short := "ALL"]
 
-  # --- Step 13: Renaming variables -------------------------------------------
+  # --- Step 13: Renaming variables --------------------------------------------
   # Ensure variable_name is a factor for levels() assignment
   if (!is.factor(results_herd$variable_name)) {
     results_herd[, variable_name := as.factor(variable_name)]
@@ -374,12 +368,12 @@ run_aggregation <- function(
     ch4_manure_pasture = "Manure-Pasture_CH4",
     ch4_manure_burned = "Manure-Burned_CH4",
     ch4_manure_other = "Manure-Other_CH4",
-    direct_n2o_manure_pasture = "ManureDirect-Pasture_N2O",
-    direct_n2o_manure_burned = "ManureDirect-Burned_N2O",
-    direct_n2o_manure_other = "ManureDirect-Other_N2O",
-    indirect_n2o_manure_burned = "ManureIndirect-Burned_N2O",
-    indirect_n2o_manure_pasture = "ManureIndirect-Pasture_N2O",
-    indirect_n2o_manure_other = "ManureIndirect-Other_N2O",
+    n2o_manure_pasture_direct = "ManureDirect-Pasture_N2O",
+    n2o_manure_burned_direct = "ManureDirect-Burned_N2O",
+    n2o_manure_other_direct = "ManureDirect-Other_N2O",
+    n2o_manure_burned_indirect = "ManureIndirect-Burned_N2O",
+    n2o_manure_pasture_indirect = "ManureIndirect-Pasture_N2O",
+    n2o_manure_other_indirect = "ManureIndirect-Other_N2O",
     diet_co2_feed_fertilizer = "Feed-Fertilizer_CO2",
     diet_co2_feed_pesticides = "Feed-Pesticides_CO2",
     diet_co2_feed_crop_operations = "Feed-CropOperations_CO2",
@@ -403,7 +397,7 @@ run_aggregation <- function(
     fibre_production_cohort = "Fibre"
   )[levels(results_herd$variable_name)]
 
-  # --- Step 14: Variables order ----------------------------------------------
+  # --- Step 14: Variables order -----------------------------------------------
   variable_order <- c(
     "herd_id",
     "species_short",
@@ -424,7 +418,7 @@ run_aggregation <- function(
     intersect(variable_order, names(results_herd))
   )
 
-  # --- Return results --------------------------------------------------------
+  # --- Return results ---------------------------------------------------------
   return(
     list(
       cohort_level_results = cohort_level_data,
