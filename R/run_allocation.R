@@ -98,15 +98,15 @@
 #'         \item \code{SHP}: sheep
 #'         \item \code{GTS}: goats
 #'         }}
-#'         \item{variable_name}{Character. Names of emission variables to which 
-#'         allocation should be applied (e.g.,"ch4_enteric", "ch4_manure_pasture", 
-#'         "ch4_manure_burned","ch4_manure_other", "n2o_manure_pasture_direct", 
-#'         "n2o_manure_burned_direct","n2o_manure_other_direct", 
+#'         \item{variable_name}{Character. Names of emission variables to which
+#'         allocation should be applied (e.g.,"ch4_enteric", "ch4_manure_pasture",
+#'         "ch4_manure_burned","ch4_manure_other", "n2o_manure_pasture_direct",
+#'         "n2o_manure_burned_direct","n2o_manure_other_direct",
 #'         "n2o_manure_burned_indirect","n2o_manure_pasture_indirect",
-#'         "n2o_manure_other_indirect", "diet_co2_feed_fertilizer", 
-#'         "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", 
-#'         "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", 
-#'         "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", 
+#'         "n2o_manure_other_indirect", "diet_co2_feed_fertilizer",
+#'         "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations",
+#'         "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
+#'         "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied",
 #'         "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice")}
 #'         \item{commodity_name}{Character. List of commodity categories to which emissions may be allocated.
 #'         List=c("None","Milk","Meat","Fibre","Work","Eggs")}
@@ -409,6 +409,8 @@ run_allocation <- function(
     commodity_col = "commodity_name",
     allocation_col = "allocation_share"
   )
+  # Remove rows with allocation_share == 0
+  allocation_herd_long <- allocation_herd_long[allocation_share != 0]
 
   # Reorder columns for clarity
   data.table::setcolorder(
