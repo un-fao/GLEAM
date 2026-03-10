@@ -51,8 +51,7 @@ Numeric. Energy required by a given sex–age cohort for total meat output by co
 period,
 equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment
 period).
-Non-zero values are applicable to all species/cohorts where growth is modelled. For
-pigs (\code{PGS}), the function returns \code{0} by design.
+For pigs (\code{PGS}), the function returns \code{0} by design.
 }
 \description{
 Computes the energy required for meat production over the assessment period
@@ -87,12 +86,7 @@ one kilogram of live weight, accounting for species- and cohort-specific
 growth characteristics (MJ/kg live weight).
 
 \item \code{meat_production_live_weight_cohort} is the total live weight of
-animals sold for meat over the assessment period
-
-\eqn{specific\_energy\_meat}, reflecting differences in growth physiology and
-efficiency.
-
-\item \code{meat_production_live_weight_cohort} can be computed using
+animals sold for meat over the assessment period. It can be computed using
 \code{\link{compute_meat_outputs}} (see also
 \code{\link{run_production_cohort}}).
 }

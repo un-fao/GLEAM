@@ -19,13 +19,13 @@ row represents an emission source–commodity combination or an unallocated emis
 
 \item{emissions_vars}{Character. Names of emission variables to which allocation should be applied (e.g.,
 "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",
-"direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other",
-"indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other", "diet_co2_feed_fertilizer",
+"n2o_manure_pasture_direct","n2o_manure_burned_direct","n2o_manure_other_direct",
+"n2o_manure_burned_indirect","n2o_manure_pasture_indirect","n2o_manure_other_indirect", "diet_co2_feed_fertilizer",
 "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
 "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice").}
 
 \item{commodities}{Character. List of commodity categories to which emissions may be allocated.
-List=c("Other","Milk","Meat","Fibre","Work","Eggs").}
+List=c("None","Milk","Meat","Fibre","Work","Eggs").}
 
 \item{excluded_vars}{Character. Emission variables that should not be allocated across commodities, even if they
 appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").}
@@ -39,36 +39,33 @@ applied.}
 A \code{data.table} equal to \code{allocation_herd_long} expanded over all \code{emissions_vars},
 with enforced allocation rules:
 \describe{
-\item{Excluded emission variables}{\code{allocation_col = 1} when \code{commodity_col == "Other"}, else \code{0}.}
-\item{Non-excluded emission variables}{\code{allocation_col = 0} when \code{commodity_col == "Other"} (others unchanged).}
+\item{Non-allocated emission sources}{\code{allocation_col = 1} when \code{commodity_col == "None"}, else \code{0}.}
+\item{Allocated emission sources}{\code{allocation_col = 0} when \code{commodity_col == "None"} (others unchanged).}
 }
 }
 \description{
-Expands commodity-level allocation shares across emission variables and applies
+Expands commodity-level allocation shares across emission sources and applies
 predefined allocation rules for excluded emission sources.
 }
 \details{
-The function enforces the allocation of emissions from manure burned as fuel and deposited on pasture
-to be \strong{100\% to the commodity "Other"}.
-
-Emission variables listed in \code{excluded_vars} (e.g., emissions from manure
+Emission sources listed in \code{excluded_vars} (e.g., emissions from manure
 burned as fuel or manure deposited on pasture) are treated as not attributable
-to edible livestock commodities under the chosen goal and scope. Consequently,
+to livestock commodities under the chosen goal and scope. Consequently,
 these emissions are allocated entirely to the residual commodity category
-\code{"Other"} and are not distributed across milk, meat, fibre, work, or egg
+\code{"None"} and are not distributed across milk, meat, fibre, work, or egg
 outputs.
 
-The following methodological rules apply to emission variables listed in
+The following methodological rules apply to emission sources listed in
 \code{excluded_vars}:
 
 \itemize{
 \item \strong{Manure burned for fuel} — Emissions are considered outside the
 life cycle assessment system boundaries under the defined goal and scope and
-are therefore not attributed to edible livestock commodities. A cut-off
+are therefore not attributed to livestock commodities. A cut-off
 approach is applied, consistent with the IDF (2022) standard and LEAP guidelines (LEAP 2016a, 2016b, 2016c).
 
-\item \strong{Manure deposited on pasture or grassland} — Emissions are not
-allocated to edible livestock commodities in order to avoid double counting.
+\item \strong{Manure deposited on pastures} — Emissions are not
+allocated to livestock commodities in order to avoid double counting.
 When upstream feed production is included in the inventory, emission factors of feed items
 already account for this source.
 }

@@ -16,7 +16,16 @@ corresponds to a single sex–age cohort within a herd.}
 herd-level totals (e.g., energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre,
 energy_allocation_work, energy_allocation_eggs)}
 
-\item{cohort_short}{Character. Name of the column identifying the sex–age cohort (e.g. FJ, FA, MJ, etc.).}
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
 }
 \value{
 A \code{data.table} at herd scale, in which selected cohort-level variables have been summed across all cohorts

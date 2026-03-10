@@ -61,7 +61,7 @@ resulting process remains multifunctional, these energy terms may subsequently
 be used to derive allocation factors among co-products.
 
 Total work-related energy is computed for species (\code{CTL}, \code{BFL}, \code{CML})
-and cohorts (\code{MA}) assumed to be potentially involved in draught power generation.
+and cohorts (, \code{FA}, \code{MA}) assumed to be potentially involved in draught power generation.
 
 The \code{energy_allocation_work} is calculated as follows:
 
