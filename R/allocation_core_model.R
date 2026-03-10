@@ -54,7 +54,7 @@
 #'   (FPCM) produced over the assessment period (kg/assessment period).
 #'   
 #'   \item \code{milk_production_fpcm_cohort} value can be computed using \code{\link{compute_milk_outputs}}
-#'   (see also \code{\link{run_production}}).
+#'   (see also \code{\link{run_production_cohort}}).
 #'   
 #' }
 #' 
@@ -192,7 +192,7 @@ calc_energy_allocation_milk <- function(
 #' 
 #'   \item \code{meat_production_live_weight_cohort} can be computed using
 #'   \code{\link{compute_meat_outputs}} (see also
-#'   \code{\link{run_production}}).
+#'   \code{\link{run_production_cohort}}).
 #'   }
 #'
 #' \strong{Specific approaches by species:}
@@ -241,7 +241,7 @@ calc_energy_allocation_milk <- function(
 #' 
 #' @seealso
 #' \code{\link{compute_meat_outputs}},
-#' \code{\link{run_production}},
+#' \code{\link{run_production_cohort}},
 #' \code{\link{calc_allocation_shares}}
 #'
 #' @export
@@ -659,7 +659,7 @@ aggregate_cohort_to_herd <- function(
 #' \code{\link{calc_energy_allocation_milk}},
 #' \code{\link{calc_energy_allocation_fibre}},
 #' \code{\link{calc_energy_allocation_work}}, and
-#' \code{\link{calc_energy_allocation_eggs}}.
+#' \code{calc_energy_allocation_eggs}.
 #'
 #' \strong{Pig systems (\code{PGS}).} For pigs, allocation is not based on energy
 #' partitioning because pig production is treated as functionally single-output
@@ -672,7 +672,7 @@ aggregate_cohort_to_herd <- function(
 #' \code{\link{calc_energy_allocation_milk}},
 #' \code{\link{calc_energy_allocation_fibre}},
 #' \code{\link{calc_energy_allocation_work}},
-#' \code{\link{calc_energy_allocation_eggs}}
+#' \code{calc_energy_allocation_eggs}
 #'
 #' @references
 #' ISO. (2006). \emph{Environmental management — Life cycle assessment —

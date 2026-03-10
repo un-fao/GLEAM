@@ -94,7 +94,7 @@ efficiency.
 
 \item \code{meat_production_live_weight_cohort} can be computed using
 \code{\link{compute_meat_outputs}} (see also
-\code{\link{run_production}}).
+\code{\link{run_production_cohort}}).
 }
 
 \strong{Specific approaches by species:}
@@ -143,6 +143,6 @@ and Performance (LEAP) Partnership. FAO, Rome, Italy.
 }
 \seealso{
 \code{\link{compute_meat_outputs}},
-\code{\link{run_production}},
+\code{\link{run_production_cohort}},
 \code{\link{calc_allocation_shares}}
 }

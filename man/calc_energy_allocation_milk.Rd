@@ -71,7 +71,7 @@ following IDF (2022) (MJ/kg milk).
 (FPCM) produced over the assessment period (kg/assessment period).
 
 \item \code{milk_production_fpcm_cohort} value can be computed using \code{\link{compute_milk_outputs}}
-(see also \code{\link{run_production}}).
+(see also \code{\link{run_production_cohort}}).
 
 }
 }

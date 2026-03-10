@@ -147,7 +147,7 @@ fibre, work, and eggs using
 \code{\link{calc_energy_allocation_milk}},
 \code{\link{calc_energy_allocation_fibre}},
 \code{\link{calc_energy_allocation_work}}, and
-\code{\link{calc_energy_allocation_eggs}}.
+\code{calc_energy_allocation_eggs}.
 
 \item Aggregation of cohort-level energy terms to herd level using
 \code{\link{aggregate_cohort_to_herd}}.
@@ -223,7 +223,7 @@ and Performance (LEAP) Partnership. FAO, Rome, Italy.
 \code{\link{calc_energy_allocation_milk}},
 \code{\link{calc_energy_allocation_fibre}},
 \code{\link{calc_energy_allocation_work}},
-\code{\link{calc_energy_allocation_eggs}},
+\code{calc_energy_allocation_eggs},
 \code{\link{aggregate_cohort_to_herd}},
 \code{\link{calc_allocation_shares}},
 \code{\link{assign_allocation_to_emissions}}

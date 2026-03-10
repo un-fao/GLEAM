@@ -83,7 +83,7 @@ commodity-specific energy requirements calculated using
 \code{\link{calc_energy_allocation_milk}},
 \code{\link{calc_energy_allocation_fibre}},
 \code{\link{calc_energy_allocation_work}}, and
-\code{\link{calc_energy_allocation_eggs}}.
+\code{calc_energy_allocation_eggs}.
 
 \strong{Pig systems (\code{PGS}).} For pigs, allocation is not based on energy
 partitioning because pig production is treated as functionally single-output
@@ -122,5 +122,5 @@ and Performance (LEAP) Partnership. FAO, Rome, Italy.
 \code{\link{calc_energy_allocation_milk}},
 \code{\link{calc_energy_allocation_fibre}},
 \code{\link{calc_energy_allocation_work}},
-\code{\link{calc_energy_allocation_eggs}}
+\code{calc_energy_allocation_eggs}
 }
