@@ -169,9 +169,9 @@ run_aggregation <- function(
       unit = "kg dry matter"
     )
   )
+
   feed_vars <- sapply(feed_list, `[[`, "feed_source")
-  
-  
+
   nitrogen_balance_list <- list(
     list(
       nitrogen_balance_source = "nitrogen_intake",
@@ -189,8 +189,9 @@ run_aggregation <- function(
       unit = "kg N"
     )
   )
+
   nitrogen_balance_vars <- sapply(nitrogen_balance_list, `[[`, "nitrogen_balance_source")
-  
+
   production_list <- list(
     list(
       production_source = "milk_production_mass_cohort",
@@ -249,37 +250,37 @@ run_aggregation <- function(
       commodity_type = "Edible"
     )
   )
+
   production_vars <- sapply(production_list, `[[`, "production_source")
-  
+
   emissions_list <- list(
     list(emissions_source = "ch4_enteric", label = "Enteric_CH4"),
     list(emissions_source = "ch4_manure_pasture", label = "Manure-Pasture_CH4"),
     list(emissions_source = "ch4_manure_burned", label = "Manure-Burned_CH4"),
     list(emissions_source = "ch4_manure_other", label = "Manure-Other_CH4"),
-    
+
     list(emissions_source = "n2o_manure_pasture_direct", label = "ManureDirect-Pasture_N2O"),
     list(emissions_source = "n2o_manure_burned_direct", label = "ManureDirect-Burned_N2O"),
     list(emissions_source = "n2o_manure_other_direct", label = "ManureDirect-Other_N2O"),
-    
+
     list(emissions_source = "n2o_manure_burned_indirect", label = "ManureIndirect-Burned_N2O"),
     list(emissions_source = "n2o_manure_pasture_indirect", label = "ManureIndirect-Pasture_N2O"),
     list(emissions_source = "n2o_manure_other_indirect", label = "ManureIndirect-Other_N2O"),
-    
+
     list(emissions_source = "diet_co2_feed_fertilizer", label = "Feed-Fertilizer_CO2"),
     list(emissions_source = "diet_co2_feed_pesticides", label = "Feed-Pesticides_CO2"),
     list(emissions_source = "diet_co2_feed_crop_operations", label = "Feed-CropOperations_CO2"),
     list(emissions_source = "diet_co2_feed_luc_nopeat", label = "Feed-LandUseChange_CO2"),
     list(emissions_source = "diet_co2_feed_luc_peat", label = "Feed-PeatDrainage_CO2"),
-    
+
     list(emissions_source = "diet_n2o_feed_fertilizer", label = "Feed-Fertilizer_N2O"),
     list(emissions_source = "diet_n2o_feed_manure_applied", label = "Feed-ManureApplication_N2O"),
     list(emissions_source = "diet_n2o_feed_crop_residues", label = "Feed-CropResidues_N2O"),
-    
+
     list(emissions_source = "diet_ch4_feed_rice", label = "Feed-Rice_CH4")
   )
   emissions_vars <- sapply(emissions_list, `[[`, "emissions_source")
-  
-  
+
   # Check that required variables exist in cohort_level_data
   all_vars <- unique(
     c(feed_vars, nitrogen_balance_vars, production_vars, emissions_vars)
@@ -287,7 +288,8 @@ run_aggregation <- function(
   available_vars <- intersect(all_vars, names(cohort_level_data))
   if (length(available_vars) == 0) {
     cli::cli_abort(
-      "No recognized variables found in {.arg cohort_level_data}. Expected variables include: {.val {all_vars}}"
+      "No recognized variables found in {.arg cohort_level_data}.
+      Expected variables include: {.val {all_vars}}"
     )
   }
 
@@ -306,8 +308,6 @@ run_aggregation <- function(
     value.name = "value"
   )
 
-  
-  
   # --- Step 3: Classify variables by type -------------------------------------
   data_cohort_long[
     , variable_type := data.table::fcase(
@@ -320,7 +320,7 @@ run_aggregation <- function(
   ]
 
   # --- Step 4: Calculate totals by cohort -------------------------------------
-  # Scale per-head-per-day values to cohort totals over assessment duration
+  # Scale per-head-per-day values to cohort totals over simulation duration
   data_cohort_long[
     , value_total := calc_totals_by_cohort(
       value = value,
@@ -346,14 +346,17 @@ run_aggregation <- function(
   )
 
   # --- Step 6: Subsetting datframes by variable_type ----------------------------
-  data_herd_long_production <- data_herd_long[variable_type=="Production"]
-  data_herd_long_nitrogen <- data_herd_long[variable_type=="NitrogenBalance"]
-  data_herd_long_feed<- data_herd_long[variable_type=="Feed"]
-  
+  data_herd_long_production <- data_herd_long[variable_type == "Production"]
+  data_herd_long_nitrogen <- data_herd_long[variable_type == "NitrogenBalance"]
+  data_herd_long_feed <- data_herd_long[variable_type == "Feed"]
+
   # --- Step 7: Subsetting emissions dataframe and merge emissions with allocation data ---------------------------
   # Only emissions need allocation; other variables are assigned to "ALL"
   data_herd_long_emissions<- merge(
-    data_herd_long[variable_type == "Emissions", .(herd_id, species_short, variable_type, variable_name, value_total_kgGas=value_total)],
+    data_herd_long[
+      variable_type == "Emissions",
+      .(herd_id, species_short, variable_type, variable_name, value_total_kgGas = value_total)
+    ],
     allocation_herd_long,
     by = c("herd_id", "species_short", "variable_name")
   )
@@ -387,41 +390,46 @@ run_aggregation <- function(
   ]
 
   # --- Step 11: Cleaning-up output tables -----------------------------------------
-  
+
   # 11.1 Emissions
   emissions_dt <- data.table::rbindlist(emissions_list)
   data.table::setnames(emissions_dt, "emissions_source", "variable_name")
-  
-  data_herd_long_emissions <- merge(data_herd_long_emissions,
-                                    emissions_dt,
-                                     by = "variable_name")
-  
+
+  data_herd_long_emissions <- merge(
+    data_herd_long_emissions,
+    emissions_dt,
+    by = "variable_name"
+  )
 
   # 12.2 Production
   production_dt <- data.table::rbindlist(production_list)
   data.table::setnames(production_dt, "production_source", "variable_name")
-  
-  data_herd_long_production <- merge(data_herd_long_production,
-                                    production_dt,
-                                    by = "variable_name")
-  
-  
+
+  data_herd_long_production <- merge(
+    data_herd_long_production,
+    production_dt,
+    by = "variable_name"
+  )
+
   # 12.3 Feed
   feed_dt <- data.table::rbindlist(feed_list)
   data.table::setnames(feed_dt, "feed_source", "variable_name")
-  
-  data_herd_long_feed <- merge(data_herd_long_feed,
-                                     feed_dt,
-                                     by = "variable_name")
-  
-  
+
+  data_herd_long_feed <- merge(
+    data_herd_long_feed,
+    feed_dt,
+    by = "variable_name"
+  )
+
   # 12.4 Nitrogen balance
   nitrogen_balance_dt <- data.table::rbindlist(nitrogen_balance_list)
   data.table::setnames(nitrogen_balance_dt, "nitrogen_balance_source", "variable_name")
-  
-  data_herd_long_nitrogen <- merge(data_herd_long_nitrogen,
-                                   nitrogen_balance_dt,
-                               by = "variable_name")
+
+  data_herd_long_nitrogen <- merge(
+    data_herd_long_nitrogen,
+    nitrogen_balance_dt,
+    by = "variable_name"
+  )
 
   # --- Return results ---------------------------------------------------------
   return(
