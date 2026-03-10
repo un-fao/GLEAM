@@ -14,7 +14,7 @@ calc_energy_allocation_milk(
 \arguments{
 \item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
 period (kg/cohort/assessment period).
-Suggest standard fat and protein contents = 0.04 and 0.033.}
+Suggested standard fat, protein and lactose contents are 0.04, 0.033, and 0.048 respectively.}
 
 \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
 Fat-protein-corrected milk (FPCM), (kg protein/kg milk).
@@ -31,7 +31,7 @@ Suggested value = 0.048.}
 \value{
 Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment period).
 Non-zero values are applicable only to milk-producing species and cohorts (species = CTL, BFL, CML, SHP, GTS;
-cohorts=AF).
+cohorts=FA).
 All other species–cohort combinations are assigned a value of 0.
 }
 \description{
@@ -67,10 +67,8 @@ where:
 calculated internally based on standard fat, protein, and lactose contents
 following IDF (2022) (MJ/kg milk).
 
-\item \code{milk_fpcm_output} is the total fat- and protein-corrected milk
-(FPCM) produced over the assessment period (kg/assessment period).
-
-\item \code{milk_production_fpcm_cohort} value can be computed using \code{\link{compute_milk_outputs}}
+\item \code{milk_production_fpcm_cohort} is the total fat- and protein-corrected milk
+(FPCM) produced over the assessment period (kg/assessment period). It can be computed using \code{\link{compute_milk_outputs}}
 (see also \code{\link{run_production_cohort}}).
 
 }

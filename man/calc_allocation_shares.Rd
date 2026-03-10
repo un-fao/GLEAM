@@ -31,7 +31,7 @@ slaughter weight (MJ/cohort/assessment period).}
 
 \item{energy_allocation_milk}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
 period). Non-zero values are applicable only to milk-producing species and cohorts (species=CTL, BFL, CML, SHP, GTS;
-cohorts=AF). All other species–cohort combinations are assigned a value of 0.}
+cohorts=FA). All other species–cohort combinations are assigned a value of 0.}
 
 \item{energy_allocation_fibre}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
 period).}

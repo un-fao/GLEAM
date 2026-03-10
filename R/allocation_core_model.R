@@ -6,7 +6,7 @@
 #' 
 #' @param milk_production_fpcm_cohort Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
 #' period (kg/cohort/assessment period).
-#' Suggest standard fat and protein contents = 0.04 and 0.033.
+#' Suggested standard fat, protein and lactose contents are 0.04, 0.033, and 0.048 respectively.
 #' @param milk_protein_fraction_standard Numeric. Standard protein content of milk, used to calculate
 #' Fat-protein-corrected milk (FPCM), (kg protein/kg milk).
 #' Suggested value = 0.033.
@@ -19,7 +19,7 @@
 #'
 #' @return Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment period). 
 #' Non-zero values are applicable only to milk-producing species and cohorts (species = CTL, BFL, CML, SHP, GTS;
-#' cohorts=AF).
+#' cohorts=FA).
 #' All other species–cohort combinations are assigned a value of 0.
 #'
 #' @details
@@ -50,10 +50,8 @@
 #'   calculated internally based on standard fat, protein, and lactose contents
 #'   following IDF (2022) (MJ/kg milk).
 #'
-#'   \item \code{milk_fpcm_output} is the total fat- and protein-corrected milk
-#'   (FPCM) produced over the assessment period (kg/assessment period).
-#'   
-#'   \item \code{milk_production_fpcm_cohort} value can be computed using \code{\link{compute_milk_outputs}}
+#'   \item \code{milk_production_fpcm_cohort} is the total fat- and protein-corrected milk
+#'   (FPCM) produced over the assessment period (kg/assessment period). It can be computed using \code{\link{compute_milk_outputs}}
 #'   (see also \code{\link{run_production_cohort}}).
 #'   
 #' }
@@ -154,8 +152,7 @@ calc_energy_allocation_milk <- function(
 #' period,
 #' equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment
 #' period).
-#' Non-zero values are applicable to all species/cohorts where growth is modelled. For
-#' pigs (\code{PGS}), the function returns \code{0} by design.
+#' For pigs (\code{PGS}), the function returns \code{0} by design.
 #'
 #' @details
 #' This function provides the meat-related energy term used in a biophysical
@@ -185,12 +182,7 @@ calc_energy_allocation_milk <- function(
 #'   growth characteristics (MJ/kg live weight).
 #'
 #'   \item \code{meat_production_live_weight_cohort} is the total live weight of
-#'   animals sold for meat over the assessment period
-#'
-#' \eqn{specific\_energy\_meat}, reflecting differences in growth physiology and
-#' efficiency.
-#' 
-#'   \item \code{meat_production_live_weight_cohort} can be computed using
+#'   animals sold for meat over the assessment period. It can be computed using
 #'   \code{\link{compute_meat_outputs}} (see also
 #'   \code{\link{run_production_cohort}}).
 #'   }
@@ -477,7 +469,7 @@ calc_energy_allocation_fibre <- function(
 #' be used to derive allocation factors among co-products.
 #'
 #' Total work-related energy is computed for species (\code{CTL}, \code{BFL}, \code{CML})
-#' and cohorts (\code{MA}) assumed to be potentially involved in draught power generation.
+#' and cohorts (, \code{FA}, \code{MA}) assumed to be potentially involved in draught power generation.
 #' 
 #' The \code{energy_allocation_work} is calculated as follows:
 #'
@@ -566,7 +558,16 @@ calc_energy_allocation_work <- function(
 #' @param vars_to_sum Character vector. Names of numeric cohort-level variables to be summed across cohorts to produce
 #' herd-level totals (e.g., energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre,
 #' energy_allocation_work, energy_allocation_eggs)
-#' @param cohort_short Character. Name of the column identifying the sex–age cohort (e.g. FJ, FA, MJ, etc.).
+#' @param cohort_short Character. Sex- and age-specific cohort code describing the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'   }
 #'
 #' @return A `data.table` at herd scale, in which selected cohort-level variables have been summed across all cohorts
 #' belonging to the same herd, as defined by id_herd.
@@ -615,7 +616,7 @@ aggregate_cohort_to_herd <- function(
 #' slaughter weight (MJ/cohort/assessment period).
 #' @param energy_allocation_milk Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
 #' period). Non-zero values are applicable only to milk-producing species and cohorts (species=CTL, BFL, CML, SHP, GTS;
-#' cohorts=AF). All other species–cohort combinations are assigned a value of 0.
+#' cohorts=FA). All other species–cohort combinations are assigned a value of 0.
 #' @param energy_allocation_fibre Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
 #' period).
 #' @param energy_allocation_work Numeric vector. Energy required to provide all draught power (traction/work) by cohort
@@ -747,22 +748,19 @@ calc_allocation_shares <- function(
 
 #' Assign Allocation shares to emission variables by commodity
 #'
-#' Expands commodity-level allocation shares across emission variables and applies
+#' Expands commodity-level allocation shares across emission sources and applies
 #' predefined allocation rules for excluded emission sources.
-#'
-#' The function enforces the allocation of emissions from manure burned as fuel and deposited on pasture
-#' to be **100% to the commodity "Other"**.
 #'
 #' @param allocation_herd_long Long-format `data.table` containing herd-level emissions and allocation information. Each
 #' row represents an emission source–commodity combination or an unallocated emission source prior to allocation.
 #' @param emissions_vars Character. Names of emission variables to which allocation should be applied (e.g.,
 #' "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",
-#' "direct_n2o_manure_pasture","direct_n2o_manure_burned","direct_n2o_manure_other",
-#' "indirect_n2o_manure_burned","indirect_n2o_manure_pasture","indirect_n2o_manure_other", "diet_co2_feed_fertilizer",
+#' "n2o_manure_pasture_direct","n2o_manure_burned_direct","n2o_manure_other_direct",
+#' "n2o_manure_burned_indirect","n2o_manure_pasture_indirect","n2o_manure_other_indirect", "diet_co2_feed_fertilizer",
 #' "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
 #' "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice").
 #' @param commodities Character. List of commodity categories to which emissions may be allocated.
-#' List=c("Other","Milk","Meat","Fibre","Work","Eggs").
+#' List=c("None","Milk","Meat","Fibre","Work","Eggs").
 #' @param excluded_vars Character. Emission variables that should not be allocated across commodities, even if they
 #' appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").
 #' @param commodity_col Character. Name of the column in `allocation_herd_long` identifying the commodity category.
@@ -772,29 +770,29 @@ calc_allocation_shares <- function(
 #' @return A `data.table` equal to `allocation_herd_long` expanded over all `emissions_vars`,
 #' with enforced allocation rules:
 #' \describe{
-#'   \item{Excluded emission variables}{`allocation_col = 1` when `commodity_col == "Other"`, else `0`.}
-#'   \item{Non-excluded emission variables}{`allocation_col = 0` when `commodity_col == "Other"` (others unchanged).}
+#'   \item{Non-allocated emission sources}{`allocation_col = 1` when `commodity_col == "None"`, else `0`.}
+#'   \item{Allocated emission sources}{`allocation_col = 0` when `commodity_col == "None"` (others unchanged).}
 #' }
 #'
 #'@details
-#' Emission variables listed in \code{excluded_vars} (e.g., emissions from manure
+#' Emission sources listed in \code{excluded_vars} (e.g., emissions from manure
 #' burned as fuel or manure deposited on pasture) are treated as not attributable
-#' to edible livestock commodities under the chosen goal and scope. Consequently,
+#' to livestock commodities under the chosen goal and scope. Consequently,
 #' these emissions are allocated entirely to the residual commodity category
-#' \code{"Other"} and are not distributed across milk, meat, fibre, work, or egg
+#' \code{"None"} and are not distributed across milk, meat, fibre, work, or egg
 #' outputs.
 #'
-#' The following methodological rules apply to emission variables listed in
+#' The following methodological rules apply to emission sources listed in
 #' \code{excluded_vars}:
 #'
 #' \itemize{
 #'   \item \strong{Manure burned for fuel} — Emissions are considered outside the
 #'   life cycle assessment system boundaries under the defined goal and scope and
-#'   are therefore not attributed to edible livestock commodities. A cut-off
+#'   are therefore not attributed to livestock commodities. A cut-off
 #'   approach is applied, consistent with the IDF (2022) standard and LEAP guidelines (LEAP 2016a, 2016b, 2016c).
 #'
-#'   \item \strong{Manure deposited on pasture or grassland} — Emissions are not
-#'   allocated to edible livestock commodities in order to avoid double counting.
+#'   \item \strong{Manure deposited on pastures} — Emissions are not
+#'   allocated to livestock commodities in order to avoid double counting.
 #'   When upstream feed production is included in the inventory, emission factors of feed items
 #'   already account for this source.
 #' }

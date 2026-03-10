@@ -25,8 +25,8 @@ Supported values include:
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
-\item{milk_production_fpcm_cohort}{NNumeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
-period (kg/cohort/assessment period). Suggest standard fat and protein contents = 0.04 and 0.033.}
+\item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
+period (kg/cohort/assessment period). Suggested standard fat, protein and lactose contents are 0.04, 0.033, and 0.048 respectively.}
 \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 \item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by
 cohort (kg/cohort/assessment period).}
@@ -37,7 +37,7 @@ for CML.}
 FS, FA, MJ, MS, MA).}
 \item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught
 power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
-SHP, GTS and as metabolizable energy for CML and PGS.}
+SHP, GTS and as metabolizable energy for CML.}
 }}
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data
@@ -59,7 +59,7 @@ internal lookup table. Supported values include:
 \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
 \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
 Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}
-\item{milk_fat_fraction_standard}{umeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
+\item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
 (FPCM), (kg fat/kg milk). Suggested value = 0.04.}
 \item{milk_lactose_fraction_standard}{ Numeric. Standard lactose content of milk, used to calculate
 Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk). Suggested value = 0.048.}
@@ -92,10 +92,11 @@ period).}
 (MJ/cohort/assessment period). Currently set to 0.}
 }}
 \item{allocation_long}{A herd-level \code{data.table} in long format with one
-row per herd, commodity, and emission variable combination, containing the
+row per herd, commodity, and emission source combination, containing the
 following columns:
 \describe{
-\item{herd_id}{Character. Unique identifier for the herd.}
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
+to the same herd.}
 \item{species_short}{Character. Code identifying the livestock species.
 Supported values include:
 \itemize{
@@ -106,19 +107,22 @@ Supported values include:
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
 }}
-\item{variable_name}{Character. Names of emission variables to which allocation should be applied (e.g.,
-"ch4_enteric", "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other",
-"n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
-"n2o_manure_burned_indirect", "n2o_manure_pasture_indirect", "n2o_manure_other_indirect",
-"diet_co2_feed_fertilizer", "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations",
-"diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", "diet_n2o_feed_fertilizer",
-"diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice")}
+\item{variable_name}{Character. Names of emission variables to which
+allocation should be applied (e.g.,"ch4_enteric", "ch4_manure_pasture",
+"ch4_manure_burned","ch4_manure_other", "n2o_manure_pasture_direct",
+"n2o_manure_burned_direct","n2o_manure_other_direct",
+"n2o_manure_burned_indirect","n2o_manure_pasture_indirect",
+"n2o_manure_other_indirect", "diet_co2_feed_fertilizer",
+"diet_co2_feed_pesticides", "diet_co2_feed_crop_operations",
+"diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
+"diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied",
+"diet_n2o_feed_crop_residues", "diet_ch4_feed_rice")}
 \item{commodity_name}{Character. List of commodity categories to which emissions may be allocated.
-List=c("Other","Milk","Meat","Fibre","Work","Eggs")}
+List=c("None","Milk","Meat","Fibre","Work","Eggs")}
 \item{commodity_type}{Character. Commodity (commodity_name) grouping, either
 \code{"Edible"} or \code{"Non-Edible"}.}
 \item{allocation_share}{Numeric. Allocation share assigned to the
-commodity for the corresponding emission variable (fraction).}
+commodity for the corresponding emission source (fraction).}
 }}
 }
 }
@@ -126,7 +130,7 @@ commodity for the corresponding emission variable (fraction).}
 Computes biophysical allocation shares for livestock commodities by calculating
 cohort-level energy requirements for meat, milk, fibre, work, and eggs,
 aggregating these terms to herd level, and assigning allocation shares to
-emission variables.
+emission sources.
 }
 \details{
 This function implements the allocation pipeline used to derive biophysical
@@ -157,18 +161,18 @@ fibre, work, and eggs using
 \code{\link{calc_allocation_shares}}.
 
 \item Reshaping of allocation shares to long format and assignment of shares
-to emission variables using
+to emission sources using
 \code{\link{assign_allocation_to_emissions}}.
 }
 
 Commodity-specific allocation shares represent the fraction of total herd-level
 energy requirements attributable to each commodity. These shares are then used
 to assign emissions to meat, milk, fibre, work, eggs, or the residual category
-\code{"Other"}.
+\code{"None"}.
 
 Emissions from manure burned for fuel and manure deposited on pasture are not
 allocated to livestock commodities. These flows are assigned fully to
-\code{"Other"} in accordance with the rules implemented in
+\code{"None"} in accordance with the rules implemented in
 \code{\link{assign_allocation_to_emissions}}.
 }
 \examples{
