@@ -254,8 +254,7 @@ run_aggregation <- function(
   data_herd_long_allocation <- merge(
     data_herd_long[variable_type == "Emissions", ],
     allocation_herd_long,
-    by = c("herd_id", "species_short", "variable_name"),
-    all = TRUE
+    by = c("herd_id", "species_short", "variable_name")
   )
 
   # --- Step 7: Allocate emissions to commodities -----------------------------
