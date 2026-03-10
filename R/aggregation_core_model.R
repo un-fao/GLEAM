@@ -138,8 +138,10 @@ calc_co2eq <- function(
   # Calculate CO2-equivalent emissions
   value_co2e <- value_allocated * gwp_used
 
-  list(
-    value_co2e = value_co2e,
-    gwp = gwp_used
+  return(
+    list(
+      value_co2e = value_co2e,
+      gwp = gwp_used
+    )
   )
 }
