@@ -4,27 +4,28 @@
 \alias{run_aggregation}
 \title{Aggregation Pipeline: Final Herd-Level Results}
 \usage{
-run_aggregation(data_cohort, allocation_herd_long, gwp = "AR6")
+run_aggregation(cohort_level_data, allocation_herd_long, gwp = "AR6")
 }
 \arguments{
-\item{data_cohort}{A \code{data.table} containing cohort-level data with all
+\item{cohort_level_data}{A \code{data.table} containing cohort-level data with all
 calculated variables. Must include:
 \describe{
-\item{\strong{Feed variables}:}{\code{dmi} (dry matter intake)}
+\item{\strong{Feed variables}:}{\code{dry_matter_intake} (kg DM/head/day)}
 \item{\strong{Nitrogen balance}:}{\code{nitrogen_intake}, \code{nitrogen_retention}, \code{nitrogen_excretion}}
 \item{\strong{Production}:}{\verb{milk_production_*_cohort}, \verb{meat_production_*_cohort}, \code{fibre_production_cohort}}
 \item{\strong{Emissions}:}{\code{ch4_enteric}, \verb{ch4_manure_*}, \verb{direct_n2o_manure_*},
 \verb{indirect_n2o_manure_*}}
 }
-Required grouping columns: \code{herd_id}, \code{Animal_short},
-\code{cohort}, \code{assessment_duration}, \code{size}.}
+Required grouping columns: \code{herd_id}, \code{animal} (full species name, e.g. Cattle, Buffalo;
+mapped to \code{species_short} internally), \code{cohort_short}, \code{simulation_duration},
+\code{cohort_stock_size}.}
 
 \item{allocation_herd_long}{A \code{data.table} in long format, typically the
 output of \code{\link[=run_allocation]{run_allocation()}}. Must include columns:
 \describe{
-\item{\strong{Grouping}:}{\code{herd_id}, \code{Animal_short}}
+\item{\strong{Grouping}:}{\code{herd_id}, \code{species_short}}
 \item{\strong{Allocation}:}{\code{commodity_name} (e.g., "Meat", "Milk", "Fibre"),
-\code{allocation_share} (numeric, 0-1), \code{allocation_type} (character)}
+\code{allocation_share} (numeric, 0-1)}
 \item{\strong{Emission source}:}{\code{variable_name} (emission variable names)}
 }}
 
@@ -43,7 +44,7 @@ Must be one of:
 \value{
 A named list containing:
 \describe{
-\item{\code{data_cohort}}{The raw cohort-level input data and results.}
+\item{\code{cohort_level_results}}{The raw cohort-level input data and results.}
 \item{\code{results_herd}}{A \code{data.table} in long format with:
 \itemize{
 \item Allocated emissions (already converted in kgCO2eq)
@@ -52,9 +53,9 @@ A named list containing:
 \item Standardized variable names and units
 \item Commodity classifications and allocation metadata
 }
-Columns include: \code{herd_id}, \code{Animal_short},
-\code{cohort} (set to "ALL"), \code{variable_type}, \code{variable_name}, \code{unit}, \code{gas},
-\code{gwp}, \code{allocation_type}, \code{allocation_share}, \code{commodity_type}, \code{commodity_name},
+Columns include: \code{herd_id}, \code{species_short},
+\code{cohort_short} (set to "ALL"), \code{variable_type}, \code{variable_name}, \code{unit}, \code{gas},
+\code{gwp}, \code{allocation_share}, \code{commodity_type}, \code{commodity_name},
 \code{value_total}.
 }
 }
@@ -75,9 +76,9 @@ The function follows this workflow:
 format using \code{data.table::melt()}.
 \item \strong{Classify variables.} Group variables into Emissions, Production, Feed, Nitrogen Balance.
 \item \strong{Scale to totals.} Variables expressed per head per day are converted to cohort totals
-over the assessment period using cohort size (\code{size}) and \code{assessment_duration}.
+over the assessment period using \code{cohort_stock_size} and \code{simulation_duration}.
 \item \strong{Aggregate to herd level.} Cohort totals are summed to herd totals within each
-\code{herd_id × Animal_short} group.
+\code{herd_id × species_short} group.
 \item \strong{Merge allocation data:} Combine emissions with allocation shares.
 \item \strong{Allocate emissions.} Emission totals are merged with
 \code{allocation_herd_long} and multiplied by \code{allocation_share} to obtain
@@ -87,6 +88,30 @@ with \code{allocation_share = 1}.
 the selected GWP-100 option. Results are stored as \code{value_total} with \code{unit = "kg CO₂eq"}.
   \item \strong{Standardize output:} Rename variables, assign units, and format final results.
 }
+}
+\examples{
+\dontrun{
+# Load cohort-level aggregation input (output from run_gleam or equivalent)
+cohort_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/aggregation_input_chrt_data.csv",
+  package = "gleam"
+))
+
+# Load allocation shares (herd-level, long format)
+allocation_long <- data.table::fread(system.file(
+  "extdata/run_modules_examples/aggregation_allocation_input_data.csv",
+  package = "gleam"
+))
+
+# Run aggregation
+results <- run_aggregation(
+  cohort_level_data = cohort_dt,
+  allocation_herd_long = allocation_long,
+  gwp = "AR6"
+)
+head(results$results_herd)
+}
+
 }
 \references{
 IPCC (2021). \emph{Climate Change 2021: The Physical Science Basis}.

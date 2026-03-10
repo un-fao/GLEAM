@@ -4,7 +4,12 @@
 \alias{calc_totals_by_cohort}
 \title{Calculate Totals by Cohort}
 \usage{
-calc_totals_by_cohort(value, size, assessment_duration, variable_type)
+calc_totals_by_cohort(
+  value,
+  cohort_stock_size,
+  simulation_duration,
+  variable_type
+)
 }
 \arguments{
 \item{value}{Numeric vector. Variable value expressed in:
@@ -13,10 +18,10 @@ calc_totals_by_cohort(value, size, assessment_duration, variable_type)
 \item kg/cohort/assessment duration for production variables
 }}
 
-\item{size}{Numeric. Population size in each of the 6 sex–age cohorts at the
+\item{cohort_stock_size}{Numeric. Population size in each of the 6 sex–age cohorts at the
 start of the year (# heads). (cohorts = FJ, FS, FA, MJ, MS, MA)}
 
-\item{assessment_duration}{Numeric. Length of the assessment period (days)}
+\item{simulation_duration}{Numeric. Length of the assessment period (days)}
 
 \item{variable_type}{Character vector. Variable group classification:
 \itemize{

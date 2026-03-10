@@ -13,9 +13,9 @@
 #' @param value Numeric vector. Variable value expressed in:
 #'   - kg (unit)/head/day for non-production variables
 #'   - kg/cohort/assessment duration for production variables
-#' @param size Numeric. Population size in each of the 6 sex–age cohorts at the
+#' @param cohort_stock_size Numeric. Population size in each of the 6 sex–age cohorts at the
 #'  start of the year (# heads). (cohorts = FJ, FS, FA, MJ, MS, MA)
-#' @param assessment_duration Numeric. Length of the assessment period (days)
+#' @param simulation_duration Numeric. Length of the assessment period (days)
 #' @param variable_type Character vector. Variable group classification:
 #'   - `"Production"`: Production outputs (already at cohort level)
 #'   - `"Emissions"`, `"Feed"`, `"NitrogenBalance"`: Per-head-per-day values
@@ -26,12 +26,12 @@
 #' @export
 calc_totals_by_cohort <- function(
     value,
-    size,
-    assessment_duration,
+    cohort_stock_size,
+    simulation_duration,
     variable_type
 ) {
   validate_totals_by_cohort_inputs(
-    value, size, assessment_duration, variable_type
+    value, cohort_stock_size, simulation_duration, variable_type
   )
 
   # Production variables are already at cohort level for entire assessment
@@ -39,7 +39,7 @@ calc_totals_by_cohort <- function(
   value_total <- ifelse(
     variable_type == "Production",
     value,
-    value * size * assessment_duration
+    value * cohort_stock_size * simulation_duration
   )
 
   return(value_total)

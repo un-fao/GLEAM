@@ -15,9 +15,9 @@
 #'     format using \code{data.table::melt()}.
 #'   \item \strong{Classify variables.} Group variables into Emissions, Production, Feed, Nitrogen Balance.
 #'   \item \strong{Scale to totals.} Variables expressed per head per day are converted to cohort totals
-#'     over the assessment period using cohort size (\code{size}) and \code{assessment_duration}.
+#'     over the assessment period using \code{cohort_stock_size} and \code{simulation_duration}.
 #'   \item \strong{Aggregate to herd level.} Cohort totals are summed to herd totals within each
-#'     \code{herd_id × Animal_short} group.
+#'     \code{herd_id × species_short} group.
 #'   \item \strong{Merge allocation data:} Combine emissions with allocation shares.
 #'   \item \strong{Allocate emissions.} Emission totals are merged with
 #'     \code{allocation_herd_long} and multiplied by \code{allocation_share} to obtain
@@ -30,24 +30,25 @@
 #'
 #'
 #'
-#' @param data_cohort A `data.table` containing cohort-level data with all
+#' @param cohort_level_data A `data.table` containing cohort-level data with all
 #'   calculated variables. Must include:
 #'   \describe{
-#'     \item{**Feed variables**:}{`dmi` (dry matter intake)}
+#'     \item{**Feed variables**:}{`dry_matter_intake` (kg DM/head/day)}
 #'     \item{**Nitrogen balance**:}{`nitrogen_intake`, `nitrogen_retention`, `nitrogen_excretion`}
 #'     \item{**Production**:}{`milk_production_*_cohort`, `meat_production_*_cohort`, `fibre_production_cohort`}
 #'     \item{**Emissions**:}{`ch4_enteric`, `ch4_manure_*`, `direct_n2o_manure_*`,
 #'       `indirect_n2o_manure_*`}
 #'   }
-#'   Required grouping columns: `herd_id`, `Animal_short`,
-#'    `cohort`, `assessment_duration`, `size`.
+#'   Required grouping columns: `herd_id`, `animal` (full species name, e.g. Cattle, Buffalo;
+#'   mapped to \code{species_short} internally), `cohort_short`, `simulation_duration`,
+#'   \code{cohort_stock_size}.
 #'
 #' @param allocation_herd_long A `data.table` in long format, typically the
 #'   output of [run_allocation()]. Must include columns:
 #'   \describe{
-#'     \item{**Grouping**:}{`herd_id`, `Animal_short`}
+#'     \item{**Grouping**:}{`herd_id`, `species_short`}
 #'     \item{**Allocation**:}{`commodity_name` (e.g., "Meat", "Milk", "Fibre"),
-#'       `allocation_share` (numeric, 0-1), `allocation_type` (character)}
+#'       `allocation_share` (numeric, 0-1)}
 #'     \item{**Emission source**:}{`variable_name` (emission variable names)}
 #'   }
 #' @param gwp Character scalar specifying the 100-year Global Warming Potential
@@ -64,7 +65,7 @@
 #'
 #' @return A named list containing:
 #' \describe{
-#'   \item{`data_cohort`}{The raw cohort-level input data and results.}
+#'   \item{`cohort_level_results`}{The raw cohort-level input data and results.}
 #'   \item{`results_herd`}{A `data.table` in long format with:
 #'     \itemize{
 #'       \item Allocated emissions (already converted in kgCO2eq)
@@ -73,14 +74,37 @@
 #'       \item Standardized variable names and units
 #'       \item Commodity classifications and allocation metadata
 #'     }
-#'     Columns include: `herd_id`, `Animal_short`,
-#'     `cohort` (set to "ALL"), `variable_type`, `variable_name`, `unit`, `gas`,
-#'     `gwp`, `allocation_type`, `allocation_share`, `commodity_type`, `commodity_name`,
+#'     Columns include: `herd_id`, `species_short`,
+#'     `cohort_short` (set to "ALL"), `variable_type`, `variable_name`, `unit`, `gas`,
+#'     `gwp`, `allocation_share`, `commodity_type`, `commodity_name`,
 #'     `value_total`.
 #'   }
 #' }
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load cohort-level aggregation input (output from run_gleam or equivalent)
+#' cohort_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/aggregation_input_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#'
+#' # Load allocation shares (herd-level, long format)
+#' allocation_long <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/aggregation_allocation_input_data.csv",
+#'   package = "gleam"
+#' ))
+#'
+#' # Run aggregation
+#' results <- run_aggregation(
+#'   cohort_level_data = cohort_dt,
+#'   allocation_herd_long = allocation_long,
+#'   gwp = "AR6"
+#' )
+#' head(results$results_herd)
+#' }
 #'
 #' @references
 #' IPCC (2021). *Climate Change 2021: The Physical Science Basis*.
@@ -98,27 +122,33 @@
 #'
 #' @importFrom data.table := .I melt fcase setcolorder rbindlist
 run_aggregation <- function(
-    data_cohort,
+    cohort_level_data,
     allocation_herd_long,
     gwp = "AR6"
 ) {
   # --- Input validation -----------------------------------------------------
-  if (!data.table::is.data.table(data_cohort) || nrow(data_cohort) == 0) {
-    cli::cli_abort("{.arg data_cohort} must be a non-empty data.table.")
+  cohort_level_data <- data.table::as.data.table(cohort_level_data)
+  if (nrow(cohort_level_data) == 0) {
+    cli::cli_abort("{.arg cohort_level_data} must be a non-empty data.table.")
   }
 
   if (!data.table::is.data.table(allocation_herd_long) || nrow(allocation_herd_long) == 0) {
     cli::cli_abort("{.arg allocation_herd_long} must be a non-empty data.table.")
   }
 
+  # Map animal to species_short
+  if (!"species_short" %in% names(cohort_level_data) && "animal" %in% names(cohort_level_data)) {
+    cohort_level_data[abbr_animals, species_short := i.species_short, on = "animal"]
+  }
+
   # Validate required grouping columns
   required_group_cols <- c(
-    "herd_id", "Animal_short",
-    "cohort", "assessment_duration", "size"
+    "herd_id", "species_short",
+    "cohort_short", "simulation_duration", "cohort_stock_size"
   )
-  miss_group <- setdiff(required_group_cols, names(data_cohort))
+  miss_group <- setdiff(required_group_cols, names(cohort_level_data))
   if (length(miss_group)) {
-    cli::cli_abort("Missing required grouping columns in {.arg data_cohort}: {miss_group}.")
+    cli::cli_abort("Missing required grouping columns in {.arg cohort_level_data}: {miss_group}.")
   }
 
   # Validate GWP option
@@ -132,8 +162,8 @@ run_aggregation <- function(
   }
 
   # --- Step 1: Define variable groups ---------------------------------------
-  feed_vars <- c("dmi")
-  nitrogen_balance_vars <- c("dry_matter_intake", "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion")
+  feed_vars <- c("dry_matter_intake")
+  nitrogen_balance_vars <- c("nitrogen_intake", "nitrogen_retention", "nitrogen_excretion")
   production_vars <- c(
     "milk_production_mass_cohort", "milk_production_protein_cohort",
     "milk_production_fpcm_cohort",
@@ -156,26 +186,26 @@ run_aggregation <- function(
     "diet_ch4_feed_rice"
   )
 
-  # Check that required variables exist in data_cohort
+  # Check that required variables exist in cohort_level_data
   all_vars <- unique(
     c(feed_vars, nitrogen_balance_vars, production_vars, emissions_vars)
   )
-  available_vars <- intersect(all_vars, names(data_cohort))
+  available_vars <- intersect(all_vars, names(cohort_level_data))
   if (length(available_vars) == 0) {
     cli::cli_abort(
-      "No recognized variables found in {.arg data_cohort}. Expected variables include: {.val {all_vars}}"
+      "No recognized variables found in {.arg cohort_level_data}. Expected variables include: {.val {all_vars}}"
     )
   }
 
-  # --- Step 2: Reshape data_cohort to long format --------------------------
+  # --- Step 2: Reshape cohort_level_data to long format --------------------
   data_cohort_long <- data.table::melt(
-    data_cohort,
+    cohort_level_data,
     id.vars = c(
       "herd_id",
-      "Animal_short",
-      "cohort",
-      "assessment_duration",
-      "size"
+      "species_short",
+      "cohort_short",
+      "simulation_duration",
+      "cohort_stock_size"
     ),
     measure.vars = available_vars,
     variable.name = "variable_name",
@@ -198,8 +228,8 @@ run_aggregation <- function(
   data_cohort_long[
     , value_total := calc_totals_by_cohort(
       value = value,
-      size = size,
-      assessment_duration = assessment_duration,
+      cohort_stock_size = cohort_stock_size,
+      simulation_duration = simulation_duration,
       variable_type = variable_type
     ),
     by = .I
@@ -211,7 +241,7 @@ run_aggregation <- function(
     data_cohort = data_cohort_long,
     id_cols = c(
       "herd_id",
-      "Animal_short",
+      "species_short",
       "variable_type",
       "variable_name"
     ),
@@ -224,7 +254,7 @@ run_aggregation <- function(
   data_herd_long_allocation <- merge(
     data_herd_long[variable_type == "Emissions", ],
     allocation_herd_long,
-    by = c("herd_id", "Animal_short", "variable_name"),
+    by = c("herd_id", "species_short", "variable_name"),
     all = TRUE
   )
 
@@ -233,7 +263,8 @@ run_aggregation <- function(
     , value_allocated := calc_allocated_emissions(
       value = value_total,
       allocation_share = allocation_share
-    )
+    ),
+    by = .I
   ]
 
   # --- Step 8: Identify gas type for GWP conversion -------------------------
@@ -251,17 +282,18 @@ run_aggregation <- function(
       gas = gas,
       value_allocated = value_allocated,
       gwp = gwp
-    )
+    ),
+    by = .I
   ]
 
   # --- Step 10: Cleaning-up emissions variables ------------------------------
   subset_allocatedco2e <- data_herd_long_allocation[
     variable_type == "Emissions",
     .(
-      herd_id, Animal_short,
+      herd_id, species_short,
       variable_name, gas, variable_type, commodity_name,
       allocation_share, commodity_type, value_total = value_allocated_co2e,
-      allocation_type, gwp
+      gwp
     )
   ]
   subset_allocatedco2e[, unit := "kg co2eq"]
@@ -308,8 +340,8 @@ run_aggregation <- function(
   # 12.2 Feed & N balance
   results_herd[
     , unit := data.table::fcase(
-      variable_name %in% c("DryMatterIntake"), "kg dry matter",
-      variable_name %in% c("NitrogenIntake", "NitrogenRetention", "NitrogenExcretion"), "kg N",
+      variable_name %in% c("dry_matter_intake"), "kg dry matter",
+      variable_name %in% c("nitrogen_intake", "nitrogen_retention", "nitrogen_excretion"), "kg N",
       default = unit
     )
   ]
@@ -326,15 +358,10 @@ run_aggregation <- function(
 
   results_herd[
     !variable_type %in% c("Emissions"),
-    allocation_type := NA
-  ]
-
-  results_herd[
-    !variable_type %in% c("Emissions"),
     gwp := 1
   ]
 
-  results_herd[, cohort := "ALL"]
+  results_herd[, cohort_short := "ALL"]
 
   # --- Step 13: Renaming variables -------------------------------------------
   # Ensure variable_name is a factor for levels() assignment
@@ -363,7 +390,7 @@ run_aggregation <- function(
     diet_n2o_feed_manure_applied = "Feed-ManureApplication_N2O",
     diet_n2o_feed_crop_residues = "Feed-CropResidues_N2O",
     diet_ch4_feed_rice = "Feed-Rice_CH4",
-    dmi = "DryMatterIntake",
+    dry_matter_intake = "DryMatterIntake",
     nitrogen_intake = "NitrogenIntake",
     nitrogen_retention = "NitrogenRetention",
     nitrogen_excretion = "NitrogenExcretion",
@@ -380,14 +407,13 @@ run_aggregation <- function(
   # --- Step 14: Variables order ----------------------------------------------
   variable_order <- c(
     "herd_id",
-    "Animal_short",
-    "cohort",
+    "species_short",
+    "cohort_short",
     "variable_type",
     "variable_name",
     "unit",
     "gas",
     "gwp",
-    "allocation_type",
     "allocation_share",
     "commodity_type",
     "commodity_name",
@@ -402,7 +428,7 @@ run_aggregation <- function(
   # --- Return results --------------------------------------------------------
   return(
     list(
-      data_cohort = data_cohort,
+      cohort_level_results = cohort_level_data,
       results_herd = results_herd
     )
   )
