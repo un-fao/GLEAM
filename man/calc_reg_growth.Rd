@@ -4,7 +4,7 @@
 \alias{calc_reg_growth}
 \title{Calculate the Ratio of Net Energy Available for Growth in the Diet (REG – Net Energy for Growth / Digestible Energy)}
 \usage{
-calc_reg_growth(species_short, diet_digestibility_fraction = NA_real_)
+calc_reg_growth(species_short, ration_digestibility_fraction = NA_real_)
 }
 \arguments{
 \item{species_short}{Character. Code identifying the livestock species.
@@ -18,7 +18,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration,
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration,
 expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{

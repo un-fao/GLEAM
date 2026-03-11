@@ -60,11 +60,11 @@ utils::globalVariables(c(
   "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
   "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
   "feed_urinary_energy_ruminant", "feed_urinary_energy_pigs",
-  "feed_urinary_energy_chicken", "feed_ash_content",
+  "feed_urinary_energy_chicken", "feed_ash",
   "feed_name_input", "feed_name_params",
-  "diet_gross_energy", "diet_metabolizable_energy",
-  "diet_nitrogen", "diet_digestibility_fraction",
-  "urinary_energy_fraction", "diet_ash",
+  "ration_gross_energy", "ration_metabolizable_energy",
+  "ration_nitrogen", "ration_digestibility_fraction",
+  "ration_urinary_energy_fraction", "ration_ash",
   "feed_digestibility_fraction_ruminant", "feed_digestibility_fraction_pigs",
   "feed_digestibility_fraction_chicken",
   "diet_dig", "diet_ge", "diet_me", "feed_ration_sum",
@@ -77,7 +77,7 @@ utils::globalVariables(c(
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations", "..cols_to_show",
   # Columns used in run_emissions_manure_module
-  "dmi", "n_excretion", "ef4", "ef5", "urinary_energy_fraction", "diet_ash",
+  "dmi", "n_excretion", "ef4", "ef5", "ration_urinary_energy_fraction", "ration_ash",
   "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
   "mmsdaily", "mmssolid", "mmssolidcov", "mmssolidbulk", "mmssolidadd", "mmsdrylot",
   "mmspit1", "mmspit3", "mmspit4", "mmspit6", "mmspit12",
@@ -94,7 +94,7 @@ utils::globalVariables(c(
   "management_start", "management_end", "SOC1", "SOC2", "dSOC",
   # Columns used in nitrogen_balance
   "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion",
-  "dry_matter_intake", "diet_nitrogen", "daily_weight_gain",
+  "dry_matter_intake", "ration_nitrogen", "daily_weight_gain",
   "species_short", "cohort_short", "milk_protein_fraction", "milk_yield_day",
   "fibre_yield_year", "litter_size", "parturition_rate", "live_weight_at_weaning",
   "live_weight_at_birth", "age_first_parturition",
@@ -145,7 +145,7 @@ utils::globalVariables(c(
   # Columns used in run_metabolic_energy_req_module (cohort-level and results)
   "cohort_short", "live_weight_cohort_average", "offtake_rate", "low_activity_fraction", "high_activity_fraction",
   "live_weight_cohort_initial", "live_weight_cohort_final", "live_weight_mature_stage", "daily_weight_gain", "cohort_duration_days",
-  "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy",
+  "ration_digestibility_fraction", "ration_gross_energy", "ration_metabolizable_energy",
   "energy_requirement_maintenance", "energy_requirement_activity", "energy_requirement_growth", "energy_requirement_lactation",
   "energy_requirement_work", "energy_requirement_fibre_production", "energy_requirement_pregnancy",
   "net_energy_maintenance_digestible_energy_ratio", "net_energy_growth_digestible_energy_ratio",
@@ -170,8 +170,8 @@ utils::globalVariables(c(
   "feed_emissions_kgGas", "feed_share",
   # Columns added by run_emissions_enteric_module
   "ch4_enteric", "ch4_mitigation_factor", "ch4_conversion_factor_ym",
-  "species_short", "cohort_short", "diet_digestibility_fraction",
-  "diet_gross_energy", "dry_matter_intake",
+  "species_short", "cohort_short", "ration_digestibility_fraction",
+  "ration_gross_energy", "dry_matter_intake",
   # Columns used in run_aggregation
   "value", "value_total", "value_total_kgGas", "value_total_allocated_kgGas",
   "value_allocated", "value_allocated_co2e", "gwp_factor",

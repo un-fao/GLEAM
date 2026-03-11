@@ -8,7 +8,7 @@ calc_ch4_enteric(
   species_short,
   ch4_conversion_factor_ym,
   ch4_mitigation_factor,
-  diet_gross_energy,
+  ration_gross_energy,
   dry_matter_intake
 )
 }
@@ -34,7 +34,7 @@ reductions (e.g., \code{0.90} = 10\% reduction). This factor can represent mitig
 measures with a direct effect on enteric methane emissions, such as the use of feed
 additives or methane inhibitors.}
 
-\item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 
 \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 }
@@ -53,7 +53,7 @@ The formula used to estimate daily enteric methane emissions is:
 
 where 55.65 MJ/kg is the energy content of methane.
 
-\code{diet_gross_energy} and \code{dry_matter_intake} can be calculated with
+\code{ration_gross_energy} and \code{dry_matter_intake} can be calculated with
 \code{\link{calc_ration_gross_energy}} and \code{\link{calc_ration_intake}} -
 see also \code{\link{run_ration_quality_module}} and \code{\link{run_metabolic_energy_req_module}}.
 

@@ -1,4 +1,4 @@
-herd_id,cohort_short,live_weight_cohort_average,offtake_rate,low_activity_fraction,high_activity_fraction,live_weight_cohort_initial,live_weight_cohort_final,live_weight_mature_stage,daily_weight_gain,cohort_duration_days,diet_digestibility_fraction,diet_gross_energy,diet_metabolizable_energy
+herd_id,cohort_short,live_weight_cohort_average,offtake_rate,low_activity_fraction,high_activity_fraction,live_weight_cohort_initial,live_weight_cohort_final,live_weight_mature_stage,daily_weight_gain,cohort_duration_days,ration_digestibility_fraction,ration_gross_energy,ration_metabolizable_energy
 1,FA,550,0.05,0.7,0.2,550,550,550,0,365,0.65,18,12
 1,FS,350,0.1,0.7,0.2,250,450,550,0.55,365,0.65,18,12
 1,FJ,200,0,0.7,0.2,100,300,550,0.55,365,0.65,18,12

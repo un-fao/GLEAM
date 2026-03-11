@@ -7,9 +7,9 @@
 #' emissions from manure management systems under IPCC methodologies.
 #'
 #' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
-#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
-#' @param urinary_energy_fraction Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).
-#' @param diet_ash Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).
+#' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
+#' @param ration_urinary_energy_fraction Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).
+#' @param ration_ash Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).
 #'
 #' @return Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
 #'
@@ -21,9 +21,9 @@
 #' daily VS excretion as a function of:
 #'
 #' * Gross energy intake (gross_energy_intake, MJ/day)
-#' * Digestibility of the diet (diet_digestibility_fraction)
-#' * Urinary energy expressed as a fraction of GE (urinary_energy_fraction)
-#' * Ash content of the diet (diet_ash, fraction of dry matter)
+#' * Digestibility of the diet (ration_digestibility_fraction)
+#' * Urinary energy expressed as a fraction of GE (ration_urinary_energy_fraction)
+#' * Ash content of the diet (ration_ash, fraction of dry matter)
 #' * A conversion factor representing the average gross energy content of
 #'   dry matter (18.45 MJ/kg DM)
 #'
@@ -63,9 +63,9 @@
 #' @examples
 #' calc_volatile_solids <- calc_volatile_solids(
 #'   dry_matter_intake = 5,
-#'   diet_digestibility_fraction = 0.6,
-#'   urinary_energy_fraction = 0.04,
-#'   diet_ash = 0.08
+#'   ration_digestibility_fraction = 0.6,
+#'   ration_urinary_energy_fraction = 0.04,
+#'   ration_ash = 0.08
 #' )
 #'
 #'@references
@@ -78,15 +78,15 @@
 
 calc_volatile_solids <- function(
     dry_matter_intake,
-    diet_digestibility_fraction,
-    urinary_energy_fraction,
-    diet_ash
+    ration_digestibility_fraction,
+    ration_urinary_energy_fraction,
+    ration_ash
 ) {
   validate_calc_volatile_solids(
-    dry_matter_intake, diet_digestibility_fraction, urinary_energy_fraction, diet_ash
+    dry_matter_intake, ration_digestibility_fraction, ration_urinary_energy_fraction, ration_ash
   )
 
-  volatile_solids <- dry_matter_intake * (1 - diet_digestibility_fraction + urinary_energy_fraction) * (1 - diet_ash)
+  volatile_solids <- dry_matter_intake * (1 - ration_digestibility_fraction + ration_urinary_energy_fraction) * (1 - ration_ash)
 
   return(volatile_solids)
 }

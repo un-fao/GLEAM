@@ -1,4 +1,4 @@
-herd_id,cohort_short,dry_matter_intake,diet_digestibility_fraction,nitrogen_excretion,urinary_energy_fraction,diet_ash
+herd_id,cohort_short,dry_matter_intake,ration_digestibility_fraction,nitrogen_excretion,ration_urinary_energy_fraction,ration_ash
 1,FA,5,0.6,0.9,0.04,0.08
 1,FS,3.6,0.6,0.7,0.04,0.08
 1,FJ,2.8,0.58,0.55,0.04,0.08

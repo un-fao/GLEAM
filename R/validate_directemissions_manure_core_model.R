@@ -3,15 +3,15 @@
 #' @noRd
 validate_calc_volatile_solids <- function(
     dry_matter_intake,
-    diet_digestibility_fraction,
-    urinary_energy_fraction,
-    diet_ash
+    ration_digestibility_fraction,
+    ration_urinary_energy_fraction,
+    ration_ash
 ) {
   # Enforce configured bounds
   validate_param_range(dry_matter_intake)
-  validate_param_range(diet_digestibility_fraction)
-  validate_param_range(urinary_energy_fraction)
-  validate_param_range(diet_ash)
+  validate_param_range(ration_digestibility_fraction)
+  validate_param_range(ration_urinary_energy_fraction)
+  validate_param_range(ration_ash)
 }
 
 #' Validate manure variable characteristics

@@ -1369,7 +1369,7 @@ calc_metabolic_energy_req_pregnancy <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param diet_digestibility_fraction Numeric. Average digestibility of 
+#' @param ration_digestibility_fraction Numeric. Average digestibility of 
 #' the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #'
 #' @return Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction). 
@@ -1409,16 +1409,16 @@ calc_metabolic_energy_req_pregnancy <- function(
 #' @export
 calc_rem_maintenance <- function(
     species_short,
-    diet_digestibility_fraction = NA_real_
+    ration_digestibility_fraction = NA_real_
 ) {
   # Validate inputs
-  validate_rem_inputs(species_short, diet_digestibility_fraction)
+  validate_rem_inputs(species_short, ration_digestibility_fraction)
   # Only ruminants: cattle, buffalo, sheep, goats
 
   if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
     # Polynomial fit from GLEAM
-    net_energy_maintenance_digestible_energy_ratio <- 1.123 - (0.004092 * (diet_digestibility_fraction * 100)) +
-      (0.00001126 * (diet_digestibility_fraction * 100)^2) - (25.4 / (diet_digestibility_fraction * 100))
+    net_energy_maintenance_digestible_energy_ratio <- 1.123 - (0.004092 * (ration_digestibility_fraction * 100)) +
+      (0.00001126 * (ration_digestibility_fraction * 100)^2) - (25.4 / (ration_digestibility_fraction * 100))
   } else if (species_short %in% c("PGS", "CHK", "CML")) {
     net_energy_maintenance_digestible_energy_ratio <- NA_real_ # Not applicable
   }
@@ -1442,7 +1442,7 @@ calc_rem_maintenance <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, 
+#' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, 
 #' expressed as ratio of digestible to gross energy content (fraction).
 #'
 #' @return Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).
@@ -1479,16 +1479,16 @@ calc_rem_maintenance <- function(
 #' @export
 calc_reg_growth <- function(
     species_short,
-    diet_digestibility_fraction = NA_real_
+    ration_digestibility_fraction = NA_real_
 ) {
   # Validate inputs
-  validate_reg_inputs(species_short, diet_digestibility_fraction)
+  validate_reg_inputs(species_short, ration_digestibility_fraction)
   # Only ruminants: cattle, buffalo, sheep, goats
 
   if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
     # Polynomial fit
-    net_energy_growth_digestible_energy_ratio <- 1.164 - (0.005160 * (diet_digestibility_fraction * 100)) +
-      (0.00001308 * (diet_digestibility_fraction * 100)^2) - (37.4 / (diet_digestibility_fraction * 100))
+    net_energy_growth_digestible_energy_ratio <- 1.164 - (0.005160 * (ration_digestibility_fraction * 100)) +
+      (0.00001308 * (ration_digestibility_fraction * 100)^2) - (37.4 / (ration_digestibility_fraction * 100))
   } else if (species_short %in% c("PGS", "CHK", "CML")) {
     net_energy_growth_digestible_energy_ratio <- NA_real_ # Not applicable
   }
@@ -1531,7 +1531,7 @@ calc_reg_growth <- function(
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param energy_requirement_egg_deposition Numeric. Net energy for egg production (MJ/head/day).
 #' @param net_energy_growth_digestible_energy_ratio Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction)
-#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
+#' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #' 
 #' @return Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
 #' For CML and PGS the function returns the summed daily metabolizable energy requirement.
@@ -1648,7 +1648,7 @@ calc_total_metabolic_energy_req <- function(
     energy_requirement_fibre_production,
     energy_requirement_egg_deposition,
     net_energy_growth_digestible_energy_ratio,
-    diet_digestibility_fraction
+    ration_digestibility_fraction
 ) {
   # Validate inputs
   validate_total_energy_inputs(
@@ -1663,7 +1663,7 @@ calc_total_metabolic_energy_req <- function(
     energy_requirement_fibre_production,
     energy_requirement_egg_deposition,
     net_energy_growth_digestible_energy_ratio,
-    diet_digestibility_fraction
+    ration_digestibility_fraction
   )
   # Cattle, buffalo: sum maintenance, activity, lactation, work, pregnancy, growth
   if (species_short %in% c("CTL", "BFL")) {
@@ -1673,7 +1673,7 @@ calc_total_metabolic_energy_req <- function(
            energy_requirement_lactation + energy_requirement_work + energy_requirement_pregnancy) /
           net_energy_maintenance_digestible_energy_ratio
       ) + ((energy_requirement_growth) /  net_energy_growth_digestible_energy_ratio)
-    ) / diet_digestibility_fraction
+    ) / ration_digestibility_fraction
   } else if (species_short %in% c("SHP", "GTS")) {
     # Sheep, goats: add fibre
     energy_requirement_total <- (
@@ -1683,7 +1683,7 @@ calc_total_metabolic_energy_req <- function(
            (energy_requirement_growth +
               energy_requirement_fibre_production) / net_energy_growth_digestible_energy_ratio
          )
-    ) / diet_digestibility_fraction
+    ) / ration_digestibility_fraction
   } else if (species_short == "CML") {
     energy_requirement_total <- energy_requirement_maintenance + energy_requirement_activity +
       energy_requirement_lactation + energy_requirement_work + energy_requirement_fibre_production +
@@ -1716,8 +1716,8 @@ calc_total_metabolic_energy_req <- function(
 #' @param energy_requirement_total Numeric. Total daily energy requirement (MJ/head/day). 
 #' For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
 #' For CML and PGS the function returns the summed daily metabolizable energy requirement.
-#' @param diet_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
-#' @param diet_metabolizable_energy Numeric. Average metabolizable energy content of the diet (MJ/kg DM).
+#' @param ration_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
+#' @param ration_metabolizable_energy Numeric. Average metabolizable energy content of the diet (MJ/kg DM).
 #'
 #' @return Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #'
@@ -1760,17 +1760,17 @@ calc_total_metabolic_energy_req <- function(
 calc_ration_intake <- function(
     species_short,
     energy_requirement_total,
-    diet_gross_energy,
-    diet_metabolizable_energy
+    ration_gross_energy,
+    ration_metabolizable_energy
 ) {
   # Validate inputs
-  validate_dmi_inputs(species_short, energy_requirement_total, diet_gross_energy, diet_metabolizable_energy)
+  validate_dmi_inputs(species_short, energy_requirement_total, ration_gross_energy, ration_metabolizable_energy)
   # Ruminants: use gross energy
   if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
-    dry_matter_intake <- energy_requirement_total / diet_gross_energy
+    dry_matter_intake <- energy_requirement_total / ration_gross_energy
   } else if (species_short %in% c("PGS", "CHK", "CML")) {
     # Monogastrics/camelids: use metabolizable energy
-    dry_matter_intake <- energy_requirement_total / diet_metabolizable_energy
+    dry_matter_intake <- energy_requirement_total / ration_metabolizable_energy
   }
   return(dry_matter_intake)
 }

@@ -1,4 +1,4 @@
-feed_id,feed_name,category,feed_gross_energy,feed_digestible_energy_ruminant,feed_digestible_energy_pigs,feed_metabolizable_energy_ruminant,feed_metabolizable_energy_pigs,feed_metabolizable_energy_chicken,feed_nitrogen_content,feed_urinary_energy_ruminant,feed_urinary_energy_pigs,feed_ash_content
+feed_id,feed_name,category,feed_gross_energy,feed_digestible_energy_ruminant,feed_digestible_energy_pigs,feed_metabolizable_energy_ruminant,feed_metabolizable_energy_pigs,feed_metabolizable_energy_chicken,feed_nitrogen_content,feed_urinary_energy_ruminant,feed_urinary_energy_pigs,feed_ash
 F1,"Fresh grass, natural pastures",Grass and leaves,17.83162943,10.38616667,7.38530303,8.232065217,6.698369565,5.220108696,0.016891275,0.120802278,0.038523314,8.2
 F2,"Wheat, straw",Crop residues,18.5,8.3,2.3,6.8,2,3.19539688,0.00672,0.081081081,0.016216216,6.7
 F3,Wheat,Cereals,18.2,15.6,15.9,13.1,15.5,14.1,0.02016,0.137362637,0.021978022,1.8

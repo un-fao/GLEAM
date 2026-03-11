@@ -42,7 +42,7 @@ test_that("calc_ch4_enteric validates inputs and returns expected numeric", {
     species_short = "CTL",
     ch4_conversion_factor_ym = ch4_ym,
     ch4_mitigation_factor = 1,
-    diet_gross_energy = 18.4,
+    ration_gross_energy = 18.4,
     dry_matter_intake = 10
   )
   expect_type(ch4, "double")
@@ -58,7 +58,7 @@ test_that("calc_ch4_enteric validates inputs and returns expected numeric", {
 
   # Invalid arguments
   expect_error(calc_ch4_enteric("CTL", -1, 1, 18, 10))  # ym < 0
-  expect_error(calc_ch4_enteric("CTL", 5, 1, -1, 10))   # diet_gross_energy < 0
+  expect_error(calc_ch4_enteric("CTL", 5, 1, -1, 10))   # ration_gross_energy < 0
   expect_error(calc_ch4_enteric("CTL", 5, 1, 18, -1))  # dry_matter_intake < 0
 
   # Emissions must be non-negative

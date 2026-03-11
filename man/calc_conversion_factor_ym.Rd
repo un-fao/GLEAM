@@ -7,7 +7,7 @@
 calc_conversion_factor_ym(
   species_short,
   cohort_short,
-  diet_digestibility_fraction
+  ration_digestibility_fraction
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of
 digestible (or metabolizable, for poultry) to gross energy content (fraction).}
 }
 \value{
@@ -48,7 +48,7 @@ rules consistent with IPCC Tier 2 approach.
 \details{
 ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013).
 
-\code{diet_digestibility_fraction} can be calculated with
+\code{ration_digestibility_fraction} can be calculated with
 \code{\link{calc_ration_digestibility}} - see also \code{\link{run_ration_quality_module}}.
 
 \itemize{

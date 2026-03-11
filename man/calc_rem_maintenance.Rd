@@ -4,7 +4,7 @@
 \alias{calc_rem_maintenance}
 \title{Calculate Ratio of Net Energy available for Maintenance in the diet (REM - Net Energy for Maintenance / Digestible Energy)}
 \usage{
-calc_rem_maintenance(species_short, diet_digestibility_fraction = NA_real_)
+calc_rem_maintenance(species_short, ration_digestibility_fraction = NA_real_)
 }
 \arguments{
 \item{species_short}{Character. Code identifying the livestock species.
@@ -18,7 +18,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of
 the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{

@@ -24,9 +24,9 @@
 #'     \item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 #'     \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 #'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
-#'     \item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
-#'     \item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
-#'     \item{diet_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
+#'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+#'     \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+#'     \item{ration_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
 #'   }
 #'
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
@@ -295,7 +295,7 @@ run_metabolic_energy_req_module <- function(
     ,
     net_energy_maintenance_digestible_energy_ratio := calc_rem_maintenance(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
-      diet_digestibility_fraction = diet_digestibility_fraction
+      ration_digestibility_fraction = ration_digestibility_fraction
     ),
     by = .I
   ]
@@ -304,7 +304,7 @@ run_metabolic_energy_req_module <- function(
     ,
     net_energy_growth_digestible_energy_ratio := calc_reg_growth(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
-      diet_digestibility_fraction = diet_digestibility_fraction
+      ration_digestibility_fraction = ration_digestibility_fraction
     ),
     by = .I
   ]
@@ -324,7 +324,7 @@ run_metabolic_energy_req_module <- function(
       energy_requirement_fibre_production = energy_requirement_fibre_production,
       energy_requirement_egg_deposition = 0,
       net_energy_growth_digestible_energy_ratio = net_energy_growth_digestible_energy_ratio,
-      diet_digestibility_fraction = diet_digestibility_fraction
+      ration_digestibility_fraction = ration_digestibility_fraction
     ),
     by = .I
   ]
@@ -335,8 +335,8 @@ run_metabolic_energy_req_module <- function(
     dry_matter_intake := calc_ration_intake(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       energy_requirement_total = energy_requirement_total,
-      diet_gross_energy = diet_gross_energy,
-      diet_metabolizable_energy = diet_metabolizable_energy
+      ration_gross_energy = ration_gross_energy,
+      ration_metabolizable_energy = ration_metabolizable_energy
     ),
     by = .I
   ]

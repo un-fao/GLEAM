@@ -35,8 +35,8 @@ low_activity_fraction,0,TRUE,1,TRUE
 high_activity_fraction,0,TRUE,1,TRUE
 fibre_yield_year,0,TRUE,Inf,TRUE
 feed_gross_energy,0,TRUE,45,TRUE
-diet_gross_energy,0,TRUE,45,TRUE
-diet_metabolizable_energy,0,TRUE,45,TRUE
+ration_gross_energy,0,TRUE,45,TRUE
+ration_metabolizable_energy,0,TRUE,45,TRUE
 feed_ration_fraction,0,TRUE,1,TRUE
 feed_digestibility_fraction_ruminant,0,TRUE,1,TRUE
 feed_digestibility_fraction_pigs,0,TRUE,1,TRUE
@@ -48,11 +48,11 @@ feed_nitrogen_content,0,TRUE,0.1,TRUE
 feed_urinary_energy_ruminant,0,TRUE,0.5,TRUE
 feed_urinary_energy_pigs,0,TRUE,0.5,TRUE
 feed_urinary_energy_chicken,0,TRUE,0.5,TRUE
-feed_ash_content,0,TRUE,25,TRUE
+feed_ash,0,TRUE,25,TRUE
 dry_matter_intake,0,TRUE,Inf,TRUE
-diet_digestibility_fraction,0,TRUE,1,TRUE
-urinary_energy_fraction,0,TRUE,0.2,TRUE
-diet_ash,0,TRUE,0.2,TRUE
+ration_digestibility_fraction,0,TRUE,1,TRUE
+ration_urinary_energy_fraction,0,TRUE,0.2,TRUE
+ration_ash,0,TRUE,0.2,TRUE
 ratio_m3CH4_to_kgCH4,0,FALSE,Inf,TRUE
 volatile_solids,0,TRUE,Inf,TRUE
 methane_conversion_factor_mcf,0,TRUE,100,TRUE
@@ -65,7 +65,7 @@ nitrogen_fracleach,0,TRUE,1,TRUE
 manure_management_system_fraction,0,TRUE,1,TRUE
 ch4_conversion_factor_ym,0,TRUE,20,TRUE
 ch4_mitigation_factor,0,TRUE,1,TRUE
-diet_nitrogen,0,TRUE,0.1,TRUE
+ration_nitrogen,0,TRUE,0.1,TRUE
 milk_protein_fraction,0,TRUE,1,TRUE
 milk_lactose_fraction,0,TRUE,1,TRUE
 offtake_heads_assessment,0,TRUE,Inf,TRUE

@@ -26,7 +26,7 @@
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of 
+#' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of 
 #' digestible (or metabolizable, for poultry) to gross energy content (fraction).
 #'
 #' @return Numeric. Methane (CH₄) conversion factor (ym), representing the percentage of  gross energy 
@@ -35,7 +35,7 @@
 #'@details
 #' ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013). 
 #' 
-#' \code{diet_digestibility_fraction} can be calculated with
+#' \code{ration_digestibility_fraction} can be calculated with
 #' \code{\link{calc_ration_digestibility}} - see also \code{\link{run_ration_quality_module}}.
 #'
 #' \itemize{
@@ -88,23 +88,23 @@
 calc_conversion_factor_ym <- function(
     species_short,
     cohort_short,
-    diet_digestibility_fraction
+    ration_digestibility_fraction
 ) {
-  validate_ym_inputs(species_short, cohort_short, diet_digestibility_fraction)
+  validate_ym_inputs(species_short, cohort_short, ration_digestibility_fraction)
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short %in% c("FJ", "MJ")) {
       ch4_conversion_factor_ym <- 0
     } else {
-      ch4_conversion_factor_ym <- 9.75 - 0.05 * diet_digestibility_fraction * 100
+      ch4_conversion_factor_ym <- 9.75 - 0.05 * ration_digestibility_fraction * 100
     }
   } else if (species_short %in% c("SHP", "GTS", "CML")) {
     if (cohort_short %in% c("FJ", "MJ")) {
       ch4_conversion_factor_ym <- 0
     } else if (cohort_short %in% c("FS", "MS")) {
-      ch4_conversion_factor_ym <- 7.75 - 0.05 * diet_digestibility_fraction * 100
+      ch4_conversion_factor_ym <- 7.75 - 0.05 * ration_digestibility_fraction * 100
     } else {
-      ch4_conversion_factor_ym <- 9.75 - 0.05 * diet_digestibility_fraction * 100
+      ch4_conversion_factor_ym <- 9.75 - 0.05 * ration_digestibility_fraction * 100
     }
   } else if (species_short %in% c("PGS")) {
     if (cohort_short %in% c("FJ", "MJ")) {
@@ -145,7 +145,7 @@ calc_conversion_factor_ym <- function(
 #'     reductions (e.g., \code{0.90} = 10% reduction). This factor can represent mitigation
 #'     measures with a direct effect on enteric methane emissions, such as the use of feed
 #'     additives or methane inhibitors.
-#' @param diet_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
+#' @param ration_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
 #' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #'
 #' @return Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).
@@ -158,7 +158,7 @@ calc_conversion_factor_ym <- function(
 #' 
 #' where 55.65 MJ/kg is the energy content of methane.
 #' 
-#' \code{diet_gross_energy} and \code{dry_matter_intake} can be calculated with
+#' \code{ration_gross_energy} and \code{dry_matter_intake} can be calculated with
 #' \code{\link{calc_ration_gross_energy}} and \code{\link{calc_ration_intake}} - 
 #' see also \code{\link{run_ration_quality_module}} and \code{\link{run_metabolic_energy_req_module}}.
 #' 
@@ -186,16 +186,16 @@ calc_ch4_enteric <- function(
     species_short,
     ch4_conversion_factor_ym,
     ch4_mitigation_factor,
-    diet_gross_energy,
+    ration_gross_energy,
     dry_matter_intake
 ) {
   validate_enteric_emission_inputs(
     species_short, ch4_conversion_factor_ym, ch4_mitigation_factor,
-    diet_gross_energy, dry_matter_intake
+    ration_gross_energy, dry_matter_intake
   )
 
   if (species_short %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
-    ch4_enteric <- diet_gross_energy * dry_matter_intake *
+    ch4_enteric <- ration_gross_energy * dry_matter_intake *
       (ch4_conversion_factor_ym / 100) * ch4_mitigation_factor / 55.65
   } else if (species_short == "CHK") {
     ch4_enteric <- 0

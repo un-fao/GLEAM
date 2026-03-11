@@ -17,9 +17,9 @@
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }}
 #'     \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
-#'     \item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
-#'     \item{urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
-#'     \item{diet_ash}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).}
+#'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+#'     \item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
+#'     \item{ration_ash}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).}
 #'     \item{nitrogen_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
 #'   }
 #'
@@ -291,9 +291,9 @@ run_emissions_manure_module <- function(
     ,
     volatile_solids := calc_volatile_solids(
       dry_matter_intake = dry_matter_intake,
-      diet_digestibility_fraction = diet_digestibility_fraction,
-      urinary_energy_fraction = urinary_energy_fraction,
-      diet_ash = diet_ash
+      ration_digestibility_fraction = ration_digestibility_fraction,
+      ration_urinary_energy_fraction = ration_urinary_energy_fraction,
+      ration_ash = ration_ash
     ),
     by = .I
   ]

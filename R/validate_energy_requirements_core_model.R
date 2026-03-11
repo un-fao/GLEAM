@@ -362,32 +362,32 @@ validate_pregnancy_inputs <- function(
 
 #' Validate inputs for calc_rem_maintenance
 #'
-#' diet_digestibility_fraction is only used (and required) for ruminants (CTL, BFL, SHP, GTS).
+#' ration_digestibility_fraction is only used (and required) for ruminants (CTL, BFL, SHP, GTS).
 #' For PGS, CHK, CML the function returns NA and the argument may be NA.
 #'
 #' @noRd
 validate_rem_inputs <- function(
     species_short,
-    diet_digestibility_fraction
+    ration_digestibility_fraction
 ) {
   validate_animal_species(species_short)
   if (!species_short %in% c("CTL", "BFL", "SHP", "GTS")) return()
-  validate_param_range(diet_digestibility_fraction, "diet_digestibility_fraction")
+  validate_param_range(ration_digestibility_fraction, "ration_digestibility_fraction")
 }
 
 #' Validate inputs for calc_reg_growth
 #'
-#' diet_digestibility_fraction is only used (and required) for ruminants (CTL, BFL, SHP, GTS).
+#' ration_digestibility_fraction is only used (and required) for ruminants (CTL, BFL, SHP, GTS).
 #' For PGS, CHK, CML the function returns NA and the argument may be NA.
 #'
 #' @noRd
 validate_reg_inputs <- function(
     species_short,
-    diet_digestibility_fraction
+    ration_digestibility_fraction
 ) {
   validate_animal_species(species_short)
   if (!species_short %in% c("CTL", "BFL", "SHP", "GTS")) return()
-  validate_param_range(diet_digestibility_fraction, "diet_digestibility_fraction")
+  validate_param_range(ration_digestibility_fraction, "ration_digestibility_fraction")
 }
 
 #' Validate inputs for calc_total_energy_requirement
@@ -405,7 +405,7 @@ validate_total_energy_inputs <- function(
     energy_requirement_fibre_production,
     energy_requirement_egg_deposition,
     net_energy_growth_digestible_energy_ratio,
-    diet_digestibility_fraction
+    ration_digestibility_fraction
 ) {
   validate_animal_species(species_short)
   validate_scalar_numeric(energy_requirement_maintenance, "energy_requirement_maintenance")
@@ -415,7 +415,7 @@ validate_total_energy_inputs <- function(
   validate_scalar_numeric(energy_requirement_pregnancy, "energy_requirement_pregnancy")
   validate_scalar_numeric(energy_requirement_growth, "energy_requirement_growth")
   validate_scalar_numeric(energy_requirement_fibre_production, "energy_requirement_fibre_production")
-  validate_param_range(diet_digestibility_fraction, "diet_digestibility_fraction")
+  validate_param_range(ration_digestibility_fraction, "ration_digestibility_fraction")
 
   if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
     validate_scalar_numeric(
@@ -435,11 +435,11 @@ validate_total_energy_inputs <- function(
 validate_dmi_inputs <- function(
     species_short,
     energy_requirement_total,
-    diet_gross_energy,
-    diet_metabolizable_energy
+    ration_gross_energy,
+    ration_metabolizable_energy
 ) {
   validate_animal_species(species_short)
   validate_positive_numeric(energy_requirement_total, "energy_requirement_total")
-  validate_param_range(diet_gross_energy, "diet_gross_energy")
-  validate_param_range(diet_metabolizable_energy, "diet_metabolizable_energy")
+  validate_param_range(ration_gross_energy, "ration_gross_energy")
+  validate_param_range(ration_metabolizable_energy, "ration_metabolizable_energy")
 }

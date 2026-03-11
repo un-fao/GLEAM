@@ -7,8 +7,8 @@
 calc_ration_intake(
   species_short,
   energy_requirement_total,
-  diet_gross_energy,
-  diet_metabolizable_energy
+  ration_gross_energy,
+  ration_metabolizable_energy
 )
 }
 \arguments{
@@ -27,9 +27,9 @@ Supported values include:
 For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
 For CML and PGS the function returns the summed daily metabolizable energy requirement.}
 
-\item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 
-\item{diet_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
+\item{ration_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
 }
 \value{
 Numeric. Average daily dry matter intake of feed (kg DM/head/day).

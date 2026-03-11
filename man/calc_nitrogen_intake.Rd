@@ -4,12 +4,12 @@
 \alias{calc_nitrogen_intake}
 \title{Compute Daily Nitrogen Intake}
 \usage{
-calc_nitrogen_intake(dry_matter_intake, diet_nitrogen)
+calc_nitrogen_intake(dry_matter_intake, ration_nitrogen)
 }
 \arguments{
 \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 
-\item{diet_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
+\item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 }
 \value{
 Numeric. Daily nitrogen intake (kg N/head/day).

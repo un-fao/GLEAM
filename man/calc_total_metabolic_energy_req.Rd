@@ -16,7 +16,7 @@ calc_total_metabolic_energy_req(
   energy_requirement_fibre_production,
   energy_requirement_egg_deposition,
   net_energy_growth_digestible_energy_ratio,
-  diet_digestibility_fraction
+  ration_digestibility_fraction
 )
 }
 \arguments{
@@ -61,7 +61,7 @@ Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for C
 
 \item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction)}
 
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{
 Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).

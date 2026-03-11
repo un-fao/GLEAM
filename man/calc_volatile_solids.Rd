@@ -6,19 +6,19 @@
 \usage{
 calc_volatile_solids(
   dry_matter_intake,
-  diet_digestibility_fraction,
-  urinary_energy_fraction,
-  diet_ash
+  ration_digestibility_fraction,
+  ration_urinary_energy_fraction,
+  ration_ash
 )
 }
 \arguments{
 \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 
-\item{urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
+\item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
 
-\item{diet_ash}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).}
+\item{ration_ash}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).}
 }
 \value{
 Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
@@ -38,9 +38,9 @@ rates are not available. The core relationship is provided in
 daily VS excretion as a function of:
 \itemize{
 \item Gross energy intake (gross_energy_intake, MJ/day)
-\item Digestibility of the diet (diet_digestibility_fraction)
-\item Urinary energy expressed as a fraction of GE (urinary_energy_fraction)
-\item Ash content of the diet (diet_ash, fraction of dry matter)
+\item Digestibility of the diet (ration_digestibility_fraction)
+\item Urinary energy expressed as a fraction of GE (ration_urinary_energy_fraction)
+\item Ash content of the diet (ration_ash, fraction of dry matter)
 \item A conversion factor representing the average gross energy content of
 dry matter (18.45 MJ/kg DM)
 }
@@ -79,9 +79,9 @@ to the IPCC approach and fully consistent with Equation 10.24.
 \examples{
 calc_volatile_solids <- calc_volatile_solids(
   dry_matter_intake = 5,
-  diet_digestibility_fraction = 0.6,
-  urinary_energy_fraction = 0.04,
-  diet_ash = 0.08
+  ration_digestibility_fraction = 0.6,
+  ration_urinary_energy_fraction = 0.04,
+  ration_ash = 0.08
 )
 
 }

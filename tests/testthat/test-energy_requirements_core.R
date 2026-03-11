@@ -374,36 +374,36 @@ test_that("calc_metabolic_energy_req_pregnancy handles pigs", {
 
 # ---- test calc_rem_maintenance ----
 test_that("calc_rem_maintenance returns correct values for ruminants", {
-  result <- calc_rem_maintenance(species_short = "CTL", diet_digestibility_fraction = 0.65)
+  result <- calc_rem_maintenance(species_short = "CTL", ration_digestibility_fraction = 0.65)
   expected <- 1.123 - (0.004092 * 65) + (0.00001126 * 65^2) - (25.4 / 65)
   expect_equal(result, expected)
 
-  result <- calc_rem_maintenance(species_short = "SHP", diet_digestibility_fraction = 0.55)
+  result <- calc_rem_maintenance(species_short = "SHP", ration_digestibility_fraction = 0.55)
   expected <- 1.123 - (0.004092 * 55) + (0.00001126 * 55^2) - (25.4 / 55)
   expect_equal(result, expected)
 })
 
 test_that("calc_rem_maintenance returns NA for non-ruminants", {
-  expect_true(is.na(calc_rem_maintenance(species_short = "PGS", diet_digestibility_fraction = 0.75)))
-  expect_true(is.na(calc_rem_maintenance(species_short = "CHK", diet_digestibility_fraction = 0.70)))
-  expect_true(is.na(calc_rem_maintenance(species_short = "CML", diet_digestibility_fraction = 0.60)))
+  expect_true(is.na(calc_rem_maintenance(species_short = "PGS", ration_digestibility_fraction = 0.75)))
+  expect_true(is.na(calc_rem_maintenance(species_short = "CHK", ration_digestibility_fraction = 0.70)))
+  expect_true(is.na(calc_rem_maintenance(species_short = "CML", ration_digestibility_fraction = 0.60)))
 })
 
 # ---- test calc_reg_growth ----
 test_that("calc_reg_growth returns correct values for ruminants", {
-  result <- calc_reg_growth(species_short = "CTL", diet_digestibility_fraction = 0.65)
+  result <- calc_reg_growth(species_short = "CTL", ration_digestibility_fraction = 0.65)
   expected <- 1.164 - (0.005160 * 65) + (0.00001308 * 65^2) - (37.4 / 65)
   expect_equal(result, expected)
 
-  result <- calc_reg_growth(species_short = "GTS", diet_digestibility_fraction = 0.55)
+  result <- calc_reg_growth(species_short = "GTS", ration_digestibility_fraction = 0.55)
   expected <- 1.164 - (0.005160 * 55) + (0.00001308 * 55^2) - (37.4 / 55)
   expect_equal(result, expected)
 })
 
 test_that("calc_reg_growth returns NA for non-ruminants", {
-  expect_true(is.na(calc_reg_growth(species_short = "PGS", diet_digestibility_fraction = 0.75)))
-  expect_true(is.na(calc_reg_growth(species_short = "CHK", diet_digestibility_fraction = 0.70)))
-  expect_true(is.na(calc_reg_growth(species_short = "CML", diet_digestibility_fraction = 0.60)))
+  expect_true(is.na(calc_reg_growth(species_short = "PGS", ration_digestibility_fraction = 0.75)))
+  expect_true(is.na(calc_reg_growth(species_short = "CHK", ration_digestibility_fraction = 0.70)))
+  expect_true(is.na(calc_reg_growth(species_short = "CML", ration_digestibility_fraction = 0.60)))
 })
 
 # ---- test calc_total_metabolic_energy_req ----
@@ -411,7 +411,7 @@ test_that("calc_total_metabolic_energy_req returns correct values for cattle", {
   result <- calc_total_metabolic_energy_req(
     species_short = "CTL",
     energy_requirement_maintenance = 15.0, energy_requirement_activity = 3.0, energy_requirement_lactation = 8.0, energy_requirement_work = 0, energy_requirement_pregnancy = 1.5,
-    net_energy_maintenance_digestible_energy_ratio = 0.6, energy_requirement_growth = 0, energy_requirement_fibre_production = 0, energy_requirement_egg_deposition = 0, net_energy_growth_digestible_energy_ratio = 0.5, diet_digestibility_fraction = 0.65
+    net_energy_maintenance_digestible_energy_ratio = 0.6, energy_requirement_growth = 0, energy_requirement_fibre_production = 0, energy_requirement_egg_deposition = 0, net_energy_growth_digestible_energy_ratio = 0.5, ration_digestibility_fraction = 0.65
   )
   expected <- (((15.0 + 3.0 + 8.0 + 0 + 1.5) / 0.6) + (0 / 0.5)) / 0.65
   expect_equal(result, expected)
@@ -421,7 +421,7 @@ test_that("calc_total_metabolic_energy_req handles sheep with fibre", {
   result <- calc_total_metabolic_energy_req(
     species_short = "SHP",
     energy_requirement_maintenance = 8.0, energy_requirement_activity = 1.5, energy_requirement_lactation = 4.0, energy_requirement_work = 0, energy_requirement_pregnancy = 1.0,
-    net_energy_maintenance_digestible_energy_ratio = 0.55, energy_requirement_growth = 0, energy_requirement_fibre_production = 0.2, energy_requirement_egg_deposition = 0, net_energy_growth_digestible_energy_ratio = 0.45, diet_digestibility_fraction = 0.60
+    net_energy_maintenance_digestible_energy_ratio = 0.55, energy_requirement_growth = 0, energy_requirement_fibre_production = 0.2, energy_requirement_egg_deposition = 0, net_energy_growth_digestible_energy_ratio = 0.45, ration_digestibility_fraction = 0.60
   )
   expected <- (((8.0 + 1.5 + 4.0 + 1.0) / 0.55) + ((0 + 0.2) / 0.45)) / 0.60
   expect_equal(result, expected)
@@ -431,7 +431,7 @@ test_that("calc_total_metabolic_energy_req handles different species", {
   result <- calc_total_metabolic_energy_req(
     species_short = "CML",
     energy_requirement_maintenance = 12.0, energy_requirement_activity = 2.0, energy_requirement_lactation = 6.0, energy_requirement_work = 1.0, energy_requirement_pregnancy = 1.5,
-    net_energy_maintenance_digestible_energy_ratio = NA, energy_requirement_growth = 0, energy_requirement_fibre_production = 0.3, energy_requirement_egg_deposition = 0, net_energy_growth_digestible_energy_ratio = NA, diet_digestibility_fraction = 0.70
+    net_energy_maintenance_digestible_energy_ratio = NA, energy_requirement_growth = 0, energy_requirement_fibre_production = 0.3, energy_requirement_egg_deposition = 0, net_energy_growth_digestible_energy_ratio = NA, ration_digestibility_fraction = 0.70
   )
   expected <- 12.0 + 2.0 + 6.0 + 1.0 + 0.3 + 1.5 + 0
   expect_equal(result, expected)
@@ -439,7 +439,7 @@ test_that("calc_total_metabolic_energy_req handles different species", {
   result <- calc_total_metabolic_energy_req(
     species_short = "PGS",
     energy_requirement_maintenance = 10.0, energy_requirement_activity = 1.0, energy_requirement_lactation = 5.0, energy_requirement_work = 0, energy_requirement_pregnancy = 2.0,
-    net_energy_maintenance_digestible_energy_ratio = NA, energy_requirement_growth = 0, energy_requirement_fibre_production = 0, energy_requirement_egg_deposition = 0, net_energy_growth_digestible_energy_ratio = NA, diet_digestibility_fraction = 0.75
+    net_energy_maintenance_digestible_energy_ratio = NA, energy_requirement_growth = 0, energy_requirement_fibre_production = 0, energy_requirement_egg_deposition = 0, net_energy_growth_digestible_energy_ratio = NA, ration_digestibility_fraction = 0.75
   )
   expected <- 10.0 + 1.0 + 5.0 + 2.0 + 0
   expect_equal(result, expected)
@@ -448,13 +448,13 @@ test_that("calc_total_metabolic_energy_req handles different species", {
 # ---- test calc_ration_intake ----
 test_that("calc_ration_intake uses gross energy for ruminants", {
   result <- calc_ration_intake(
-    species_short = "CTL", energy_requirement_total = 25.0, diet_gross_energy = 18.5, diet_metabolizable_energy = 12.0
+    species_short = "CTL", energy_requirement_total = 25.0, ration_gross_energy = 18.5, ration_metabolizable_energy = 12.0
   )
   expected <- 25.0 / 18.5
   expect_equal(result, expected)
 
   result <- calc_ration_intake(
-    species_short = "SHP", energy_requirement_total = 12.0, diet_gross_energy = 16.0, diet_metabolizable_energy = 10.5
+    species_short = "SHP", energy_requirement_total = 12.0, ration_gross_energy = 16.0, ration_metabolizable_energy = 10.5
   )
   expected <- 12.0 / 16.0
   expect_equal(result, expected)
@@ -462,19 +462,19 @@ test_that("calc_ration_intake uses gross energy for ruminants", {
 
 test_that("calc_ration_intake uses metabolizable energy for monogastrics", {
   result <- calc_ration_intake(
-    species_short = "PGS", energy_requirement_total = 15.0, diet_gross_energy = 18.0, diet_metabolizable_energy = 13.5
+    species_short = "PGS", energy_requirement_total = 15.0, ration_gross_energy = 18.0, ration_metabolizable_energy = 13.5
   )
   expected <- 15.0 / 13.5
   expect_equal(result, expected)
 
   result <- calc_ration_intake(
-    species_short = "CHK", energy_requirement_total = 8.0, diet_gross_energy = 16.5, diet_metabolizable_energy = 11.0
+    species_short = "CHK", energy_requirement_total = 8.0, ration_gross_energy = 16.5, ration_metabolizable_energy = 11.0
   )
   expected <- 8.0 / 11.0
   expect_equal(result, expected)
 
   result <- calc_ration_intake(
-    species_short = "CML", energy_requirement_total = 20.0, diet_gross_energy = 17.0, diet_metabolizable_energy = 12.5
+    species_short = "CML", energy_requirement_total = 20.0, ration_gross_energy = 17.0, ration_metabolizable_energy = 12.5
   )
   expected <- 20.0 / 12.5
   expect_equal(result, expected)

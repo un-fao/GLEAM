@@ -105,8 +105,8 @@ validate_run_gleam_inputs <- function(
     "meat_production_live_weight_cohort", "meat_production_carcass_weight_cohort",
     "meat_production_bone_free_meat_cohort", "meat_production_protein_cohort",
     # Feed rations (cohort-level outputs merged into pipeline)
-    "diet_gross_energy", "diet_metabolizable_energy", "diet_nitrogen",
-    "diet_digestibility_fraction", "urinary_energy_fraction", "diet_ash",
+    "ration_gross_energy", "ration_metabolizable_energy", "ration_nitrogen",
+    "ration_digestibility_fraction", "ration_urinary_energy_fraction", "ration_ash",
     # Allocation (cohort-level energy allocation terms)
     "energy_allocation_milk", "energy_allocation_meat", "energy_allocation_fibre",
     "energy_allocation_work", "energy_allocation_eggs",

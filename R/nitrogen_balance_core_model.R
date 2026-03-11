@@ -4,7 +4,7 @@
 #' intake (DMI) and diet nitrogen content. 
 #'
 #' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
-#' @param diet_nitrogen Numeric. Average nitrogen content of diet (kg N/kg DM).
+#' @param ration_nitrogen Numeric. Average nitrogen content of diet (kg N/kg DM).
 #'
 #' @return Numeric. Daily nitrogen intake (kg N/head/day).
 #' 
@@ -29,11 +29,11 @@
 #' Livestock and Manure Management. Equation 10.32.
 #'
 #' @export
-calc_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
+calc_nitrogen_intake <- function(dry_matter_intake, ration_nitrogen) {
   # Validate inputs
-  validate_nitrogen_intake_inputs(dry_matter_intake, diet_nitrogen)
+  validate_nitrogen_intake_inputs(dry_matter_intake, ration_nitrogen)
 
-  nitrogen_intake <- dry_matter_intake * diet_nitrogen
+  nitrogen_intake <- dry_matter_intake * ration_nitrogen
 
   return(nitrogen_intake)
 }

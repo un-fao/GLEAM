@@ -72,7 +72,7 @@
 #'     that is excreted in urine for ruminants (fraction).}
 #'     \item{feed_urinary_energy_pigs}{Numeric. Fraction of feed's gross energy
 #'     that is excreted in urine for pigs (fraction).}
-#'     \item{feed_ash_content}{Numeric. Average ash content by feed component, calculated
+#'     \item{feed_ash}{Numeric. Average ash content by feed component, calculated
 #'     as a fraction of the dry matter intake (g ash/100g DM).}
 #'     \item{category}{Character. Feed category (optional). If provided, it should be
 #'     used consistently  with \code{feed_id}, for a coherent result.}
@@ -85,17 +85,17 @@
 #' @return data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
 #'   \code{animal}, and \code{cohort_short} with the following columns:
 #'   \describe{
-#'     \item{diet_gross_energy}{Numeric. Average gross energy content of the diet
+#'     \item{ration_gross_energy}{Numeric. Average gross energy content of the diet
 #'     (MJ/kg DM).}
-#'     \item{diet_metabolizable_energy}{Numeric. Average metabolizable energy
+#'     \item{ration_metabolizable_energy}{Numeric. Average metabolizable energy
 #'     content of the diet (MJ/kg DM).}
-#'     \item{diet_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
-#'     \item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed
+#'     \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
+#'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed
 #'     ration, expressed as ratio of digestible (or metabolizable, for poultry) to
 #'     gross energy content (fraction).}
-#'     \item{urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that
+#'     \item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that
 #'     is excreted in urine (fraction).}
-#'     \item{diet_ash}{Numeric. Average ash content of feed, calculated as a fraction
+#'     \item{ration_ash}{Numeric. Average ash content of feed, calculated as a fraction
 #'     of the dry matter intake (kg ash/kg DM).}
 #'   }
 #'
@@ -207,7 +207,7 @@ run_ration_quality_module <- function(
   # --- Step 5: Calculate cohort feed contributions ---------------------------
   rations_detailed[
     ,
-    diet_gross_energy := calc_ration_gross_energy(
+    ration_gross_energy := calc_ration_gross_energy(
       feed_ration_fraction = feed_ration_fraction,
       feed_gross_energy = feed_gross_energy
     ),
@@ -217,7 +217,7 @@ run_ration_quality_module <- function(
   # Calculate nitrogen contribution
   rations_detailed[
     ,
-    diet_nitrogen := calc_ration_nitrogen_content(
+    ration_nitrogen := calc_ration_nitrogen_content(
       feed_ration_fraction = feed_ration_fraction,
       feed_nitrogen_content = feed_nitrogen_content
     ),
@@ -227,7 +227,7 @@ run_ration_quality_module <- function(
   # Calculate digestibility fraction
   rations_detailed[
     ,
-    diet_digestibility_fraction := calc_ration_digestibility(
+    ration_digestibility_fraction := calc_ration_digestibility(
       species_short = species_short,
       feed_ration_fraction = feed_ration_fraction,
       feed_digestibility_fraction_ruminant = feed_digestibility_fraction_ruminant,
@@ -240,7 +240,7 @@ run_ration_quality_module <- function(
   # Calculate metabolizable energy contribution
   rations_detailed[
     ,
-    diet_metabolizable_energy := calc_ration_metabolizable_energy(
+    ration_metabolizable_energy := calc_ration_metabolizable_energy(
       species_short = species_short,
       feed_ration_fraction = feed_ration_fraction,
       feed_metabolizable_energy_ruminant = feed_metabolizable_energy_ruminant,
@@ -253,7 +253,7 @@ run_ration_quality_module <- function(
   # Calculate urinary energy fraction
   rations_detailed[
     ,
-    urinary_energy_fraction := calc_ration_urinary_energy_fraction(
+    ration_urinary_energy_fraction := calc_ration_urinary_energy_fraction(
       species_short = species_short,
       feed_ration_fraction = feed_ration_fraction,
       feed_urinary_energy_ruminant = feed_urinary_energy_ruminant,
@@ -264,9 +264,9 @@ run_ration_quality_module <- function(
 
   rations_detailed[
     ,
-    diet_ash := calc_ration_ash(
+    ration_ash := calc_ration_ash(
       feed_ration_fraction = feed_ration_fraction,
-      feed_ash_content = feed_ash_content
+      feed_ash = feed_ash
     ),
     by = .I
   ]
@@ -275,12 +275,12 @@ run_ration_quality_module <- function(
   rations_summary <- rations_detailed[
     ,
     .(
-      diet_gross_energy = sum(diet_gross_energy),
-      diet_metabolizable_energy = sum(diet_metabolizable_energy),
-      diet_nitrogen = sum(diet_nitrogen),
-      diet_digestibility_fraction = sum(diet_digestibility_fraction),
-      urinary_energy_fraction = sum(urinary_energy_fraction),
-      diet_ash = sum(diet_ash)
+      ration_gross_energy = sum(ration_gross_energy),
+      ration_metabolizable_energy = sum(ration_metabolizable_energy),
+      ration_nitrogen = sum(ration_nitrogen),
+      ration_digestibility_fraction = sum(ration_digestibility_fraction),
+      ration_urinary_energy_fraction = sum(ration_urinary_energy_fraction),
+      ration_ash = sum(ration_ash)
     ),
     by = .(herd_id, animal, cohort_short)
   ]
