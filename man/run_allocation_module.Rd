@@ -27,7 +27,7 @@ Supported values include:
 }}
 \item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
 period (kg/cohort/assessment period). Suggested standard fat, protein and lactose contents are 0.04, 0.033, and 0.048 respectively.}
-\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 \item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by
 cohort (kg/cohort/assessment period).}
 \item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
@@ -56,7 +56,7 @@ internal lookup table. Supported values include:
 \item \code{Pigs}
 \item \code{Camels}
 }}
-\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
+\item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
 Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}
 \item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk

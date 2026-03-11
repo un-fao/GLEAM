@@ -53,8 +53,8 @@ test_that("calc_meat_allocation_energy returns correct value for cattle female",
     species_short = "CTL",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 100,
-    slaughter_weight_cohort = 500,
-    birth_weight = 40
+    live_weight_cohort_at_slaughter = 500,
+    live_weight_at_birth = 40
   )
 
   expect_type(result, "double")
@@ -70,8 +70,8 @@ test_that("calc_meat_allocation_energy returns correct value for cattle male", {
     species_short = "CTL",
     cohort_short = "MA",
     meat_production_live_weight_cohort = 150,
-    slaughter_weight_cohort = 600,
-    birth_weight = 45
+    live_weight_cohort_at_slaughter = 600,
+    live_weight_at_birth = 45
   )
 
   expect_type(result, "double")
@@ -85,8 +85,8 @@ test_that("calc_meat_allocation_energy returns correct value for camelids", {
     species_short = "CML",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 80,
-    slaughter_weight_cohort = 450,
-    birth_weight = 35,
+    live_weight_cohort_at_slaughter = 450,
+    live_weight_at_birth = 35,
     ratio_me_to_ne = 2.33
   )
 
@@ -102,8 +102,8 @@ test_that("calc_meat_allocation_energy returns correct value for sheep female", 
     species_short = "SHP",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 20,
-    slaughter_weight_cohort = 60,
-    birth_weight = 4
+    live_weight_cohort_at_slaughter = 60,
+    live_weight_at_birth = 4
   )
 
   expect_type(result, "double")
@@ -118,8 +118,8 @@ test_that("calc_meat_allocation_energy returns correct value for sheep male", {
     species_short = "SHP",
     cohort_short = "MA",
     meat_production_live_weight_cohort = 25,
-    slaughter_weight_cohort = 70,
-    birth_weight = 4.5
+    live_weight_cohort_at_slaughter = 70,
+    live_weight_at_birth = 4.5
   )
 
   expect_type(result, "double")
@@ -134,8 +134,8 @@ test_that("calc_meat_allocation_energy returns correct value for goats", {
     species_short = "GTS",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 15,
-    slaughter_weight_cohort = 50,
-    birth_weight = 3.5
+    live_weight_cohort_at_slaughter = 50,
+    live_weight_at_birth = 3.5
   )
 
   expect_type(result, "double")
@@ -162,8 +162,8 @@ test_that("calc_meat_allocation_energy validates cohort codes", {
       species_short = "CTL",
       cohort_short = "INVALID",
       meat_production_live_weight_cohort = 100,
-      slaughter_weight_cohort = 500,
-      birth_weight = 40
+      live_weight_cohort_at_slaughter = 500,
+      live_weight_at_birth = 40
     ),
     "must be one of"
   )
@@ -175,8 +175,8 @@ test_that("calc_meat_allocation_energy validates weight bounds for non-PGS", {
       species_short = "CTL",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 100,
-      slaughter_weight_cohort = -10,
-      birth_weight = 40
+      live_weight_cohort_at_slaughter = -10,
+      live_weight_at_birth = 40
     ),
     "is out of range"
   )
@@ -185,8 +185,8 @@ test_that("calc_meat_allocation_energy validates weight bounds for non-PGS", {
       species_short = "CTL",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 100,
-      slaughter_weight_cohort = 500,
-      birth_weight = 1500
+      live_weight_cohort_at_slaughter = 500,
+      live_weight_at_birth = 1500
     ),
     "is out of range"
   )
@@ -198,8 +198,8 @@ test_that("calc_meat_allocation_energy validates ratio_me_to_ne for CML only", {
       species_short = "CML",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 80,
-      slaughter_weight_cohort = 450,
-      birth_weight = 35,
+      live_weight_cohort_at_slaughter = 450,
+      live_weight_at_birth = 35,
       ratio_me_to_ne = -1
     ),
     "must be a positive numeric value"
@@ -210,8 +210,8 @@ test_that("calc_meat_allocation_energy validates ratio_me_to_ne for CML only", {
       species_short = "CTL",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 100,
-      slaughter_weight_cohort = 500,
-      birth_weight = 40,
+      live_weight_cohort_at_slaughter = 500,
+      live_weight_at_birth = 40,
       ratio_me_to_ne = -1
     )
   )

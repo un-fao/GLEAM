@@ -47,7 +47,7 @@ validate_allocation_milk_inputs <- function(
 #' \code{GTS}, \code{PGS}, \code{CHK}. Valid cohort codes: \code{FA}, \code{MA},
 #' \code{FS}, \code{MS}, \code{FJ}, \code{MJ}.
 #'
-#' \code{slaughter_weight_cohort} and \code{birth_weight} are only required
+#' \code{live_weight_cohort_at_slaughter} and \code{live_weight_at_birth} are only required
 #' (and validated) for non-PGS species; they default to \code{NA_real_} for pigs.
 #' \code{ratio_me_to_ne} is only required (and validated) for CML; defaults to
 #' \code{NA_real_}.
@@ -61,9 +61,9 @@ validate_allocation_milk_inputs <- function(
 #'   (e.g., \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS}, \code{MJ}).
 #' @param meat_production_live_weight_cohort Numeric. Total meat produced as live
 #'   weight over the assessment period by cohort (kg/cohort/assessment period).
-#' @param slaughter_weight_cohort Numeric scalar. Slaughter liveweight (kg).
+#' @param live_weight_cohort_at_slaughter Numeric scalar. Slaughter liveweight (kg).
 #'   Required for non-PGS species; may be \code{NA} for pigs.
-#' @param birth_weight Numeric scalar. Birthweight (kg).
+#' @param live_weight_at_birth Numeric scalar. Birthweight (kg).
 #'   Required for non-PGS species; may be \code{NA} for pigs.
 #' @param ratio_me_to_ne Numeric scalar. Ratio of metabolizable energy to net energy
 #'   (ME/NE). Required only for CML; may be \code{NA} for other species.
@@ -73,8 +73,8 @@ validate_allocation_meat_inputs <- function(
     species_short,
     cohort_short,
     meat_production_live_weight_cohort,
-    slaughter_weight_cohort = NA_real_,
-    birth_weight = NA_real_,
+    live_weight_cohort_at_slaughter = NA_real_,
+    live_weight_at_birth = NA_real_,
     ratio_me_to_ne = NA_real_
 ) {
   validate_scalar_character(species_short, "species_short")
@@ -99,8 +99,8 @@ validate_allocation_meat_inputs <- function(
 
   # Slaughter and birth weight only needed for non-PGS species
   if (species_short != "PGS") {
-    validate_param_range(slaughter_weight_cohort, "slaughter_weight_cohort")
-    validate_param_range(birth_weight, "birth_weight")
+    validate_param_range(live_weight_cohort_at_slaughter, "live_weight_cohort_at_slaughter")
+    validate_param_range(live_weight_at_birth, "live_weight_at_birth")
   }
 
   # ratio_me_to_ne only needed for CML

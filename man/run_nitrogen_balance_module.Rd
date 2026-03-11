@@ -64,8 +64,8 @@ female animal (# parturitions/adult female/year).
 A herd-level reproductive performance indicator calculated as the total
 number of parturitions (deliveries) occurring during
 a year divided by the number of adult females potentially able to give birth during that year.}
-\item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
-\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
+\item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
+\item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 }}
 

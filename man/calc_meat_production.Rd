@@ -6,7 +6,7 @@
 \usage{
 calc_meat_production(
   offtake_heads_assessment,
-  slaughter_weight_cohort,
+  live_weight_cohort_at_slaughter,
   carcass_dressing_fraction,
   bone_free_meat_fraction,
   meat_protein_fraction
@@ -16,7 +16,7 @@ calc_meat_production(
 \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period,
 aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).}
 
-\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 
 \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
 (fraction).}

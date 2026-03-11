@@ -29,7 +29,7 @@ validate_run_production_module_inputs <- function(
   # --- Required columns: cohort level ------------------------------------------
   required_cohort_cols <- c(
     "herd_id", "cohort_short", "cohort_stock_size",
-    "offtake_heads_assessment", "slaughter_weight_cohort"
+    "offtake_heads_assessment", "live_weight_cohort_at_slaughter"
   )
   missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
   if (length(missing_cohort_cols) > 0) {

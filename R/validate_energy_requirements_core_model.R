@@ -76,7 +76,7 @@ validate_growth_inputs <- function(
     live_weight_cohort_average,
     live_weight_cohort_final,
     live_weight_cohort_initial,
-    mature_weight,
+    live_weight_mature_stage,
     daily_weight_gain,
     offtake_rate,
     cohort_duration_days
@@ -89,7 +89,7 @@ validate_growth_inputs <- function(
     validate_param_range(live_weight_cohort_average, "live_weight_cohort_average")
     validate_param_range(live_weight_cohort_final, "live_weight_cohort_final")
     validate_param_range(live_weight_cohort_initial, "live_weight_cohort_initial")
-    validate_param_range(mature_weight, "mature_weight")
+    validate_param_range(live_weight_mature_stage, "live_weight_mature_stage")
     validate_param_range(daily_weight_gain, "daily_weight_gain")
     validate_param_range(cohort_duration_days, "cohort_duration_days")
     if (cohort_short %in% c("MS", "MJ")) {
@@ -158,8 +158,8 @@ validate_lactation_inputs <- function(
     pregnancy_duration,
     litter_size,
     death_rate_juvenile,
-    birth_weight,
-    weaning_weight,
+    live_weight_at_birth,
+    live_weight_at_weaning,
     lactation_duration,
     parturition_rate
 ) {
@@ -175,10 +175,10 @@ validate_lactation_inputs <- function(
     validate_param_range(milk_yield_day, "milk_yield_day")
     validate_param_range(milk_fat_fraction, "milk_fat_fraction")
     validate_param_range(parturition_rate, "parturition_rate")
-    validate_param_range(birth_weight, "birth_weight")
-    validate_param_range(weaning_weight, "weaning_weight")
-    if (birth_weight >= weaning_weight) {
-      cli::cli_abort("{.arg birth_weight} must be strictly less than {.arg weaning_weight}.")
+    validate_param_range(live_weight_at_birth, "live_weight_at_birth")
+    validate_param_range(live_weight_at_weaning, "live_weight_at_weaning")
+    if (live_weight_at_birth >= live_weight_at_weaning) {
+      cli::cli_abort("{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}.")
     }
     return()
   }
@@ -190,10 +190,10 @@ validate_lactation_inputs <- function(
     validate_param_range(milk_fat_fraction, "milk_fat_fraction")
     validate_param_range(parturition_rate, "parturition_rate")
     validate_param_range(litter_size, "litter_size")
-    validate_param_range(birth_weight, "birth_weight")
-    validate_param_range(weaning_weight, "weaning_weight")
-    if (birth_weight >= weaning_weight) {
-      cli::cli_abort("{.arg birth_weight} must be strictly less than {.arg weaning_weight}.")
+    validate_param_range(live_weight_at_birth, "live_weight_at_birth")
+    validate_param_range(live_weight_at_weaning, "live_weight_at_weaning")
+    if (live_weight_at_birth >= live_weight_at_weaning) {
+      cli::cli_abort("{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}.")
     }
     return()
   }
@@ -202,13 +202,13 @@ validate_lactation_inputs <- function(
   if (species_short == "PGS") {
     validate_param_range(litter_size, "litter_size")
     validate_fraction(death_rate_juvenile, "death_rate_juvenile")
-    validate_param_range(birth_weight, "birth_weight")
-    validate_param_range(weaning_weight, "weaning_weight")
+    validate_param_range(live_weight_at_birth, "live_weight_at_birth")
+    validate_param_range(live_weight_at_weaning, "live_weight_at_weaning")
     validate_positive_numeric(lactation_duration, "lactation_duration")
     validate_positive_numeric(non_productive_duration, "non_productive_duration")
     validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
-    if (birth_weight >= weaning_weight) {
-      cli::cli_abort("{.arg birth_weight} must be strictly less than {.arg weaning_weight}.")
+    if (live_weight_at_birth >= live_weight_at_weaning) {
+      cli::cli_abort("{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}.")
     }
     return()
   }

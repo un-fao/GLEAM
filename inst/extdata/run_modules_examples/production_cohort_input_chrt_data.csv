@@ -1,4 +1,4 @@
-herd_id,cohort_short,cohort_stock_size,offtake_heads_assessment,slaughter_weight_cohort
+herd_id,cohort_short,cohort_stock_size,offtake_heads_assessment,live_weight_cohort_at_slaughter
 1,FA,100,5,550
 1,FS,80,8,450
 1,FJ,60,0,300

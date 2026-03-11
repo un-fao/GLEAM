@@ -17,17 +17,17 @@
 #'   }
 #' @param live_weight_female_adult Numeric. Live weight of adult females (kg)
 #' @param live_weight_male_adult Numeric. Live weight of adult males (kg)
-#' @param birth_weight Numeric. Live weight of the animal at birth (kg).
-#' @param slaughter_weight_female Numeric. Slaughter weight of female sub-adult animals (kg).
-#' @param slaughter_weight_male Numeric. Slaughter weight of male sub-adult animals (kg).
-#' @param weaning_weight Numeric. Live weight of the animal at weaning (kg)
+#' @param live_weight_at_birth Numeric. Live weight of the animal at birth (kg).
+#' @param live_weight_female_at_slaughter Numeric. Slaughter weight of female sub-adult animals (kg).
+#' @param live_weight_male_at_slaughter Numeric. Slaughter weight of male sub-adult animals (kg).
+#' @param live_weight_at_weaning Numeric. Live weight of the animal at weaning (kg)
 #'
 #' @return A named list with:
 #' \describe{
 #'   \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 #'   \item{live_weight_cohort_potential_final}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
-#'   \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
-#'   \item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+#'   \item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+#'   \item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 #' }
 #'
 #' @details
@@ -36,18 +36,18 @@
 #' \itemize{
 #'   \item \strong{Juveniles} (\code{"FJ"}, \code{"MJ"}):
 #'   \itemize{
-#'     \item \code{live_weight_cohort_initial = birth_weight}
-#'     \item \code{live_weight_cohort_potential_final = weaning_weight}
-#'     \item \code{slaughter_weight_cohort = weaning_weight}
+#'     \item \code{live_weight_cohort_initial = live_weight_at_birth}
+#'     \item \code{live_weight_cohort_potential_final = live_weight_at_weaning}
+#'     \item \code{live_weight_cohort_at_slaughter = live_weight_at_weaning}
 #'   }
 #'
 #'   \item \strong{Subadults} (\code{"FS"}, \code{"MS"}):
 #'   \itemize{
-#'     \item \code{live_weight_cohort_initial = weaning_weight}
+#'     \item \code{live_weight_cohort_initial = live_weight_at_weaning}
 #'     \item \code{live_weight_cohort_potential_final} equals the adult weight for the cohort sex
 #'       (\code{live_weight_female_adult} for \code{"FS"}, \code{live_weight_male_adult} for \code{"MS"})
-#'     \item \code{slaughter_weight_cohort} equals the subadult slaughter weight for the cohort sex
-#'       (\code{slaughter_weight_female} for \code{"FS"}, \code{slaughter_weight_male} for \code{"MS"})
+#'     \item \code{live_weight_cohort_at_slaughter} equals the subadult slaughter weight for the cohort sex
+#'       (\code{live_weight_female_at_slaughter} for \code{"FS"}, \code{live_weight_male_at_slaughter} for \code{"MS"})
 #'   }
 #'
 #'   \item \strong{Adults} (\code{"FA"}, \code{"MA"}):
@@ -55,7 +55,7 @@
 #'     \item \code{live_weight_cohort_initial = live_weight_female_adult} for \code{"FA"} and
 #'       \code{live_weight_cohort_initial = live_weight_male_adult} for \code{"MA"}
 #'     \item \code{live_weight_cohort_potential_final} equals the adult weight for the cohort sex
-#'     \item \code{slaughter_weight_cohort} equals the adult weight for the cohort sex
+#'     \item \code{live_weight_cohort_at_slaughter} equals the adult weight for the cohort sex
 #'   }
 #' }
 #'
@@ -63,22 +63,22 @@
 calc_cohort_weights <- function(
     cohort_short,
     live_weight_female_adult = NA_real_, live_weight_male_adult = NA_real_,
-    birth_weight = NA_real_, slaughter_weight_female = NA_real_,
-    slaughter_weight_male = NA_real_, weaning_weight = NA_real_
+    live_weight_at_birth = NA_real_, live_weight_female_at_slaughter = NA_real_,
+    live_weight_male_at_slaughter = NA_real_, live_weight_at_weaning = NA_real_
 ) {
   validate_cohort_weight_inputs(
     cohort_short,
     live_weight_female_adult, live_weight_male_adult,
-    birth_weight,
-    slaughter_weight_female, slaughter_weight_male,
-    weaning_weight
+    live_weight_at_birth,
+    live_weight_female_at_slaughter, live_weight_male_at_slaughter,
+    live_weight_at_weaning
   )
 
   # Juvenile cohorts
   if (cohort_short %in% c("FJ", "MJ")) {
-    live_weight_cohort_initial <- birth_weight
-    live_weight_cohort_potential_final <- slaughter_weight_cohort <- weaning_weight
-    mature_weight <- if (cohort_short == "FJ") {
+    live_weight_cohort_initial <- live_weight_at_birth
+    live_weight_cohort_potential_final <- live_weight_cohort_at_slaughter <- live_weight_at_weaning
+    live_weight_mature_stage <- if (cohort_short == "FJ") {
       live_weight_female_adult
     } else {
       live_weight_male_adult
@@ -86,38 +86,38 @@ calc_cohort_weights <- function(
 
     # Subadult cohorts
   } else if (cohort_short %in% c("FS", "MS")) {
-    live_weight_cohort_initial <- weaning_weight
-    mature_weight <- if (cohort_short == "FS") {
+    live_weight_cohort_initial <- live_weight_at_weaning
+    live_weight_mature_stage <- if (cohort_short == "FS") {
       live_weight_female_adult
     } else {
       live_weight_male_adult
     }
-    live_weight_cohort_potential_final <- mature_weight
-    slaughter_weight_cohort <- if (cohort_short == "FS") {
-      slaughter_weight_female
+    live_weight_cohort_potential_final <- live_weight_mature_stage
+    live_weight_cohort_at_slaughter <- if (cohort_short == "FS") {
+      live_weight_female_at_slaughter
     } else {
-      slaughter_weight_male
+      live_weight_male_at_slaughter
     }
 
     # Adult cohorts
   } else if (cohort_short == "FA") {
     live_weight_cohort_initial <- live_weight_female_adult
-    mature_weight <- live_weight_female_adult
-    live_weight_cohort_potential_final <- mature_weight
-    slaughter_weight_cohort <- mature_weight
+    live_weight_mature_stage <- live_weight_female_adult
+    live_weight_cohort_potential_final <- live_weight_mature_stage
+    live_weight_cohort_at_slaughter <- live_weight_mature_stage
   } else if (cohort_short == "MA") {
     live_weight_cohort_initial <- live_weight_male_adult
-    mature_weight <- live_weight_male_adult
-    live_weight_cohort_potential_final <- mature_weight
-    slaughter_weight_cohort <- mature_weight
+    live_weight_mature_stage <- live_weight_male_adult
+    live_weight_cohort_potential_final <- live_weight_mature_stage
+    live_weight_cohort_at_slaughter <- live_weight_mature_stage
   }
 
   return(
     list(
-      mature_weight = mature_weight,
+      live_weight_mature_stage = live_weight_mature_stage,
       live_weight_cohort_initial = live_weight_cohort_initial,
       live_weight_cohort_potential_final = live_weight_cohort_potential_final,
-      slaughter_weight_cohort = slaughter_weight_cohort
+      live_weight_cohort_at_slaughter = live_weight_cohort_at_slaughter
     )
   )
 }
@@ -130,7 +130,7 @@ calc_cohort_weights <- function(
 #'
 #' @param live_weight_cohort_initial Numeric. Live weight at the beginning of the cohort stage (kg).
 #' @param live_weight_cohort_potential_final Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)
-#' @param slaughter_weight_cohort Numeric. Live weight at slaughter for animals removed from the cohort (kg).
+#' @param live_weight_cohort_at_slaughter Numeric. Live weight at slaughter for animals removed from the cohort (kg).
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
 #'
 #' @return A named list with:
@@ -155,13 +155,13 @@ calc_cohort_weights <- function(
 calc_avg_weights <- function(
     live_weight_cohort_initial,
     live_weight_cohort_potential_final,
-    slaughter_weight_cohort,
+    live_weight_cohort_at_slaughter,
     offtake_rate
 ) {
   validate_avg_weight_inputs(
     live_weight_cohort_initial,
     live_weight_cohort_potential_final,
-    slaughter_weight_cohort,
+    live_weight_cohort_at_slaughter,
     offtake_rate
   )
 
@@ -170,7 +170,7 @@ calc_avg_weights <- function(
 
   # Weighted final weight: survivors reach potential_final_weight, offtaken animals go to slaughter
   live_weight_cohort_final <- live_weight_cohort_potential_final * (1 - offtake_rate) +
-    slaughter_weight_cohort * offtake_rate
+    live_weight_cohort_at_slaughter * offtake_rate
 
   # Average weight across the stage
   live_weight_cohort_average <- (live_weight_cohort_initial + live_weight_cohort_final) / 2

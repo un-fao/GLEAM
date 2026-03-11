@@ -141,8 +141,8 @@ calc_milk_allocation_energy <- function(
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param slaughter_weight_cohort Numeric. Live weight at slaughter for animals removed from the cohort (kg).
-#' @param birth_weight Numeric. Live weight of the animal at birth (kg).
+#' @param live_weight_cohort_at_slaughter Numeric. Live weight at slaughter for animals removed from the cohort (kg).
+#' @param live_weight_at_birth Numeric. Live weight of the animal at birth (kg).
 #' @param meat_production_live_weight_cohort Numeric. Total meat produced as live weight over the assessment period by
 #' cohort (kg/cohort/assessment period).
 #' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
@@ -241,28 +241,28 @@ calc_meat_allocation_energy <- function(
     species_short,
     cohort_short,
     meat_production_live_weight_cohort,
-    slaughter_weight_cohort = NA_real_,
-    birth_weight = NA_real_,
+    live_weight_cohort_at_slaughter = NA_real_,
+    live_weight_at_birth = NA_real_,
     ratio_me_to_ne = NA_real_
 ) {
   validate_allocation_meat_inputs(
     species_short, cohort_short, meat_production_live_weight_cohort,
-    slaughter_weight_cohort, birth_weight, ratio_me_to_ne
+    live_weight_cohort_at_slaughter, live_weight_at_birth, ratio_me_to_ne
   )
 
   if (species_short %in% c("CTL", "BFL")) {
     # Cattle and Buffalo: use growth efficiency factor based on cohort
     growth_efficiency_factor <- if (cohort_short %in% c("FA", "FS", "FJ")) 0.8 else 1
     specific_energy_meat <- (
-      22.02 * (((slaughter_weight_cohort - birth_weight) / 2) /
-                 (growth_efficiency_factor * slaughter_weight_cohort))^0.75 *
-        (slaughter_weight_cohort - birth_weight)^1.097
-    ) / slaughter_weight_cohort
+      22.02 * (((live_weight_cohort_at_slaughter - live_weight_at_birth) / 2) /
+                 (growth_efficiency_factor * live_weight_cohort_at_slaughter))^0.75 *
+        (live_weight_cohort_at_slaughter - live_weight_at_birth)^1.097
+    ) / live_weight_cohort_at_slaughter
 
   } else if (species_short == "CML") {
     # Camelids: convert ME to NE using ratio_me_to_ne (ME/NE)
     specific_energy_meat <- (
-      41.8 * (slaughter_weight_cohort - birth_weight) / slaughter_weight_cohort
+      41.8 * (live_weight_cohort_at_slaughter - live_weight_at_birth) / live_weight_cohort_at_slaughter
     ) / ratio_me_to_ne
 
   } else if (species_short == "SHP") {
@@ -276,18 +276,18 @@ calc_meat_allocation_energy <- function(
     }
 
     specific_energy_meat <- (
-      (slaughter_weight_cohort - birth_weight) *
-        (a + 0.5 * b * (birth_weight + slaughter_weight_cohort))
-    ) / slaughter_weight_cohort
+      (live_weight_cohort_at_slaughter - live_weight_at_birth) *
+        (a + 0.5 * b * (live_weight_at_birth + live_weight_cohort_at_slaughter))
+    ) / live_weight_cohort_at_slaughter
 
   } else if (species_short == "GTS") {
     # Goats: fixed coefficients
     a <- 5
     b <- 0.33
     specific_energy_meat <- (
-      (slaughter_weight_cohort - birth_weight) *
-        (a + 0.5 * b * (birth_weight + slaughter_weight_cohort))
-    ) / slaughter_weight_cohort
+      (live_weight_cohort_at_slaughter - live_weight_at_birth) *
+        (a + 0.5 * b * (live_weight_at_birth + live_weight_cohort_at_slaughter))
+    ) / live_weight_cohort_at_slaughter
   } else if (species_short == "PGS") {
     # Pigs: not calculated (returns 0)
     return(0)

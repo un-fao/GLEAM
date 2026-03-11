@@ -368,7 +368,7 @@ calc_metabolic_energy_req_activity <- function(
 #' both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals 
 #' and the slaughter weight of offtaken animals, based on the offtake rate (kg).
 #' @param live_weight_cohort_initial Numeric. Live weight at the beginning of the cohort stage (kg).
-#' @param mature_weight Numeric. Mature (adult) live weight that the animal can attain under given 
+#' @param live_weight_mature_stage Numeric. Mature (adult) live weight that the animal can attain under given 
 #' biological and management conditions (kg).
 #' @param daily_weight_gain Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
@@ -468,7 +468,7 @@ calc_metabolic_energy_req_growth <- function(
     live_weight_cohort_average = NA_real_,
     live_weight_cohort_final = NA_real_,
     live_weight_cohort_initial = NA_real_,
-    mature_weight = NA_real_,
+    live_weight_mature_stage = NA_real_,
     daily_weight_gain = NA_real_,
     offtake_rate = NA_real_,
     cohort_duration_days = NA_real_
@@ -477,7 +477,7 @@ calc_metabolic_energy_req_growth <- function(
   # Validate inputs
   validate_growth_inputs(
     species_short, cohort_short, live_weight_cohort_average, live_weight_cohort_final,
-    live_weight_cohort_initial, mature_weight, daily_weight_gain, offtake_rate, cohort_duration_days
+    live_weight_cohort_initial, live_weight_mature_stage, daily_weight_gain, offtake_rate, cohort_duration_days
   )
 
   # Normalize offtake_rate if it's available (not NA_real_)
@@ -493,7 +493,7 @@ calc_metabolic_energy_req_growth <- function(
     }
     if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
       energy_requirement_growth <- 22.02 *
-        ((live_weight_cohort_average / (cgro * mature_weight))^0.75) * (daily_weight_gain^1.097)
+        ((live_weight_cohort_average / (cgro * live_weight_mature_stage))^0.75) * (daily_weight_gain^1.097)
     } else {
       energy_requirement_growth <- 0 # No growth for other cohorts
     }
@@ -584,8 +584,8 @@ calc_metabolic_energy_req_growth <- function(
 #' @param litter_size Numeric. Average number of offspring born per parturition (# offsprings/parturition). 
 #' This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
 #' @param death_rate_juvenile Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).
-#' @param birth_weight Numeric. Live weight of the animal at birth (kg).
-#' @param weaning_weight Numeric. Live weight of the animal at weaning (kg).
+#' @param live_weight_at_birth Numeric. Live weight of the animal at birth (kg).
+#' @param live_weight_at_weaning Numeric. Live weight of the animal at weaning (kg).
 #' @param lactation_duration Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). 
 #' Required only for PGS.
 #' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
@@ -710,22 +710,22 @@ calc_metabolic_energy_req_lactation <- function(
     pregnancy_duration = NA_real_,
     litter_size = NA_real_,
     death_rate_juvenile = NA_real_,
-    birth_weight = NA_real_,
-    weaning_weight = NA_real_,
+    live_weight_at_birth = NA_real_,
+    live_weight_at_weaning = NA_real_,
     lactation_duration = NA_real_,
     parturition_rate = NA_real_
 ) {
   # Validate inputs
   validate_lactation_inputs(
     species_short, cohort_short, lactating_females_fraction, milk_yield_day, milk_fat_fraction,
-    non_productive_duration, pregnancy_duration, litter_size, death_rate_juvenile, birth_weight,
-    weaning_weight, lactation_duration, parturition_rate
+    non_productive_duration, pregnancy_duration, litter_size, death_rate_juvenile, live_weight_at_birth,
+    live_weight_at_weaning, lactation_duration, parturition_rate
   )
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short == "FA") {
       energy_requirement_lactation <- ((milk_yield_day * lactating_females_fraction) +
-                                         (parturition_rate * 5 * (weaning_weight - birth_weight) / 365)) *
+                                         (parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)) *
         (milk_fat_fraction * 100 * 0.40 + 1.47)
     } else {
       energy_requirement_lactation <- 0
@@ -733,7 +733,7 @@ calc_metabolic_energy_req_lactation <- function(
   } else if (species_short %in% c("CML")) {
     if (cohort_short == "FA") {
       energy_requirement_lactation <- ((milk_yield_day * lactating_females_fraction) +
-                                         (parturition_rate * 5 * (weaning_weight - birth_weight) / 365)) * 4.063
+                                         (parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)) * 4.063
     } else {
       energy_requirement_lactation <- 0
     }
@@ -742,7 +742,7 @@ calc_metabolic_energy_req_lactation <- function(
       # Includes effect of litter size and lambing interval
       energy_requirement_lactation <- (
         (milk_yield_day * lactating_females_fraction) +
-          (litter_size * parturition_rate * 5 * (weaning_weight - birth_weight) / 365)
+          (litter_size * parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)
       ) * 4.6
     } else {
       energy_requirement_lactation <- 0
@@ -751,7 +751,7 @@ calc_metabolic_energy_req_lactation <- function(
     if (cohort_short == "FA") {
       energy_requirement_lactation <- (
         (milk_yield_day * lactating_females_fraction) +
-          (litter_size * parturition_rate * 5 * (weaning_weight - birth_weight) / 365)
+          (litter_size * parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)
       ) * 3
     } else {
       energy_requirement_lactation <- 0
@@ -763,7 +763,7 @@ calc_metabolic_energy_req_lactation <- function(
       # Pigs: adjustment for lactation period
       cadj <- lactation_duration / (non_productive_duration + pregnancy_duration + lactation_duration)
       energy_requirement_lactation <- litter_size * (1 - 0.5 * death_rate_juvenile) *
-        ((0.02059 * (weaning_weight - birth_weight) * 1000 / lactation_duration) - (0.3766 / 0.67)) *
+        ((0.02059 * (live_weight_at_weaning - live_weight_at_birth) * 1000 / lactation_duration) - (0.3766 / 0.67)) *
         cadj
     }
   }

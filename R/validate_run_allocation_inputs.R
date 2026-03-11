@@ -31,7 +31,7 @@ validate_run_allocation_module_inputs <- function(
     "herd_id",
     "cohort_short",
     "milk_production_fpcm_cohort",
-    "slaughter_weight_cohort",
+    "live_weight_cohort_at_slaughter",
     "meat_production_live_weight_cohort",
     "energy_requirement_fibre_production",
     "cohort_stock_size",
@@ -40,7 +40,7 @@ validate_run_allocation_module_inputs <- function(
   required_herd_cols <- c(
     "herd_id",
     "animal",
-    "birth_weight",
+    "live_weight_at_birth",
     "milk_protein_fraction_standard",
     "milk_fat_fraction_standard",
     "milk_lactose_fraction_standard",

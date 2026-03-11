@@ -31,7 +31,7 @@ validate_energy_requirements_inputs <- function(
     "herd_id", "cohort_short",
     "live_weight_cohort_average", "offtake_rate",
     "low_activity_fraction", "high_activity_fraction",
-    "live_weight_cohort_initial", "live_weight_cohort_final", "mature_weight",
+    "live_weight_cohort_initial", "live_weight_cohort_final", "live_weight_mature_stage",
     "daily_weight_gain", "cohort_duration_days",
     "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy"
   )
@@ -39,7 +39,7 @@ validate_energy_requirements_inputs <- function(
     "herd_id", "animal",
     "age_first_parturition", "lactating_females_fraction", "milk_yield_day", "milk_fat_fraction",
     "non_productive_duration", "pregnancy_duration", "litter_size", "death_rate_juvenile",
-    "birth_weight", "weaning_weight",
+    "live_weight_at_birth", "live_weight_at_weaning",
     "lactation_duration", "parturition_rate", "egg_average_weight",
     "draught_work_hours_female", "draught_work_hours_male",
     "draught_fraction_female", "draught_fraction_male",
@@ -175,14 +175,14 @@ validate_energy_requirements_inputs <- function(
   }
 
   # --- Numeric consistency (herd-level) ----------------------------------------
-  # birth_weight < weaning_weight where both present (strict)
+  # live_weight_at_birth < live_weight_at_weaning where both present (strict)
   bad_birth_weaning <- herd_level_data[
-    !is.na(birth_weight) & !is.na(weaning_weight) & birth_weight >= weaning_weight,
+    !is.na(live_weight_at_birth) & !is.na(live_weight_at_weaning) & live_weight_at_birth >= live_weight_at_weaning,
     herd_id
   ]
   if (length(bad_birth_weaning) > 0) {
     cli::cli_abort(
-      "For each herd, {.field birth_weight} must be strictly less than {.field weaning_weight}.
+      "For each herd, {.field live_weight_at_birth} must be strictly less than {.field live_weight_at_weaning}.
       Violation(s) for herd_id: {.val {bad_birth_weaning}}"
     )
   }

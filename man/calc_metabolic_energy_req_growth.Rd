@@ -10,7 +10,7 @@ calc_metabolic_energy_req_growth(
   live_weight_cohort_average = NA_real_,
   live_weight_cohort_final = NA_real_,
   live_weight_cohort_initial = NA_real_,
-  mature_weight = NA_real_,
+  live_weight_mature_stage = NA_real_,
   daily_weight_gain = NA_real_,
   offtake_rate = NA_real_,
   cohort_duration_days = NA_real_
@@ -49,7 +49,7 @@ and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
 
 \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 
-\item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given
+\item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given
 biological and management conditions (kg).}
 
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}

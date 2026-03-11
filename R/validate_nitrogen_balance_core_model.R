@@ -18,8 +18,8 @@ validate_nitrogen_retention_inputs <- function(
     fibre_yield_year = NA_real_,
     litter_size = NA_real_,
     parturition_rate = NA_real_,
-    weaning_weight = NA_real_,
-    birth_weight = NA_real_,
+    live_weight_at_weaning = NA_real_,
+    live_weight_at_birth = NA_real_,
     pregnancy_duration = NA_real_,
     cohort_duration_days = NA_real_
 ) {
@@ -50,16 +50,16 @@ validate_nitrogen_retention_inputs <- function(
     if (cohort_short == "FA") {
       validate_param_range(litter_size, "litter_size")
       validate_param_range(parturition_rate, "parturition_rate")
-      validate_param_range(weaning_weight, "weaning_weight")
-      validate_param_range(birth_weight, "birth_weight")
+      validate_param_range(live_weight_at_weaning, "live_weight_at_weaning")
+      validate_param_range(live_weight_at_birth, "live_weight_at_birth")
     } else if (cohort_short == "FS") {
       validate_param_range(daily_weight_gain, "daily_weight_gain")
       validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
       validate_param_range(cohort_duration_days, "cohort_duration_days")
       validate_param_range(litter_size, "litter_size")
       validate_param_range(parturition_rate, "parturition_rate")
-      validate_param_range(weaning_weight, "weaning_weight")
-      validate_param_range(birth_weight, "birth_weight")
+      validate_param_range(live_weight_at_weaning, "live_weight_at_weaning")
+      validate_param_range(live_weight_at_birth, "live_weight_at_birth")
     } else {
       validate_param_range(daily_weight_gain, "daily_weight_gain")
     }
@@ -82,9 +82,9 @@ validate_nitrogen_retention_inputs <- function(
   }
 
   # Birth weight must be strictly below weaning weight when both are provided
-  if (!is.na(birth_weight) && !is.na(weaning_weight) && birth_weight >= weaning_weight) {
+  if (!is.na(live_weight_at_birth) && !is.na(live_weight_at_weaning) && live_weight_at_birth >= live_weight_at_weaning) {
     cli::cli_abort(
-      "{.arg birth_weight} must be strictly less than {.arg weaning_weight}."
+      "{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}."
     )
   }
 }

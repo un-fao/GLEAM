@@ -364,7 +364,7 @@ test_that("calc_fibre_production handles validation errors", {
 test_that("calc_meat_production returns expected output structure", {
   result <- calc_meat_production(
     offtake_heads_assessment = 10,
-    slaughter_weight_cohort = 400,
+    live_weight_cohort_at_slaughter = 400,
     carcass_dressing_fraction = 0.55,
     bone_free_meat_fraction = 0.75,
     meat_protein_fraction = 0.20
@@ -382,7 +382,7 @@ test_that("calc_meat_production returns expected output structure", {
 test_that("calc_meat_production calculates liveweight correctly", {
   result <- calc_meat_production(
     offtake_heads_assessment = 50,
-    slaughter_weight_cohort = 300,
+    live_weight_cohort_at_slaughter = 300,
     carcass_dressing_fraction = 0.60,
     bone_free_meat_fraction = 0.80,
     meat_protein_fraction = 0.22
@@ -395,7 +395,7 @@ test_that("calc_meat_production calculates liveweight correctly", {
 test_that("calc_meat_production calculates carcass weight correctly", {
   result <- calc_meat_production(
     offtake_heads_assessment = 25,
-    slaughter_weight_cohort = 450,
+    live_weight_cohort_at_slaughter = 450,
     carcass_dressing_fraction = 0.58,
     bone_free_meat_fraction = 0.78,
     meat_protein_fraction = 0.21
@@ -409,7 +409,7 @@ test_that("calc_meat_production calculates carcass weight correctly", {
 test_that("calc_meat_production calculates boneless meat correctly", {
   result <- calc_meat_production(
     offtake_heads_assessment = 30,
-    slaughter_weight_cohort = 350,
+    live_weight_cohort_at_slaughter = 350,
     carcass_dressing_fraction = 0.55,
     bone_free_meat_fraction = 0.70,
     meat_protein_fraction = 0.20
@@ -424,7 +424,7 @@ test_that("calc_meat_production calculates boneless meat correctly", {
 test_that("calc_meat_production calculates meat protein correctly", {
   result <- calc_meat_production(
     offtake_heads_assessment = 20,
-    slaughter_weight_cohort = 400,
+    live_weight_cohort_at_slaughter = 400,
     carcass_dressing_fraction = 0.56,
     bone_free_meat_fraction = 0.75,
     meat_protein_fraction = 0.23
@@ -440,7 +440,7 @@ test_that("calc_meat_production calculates meat protein correctly", {
 test_that("calc_meat_production handles zero offtake", {
   result <- calc_meat_production(
     offtake_heads_assessment = 0,
-    slaughter_weight_cohort = 400,
+    live_weight_cohort_at_slaughter = 400,
     carcass_dressing_fraction = 0.55,
     bone_free_meat_fraction = 0.75,
     meat_protein_fraction = 0.20
@@ -455,7 +455,7 @@ test_that("calc_meat_production handles zero offtake", {
 test_that("calc_meat_production handles zero slaughter weight", {
   result <- calc_meat_production(
     offtake_heads_assessment = 10,
-    slaughter_weight_cohort = 0,
+    live_weight_cohort_at_slaughter = 0,
     carcass_dressing_fraction = 0.55,
     bone_free_meat_fraction = 0.75,
     meat_protein_fraction = 0.20
@@ -470,7 +470,7 @@ test_that("calc_meat_production handles zero slaughter weight", {
 test_that("calc_meat_production verifies sequential calculation chain", {
   result <- calc_meat_production(
     offtake_heads_assessment = 100,
-    slaughter_weight_cohort = 300,
+    live_weight_cohort_at_slaughter = 300,
     carcass_dressing_fraction = 0.50,
     bone_free_meat_fraction = 0.80,
     meat_protein_fraction = 0.25
@@ -490,7 +490,7 @@ test_that("calc_meat_production verifies sequential calculation chain", {
 test_that("calc_meat_production handles validation errors", {
   expect_error(
     calc_meat_production(
-      offtake_heads_assessment = -10, slaughter_weight_cohort = 400,
+      offtake_heads_assessment = -10, live_weight_cohort_at_slaughter = 400,
       carcass_dressing_fraction = 0.55, bone_free_meat_fraction = 0.75,
       meat_protein_fraction = 0.20
     ),
@@ -499,16 +499,16 @@ test_that("calc_meat_production handles validation errors", {
 
   expect_error(
     calc_meat_production(
-      offtake_heads_assessment = 10, slaughter_weight_cohort = -400,
+      offtake_heads_assessment = 10, live_weight_cohort_at_slaughter = -400,
       carcass_dressing_fraction = 0.55, bone_free_meat_fraction = 0.75,
       meat_protein_fraction = 0.20
     ),
-    "slaughter_weight_cohort"
+    "live_weight_cohort_at_slaughter"
   )
 
   expect_error(
     calc_meat_production(
-      offtake_heads_assessment = 10, slaughter_weight_cohort = 400,
+      offtake_heads_assessment = 10, live_weight_cohort_at_slaughter = 400,
       carcass_dressing_fraction = 1.5, bone_free_meat_fraction = 0.75,
       meat_protein_fraction = 0.20
     ),
@@ -517,7 +517,7 @@ test_that("calc_meat_production handles validation errors", {
 
   expect_error(
     calc_meat_production(
-      offtake_heads_assessment = 10, slaughter_weight_cohort = 400,
+      offtake_heads_assessment = 10, live_weight_cohort_at_slaughter = 400,
       carcass_dressing_fraction = 0.55, bone_free_meat_fraction = -0.1,
       meat_protein_fraction = 0.20
     ),
@@ -526,7 +526,7 @@ test_that("calc_meat_production handles validation errors", {
 
   expect_error(
     calc_meat_production(
-      offtake_heads_assessment = 10, slaughter_weight_cohort = 400,
+      offtake_heads_assessment = 10, live_weight_cohort_at_slaughter = 400,
       carcass_dressing_fraction = 0.55, bone_free_meat_fraction = 0.75,
       meat_protein_fraction = 1.5
     ),

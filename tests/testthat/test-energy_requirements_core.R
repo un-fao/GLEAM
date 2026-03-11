@@ -160,7 +160,7 @@ test_that("calc_metabolic_energy_req_growth returns correct values for cattle", 
   result <- calc_metabolic_energy_req_growth(
     species_short = "CTL", cohort_short = "FJ",
     live_weight_cohort_average = 200, live_weight_cohort_final = 300,
-    live_weight_cohort_initial = 150, mature_weight = 500, daily_weight_gain = 0.5, offtake_rate = 0.1, cohort_duration_days = 100
+    live_weight_cohort_initial = 150, live_weight_mature_stage = 500, daily_weight_gain = 0.5, offtake_rate = 0.1, cohort_duration_days = 100
   )
   expected <- 22.02 * ((200 / (0.8 * 500))^0.75) * (0.5^1.097)
   expect_equal(result, expected)
@@ -168,7 +168,7 @@ test_that("calc_metabolic_energy_req_growth returns correct values for cattle", 
   result <- calc_metabolic_energy_req_growth(
     species_short = "CTL", cohort_short = "FA",
     live_weight_cohort_average = 500, live_weight_cohort_final = 500,
-    live_weight_cohort_initial = 500, mature_weight = 500, daily_weight_gain = 0, offtake_rate = 0.1, cohort_duration_days = 365
+    live_weight_cohort_initial = 500, live_weight_mature_stage = 500, daily_weight_gain = 0, offtake_rate = 0.1, cohort_duration_days = 365
   )
   expect_equal(result, 0)
 })
@@ -177,7 +177,7 @@ test_that("calc_metabolic_energy_req_growth handles sheep linear formula", {
   result <- calc_metabolic_energy_req_growth(
     species_short = "SHP", cohort_short = "FJ",
     live_weight_cohort_average = 30, live_weight_cohort_final = 50,
-    live_weight_cohort_initial = 25, mature_weight = 60, daily_weight_gain = 0.1, offtake_rate = 0.1, cohort_duration_days = 250
+    live_weight_cohort_initial = 25, live_weight_mature_stage = 60, daily_weight_gain = 0.1, offtake_rate = 0.1, cohort_duration_days = 250
   )
   expected <- ((50 - 25) * (2.1 + 0.5 * 0.45 * (25 + 50))) / 250
   expect_equal(result, expected)
@@ -185,7 +185,7 @@ test_that("calc_metabolic_energy_req_growth handles sheep linear formula", {
   result <- calc_metabolic_energy_req_growth(
     species_short = "SHP", cohort_short = "FA",
     live_weight_cohort_average = 60, live_weight_cohort_final = 60,
-    live_weight_cohort_initial = 60, mature_weight = 60, daily_weight_gain = 0, offtake_rate = 0.1, cohort_duration_days = 365
+    live_weight_cohort_initial = 60, live_weight_mature_stage = 60, daily_weight_gain = 0, offtake_rate = 0.1, cohort_duration_days = 365
   )
   expect_equal(result, 0)
 })
@@ -194,7 +194,7 @@ test_that("calc_metabolic_energy_req_growth handles pigs", {
   result <- calc_metabolic_energy_req_growth(
     species_short = "PGS", cohort_short = "FJ",
     live_weight_cohort_average = 50, live_weight_cohort_final = 80,
-    live_weight_cohort_initial = 40, mature_weight = 300, daily_weight_gain = 0.3, offtake_rate = 0.1, cohort_duration_days = 133
+    live_weight_cohort_initial = 40, live_weight_mature_stage = 300, daily_weight_gain = 0.3, offtake_rate = 0.1, cohort_duration_days = 133
   )
   prot_tissue_frac <- 0.65
   cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * 0.9 * 52.3)
@@ -207,7 +207,7 @@ test_that("calc_metabolic_energy_req_lactation returns correct values for cattle
   result <- calc_metabolic_energy_req_lactation(
     species_short = "CTL", cohort_short = "FA",
     lactating_females_fraction = 0.8, milk_yield_day = 20, milk_fat_fraction = 0.04,
-    non_productive_duration = 0, pregnancy_duration = 0, litter_size = 1, death_rate_juvenile = 0, birth_weight = 35, weaning_weight = 90,
+    non_productive_duration = 0, pregnancy_duration = 0, litter_size = 1, death_rate_juvenile = 0, live_weight_at_birth = 35, live_weight_at_weaning = 90,
     lactation_duration = 0, parturition_rate = 0.8
   )
   expected <- ((20 * 0.8) + (0.8 * 5 * (90 - 35) / 365)) * (0.04 * 100 * 0.40 + 1.47)
@@ -218,7 +218,7 @@ test_that("calc_metabolic_energy_req_lactation handles sheep with litter size", 
   result <- calc_metabolic_energy_req_lactation(
     species_short = "SHP", cohort_short = "FA",
     lactating_females_fraction = 0.9, milk_yield_day = 1.5, milk_fat_fraction = 0.06,
-    non_productive_duration = 0, pregnancy_duration = 0, litter_size = 1.5, death_rate_juvenile = 0, birth_weight = 4, weaning_weight = 18,
+    non_productive_duration = 0, pregnancy_duration = 0, litter_size = 1.5, death_rate_juvenile = 0, live_weight_at_birth = 4, live_weight_at_weaning = 18,
     lactation_duration = 0, parturition_rate = 1.2
   )
   expected <- ((1.5 * 0.9) + (1.5 * 1.2 * 5 * (18 - 4) / 365)) * 4.6
@@ -229,7 +229,7 @@ test_that("calc_metabolic_energy_req_lactation handles pigs", {
   result <- calc_metabolic_energy_req_lactation(
     species_short = "PGS", cohort_short = "FA",
     lactating_females_fraction = 0, milk_yield_day = 0, milk_fat_fraction = 0,
-    non_productive_duration = 0.2, pregnancy_duration = 0.3, litter_size = 10, death_rate_juvenile = 0.1, birth_weight = 1.5, weaning_weight = 8,
+    non_productive_duration = 0.2, pregnancy_duration = 0.3, litter_size = 10, death_rate_juvenile = 0.1, live_weight_at_birth = 1.5, live_weight_at_weaning = 8,
     lactation_duration = 0.5, parturition_rate = 2.2
   )
   cadj <- 0.5 / (0.2 + 0.3 + 0.5)

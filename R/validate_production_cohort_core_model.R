@@ -73,7 +73,7 @@ validate_fibre_output_inputs <- function(
 #' @noRd
 validate_meat_outputs_inputs <- function(
     offtake_heads_assessment,
-    slaughter_weight_cohort,
+    live_weight_cohort_at_slaughter,
     carcass_dressing_fraction,
     bone_free_meat_fraction,
     meat_protein_fraction
@@ -81,7 +81,7 @@ validate_meat_outputs_inputs <- function(
 
   # Range checks via parameter_ranges
   validate_param_range(offtake_heads_assessment, "offtake_heads_assessment")
-  validate_param_range(slaughter_weight_cohort, "slaughter_weight_cohort")
+  validate_param_range(live_weight_cohort_at_slaughter, "live_weight_cohort_at_slaughter")
   validate_param_range(carcass_dressing_fraction, "carcass_dressing_fraction")
   validate_param_range(bone_free_meat_fraction, "bone_free_meat_fraction")
   validate_param_range(meat_protein_fraction, "meat_protein_fraction")

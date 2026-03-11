@@ -252,7 +252,7 @@ calc_fibre_production <- function(
 #'
 #' @param offtake_heads_assessment Numeric. Total number of animals removed via offtake over the assessment period,
 #' aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).
-#' @param slaughter_weight_cohort Numeric. Live weight at slaughter for animals removed from the cohort (kg).
+#' @param live_weight_cohort_at_slaughter Numeric. Live weight at slaughter for animals removed from the cohort (kg).
 #' @param carcass_dressing_fraction Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
 #' (fraction).
 #' @param bone_free_meat_fraction Numeric. Ratio of bone-free-meat to carcass weight (fraction).
@@ -303,20 +303,20 @@ calc_fibre_production <- function(
 #' @export
 calc_meat_production <- function(
     offtake_heads_assessment,
-    slaughter_weight_cohort,
+    live_weight_cohort_at_slaughter,
     carcass_dressing_fraction,
     bone_free_meat_fraction,
     meat_protein_fraction
 ) {
   validate_meat_outputs_inputs(
     offtake_heads_assessment = offtake_heads_assessment,
-    slaughter_weight_cohort = slaughter_weight_cohort,
+    live_weight_cohort_at_slaughter = live_weight_cohort_at_slaughter,
     carcass_dressing_fraction = carcass_dressing_fraction,
     bone_free_meat_fraction = bone_free_meat_fraction,
     meat_protein_fraction = meat_protein_fraction
   )
 
-  meat_production_live_weight_cohort <- offtake_heads_assessment * slaughter_weight_cohort
+  meat_production_live_weight_cohort <- offtake_heads_assessment * live_weight_cohort_at_slaughter
   meat_production_carcass_weight_cohort <- (
     meat_production_live_weight_cohort * carcass_dressing_fraction
   )

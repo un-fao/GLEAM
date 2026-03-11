@@ -30,7 +30,7 @@ Supported values include:
 FS, FA, MJ, MS, MA).}
 \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period,
 aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).}
-\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 }}
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data

@@ -96,8 +96,8 @@ validate_run_gleam_inputs <- function(
     # Herd simulation (cohort and herd)
     "cohort_stock_size", "offtake_heads", "offtake_heads_assessment", "growth_rate_herd",
     # Weights (cohort)
-    "mature_weight", "live_weight_cohort_initial", "live_weight_cohort_potential_final",
-    "slaughter_weight_cohort", "live_weight_cohort_average", "live_weight_cohort_final",
+    "live_weight_mature_stage", "live_weight_cohort_initial", "live_weight_cohort_potential_final",
+    "live_weight_cohort_at_slaughter", "live_weight_cohort_average", "live_weight_cohort_final",
     "daily_weight_gain",
     # Production cohort (cohort-level outputs)
     "milk_production_mass_cohort", "milk_production_protein_cohort", "milk_production_fpcm_cohort",

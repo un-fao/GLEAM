@@ -29,7 +29,7 @@ run_metabolic_energy_req_module(
 \item{high_activity_fraction}{Numeric. Proportion of the assessment period during which the animal engages in sustained locomotion associated with herding or long-distance grazing, typically involving extended walking distances and/or uneven or hilly terrain (fraction).}
 \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 \item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
-\item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+\item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 \item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
@@ -59,8 +59,8 @@ internal lookup table. Supported values include:
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 \item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
-\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
-\item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
+\item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
+\item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.}
 \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance
 indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}

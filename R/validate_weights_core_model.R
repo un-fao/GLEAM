@@ -4,9 +4,9 @@
 validate_cohort_weight_inputs <- function(
     cohort_short,
     live_weight_female_adult, live_weight_male_adult,
-    birth_weight,
-    slaughter_weight_female, slaughter_weight_male,
-    weaning_weight
+    live_weight_at_birth,
+    live_weight_female_at_slaughter, live_weight_male_at_slaughter,
+    live_weight_at_weaning
 ) {
   # Character inputs
   validate_scalar_character(cohort_short, "cohort_short")
@@ -15,10 +15,10 @@ validate_cohort_weight_inputs <- function(
   args <- list(
     live_weight_female_adult = live_weight_female_adult,
     live_weight_male_adult = live_weight_male_adult,
-    birth_weight = birth_weight,
-    slaughter_weight_female = slaughter_weight_female,
-    slaughter_weight_male = slaughter_weight_male,
-    weaning_weight = weaning_weight
+    live_weight_at_birth = live_weight_at_birth,
+    live_weight_female_at_slaughter = live_weight_female_at_slaughter,
+    live_weight_male_at_slaughter = live_weight_male_at_slaughter,
+    live_weight_at_weaning = live_weight_at_weaning
   )
 
   for (arg_name in names(args)) {
@@ -38,10 +38,10 @@ validate_cohort_weight_inputs <- function(
 
   required_by_cohort <- switch(
     cohort_short,
-    "FJ" = c("birth_weight", "weaning_weight", "live_weight_female_adult"),
-    "MJ" = c("birth_weight", "weaning_weight", "live_weight_male_adult"),
-    "FS" = c("weaning_weight", "live_weight_female_adult", "slaughter_weight_female"),
-    "MS" = c("weaning_weight", "live_weight_male_adult", "slaughter_weight_male"),
+    "FJ" = c("live_weight_at_birth", "live_weight_at_weaning", "live_weight_female_adult"),
+    "MJ" = c("live_weight_at_birth", "live_weight_at_weaning", "live_weight_male_adult"),
+    "FS" = c("live_weight_at_weaning", "live_weight_female_adult", "live_weight_female_at_slaughter"),
+    "MS" = c("live_weight_at_weaning", "live_weight_male_adult", "live_weight_male_at_slaughter"),
     "FA" = c("live_weight_female_adult"),
     "MA" = c("live_weight_male_adult")
   )
@@ -61,15 +61,15 @@ validate_cohort_weight_inputs <- function(
   # Enforce configured bounds
   validate_param_range(live_weight_female_adult)
   validate_param_range(live_weight_male_adult)
-  validate_param_range(birth_weight)
-  validate_param_range(slaughter_weight_female)
-  validate_param_range(slaughter_weight_male)
-  validate_param_range(weaning_weight)
+  validate_param_range(live_weight_at_birth)
+  validate_param_range(live_weight_female_at_slaughter)
+  validate_param_range(live_weight_male_at_slaughter)
+  validate_param_range(live_weight_at_weaning)
 
   # Birth weight must be strictly below weaning weight when both are provided
-  if (!is.na(birth_weight) && !is.na(weaning_weight) && birth_weight >= weaning_weight) {
+  if (!is.na(live_weight_at_birth) && !is.na(live_weight_at_weaning) && live_weight_at_birth >= live_weight_at_weaning) {
     cli::cli_abort(
-      "{.arg birth_weight} must be strictly less than {.arg weaning_weight}."
+      "{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}."
     )
   }
 }
@@ -82,16 +82,16 @@ validate_cohort_weight_inputs <- function(
 validate_avg_weight_inputs <- function(
     live_weight_cohort_initial,
     live_weight_cohort_potential_final,
-    slaughter_weight_cohort,
+    live_weight_cohort_at_slaughter,
     offtake_rate
 ) {
   validate_scalar_numeric(live_weight_cohort_initial, "live_weight_cohort_initial")
   validate_scalar_numeric(live_weight_cohort_potential_final, "live_weight_cohort_potential_final")
-  validate_scalar_numeric(slaughter_weight_cohort, "slaughter_weight_cohort")
+  validate_scalar_numeric(live_weight_cohort_at_slaughter, "live_weight_cohort_at_slaughter")
   validate_scalar_numeric(offtake_rate, "offtake_rate")
 
   # Enforce configured bounds
-  validate_param_range(slaughter_weight_cohort)
+  validate_param_range(live_weight_cohort_at_slaughter)
   validate_param_range(offtake_rate)
 }
 

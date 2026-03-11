@@ -47,9 +47,9 @@ utils::globalVariables(c(
   # Columns used in run_weights_module and validate_weights_inputs
   "cohort", "cohort_short", "cohort_duration_days",
   "live_weight_female_adult", "live_weight_male_adult",
-  "birth_weight", "slaughter_weight_female", "slaughter_weight_male", "weaning_weight",
+  "live_weight_at_birth", "live_weight_female_at_slaughter", "live_weight_male_at_slaughter", "live_weight_at_weaning",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
-  "slaughter_weight_cohort", "live_weight_cohort_average",
+  "live_weight_cohort_at_slaughter", "live_weight_cohort_average",
   "live_weight_cohort_final", "animal"
 ))
 
@@ -96,15 +96,15 @@ utils::globalVariables(c(
   "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion",
   "dry_matter_intake", "diet_nitrogen", "daily_weight_gain",
   "species_short", "cohort_short", "milk_protein_fraction", "milk_yield_day",
-  "fibre_yield_year", "litter_size", "parturition_rate", "weaning_weight",
-  "birth_weight", "age_first_parturition",
+  "fibre_yield_year", "litter_size", "parturition_rate", "live_weight_at_weaning",
+  "live_weight_at_birth", "age_first_parturition",
   # data.table join prefixes used in run_nitrogen_balance
   "x.species_short", "x.milk_protein_fraction", "x.milk_yield_day",
   "x.fibre_yield_year", "x.litter_size", "x.parturition_rate",
-  "x.weaning_weight", "x.birth_weight", "x.age_first_parturition",
+  "x.live_weight_at_weaning", "x.live_weight_at_birth", "x.age_first_parturition",
   "Item_Name", "dmi", "milk_yield",
   # Columns used in run_production_cohort (cohort-level + outputs)
-  "cohort_stock_size", "offtake_heads_assessment", "slaughter_weight_cohort",
+  "cohort_stock_size", "offtake_heads_assessment", "live_weight_cohort_at_slaughter",
   "fibre_production_cohort",
   # data.table join prefixes used in run_production_cohort (herd-level lookups)
   "x.milk_yield_day", "x.lactating_females_fraction",
@@ -137,14 +137,14 @@ utils::globalVariables(c(
 
 utils::globalVariables(c(
   # Columns created by update joins in run_weights_module
-  "x.live_weight_female_adult", "x.live_weight_male_adult", "x.birth_weight",
-  "x.slaughter_weight_female", "x.slaughter_weight_male", "x.weaning_weight"
+  "x.live_weight_female_adult", "x.live_weight_male_adult", "x.live_weight_at_birth",
+  "x.live_weight_female_at_slaughter", "x.live_weight_male_at_slaughter", "x.live_weight_at_weaning"
 ))
 
 utils::globalVariables(c(
   # Columns used in run_metabolic_energy_req_module (cohort-level and results)
   "cohort_short", "live_weight_cohort_average", "offtake_rate", "low_activity_fraction", "high_activity_fraction",
-  "live_weight_cohort_initial", "live_weight_cohort_final", "mature_weight", "daily_weight_gain", "cohort_duration_days",
+  "live_weight_cohort_initial", "live_weight_cohort_final", "live_weight_mature_stage", "daily_weight_gain", "cohort_duration_days",
   "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy",
   "energy_requirement_maintenance", "energy_requirement_activity", "energy_requirement_growth", "energy_requirement_lactation",
   "energy_requirement_work", "energy_requirement_fibre_production", "energy_requirement_pregnancy",
@@ -152,11 +152,11 @@ utils::globalVariables(c(
   "energy_requirement_total", "dry_matter_intake", "activity_sum", "species_short",
   # herd-level lookups (x.* from herd_level_data[.SD, on = "herd_id", x.col])
   "x.species_short", "x.lactating_females_fraction", "x.age_first_parturition", "x.milk_yield_day", "x.milk_fat_fraction",
-  "x.non_productive_duration", "x.pregnancy_duration", "x.litter_size", "x.death_rate_juvenile", "x.birth_weight", "x.weaning_weight",
+  "x.non_productive_duration", "x.pregnancy_duration", "x.litter_size", "x.death_rate_juvenile", "x.live_weight_at_birth", "x.live_weight_at_weaning",
   "x.lactation_duration", "x.parturition_rate", "x.draught_work_hours_female", "x.draught_work_hours_male",
   "x.draught_fraction_female", "x.draught_fraction_male", "x.fibre_yield_year",
   # validate_energy_requirements_inputs
-  "has_all_cohorts", "missing_cohorts", "birth_weight", "weaning_weight"
+  "has_all_cohorts", "missing_cohorts", "live_weight_at_birth", "live_weight_at_weaning"
 ))
 
 utils::globalVariables(c(

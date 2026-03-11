@@ -56,8 +56,8 @@
 #'     A herd-level reproductive performance indicator calculated as the total
 #'     number of parturitions (deliveries) occurring during
 #'     a year divided by the number of adult females potentially able to give birth during that year.}
-#'     \item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
-#'     \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
+#'     \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
+#'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 #'   }
 #'
@@ -161,8 +161,8 @@ run_nitrogen_balance_module <- function(
       fibre_yield_year = herd_level_data[.SD, on = "herd_id", x.fibre_yield_year],
       litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
       parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
-      weaning_weight = herd_level_data[.SD, on = "herd_id", x.weaning_weight],
-      birth_weight = herd_level_data[.SD, on = "herd_id", x.birth_weight],
+      live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning],
+      live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
       pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
       cohort_duration_days = cohort_duration_days
     ),
