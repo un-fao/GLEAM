@@ -131,10 +131,10 @@ validate_run_gleam_inputs <- function(
     "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other", "ch4_manure_all_noburn",
     "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
     "n2o_manure_all_noburn_direct",
-    "n2o_vol_manure_pasture", "n2o_vol_manure_burned", "n2o_vol_manure_other",
-    "n2o_vol_manure_all_noburn",
-    "n2o_leach_manure_pasture", "n2o_leach_manure_burned", "n2o_leach_manure_other",
-    "n2o_leach_manure_all_noburn",
+    "n2o_manure_pasture_vol", "n2o_manure_burned_vol", "n2o_manure_other_vol",
+    "n2o_manure_all_noburn_vol",
+    "n2o_manure_pasture_leach", "n2o_manure_burned_leach", "n2o_manure_other_leach",
+    "n2o_manure_all_noburn_leach",
     "n2o_manure_pasture_indirect", "n2o_manure_burned_indirect", "n2o_manure_other_indirect",
     "n2o_manure_pasture_total", "n2o_manure_burned_total", "n2o_manure_other_total"
   )

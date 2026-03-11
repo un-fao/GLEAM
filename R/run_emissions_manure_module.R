@@ -123,14 +123,14 @@
 #'     \item{n2o_manure_burned_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure burned for fuel (kg N₂O/head/day).}
 #'     \item{n2o_manure_other_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg N₂O/head/day).}
 #'     \item{n2o_manure_all_noburn_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure management systems, excluding emissions from manure burned for fuel (kg N₂O/head/day).}
-#'     \item{n2o_vol_manure_pasture}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure deposited on pasture (kg N₂O/head/day).}
-#'     \item{n2o_vol_manure_burned}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure burned for fuel (kg N₂O/head/day).}
-#'     \item{n2o_vol_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
-#'     \item{n2o_vol_manure_all_noburn}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding losses from manure burned for fuel (kg N₂O/head/day).}
-#'     \item{n2o_leach_manure_pasture}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure deposited on pasture (kg N₂O/head/day).}
-#'     \item{n2o_leach_manure_burned}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure burned for fuel (kg N₂O/head/day).}
-#'     \item{n2o_leach_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
-#'     \item{n2o_leach_manure_all_noburn}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_manure_pasture_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure deposited on pasture (kg N₂O/head/day).}
+#'     \item{n2o_manure_burned_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_manure_other_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_manure_all_noburn_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding losses from manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_manure_pasture_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure deposited on pasture (kg N₂O/head/day).}
+#'     \item{n2o_manure_burned_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_manure_other_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
+#'     \item{n2o_manure_all_noburn_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure burned for fuel (kg N₂O/head/day).}
 #'     \item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions from manure deposited on pasture. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
 #'     \item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
 #'     \item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen.}
@@ -370,10 +370,10 @@ run_emissions_manure_module <- function(
   cohort_level_data[
     ,
     c(
-      "n2o_vol_manure_pasture",
-      "n2o_vol_manure_burned",
-      "n2o_vol_manure_other",
-      "n2o_vol_manure_all_noburn"
+      "n2o_manure_pasture_vol",
+      "n2o_manure_burned_vol",
+      "n2o_manure_other_vol",
+      "n2o_manure_all_noburn_vol"
     ) := {
       # Select MMS records for this herd/cohort (fractions + factors).
       current_herd_id <- herd_id
@@ -391,10 +391,10 @@ run_emissions_manure_module <- function(
         c(list(nitrogen_excretion = nitrogen_excretion), mms_list)
       )
       list(
-        n2o_vol$n2o_vol_manure_pasture,
-        n2o_vol$n2o_vol_manure_burned,
-        n2o_vol$n2o_vol_manure_other,
-        n2o_vol$n2o_vol_manure_all_noburn
+        n2o_vol$n2o_manure_pasture_vol,
+        n2o_vol$n2o_manure_burned_vol,
+        n2o_vol$n2o_manure_other_vol,
+        n2o_vol$n2o_manure_all_noburn_vol
       )
     },
     by = .I
@@ -404,10 +404,10 @@ run_emissions_manure_module <- function(
   cohort_level_data[
     ,
     c(
-      "n2o_leach_manure_pasture",
-      "n2o_leach_manure_burned",
-      "n2o_leach_manure_other",
-      "n2o_leach_manure_all_noburn"
+      "n2o_manure_pasture_leach",
+      "n2o_manure_burned_leach",
+      "n2o_manure_other_leach",
+      "n2o_manure_all_noburn_leach"
     ) := {
       # Select MMS records for this herd/cohort (fractions + factors).
       current_herd_id <- herd_id
@@ -425,10 +425,10 @@ run_emissions_manure_module <- function(
         c(list(nitrogen_excretion = nitrogen_excretion), mms_list)
       )
       list(
-        n2o_leach$n2o_leach_manure_pasture,
-        n2o_leach$n2o_leach_manure_burned,
-        n2o_leach$n2o_leach_manure_other,
-        n2o_leach$n2o_leach_manure_all_noburn
+        n2o_leach$n2o_manure_pasture_leach,
+        n2o_leach$n2o_manure_burned_leach,
+        n2o_leach$n2o_manure_other_leach,
+        n2o_leach$n2o_manure_all_noburn_leach
       )
     },
     by = .I
@@ -446,12 +446,12 @@ run_emissions_manure_module <- function(
       "n2o_manure_other_total"
     ) := {
       totals <- calc_n2o_manure_total(
-        n2o_vol_manure_pasture = n2o_vol_manure_pasture,
-        n2o_leach_manure_pasture = n2o_leach_manure_pasture,
-        n2o_vol_manure_burned = n2o_vol_manure_burned,
-        n2o_leach_manure_burned = n2o_leach_manure_burned,
-        n2o_vol_manure_other = n2o_vol_manure_other,
-        n2o_leach_manure_other = n2o_leach_manure_other,
+        n2o_manure_pasture_vol = n2o_manure_pasture_vol,
+        n2o_manure_pasture_leach = n2o_manure_pasture_leach,
+        n2o_manure_burned_vol = n2o_manure_burned_vol,
+        n2o_manure_burned_leach = n2o_manure_burned_leach,
+        n2o_manure_other_vol = n2o_manure_other_vol,
+        n2o_manure_other_leach = n2o_manure_other_leach,
         n2o_manure_pasture_direct = n2o_manure_pasture_direct,
         n2o_manure_burned_direct = n2o_manure_burned_direct,
         n2o_manure_other_direct = n2o_manure_other_direct
