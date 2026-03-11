@@ -98,8 +98,8 @@ the selected GWP-100 option. Results are stored as \code{value_total} with \code
 }
 \examples{
 \dontrun{
-# Load cohort-level aggregation input (output from run_gleam or equivalent)
-cohort_dt <- data.table::fread(system.file(
+# Load cohort-level aggregation input
+aggregation_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/aggregation_input_chrt_data.csv",
   package = "gleam"
 ))
@@ -112,7 +112,7 @@ allocation_long <- data.table::fread(system.file(
 
 # Run aggregation
 results <- run_aggregation(
-  cohort_level_data = cohort_dt,
+  cohort_level_data = aggregation_chrt_dt,
   allocation_herd_long = allocation_long,
   simulation_duration = 365,
   global_warming_potential_set = "AR6"
