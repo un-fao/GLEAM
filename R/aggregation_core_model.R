@@ -24,7 +24,7 @@
 #'   level (kg/cohort/assessment duration).
 #'
 #' @export
-calc_totals_by_cohort <- function(
+calc_cohort_totals <- function(
     value,
     cohort_stock_size,
     simulation_duration,
@@ -54,7 +54,7 @@ calc_totals_by_cohort <- function(
 #' This function multiplies total herd-level emissions by the corresponding
 #' allocation share to estimate the share of emissions allocated to a
 #' specific output. Allocation shares are typically derived from biophysical
-#' allocation based on energy requirements (see [run_allocation()]).
+#' allocation based on energy requirements (see [run_allocation_module()]).
 #'
 #' @param value Numeric vector. Total emissions at herd-level by source
 #'   (kg gas).

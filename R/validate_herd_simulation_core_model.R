@@ -61,7 +61,7 @@ validate_named_numeric_vector <- function(
   }
 }
 
-#' Validate inputs for compute_fecundity_rates
+#' Validate inputs for calc_fecundity_rates
 #'
 #' @noRd
 validate_fecundity_inputs <- function(
@@ -79,7 +79,7 @@ validate_fecundity_inputs <- function(
   validate_param_range(birth_fraction_female)
 }
 
-#' Validate inputs for compute_transition_probabilities
+#' Validate inputs for calc_transition_probabilities
 #'
 #' @noRd
 validate_transition_inputs <- function(
@@ -97,7 +97,7 @@ validate_transition_inputs <- function(
   validate_param_range(offtake_rate)
 }
 
-#' Validate inputs for simulate_steady_state_structure
+#' Validate inputs for calc_steady_state_structure
 #'
 #' @noRd
 validate_steady_state_inputs <- function(
@@ -135,7 +135,7 @@ validate_steady_state_inputs <- function(
   validate_scalar_numeric(fecundity_male, "fecundity_male")
 }
 
-#' Validate inputs for project_population_size
+#' Validate inputs for calc_projected_population_size
 #'
 #' @noRd
 validate_population_size_inputs <- function(
@@ -181,7 +181,7 @@ validate_population_size_inputs <- function(
   validate_param_range(herd_size_total)
 }
 
-#' Validate inputs for summarise_offtake
+#' Validate inputs for calc_summary_offtake
 #'
 #' @noRd
 validate_offtake_summary_inputs <- function(

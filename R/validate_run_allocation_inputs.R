@@ -1,13 +1,13 @@
-#' Validate inputs for run_allocation
+#' Validate inputs for run_allocation_module
 #'
 #' Validates that cohort_level_data and herd_level_data have the expected structure,
-#' required columns, and consistent herd_id linkage (like run_energy_requirements).
+#' required columns, and consistent herd_id linkage (like run_metabolic_energy_req_module).
 #'
 #' @param cohort_level_data data.table. Cohort-level allocation inputs (one row per herd-cohort).
 #' @param herd_level_data data.table. Herd-level allocation inputs (one row per herd).
 #'
 #' @noRd
-validate_run_allocation_inputs <- function(
+validate_run_allocation_module_inputs <- function(
     cohort_level_data,
     herd_level_data
 ) {

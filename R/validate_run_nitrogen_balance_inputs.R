@@ -1,4 +1,4 @@
-#' Validate inputs for run_nitrogen_balance
+#' Validate inputs for run_nitrogen_balance_module
 #'
 #' Validates that cohort_level_data and herd_level_data have the correct structure,
 #' required columns, valid species and cohort codes, and consistent herd_id linkage.
@@ -9,7 +9,7 @@
 #' @param herd_level_data data.table. Herd-level inputs (one row per herd).
 #'
 #' @noRd
-validate_run_nitrogen_balance_inputs <- function(cohort_level_data, herd_level_data) {
+validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_level_data) {
 
   # --- Basic type and structure checks ----------------------------------------
   if (!data.table::is.data.table(cohort_level_data)) {

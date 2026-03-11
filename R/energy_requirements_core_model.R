@@ -125,7 +125,7 @@
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
 #' @export
-calc_net_energy_maintenance <- function(
+calc_metabolic_energy_req_maintenance <- function(
     species_short,
     cohort_short,
     live_weight_cohort_average,
@@ -243,7 +243,7 @@ calc_net_energy_maintenance <- function(
 #' \eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS};
 #' MJ/day/kg for \code{SHP},  \code{GTS}) that reflects the animal’s feeding and management conditions.
 #' \code{energy_requirement_maintenance} can be calculated using
-#' \code{\link{calc_net_energy_maintenance}()}.
+#' \code{\link{calc_metabolic_energy_req_maintenance}()}.
 #' 
 #' For \code{CTL, BFL, SHP} and \code{GTS}, \eqn{cact} is computed as a *weighted average* of activity levels
 #' over the assessment period to account for variation in management and grazing intensity.
@@ -275,7 +275,7 @@ calc_net_energy_maintenance <- function(
 #'   }
 #'   
 #' @seealso
-#' \code{\link{calc_net_energy_maintenance}} 
+#' \code{\link{calc_metabolic_energy_req_maintenance}} 
 #' \code{\link{calc_avg_weights}} 
 #' 
 #' @references
@@ -299,7 +299,7 @@ calc_net_energy_maintenance <- function(
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
 #' @export
-calc_net_energy_activity <- function(
+calc_metabolic_energy_req_activity <- function(
     species_short,
     cohort_short,
     energy_requirement_maintenance,
@@ -462,7 +462,7 @@ calc_net_energy_activity <- function(
 #'   from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
 #'
 #' @export
-calc_net_energy_growth <- function(
+calc_metabolic_energy_req_growth <- function(
     species_short,
     cohort_short,
     live_weight_cohort_average = NA_real_,
@@ -700,7 +700,7 @@ calc_net_energy_growth <- function(
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
 #' @export
-calc_net_energy_lactation <- function(
+calc_metabolic_energy_req_lactation <- function(
     species_short,
     cohort_short,
     lactating_females_fraction = NA_real_,
@@ -801,7 +801,7 @@ calc_net_energy_lactation <- function(
 #'
 #' @return No return value; this function always errors to indicate it's a stub.
 #' @noRd
-calc_net_energy_eggs <- function(
+calc_metabolic_energy_req_eggs <- function(
     species_short,
     cohort_short,
     egg_yield_year = NA_real_,
@@ -869,7 +869,7 @@ calc_net_energy_eggs <- function(
 #' where:
 #' \itemize{
 #'   \item \eqn{energy\_requirement\_maintenance} is net energy required for maintenance (MJ/head/day) and can be calculated using 
-#'   \code{\link{calc_net_energy_maintenance}()},
+#'   \code{\link{calc_metabolic_energy_req_maintenance}()},
 #'   \item \eqn{0.1} represents a 10% increase in maintenance energy per hour of work,
 #'   \item \eqn{work\_hours} is the mean number of hours worked per animal per day - 
 #'   \code{draught_work_hours_female} (for \code{FA}) and \code{draught_work_hours_male} (for \code{MA}) and,
@@ -896,7 +896,7 @@ calc_net_energy_eggs <- function(
 #'   }
 #'
 #'@seealso
-#' \code{\link{calc_net_energy_maintenance}} 
+#' \code{\link{calc_metabolic_energy_req_maintenance}} 
 #'
 #'@references
 #' Bamualim A., Kartiarso (1985). \emph{Nutrition of draught animals with special reference to Indonesia}.
@@ -914,7 +914,7 @@ calc_net_energy_eggs <- function(
 #' Zaragoza : CIHEAM. (1989). p. 171-179 (Options Méditerranéennes : Série A. Séminaires Méditerranéens; n. 2)
 #'
 #' @export
-calc_net_energy_work <- function(
+calc_metabolic_energy_req_work <- function(
     species_short,
     cohort_short,
     energy_requirement_maintenance = NA_real_,
@@ -1067,7 +1067,7 @@ calc_net_energy_work <- function(
 #'
 #' @export
 #'
-calc_net_energy_fibre <- function(
+calc_metabolic_energy_req_fibre <- function(
     species_short,
     cohort_short,
     fibre_yield_year = NA_real_
@@ -1166,7 +1166,7 @@ calc_net_energy_fibre <- function(
 #' \itemize{
 #' \item \eqn{c_{preg}} is a species-specific pregnancy coefficient, 
 #' \item \eqn{S} is a scaling term that depends on cohort (\code{FA} vs \code{FS}).
-#' \item \eqn{energy\_requirement\_maintenance} can be calculated using \code{\link{calc_net_energy_maintenance}()}
+#' \item \eqn{energy\_requirement\_maintenance} can be calculated using \code{\link{calc_metabolic_energy_req_maintenance}()}
 #'}
 #'
 #' \strong{Specific coefficients by species and cohort:}
@@ -1255,7 +1255,7 @@ calc_net_energy_fibre <- function(
 #' }
 #' 
 #' @seealso
-#' \code{\link{calc_net_energy_maintenance}} 
+#' \code{\link{calc_metabolic_energy_req_maintenance}} 
 #'
 #' @references
 #' NRC (1998). \emph{Nutrient Requirements of Swine},
@@ -1273,7 +1273,7 @@ calc_net_energy_fibre <- function(
 #'
 #' @export
 #'
-calc_net_energy_pregnancy <- function(
+calc_metabolic_energy_req_pregnancy <- function(
     species_short,
     cohort_short,
     energy_requirement_maintenance = NA_real_,
@@ -1389,9 +1389,9 @@ calc_net_energy_pregnancy <- function(
 #' returns \code{NA_real_}.
 #'
 #' @seealso
-#' \code{\link{calc_diet_digestibility}}
-#' \code{\link{calc_total_energy_requirement}}
-#' \code{\link{calc_dry_matter_intake}}
+#' \code{\link{calc_ration_digestibility}}
+#' \code{\link{calc_total_metabolic_energy_req}}
+#' \code{\link{calc_ration_intake}}
 #'
 #'
 #' @references
@@ -1460,9 +1460,9 @@ calc_rem_maintenance <- function(
 #' 
 #'
 #' @seealso
-#' \code{\link{calc_diet_digestibility}}
-#' \code{\link{calc_total_energy_requirement}}
-#' \code{\link{calc_dry_matter_intake}}
+#' \code{\link{calc_ration_digestibility}}
+#' \code{\link{calc_total_metabolic_energy_req}}
+#' \code{\link{calc_ration_intake}}
 #'
 #'
 #' @references
@@ -1617,16 +1617,16 @@ calc_reg_growth <- function(
 #'   }
 #' 
 #' @seealso
-#' \code{\link{calc_net_energy_maintenance}}
-#' \code{\link{calc_net_energy_activity}}
-#' \code{\link{calc_net_energy_growth}}
-#' \code{\link{calc_net_energy_lactation}}
-#' \code{\link{calc_net_energy_work}}
-#' \code{\link{calc_net_energy_fibre}}
-#' \code{\link{calc_net_energy_pregnancy}}
+#' \code{\link{calc_metabolic_energy_req_maintenance}}
+#' \code{\link{calc_metabolic_energy_req_activity}}
+#' \code{\link{calc_metabolic_energy_req_growth}}
+#' \code{\link{calc_metabolic_energy_req_lactation}}
+#' \code{\link{calc_metabolic_energy_req_work}}
+#' \code{\link{calc_metabolic_energy_req_fibre}}
+#' \code{\link{calc_metabolic_energy_req_pregnancy}}
 #' \code{\link{calc_rem_maintenance}}
 #' \code{\link{calc_reg_growth}}
-#' \code{\link{calc_dry_matter_intake}}
+#' \code{\link{calc_ration_intake}}
 #' 
 #' @references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
@@ -1636,7 +1636,7 @@ calc_reg_growth <- function(
 #'   from Livestock and Manure Management, Equation 10.16.
 #'
 #' @export
-calc_total_energy_requirement <- function(
+calc_total_metabolic_energy_req <- function(
     species_short,
     energy_requirement_maintenance,
     energy_requirement_activity,
@@ -1744,9 +1744,9 @@ calc_total_energy_requirement <- function(
 #' }
 #'
 #' @seealso
-#' \code{\link{calc_total_energy_requirement}}
-#' \code{\link{calc_diet_gross_energy}}
-#' \code{\link{calc_diet_metabolizable_energy}}
+#' \code{\link{calc_total_metabolic_energy_req}}
+#' \code{\link{calc_ration_gross_energy}}
+#' \code{\link{calc_ration_metabolizable_energy}}
 #' 
 #' @references
 #' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories},
@@ -1757,7 +1757,7 @@ calc_total_energy_requirement <- function(
 #'
 #'
 #' @export
-calc_dry_matter_intake <- function(
+calc_ration_intake <- function(
     species_short,
     energy_requirement_total,
     diet_gross_energy,

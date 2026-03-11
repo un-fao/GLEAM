@@ -1,4 +1,4 @@
-#' Validate inputs for run_feed_rations
+#' Validate inputs for run_ration_quality_module
 #'
 #' Validates that rations_share and feed_params have the expected structure,
 #' required columns, and consistent identifiers.

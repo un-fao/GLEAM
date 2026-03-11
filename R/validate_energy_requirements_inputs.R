@@ -1,4 +1,4 @@
-#' Validate inputs for run_energy_requirements
+#' Validate inputs for run_metabolic_energy_req_module
 #'
 #' Validates that cohort_level_data and herd_level_data have the correct structure,
 #' required columns, valid cohort and animal values, and consistent herd_id linkage.

@@ -51,8 +51,8 @@
 #'   following IDF (2022) (MJ/kg milk).
 #'
 #'   \item \code{milk_production_fpcm_cohort} is the total fat- and protein-corrected milk
-#'   (FPCM) produced over the assessment period (kg/assessment period). It can be computed using \code{\link{compute_milk_outputs}}
-#'   (see also \code{\link{run_production_cohort}}).
+#'   (FPCM) produced over the assessment period (kg/assessment period). It can be computed using \code{\link{calc_milk_production}}
+#'   (see also \code{\link{run_production_module}}).
 #'
 #' }
 #'
@@ -83,11 +83,11 @@
 #' and Performance (LEAP) Partnership. FAO, Rome, Italy.
 #'
 #' @seealso
-#' \code{\link{compute_milk_outputs}},
-#' \code{\link{run_production_cohort}}
+#' \code{\link{calc_milk_production}},
+#' \code{\link{run_production_module}}
 #'
 #' @export
-calc_energy_allocation_milk <- function(
+calc_milk_allocation_energy <- function(
     milk_production_fpcm_cohort,
     milk_protein_fraction_standard,
     milk_fat_fraction_standard,
@@ -183,8 +183,8 @@ calc_energy_allocation_milk <- function(
 #'
 #'   \item \code{meat_production_live_weight_cohort} is the total live weight of
 #'   animals sold for meat over the assessment period. It can be computed using
-#'   \code{\link{compute_meat_outputs}} (see also
-#'   \code{\link{run_production_cohort}}).
+#'   \code{\link{calc_meat_production}} (see also
+#'   \code{\link{run_production_module}}).
 #'   }
 #'
 #' \strong{Specific approaches by species:}
@@ -195,7 +195,7 @@ calc_energy_allocation_milk <- function(
 #'
 #'   Growth energy is calculated using species- and
 #'   cohort-specific biophysical relationships adapted from established growth
-#'   energy formulations (further details in \code{\link{calc_net_energy_growth}}).
+#'   energy formulations (further details in \code{\link{calc_metabolic_energy_req_growth}}).
 #'
 #'   \item \strong{For \code{PGS}}:
 #'
@@ -232,12 +232,12 @@ calc_energy_allocation_milk <- function(
 #' and Performance (LEAP) Partnership. FAO, Rome, Italy.
 #'
 #' @seealso
-#' \code{\link{compute_meat_outputs}},
-#' \code{\link{run_production_cohort}},
+#' \code{\link{calc_meat_production}},
+#' \code{\link{run_production_module}},
 #' \code{\link{calc_allocation_shares}}
 #'
 #' @export
-calc_energy_allocation_meat <- function(
+calc_meat_allocation_energy <- function(
     species_short,
     cohort_short,
     meat_production_live_weight_cohort,
@@ -363,12 +363,12 @@ calc_energy_allocation_meat <- function(
 #' for sheep (\code{SHP}) and goats (\code{GTS}).
 #'
 #' where \code{energy_requirement_fibre_production} can be computed using
-#'   \code{\link{calc_net_energy_fibre}} (see also
-#'   \code{\link{run_energy_requirements}}).
+#'   \code{\link{calc_metabolic_energy_req_fibre}} (see also
+#'   \code{\link{run_metabolic_energy_req_module}}).
 #'
 #' @seealso
-#' \code{\link{calc_net_energy_fibre}},
-#' \code{\link{run_energy_requirements}}
+#' \code{\link{calc_metabolic_energy_req_fibre}},
+#' \code{\link{run_metabolic_energy_req_module}}
 #'
 #' @references
 #' ISO. (2006). \emph{Environmental management — Life cycle assessment —
@@ -397,7 +397,7 @@ calc_energy_allocation_meat <- function(
 #' and Performance (LEAP) Partnership. FAO, Rome, Italy.
 #'
 #' @export
-calc_energy_allocation_fibre <- function(
+calc_fibre_allocation_energy <- function(
     species_short,
     cohort_stock_size = NA_real_,
     energy_requirement_fibre_production = NA_real_,
@@ -485,12 +485,12 @@ calc_energy_allocation_fibre <- function(
 #' for camels (\code{CML}).
 #'
 #' where \code{energy_requirement_work} can be computed using
-#'   \code{\link{calc_net_energy_work}} (see also
-#'   \code{\link{run_energy_requirements}}).
+#'   \code{\link{calc_metabolic_energy_req_work}} (see also
+#'   \code{\link{run_metabolic_energy_req_module}}).
 #'
 #' @seealso
-#' \code{\link{calc_net_energy_work}},
-#' \code{\link{run_energy_requirements}}
+#' \code{\link{calc_metabolic_energy_req_work}},
+#' \code{\link{run_metabolic_energy_req_module}}
 #'
 #' @references
 #' ISO. (2006). \emph{Environmental management — Life cycle assessment —
@@ -519,7 +519,7 @@ calc_energy_allocation_fibre <- function(
 #' and Performance (LEAP) Partnership. FAO, Rome, Italy.
 #'
 #' @export
-calc_energy_allocation_work <- function(
+calc_work_allocation_energy <- function(
     species_short,
     cohort_stock_size,
     energy_requirement_work,
@@ -572,7 +572,7 @@ calc_energy_allocation_work <- function(
 #' @return A `data.table` at herd scale, in which selected cohort-level variables have been summed across all cohorts
 #' belonging to the same herd, as defined by id_herd.
 #' @export
-aggregate_cohort_to_herd <- function(
+calc_cohort_to_herd_aggregation <- function(
     data_cohort,
     id_cols,
     vars_to_sum,
@@ -650,11 +650,11 @@ aggregate_cohort_to_herd <- function(
 #' This function calculates biophysical allocation fractions for commodities
 #' (meat, milk, fibre, work, eggs) for all species. The allocation is based on
 #' commodity-specific energy requirements calculated using
-#' \code{\link{calc_energy_allocation_meat}},
-#' \code{\link{calc_energy_allocation_milk}},
-#' \code{\link{calc_energy_allocation_fibre}},
-#' \code{\link{calc_energy_allocation_work}}, and
-#' \code{calc_energy_allocation_eggs}.
+#' \code{\link{calc_meat_allocation_energy}},
+#' \code{\link{calc_milk_allocation_energy}},
+#' \code{\link{calc_fibre_allocation_energy}},
+#' \code{\link{calc_work_allocation_energy}}, and
+#' \code{calc_eggs_allocation_energy}.
 #'
 #' \strong{Pig systems (\code{PGS}).} For pigs, allocation is not based on energy
 #' partitioning because pig production is treated as functionally single-output
@@ -663,11 +663,11 @@ aggregate_cohort_to_herd <- function(
 #' energy inputs.
 #'
 #' @seealso
-#' \code{\link{calc_energy_allocation_meat}},
-#' \code{\link{calc_energy_allocation_milk}},
-#' \code{\link{calc_energy_allocation_fibre}},
-#' \code{\link{calc_energy_allocation_work}},
-#' \code{calc_energy_allocation_eggs}
+#' \code{\link{calc_meat_allocation_energy}},
+#' \code{\link{calc_milk_allocation_energy}},
+#' \code{\link{calc_fibre_allocation_energy}},
+#' \code{\link{calc_work_allocation_energy}},
+#' \code{calc_eggs_allocation_energy}
 #'
 #' @references
 #' ISO. (2006). \emph{Environmental management — Life cycle assessment —
@@ -809,7 +809,7 @@ calc_allocation_shares <- function(
 #' and Performance (LEAP) Partnership. FAO, Rome, Italy.
 #'
 #' @export
-assign_allocation_to_emissions <- function(
+assign_allocation_shares <- function(
     allocation_herd_long,
     emissions_vars,
     commodities,

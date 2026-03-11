@@ -36,7 +36,7 @@
 #'
 #' In this implementation, the function takes \code{dry_matter_intake} directly
 #' as an input. It can be calculated upstream with
-#' \code{\link{calc_dry_matter_intake}} as a function of energy requirements and
+#' \code{\link{calc_ration_intake}} as a function of energy requirements and
 #' the energy content of the diet.
 #'
 #' \deqn{
@@ -176,7 +176,7 @@ calc_volatile_solids <- function(
 #' adapting the original annual formulation to a daily basis.
 #'
 #' @examples
-#' calc_ch4_emissions(
+#' calc_ch4_manure(
 #'   ratio_m3CH4_to_kgCH4 = 0.67,
 #'   volatile_solids   = 2.024,
 #'   mms_burned = c(
@@ -209,7 +209,7 @@ calc_volatile_solids <- function(
 #' Livestock and Manure Management. Equation 10.23.
 #' @export
 
-calc_ch4_emissions <- function(
+calc_ch4_manure <- function(
     ratio_m3CH4_to_kgCH4 = 0.67,
     volatile_solids,
     ...
@@ -339,7 +339,7 @@ calc_ch4_emissions <- function(
 #'
 #'
 #' @examples
-#' calc_direct_n2o_emissions(
+#' calc_n2o_manure_direct(
 #'   ratio_N2ON_to_N2O = 44 / 28,
 #'   nitrogen_excretion = 0.9,
 #'   mms_burned = c(
@@ -388,7 +388,7 @@ calc_ch4_emissions <- function(
 #'
 #' In this implementation, calculations are performed at daily,
 #' per-head resolution using \code{nitrogen_excretion}
-#' (kg N/head/day) - see also \code{\link{compute_nitrogen_excretion}}.
+#' (kg N/head/day) - see also \code{\link{calc_nitrogen_excretion}}.
 #' 
 #' Daily emissions are computed as:
 #'
@@ -408,7 +408,7 @@ calc_ch4_emissions <- function(
 #' Livestock and Manure Management. Equation 10.25.
 #' 
 #' @export
-calc_direct_n2o_emissions <- function(
+calc_n2o_manure_direct <- function(
     ratio_N2ON_to_N2O = 44 / 28,
     nitrogen_excretion,
     ...
@@ -536,7 +536,7 @@ calc_direct_n2o_emissions <- function(
 #' }
 #'
 #' @examples
-#' calc_n2o_from_volatilization(
+#' calc_n2o_manure_volatilization(
 #'   ratio_N2ON_to_N2O = 44 / 28,
 #'   nitrogen_excretion = 0.9,
 #'   mms_burned = c(
@@ -610,7 +610,7 @@ calc_direct_n2o_emissions <- function(
 #' Livestock and Manure Management. Equation 10.26; 10.27.
 #' 
 #' @export
-calc_n2o_from_volatilization <- function(
+calc_n2o_manure_volatilization <- function(
     ratio_N2ON_to_N2O = 44 / 28,
     nitrogen_excretion,
     ...
@@ -743,7 +743,7 @@ calc_n2o_from_volatilization <- function(
 #' }
 #'
 #' @examples
-#' calc_n2o_from_leaching(
+#' calc_n2o_manure_leaching(
 #'   ratio_N2ON_to_N2O = 44 / 28,
 #'   nitrogen_excretion = 0.9,
 #'   mms_burned = c(
@@ -815,7 +815,7 @@ calc_n2o_from_volatilization <- function(
 #' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories},
 #' Volume 4, Chapter 10: Emissions from Livestock and Manure Management. Equations 10.28; 10.29.
 #' @export
-calc_n2o_from_leaching <- function(
+calc_n2o_manure_leaching <- function(
     ratio_N2ON_to_N2O = 44 / 28,
     nitrogen_excretion,
     ...
@@ -976,7 +976,7 @@ calc_n2o_from_leaching <- function(
 #' }
 #'
 #' @examples
-#' calc_total_n2o_emissions(
+#' calc_n2o_manure_total(
 #'   n2o_vol_manure_pasture = 0.0129,
 #'   n2o_leach_manure_pasture = 0.0012,
 #'   n2o_vol_manure_burned = 0,
@@ -989,7 +989,7 @@ calc_n2o_from_leaching <- function(
 #' )
 #'
 #' @export
-calc_total_n2o_emissions <- function(
+calc_n2o_manure_total <- function(
     n2o_vol_manure_pasture,
     n2o_leach_manure_pasture,
     n2o_vol_manure_burned,
@@ -1000,7 +1000,7 @@ calc_total_n2o_emissions <- function(
     n2o_manure_burned_direct,
     n2o_manure_other_direct
 ) {
-  validate_calc_total_n2o_emissions(
+  validate_calc_n2o_manure_total(
     n2o_vol_manure_pasture = n2o_vol_manure_pasture,
     n2o_leach_manure_pasture = n2o_leach_manure_pasture,
     n2o_vol_manure_burned = n2o_vol_manure_burned,

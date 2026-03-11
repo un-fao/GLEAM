@@ -1,4 +1,4 @@
-#' Validate inputs for calc_totals_by_cohort
+#' Validate inputs for calc_cohort_totals
 #'
 #' Ensures that inputs for the cohort totals calculation are correctly typed
 #' and within valid ranges. Specifically:
@@ -10,7 +10,7 @@
 #'
 #' Valid variable types: `"Production"`, `"Emissions"`, `"Feed"`, `"NitrogenBalance"`.
 #'
-#' This validator is designed for internal use in [calc_totals_by_cohort()].
+#' This validator is designed for internal use in [calc_cohort_totals()].
 #'
 #' @param value Numeric vector. Variable value (kg/head/day or kg/cohort/assessment duration).
 #' @param cohort_stock_size Numeric vector. Number of heads in the cohort.
@@ -34,7 +34,7 @@ validate_totals_by_cohort_inputs <- function(
 
   if (length(unique(lengths)) > 1) {
     cli::cli_abort(
-      "All inputs to {.fun calc_totals_by_cohort} must have the same length."
+      "All inputs to {.fun calc_cohort_totals} must have the same length."
     )
   }
 

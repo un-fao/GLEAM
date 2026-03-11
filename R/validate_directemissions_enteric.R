@@ -1,4 +1,4 @@
-#' Validate inputs for compute_methane_conversion_factor
+#' Validate inputs for calc_conversion_factor_ym
 #'
 #' Ensures that inputs for the methane conversion factor (YM) calculation
 #' are correctly typed and within valid ranges. Specifically:
@@ -6,7 +6,7 @@
 #' * `diet_digestibility_fraction` must be a scalar numeric between 0 and 1 (fraction of GE).
 #'
 #' This validator is designed for internal use in
-#' [compute_methane_conversion_factor()].
+#' [calc_conversion_factor_ym()].
 #'
 #' @noRd
 validate_ym_inputs <- function(
@@ -19,7 +19,7 @@ validate_ym_inputs <- function(
   validate_param_range(diet_digestibility_fraction, "diet_digestibility_fraction")
 }
 
-#' Validate inputs for compute_daily_enteric_emissions
+#' Validate inputs for calc_ch4_enteric
 #'
 #' Ensures that inputs for the daily enteric methane emissions calculation
 #' are valid. Specifically:
@@ -30,7 +30,7 @@ validate_ym_inputs <- function(
 #'   diet_gross_energy, dry_matter_intake).
 #'
 #' This validator is designed for internal use in
-#' [compute_daily_enteric_emissions()].
+#' [calc_ch4_enteric()].
 #'
 #' @noRd
 validate_enteric_emission_inputs <- function(

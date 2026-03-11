@@ -14,10 +14,10 @@
 #' \eqn{nitrogen\_intake = dry\_matter\_intake \times diet\_nitrogen}
 #' 
 #' @seealso
-#' \code{\link{calc_dry_matter_intake}}, 
-#' \code{\link{run_energy_requirements}},
-#' \code{\link{calc_diet_nitrogen_content}}, 
-#' \code{\link{run_feed_rations}}
+#' \code{\link{calc_ration_intake}}, 
+#' \code{\link{run_metabolic_energy_req_module}},
+#' \code{\link{calc_ration_nitrogen_content}}, 
+#' \code{\link{run_ration_quality_module}}
 #'
 #' @references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, 
@@ -29,7 +29,7 @@
 #' Livestock and Manure Management. Equation 10.32.
 #'
 #' @export
-compute_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
+calc_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
   # Validate inputs
   validate_nitrogen_intake_inputs(dry_matter_intake, diet_nitrogen)
 
@@ -168,7 +168,7 @@ compute_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
 #' Livestock and Manure Management. Equation 10.33.
 #'
 #' @export
-compute_nitrogen_retention <- function(
+calc_nitrogen_retention <- function(
     species_short,
     cohort_short,
     milk_protein_fraction = NA_real_,
@@ -276,11 +276,11 @@ compute_nitrogen_retention <- function(
 #' Livestock and Manure Management. Equation 10.31A.
 #'
 #' @seealso
-#' \code{\link{compute_nitrogen_intake}}, 
-#' \code{\link{compute_nitrogen_retention}}
+#' \code{\link{calc_nitrogen_intake}}, 
+#' \code{\link{calc_nitrogen_retention}}
 #'
 #' @export
-compute_nitrogen_excretion <- function(
+calc_nitrogen_excretion <- function(
     species_short,
     nitrogen_intake,
     nitrogen_retention

@@ -1,4 +1,4 @@
-#' Validate inputs for compute_nitrogen_intake
+#' Validate inputs for calc_nitrogen_intake
 #'
 #' @noRd
 validate_nitrogen_intake_inputs <- function(dry_matter_intake, diet_nitrogen) {
@@ -6,7 +6,7 @@ validate_nitrogen_intake_inputs <- function(dry_matter_intake, diet_nitrogen) {
   validate_param_range(diet_nitrogen, "diet_nitrogen")
 }
 
-#' Validate inputs for compute_nitrogen_retention
+#' Validate inputs for calc_nitrogen_retention
 #'
 #' @noRd
 validate_nitrogen_retention_inputs <- function(
@@ -89,7 +89,7 @@ validate_nitrogen_retention_inputs <- function(
   }
 }
 
-#' Validate inputs for compute_nitrogen_excretion
+#' Validate inputs for calc_nitrogen_excretion
 #'
 #' @noRd
 validate_nitrogen_excretion_inputs <- function(species_short, nitrogen_intake, nitrogen_retention) {

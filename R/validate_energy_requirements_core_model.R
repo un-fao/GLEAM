@@ -1,4 +1,4 @@
-#' Validate inputs for calc_net_energy_maintenance
+#' Validate inputs for calc_metabolic_energy_req_maintenance
 #'
 #' Maintenance always uses live_weight_cohort_average. Optional args (lactating
 #' fraction, offtake rate, age at first parturition) are only required and
@@ -64,7 +64,7 @@ validate_activity_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_net_energy_growth
+#' Validate inputs for calc_metabolic_energy_req_growth
 #'
 #' Only the arguments used for the given species and cohort are required and validated.
 #' Growth is zero for adult cohorts (FA, MA) in all species; other args may be NA when not used.
@@ -142,7 +142,7 @@ validate_growth_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_net_energy_lactation
+#' Validate inputs for calc_metabolic_energy_req_lactation
 #'
 #' Lactation is computed only for cohort FA. Only the arguments used for that species
 #' are required and validated; others may be NA.
@@ -258,7 +258,7 @@ validate_work_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_net_energy_fibre
+#' Validate inputs for calc_metabolic_energy_req_fibre
 #'
 #' Fibre is only computed for SHP, GTS, CML and only for cohorts FA, FS, MA, MS.
 #' For those cases fibre_yield_year is required and must be >= 0.
@@ -284,7 +284,7 @@ validate_fibre_inputs <- function(
   validate_param_range(fibre_yield_year, "fibre_yield_year")
 }
 
-#' Validate inputs for calc_net_energy_pregnancy
+#' Validate inputs for calc_metabolic_energy_req_pregnancy
 #'
 #' Pregnancy is computed only for female cohorts (FA, FS) and only for CTL, BFL, CML, SHP, GTS, PGS.
 #' CHK is not applicable. Only the arguments used for that species and cohort are required and validated.
@@ -429,7 +429,7 @@ validate_total_energy_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_dry_matter_intake
+#' Validate inputs for calc_ration_intake
 #'
 #' @noRd
 validate_dmi_inputs <- function(
