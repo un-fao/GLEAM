@@ -401,7 +401,7 @@ run_allocation <- function(
       "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice"
     ),
     commodities = c("Other", "Milk", "Meat", "Fibre", "Work", "Eggs"),
-    excluded_vars = c(
+    non_allocated_emission_sources = c(
       "ch4_manure_pasture", "ch4_manure_burned",
       "n2o_manure_pasture_direct", "n2o_manure_burned_direct",
       "n2o_manure_burned_indirect", "n2o_manure_pasture_indirect"

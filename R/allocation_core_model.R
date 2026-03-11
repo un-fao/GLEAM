@@ -761,8 +761,8 @@ calc_allocation_shares <- function(
 #' "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice").
 #' @param commodities Character. List of commodity categories to which emissions may be allocated.
 #' List=c("None","Milk","Meat","Fibre","Work","Eggs").
-#' @param excluded_vars Character. Emission variables that should not be allocated across commodities, even if they
-#' appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").
+#' @param non_allocated_emission_sources Character. Emission variables that should not be allocated across commodities, even if they
+#' appear in emissions_vars (e.g., "ch4_manure_pasture", "ch4_manure_burned").
 #' @param commodity_col Character. Name of the column in `allocation_herd_long` identifying the commodity category.
 #' @param allocation_col Character. Name of the column in `allocation_herd_long` containing the allocation share to be
 #' applied.
@@ -775,7 +775,7 @@ calc_allocation_shares <- function(
 #' }
 #'
 #'@details
-#' Emission sources listed in \code{excluded_vars} (e.g., emissions from manure
+#' Emission sources listed in \code{non_allocated_emission_sources} (e.g., emissions from manure
 #' burned as fuel or manure deposited on pasture) are treated as not attributable
 #' to livestock commodities under the chosen goal and scope. Consequently,
 #' these emissions are allocated entirely to the residual commodity category
@@ -783,7 +783,7 @@ calc_allocation_shares <- function(
 #' outputs.
 #'
 #' The following methodological rules apply to emission sources listed in
-#' \code{excluded_vars}:
+#' \code{non_allocated_emission_sources}:
 #'
 #' \itemize{
 #'   \item \strong{Manure burned for fuel} — Emissions are considered outside the
@@ -819,7 +819,7 @@ assign_allocation_to_emissions <- function(
     allocation_herd_long,
     emissions_vars,
     commodities,
-    excluded_vars,
+    non_allocated_emission_sources,
     commodity_col,
     allocation_col
 ) {
@@ -838,19 +838,19 @@ assign_allocation_to_emissions <- function(
     allow.cartesian = TRUE
   )
 
-  # 3) Excluded vars → 100% to Other, 0% to others
+  # 3) Non-allocated emission sources → 100% to Other, 0% to others
   allocation_herd_long[
-    variable_name %in% excluded_vars & get(commodity_col) == "Other",
+    variable_name %in% non_allocated_emission_sources & get(commodity_col) == "Other",
     (allocation_col) := 1
   ]
   allocation_herd_long[
-    variable_name %in% excluded_vars & get(commodity_col) != "Other",
+    variable_name %in% non_allocated_emission_sources & get(commodity_col) != "Other",
     (allocation_col) := 0
   ]
 
-  # 4) Non-excluded vars → Other = 0
+  # 4) Allocated emission sources → Other = 0
   allocation_herd_long[
-    !(variable_name %in% excluded_vars) & get(commodity_col) == "Other",
+    !(variable_name %in% non_allocated_emission_sources) & get(commodity_col) == "Other",
     (allocation_col) := 0
   ]
 
