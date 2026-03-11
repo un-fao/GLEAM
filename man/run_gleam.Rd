@@ -14,6 +14,7 @@ run_gleam(
   manure_management_system_fraction,
   manure_management_system_factors,
   simulation_duration = 365,
+  global_warming_potential_set = "AR6",
   show_indicator = TRUE
 )
 }
@@ -48,6 +49,10 @@ system factors (see \code{\link{run_directemissions_manure}}).}
 simulation module (when \code{has_herd_structure} is FALSE) and by the production module
 (milk, fibre, meat). Defaults to \code{365}.}
 
+\item{global_warming_potential_set}{Character. GWP-100 option for converting CH₄ and N₂O to CO₂-equivalents
+in aggregation results. One of \code{"AR6"} (default), \code{"AR5_excluding_carbon_feedback"},
+\code{"AR5_including_carbon_feedback"}, \code{"AR4"}.}
+
 \item{show_indicator}{Logical. Whether to display progress indicators during the pipeline run.}
 }
 \value{
@@ -61,6 +66,9 @@ such as \code{growth_rate_herd}; otherwise returns the input
 \code{herd_level_data}.}
 \item{allocation_long}{Herd-level \code{data.table} in long format (one row
 per herd, emission variable, and commodity) with allocation shares.}
+\item{aggregation_results}{Named list from \code{\link{run_aggregation}} with herd-level
+totals: \code{results_emissions} (allocated emissions in kg CO₂eq),
+\code{results_feed}, \code{results_production}, \code{results_nitrogen}.}
 }
 }
 \description{
@@ -157,7 +165,8 @@ results <- run_gleam(
   feed_emissions = feed_emissions_dt,
   manure_management_system_fraction = manure_management_system_fraction_dt,
   manure_management_system_factors = manure_management_system_factors_dt,
-  simulation_duration = 365
+  simulation_duration = 365,
+  global_warming_potential_set = "AR6"
 )
 print(results$cohort_level_results)
 print(results$allocation_long)

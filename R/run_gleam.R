@@ -29,6 +29,9 @@
 #' @param simulation_duration Numeric. Length of the assessment period (days). Used by the herd
 #'   simulation module (when \code{has_herd_structure} is FALSE) and by the production module
 #'   (milk, fibre, meat). Defaults to \code{365}.
+#' @param global_warming_potential_set Character. GWP-100 option for converting CH₄ and N₂O to CO₂-equivalents
+#'   in aggregation results. One of \code{"AR6"} (default), \code{"AR5_excluding_carbon_feedback"},
+#'   \code{"AR5_including_carbon_feedback"}, \code{"AR4"}.
 #' @param show_indicator Logical. Whether to display progress indicators during the pipeline run.
 #'
 #' @return A named list containing:
@@ -41,6 +44,9 @@
 #'       \code{herd_level_data}.}
 #'     \item{allocation_long}{Herd-level \code{data.table} in long format (one row
 #'       per herd, emission variable, and commodity) with allocation shares.}
+#'     \item{aggregation_results}{Named list from \code{\link{run_aggregation}} with herd-level
+#'       totals: \code{results_emissions} (allocated emissions in kg CO₂eq),
+#'       \code{results_feed}, \code{results_production}, \code{results_nitrogen}.}
 #'   }
 #'
 #' @examples
@@ -128,7 +134,8 @@
 #'   feed_emissions = feed_emissions_dt,
 #'   manure_management_system_fraction = manure_management_system_fraction_dt,
 #'   manure_management_system_factors = manure_management_system_factors_dt,
-#'   simulation_duration = 365
+#'   simulation_duration = 365,
+#'   global_warming_potential_set = "AR6"
 #' )
 #' print(results$cohort_level_results)
 #' print(results$allocation_long)
@@ -144,6 +151,7 @@ run_gleam <- function(
     manure_management_system_fraction,
     manure_management_system_factors,
     simulation_duration = 365,
+    global_warming_potential_set = "AR6",
     show_indicator = TRUE
 ) {
 
@@ -231,7 +239,7 @@ run_gleam <- function(
     show_indicator = show_indicator
   )
 
-  # --- Step 9: Run feed emissions (diet-level emission factors) ----------------
+  # --- Step 9: Run feed emissions (diet-level emission factors) ---------------
   feed_emissions_summary <- run_feed_emissions(
     rations_share = feed_rations,
     feed_emissions = feed_emissions,
@@ -243,7 +251,7 @@ run_gleam <- function(
     by = c("herd_id", "animal", "cohort_short")
   )
 
-  # --- Step 10: Run production (milk, fibre, meat) at cohort level ---------------
+  # --- Step 10: Run production (milk, fibre, meat) at cohort level ------------
   gleam_chrt_data <- run_production_cohort(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = herd_level_data,
@@ -251,7 +259,7 @@ run_gleam <- function(
     show_indicator = show_indicator
   )
 
-  # --- Step 11: Run allocation (energy allocation terms and commodity shares) ----
+  # --- Step 11: Run allocation (energy allocation terms and commodity shares) -
   allocation_results <- run_allocation(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = gleam_hrd_data,
@@ -259,6 +267,14 @@ run_gleam <- function(
     show_indicator = show_indicator
   )
   gleam_chrt_data <- allocation_results$cohort_allocation_inputs
+
+  # --- Step 12: Run aggregation (herd-level totals, allocated emissions in CO₂eq) ----
+  aggregation_results <- run_aggregation(
+    cohort_level_data = gleam_chrt_data,
+    allocation_herd_long = allocation_results$allocation_long,
+    simulation_duration = simulation_duration,
+    global_warming_potential_set = global_warming_potential_set
+  )
 
   # Clear progress indicator if it was shown
   if (show_indicator) {
@@ -271,7 +287,13 @@ run_gleam <- function(
     list(
       cohort_level_results = gleam_chrt_data,
       herd_level_results = gleam_hrd_data,
-      allocation_long = allocation_results$allocation_long
+      allocation_long = allocation_results$allocation_long,
+      aggregation_results = list(
+        results_emissions = aggregation_results$results_emissions,
+        results_feed = aggregation_results$results_feed,
+        results_production = aggregation_results$results_production,
+        results_nitrogen = aggregation_results$results_nitrogen
+      )
     )
   )
 }
