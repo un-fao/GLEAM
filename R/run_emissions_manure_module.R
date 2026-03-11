@@ -244,7 +244,7 @@ run_emissions_manure_module <- function(
     show_indicator = TRUE
 ) {
   # --- Step 1: Validate inputs ------------------------------------------------
-  validate_directemissions_manure_inputs(
+  validate_run_emissions_manure_module_inputs(
     cohort_level_data = cohort_level_data,
     manure_management_system_fraction = manure_management_system_fraction,
     manure_management_system_factors = manure_management_system_factors

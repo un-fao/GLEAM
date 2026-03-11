@@ -166,7 +166,7 @@ run_metabolic_energy_req_module <- function(
   herd_level_data <- data.table::as.data.table(herd_level_data)
 
   # --- Step 1: Validate inputs ------------------------------------------------
-  validate_energy_requirements_inputs(cohort_level_data, herd_level_data)
+  validate_run_metabolic_energy_req_module_inputs(cohort_level_data, herd_level_data)
 
   # Show progress indicator if requested
   if (show_indicator) {

@@ -7,7 +7,7 @@
 #' @param herd_level_data data.table. Herd-level inputs (one row per herd).
 #'
 #' @noRd
-validate_energy_requirements_inputs <- function(
+validate_run_metabolic_energy_req_module_inputs <- function(
     cohort_level_data,
     herd_level_data
 ) {

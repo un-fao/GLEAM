@@ -205,7 +205,7 @@ run_emissions_ration_module <- function(
     show_indicator = TRUE
 ) {
   # --- Step 1: Validate inputs ------------------------------------------------
-  validate_feed_indirect_emissions_inputs(rations_share, feed_emissions)
+  validate_run_emissions_ration_module_inputs(rations_share, feed_emissions)
 
   # Show progress indicator if requested
   if (show_indicator) {

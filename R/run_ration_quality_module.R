@@ -156,7 +156,7 @@ run_ration_quality_module <- function(
     show_indicator = TRUE
 ) {
   # --- Step 1: Validate inputs -----------------------------------------------
-  validate_feed_rations_inputs(rations_share, feed_params)
+  validate_run_ration_quality_module_inputs(rations_share, feed_params)
 
   # Show progress indicator if requested
   if (show_indicator) {

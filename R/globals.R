@@ -155,7 +155,7 @@ utils::globalVariables(c(
   "x.non_productive_duration", "x.pregnancy_duration", "x.litter_size", "x.death_rate_juvenile", "x.live_weight_at_birth", "x.live_weight_at_weaning",
   "x.lactation_duration", "x.parturition_rate", "x.draught_work_hours_female", "x.draught_work_hours_male",
   "x.draught_fraction_female", "x.draught_fraction_male", "x.fibre_yield_year",
-  # validate_energy_requirements_inputs
+  # validate_run_metabolic_energy_req_module_inputs
   "has_all_cohorts", "missing_cohorts", "live_weight_at_birth", "live_weight_at_weaning"
 ))
 

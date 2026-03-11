@@ -188,7 +188,7 @@ run_demographic_herd_module <- function(
 ) {
 
   # --- Step 1: Validate Inputs -----------------------------------------------
-  validate_herd_simulation_inputs(cohort_level_data, herd_level_data)
+  validate_run_demographic_herd_module_inputs(cohort_level_data, herd_level_data)
 
   # Show progress indicator if requested
   if (show_indicator) {

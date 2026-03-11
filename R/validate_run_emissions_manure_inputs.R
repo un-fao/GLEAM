@@ -8,7 +8,7 @@
 #' @param manure_management_system_factors data.table. Herd-level MMS factors.
 #'
 #' @noRd
-validate_directemissions_manure_inputs <- function(
+validate_run_emissions_manure_module_inputs <- function(
     cohort_level_data,
     manure_management_system_fraction,
     manure_management_system_factors

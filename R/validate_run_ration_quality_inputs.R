@@ -7,7 +7,7 @@
 #' @param feed_params data.table. Nutrient parameters for feed items.
 #'
 #' @noRd
-validate_feed_rations_inputs <- function(
+validate_run_ration_quality_module_inputs <- function(
     rations_share,
     feed_params
 ) {
