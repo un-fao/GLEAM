@@ -162,7 +162,7 @@
 #' @seealso
 #' \code{\link{calc_milk_production}},
 #' \code{\link{calc_meat_production}},
-#' \code{\link{run_production_cohort}},
+#' \code{\link{run_production_module}},
 #' \code{\link{calc_meat_allocation_energy}},
 #' \code{\link{calc_milk_allocation_energy}},
 #' \code{\link{calc_fibre_allocation_energy}},

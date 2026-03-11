@@ -15,7 +15,7 @@
 #' 
 #' @seealso
 #' \code{\link{calc_ration_intake}}, 
-#' \code{\link{run_energy_requirements}},
+#' \code{\link{run_metabolic_energy_req_module}},
 #' \code{\link{calc_ration_nitrogen_content}}, 
 #' \code{\link{run_ration_quality_module}}
 #'
