@@ -131,46 +131,15 @@ run_aggregation <- function(
 ) {
   # --- Input validation -------------------------------------------------------
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
-  if (nrow(cohort_level_data) == 0) {
-    cli::cli_abort("{.arg cohort_level_data} must be a non-empty data.table.")
-  }
-
-  if (!data.table::is.data.table(allocation_herd_long) || nrow(allocation_herd_long) == 0) {
-    cli::cli_abort("{.arg allocation_herd_long} must be a non-empty data.table.")
-  }
+  validate_run_aggregation_inputs(
+    cohort_level_data = cohort_level_data,
+    allocation_herd_long = allocation_herd_long,
+    simulation_duration = simulation_duration,
+    global_warming_potential_set = global_warming_potential_set
+  )
 
   # Map animal to species_short
-  if (!"species_short" %in% names(cohort_level_data) && "animal" %in% names(cohort_level_data)) {
-    cohort_level_data[abbr_animals, species_short := i.species_short, on = "animal"]
-  }
-
-  # Validate required grouping columns
-  required_group_cols <- c(
-    "herd_id", "species_short",
-    "cohort_short", "cohort_stock_size"
-  )
-  miss_group <- setdiff(required_group_cols, names(cohort_level_data))
-  if (length(miss_group)) {
-    cli::cli_abort("Missing required grouping columns in {.arg cohort_level_data}: {miss_group}.")
-  }
-
-  # Validate simulation_duration
-  if (!is.numeric(simulation_duration) || length(simulation_duration) != 1L || is.na(simulation_duration)) {
-    cli::cli_abort("{.arg simulation_duration} must be a single numeric value.")
-  }
-  if (simulation_duration <= 0) {
-    cli::cli_abort("{.arg simulation_duration} must be positive (days).")
-  }
-
-  # Validate global warming potential set option
-  valid_gwp <- c(
-    "AR6", "AR5_excluding_carbon_feedback", "AR5_including_carbon_feedback", "AR4"
-  )
-  if (!global_warming_potential_set %in% valid_gwp) {
-    cli::cli_abort(
-      "{.arg global_warming_potential_set} must be one of: {.val {valid_gwp}}"
-    )
-  }
+  cohort_level_data[abbr_animals, species_short := i.species_short, on = "animal"]
 
   # --- Step 1: Define variable groups -----------------------------------------
   feed_list <- list(
@@ -385,8 +354,7 @@ run_aggregation <- function(
     , gas := data.table::fcase(
       grepl("ch4", variable_name, ignore.case = TRUE), "CH4",
       grepl("n2o", variable_name, ignore.case = TRUE), "N2O",
-      grepl("co2", variable_name, ignore.case = TRUE), "CO2",
-      default = NA_character_
+      grepl("co2", variable_name, ignore.case = TRUE), "CO2"
     )
   ]
 
