@@ -3,7 +3,7 @@
 #' Computes the energy required for milk production over the assessment period
 #' (MJ/cohort/assessment period), based on total fat- and protein-corrected milk
 #' (FPCM) produced by the cohort.
-#' 
+#'
 #' @param milk_production_fpcm_cohort Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
 #' period (kg/cohort/assessment period).
 #' Suggested standard fat, protein and lactose contents are 0.04, 0.033, and 0.048 respectively.
@@ -17,7 +17,7 @@
 #' Fat-protein-corrected milk (FPCM) , (kg lactose/kg milk).
 #' Suggested value = 0.048.
 #'
-#' @return Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment period). 
+#' @return Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment period).
 #' Non-zero values are applicable only to milk-producing species and cohorts (species = CTL, BFL, CML, SHP, GTS;
 #' cohorts=FA).
 #' All other species–cohort combinations are assigned a value of 0.
@@ -29,7 +29,7 @@
 #'
 #' The approach implements the IDF (2022) standard, adapted from Thoma and Nemecek (2020), and is consistent with
 #' FAO LEAP livestock LCA guidelines (FAO, 2016a, 2016b, 2016c) and with ISO 14044:2006 (Section 4.3.4.2, Step 2).
-#' 
+#'
 #' In accordance with ISO 14044:2006, known biophysical relationships may be used
 #' to assign shared inputs and outputs of a production system to individual
 #' products or sub-units. In livestock systems, this includes apportioning shared
@@ -37,7 +37,7 @@
 #' lactation, growth, and maintenance. If the resulting process remains
 #' multifunctional, these energy terms may subsequently be used to derive
 #' allocation factors among co-products.
-#' 
+#'
 #' The \code{energy_allocation_milk} is calculated as follows:
 #'
 #' \eqn{energy\_allocation\_milk = energy\_standard \times milk\_production\_fpcm\_cohort}
@@ -53,9 +53,9 @@
 #'   \item \code{milk_production_fpcm_cohort} is the total fat- and protein-corrected milk
 #'   (FPCM) produced over the assessment period (kg/assessment period). It can be computed using \code{\link{compute_milk_outputs}}
 #'   (see also \code{\link{run_production_cohort}}).
-#'   
+#'
 #' }
-#' 
+#'
 #' @references
 #' ISO. (2006). \emph{Environmental management — Life cycle assessment —
 #' Requirements and guidelines (ISO 14044:2006)}. International Organization for
@@ -81,10 +81,10 @@
 #' FAO. (2016c). \emph{Greenhouse gas emissions and fossil energy use from poultry
 #' supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 #' and Performance (LEAP) Partnership. FAO, Rome, Italy.
-#' 
+#'
 #' @seealso
 #' \code{\link{compute_milk_outputs}},
-#' \code{\link{run_production_cohort}} 
+#' \code{\link{run_production_cohort}}
 #'
 #' @export
 calc_energy_allocation_milk <- function(
@@ -120,7 +120,7 @@ calc_energy_allocation_milk <- function(
 #' Computes the energy required for meat production over the assessment period
 #' (MJ/cohort/assessment period), based on total live weight produced by the
 #' cohort.
-#' 
+#'
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
 #'   \itemize{
@@ -161,7 +161,7 @@ calc_energy_allocation_milk <- function(
 #'
 #' The approach implements the IDF (2022) standard, adapted from Thoma and Nemecek (2020), and is consistent with
 #' FAO LEAP livestock LCA guidelines (FAO, 2016a, 2016b, 2016c) and with ISO 14044:2006 (Section 4.3.4.2, Step 2).
-#' 
+#'
 #' In accordance with ISO 14044:2006, known biophysical relationships may be used
 #' to assign shared inputs and outputs of a production system to individual
 #' products or sub-units. In livestock systems, this includes apportioning shared
@@ -169,14 +169,14 @@ calc_energy_allocation_milk <- function(
 #' growth, lactation, and maintenance. If the resulting process remains
 #' multifunctional, these energy terms may subsequently be used to derive
 #' allocation factors among co-products.
-#' 
+#'
 #' The \code{energy_allocation_meat} is calculated as follows:
 #'
 #' \eqn{energy\_allocation\_meat = specific\_energy\_meat \times meat\_production\_live\_weight\_cohort}
 #'
 #' where
 #' \itemize{
-#' 
+#'
 #'   \item \code{specific_energy_meat} is the average energy required to produce
 #'   one kilogram of live weight, accounting for species- and cohort-specific
 #'   growth characteristics (MJ/kg live weight).
@@ -230,7 +230,7 @@ calc_energy_allocation_milk <- function(
 #' FAO. (2016c). \emph{Greenhouse gas emissions and fossil energy use from poultry
 #' supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 #' and Performance (LEAP) Partnership. FAO, Rome, Italy.
-#' 
+#'
 #' @seealso
 #' \code{\link{compute_meat_outputs}},
 #' \code{\link{run_production_cohort}},
@@ -350,7 +350,7 @@ calc_energy_allocation_meat <- function(
 #' \code{"MS"}).
 #'
 #' The \code{energy_allocation_fibre} is calculated as follows:
-#' 
+#'
 #' \eqn{energy\_allocation\_fibre =
 #' \frac{energy\_requirement\_fibre\_production}{ratio\_me\_to\_ne}
 #' \times simulation\_duration \times cohort\_stock\_size}
@@ -365,7 +365,7 @@ calc_energy_allocation_meat <- function(
 #' where \code{energy_requirement_fibre_production} can be computed using
 #'   \code{\link{calc_net_energy_fibre}} (see also
 #'   \code{\link{run_energy_requirements}}).
-#' 
+#'
 #' @seealso
 #' \code{\link{calc_net_energy_fibre}},
 #' \code{\link{run_energy_requirements}}
@@ -470,7 +470,7 @@ calc_energy_allocation_fibre <- function(
 #'
 #' Total work-related energy is computed for species (\code{CTL}, \code{BFL}, \code{CML})
 #' and cohorts (, \code{FA}, \code{MA}) assumed to be potentially involved in draught power generation.
-#' 
+#'
 #' The \code{energy_allocation_work} is calculated as follows:
 #'
 #' \eqn{energy\_allocation\_work =
@@ -755,8 +755,8 @@ calc_allocation_shares <- function(
 #' "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice").
 #' @param commodities Character. List of commodity categories to which emissions may be allocated.
 #' List=c("None","Milk","Meat","Fibre","Work","Eggs").
-#' @param excluded_vars Character. Emission variables that should not be allocated across commodities, even if they
-#' appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").
+#' @param non_allocated_emission_sources Character. Emission variables that should not be allocated
+#' across commodities, even if they appear in emissions_vars (e.g., "ch4_manure_pasture", "ch4_manure_burned").
 #' @param commodity_col Character. Name of the column in `allocation_herd_long` identifying the commodity category.
 #' @param allocation_col Character. Name of the column in `allocation_herd_long` containing the allocation share to be
 #' applied.
@@ -769,7 +769,7 @@ calc_allocation_shares <- function(
 #' }
 #'
 #'@details
-#' Emission sources listed in \code{excluded_vars} (e.g., emissions from manure
+#' Emission sources listed in \code{non_allocated_emission_sources} (e.g., emissions from manure
 #' burned as fuel or manure deposited on pasture) are treated as not attributable
 #' to livestock commodities under the chosen goal and scope. Consequently,
 #' these emissions are allocated entirely to the residual commodity category
@@ -777,7 +777,7 @@ calc_allocation_shares <- function(
 #' outputs.
 #'
 #' The following methodological rules apply to emission sources listed in
-#' \code{excluded_vars}:
+#' \code{non_allocated_emission_sources}:
 #'
 #' \itemize{
 #'   \item \strong{Manure burned for fuel} — Emissions are considered outside the
@@ -813,7 +813,7 @@ assign_allocation_to_emissions <- function(
     allocation_herd_long,
     emissions_vars,
     commodities,
-    excluded_vars,
+    non_allocated_emission_sources,
     commodity_col,
     allocation_col
 ) {
@@ -832,19 +832,19 @@ assign_allocation_to_emissions <- function(
     allow.cartesian = TRUE
   )
 
-  # 3) Excluded vars → 100% to Other, 0% to others
+  # 3) Non-allocated emission sources → 100% to Other, 0% to others
   allocation_herd_long[
-    variable_name %in% excluded_vars & get(commodity_col) == "Other",
+    variable_name %in% non_allocated_emission_sources & get(commodity_col) == "Other",
     (allocation_col) := 1
   ]
   allocation_herd_long[
-    variable_name %in% excluded_vars & get(commodity_col) != "Other",
+    variable_name %in% non_allocated_emission_sources & get(commodity_col) != "Other",
     (allocation_col) := 0
   ]
 
-  # 4) Non-excluded vars → Other = 0
+  # 4) Allocated emission sources → Other = 0
   allocation_herd_long[
-    !(variable_name %in% excluded_vars) & get(commodity_col) == "Other",
+    !(variable_name %in% non_allocated_emission_sources) & get(commodity_col) == "Other",
     (allocation_col) := 0
   ]
 

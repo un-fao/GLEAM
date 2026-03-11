@@ -8,7 +8,7 @@ assign_allocation_to_emissions(
   allocation_herd_long,
   emissions_vars,
   commodities,
-  excluded_vars,
+  non_allocated_emission_sources,
   commodity_col,
   allocation_col
 )
@@ -27,8 +27,8 @@ row represents an emission source–commodity combination or an unallocated emis
 \item{commodities}{Character. List of commodity categories to which emissions may be allocated.
 List=c("None","Milk","Meat","Fibre","Work","Eggs").}
 
-\item{excluded_vars}{Character. Emission variables that should not be allocated across commodities, even if they
-appear in emissions_vars ( e.g., "ch4_manure_pasture","ch4_manure_burned").}
+\item{non_allocated_emission_sources}{Character. Emission variables that should not be allocated
+across commodities, even if they appear in emissions_vars (e.g., "ch4_manure_pasture", "ch4_manure_burned").}
 
 \item{commodity_col}{Character. Name of the column in \code{allocation_herd_long} identifying the commodity category.}
 
@@ -48,7 +48,7 @@ Expands commodity-level allocation shares across emission sources and applies
 predefined allocation rules for excluded emission sources.
 }
 \details{
-Emission sources listed in \code{excluded_vars} (e.g., emissions from manure
+Emission sources listed in \code{non_allocated_emission_sources} (e.g., emissions from manure
 burned as fuel or manure deposited on pasture) are treated as not attributable
 to livestock commodities under the chosen goal and scope. Consequently,
 these emissions are allocated entirely to the residual commodity category
@@ -56,7 +56,7 @@ these emissions are allocated entirely to the residual commodity category
 outputs.
 
 The following methodological rules apply to emission sources listed in
-\code{excluded_vars}:
+\code{non_allocated_emission_sources}:
 
 \itemize{
 \item \strong{Manure burned for fuel} — Emissions are considered outside the
