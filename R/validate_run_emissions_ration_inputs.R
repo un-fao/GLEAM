@@ -7,7 +7,7 @@
 #' @param feed_emissions data.table. Feed production emission factors for feed items.
 #'
 #' @noRd
-validate_feed_indirect_emissions_inputs <- function(
+validate_run_emissions_ration_module_inputs <- function(
     rations_share,
     feed_emissions
 ) {

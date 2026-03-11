@@ -25,11 +25,11 @@ calc_co2_ration_fertilizer <- function(
     feed_ration_fraction,
     co2_feed_fertilizer
 ) {
-  validate_diet_co2_feed_fertilizer_inputs(feed_ration_fraction, co2_feed_fertilizer)
+  validate_co2_ration_fertilizer_inputs(feed_ration_fraction, co2_feed_fertilizer)
 
-  diet_co2_feed_fertilizer <- feed_ration_fraction * co2_feed_fertilizer
+  co2_ration_fertilizer <- feed_ration_fraction * co2_feed_fertilizer
 
-  return(diet_co2_feed_fertilizer)
+  return(co2_ration_fertilizer)
 }
 
 #' Calculate a ration component's contribution to carbon dioxide (CO₂) emissions from pesticide manufacture
@@ -59,11 +59,11 @@ calc_co2_ration_pesticides <- function(
     feed_ration_fraction,
     co2_feed_pesticides
 ) {
-  validate_diet_co2_feed_pesticides_inputs(feed_ration_fraction, co2_feed_pesticides)
+  validate_co2_ration_pesticides_inputs(feed_ration_fraction, co2_feed_pesticides)
 
-  diet_co2_feed_pesticides <- feed_ration_fraction * co2_feed_pesticides
+  co2_ration_pesticides <- feed_ration_fraction * co2_feed_pesticides
 
-  return(diet_co2_feed_pesticides)
+  return(co2_ration_pesticides)
 }
 
 
@@ -96,11 +96,11 @@ calc_co2_ration_crop_activities <- function(
     feed_ration_fraction,
     co2_feed_crop_operations
 ) {
-  validate_diet_co2_feed_crop_operations_inputs(feed_ration_fraction, co2_feed_crop_operations)
+  validate_co2_ration_crop_activities_inputs(feed_ration_fraction, co2_feed_crop_operations)
 
-  diet_co2_feed_crop_operations <- feed_ration_fraction * co2_feed_crop_operations
+  co2_ration_crop_activities <- feed_ration_fraction * co2_feed_crop_operations
 
-  return(diet_co2_feed_crop_operations)
+  return(co2_ration_crop_activities)
 }
 
 
@@ -131,11 +131,11 @@ calc_co2_ration_luc_nopeat <- function(
     feed_ration_fraction,
     co2_feed_luc_nopeat
 ) {
-  validate_diet_co2_feed_luc_nopeat_inputs(feed_ration_fraction, co2_feed_luc_nopeat)
+  validate_co2_ration_luc_nopeat_inputs(feed_ration_fraction, co2_feed_luc_nopeat)
 
-  diet_co2_feed_luc_nopeat <- feed_ration_fraction * co2_feed_luc_nopeat
+  co2_ration_luc_nopeat <- feed_ration_fraction * co2_feed_luc_nopeat
 
-  return(diet_co2_feed_luc_nopeat)
+  return(co2_ration_luc_nopeat)
 }
 
 
@@ -166,11 +166,11 @@ calc_co2_ration_luc_peat <- function(
     feed_ration_fraction,
     co2_feed_luc_peat
 ) {
-  validate_diet_co2_feed_luc_peat_inputs(feed_ration_fraction, co2_feed_luc_peat)
+  validate_co2_ration_luc_peat_inputs(feed_ration_fraction, co2_feed_luc_peat)
 
-  diet_co2_feed_luc_peat <- feed_ration_fraction * co2_feed_luc_peat
+  co2_ration_luc_peat <- feed_ration_fraction * co2_feed_luc_peat
 
-  return(diet_co2_feed_luc_peat)
+  return(co2_ration_luc_peat)
 }
 
 
@@ -201,11 +201,11 @@ calc_n2o_ration_fertilizer <- function(
     feed_ration_fraction,
     n2o_feed_fertilizer
 ) {
-  validate_diet_n2o_feed_fertilizer_inputs(feed_ration_fraction, n2o_feed_fertilizer)
+  validate_n2o_ration_fertilizer_inputs(feed_ration_fraction, n2o_feed_fertilizer)
 
-  diet_n2o_feed_fertilizer <- feed_ration_fraction * n2o_feed_fertilizer
+  n2o_ration_fertilizer <- feed_ration_fraction * n2o_feed_fertilizer
 
-  return(diet_n2o_feed_fertilizer)
+  return(n2o_ration_fertilizer)
 }
 
 
@@ -237,11 +237,11 @@ calc_n2o_ration_manure <- function(
     feed_ration_fraction,
     n2o_feed_manure_applied
 ) {
-  validate_diet_n2o_feed_manure_applied_inputs(feed_ration_fraction, n2o_feed_manure_applied)
+  validate_n2o_ration_manure_applied_inputs(feed_ration_fraction, n2o_feed_manure_applied)
 
-  diet_n2o_feed_manure_applied <- feed_ration_fraction * n2o_feed_manure_applied
+  n2o_ration_manure_applied <- feed_ration_fraction * n2o_feed_manure_applied
 
-  return(diet_n2o_feed_manure_applied)
+  return(n2o_ration_manure_applied)
 }
 
 
@@ -273,11 +273,11 @@ calc_n2o_ration_crop_residues <- function(
     feed_ration_fraction,
     n2o_feed_crop_residues
 ) {
-  validate_diet_n2o_feed_crop_residues_inputs(feed_ration_fraction, n2o_feed_crop_residues)
+  validate_n2o_ration_crop_residues_inputs(feed_ration_fraction, n2o_feed_crop_residues)
 
-  diet_n2o_feed_crop_residues <- feed_ration_fraction * n2o_feed_crop_residues
+  n2o_ration_crop_residues <- feed_ration_fraction * n2o_feed_crop_residues
 
-  return(diet_n2o_feed_crop_residues)
+  return(n2o_ration_crop_residues)
 }
 
 
@@ -307,9 +307,9 @@ calc_ch4_ration_rice <- function(
     feed_ration_fraction,
     ch4_feed_rice
 ) {
-  validate_diet_ch4_feed_rice_inputs(feed_ration_fraction, ch4_feed_rice)
+  validate_ch4_ration_rice_inputs(feed_ration_fraction, ch4_feed_rice)
 
-  diet_ch4_feed_rice <- feed_ration_fraction * ch4_feed_rice
+  ch4_ration_rice <- feed_ration_fraction * ch4_feed_rice
 
-  return(diet_ch4_feed_rice)
+  return(ch4_ration_rice)
 }

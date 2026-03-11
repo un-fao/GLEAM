@@ -7,7 +7,7 @@
 calc_avg_weights(
   live_weight_cohort_initial,
   live_weight_cohort_potential_final,
-  slaughter_weight_cohort,
+  live_weight_cohort_at_slaughter,
   offtake_rate
 )
 }
@@ -16,7 +16,7 @@ calc_avg_weights(
 
 \item{live_weight_cohort_potential_final}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
 
-\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 }

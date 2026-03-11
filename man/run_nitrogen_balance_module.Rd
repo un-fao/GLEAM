@@ -24,8 +24,8 @@ Supported values include:
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
-\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
-\item{diet_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
+\item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+\item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 }}
@@ -64,8 +64,8 @@ female animal (# parturitions/adult female/year).
 A herd-level reproductive performance indicator calculated as the total
 number of parturitions (deliveries) occurring during
 a year divided by the number of adult females potentially able to give birth during that year.}
-\item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
-\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
+\item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
+\item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 }}
 
@@ -93,7 +93,7 @@ and computes cohort-level nitrogen balance components following the IPCC Tier 2 
 The following calculation sequence is applied:
 \enumerate{
 \item Daily nitrogen intake is computed using \code{\link{calc_nitrogen_intake}}
-from \code{dry_matter_intake} and \code{diet_nitrogen}.
+from \code{ration_intake} and \code{ration_nitrogen}.
 \item Daily nitrogen retention is computed using \code{\link{calc_nitrogen_retention}}
 from cohort-level and herd-level species parameters.
 \item Daily nitrogen excretion is computed using \code{\link{calc_nitrogen_excretion}}

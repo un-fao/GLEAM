@@ -83,39 +83,39 @@
 #' @return data.table. Cohort-level emission factors summarized by \code{herd_id},
 #'   \code{animal}, and \code{cohort_short} with the following columns:
 #'   \describe{
-#'     \item{diet_co2_feed_fertilizer}{
+#'     \item{co2_ration_fertilizer}{
 #'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
 #'       fertilizer manufacture in feed production (g CO₂/kg DM).
 #'     }
-#'     \item{diet_co2_feed_pesticides}{
+#'     \item{co2_ration_pesticides}{
 #'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
 #'       pesticide manufacture in feed production (g CO₂/kg DM).
 #'     }
-#'     \item{diet_co2_feed_crop_operations}{
+#'     \item{co2_ration_crop_activities}{
 #'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
 #'       on-field agricultural activities in feed production (g CO₂/kg DM).
 #'     }
-#'     \item{diet_co2_feed_luc_nopeat}{
+#'     \item{co2_ration_luc_nopeat}{
 #'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
 #'       land-use change (excluding peatland drainage) in feed production (g CO₂/kg DM).
 #'     }
-#'     \item{diet_co2_feed_luc_peat}{
+#'     \item{co2_ration_luc_peat}{
 #'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
 #'       peatland drainage in feed production (g CO₂/kg DM).
 #'     }
-#'     \item{diet_n2o_feed_fertilizer}{
+#'     \item{n2o_ration_fertilizer}{
 #'       Numeric. Diet-level average nitrous oxide (N₂O) emission factor from
 #'       fertilizer use in feed production (g N₂O/kg DM).
 #'     }
-#'     \item{diet_n2o_feed_manure_applied}{
+#'     \item{n2o_ration_manure_applied}{
 #'       Numeric. Diet-level average nitrous oxide (N₂O) emission factor from
 #'       manure applied to or deposited on soil in feed production (g N₂O/kg DM).
 #'     }
-#'     \item{diet_n2o_feed_crop_residues}{
+#'     \item{n2o_ration_crop_residues}{
 #'       Numeric. Diet-level average nitrous oxide (N₂O) emission factor from
 #'       crop residues decomposition in feed production (g N₂O/kg DM).
 #'     }
-#'     \item{diet_ch4_feed_rice}{
+#'     \item{ch4_ration_rice}{
 #'       Numeric. Diet-level average methane (CH₄) emission factor from
 #'       rice cultivation in feed production (g CH₄/kg DM).
 #'     }
@@ -205,7 +205,7 @@ run_emissions_ration_module <- function(
     show_indicator = TRUE
 ) {
   # --- Step 1: Validate inputs ------------------------------------------------
-  validate_feed_indirect_emissions_inputs(rations_share, feed_emissions)
+  validate_run_emissions_ration_module_inputs(rations_share, feed_emissions)
 
   # Show progress indicator if requested
   if (show_indicator) {
@@ -227,7 +227,7 @@ run_emissions_ration_module <- function(
   # --- Step 4: Calculate cohort feed contributions ----------------------------
   feed_emissions_detailed[
     ,
-    diet_co2_feed_fertilizer := calc_co2_ration_fertilizer(
+    co2_ration_fertilizer := calc_co2_ration_fertilizer(
       feed_ration_fraction = feed_ration_fraction,
       co2_feed_fertilizer = co2_feed_fertilizer
     ),
@@ -236,7 +236,7 @@ run_emissions_ration_module <- function(
 
   feed_emissions_detailed[
     ,
-    diet_co2_feed_pesticides := calc_co2_ration_pesticides(
+    co2_ration_pesticides := calc_co2_ration_pesticides(
       feed_ration_fraction = feed_ration_fraction,
       co2_feed_pesticides = co2_feed_pesticides
     ),
@@ -245,7 +245,7 @@ run_emissions_ration_module <- function(
 
   feed_emissions_detailed[
     ,
-    diet_co2_feed_crop_operations := calc_co2_ration_crop_activities(
+    co2_ration_crop_activities := calc_co2_ration_crop_activities(
       feed_ration_fraction = feed_ration_fraction,
       co2_feed_crop_operations = co2_feed_crop_operations
     ),
@@ -254,7 +254,7 @@ run_emissions_ration_module <- function(
 
   feed_emissions_detailed[
     ,
-    diet_co2_feed_luc_nopeat := calc_co2_ration_luc_nopeat(
+    co2_ration_luc_nopeat := calc_co2_ration_luc_nopeat(
       feed_ration_fraction = feed_ration_fraction,
       co2_feed_luc_nopeat = co2_feed_luc_nopeat
     ),
@@ -263,7 +263,7 @@ run_emissions_ration_module <- function(
 
   feed_emissions_detailed[
     ,
-    diet_co2_feed_luc_peat := calc_co2_ration_luc_peat(
+    co2_ration_luc_peat := calc_co2_ration_luc_peat(
       feed_ration_fraction = feed_ration_fraction,
       co2_feed_luc_peat = co2_feed_luc_peat
     ),
@@ -272,7 +272,7 @@ run_emissions_ration_module <- function(
 
   feed_emissions_detailed[
     ,
-    diet_n2o_feed_fertilizer := calc_n2o_ration_fertilizer(
+    n2o_ration_fertilizer := calc_n2o_ration_fertilizer(
       feed_ration_fraction = feed_ration_fraction,
       n2o_feed_fertilizer = n2o_feed_fertilizer
     ),
@@ -281,7 +281,7 @@ run_emissions_ration_module <- function(
 
   feed_emissions_detailed[
     ,
-    diet_n2o_feed_manure_applied := calc_n2o_ration_manure(
+    n2o_ration_manure_applied := calc_n2o_ration_manure(
       feed_ration_fraction = feed_ration_fraction,
       n2o_feed_manure_applied = n2o_feed_manure_applied
     ),
@@ -290,7 +290,7 @@ run_emissions_ration_module <- function(
 
   feed_emissions_detailed[
     ,
-    diet_n2o_feed_crop_residues := calc_n2o_ration_crop_residues(
+    n2o_ration_crop_residues := calc_n2o_ration_crop_residues(
       feed_ration_fraction = feed_ration_fraction,
       n2o_feed_crop_residues = n2o_feed_crop_residues
     ),
@@ -299,7 +299,7 @@ run_emissions_ration_module <- function(
 
   feed_emissions_detailed[
     ,
-    diet_ch4_feed_rice := calc_ch4_ration_rice(
+    ch4_ration_rice := calc_ch4_ration_rice(
       feed_ration_fraction = feed_ration_fraction,
       ch4_feed_rice = ch4_feed_rice
     ),
@@ -310,15 +310,15 @@ run_emissions_ration_module <- function(
   feed_emissions_summary <- feed_emissions_detailed[
     ,
     .(
-      diet_co2_feed_fertilizer = sum(diet_co2_feed_fertilizer, na.rm = TRUE),
-      diet_co2_feed_pesticides = sum(diet_co2_feed_pesticides, na.rm = TRUE),
-      diet_co2_feed_crop_operations = sum(diet_co2_feed_crop_operations, na.rm = TRUE),
-      diet_co2_feed_luc_nopeat = sum(diet_co2_feed_luc_nopeat, na.rm = TRUE),
-      diet_co2_feed_luc_peat = sum(diet_co2_feed_luc_peat, na.rm = TRUE),
-      diet_n2o_feed_fertilizer = sum(diet_n2o_feed_fertilizer, na.rm = TRUE),
-      diet_n2o_feed_manure_applied = sum(diet_n2o_feed_manure_applied, na.rm = TRUE),
-      diet_n2o_feed_crop_residues = sum(diet_n2o_feed_crop_residues, na.rm = TRUE),
-      diet_ch4_feed_rice = sum(diet_ch4_feed_rice, na.rm = TRUE)
+      co2_ration_fertilizer = sum(co2_ration_fertilizer, na.rm = TRUE),
+      co2_ration_pesticides = sum(co2_ration_pesticides, na.rm = TRUE),
+      co2_ration_crop_activities = sum(co2_ration_crop_activities, na.rm = TRUE),
+      co2_ration_luc_nopeat = sum(co2_ration_luc_nopeat, na.rm = TRUE),
+      co2_ration_luc_peat = sum(co2_ration_luc_peat, na.rm = TRUE),
+      n2o_ration_fertilizer = sum(n2o_ration_fertilizer, na.rm = TRUE),
+      n2o_ration_manure_applied = sum(n2o_ration_manure_applied, na.rm = TRUE),
+      n2o_ration_crop_residues = sum(n2o_ration_crop_residues, na.rm = TRUE),
+      ch4_ration_rice = sum(ch4_ration_rice, na.rm = TRUE)
     ),
     by = .(herd_id, animal, cohort_short)
   ]

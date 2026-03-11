@@ -74,7 +74,7 @@ energy losses in uric acid and gaseous products of digestion (MJ/kg DM).}
 that is excreted in urine for ruminants (fraction).}
 \item{feed_urinary_energy_pigs}{Numeric. Fraction of feed's gross energy
 that is excreted in urine for pigs (fraction).}
-\item{feed_ash_content}{Numeric. Average ash content by feed component, calculated
+\item{feed_ash}{Numeric. Average ash content by feed component, calculated
 as a fraction of the dry matter intake (g ash/100g DM).}
 \item{category}{Character. Feed category (optional). If provided, it should be
 used consistently  with \code{feed_id}, for a coherent result.}
@@ -88,17 +88,17 @@ reporting). If provided, it should uniquely identify the same feed component as 
 data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
 \code{animal}, and \code{cohort_short} with the following columns:
 \describe{
-\item{diet_gross_energy}{Numeric. Average gross energy content of the diet
+\item{ration_gross_energy}{Numeric. Average gross energy content of the diet
 (MJ/kg DM).}
-\item{diet_metabolizable_energy}{Numeric. Average metabolizable energy
+\item{ration_metabolizable_energy}{Numeric. Average metabolizable energy
 content of the diet (MJ/kg DM).}
-\item{diet_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed
+\item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed
 ration, expressed as ratio of digestible (or metabolizable, for poultry) to
 gross energy content (fraction).}
-\item{urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that
+\item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that
 is excreted in urine (fraction).}
-\item{diet_ash}{Numeric. Average ash content of feed, calculated as a fraction
+\item{ration_ash}{Numeric. Average ash content of feed, calculated as a fraction
 of the dry matter intake (kg ash/kg DM).}
 }
 }

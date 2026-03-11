@@ -8,7 +8,7 @@
 #' @param manure_management_system_factors data.table. Herd-level MMS factors.
 #'
 #' @noRd
-validate_directemissions_manure_inputs <- function(
+validate_run_emissions_manure_module_inputs <- function(
     cohort_level_data,
     manure_management_system_fraction,
     manure_management_system_factors
@@ -36,9 +36,9 @@ validate_directemissions_manure_inputs <- function(
 
   # --- Required columns validation --------------------------------------------
   required_input_cols <- c(
-    "herd_id", "cohort_short", "dry_matter_intake",
-    "diet_digestibility_fraction", "nitrogen_excretion",
-    "urinary_energy_fraction", "diet_ash"
+    "herd_id", "cohort_short", "ration_intake",
+    "ration_digestibility_fraction", "nitrogen_excretion",
+    "ration_urinary_energy_fraction", "ration_ash"
   )
   required_fraction_cols <- c(
     "herd_id", "cohort_short", "manure_management_system", "manure_management_system_fraction"
@@ -81,9 +81,9 @@ validate_directemissions_manure_inputs <- function(
       any(is.na(cohort_level_data$cohort_short))) {
     cli::cli_abort("{.arg cohort_level_data} must not contain missing herd_id or cohort_short.")
   }
-  if (any(is.na(cohort_level_data$urinary_energy_fraction)) ||
-      any(is.na(cohort_level_data$diet_ash))) {
-    cli::cli_abort("{.arg cohort_level_data} must not contain missing urinary_energy_fraction or diet_ash.")
+  if (any(is.na(cohort_level_data$ration_urinary_energy_fraction)) ||
+      any(is.na(cohort_level_data$ration_ash))) {
+    cli::cli_abort("{.arg cohort_level_data} must not contain missing ration_urinary_energy_fraction or ration_ash.")
   }
   if (any(is.na(manure_management_system_fraction$herd_id)) ||
       any(is.na(manure_management_system_fraction$cohort_short)) ||

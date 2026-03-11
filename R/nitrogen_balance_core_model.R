@@ -3,13 +3,13 @@
 #' Calculates the daily nitrogen intake per head (kg N/head/day) as the product of feed dry matter
 #' intake (DMI) and diet nitrogen content. 
 #'
-#' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
-#' @param diet_nitrogen Numeric. Average nitrogen content of diet (kg N/kg DM).
+#' @param ration_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
+#' @param ration_nitrogen Numeric. Average nitrogen content of diet (kg N/kg DM).
 #'
 #' @return Numeric. Daily nitrogen intake (kg N/head/day).
 #' 
 #' @details
-#' This approach follows the IPCC Tier 2 approach and estimates \code{dry_matter_intake}  as follows:
+#' This approach follows the IPCC Tier 2 approach and estimates \code{ration_intake}  as follows:
 #'
 #' \eqn{nitrogen\_intake = dry\_matter\_intake \times diet\_nitrogen}
 #' 
@@ -29,11 +29,11 @@
 #' Livestock and Manure Management. Equation 10.32.
 #'
 #' @export
-calc_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
+calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
   # Validate inputs
-  validate_nitrogen_intake_inputs(dry_matter_intake, diet_nitrogen)
+  validate_nitrogen_intake_inputs(ration_intake, ration_nitrogen)
 
-  nitrogen_intake <- dry_matter_intake * diet_nitrogen
+  nitrogen_intake <- ration_intake * ration_nitrogen
 
   return(nitrogen_intake)
 }
@@ -82,8 +82,8 @@ calc_nitrogen_intake <- function(dry_matter_intake, diet_nitrogen) {
 #' A herd-level reproductive performance indicator calculated as the total
 #' number of parturitions (deliveries) occurring during
 #' a year divided by the number of adult females potentially able to give birth during that year.
-#' @param weaning_weight Numeric. Live weight of the animal at weaning (kg).
-#' @param birth_weight Numeric. Live weight of the animal at birth (kg).
+#' @param live_weight_at_weaning Numeric. Live weight of the animal at weaning (kg).
+#' @param live_weight_at_birth Numeric. Live weight of the animal at birth (kg).
 #' @param pregnancy_duration Numeric. Duration of pregnancy period (days).
 #' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days).
 #'
@@ -177,8 +177,8 @@ calc_nitrogen_retention <- function(
     fibre_yield_year = NA_real_,
     litter_size = NA_real_,
     parturition_rate = NA_real_,
-    weaning_weight = NA_real_,
-    birth_weight = NA_real_,
+    live_weight_at_weaning = NA_real_,
+    live_weight_at_birth = NA_real_,
     pregnancy_duration = NA_real_,
     cohort_duration_days = NA_real_
     
@@ -187,7 +187,7 @@ calc_nitrogen_retention <- function(
   validate_nitrogen_retention_inputs(
     species_short, cohort_short, milk_protein_fraction, milk_yield_day,
     daily_weight_gain, fibre_yield_year, litter_size, parturition_rate,
-    weaning_weight, birth_weight, pregnancy_duration, cohort_duration_days
+    live_weight_at_weaning, live_weight_at_birth, pregnancy_duration, cohort_duration_days
   )
 
   if (species_short %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
@@ -216,12 +216,12 @@ calc_nitrogen_retention <- function(
   } else if (species_short == "PGS") {
     if (cohort_short == "FA") {
       nitrogen_retention <- (
-        (0.025 * litter_size * parturition_rate * (weaning_weight - birth_weight) / 0.98 +
-           0.025 * litter_size * parturition_rate * birth_weight) / 365
+        (0.025 * litter_size * parturition_rate * (live_weight_at_weaning - live_weight_at_birth) / 0.98 +
+           0.025 * litter_size * parturition_rate * live_weight_at_birth) / 365
       )
     } else if (cohort_short == "FS") {
       nitrogen_retention <- 0.025 * daily_weight_gain +
-            (0.025 * litter_size *  (pregnancy_duration / cohort_duration_days)  * birth_weight / 0.806) / 365
+            (0.025 * litter_size *  (pregnancy_duration / cohort_duration_days)  * live_weight_at_birth / 0.806) / 365
     } else {
       nitrogen_retention <- 0.025 * daily_weight_gain
     }

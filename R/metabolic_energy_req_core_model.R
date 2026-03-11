@@ -185,8 +185,8 @@ calc_metabolic_energy_req_maintenance <- function(
     cmain <- 0.4435 # Pigs fixed coefficient
   }
   # Default: metabolic body weight scaling
-  energy_requirement_maintenance <- (live_weight_cohort_average^0.75) * cmain
-  return(energy_requirement_maintenance)
+  metabolic_energy_req_maintenance <- (live_weight_cohort_average^0.75) * cmain
+  return(metabolic_energy_req_maintenance)
 }
 
 #' Calculate Energy for Activity
@@ -214,7 +214,7 @@ calc_metabolic_energy_req_maintenance <- function(
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param energy_requirement_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed to 
+#' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed to 
 #' keep the animal at equilibrium such that body energy is neither gained nor lost. 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for 
 #' CML and PGS (MJ/head/day).
@@ -242,7 +242,7 @@ calc_metabolic_energy_req_maintenance <- function(
 #' 
 #' \eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS};
 #' MJ/day/kg for \code{SHP},  \code{GTS}) that reflects the animal’s feeding and management conditions.
-#' \code{energy_requirement_maintenance} can be calculated using
+#' \code{metabolic_energy_req_maintenance} can be calculated using
 #' \code{\link{calc_metabolic_energy_req_maintenance}()}.
 #' 
 #' For \code{CTL, BFL, SHP} and \code{GTS}, \eqn{cact} is computed as a *weighted average* of activity levels
@@ -302,7 +302,7 @@ calc_metabolic_energy_req_maintenance <- function(
 calc_metabolic_energy_req_activity <- function(
     species_short,
     cohort_short,
-    energy_requirement_maintenance,
+    metabolic_energy_req_maintenance,
     live_weight_cohort_average,
     low_activity_fraction,
     high_activity_fraction
@@ -310,7 +310,7 @@ calc_metabolic_energy_req_activity <- function(
   # Validate inputs
   validate_activity_inputs(
     species_short, cohort_short,
-    energy_requirement_maintenance, live_weight_cohort_average,
+    metabolic_energy_req_maintenance, live_weight_cohort_average,
     low_activity_fraction,
     high_activity_fraction
   )
@@ -318,21 +318,21 @@ calc_metabolic_energy_req_activity <- function(
   if (species_short %in% c("CTL", "BFL")) {
     # Weighted by pasture management
     cact <- (0.17 * low_activity_fraction) + (0.36 * high_activity_fraction)
-    energy_requirement_activity <- cact * energy_requirement_maintenance
+    metabolic_energy_req_activity <- cact * metabolic_energy_req_maintenance
   } else if (species_short %in% c("CML")) {
     cact <- (0.1 * (low_activity_fraction + high_activity_fraction))
-    energy_requirement_activity <- cact * energy_requirement_maintenance
+    metabolic_energy_req_activity <- cact * metabolic_energy_req_maintenance
   } else if (species_short == "SHP") {
     cact <- (0.0107 * low_activity_fraction) + (0.024 * high_activity_fraction)
-    energy_requirement_activity <- cact * live_weight_cohort_average
+    metabolic_energy_req_activity <- cact * live_weight_cohort_average
   } else if (species_short %in% c("GTS")) {
     cact <- (0.019 * low_activity_fraction) + (0.024 * high_activity_fraction)
-    energy_requirement_activity <- cact * live_weight_cohort_average
+    metabolic_energy_req_activity <- cact * live_weight_cohort_average
   } else if (species_short == "PGS") {
     cact <- 0.125 * (low_activity_fraction + high_activity_fraction)
-    energy_requirement_activity <- cact * energy_requirement_maintenance
+    metabolic_energy_req_activity <- cact * metabolic_energy_req_maintenance
   }
-  return(energy_requirement_activity)
+  return(metabolic_energy_req_activity)
 }
 
 #' Calculate Energy for Growth
@@ -368,7 +368,7 @@ calc_metabolic_energy_req_activity <- function(
 #' both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals 
 #' and the slaughter weight of offtaken animals, based on the offtake rate (kg).
 #' @param live_weight_cohort_initial Numeric. Live weight at the beginning of the cohort stage (kg).
-#' @param mature_weight Numeric. Mature (adult) live weight that the animal can attain under given 
+#' @param live_weight_mature_stage Numeric. Mature (adult) live weight that the animal can attain under given 
 #' biological and management conditions (kg).
 #' @param daily_weight_gain Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
@@ -468,7 +468,7 @@ calc_metabolic_energy_req_growth <- function(
     live_weight_cohort_average = NA_real_,
     live_weight_cohort_final = NA_real_,
     live_weight_cohort_initial = NA_real_,
-    mature_weight = NA_real_,
+    live_weight_mature_stage = NA_real_,
     daily_weight_gain = NA_real_,
     offtake_rate = NA_real_,
     cohort_duration_days = NA_real_
@@ -477,7 +477,7 @@ calc_metabolic_energy_req_growth <- function(
   # Validate inputs
   validate_growth_inputs(
     species_short, cohort_short, live_weight_cohort_average, live_weight_cohort_final,
-    live_weight_cohort_initial, mature_weight, daily_weight_gain, offtake_rate, cohort_duration_days
+    live_weight_cohort_initial, live_weight_mature_stage, daily_weight_gain, offtake_rate, cohort_duration_days
   )
 
   # Normalize offtake_rate if it's available (not NA_real_)
@@ -492,16 +492,16 @@ calc_metabolic_energy_req_growth <- function(
       cgro <- 1.2 * (1 - offtake_rate) + 1 * offtake_rate
     }
     if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
-      energy_requirement_growth <- 22.02 *
-        ((live_weight_cohort_average / (cgro * mature_weight))^0.75) * (daily_weight_gain^1.097)
+      metabolic_energy_req_growth <- 22.02 *
+        ((live_weight_cohort_average / (cgro * live_weight_mature_stage))^0.75) * (daily_weight_gain^1.097)
     } else {
-      energy_requirement_growth <- 0 # No growth for other cohorts
+      metabolic_energy_req_growth <- 0 # No growth for other cohorts
     }
   } else if (species_short %in% c("CML")) {
     if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
-      energy_requirement_growth <- 41.2 * daily_weight_gain
+      metabolic_energy_req_growth <- 41.2 * daily_weight_gain
     } else {
-      energy_requirement_growth <- 0
+      metabolic_energy_req_growth <- 0
     }
   } else if (species_short %in% c("SHP")) {
     # Sheep: a, b coefficients depend on cohort and offtake
@@ -516,7 +516,7 @@ calc_metabolic_energy_req_growth <- function(
       b <- 0
     }
     # Linear growth formula
-    energy_requirement_growth <- (
+    metabolic_energy_req_growth <- (
       (live_weight_cohort_final - live_weight_cohort_initial) *
         (a + 0.5 * b * (live_weight_cohort_initial + live_weight_cohort_final))
     ) / cohort_duration_days
@@ -528,7 +528,7 @@ calc_metabolic_energy_req_growth <- function(
       a <- 0
       b <- 0
     }
-    energy_requirement_growth <- (
+    metabolic_energy_req_growth <- (
       (live_weight_cohort_final - live_weight_cohort_initial) *
         (a + 0.5 * b * (live_weight_cohort_initial + live_weight_cohort_final))
     ) / cohort_duration_days
@@ -536,14 +536,14 @@ calc_metabolic_energy_req_growth <- function(
     prot_tissue_frac <- 0.65
     if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
       cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * 0.9 * 52.3)
-      energy_requirement_growth <- daily_weight_gain * cgro
+      metabolic_energy_req_growth <- daily_weight_gain * cgro
     } else {
-      energy_requirement_growth <- 0
+      metabolic_energy_req_growth <- 0
     }
   } else {
-    energy_requirement_growth <- 0 # Default: no growth
+    metabolic_energy_req_growth <- 0 # Default: no growth
   }
-  return(energy_requirement_growth)
+  return(metabolic_energy_req_growth)
 }
 
 #' Calculate Energy for Lactation
@@ -584,8 +584,8 @@ calc_metabolic_energy_req_growth <- function(
 #' @param litter_size Numeric. Average number of offspring born per parturition (# offsprings/parturition). 
 #' This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
 #' @param death_rate_juvenile Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).
-#' @param birth_weight Numeric. Live weight of the animal at birth (kg).
-#' @param weaning_weight Numeric. Live weight of the animal at weaning (kg).
+#' @param live_weight_at_birth Numeric. Live weight of the animal at birth (kg).
+#' @param live_weight_at_weaning Numeric. Live weight of the animal at weaning (kg).
 #' @param lactation_duration Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). 
 #' Required only for PGS.
 #' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
@@ -710,64 +710,64 @@ calc_metabolic_energy_req_lactation <- function(
     pregnancy_duration = NA_real_,
     litter_size = NA_real_,
     death_rate_juvenile = NA_real_,
-    birth_weight = NA_real_,
-    weaning_weight = NA_real_,
+    live_weight_at_birth = NA_real_,
+    live_weight_at_weaning = NA_real_,
     lactation_duration = NA_real_,
     parturition_rate = NA_real_
 ) {
   # Validate inputs
   validate_lactation_inputs(
     species_short, cohort_short, lactating_females_fraction, milk_yield_day, milk_fat_fraction,
-    non_productive_duration, pregnancy_duration, litter_size, death_rate_juvenile, birth_weight,
-    weaning_weight, lactation_duration, parturition_rate
+    non_productive_duration, pregnancy_duration, litter_size, death_rate_juvenile, live_weight_at_birth,
+    live_weight_at_weaning, lactation_duration, parturition_rate
   )
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short == "FA") {
-      energy_requirement_lactation <- ((milk_yield_day * lactating_females_fraction) +
-                                         (parturition_rate * 5 * (weaning_weight - birth_weight) / 365)) *
+      metabolic_energy_req_lactation <- ((milk_yield_day * lactating_females_fraction) +
+                                         (parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)) *
         (milk_fat_fraction * 100 * 0.40 + 1.47)
     } else {
-      energy_requirement_lactation <- 0
+      metabolic_energy_req_lactation <- 0
     }
   } else if (species_short %in% c("CML")) {
     if (cohort_short == "FA") {
-      energy_requirement_lactation <- ((milk_yield_day * lactating_females_fraction) +
-                                         (parturition_rate * 5 * (weaning_weight - birth_weight) / 365)) * 4.063
+      metabolic_energy_req_lactation <- ((milk_yield_day * lactating_females_fraction) +
+                                         (parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)) * 4.063
     } else {
-      energy_requirement_lactation <- 0
+      metabolic_energy_req_lactation <- 0
     }
   } else if (species_short %in% c("SHP")) {
     if (cohort_short == "FA") {
       # Includes effect of litter size and lambing interval
-      energy_requirement_lactation <- (
+      metabolic_energy_req_lactation <- (
         (milk_yield_day * lactating_females_fraction) +
-          (litter_size * parturition_rate * 5 * (weaning_weight - birth_weight) / 365)
+          (litter_size * parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)
       ) * 4.6
     } else {
-      energy_requirement_lactation <- 0
+      metabolic_energy_req_lactation <- 0
     }
   } else if (species_short %in% c("GTS")) {
     if (cohort_short == "FA") {
-      energy_requirement_lactation <- (
+      metabolic_energy_req_lactation <- (
         (milk_yield_day * lactating_females_fraction) +
-          (litter_size * parturition_rate * 5 * (weaning_weight - birth_weight) / 365)
+          (litter_size * parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)
       ) * 3
     } else {
-      energy_requirement_lactation <- 0
+      metabolic_energy_req_lactation <- 0
     }
   } else if (species_short == "PGS") {
     if (cohort_short != "FA") {
-      energy_requirement_lactation <- 0
+      metabolic_energy_req_lactation <- 0
     } else {
       # Pigs: adjustment for lactation period
       cadj <- lactation_duration / (non_productive_duration + pregnancy_duration + lactation_duration)
-      energy_requirement_lactation <- litter_size * (1 - 0.5 * death_rate_juvenile) *
-        ((0.02059 * (weaning_weight - birth_weight) * 1000 / lactation_duration) - (0.3766 / 0.67)) *
+      metabolic_energy_req_lactation <- litter_size * (1 - 0.5 * death_rate_juvenile) *
+        ((0.02059 * (live_weight_at_weaning - live_weight_at_birth) * 1000 / lactation_duration) - (0.3766 / 0.67)) *
         cadj
     }
   }
-  return(energy_requirement_lactation)
+  return(metabolic_energy_req_lactation)
 }
 
 #' Calculate Energy for Egg Production (placeholder)
@@ -835,7 +835,7 @@ calc_metabolic_energy_req_eggs <- function(
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param energy_requirement_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed 
+#' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed 
 #' to keep the animal at equilibrium such that body energy is neither gained nor lost. 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param draught_work_hours_female Numeric. Average daily working time per adult female (hours/head/day). Required only for species = CML, CTL and BFL.
@@ -917,7 +917,7 @@ calc_metabolic_energy_req_eggs <- function(
 calc_metabolic_energy_req_work <- function(
     species_short,
     cohort_short,
-    energy_requirement_maintenance = NA_real_,
+    metabolic_energy_req_maintenance = NA_real_,
     draught_work_hours_female = NA_real_,
     draught_work_hours_male = NA_real_,
     draught_fraction_female = NA_real_,
@@ -925,7 +925,7 @@ calc_metabolic_energy_req_work <- function(
 ) {
   # Validate inputs
   validate_work_inputs(
-    species_short, cohort_short, energy_requirement_maintenance,
+    species_short, cohort_short, metabolic_energy_req_maintenance,
     draught_work_hours_female,
     draught_work_hours_male,
     draught_fraction_female,
@@ -934,25 +934,25 @@ calc_metabolic_energy_req_work <- function(
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short == "MA") {
-      energy_requirement_work <- 0.1 * energy_requirement_maintenance * draught_work_hours_male * draught_fraction_male
+      metabolic_energy_req_work <- 0.1 * metabolic_energy_req_maintenance * draught_work_hours_male * draught_fraction_male
     } else if (cohort_short == "FA") {
-      energy_requirement_work <- 0.1 * energy_requirement_maintenance * draught_work_hours_female *
+      metabolic_energy_req_work <- 0.1 * metabolic_energy_req_maintenance * draught_work_hours_female *
         draught_fraction_female
     } else {
-      energy_requirement_work <- 0
+      metabolic_energy_req_work <- 0
     }
   } else if (species_short %in% c("CML")) {
     if (cohort_short == "MA") {
-      energy_requirement_work <- 4 * draught_work_hours_male * draught_fraction_male
+      metabolic_energy_req_work <- 4 * draught_work_hours_male * draught_fraction_male
     } else if (cohort_short == "FA") {
-      energy_requirement_work <- 4 * draught_work_hours_female * draught_fraction_female
+      metabolic_energy_req_work <- 4 * draught_work_hours_female * draught_fraction_female
     } else {
-      energy_requirement_work <- 0
+      metabolic_energy_req_work <- 0
     }
   } else if (species_short %in% c("SHP", "GTS", "PGS", "CHK")) {
-    energy_requirement_work <- 0 # No work for these species
+    metabolic_energy_req_work <- 0 # No work for these species
   }
-  return(energy_requirement_work)
+  return(metabolic_energy_req_work)
 }
 
 #' Calculate Energy for Fibre Production
@@ -1078,20 +1078,20 @@ calc_metabolic_energy_req_fibre <- function(
 
   if (species_short %in% c("GTS", "SHP")) {
     if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
-      energy_requirement_fibre_production <- 24 * fibre_yield_year / 365 # 24 MJ/kg fibre, annualized
+      metabolic_energy_req_fibre_production <- 24 * fibre_yield_year / 365 # 24 MJ/kg fibre, annualized
     } else {
-      energy_requirement_fibre_production <- 0
+      metabolic_energy_req_fibre_production <- 0
     }
   } else if (species_short %in% c("CML")) {
     if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
-      energy_requirement_fibre_production <- (24 / 0.43) * (fibre_yield_year / 365) # 0.43: efficiency factor for camels
+      metabolic_energy_req_fibre_production <- (24 / 0.43) * (fibre_yield_year / 365) # 0.43: efficiency factor for camels
     } else {
-      energy_requirement_fibre_production <- 0
+      metabolic_energy_req_fibre_production <- 0
     }
   } else if (species_short %in% c("CTL", "BFL", "PGS", "CHK")) {
-    energy_requirement_fibre_production <- 0 # Not applicable
+    metabolic_energy_req_fibre_production <- 0 # Not applicable
   }
-  return(energy_requirement_fibre_production)
+  return(metabolic_energy_req_fibre_production)
 }
 
 #' Calculate Energy for Pregnancy
@@ -1119,7 +1119,7 @@ calc_metabolic_energy_req_fibre <- function(
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param energy_requirement_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed 
+#' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed 
 #' to keep the animal at equilibrium such that body energy is neither gained nor lost. 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
@@ -1142,7 +1142,7 @@ calc_metabolic_energy_req_fibre <- function(
 #' This component follows the IPCC Tier 2 partitioning framework and is applied
 #' only to \strong{female cohorts} (\code{FA} and \code{FS}).
 #'
-#' Pregnancy energy (\code{energy_requirement_pregnancy}) represents the additional
+#' Pregnancy energy (\code{metabolic_energy_req_pregnancy}) represents the additional
 #' energy required to support gestation. Requirements are computed as a fraction
 #' of maintenance energy and are adjusted to reflect reproductive activity within
 #' the cohort:
@@ -1276,7 +1276,7 @@ calc_metabolic_energy_req_fibre <- function(
 calc_metabolic_energy_req_pregnancy <- function(
     species_short,
     cohort_short,
-    energy_requirement_maintenance = NA_real_,
+    metabolic_energy_req_maintenance = NA_real_,
     parturition_rate = NA_real_,
     litter_size = NA_real_,
     pregnancy_duration = NA_real_,
@@ -1293,29 +1293,29 @@ calc_metabolic_energy_req_pregnancy <- function(
 
   # Validate inputs
   validate_pregnancy_inputs(
-    species_short, cohort_short, energy_requirement_maintenance, parturition_rate,
+    species_short, cohort_short, metabolic_energy_req_maintenance, parturition_rate,
     litter_size, pregnancy_duration, non_productive_duration, lactation_duration,
     cohort_duration_days, offtake_rate
   )
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short == "FA") {
-      energy_requirement_pregnancy <- (energy_requirement_maintenance * 0.1 * parturition_rate *
+      metabolic_energy_req_pregnancy <- (metabolic_energy_req_maintenance * 0.1 * parturition_rate *
                                          pregnancy_duration / 365)
     } else if (cohort_short == "FS") {
-      energy_requirement_pregnancy <- (energy_requirement_maintenance * 0.1) *
+      metabolic_energy_req_pregnancy <- (metabolic_energy_req_maintenance * 0.1) *
         (pregnancy_duration / cohort_duration_days) * (1 - offtake_rate)
     } else {
-      energy_requirement_pregnancy <- 0
+      metabolic_energy_req_pregnancy <- 0
     }
   } else if (species_short %in% c("CML")) {
     if (cohort_short == "FA") {
-      energy_requirement_pregnancy <- energy_requirement_maintenance * 0.12 * parturition_rate
+      metabolic_energy_req_pregnancy <- metabolic_energy_req_maintenance * 0.12 * parturition_rate
     } else if (cohort_short == "FS") {
-      energy_requirement_pregnancy <- energy_requirement_maintenance * 0.12 *
+      metabolic_energy_req_pregnancy <- metabolic_energy_req_maintenance * 0.12 *
         (pregnancy_duration / cohort_duration_days) * (1 - offtake_rate)
     } else {
-      energy_requirement_pregnancy <- 0
+      metabolic_energy_req_pregnancy <- 0
     }
   } else if (species_short %in% c("SHP", "GTS")) {
     if (cohort_short == "FA") {
@@ -1326,33 +1326,33 @@ calc_metabolic_energy_req_pregnancy <- function(
       } else if (litter_size > 2) {
         cpreg <- 0.150
       }
-      energy_requirement_pregnancy <- energy_requirement_maintenance * cpreg * parturition_rate *
+      metabolic_energy_req_pregnancy <- metabolic_energy_req_maintenance * cpreg * parturition_rate *
         pregnancy_duration / 365
     } else if (cohort_short == "FS") {
-      energy_requirement_pregnancy <- energy_requirement_maintenance * 0.077 *
+      metabolic_energy_req_pregnancy <- metabolic_energy_req_maintenance * 0.077 *
         (pregnancy_duration / cohort_duration_days) * (1 - offtake_rate)
     } else {
-      energy_requirement_pregnancy <- 0
+      metabolic_energy_req_pregnancy <- 0
     }
   } else if (species_short == "PGS") {
     cgest <- 0.14985
 
     if (cohort_short == "FA") {
-      energy_requirement_pregnancy <- cgest * litter_size * pregnancy_duration /
+      metabolic_energy_req_pregnancy <- cgest * litter_size * pregnancy_duration /
         (non_productive_duration + pregnancy_duration + lactation_duration)
 
     } else if (cohort_short == "FS") {
 
-      energy_requirement_pregnancy <- cgest * litter_size * (pregnancy_duration / cohort_duration_days) *
+      metabolic_energy_req_pregnancy <- cgest * litter_size * (pregnancy_duration / cohort_duration_days) *
         (1 - offtake_rate)
 
     } else {
-      energy_requirement_pregnancy <- 0
+      metabolic_energy_req_pregnancy <- 0
     }
   } else if (species_short == "CHK") {
-    energy_requirement_pregnancy <- 0 # Not applicable
+    metabolic_energy_req_pregnancy <- 0 # Not applicable
   }
-  return(energy_requirement_pregnancy)
+  return(metabolic_energy_req_pregnancy)
 }
 
 #' Calculate Ratio of Net Energy available for Maintenance in the diet (REM - Net Energy for Maintenance / Digestible Energy)
@@ -1369,7 +1369,7 @@ calc_metabolic_energy_req_pregnancy <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param diet_digestibility_fraction Numeric. Average digestibility of 
+#' @param ration_digestibility_fraction Numeric. Average digestibility of 
 #' the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #'
 #' @return Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction). 
@@ -1409,16 +1409,16 @@ calc_metabolic_energy_req_pregnancy <- function(
 #' @export
 calc_rem_maintenance <- function(
     species_short,
-    diet_digestibility_fraction = NA_real_
+    ration_digestibility_fraction = NA_real_
 ) {
   # Validate inputs
-  validate_rem_inputs(species_short, diet_digestibility_fraction)
+  validate_rem_inputs(species_short, ration_digestibility_fraction)
   # Only ruminants: cattle, buffalo, sheep, goats
 
   if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
     # Polynomial fit from GLEAM
-    net_energy_maintenance_digestible_energy_ratio <- 1.123 - (0.004092 * (diet_digestibility_fraction * 100)) +
-      (0.00001126 * (diet_digestibility_fraction * 100)^2) - (25.4 / (diet_digestibility_fraction * 100))
+    net_energy_maintenance_digestible_energy_ratio <- 1.123 - (0.004092 * (ration_digestibility_fraction * 100)) +
+      (0.00001126 * (ration_digestibility_fraction * 100)^2) - (25.4 / (ration_digestibility_fraction * 100))
   } else if (species_short %in% c("PGS", "CHK", "CML")) {
     net_energy_maintenance_digestible_energy_ratio <- NA_real_ # Not applicable
   }
@@ -1442,7 +1442,7 @@ calc_rem_maintenance <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, 
+#' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, 
 #' expressed as ratio of digestible to gross energy content (fraction).
 #'
 #' @return Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).
@@ -1479,16 +1479,16 @@ calc_rem_maintenance <- function(
 #' @export
 calc_reg_growth <- function(
     species_short,
-    diet_digestibility_fraction = NA_real_
+    ration_digestibility_fraction = NA_real_
 ) {
   # Validate inputs
-  validate_reg_inputs(species_short, diet_digestibility_fraction)
+  validate_reg_inputs(species_short, ration_digestibility_fraction)
   # Only ruminants: cattle, buffalo, sheep, goats
 
   if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
     # Polynomial fit
-    net_energy_growth_digestible_energy_ratio <- 1.164 - (0.005160 * (diet_digestibility_fraction * 100)) +
-      (0.00001308 * (diet_digestibility_fraction * 100)^2) - (37.4 / (diet_digestibility_fraction * 100))
+    net_energy_growth_digestible_energy_ratio <- 1.164 - (0.005160 * (ration_digestibility_fraction * 100)) +
+      (0.00001308 * (ration_digestibility_fraction * 100)^2) - (37.4 / (ration_digestibility_fraction * 100))
   } else if (species_short %in% c("PGS", "CHK", "CML")) {
     net_energy_growth_digestible_energy_ratio <- NA_real_ # Not applicable
   }
@@ -1511,27 +1511,27 @@ calc_reg_growth <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param energy_requirement_maintenance Numeric. Energy required for maintenance, defined as the amount of 
+#' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of 
 #' energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
-#' @param energy_requirement_activity Numeric. Energy required for activity, defined as the amount of energy 
+#' @param metabolic_energy_req_activity Numeric. Energy required for activity, defined as the amount of energy 
 #' needed to support animal movement and physical activity (MJ/head/day). Expressed as net energy for 
 #' CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
-#' @param energy_requirement_lactation Numeric. Energy required for lactation (MJ/head/day). 
+#' @param metabolic_energy_req_lactation Numeric. Energy required for lactation (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
-#' @param energy_requirement_work Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
+#' @param metabolic_energy_req_work Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
 #'  Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
-#' @param energy_requirement_pregnancy Numeric. Energy required for pregnancy for pregnant females (MJ/head/day). 
+#' @param metabolic_energy_req_pregnancy Numeric. Energy required for pregnancy for pregnant females (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 #' @param net_energy_maintenance_digestible_energy_ratio Ratio of net energy available for maintenance in
 #'   the diet to digestible energy consumed (fraction).
-#' @param energy_requirement_growth Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). 
+#' @param metabolic_energy_req_growth Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
-#' @param energy_requirement_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species (MJ/head/day).
+#' @param metabolic_energy_req_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species (MJ/head/day).
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#' @param energy_requirement_egg_deposition Numeric. Net energy for egg production (MJ/head/day).
+#' @param metabolic_energy_req_egg_deposition Numeric. Net energy for egg production (MJ/head/day).
 #' @param net_energy_growth_digestible_energy_ratio Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction)
-#' @param diet_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
+#' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #' 
 #' @return Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
 #' For CML and PGS the function returns the summed daily metabolizable energy requirement.
@@ -1638,64 +1638,64 @@ calc_reg_growth <- function(
 #' @export
 calc_total_metabolic_energy_req <- function(
     species_short,
-    energy_requirement_maintenance,
-    energy_requirement_activity,
-    energy_requirement_lactation,
-    energy_requirement_work,
-    energy_requirement_pregnancy,
+    metabolic_energy_req_maintenance,
+    metabolic_energy_req_activity,
+    metabolic_energy_req_lactation,
+    metabolic_energy_req_work,
+    metabolic_energy_req_pregnancy,
     net_energy_maintenance_digestible_energy_ratio,
-    energy_requirement_growth,
-    energy_requirement_fibre_production,
-    energy_requirement_egg_deposition,
+    metabolic_energy_req_growth,
+    metabolic_energy_req_fibre_production,
+    metabolic_energy_req_egg_deposition,
     net_energy_growth_digestible_energy_ratio,
-    diet_digestibility_fraction
+    ration_digestibility_fraction
 ) {
   # Validate inputs
   validate_total_energy_inputs(
     species_short,
-    energy_requirement_maintenance,
-    energy_requirement_activity,
-    energy_requirement_lactation,
-    energy_requirement_work,
-    energy_requirement_pregnancy,
+    metabolic_energy_req_maintenance,
+    metabolic_energy_req_activity,
+    metabolic_energy_req_lactation,
+    metabolic_energy_req_work,
+    metabolic_energy_req_pregnancy,
     net_energy_maintenance_digestible_energy_ratio,
-    energy_requirement_growth,
-    energy_requirement_fibre_production,
-    energy_requirement_egg_deposition,
+    metabolic_energy_req_growth,
+    metabolic_energy_req_fibre_production,
+    metabolic_energy_req_egg_deposition,
     net_energy_growth_digestible_energy_ratio,
-    diet_digestibility_fraction
+    ration_digestibility_fraction
   )
   # Cattle, buffalo: sum maintenance, activity, lactation, work, pregnancy, growth
   if (species_short %in% c("CTL", "BFL")) {
-    energy_requirement_total <- (
+    metabolic_energy_req_total <- (
       (
-        (energy_requirement_maintenance + energy_requirement_activity +
-           energy_requirement_lactation + energy_requirement_work + energy_requirement_pregnancy) /
+        (metabolic_energy_req_maintenance + metabolic_energy_req_activity +
+           metabolic_energy_req_lactation + metabolic_energy_req_work + metabolic_energy_req_pregnancy) /
           net_energy_maintenance_digestible_energy_ratio
-      ) + ((energy_requirement_growth) /  net_energy_growth_digestible_energy_ratio)
-    ) / diet_digestibility_fraction
+      ) + ((metabolic_energy_req_growth) /  net_energy_growth_digestible_energy_ratio)
+    ) / ration_digestibility_fraction
   } else if (species_short %in% c("SHP", "GTS")) {
     # Sheep, goats: add fibre
-    energy_requirement_total <- (
-      ((energy_requirement_maintenance + energy_requirement_activity +
-          energy_requirement_lactation + energy_requirement_pregnancy) /
+    metabolic_energy_req_total <- (
+      ((metabolic_energy_req_maintenance + metabolic_energy_req_activity +
+          metabolic_energy_req_lactation + metabolic_energy_req_pregnancy) /
          net_energy_maintenance_digestible_energy_ratio) + (
-           (energy_requirement_growth +
-              energy_requirement_fibre_production) / net_energy_growth_digestible_energy_ratio
+           (metabolic_energy_req_growth +
+              metabolic_energy_req_fibre_production) / net_energy_growth_digestible_energy_ratio
          )
-    ) / diet_digestibility_fraction
+    ) / ration_digestibility_fraction
   } else if (species_short == "CML") {
-    energy_requirement_total <- energy_requirement_maintenance + energy_requirement_activity +
-      energy_requirement_lactation + energy_requirement_work + energy_requirement_fibre_production +
-      energy_requirement_pregnancy + energy_requirement_growth
+    metabolic_energy_req_total <- metabolic_energy_req_maintenance + metabolic_energy_req_activity +
+      metabolic_energy_req_lactation + metabolic_energy_req_work + metabolic_energy_req_fibre_production +
+      metabolic_energy_req_pregnancy + metabolic_energy_req_growth
   } else if (species_short == "PGS") {
-    energy_requirement_total <- energy_requirement_maintenance + energy_requirement_activity +
-      energy_requirement_lactation + energy_requirement_pregnancy + energy_requirement_growth
+    metabolic_energy_req_total <- metabolic_energy_req_maintenance + metabolic_energy_req_activity +
+      metabolic_energy_req_lactation + metabolic_energy_req_pregnancy + metabolic_energy_req_growth
   } else if (species_short == "CHK") {
-    energy_requirement_total <- energy_requirement_maintenance + energy_requirement_activity +
-      energy_requirement_growth + energy_requirement_egg_deposition
+    metabolic_energy_req_total <- metabolic_energy_req_maintenance + metabolic_energy_req_activity +
+      metabolic_energy_req_growth + metabolic_energy_req_egg_deposition
   }
-  return(energy_requirement_total)
+  return(metabolic_energy_req_total)
 }
 
 #' Calculate Daily Dry Matter Intake
@@ -1713,11 +1713,11 @@ calc_total_metabolic_energy_req <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param energy_requirement_total Numeric. Total daily energy requirement (MJ/head/day). 
+#' @param metabolic_energy_req_total Numeric. Total daily energy requirement (MJ/head/day). 
 #' For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
 #' For CML and PGS the function returns the summed daily metabolizable energy requirement.
-#' @param diet_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
-#' @param diet_metabolizable_energy Numeric. Average metabolizable energy content of the diet (MJ/kg DM).
+#' @param ration_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
+#' @param ration_metabolizable_energy Numeric. Average metabolizable energy content of the diet (MJ/kg DM).
 #'
 #' @return Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #'
@@ -1732,14 +1732,14 @@ calc_total_metabolic_energy_req <- function(
 #'   \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}}:
 #'
 #'   \deqn{
-#'     dry\_matter\_intake = \frac{energy\_requirement\_total}{diet\_gross\_energy}
+#'     ration\_intake = \frac{metabolic\_energy\_req\_total}{ration\_gross\_energy}
 #'   }
 #'
 #'   \item \strong{Energy expressed as metabolizable energy requirement - 
 #'   \code{CML}, \code{PGS}, \code{CHK}}:
 #'
 #'   \deqn{
-#'     dry\_matter\_intake = \frac{energy\_requirement\_total}{diet\_metabolizable\_energy}
+#'     ration\_intake = \frac{metabolic\_energy\_req\_total}{ration\_metabolizable\_energy}
 #'   }
 #' }
 #'
@@ -1759,18 +1759,18 @@ calc_total_metabolic_energy_req <- function(
 #' @export
 calc_ration_intake <- function(
     species_short,
-    energy_requirement_total,
-    diet_gross_energy,
-    diet_metabolizable_energy
+    metabolic_energy_req_total,
+    ration_gross_energy,
+    ration_metabolizable_energy
 ) {
   # Validate inputs
-  validate_dmi_inputs(species_short, energy_requirement_total, diet_gross_energy, diet_metabolizable_energy)
+  validate_dmi_inputs(species_short, metabolic_energy_req_total, ration_gross_energy, ration_metabolizable_energy)
   # Ruminants: use gross energy
   if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
-    dry_matter_intake <- energy_requirement_total / diet_gross_energy
+    ration_intake <- metabolic_energy_req_total / ration_gross_energy
   } else if (species_short %in% c("PGS", "CHK", "CML")) {
     # Monogastrics/camelids: use metabolizable energy
-    dry_matter_intake <- energy_requirement_total / diet_metabolizable_energy
+    ration_intake <- metabolic_energy_req_total / ration_metabolizable_energy
   }
-  return(dry_matter_intake)
+  return(ration_intake)
 }

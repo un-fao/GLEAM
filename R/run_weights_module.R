@@ -26,10 +26,10 @@
 #'   \itemize{
 #'     \item \code{live_weight_female_adult} Numeric. Live weight of adult females (kg)
 #'     \item \code{live_weight_male_adult} Numeric. Live weight of adult males (kg)
-#'     \item \code{birth_weight} Numeric. Live weight of the animal at birth (kg).
-#'     \item \code{weaning_weight} Numeric. Live weight of the animal at weaning (kg)
-#'     \item \code{slaughter_weight_female} Numeric. Slaughter weight of female sub-adult animals (kg)
-#'     \item \code{slaughter_weight_male} Numeric. Slaughter weight of male sub-adult animals (kg)
+#'     \item \code{live_weight_at_birth} Numeric. Live weight of the animal at birth (kg).
+#'     \item \code{live_weight_at_weaning} Numeric. Live weight of the animal at weaning (kg)
+#'     \item \code{live_weight_female_at_slaughter} Numeric. Slaughter weight of female sub-adult animals (kg)
+#'     \item \code{live_weight_male_at_slaughter} Numeric. Slaughter weight of male sub-adult animals (kg)
 #'   }
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'
@@ -38,10 +38,10 @@
 #'     \item{cohort_level_results}{The input \code{cohort_level_data} with these
 #'       additional columns:
 #'       \describe{
-#'         \item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+#'         \item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 #'         \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 #'         \item{live_weight_cohort_potential_final}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
-#'         \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+#'         \item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 #'         \item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
 #'         \item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
 #'         \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
@@ -120,18 +120,18 @@ run_weights_module <- function(
   cohort_level_data[
     ,
     c(
-      "mature_weight",
+      "live_weight_mature_stage",
       "live_weight_cohort_initial",
       "live_weight_cohort_potential_final",
-      "slaughter_weight_cohort"
+      "live_weight_cohort_at_slaughter"
     ) := calc_cohort_weights(
       cohort_short = cohort_short,
       live_weight_female_adult = herd_level_data[.SD, on = "herd_id", x.live_weight_female_adult],
       live_weight_male_adult = herd_level_data[.SD, on = "herd_id", x.live_weight_male_adult],
-      birth_weight = herd_level_data[.SD, on = "herd_id", x.birth_weight],
-      slaughter_weight_female = herd_level_data[.SD, on = "herd_id", x.slaughter_weight_female],
-      slaughter_weight_male = herd_level_data[.SD, on = "herd_id", x.slaughter_weight_male],
-      weaning_weight = herd_level_data[.SD, on = "herd_id", x.weaning_weight]
+      live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
+      live_weight_female_at_slaughter = herd_level_data[.SD, on = "herd_id", x.live_weight_female_at_slaughter],
+      live_weight_male_at_slaughter = herd_level_data[.SD, on = "herd_id", x.live_weight_male_at_slaughter],
+      live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning]
     ),
     by = .I
   ]
@@ -145,7 +145,7 @@ run_weights_module <- function(
     ) := calc_avg_weights(
       live_weight_cohort_initial = live_weight_cohort_initial,
       live_weight_cohort_potential_final = live_weight_cohort_potential_final,
-      slaughter_weight_cohort = slaughter_weight_cohort,
+      live_weight_cohort_at_slaughter = live_weight_cohort_at_slaughter,
       offtake_rate = offtake_rate
     ),
     by = .I

@@ -96,8 +96,8 @@ validate_run_gleam_inputs <- function(
     # Herd simulation (cohort and herd)
     "cohort_stock_size", "offtake_heads", "offtake_heads_assessment", "growth_rate_herd",
     # Weights (cohort)
-    "mature_weight", "live_weight_cohort_initial", "live_weight_cohort_potential_final",
-    "slaughter_weight_cohort", "live_weight_cohort_average", "live_weight_cohort_final",
+    "live_weight_mature_stage", "live_weight_cohort_initial", "live_weight_cohort_potential_final",
+    "live_weight_cohort_at_slaughter", "live_weight_cohort_average", "live_weight_cohort_final",
     "daily_weight_gain",
     # Production cohort (cohort-level outputs)
     "milk_production_mass_cohort", "milk_production_protein_cohort", "milk_production_fpcm_cohort",
@@ -105,23 +105,23 @@ validate_run_gleam_inputs <- function(
     "meat_production_live_weight_cohort", "meat_production_carcass_weight_cohort",
     "meat_production_bone_free_meat_cohort", "meat_production_protein_cohort",
     # Feed rations (cohort-level outputs merged into pipeline)
-    "diet_gross_energy", "diet_metabolizable_energy", "diet_nitrogen",
-    "diet_digestibility_fraction", "urinary_energy_fraction", "diet_ash",
+    "ration_gross_energy", "ration_metabolizable_energy", "ration_nitrogen",
+    "ration_digestibility_fraction", "ration_urinary_energy_fraction", "ration_ash",
     # Allocation (cohort-level energy allocation terms)
-    "energy_allocation_milk", "energy_allocation_meat", "energy_allocation_fibre",
-    "energy_allocation_work", "energy_allocation_eggs",
+    "milk_allocation_energy", "meat_allocation_energy", "fibre_allocation_energy",
+    "work_allocation_energy", "egg_allocation_energy",
     # Feed emissions (cohort-level diet emission factors)
-    "diet_co2_feed_fertilizer", "diet_co2_feed_pesticides",
-    "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
-    "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues",
-    "diet_ch4_feed_rice",
+    "co2_ration_fertilizer", "co2_ration_pesticides",
+    "co2_ration_crop_activities", "co2_ration_luc_nopeat", "co2_ration_luc_peat",
+    "n2o_ration_fertilizer", "n2o_ration_manure_applied", "n2o_ration_crop_residues",
+    "ch4_ration_rice",
     # Energy requirements (cohort)
-    "energy_requirement_maintenance", "energy_requirement_activity", "energy_requirement_growth",
-    "energy_requirement_lactation", "energy_requirement_work",
-    "energy_requirement_fibre_production", "energy_requirement_pregnancy",
+    "metabolic_energy_req_maintenance", "metabolic_energy_req_activity", "metabolic_energy_req_growth",
+    "metabolic_energy_req_lactation", "metabolic_energy_req_work",
+    "metabolic_energy_req_fibre_production", "metabolic_energy_req_pregnancy",
     "net_energy_maintenance_digestible_energy_ratio",
     "net_energy_growth_digestible_energy_ratio",
-    "energy_requirement_total", "dry_matter_intake",
+    "metabolic_energy_req_total", "ration_intake",
     # Nitrogen balance (cohort)
     "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion",
     # Enteric direct emissions (cohort)
@@ -131,10 +131,10 @@ validate_run_gleam_inputs <- function(
     "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other", "ch4_manure_all_noburn",
     "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
     "n2o_manure_all_noburn_direct",
-    "n2o_vol_manure_pasture", "n2o_vol_manure_burned", "n2o_vol_manure_other",
-    "n2o_vol_manure_all_noburn",
-    "n2o_leach_manure_pasture", "n2o_leach_manure_burned", "n2o_leach_manure_other",
-    "n2o_leach_manure_all_noburn",
+    "n2o_manure_pasture_vol", "n2o_manure_burned_vol", "n2o_manure_other_vol",
+    "n2o_manure_all_noburn_vol",
+    "n2o_manure_pasture_leach", "n2o_manure_burned_leach", "n2o_manure_other_leach",
+    "n2o_manure_all_noburn_leach",
     "n2o_manure_pasture_indirect", "n2o_manure_burned_indirect", "n2o_manure_other_indirect",
     "n2o_manure_pasture_total", "n2o_manure_burned_total", "n2o_manure_other_total"
   )

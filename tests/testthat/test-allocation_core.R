@@ -53,8 +53,8 @@ test_that("calc_meat_allocation_energy returns correct value for cattle female",
     species_short = "CTL",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 100,
-    slaughter_weight_cohort = 500,
-    birth_weight = 40
+    live_weight_cohort_at_slaughter = 500,
+    live_weight_at_birth = 40
   )
 
   expect_type(result, "double")
@@ -70,8 +70,8 @@ test_that("calc_meat_allocation_energy returns correct value for cattle male", {
     species_short = "CTL",
     cohort_short = "MA",
     meat_production_live_weight_cohort = 150,
-    slaughter_weight_cohort = 600,
-    birth_weight = 45
+    live_weight_cohort_at_slaughter = 600,
+    live_weight_at_birth = 45
   )
 
   expect_type(result, "double")
@@ -85,8 +85,8 @@ test_that("calc_meat_allocation_energy returns correct value for camelids", {
     species_short = "CML",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 80,
-    slaughter_weight_cohort = 450,
-    birth_weight = 35,
+    live_weight_cohort_at_slaughter = 450,
+    live_weight_at_birth = 35,
     ratio_me_to_ne = 2.33
   )
 
@@ -102,8 +102,8 @@ test_that("calc_meat_allocation_energy returns correct value for sheep female", 
     species_short = "SHP",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 20,
-    slaughter_weight_cohort = 60,
-    birth_weight = 4
+    live_weight_cohort_at_slaughter = 60,
+    live_weight_at_birth = 4
   )
 
   expect_type(result, "double")
@@ -118,8 +118,8 @@ test_that("calc_meat_allocation_energy returns correct value for sheep male", {
     species_short = "SHP",
     cohort_short = "MA",
     meat_production_live_weight_cohort = 25,
-    slaughter_weight_cohort = 70,
-    birth_weight = 4.5
+    live_weight_cohort_at_slaughter = 70,
+    live_weight_at_birth = 4.5
   )
 
   expect_type(result, "double")
@@ -134,8 +134,8 @@ test_that("calc_meat_allocation_energy returns correct value for goats", {
     species_short = "GTS",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 15,
-    slaughter_weight_cohort = 50,
-    birth_weight = 3.5
+    live_weight_cohort_at_slaughter = 50,
+    live_weight_at_birth = 3.5
   )
 
   expect_type(result, "double")
@@ -162,8 +162,8 @@ test_that("calc_meat_allocation_energy validates cohort codes", {
       species_short = "CTL",
       cohort_short = "INVALID",
       meat_production_live_weight_cohort = 100,
-      slaughter_weight_cohort = 500,
-      birth_weight = 40
+      live_weight_cohort_at_slaughter = 500,
+      live_weight_at_birth = 40
     ),
     "must be one of"
   )
@@ -175,8 +175,8 @@ test_that("calc_meat_allocation_energy validates weight bounds for non-PGS", {
       species_short = "CTL",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 100,
-      slaughter_weight_cohort = -10,
-      birth_weight = 40
+      live_weight_cohort_at_slaughter = -10,
+      live_weight_at_birth = 40
     ),
     "is out of range"
   )
@@ -185,8 +185,8 @@ test_that("calc_meat_allocation_energy validates weight bounds for non-PGS", {
       species_short = "CTL",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 100,
-      slaughter_weight_cohort = 500,
-      birth_weight = 1500
+      live_weight_cohort_at_slaughter = 500,
+      live_weight_at_birth = 1500
     ),
     "is out of range"
   )
@@ -198,8 +198,8 @@ test_that("calc_meat_allocation_energy validates ratio_me_to_ne for CML only", {
       species_short = "CML",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 80,
-      slaughter_weight_cohort = 450,
-      birth_weight = 35,
+      live_weight_cohort_at_slaughter = 450,
+      live_weight_at_birth = 35,
       ratio_me_to_ne = -1
     ),
     "must be a positive numeric value"
@@ -210,8 +210,8 @@ test_that("calc_meat_allocation_energy validates ratio_me_to_ne for CML only", {
       species_short = "CTL",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 100,
-      slaughter_weight_cohort = 500,
-      birth_weight = 40,
+      live_weight_cohort_at_slaughter = 500,
+      live_weight_at_birth = 40,
       ratio_me_to_ne = -1
     )
   )
@@ -223,7 +223,7 @@ test_that("calc_fibre_allocation_energy returns correct value for sheep", {
   result <- calc_fibre_allocation_energy(
     species_short = "SHP",
     cohort_stock_size = 100,
-    energy_requirement_fibre_production = 5,
+    metabolic_energy_req_fibre_production = 5,
     simulation_duration = 365
   )
 
@@ -236,7 +236,7 @@ test_that("calc_fibre_allocation_energy returns correct value for goats", {
   result <- calc_fibre_allocation_energy(
     species_short = "GTS",
     cohort_stock_size = 100,
-    energy_requirement_fibre_production = 4,
+    metabolic_energy_req_fibre_production = 4,
     simulation_duration = 365
   )
 
@@ -247,13 +247,13 @@ test_that("calc_fibre_allocation_energy returns correct value for camelids", {
   result <- calc_fibre_allocation_energy(
     species_short = "CML",
     cohort_stock_size = 100,
-    energy_requirement_fibre_production = 6,
+    metabolic_energy_req_fibre_production = 6,
     ratio_me_to_ne = 2.33,
     simulation_duration = 365
   )
 
   expect_type(result, "double")
-  # For camelids: (energy_requirement / ratio_me_to_ne) * simulation_duration * cohort_stock_size
+  # For camelids: (metabolic_energy_req / ratio_me_to_ne) * simulation_duration * cohort_stock_size
   expect_equal(result, (6 / 2.33) * 365 * 100)
 })
 
@@ -272,7 +272,7 @@ test_that("calc_fibre_allocation_energy validates inputs", {
     calc_fibre_allocation_energy(
       species_short = "SHP",
       cohort_stock_size = 100,
-      energy_requirement_fibre_production = -5,
+      metabolic_energy_req_fibre_production = -5,
       simulation_duration = 365
     ),
     "is out of range"
@@ -282,7 +282,7 @@ test_that("calc_fibre_allocation_energy validates inputs", {
     calc_fibre_allocation_energy(
       species_short = "SHP",
       cohort_stock_size = 100,
-      energy_requirement_fibre_production = 5,
+      metabolic_energy_req_fibre_production = 5,
       ratio_me_to_ne = -0.1,
       simulation_duration = 365
     )
@@ -291,7 +291,7 @@ test_that("calc_fibre_allocation_energy validates inputs", {
     calc_fibre_allocation_energy(
       species_short = "CML",
       cohort_stock_size = 100,
-      energy_requirement_fibre_production = 5,
+      metabolic_energy_req_fibre_production = 5,
       ratio_me_to_ne = -0.1,
       simulation_duration = 365
     ),
@@ -305,7 +305,7 @@ test_that("calc_work_allocation_energy returns correct value for camelids", {
   result <- calc_work_allocation_energy(
     species_short = "CML",
     cohort_stock_size = 100,
-    energy_requirement_work = 10,
+    metabolic_energy_req_work = 10,
     simulation_duration = 365,
     ratio_me_to_ne = 2.33
   )
@@ -320,7 +320,7 @@ test_that("calc_work_allocation_energy returns correct value for non-camelids (r
   result <- calc_work_allocation_energy(
     species_short = "CTL",
     cohort_stock_size = 100,
-    energy_requirement_work = 8,
+    metabolic_energy_req_work = 8,
     simulation_duration = 365
   )
 
@@ -333,7 +333,7 @@ test_that("calc_work_allocation_energy handles zero energy requirement", {
   result <- calc_work_allocation_energy(
     species_short = "CTL",
     cohort_stock_size = 100,
-    energy_requirement_work = 0,
+    metabolic_energy_req_work = 0,
     simulation_duration = 365
   )
 
@@ -345,7 +345,7 @@ test_that("calc_work_allocation_energy validates inputs", {
     calc_work_allocation_energy(
       species_short = "INVALID",
       cohort_stock_size = 100,
-      energy_requirement_work = 10,
+      metabolic_energy_req_work = 10,
       simulation_duration = 365
     ),
     "must be one of"
@@ -354,7 +354,7 @@ test_that("calc_work_allocation_energy validates inputs", {
     calc_work_allocation_energy(
       species_short = "CTL",
       cohort_stock_size = 100,
-      energy_requirement_work = -5,
+      metabolic_energy_req_work = -5,
       simulation_duration = 365
     ),
     "is out of range"
@@ -363,7 +363,7 @@ test_that("calc_work_allocation_energy validates inputs", {
     calc_work_allocation_energy(
       species_short = "CTL",
       cohort_stock_size = 100,
-      energy_requirement_work = 10,
+      metabolic_energy_req_work = 10,
       simulation_duration = 5000
     ),
     "is out of range"
@@ -373,7 +373,7 @@ test_that("calc_work_allocation_energy validates inputs", {
     calc_work_allocation_energy(
       species_short = "CML",
       cohort_stock_size = 100,
-      energy_requirement_work = 10,
+      metabolic_energy_req_work = 10,
       simulation_duration = 365,
       ratio_me_to_ne = -0.1
     ),
@@ -383,7 +383,7 @@ test_that("calc_work_allocation_energy validates inputs", {
     calc_work_allocation_energy(
       species_short = "CTL",
       cohort_stock_size = 100,
-      energy_requirement_work = 10,
+      metabolic_energy_req_work = 10,
       simulation_duration = 365,
       ratio_me_to_ne = -0.1
     )
@@ -395,69 +395,69 @@ test_that("calc_work_allocation_energy validates inputs", {
 test_that("calc_allocation_shares returns meat=1 and others=0 for pigs (PGS)", {
   result <- calc_allocation_shares(
     species_short = "PGS",
-    energy_allocation_meat = NA,
-    energy_allocation_milk = 0,
-    energy_allocation_fibre = 0,
-    energy_allocation_work = 0,
-    energy_allocation_eggs = 0
+    meat_allocation_energy = NA,
+    milk_allocation_energy = 0,
+    fibre_allocation_energy = 0,
+    work_allocation_energy = 0,
+    egg_allocation_energy = 0
   )
 
-  expect_equal(result$allocation_share_meat, 1)
-  expect_equal(result$allocation_share_milk, 0)
-  expect_equal(result$allocation_share_fibre, 0)
-  expect_equal(result$allocation_share_work, 0)
-  expect_equal(result$allocation_share_eggs, 0)
+  expect_equal(result$meat_share_allocation, 1)
+  expect_equal(result$milk_share_allocation, 0)
+  expect_equal(result$fibre_share_allocation, 0)
+  expect_equal(result$work_share_allocation, 0)
+  expect_equal(result$eggs_share_allocation, 0)
 })
 
 test_that("calc_allocation_shares returns correct proportions for milk and meat", {
   result <- calc_allocation_shares(
     species_short = "CTL",
-    energy_allocation_meat = 300,
-    energy_allocation_milk = 700,
-    energy_allocation_fibre = 0,
-    energy_allocation_work = 0,
-    energy_allocation_eggs = 0
+    meat_allocation_energy = 300,
+    milk_allocation_energy = 700,
+    fibre_allocation_energy = 0,
+    work_allocation_energy = 0,
+    egg_allocation_energy = 0
   )
 
-  expect_equal(result$allocation_share_meat, 0.3)
-  expect_equal(result$allocation_share_milk, 0.7)
-  expect_equal(result$allocation_share_fibre, 0)
-  expect_equal(result$allocation_share_work, 0)
-  expect_equal(result$allocation_share_eggs, 0)
+  expect_equal(result$meat_share_allocation, 0.3)
+  expect_equal(result$milk_share_allocation, 0.7)
+  expect_equal(result$fibre_share_allocation, 0)
+  expect_equal(result$work_share_allocation, 0)
+  expect_equal(result$eggs_share_allocation, 0)
 })
 
 test_that("calc_allocation_shares shares sum to 1", {
   result <- calc_allocation_shares(
     species_short = "SHP",
-    energy_allocation_meat = 200,
-    energy_allocation_milk = 0,
-    energy_allocation_fibre = 300,
-    energy_allocation_work = 0,
-    energy_allocation_eggs = 0
+    meat_allocation_energy = 200,
+    milk_allocation_energy = 0,
+    fibre_allocation_energy = 300,
+    work_allocation_energy = 0,
+    egg_allocation_energy = 0
   )
 
-  total <- result$allocation_share_meat + result$allocation_share_milk +
-    result$allocation_share_fibre + result$allocation_share_work +
-    result$allocation_share_eggs
+  total <- result$meat_share_allocation + result$milk_share_allocation +
+    result$fibre_share_allocation + result$work_share_allocation +
+    result$eggs_share_allocation
 
   expect_equal(total, 1)
-  expect_equal(result$allocation_share_meat, 0.4)
-  expect_equal(result$allocation_share_fibre, 0.6)
+  expect_equal(result$meat_share_allocation, 0.4)
+  expect_equal(result$fibre_share_allocation, 0.6)
 })
 
 test_that("calc_allocation_shares returns a named list with 5 elements", {
   result <- calc_allocation_shares(
     species_short = "CTL",
-    energy_allocation_meat = 500,
-    energy_allocation_milk = 500,
-    energy_allocation_fibre = 0,
-    energy_allocation_work = 0,
-    energy_allocation_eggs = 0
+    meat_allocation_energy = 500,
+    milk_allocation_energy = 500,
+    fibre_allocation_energy = 0,
+    work_allocation_energy = 0,
+    egg_allocation_energy = 0
   )
 
   expect_type(result, "list")
   expect_named(result, c(
-    "allocation_share_meat", "allocation_share_milk",
-    "allocation_share_fibre", "allocation_share_work", "allocation_share_eggs"
+    "meat_share_allocation", "milk_share_allocation",
+    "fibre_share_allocation", "work_share_allocation", "eggs_share_allocation"
   ))
 })

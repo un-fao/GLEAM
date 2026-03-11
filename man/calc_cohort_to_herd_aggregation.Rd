@@ -18,8 +18,8 @@ corresponds to a single sex–age cohort within a herd.}
 \item{id_cols}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 
 \item{vars_to_sum}{Character vector. Names of numeric cohort-level variables to be summed across cohorts to produce
-herd-level totals (e.g., energy_allocation_meat, energy_allocation_milk, energy_allocation_fibre,
-energy_allocation_work, energy_allocation_eggs)}
+herd-level totals (e.g., meat_allocation_energy, milk_allocation_energy, fibre_allocation_energy,
+work_allocation_energy, egg_allocation_energy)}
 
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:

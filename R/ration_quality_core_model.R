@@ -142,13 +142,13 @@ calc_ration_digestibility <- function(
 
   # Apply the species-specific digestibility coefficient
   if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
-    diet_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_ruminant
+    ration_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_ruminant
   } else if (species_short == "CHK") {
-    diet_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_chicken
+    ration_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_chicken
   } else {
-    diet_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_pigs
+    ration_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_pigs
   }
-  return(diet_digestibility_fraction)
+  return(ration_digestibility_fraction)
 }
 
 #' Calculate diet metabolizable energy contribution for a ration component
@@ -202,7 +202,7 @@ calc_ration_metabolizable_energy <- function(
     feed_metabolizable_energy_pigs = NA_real_,
     feed_metabolizable_energy_chicken = NA_real_
 ) {
-  validate_diet_metabolizable_energy_inputs(
+  validate_ration_metabolizable_energy_inputs(
     species_short,
     feed_ration_fraction,
     feed_metabolizable_energy_ruminant,
@@ -212,13 +212,13 @@ calc_ration_metabolizable_energy <- function(
 
   # Apply the species-specific metabolizable energy parameter
   if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
-    diet_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_ruminant
+    ration_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_ruminant
   } else if (species_short == "CHK") {
-    diet_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_chicken
+    ration_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_chicken
   } else {
-    diet_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_pigs
+    ration_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_pigs
   }
-  return(diet_metabolizable_energy)
+  return(ration_metabolizable_energy)
 }
 
 #' Calculate diet gross energy contribution for a ration component
@@ -241,10 +241,10 @@ calc_ration_metabolizable_energy <- function(
 #'
 #' @export
 calc_ration_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
-  validate_diet_gross_energy_inputs(feed_ration_fraction, feed_gross_energy)
+  validate_ration_gross_energy_inputs(feed_ration_fraction, feed_gross_energy)
   # Contribution is ration composition share multiplied by gross energy content
-  diet_gross_energy <- feed_ration_fraction * feed_gross_energy
-  return(diet_gross_energy)
+  ration_gross_energy <- feed_ration_fraction * feed_gross_energy
+  return(ration_gross_energy)
 }
 
 #' Calculate diet nitrogen contribution for a ration component
@@ -265,10 +265,10 @@ calc_ration_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
 #'
 #' @export
 calc_ration_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_content) {
-  validate_diet_nitrogen_inputs(feed_ration_fraction, feed_nitrogen_content)
+  validate_ration_nitrogen_inputs(feed_ration_fraction, feed_nitrogen_content)
   # Contribution is ration composition share multiplied by nitrogen content
-  diet_nitrogen <- feed_ration_fraction * feed_nitrogen_content
-  return(diet_nitrogen)
+  ration_nitrogen <- feed_ration_fraction * feed_nitrogen_content
+  return(ration_nitrogen)
 }
 
 #' Calculate urinary energy fraction contribution for a ration component
@@ -334,13 +334,13 @@ calc_ration_urinary_energy_fraction <- function(
 
   # Apply the species-specific diet_urinary_energy
   if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
-    urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_ruminant
+    ration_urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_ruminant
   } else if (species_short == "CHK") {
-    urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_chicken
+    ration_urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_chicken
   } else {
-    urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_pigs
+    ration_urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_pigs
   }
-  return(urinary_energy_fraction)
+  return(ration_urinary_energy_fraction)
 }
 
 #' Calculate diet ash contribution for a ration component
@@ -351,23 +351,23 @@ calc_ration_urinary_energy_fraction <- function(
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
 #'   total ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #'   each herd_id and cohort, proportions should sum to 1.
-#' @param feed_ash_content Numeric. Average ash content by feed component, expressed as
+#' @param feed_ash Numeric. Average ash content by feed component, expressed as
 #'   a fraction of the dry matter intake (g ash/100g DM).
 #'
 #' @return Numeric. Contribution of the feed component to total diet ash content (kg ash/kg DM).
 #'
 #' @details
 #' The ash contribution is defined as:
-#' \deqn{diet\_ash = feed\_ration\_fraction \times feed\_ash\_content / 100}
+#' \deqn{ration\_ash = feed\_ration\_fraction \times feed\_ash / 100}
 #'
 #' Ash content is expressed as a percentage (g/100g DM); the result is a fraction.
 #'
 #' @export
-calc_ration_ash <- function(feed_ration_fraction, feed_ash_content) {
-  validate_diet_ash_inputs(feed_ration_fraction, feed_ash_content)
+calc_ration_ash <- function(feed_ration_fraction, feed_ash) {
+  validate_ration_ash_inputs(feed_ration_fraction, feed_ash)
 
-  # Contribution is ration composition share multiplied by feed_ash_content
-  diet_ash <- feed_ration_fraction * feed_ash_content / 100
+  # Contribution is ration composition share multiplied by feed_ash
+  ration_ash <- feed_ration_fraction * feed_ash / 100
 
-  return(diet_ash)
+  return(ration_ash)
 }

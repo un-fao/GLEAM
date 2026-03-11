@@ -26,10 +26,10 @@ production stage of the animals. Supported values include:
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
-\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
-\item{urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
-\item{diet_ash}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).}
+\item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
+\item{ration_ash}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).}
 \item{nitrogen_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
 }}
 
@@ -134,14 +134,14 @@ emissions columns:
 \item{n2o_manure_burned_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure burned for fuel (kg N₂O/head/day).}
 \item{n2o_manure_other_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg N₂O/head/day).}
 \item{n2o_manure_all_noburn_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure management systems, excluding emissions from manure burned for fuel (kg N₂O/head/day).}
-\item{n2o_vol_manure_pasture}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure deposited on pasture (kg N₂O/head/day).}
-\item{n2o_vol_manure_burned}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure burned for fuel (kg N₂O/head/day).}
-\item{n2o_vol_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
-\item{n2o_vol_manure_all_noburn}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding losses from manure burned for fuel (kg N₂O/head/day).}
-\item{n2o_leach_manure_pasture}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure deposited on pasture (kg N₂O/head/day).}
-\item{n2o_leach_manure_burned}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure burned for fuel (kg N₂O/head/day).}
-\item{n2o_leach_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
-\item{n2o_leach_manure_all_noburn}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_pasture_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure deposited on pasture (kg N₂O/head/day).}
+\item{n2o_manure_burned_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_other_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_all_noburn_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) from manure management systems, excluding losses from manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_pasture_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure deposited on pasture (kg N₂O/head/day).}
+\item{n2o_manure_burned_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_other_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure deposited on pasture and manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_all_noburn_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure burned for fuel (kg N₂O/head/day).}
 \item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions from manure deposited on pasture. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
 \item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
 \item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen.}

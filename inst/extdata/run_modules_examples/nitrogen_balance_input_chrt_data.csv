@@ -1,4 +1,4 @@
-herd_id,cohort_short,dry_matter_intake,diet_nitrogen,daily_weight_gain,cohort_duration_days
+herd_id,cohort_short,ration_intake,ration_nitrogen,daily_weight_gain,cohort_duration_days
 1,FA,8.5,0.03,0,365
 1,FJ,2.1,0.04,0.35,365
 1,FS,6.2,0.03,0.25,365

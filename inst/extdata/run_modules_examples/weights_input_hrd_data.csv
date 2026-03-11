@@ -1,4 +1,4 @@
-herd_id,live_weight_female_adult,live_weight_male_adult,birth_weight,slaughter_weight_female,slaughter_weight_male,weaning_weight
+herd_id,live_weight_female_adult,live_weight_male_adult,live_weight_at_birth,live_weight_female_at_slaughter,live_weight_male_at_slaughter,live_weight_at_weaning
 1,450.0,600.0,35.0,500.0,650.0,200.0
 2,180.0,220.0,1.5,100.0,120.0,20.0
 3,70.0,80.0,3.5,45.0,55.0,20.0

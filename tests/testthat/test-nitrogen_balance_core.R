@@ -67,7 +67,7 @@ test_that("retention for pigs FA cohort matches reproductive formula", {
   val <- calc_nitrogen_retention(
     "PGS", "FA",
     litter_size = 10, parturition_rate = 2,
-    weaning_weight = 30, birth_weight = 1
+    live_weight_at_weaning = 30, live_weight_at_birth = 1
   )
 
   expected <- (
@@ -84,7 +84,7 @@ test_that("retention for pigs FS cohort matches reproductive formula", {
     "PGS", "FS",
     daily_weight_gain = 0.5,
     litter_size = 12, parturition_rate = 2.2,
-    weaning_weight = 20, birth_weight = 1,
+    live_weight_at_weaning = 20, live_weight_at_birth = 1,
     pregnancy_duration = 115, cohort_duration_days = 200
   )
 

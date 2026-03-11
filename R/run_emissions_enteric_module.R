@@ -28,10 +28,10 @@
 #'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
 #'       }}
-#'     \item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as
+#'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as
 #'     ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).}
-#'     \item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
-#'     \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+#'     \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+#'     \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'     \item{ch4_mitigation_factor}{Numeric. Optional. Multiplicative mitigation factor applied to
 #'     baseline enteric methane (CH₄) emissions (dimensionless). If not provided, a default
 #'     value of \code{1} (no mitigation) is used. Values lower than 1 represent proportional
@@ -116,7 +116,7 @@ run_emissions_enteric_module <- function(
     ch4_conversion_factor_ym := calc_conversion_factor_ym(
       species_short = species_short,
       cohort_short = cohort_short,
-      diet_digestibility_fraction = diet_digestibility_fraction
+      ration_digestibility_fraction = ration_digestibility_fraction
     ),
     by = .I
   ]
@@ -128,8 +128,8 @@ run_emissions_enteric_module <- function(
       species_short = species_short,
       ch4_conversion_factor_ym = ch4_conversion_factor_ym,
       ch4_mitigation_factor = ch4_mitigation_factor,
-      diet_gross_energy = diet_gross_energy,
-      dry_matter_intake = dry_matter_intake
+      ration_gross_energy = ration_gross_energy,
+      ration_intake = ration_intake
     ),
     by = .I
   ]

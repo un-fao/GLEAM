@@ -1,10 +1,10 @@
 # ---- test calc_volatile_solids ----
 test_that("calc_volatile_solids produces expected results", {
   result <- calc_volatile_solids(
-    dry_matter_intake = 5,
-    diet_digestibility_fraction = 0.6,
-    urinary_energy_fraction = 0.04,
-    diet_ash = 0.08
+    ration_intake = 5,
+    ration_digestibility_fraction = 0.6,
+    ration_urinary_energy_fraction = 0.04,
+    ration_ash = 0.08
   )
   expect_length(result, 1)
   expect_true(result >= 0)
@@ -13,10 +13,10 @@ test_that("calc_volatile_solids produces expected results", {
 
 test_that("calc_volatile_solids produces expected results", {
   result <- calc_volatile_solids(
-    dry_matter_intake = 4,
-    diet_digestibility_fraction = 0.7,
-    urinary_energy_fraction = 0.02,
-    diet_ash = 0.06
+    ration_intake = 4,
+    ration_digestibility_fraction = 0.7,
+    ration_urinary_energy_fraction = 0.02,
+    ration_ash = 0.06
   )
   expect_equal(result, 4 * (1 - 0.7 + 0.02) * (1 - 0.06))
 })
@@ -160,10 +160,10 @@ test_that("calc_n2o_manure_volatilization computes indirect N2O by MMS group", {
   expected_burned <- n_excretion * (44 / 28) * 0.2 * 0 * 0.14
   expected_other <- n_excretion * (44 / 28) * sum(0.5 * 0.3 * 0.14)
 
-  expect_equal(result$n2o_vol_manure_pasture, expected_pasture)
-  expect_equal(result$n2o_vol_manure_burned, expected_burned)
-  expect_equal(result$n2o_vol_manure_other, expected_other)
-  expect_equal(result$n2o_vol_manure_all_noburn, expected_pasture + expected_other)
+  expect_equal(result$n2o_manure_pasture_vol, expected_pasture)
+  expect_equal(result$n2o_manure_burned_vol, expected_burned)
+  expect_equal(result$n2o_manure_other_vol, expected_other)
+  expect_equal(result$n2o_manure_all_noburn_vol, expected_pasture + expected_other)
 })
 
 # ---- test calc_n2o_manure_volatilization edge cases ----
@@ -200,10 +200,10 @@ test_that("calc_n2o_manure_leaching computes indirect N2O by MMS group", {
   expected_burned <- n_excretion * (44 / 28) * 0.2 * 0 * 0.011
   expected_other <- n_excretion * (44 / 28) * sum(0.5 * 0.035 * 0.011)
 
-  expect_equal(result$n2o_leach_manure_pasture, expected_pasture)
-  expect_equal(result$n2o_leach_manure_burned, expected_burned)
-  expect_equal(result$n2o_leach_manure_other, expected_other)
-  expect_equal(result$n2o_leach_manure_all_noburn, expected_pasture + expected_other)
+  expect_equal(result$n2o_manure_pasture_leach, expected_pasture)
+  expect_equal(result$n2o_manure_burned_leach, expected_burned)
+  expect_equal(result$n2o_manure_other_leach, expected_other)
+  expect_equal(result$n2o_manure_all_noburn_leach, expected_pasture + expected_other)
 })
 
 # ---- test calc_n2o_manure_leaching edge cases ----
@@ -222,12 +222,12 @@ test_that("calc_n2o_manure_leaching validates MMS inputs", {
 # ---- test calc_n2o_manure_total ----
 test_that("calc_n2o_manure_total aggregates direct and indirect N2O", {
   result <- calc_n2o_manure_total(
-    n2o_vol_manure_pasture = 0.0129,
-    n2o_leach_manure_pasture = 0.0012,
-    n2o_vol_manure_burned = 0,
-    n2o_leach_manure_burned = 0,
-    n2o_vol_manure_other = 0.052,
-    n2o_leach_manure_other = 0.00027,
+    n2o_manure_pasture_vol = 0.0129,
+    n2o_manure_pasture_leach = 0.0012,
+    n2o_manure_burned_vol = 0,
+    n2o_manure_burned_leach = 0,
+    n2o_manure_other_vol = 0.052,
+    n2o_manure_other_leach = 0.00027,
     n2o_manure_pasture_direct = 0.009,
     n2o_manure_burned_direct = 0,
     n2o_manure_other_direct = 0.01033
@@ -244,12 +244,12 @@ test_that("calc_n2o_manure_total aggregates direct and indirect N2O", {
 # ---- test calc_n2o_manure_total edge cases ----
 test_that("calc_n2o_manure_total validates scalar numeric inputs", {
   expect_error(calc_n2o_manure_total(
-    n2o_vol_manure_pasture = "0.01",
-    n2o_leach_manure_pasture = 0.0012,
-    n2o_vol_manure_burned = 0,
-    n2o_leach_manure_burned = 0,
-    n2o_vol_manure_other = 0.052,
-    n2o_leach_manure_other = 0.00027,
+    n2o_manure_pasture_vol = "0.01",
+    n2o_manure_pasture_leach = 0.0012,
+    n2o_manure_burned_vol = 0,
+    n2o_manure_burned_leach = 0,
+    n2o_manure_other_vol = 0.052,
+    n2o_manure_other_leach = 0.00027,
     n2o_manure_pasture_direct = 0.009,
     n2o_manure_burned_direct = 0,
     n2o_manure_other_direct = 0.01033

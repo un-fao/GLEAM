@@ -61,7 +61,7 @@ validate_diet_digestibility_inputs <- function(
 #' Validate inputs for calc_ration_metabolizable_energy
 #'
 #' @noRd
-validate_diet_metabolizable_energy_inputs <- function(
+validate_ration_metabolizable_energy_inputs <- function(
     species_short,
     feed_ration_fraction,
     feed_metabolizable_energy_ruminant,
@@ -149,7 +149,7 @@ validate_feed_digestibility_inputs <- function(
 #' Validate inputs for calc_ration_gross_energy
 #'
 #' @noRd
-validate_diet_gross_energy_inputs <- function(feed_ration_fraction, feed_gross_energy) {
+validate_ration_gross_energy_inputs <- function(feed_ration_fraction, feed_gross_energy) {
   # Ration and GE must be numeric scalars
   validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
   validate_scalar_numeric(feed_gross_energy, "feed_gross_energy")
@@ -162,7 +162,7 @@ validate_diet_gross_energy_inputs <- function(feed_ration_fraction, feed_gross_e
 #' Validate inputs for calc_ration_nitrogen_content
 #'
 #' @noRd
-validate_diet_nitrogen_inputs <- function(feed_ration_fraction, feed_nitrogen_content) {
+validate_ration_nitrogen_inputs <- function(feed_ration_fraction, feed_nitrogen_content) {
   # Ration and nitrogen content must be numeric scalars
   validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
   validate_scalar_numeric(feed_nitrogen_content, "feed_nitrogen_content")
@@ -232,10 +232,10 @@ validate_urinary_energy_inputs <- function(
 #' Validate inputs for calc_ration_ash
 #'
 #' @noRd
-validate_diet_ash_inputs <- function(feed_ration_fraction, feed_ash_content) {
+validate_ration_ash_inputs <- function(feed_ration_fraction, feed_ash) {
   validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
-  validate_scalar_numeric(feed_ash_content, "feed_ash_content")
+  validate_scalar_numeric(feed_ash, "feed_ash")
 
   validate_param_range(feed_ration_fraction)
-  validate_param_range(feed_ash_content)
+  validate_param_range(feed_ash)
 }

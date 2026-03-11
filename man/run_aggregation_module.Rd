@@ -15,7 +15,7 @@ run_aggregation_module(
 \item{cohort_level_data}{A \code{data.table} containing cohort-level data with all
 calculated variables. Must include:
 \describe{
-\item{\strong{Feed variables}:}{\code{dry_matter_intake} (kg DM/head/day)}
+\item{\strong{Feed variables}:}{\code{ration_intake} (kg DM/head/day)}
 \item{\strong{Nitrogen balance}:}{\code{nitrogen_intake}, \code{nitrogen_retention}, \code{nitrogen_excretion}}
 \item{\strong{Production}:}{\verb{milk_production_*_cohort}, \verb{meat_production_*_cohort}, \code{fibre_production_cohort}}
 \item{\strong{Emissions}:}{\code{ch4_enteric}, \verb{ch4_manure_*}, \verb{direct_n2o_manure_*},

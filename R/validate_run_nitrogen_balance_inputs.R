@@ -29,7 +29,7 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
   # --- Required columns: cohort (herd_id, cohort_short, cohort-level vars) ----
   required_cohort_cols <- c(
     "herd_id", "cohort_short",
-    "dry_matter_intake", "diet_nitrogen", "daily_weight_gain", "cohort_duration_days"
+    "ration_intake", "ration_nitrogen", "daily_weight_gain", "cohort_duration_days"
   )
   missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
   if (length(missing_cohort_cols) > 0) {
@@ -43,7 +43,7 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
     "herd_id", "animal",
     "milk_protein_fraction", "milk_yield_day", "fibre_yield_year",
     "litter_size", "parturition_rate",
-    "weaning_weight", "birth_weight", "pregnancy_duration"
+    "live_weight_at_weaning", "live_weight_at_birth", "pregnancy_duration"
   )
   missing_herd_cols <- setdiff(required_herd_cols, names(herd_level_data))
   if (length(missing_herd_cols) > 0) {

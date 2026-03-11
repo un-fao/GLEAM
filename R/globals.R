@@ -47,9 +47,9 @@ utils::globalVariables(c(
   # Columns used in run_weights_module and validate_weights_inputs
   "cohort", "cohort_short", "cohort_duration_days",
   "live_weight_female_adult", "live_weight_male_adult",
-  "birth_weight", "slaughter_weight_female", "slaughter_weight_male", "weaning_weight",
+  "live_weight_at_birth", "live_weight_female_at_slaughter", "live_weight_male_at_slaughter", "live_weight_at_weaning",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
-  "slaughter_weight_cohort", "live_weight_cohort_average",
+  "live_weight_cohort_at_slaughter", "live_weight_cohort_average",
   "live_weight_cohort_final", "animal"
 ))
 
@@ -60,24 +60,24 @@ utils::globalVariables(c(
   "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
   "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
   "feed_urinary_energy_ruminant", "feed_urinary_energy_pigs",
-  "feed_urinary_energy_chicken", "feed_ash_content",
+  "feed_urinary_energy_chicken", "feed_ash",
   "feed_name_input", "feed_name_params",
-  "diet_gross_energy", "diet_metabolizable_energy",
-  "diet_nitrogen", "diet_digestibility_fraction",
-  "urinary_energy_fraction", "diet_ash",
+  "ration_gross_energy", "ration_metabolizable_energy",
+  "ration_nitrogen", "ration_digestibility_fraction",
+  "ration_urinary_energy_fraction", "ration_ash",
   "feed_digestibility_fraction_ruminant", "feed_digestibility_fraction_pigs",
   "feed_digestibility_fraction_chicken",
   "diet_dig", "diet_ge", "diet_me", "feed_ration_sum",
-  "dry_matter_intake", "nitrogen_excretion", "volatile_solids", "total_fraction",
-  "n2o_vol_manure_pasture", "n2o_vol_manure_burned", "n2o_vol_manure_other",
-  "n2o_leach_manure_pasture", "n2o_leach_manure_burned", "n2o_leach_manure_other",
+  "ration_intake", "nitrogen_excretion", "volatile_solids", "total_fraction",
+  "n2o_manure_pasture_vol", "n2o_manure_burned_vol", "n2o_manure_other_vol",
+  "n2o_manure_pasture_leach", "n2o_manure_burned_leach", "n2o_manure_other_leach",
   "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
   "manure_management_system", "mms_list", "mms_list_fraction", "mms_list_factors",
   "unique_mms_sets",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations", "..cols_to_show",
   # Columns used in run_emissions_manure_module
-  "dmi", "n_excretion", "ef4", "ef5", "urinary_energy_fraction", "diet_ash",
+  "dmi", "n_excretion", "ef4", "ef5", "ration_urinary_energy_fraction", "ration_ash",
   "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
   "mmsdaily", "mmssolid", "mmssolidcov", "mmssolidbulk", "mmssolidadd", "mmsdrylot",
   "mmspit1", "mmspit3", "mmspit4", "mmspit6", "mmspit12",
@@ -94,17 +94,17 @@ utils::globalVariables(c(
   "management_start", "management_end", "SOC1", "SOC2", "dSOC",
   # Columns used in nitrogen_balance
   "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion",
-  "dry_matter_intake", "diet_nitrogen", "daily_weight_gain",
+  "ration_intake", "ration_nitrogen", "daily_weight_gain",
   "species_short", "cohort_short", "milk_protein_fraction", "milk_yield_day",
-  "fibre_yield_year", "litter_size", "parturition_rate", "weaning_weight",
-  "birth_weight", "age_first_parturition",
+  "fibre_yield_year", "litter_size", "parturition_rate", "live_weight_at_weaning",
+  "live_weight_at_birth", "age_first_parturition",
   # data.table join prefixes used in run_nitrogen_balance
   "x.species_short", "x.milk_protein_fraction", "x.milk_yield_day",
   "x.fibre_yield_year", "x.litter_size", "x.parturition_rate",
-  "x.weaning_weight", "x.birth_weight", "x.age_first_parturition",
+  "x.live_weight_at_weaning", "x.live_weight_at_birth", "x.age_first_parturition",
   "Item_Name", "dmi", "milk_yield",
   # Columns used in run_production_cohort (cohort-level + outputs)
-  "cohort_stock_size", "offtake_heads_assessment", "slaughter_weight_cohort",
+  "cohort_stock_size", "offtake_heads_assessment", "live_weight_cohort_at_slaughter",
   "fibre_production_cohort",
   # data.table join prefixes used in run_production_cohort (herd-level lookups)
   "x.milk_yield_day", "x.lactating_females_fraction",
@@ -114,9 +114,9 @@ utils::globalVariables(c(
   # Columns used in run_emissions_ration_module and validate_feed_emissions_inputs
   "ch4_feed_rice", "co2_feed_crop_operations", "co2_feed_fertilizer", "co2_feed_luc_nopeat",
   "co2_feed_luc_peat", "co2_feed_pesticides",
-  "diet_ch4_feed_rice", "diet_co2_feed_crop_operations", "diet_co2_feed_fertilizer",
-  "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", "diet_co2_feed_pesticides",
-  "diet_n2o_feed_crop_residues", "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied",
+  "ch4_ration_rice", "co2_ration_crop_activities", "co2_ration_fertilizer",
+  "co2_ration_luc_nopeat", "co2_ration_luc_peat", "co2_ration_pesticides",
+  "n2o_ration_crop_residues", "n2o_ration_fertilizer", "n2o_ration_manure_applied",
   "n2o_feed_crop_residues", "n2o_feed_fertilizer", "n2o_feed_manure_applied",
   "feed_name_emissions", "feed_name_input", "n_ids",
   # data.table join prefixes used in run_allocation and run_aggregation
@@ -127,36 +127,36 @@ utils::globalVariables(c(
   # Columns used in run_allocation
   "slaughterLW", "initialLW", "meat_production_live_weight_cohort",
   "milk_production_fpcm_cohort", "nefibre", "nework",
-  "energy_allocation_milk", "energy_allocation_meat",
-  "energy_allocation_fibre", "energy_allocation_work", "energy_allocation_eggs",
-  "total_allocation_energy", "allocation_share_meat", "allocation_share_milk",
-  "allocation_share_work", "allocation_share_fibre", "allocation_share_eggs",
+  "milk_allocation_energy", "meat_allocation_energy",
+  "fibre_allocation_energy", "work_allocation_energy", "egg_allocation_energy",
+  "total_allocation_energy", "meat_share_allocation", "milk_share_allocation",
+  "work_share_allocation", "fibre_share_allocation", "eggs_share_allocation",
   "allocation_share_other", "allocation_herd_long_all",  # Variables used in run_allocation
   "commodity_name", "commodity_type", "V1"
 ))
 
 utils::globalVariables(c(
   # Columns created by update joins in run_weights_module
-  "x.live_weight_female_adult", "x.live_weight_male_adult", "x.birth_weight",
-  "x.slaughter_weight_female", "x.slaughter_weight_male", "x.weaning_weight"
+  "x.live_weight_female_adult", "x.live_weight_male_adult", "x.live_weight_at_birth",
+  "x.live_weight_female_at_slaughter", "x.live_weight_male_at_slaughter", "x.live_weight_at_weaning"
 ))
 
 utils::globalVariables(c(
   # Columns used in run_metabolic_energy_req_module (cohort-level and results)
   "cohort_short", "live_weight_cohort_average", "offtake_rate", "low_activity_fraction", "high_activity_fraction",
-  "live_weight_cohort_initial", "live_weight_cohort_final", "mature_weight", "daily_weight_gain", "cohort_duration_days",
-  "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy",
-  "energy_requirement_maintenance", "energy_requirement_activity", "energy_requirement_growth", "energy_requirement_lactation",
-  "energy_requirement_work", "energy_requirement_fibre_production", "energy_requirement_pregnancy",
+  "live_weight_cohort_initial", "live_weight_cohort_final", "live_weight_mature_stage", "daily_weight_gain", "cohort_duration_days",
+  "ration_digestibility_fraction", "ration_gross_energy", "ration_metabolizable_energy",
+  "metabolic_energy_req_maintenance", "metabolic_energy_req_activity", "metabolic_energy_req_growth", "metabolic_energy_req_lactation",
+  "metabolic_energy_req_work", "metabolic_energy_req_fibre_production", "metabolic_energy_req_pregnancy",
   "net_energy_maintenance_digestible_energy_ratio", "net_energy_growth_digestible_energy_ratio",
-  "energy_requirement_total", "dry_matter_intake", "activity_sum", "species_short",
+  "metabolic_energy_req_total", "ration_intake", "activity_sum", "species_short",
   # herd-level lookups (x.* from herd_level_data[.SD, on = "herd_id", x.col])
   "x.species_short", "x.lactating_females_fraction", "x.age_first_parturition", "x.milk_yield_day", "x.milk_fat_fraction",
-  "x.non_productive_duration", "x.pregnancy_duration", "x.litter_size", "x.death_rate_juvenile", "x.birth_weight", "x.weaning_weight",
+  "x.non_productive_duration", "x.pregnancy_duration", "x.litter_size", "x.death_rate_juvenile", "x.live_weight_at_birth", "x.live_weight_at_weaning",
   "x.lactation_duration", "x.parturition_rate", "x.draught_work_hours_female", "x.draught_work_hours_male",
   "x.draught_fraction_female", "x.draught_fraction_male", "x.fibre_yield_year",
-  # validate_energy_requirements_inputs
-  "has_all_cohorts", "missing_cohorts", "birth_weight", "weaning_weight"
+  # validate_run_metabolic_energy_req_module_inputs
+  "has_all_cohorts", "missing_cohorts", "live_weight_at_birth", "live_weight_at_weaning"
 ))
 
 utils::globalVariables(c(
@@ -170,10 +170,10 @@ utils::globalVariables(c(
   "feed_emissions_kgGas", "feed_share",
   # Columns added by run_emissions_enteric_module
   "ch4_enteric", "ch4_mitigation_factor", "ch4_conversion_factor_ym",
-  "species_short", "cohort_short", "diet_digestibility_fraction",
-  "diet_gross_energy", "dry_matter_intake",
+  "species_short", "cohort_short", "ration_digestibility_fraction",
+  "ration_gross_energy", "ration_intake",
   # Columns used in run_aggregation
-  "value", "value_total", "value_total_kgGas", "value_total_allocated_kgGas",
+  "value", "value_total", "value_total_gas", "value_total_allocated_gas",
   "value_allocated", "value_allocated_co2e", "gwp_factor",
   "variable_type", "variable_name", "unit", "gas", "allocation_share",
   "commodity_name", "commodity_type",

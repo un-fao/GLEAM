@@ -20,15 +20,15 @@
 #'       }}
 #'       \item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
 #'       period (kg/cohort/assessment period). Suggested standard fat, protein and lactose contents are 0.04, 0.033, and 0.048 respectively.}
-#'       \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+#'       \item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 #'       \item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by
 #'       cohort (kg/cohort/assessment period).}
-#'       \item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
+#'       \item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 #'       Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
 #'       for CML.}
 #'       \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
 #'       FS, FA, MJ, MS, MA).}
-#'       \item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught
+#'       \item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught
 #'       power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
 #'       SHP, GTS and as metabolizable energy for CML.}
 #'   }
@@ -49,7 +49,7 @@
 #'        \item \code{Pigs}
 #'        \item \code{Camels}
 #'        }}
-#'     \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
+#'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
 #'     Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}
 #'     \item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk, used to calculate Fat-protein-corrected milk
@@ -69,17 +69,17 @@
 #'     \item{cohort_allocation_inputs}{A `data.table` with the original
 #'     cohort-level input columns plus the following new variables:
 #'       \describe{
-#'       \item{energy_allocation_milk}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
+#'       \item{milk_allocation_energy}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
 #'       period). }
-#'       \item{energy_allocation_meat}{Numeric. Energy required by a given sex–age cohort for total meat output by cohort
+#'       \item{meat_allocation_energy}{Numeric. Energy required by a given sex–age cohort for total meat output by cohort
 #'       during the assessment period,
 #'       equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment
 #'       period). }
-#'       \item{energy_allocation_fibre}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
+#'       \item{fibre_allocation_energy}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
 #'       period).}
-#'       \item{energy_allocation_work}{Numeric. Energy required to provide all draught power (traction/work) by cohort
+#'       \item{work_allocation_energy}{Numeric. Energy required to provide all draught power (traction/work) by cohort
 #'       (MJ/cohort/assessment period).}
-#'       \item{energy_allocation_eggs}{Numeric. Energy required for egg production over the assessment period
+#'       \item{egg_allocation_energy}{Numeric. Energy required for egg production over the assessment period
 #'       (MJ/cohort/assessment period). Currently set to 0.}
 #'       }}
 #'     \item{allocation_long}{A herd-level `data.table` in long format with one
@@ -103,11 +103,11 @@
 #'         "ch4_manure_burned","ch4_manure_other", "n2o_manure_pasture_direct",
 #'         "n2o_manure_burned_direct","n2o_manure_other_direct",
 #'         "n2o_manure_burned_indirect","n2o_manure_pasture_indirect",
-#'         "n2o_manure_other_indirect", "diet_co2_feed_fertilizer",
-#'         "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations",
-#'         "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
-#'         "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied",
-#'         "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice")}
+#'         "n2o_manure_other_indirect", "co2_ration_fertilizer",
+#'         "co2_ration_pesticides", "co2_ration_crop_activities",
+#'         "co2_ration_luc_nopeat", "co2_ration_luc_peat",
+#'         "n2o_ration_fertilizer", "n2o_ration_manure_applied",
+#'         "n2o_ration_crop_residues", "ch4_ration_rice")}
 #'         \item{commodity_name}{Character. List of commodity categories to which emissions may be allocated.
 #'         List=c("None","Milk","Meat","Fibre","Work","Eggs")}
 #'         \item{commodity_type}{Character. Commodity (commodity_name) grouping, either
@@ -246,7 +246,7 @@ run_allocation_module <- function(
   # Milk energy allocation: based on FPCM (fat- and protein-corrected milk) output
   cohort_level_data[
     ,
-    energy_allocation_milk := calc_milk_allocation_energy(
+    milk_allocation_energy := calc_milk_allocation_energy(
       milk_production_fpcm_cohort = milk_production_fpcm_cohort,
       milk_protein_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction_standard],
       milk_fat_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction_standard],
@@ -258,11 +258,11 @@ run_allocation_module <- function(
   # Meat energy allocation: species- and cohort-specific formulas
   cohort_level_data[
     ,
-    energy_allocation_meat := calc_meat_allocation_energy(
+    meat_allocation_energy := calc_meat_allocation_energy(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
-      slaughter_weight_cohort = slaughter_weight_cohort,
-      birth_weight = herd_level_data[.SD, on = "herd_id", x.birth_weight],
+      live_weight_cohort_at_slaughter = live_weight_cohort_at_slaughter,
+      live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
       meat_production_live_weight_cohort = meat_production_live_weight_cohort,
       ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne]
     ),
@@ -272,10 +272,10 @@ run_allocation_module <- function(
   # Fibre energy allocation: applies camelid conversion factor when needed
   cohort_level_data[
     ,
-    energy_allocation_fibre := calc_fibre_allocation_energy(
+    fibre_allocation_energy := calc_fibre_allocation_energy(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_stock_size = cohort_stock_size,
-      energy_requirement_fibre_production = energy_requirement_fibre_production,
+      metabolic_energy_req_fibre_production = metabolic_energy_req_fibre_production,
       ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne],
       simulation_duration = simulation_duration
     ),
@@ -285,10 +285,10 @@ run_allocation_module <- function(
   # Work energy allocation: applies camelid conversion factor when needed
   cohort_level_data[
     ,
-    energy_allocation_work := calc_work_allocation_energy(
+    work_allocation_energy := calc_work_allocation_energy(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_stock_size = cohort_stock_size,
-      energy_requirement_work = energy_requirement_work,
+      metabolic_energy_req_work = metabolic_energy_req_work,
       ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne],
       simulation_duration = simulation_duration
     ),
@@ -296,7 +296,7 @@ run_allocation_module <- function(
   ]
 
   # Eggs energy allocation: placeholder (not currently implemented)
-  cohort_level_data[, energy_allocation_eggs := 0]
+  cohort_level_data[, egg_allocation_energy := 0]
 
   # --- Step 5: Aggregate from cohort to herd level --------------------------
   # Sum energy allocations by herd_id to get herd-level totals
@@ -304,11 +304,11 @@ run_allocation_module <- function(
     data_cohort = cohort_level_data,
     id_cols = "herd_id",
     vars_to_sum = c(
-      "energy_allocation_meat",
-      "energy_allocation_milk",
-      "energy_allocation_fibre",
-      "energy_allocation_work",
-      "energy_allocation_eggs"
+      "meat_allocation_energy",
+      "milk_allocation_energy",
+      "fibre_allocation_energy",
+      "work_allocation_energy",
+      "egg_allocation_energy"
     ),
     cohort_short = "cohort_short"
   )
@@ -324,18 +324,18 @@ run_allocation_module <- function(
   allocation_herd[
     ,
     c(
-      "allocation_share_meat",
-      "allocation_share_milk",
-      "allocation_share_fibre",
-      "allocation_share_work",
-      "allocation_share_eggs"
+      "meat_share_allocation",
+      "milk_share_allocation",
+      "fibre_share_allocation",
+      "work_share_allocation",
+      "eggs_share_allocation"
     ) := calc_allocation_shares(
       species_short = species_short,
-      energy_allocation_meat = energy_allocation_meat,
-      energy_allocation_milk = energy_allocation_milk,
-      energy_allocation_fibre = energy_allocation_fibre,
-      energy_allocation_work = energy_allocation_work,
-      energy_allocation_eggs = energy_allocation_eggs
+      meat_allocation_energy = meat_allocation_energy,
+      milk_allocation_energy = milk_allocation_energy,
+      fibre_allocation_energy = fibre_allocation_energy,
+      work_allocation_energy = work_allocation_energy,
+      egg_allocation_energy = egg_allocation_energy
     ),
     by = .I
   ]
@@ -348,11 +348,11 @@ run_allocation_module <- function(
   # --- Step 7: Reshape to long format ----------------------------------------
   # Convert allocation shares from wide to long format for downstream processing
   measure_cols <- c(
-    "allocation_share_meat",
-    "allocation_share_milk",
-    "allocation_share_fibre",
-    "allocation_share_work",
-    "allocation_share_eggs",
+    "meat_share_allocation",
+    "milk_share_allocation",
+    "fibre_share_allocation",
+    "work_share_allocation",
+    "eggs_share_allocation",
     "allocation_share_other"
   )
 
@@ -366,11 +366,11 @@ run_allocation_module <- function(
   )
 
   rename_map <- c(
-    allocation_share_meat = "Meat",
-    allocation_share_milk = "Milk",
-    allocation_share_fibre = "Fibre",
-    allocation_share_work = "Work",
-    allocation_share_eggs = "Eggs",
+    meat_share_allocation = "Meat",
+    milk_share_allocation = "Milk",
+    fibre_share_allocation = "Fibre",
+    work_share_allocation = "Work",
+    eggs_share_allocation = "Eggs",
     allocation_share_other = "Other"
   )
   # Rename the commodity columns
@@ -396,9 +396,9 @@ run_allocation_module <- function(
       "ch4_enteric", "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other",
       "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
       "n2o_manure_burned_indirect", "n2o_manure_pasture_indirect", "n2o_manure_other_indirect",
-      "diet_co2_feed_fertilizer", "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations",
-      "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", "diet_n2o_feed_fertilizer",
-      "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice"
+      "co2_ration_fertilizer", "co2_ration_pesticides", "co2_ration_crop_activities",
+      "co2_ration_luc_nopeat", "co2_ration_luc_peat", "n2o_ration_fertilizer",
+      "n2o_ration_manure_applied", "n2o_ration_crop_residues", "ch4_ration_rice"
     ),
     commodities = c("Other", "Milk", "Meat", "Fibre", "Work", "Eggs"),
     non_allocated_emission_sources = c(

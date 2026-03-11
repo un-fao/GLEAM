@@ -31,10 +31,10 @@ of the animals. Supported values include:
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as
 ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).}
-\item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
-\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+\item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 \item{ch4_mitigation_factor}{Numeric. Optional. Multiplicative mitigation factor applied to
 baseline enteric methane (CH₄) emissions (dimensionless). If not provided, a default
 value of \code{1} (no mitigation) is used. Values lower than 1 represent proportional

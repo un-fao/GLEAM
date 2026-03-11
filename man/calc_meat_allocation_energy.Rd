@@ -8,8 +8,8 @@ calc_meat_allocation_energy(
   species_short,
   cohort_short,
   meat_production_live_weight_cohort,
-  slaughter_weight_cohort = NA_real_,
-  birth_weight = NA_real_,
+  live_weight_cohort_at_slaughter = NA_real_,
+  live_weight_at_birth = NA_real_,
   ratio_me_to_ne = NA_real_
 )
 }
@@ -39,9 +39,9 @@ production stage of the animals. Supported values include:
 \item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by
 cohort (kg/cohort/assessment period).}
 
-\item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 
-\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
+\item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 
 \item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
 species_short = CML.}
@@ -74,7 +74,7 @@ growth, lactation, and maintenance. If the resulting process remains
 multifunctional, these energy terms may subsequently be used to derive
 allocation factors among co-products.
 
-The \code{energy_allocation_meat} is calculated as follows:
+The \code{meat_allocation_energy} is calculated as follows:
 
 \eqn{energy\_allocation\_meat = specific\_energy\_meat \times meat\_production\_live\_weight\_cohort}
 

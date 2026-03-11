@@ -13,8 +13,8 @@ calc_nitrogen_retention(
   fibre_yield_year = NA_real_,
   litter_size = NA_real_,
   parturition_rate = NA_real_,
-  weaning_weight = NA_real_,
-  birth_weight = NA_real_,
+  live_weight_at_weaning = NA_real_,
+  live_weight_at_birth = NA_real_,
   pregnancy_duration = NA_real_,
   cohort_duration_days = NA_real_
 )
@@ -66,9 +66,9 @@ A herd-level reproductive performance indicator calculated as the total
 number of parturitions (deliveries) occurring during
 a year divided by the number of adult females potentially able to give birth during that year.}
 
-\item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
+\item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 
-\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
+\item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 

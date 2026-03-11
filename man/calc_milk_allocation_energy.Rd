@@ -55,7 +55,7 @@ lactation, growth, and maintenance. If the resulting process remains
 multifunctional, these energy terms may subsequently be used to derive
 allocation factors among co-products.
 
-The \code{energy_allocation_milk} is calculated as follows:
+The \code{milk_allocation_energy} is calculated as follows:
 
 \eqn{energy\_allocation\_milk = energy\_standard \times milk\_production\_fpcm\_cohort}
 

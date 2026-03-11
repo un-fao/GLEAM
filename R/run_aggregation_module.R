@@ -33,7 +33,7 @@
 #' @param cohort_level_data A `data.table` containing cohort-level data with all
 #'   calculated variables. Must include:
 #'   \describe{
-#'     \item{**Feed variables**:}{`dry_matter_intake` (kg DM/head/day)}
+#'     \item{**Feed variables**:}{`ration_intake` (kg DM/head/day)}
 #'     \item{**Nitrogen balance**:}{`nitrogen_intake`, `nitrogen_retention`, `nitrogen_excretion`}
 #'     \item{**Production**:}{`milk_production_*_cohort`, `meat_production_*_cohort`, `fibre_production_cohort`}
 #'     \item{**Emissions**:}{`ch4_enteric`, `ch4_manure_*`, `direct_n2o_manure_*`,
@@ -144,7 +144,7 @@ run_aggregation_module <- function(
   # --- Step 1: Define variable groups -----------------------------------------
   feed_list <- list(
     list(
-      feed_source = "dry_matter_intake",
+      feed_source = "ration_intake",
       label = "DryMatterIntake",
       unit = "kg dry matter"
     )
@@ -247,17 +247,17 @@ run_aggregation_module <- function(
     list(emissions_source = "n2o_manure_pasture_indirect", label = "ManureIndirect-Pasture_N2O"),
     list(emissions_source = "n2o_manure_other_indirect", label = "ManureIndirect-Other_N2O"),
 
-    list(emissions_source = "diet_co2_feed_fertilizer", label = "Feed-Fertilizer_CO2"),
-    list(emissions_source = "diet_co2_feed_pesticides", label = "Feed-Pesticides_CO2"),
-    list(emissions_source = "diet_co2_feed_crop_operations", label = "Feed-CropOperations_CO2"),
-    list(emissions_source = "diet_co2_feed_luc_nopeat", label = "Feed-LandUseChange_CO2"),
-    list(emissions_source = "diet_co2_feed_luc_peat", label = "Feed-PeatDrainage_CO2"),
+    list(emissions_source = "co2_ration_fertilizer", label = "Feed-Fertilizer_CO2"),
+    list(emissions_source = "co2_ration_pesticides", label = "Feed-Pesticides_CO2"),
+    list(emissions_source = "co2_ration_crop_activities", label = "Feed-CropOperations_CO2"),
+    list(emissions_source = "co2_ration_luc_nopeat", label = "Feed-LandUseChange_CO2"),
+    list(emissions_source = "co2_ration_luc_peat", label = "Feed-PeatDrainage_CO2"),
 
-    list(emissions_source = "diet_n2o_feed_fertilizer", label = "Feed-Fertilizer_N2O"),
-    list(emissions_source = "diet_n2o_feed_manure_applied", label = "Feed-ManureApplication_N2O"),
-    list(emissions_source = "diet_n2o_feed_crop_residues", label = "Feed-CropResidues_N2O"),
+    list(emissions_source = "n2o_ration_fertilizer", label = "Feed-Fertilizer_N2O"),
+    list(emissions_source = "n2o_ration_manure_applied", label = "Feed-ManureApplication_N2O"),
+    list(emissions_source = "n2o_ration_crop_residues", label = "Feed-CropResidues_N2O"),
 
-    list(emissions_source = "diet_ch4_feed_rice", label = "Feed-Rice_CH4")
+    list(emissions_source = "ch4_ration_rice", label = "Feed-Rice_CH4")
   )
   emissions_vars <- sapply(emissions_list, `[[`, "emissions_source")
 
@@ -334,7 +334,7 @@ run_aggregation_module <- function(
   data_herd_long_emissions<- merge(
     data_herd_long[
       variable_type == "Emissions",
-      .(herd_id, species_short, variable_type, variable_name, value_total_kgGas = value_total)
+      .(herd_id, species_short, variable_type, variable_name, value_total_gas = value_total)
     ],
     allocation_herd_long,
     by = c("herd_id", "species_short", "variable_name")
@@ -342,8 +342,8 @@ run_aggregation_module <- function(
 
   # --- Step 8: Allocate emissions to commodities ------------------------------
   data_herd_long_emissions[
-    , value_total_allocated_kgGas := calc_allocated_emissions(
-      value = value_total_kgGas,
+    , value_total_allocated_gas := calc_allocated_emissions(
+      value = value_total_gas,
       allocation_share = allocation_share
     ),
     by = .I
@@ -362,7 +362,7 @@ run_aggregation_module <- function(
   data_herd_long_emissions[
     , c("value_total_allocated_co2eq", "gwp") := calc_co2eq(
       gas = gas,
-      value_allocated = value_total_allocated_kgGas,
+      value_allocated = value_total_allocated_gas,
       global_warming_potential_set = global_warming_potential_set
     ),
     by = .I

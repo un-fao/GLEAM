@@ -22,7 +22,7 @@
 #' FS, FA, MJ, MS, MA).}
 #' \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period,
 #' aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).}
-#'     \item{slaughter_weight_cohort}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+#'     \item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 #'   }
 #'
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with the following data
@@ -219,7 +219,7 @@ run_production_module <- function(
     ,
     (meat_output_cols) := calc_meat_production(
       offtake_heads_assessment = offtake_heads_assessment,
-      slaughter_weight_cohort = slaughter_weight_cohort,
+      live_weight_cohort_at_slaughter = live_weight_cohort_at_slaughter,
       carcass_dressing_fraction = herd_level_data[.SD, on = "herd_id", x.carcass_dressing_fraction],
       bone_free_meat_fraction = herd_level_data[.SD, on = "herd_id", x.bone_free_meat_fraction],
       meat_protein_fraction = herd_level_data[.SD, on = "herd_id", x.meat_protein_fraction]

@@ -91,39 +91,39 @@ expressed per kg of dry matter intake (g CH₄/kg DM).}
 data.table. Cohort-level emission factors summarized by \code{herd_id},
 \code{animal}, and \code{cohort_short} with the following columns:
 \describe{
-\item{diet_co2_feed_fertilizer}{
+\item{co2_ration_fertilizer}{
 Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
 fertilizer manufacture in feed production (g CO₂/kg DM).
 }
-\item{diet_co2_feed_pesticides}{
+\item{co2_ration_pesticides}{
 Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
 pesticide manufacture in feed production (g CO₂/kg DM).
 }
-\item{diet_co2_feed_crop_operations}{
+\item{co2_ration_crop_activities}{
 Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
 on-field agricultural activities in feed production (g CO₂/kg DM).
 }
-\item{diet_co2_feed_luc_nopeat}{
+\item{co2_ration_luc_nopeat}{
 Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
 land-use change (excluding peatland drainage) in feed production (g CO₂/kg DM).
 }
-\item{diet_co2_feed_luc_peat}{
+\item{co2_ration_luc_peat}{
 Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
 peatland drainage in feed production (g CO₂/kg DM).
 }
-\item{diet_n2o_feed_fertilizer}{
+\item{n2o_ration_fertilizer}{
 Numeric. Diet-level average nitrous oxide (N₂O) emission factor from
 fertilizer use in feed production (g N₂O/kg DM).
 }
-\item{diet_n2o_feed_manure_applied}{
+\item{n2o_ration_manure_applied}{
 Numeric. Diet-level average nitrous oxide (N₂O) emission factor from
 manure applied to or deposited on soil in feed production (g N₂O/kg DM).
 }
-\item{diet_n2o_feed_crop_residues}{
+\item{n2o_ration_crop_residues}{
 Numeric. Diet-level average nitrous oxide (N₂O) emission factor from
 crop residues decomposition in feed production (g N₂O/kg DM).
 }
-\item{diet_ch4_feed_rice}{
+\item{ch4_ration_rice}{
 Numeric. Diet-level average methane (CH₄) emission factor from
 rice cultivation in feed production (g CH₄/kg DM).
 }

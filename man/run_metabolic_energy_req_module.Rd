@@ -29,12 +29,12 @@ run_metabolic_energy_req_module(
 \item{high_activity_fraction}{Numeric. Proportion of the assessment period during which the animal engages in sustained locomotion associated with herding or long-distance grazing, typically involving extended walking distances and/or uneven or hilly terrain (fraction).}
 \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 \item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
-\item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+\item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
-\item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
-\item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
-\item{diet_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{ration_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
 }}
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
@@ -59,8 +59,8 @@ internal lookup table. Supported values include:
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 \item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
-\item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
-\item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
+\item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
+\item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.}
 \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance
 indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
@@ -77,23 +77,23 @@ Defaults to \code{TRUE}.}
 \value{
 A \code{data.table} with the original cohort-level input columns plus the following new variables:
 \describe{
-\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost.
+\item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
-\item{energy_requirement_activity}{Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
+\item{metabolic_energy_req_activity}{Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-\item{energy_requirement_growth}{Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-\item{energy_requirement_lactation}{Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-\item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
+\item{metabolic_energy_req_growth}{Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{metabolic_energy_req_lactation}{Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
 Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-\item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
+\item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
-\item{energy_requirement_pregnancy}{Numeric. Energy required for pregnancy for pregnant females (MJ/head/day).
+\item{metabolic_energy_req_pregnancy}{Numeric. Energy required for pregnancy for pregnant females (MJ/head/day).
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 \item{net_energy_maintenance_digestible_energy_ratio}{Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).}
 \item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).}
-\item{energy_requirement_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
+\item{metabolic_energy_req_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
 For CML and PGS the function returns the summed daily metabolizable energy requirement.}
-\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+\item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 }
 }
 \description{

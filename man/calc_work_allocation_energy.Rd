@@ -7,7 +7,7 @@
 calc_work_allocation_energy(
   species_short,
   cohort_stock_size,
-  energy_requirement_work,
+  metabolic_energy_req_work,
   simulation_duration,
   ratio_me_to_ne = NA_real_
 )
@@ -26,7 +26,7 @@ Supported values include:
 
 \item{cohort_stock_size}{Numeric. Population size in the cohort at the start of the assessment period (heads).}
 
-\item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught
+\item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught
 power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
 SHP, GTS and as metabolizable energy for CML and PGS.}
 
@@ -63,7 +63,7 @@ be used to derive allocation factors among co-products.
 Total work-related energy is computed for species (\code{CTL}, \code{BFL}, \code{CML})
 and cohorts (, \code{FA}, \code{MA}) assumed to be potentially involved in draught power generation.
 
-The \code{energy_allocation_work} is calculated as follows:
+The \code{work_allocation_energy} is calculated as follows:
 
 \eqn{energy\_allocation\_work =
 energy\_requirement\_work \times simulation\_duration \times cohort\_stock\_size}
@@ -76,7 +76,7 @@ for cattle (\code{CTL}) and buffalo (\code{BFL}), and:
 
 for camels (\code{CML}).
 
-where \code{energy_requirement_work} can be computed using
+where \code{metabolic_energy_req_work} can be computed using
 \code{\link{calc_metabolic_energy_req_work}} (see also
 \code{\link{run_metabolic_energy_req_module}}).
 }

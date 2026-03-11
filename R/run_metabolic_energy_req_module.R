@@ -21,12 +21,12 @@
 #'     \item{high_activity_fraction}{Numeric. Proportion of the assessment period during which the animal engages in sustained locomotion associated with herding or long-distance grazing, typically involving extended walking distances and/or uneven or hilly terrain (fraction).}
 #'     \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 #'     \item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
-#'     \item{mature_weight}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+#'     \item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 #'     \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 #'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
-#'     \item{diet_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
-#'     \item{diet_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
-#'     \item{diet_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
+#'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+#'     \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+#'     \item{ration_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
 #'   }
 #'
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
@@ -51,8 +51,8 @@
 #'     \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 #'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 #'     \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
-#'     \item{birth_weight}{Numeric. Live weight of the animal at birth (kg).}
-#'     \item{weaning_weight}{Numeric. Live weight of the animal at weaning (kg).}
+#'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
+#'     \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.}
 #'     \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance
 #'     indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
@@ -68,23 +68,23 @@
 #'
 #' @return A `data.table` with the original cohort-level input columns plus the following new variables:
 #'   \describe{
-#'     \item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost.
+#'     \item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost.
 #'     Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
-#'     \item{energy_requirement_activity}{Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
+#'     \item{metabolic_energy_req_activity}{Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
 #'     Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-#'     \item{energy_requirement_growth}{Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-#'     \item{energy_requirement_lactation}{Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-#'     \item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
+#'     \item{metabolic_energy_req_growth}{Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+#'     \item{metabolic_energy_req_lactation}{Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+#'     \item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
 #'     Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-#'     \item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
+#'     \item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 #'     Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
-#'     \item{energy_requirement_pregnancy}{Numeric. Energy required for pregnancy for pregnant females (MJ/head/day).
+#'     \item{metabolic_energy_req_pregnancy}{Numeric. Energy required for pregnancy for pregnant females (MJ/head/day).
 #'     Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 #'     \item{net_energy_maintenance_digestible_energy_ratio}{Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).}
 #'     \item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).}
-#'     \item{energy_requirement_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
+#'     \item{metabolic_energy_req_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
 #'     For CML and PGS the function returns the summed daily metabolizable energy requirement.}
-#'     \item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+#'     \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'   }
 #'
 #' @details
@@ -166,7 +166,7 @@ run_metabolic_energy_req_module <- function(
   herd_level_data <- data.table::as.data.table(herd_level_data)
 
   # --- Step 1: Validate inputs ------------------------------------------------
-  validate_energy_requirements_inputs(cohort_level_data, herd_level_data)
+  validate_run_metabolic_energy_req_module_inputs(cohort_level_data, herd_level_data)
 
   # Show progress indicator if requested
   if (show_indicator) {
@@ -183,7 +183,7 @@ run_metabolic_energy_req_module <- function(
   # --- Step 4: Maintenance energy (MJ/day) ------------------------------------
   cohort_level_data[
     ,
-    energy_requirement_maintenance := calc_metabolic_energy_req_maintenance(
+    metabolic_energy_req_maintenance := calc_metabolic_energy_req_maintenance(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       live_weight_cohort_average = live_weight_cohort_average,
@@ -197,10 +197,10 @@ run_metabolic_energy_req_module <- function(
   # --- Step 5: Activity energy (MJ/day) ---------------------------------------
   cohort_level_data[
     ,
-    energy_requirement_activity := calc_metabolic_energy_req_activity(
+    metabolic_energy_req_activity := calc_metabolic_energy_req_activity(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
-      energy_requirement_maintenance = energy_requirement_maintenance,
+      metabolic_energy_req_maintenance = metabolic_energy_req_maintenance,
       live_weight_cohort_average = live_weight_cohort_average,
       low_activity_fraction = low_activity_fraction,
       high_activity_fraction = high_activity_fraction
@@ -211,13 +211,13 @@ run_metabolic_energy_req_module <- function(
   # --- Step 6: Growth energy (MJ/day) -----------------------------------------
   cohort_level_data[
     ,
-    energy_requirement_growth := calc_metabolic_energy_req_growth(
+    metabolic_energy_req_growth := calc_metabolic_energy_req_growth(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       live_weight_cohort_average = live_weight_cohort_average,
       live_weight_cohort_final = live_weight_cohort_final,
       live_weight_cohort_initial = live_weight_cohort_initial,
-      mature_weight = mature_weight,
+      live_weight_mature_stage = live_weight_mature_stage,
       daily_weight_gain = daily_weight_gain,
       offtake_rate = offtake_rate,
       cohort_duration_days = cohort_duration_days
@@ -228,7 +228,7 @@ run_metabolic_energy_req_module <- function(
   # --- Step 7: Lactation energy (MJ/day) --------------------------------------
   cohort_level_data[
     ,
-    energy_requirement_lactation := calc_metabolic_energy_req_lactation(
+    metabolic_energy_req_lactation := calc_metabolic_energy_req_lactation(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       lactating_females_fraction = herd_level_data[.SD, on = "herd_id", x.lactating_females_fraction],
@@ -238,8 +238,8 @@ run_metabolic_energy_req_module <- function(
       pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
       litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
       death_rate_juvenile = herd_level_data[.SD, on = "herd_id", x.death_rate_juvenile],
-      birth_weight = herd_level_data[.SD, on = "herd_id", x.birth_weight],
-      weaning_weight = herd_level_data[.SD, on = "herd_id", x.weaning_weight],
+      live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
+      live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning],
       lactation_duration = herd_level_data[.SD, on = "herd_id", x.lactation_duration],
       parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate]
     ),
@@ -249,10 +249,10 @@ run_metabolic_energy_req_module <- function(
   # --- Step 8: Work energy (MJ/day) ------------------------------------------
   cohort_level_data[
     ,
-    energy_requirement_work := calc_metabolic_energy_req_work(
+    metabolic_energy_req_work := calc_metabolic_energy_req_work(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
-      energy_requirement_maintenance = energy_requirement_maintenance,
+      metabolic_energy_req_maintenance = metabolic_energy_req_maintenance,
       draught_work_hours_female = herd_level_data[.SD, on = "herd_id", x.draught_work_hours_female],
       draught_work_hours_male = herd_level_data[.SD, on = "herd_id", x.draught_work_hours_male],
       draught_fraction_female = herd_level_data[.SD, on = "herd_id", x.draught_fraction_female],
@@ -264,7 +264,7 @@ run_metabolic_energy_req_module <- function(
   # --- Step 9: Fibre production energy (MJ/day) ------------------------------
   cohort_level_data[
     ,
-    energy_requirement_fibre_production := calc_metabolic_energy_req_fibre(
+    metabolic_energy_req_fibre_production := calc_metabolic_energy_req_fibre(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       fibre_yield_year = herd_level_data[.SD, on = "herd_id", x.fibre_yield_year]
@@ -275,10 +275,10 @@ run_metabolic_energy_req_module <- function(
   # --- Step 10: Pregnancy energy (MJ/day) -------------------------------------
   cohort_level_data[
     ,
-    energy_requirement_pregnancy := calc_metabolic_energy_req_pregnancy(
+    metabolic_energy_req_pregnancy := calc_metabolic_energy_req_pregnancy(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
-      energy_requirement_maintenance = energy_requirement_maintenance,
+      metabolic_energy_req_maintenance = metabolic_energy_req_maintenance,
       parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
       litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
       pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
@@ -295,7 +295,7 @@ run_metabolic_energy_req_module <- function(
     ,
     net_energy_maintenance_digestible_energy_ratio := calc_rem_maintenance(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
-      diet_digestibility_fraction = diet_digestibility_fraction
+      ration_digestibility_fraction = ration_digestibility_fraction
     ),
     by = .I
   ]
@@ -304,7 +304,7 @@ run_metabolic_energy_req_module <- function(
     ,
     net_energy_growth_digestible_energy_ratio := calc_reg_growth(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
-      diet_digestibility_fraction = diet_digestibility_fraction
+      ration_digestibility_fraction = ration_digestibility_fraction
     ),
     by = .I
   ]
@@ -312,19 +312,19 @@ run_metabolic_energy_req_module <- function(
   # --- Step 12: Total ME requirement (MJ/day) ---------------------------------
   cohort_level_data[
     ,
-    energy_requirement_total := calc_total_metabolic_energy_req(
+    metabolic_energy_req_total := calc_total_metabolic_energy_req(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
-      energy_requirement_maintenance = energy_requirement_maintenance,
-      energy_requirement_activity = energy_requirement_activity,
-      energy_requirement_lactation = energy_requirement_lactation,
-      energy_requirement_work = energy_requirement_work,
-      energy_requirement_pregnancy = energy_requirement_pregnancy,
+      metabolic_energy_req_maintenance = metabolic_energy_req_maintenance,
+      metabolic_energy_req_activity = metabolic_energy_req_activity,
+      metabolic_energy_req_lactation = metabolic_energy_req_lactation,
+      metabolic_energy_req_work = metabolic_energy_req_work,
+      metabolic_energy_req_pregnancy = metabolic_energy_req_pregnancy,
       net_energy_maintenance_digestible_energy_ratio = net_energy_maintenance_digestible_energy_ratio,
-      energy_requirement_growth = energy_requirement_growth,
-      energy_requirement_fibre_production = energy_requirement_fibre_production,
-      energy_requirement_egg_deposition = 0,
+      metabolic_energy_req_growth = metabolic_energy_req_growth,
+      metabolic_energy_req_fibre_production = metabolic_energy_req_fibre_production,
+      metabolic_energy_req_egg_deposition = 0,
       net_energy_growth_digestible_energy_ratio = net_energy_growth_digestible_energy_ratio,
-      diet_digestibility_fraction = diet_digestibility_fraction
+      ration_digestibility_fraction = ration_digestibility_fraction
     ),
     by = .I
   ]
@@ -332,11 +332,11 @@ run_metabolic_energy_req_module <- function(
   # --- Step 13: Dry matter intake (kg DM/day) ---------------------------------
   cohort_level_data[
     ,
-    dry_matter_intake := calc_ration_intake(
+    ration_intake := calc_ration_intake(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
-      energy_requirement_total = energy_requirement_total,
-      diet_gross_energy = diet_gross_energy,
-      diet_metabolizable_energy = diet_metabolizable_energy
+      metabolic_energy_req_total = metabolic_energy_req_total,
+      ration_gross_energy = ration_gross_energy,
+      ration_metabolizable_energy = ration_metabolizable_energy
     ),
     by = .I
   ]
