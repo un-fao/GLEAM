@@ -95,7 +95,7 @@ calc_allocated_emissions <- function(
 #'   - `"CO2"`: Carbon dioxide (GWP = 1)
 #' @param value_allocated Numeric vector. Emission values expressed in kg of gas
 #'   (e.g., kg CH4, kg N2O, or kg CO2). Must be the same length as `gas`.
-#' @param gwp Character scalar specifying the 100-year Global Warming Potential
+#' @param global_warming_potential_set Character scalar specifying the 100-year Global Warming Potential
 #'   (GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
 #'   Must be one of:
 #'   \itemize{
@@ -118,14 +118,14 @@ calc_allocated_emissions <- function(
 calc_co2eq <- function(
     gas,
     value_allocated,
-    gwp
+    global_warming_potential_set
 ) {
-  validate_co2eq_inputs(gas, value_allocated, gwp)
+  validate_co2eq_inputs(gas, value_allocated, global_warming_potential_set)
 
   # Define GWP factors for each IPCC assessment report
   # Note: Validation ensures gwp is valid, so switch will always match
   gwp_factors <- switch(
-    gwp,
+    global_warming_potential_set,
     AR6 = c(CH4 = 27, N2O = 273, CO2 = 1),
     AR5_excluding_carbon_feedback = c(CH4 = 28, N2O = 265, CO2 = 1),
     AR5_including_carbon_feedback = c(CH4 = 34, N2O = 298, CO2 = 1),
@@ -133,15 +133,15 @@ calc_co2eq <- function(
   )
 
   # Extract GWP factor for each gas type
-  gwp_used <- unname(gwp_factors[gas])
+  gwp <- unname(gwp_factors[gas])
 
   # Calculate CO2-equivalent emissions
-  value_co2e <- value_allocated * gwp_used
+  value_co2e <- value_allocated * gwp
 
   return(
     list(
       value_co2e = value_co2e,
-      gwp = gwp_used
+      gwp = gwp
     )
   )
 }

@@ -201,7 +201,7 @@ test_that("calc_co2eq returns correct value for CH4 with AR6", {
   result <- calc_co2eq(
     gas = "CH4",
     value_allocated = 100,  # kg CH4
-    gwp = "AR6"
+    global_warming_potential_set = "AR6"
   )
 
   expect_type(result, "list")
@@ -214,7 +214,7 @@ test_that("calc_co2eq returns correct value for N2O with AR6", {
   result <- calc_co2eq(
     gas = "N2O",
     value_allocated = 10,  # kg N2O
-    gwp = "AR6"
+    global_warming_potential_set = "AR6"
   )
 
   expect_equal(result$value_co2e, 10 * 273)  # AR6: N2O = 273
@@ -225,7 +225,7 @@ test_that("calc_co2eq returns correct value for CO2", {
   result <- calc_co2eq(
     gas = "CO2",
     value_allocated = 1000,  # kg CO2
-    gwp = "AR6"
+    global_warming_potential_set = "AR6"
   )
 
   expect_equal(result$value_co2e, 1000 * 1)  # CO2 always = 1
@@ -236,7 +236,7 @@ test_that("calc_co2eq handles AR5_excluding_carbon_feedback", {
   result_ch4 <- calc_co2eq(
     gas = "CH4",
     value_allocated = 100,
-    gwp = "AR5_excluding_carbon_feedback"
+    global_warming_potential_set = "AR5_excluding_carbon_feedback"
   )
   expect_equal(result_ch4$value_co2e, 100 * 28)
   expect_equal(result_ch4$gwp, 28)
@@ -244,7 +244,7 @@ test_that("calc_co2eq handles AR5_excluding_carbon_feedback", {
   result_n2o <- calc_co2eq(
     gas = "N2O",
     value_allocated = 10,
-    gwp = "AR5_excluding_carbon_feedback"
+    global_warming_potential_set = "AR5_excluding_carbon_feedback"
   )
   expect_equal(result_n2o$value_co2e, 10 * 265)
   expect_equal(result_n2o$gwp, 265)
@@ -254,7 +254,7 @@ test_that("calc_co2eq handles AR5_including_carbon_feedback", {
   result_ch4 <- calc_co2eq(
     gas = "CH4",
     value_allocated = 100,
-    gwp = "AR5_including_carbon_feedback"
+    global_warming_potential_set = "AR5_including_carbon_feedback"
   )
   expect_equal(result_ch4$value_co2e, 100 * 34)
   expect_equal(result_ch4$gwp, 34)
@@ -262,7 +262,7 @@ test_that("calc_co2eq handles AR5_including_carbon_feedback", {
   result_n2o <- calc_co2eq(
     gas = "N2O",
     value_allocated = 10,
-    gwp = "AR5_including_carbon_feedback"
+    global_warming_potential_set = "AR5_including_carbon_feedback"
   )
   expect_equal(result_n2o$value_co2e, 10 * 298)
   expect_equal(result_n2o$gwp, 298)
@@ -272,7 +272,7 @@ test_that("calc_co2eq handles AR4", {
   result_ch4 <- calc_co2eq(
     gas = "CH4",
     value_allocated = 100,
-    gwp = "AR4"
+    global_warming_potential_set = "AR4"
   )
   expect_equal(result_ch4$value_co2e, 100 * 25)
   expect_equal(result_ch4$gwp, 25)
@@ -280,7 +280,7 @@ test_that("calc_co2eq handles AR4", {
   result_n2o <- calc_co2eq(
     gas = "N2O",
     value_allocated = 10,
-    gwp = "AR4"
+    global_warming_potential_set = "AR4"
   )
   expect_equal(result_n2o$value_co2e, 10 * 298)
   expect_equal(result_n2o$gwp, 298)
@@ -290,7 +290,7 @@ test_that("calc_co2eq handles vectorized inputs", {
   result <- calc_co2eq(
     gas = c("CH4", "N2O", "CO2"),
     value_allocated = c(100, 10, 1000),
-    gwp = "AR6"
+    global_warming_potential_set = "AR6"
   )
 
   expect_type(result, "list")
@@ -304,7 +304,7 @@ test_that("calc_co2eq handles zero emissions", {
   result <- calc_co2eq(
     gas = "CH4",
     value_allocated = 0,
-    gwp = "AR6"
+    global_warming_potential_set = "AR6"
   )
 
   expect_equal(result$value_co2e, 0)
@@ -316,7 +316,7 @@ test_that("calc_co2eq validates GWP version", {
     calc_co2eq(
       gas = "CH4",
       value_allocated = 100,
-      gwp = "INVALID"
+      global_warming_potential_set = "INVALID"
     ),
     "must be one of"
   )
@@ -327,7 +327,7 @@ test_that("calc_co2eq validates input lengths", {
     calc_co2eq(
       gas = c("CH4", "N2O"),
       value_allocated = c(100, 10, 50),
-      gwp = "AR6"
+      global_warming_potential_set = "AR6"
     ),
     "must have the same length"
   )
@@ -338,7 +338,7 @@ test_that("calc_co2eq validates gas types", {
     calc_co2eq(
       gas = "INVALID",
       value_allocated = 100,
-      gwp = "AR6"
+      global_warming_potential_set = "AR6"
     ),
     "must be one of"
   )
@@ -349,7 +349,7 @@ test_that("calc_co2eq validates value_allocated bounds", {
     calc_co2eq(
       gas = "CH4",
       value_allocated = -10,
-      gwp = "AR6"
+      global_warming_potential_set = "AR6"
     ),
     "must be non-negative"
   )

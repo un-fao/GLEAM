@@ -143,10 +143,10 @@ validate_allocated_emissions_inputs <- function(
 validate_co2eq_inputs <- function(
     gas,
     value_allocated,
-    gwp
+    global_warming_potential_set
 ) {
   # Validate gwp is scalar character
-  validate_scalar_character(gwp, "gwp")
+  validate_scalar_character(global_warming_potential_set, "global_warming_potential_set")
 
   # Validate GWP version
   valid_gwp <- c(
@@ -155,9 +155,9 @@ validate_co2eq_inputs <- function(
     "AR5_including_carbon_feedback",
     "AR4"
   )
-  if (!gwp %in% valid_gwp) {
+  if (!global_warming_potential_set %in% valid_gwp) {
     cli::cli_abort(
-      "{.arg gwp} must be one of: {cli::format_inline('{valid_gwp}')}"
+      "{.arg global_warming_potential_set} must be one of: {cli::format_inline('{valid_gwp}')}"
     )
   }
 

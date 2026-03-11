@@ -4,7 +4,12 @@
 \alias{run_aggregation}
 \title{Aggregation Pipeline: Final Herd-Level Results}
 \usage{
-run_aggregation(cohort_level_data, allocation_herd_long, gwp = "AR6")
+run_aggregation(
+  cohort_level_data,
+  allocation_herd_long,
+  simulation_duration = 365,
+  global_warming_potential_set = "AR6"
+)
 }
 \arguments{
 \item{cohort_level_data}{A \code{data.table} containing cohort-level data with all
@@ -17,8 +22,7 @@ calculated variables. Must include:
 \verb{indirect_n2o_manure_*}}
 }
 Required grouping columns: \code{herd_id}, \code{animal} (full species name, e.g. Cattle, Buffalo;
-mapped to \code{species_short} internally), \code{cohort_short}, \code{simulation_duration},
-\code{cohort_stock_size}.}
+mapped to \code{species_short} internally), \code{cohort_short}, \code{cohort_stock_size}.}
 
 \item{allocation_herd_long}{A \code{data.table} in long format, typically the
 output of \code{\link[=run_allocation]{run_allocation()}}. Must include columns:
@@ -28,6 +32,9 @@ output of \code{\link[=run_allocation]{run_allocation()}}. Must include columns:
 \code{allocation_share} (numeric, 0-1)}
 \item{\strong{Emission source}:}{\code{variable_name} (emission variable names)}
 }}
+
+\item{simulation_duration}{Numeric. Length of the assessment period (days). Used to
+scale per-head-per-day variables to cohort totals. Defaults to \code{365}.}
 
 \item{gwp}{Character scalar specifying the 100-year Global Warming Potential
 (GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
@@ -107,7 +114,8 @@ allocation_long <- data.table::fread(system.file(
 results <- run_aggregation(
   cohort_level_data = cohort_dt,
   allocation_herd_long = allocation_long,
-  gwp = "AR6"
+  simulation_duration = 365,
+  global_warming_potential_set = "AR6"
 )
 head(results$results_herd)
 }

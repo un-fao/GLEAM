@@ -40,8 +40,7 @@
 #'       `indirect_n2o_manure_*`}
 #'   }
 #'   Required grouping columns: `herd_id`, `animal` (full species name, e.g. Cattle, Buffalo;
-#'   mapped to \code{species_short} internally), `cohort_short`, `simulation_duration`,
-#'   \code{cohort_stock_size}.
+#'   mapped to \code{species_short} internally), `cohort_short`, \code{cohort_stock_size}.
 #'
 #' @param allocation_herd_long A `data.table` in long format, typically the
 #'   output of [run_allocation()]. Must include columns:
@@ -62,6 +61,8 @@
 #'       (including climate–carbon feedbacks) — CH₄ = 34, N₂O = 298
 #'     \item \code{"AR4"}: IPCC Fourth Assessment Report — CH₄ = 25, N₂O = 298
 #'   }
+#' @param simulation_duration Numeric. Length of the assessment period (days). Used to
+#'   scale per-head-per-day variables to cohort totals. Defaults to \code{365}.
 #'
 #' @return A named list containing:
 #' \describe{
@@ -101,7 +102,8 @@
 #' results <- run_aggregation(
 #'   cohort_level_data = cohort_dt,
 #'   allocation_herd_long = allocation_long,
-#'   gwp = "AR6"
+#'   simulation_duration = 365,
+#'   global_warming_potential_set = "AR6"
 #' )
 #' head(results$results_herd)
 #' }
@@ -124,7 +126,8 @@
 run_aggregation <- function(
     cohort_level_data,
     allocation_herd_long,
-    gwp = "AR6"
+    simulation_duration = 365,
+    global_warming_potential_set = "AR6"
 ) {
   # --- Input validation -------------------------------------------------------
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
@@ -144,20 +147,28 @@ run_aggregation <- function(
   # Validate required grouping columns
   required_group_cols <- c(
     "herd_id", "species_short",
-    "cohort_short", "simulation_duration", "cohort_stock_size"
+    "cohort_short", "cohort_stock_size"
   )
   miss_group <- setdiff(required_group_cols, names(cohort_level_data))
   if (length(miss_group)) {
     cli::cli_abort("Missing required grouping columns in {.arg cohort_level_data}: {miss_group}.")
   }
 
-  # Validate GWP option
+  # Validate simulation_duration
+  if (!is.numeric(simulation_duration) || length(simulation_duration) != 1L || is.na(simulation_duration)) {
+    cli::cli_abort("{.arg simulation_duration} must be a single numeric value.")
+  }
+  if (simulation_duration <= 0) {
+    cli::cli_abort("{.arg simulation_duration} must be positive (days).")
+  }
+
+  # Validate global warming potential set option
   valid_gwp <- c(
     "AR6", "AR5_excluding_carbon_feedback", "AR5_including_carbon_feedback", "AR4"
   )
-  if (!gwp %in% valid_gwp) {
+  if (!global_warming_potential_set %in% valid_gwp) {
     cli::cli_abort(
-      "{.arg gwp} must be one of: {.val {valid_gwp}}"
+      "{.arg global_warming_potential_set} must be one of: {.val {valid_gwp}}"
     )
   }
 
@@ -300,7 +311,6 @@ run_aggregation <- function(
       "herd_id",
       "species_short",
       "cohort_short",
-      "simulation_duration",
       "cohort_stock_size"
     ),
     measure.vars = available_vars,
@@ -373,8 +383,9 @@ run_aggregation <- function(
   # --- Step 9: Identify gas type for GWP conversion ---------------------------
   data_herd_long_emissions[
     , gas := data.table::fcase(
-      grepl("^ch4", variable_name, ignore.case = TRUE), "CH4",
+      grepl("ch4", variable_name, ignore.case = TRUE), "CH4",
       grepl("n2o", variable_name, ignore.case = TRUE), "N2O",
+      grepl("co2", variable_name, ignore.case = TRUE), "CO2",
       default = NA_character_
     )
   ]
@@ -384,7 +395,7 @@ run_aggregation <- function(
     , c("value_total_allocated_co2eq", "gwp") := calc_co2eq(
       gas = gas,
       value_allocated = value_total_allocated_kgGas,
-      gwp = gwp
+      global_warming_potential_set = global_warming_potential_set
     ),
     by = .I
   ]
