@@ -127,10 +127,10 @@ utils::globalVariables(c(
   # Columns used in run_allocation
   "slaughterLW", "initialLW", "meat_production_live_weight_cohort",
   "milk_production_fpcm_cohort", "nefibre", "nework",
-  "energy_allocation_milk", "energy_allocation_meat",
-  "energy_allocation_fibre", "energy_allocation_work", "energy_allocation_eggs",
-  "total_allocation_energy", "allocation_share_meat", "allocation_share_milk",
-  "allocation_share_work", "allocation_share_fibre", "allocation_share_eggs",
+  "milk_allocation_energy", "meat_allocation_energy",
+  "fibre_allocation_energy", "work_allocation_energy", "egg_allocation_energy",
+  "total_allocation_energy", "meat_share_allocation", "milk_share_allocation",
+  "work_share_allocation", "fibre_share_allocation", "eggs_share_allocation",
   "allocation_share_other", "allocation_herd_long_all",  # Variables used in run_allocation
   "commodity_name", "commodity_type", "V1"
 ))

@@ -395,69 +395,69 @@ test_that("calc_work_allocation_energy validates inputs", {
 test_that("calc_allocation_shares returns meat=1 and others=0 for pigs (PGS)", {
   result <- calc_allocation_shares(
     species_short = "PGS",
-    energy_allocation_meat = NA,
-    energy_allocation_milk = 0,
-    energy_allocation_fibre = 0,
-    energy_allocation_work = 0,
-    energy_allocation_eggs = 0
+    meat_allocation_energy = NA,
+    milk_allocation_energy = 0,
+    fibre_allocation_energy = 0,
+    work_allocation_energy = 0,
+    egg_allocation_energy = 0
   )
 
-  expect_equal(result$allocation_share_meat, 1)
-  expect_equal(result$allocation_share_milk, 0)
-  expect_equal(result$allocation_share_fibre, 0)
-  expect_equal(result$allocation_share_work, 0)
-  expect_equal(result$allocation_share_eggs, 0)
+  expect_equal(result$meat_share_allocation, 1)
+  expect_equal(result$milk_share_allocation, 0)
+  expect_equal(result$fibre_share_allocation, 0)
+  expect_equal(result$work_share_allocation, 0)
+  expect_equal(result$eggs_share_allocation, 0)
 })
 
 test_that("calc_allocation_shares returns correct proportions for milk and meat", {
   result <- calc_allocation_shares(
     species_short = "CTL",
-    energy_allocation_meat = 300,
-    energy_allocation_milk = 700,
-    energy_allocation_fibre = 0,
-    energy_allocation_work = 0,
-    energy_allocation_eggs = 0
+    meat_allocation_energy = 300,
+    milk_allocation_energy = 700,
+    fibre_allocation_energy = 0,
+    work_allocation_energy = 0,
+    egg_allocation_energy = 0
   )
 
-  expect_equal(result$allocation_share_meat, 0.3)
-  expect_equal(result$allocation_share_milk, 0.7)
-  expect_equal(result$allocation_share_fibre, 0)
-  expect_equal(result$allocation_share_work, 0)
-  expect_equal(result$allocation_share_eggs, 0)
+  expect_equal(result$meat_share_allocation, 0.3)
+  expect_equal(result$milk_share_allocation, 0.7)
+  expect_equal(result$fibre_share_allocation, 0)
+  expect_equal(result$work_share_allocation, 0)
+  expect_equal(result$eggs_share_allocation, 0)
 })
 
 test_that("calc_allocation_shares shares sum to 1", {
   result <- calc_allocation_shares(
     species_short = "SHP",
-    energy_allocation_meat = 200,
-    energy_allocation_milk = 0,
-    energy_allocation_fibre = 300,
-    energy_allocation_work = 0,
-    energy_allocation_eggs = 0
+    meat_allocation_energy = 200,
+    milk_allocation_energy = 0,
+    fibre_allocation_energy = 300,
+    work_allocation_energy = 0,
+    egg_allocation_energy = 0
   )
 
-  total <- result$allocation_share_meat + result$allocation_share_milk +
-    result$allocation_share_fibre + result$allocation_share_work +
-    result$allocation_share_eggs
+  total <- result$meat_share_allocation + result$milk_share_allocation +
+    result$fibre_share_allocation + result$work_share_allocation +
+    result$eggs_share_allocation
 
   expect_equal(total, 1)
-  expect_equal(result$allocation_share_meat, 0.4)
-  expect_equal(result$allocation_share_fibre, 0.6)
+  expect_equal(result$meat_share_allocation, 0.4)
+  expect_equal(result$fibre_share_allocation, 0.6)
 })
 
 test_that("calc_allocation_shares returns a named list with 5 elements", {
   result <- calc_allocation_shares(
     species_short = "CTL",
-    energy_allocation_meat = 500,
-    energy_allocation_milk = 500,
-    energy_allocation_fibre = 0,
-    energy_allocation_work = 0,
-    energy_allocation_eggs = 0
+    meat_allocation_energy = 500,
+    milk_allocation_energy = 500,
+    fibre_allocation_energy = 0,
+    work_allocation_energy = 0,
+    egg_allocation_energy = 0
   )
 
   expect_type(result, "list")
   expect_named(result, c(
-    "allocation_share_meat", "allocation_share_milk",
-    "allocation_share_fibre", "allocation_share_work", "allocation_share_eggs"
+    "meat_share_allocation", "milk_share_allocation",
+    "fibre_share_allocation", "work_share_allocation", "eggs_share_allocation"
   ))
 })
