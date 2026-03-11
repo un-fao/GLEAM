@@ -1,4 +1,4 @@
-#' Validate inputs for compute_milk_outputs
+#' Validate inputs for calc_milk_production
 #'
 #' Milk calculations are only used for cohort FA (adult females). Validation of
 #' milk-related parameters and ranges is performed only when cohort_short == "FA".
@@ -40,7 +40,7 @@ validate_milk_outputs_inputs <- function(
   }
 }
 
-#' Validate inputs for compute_fibre_output
+#' Validate inputs for calc_fibre_production
 #'
 #' Fibre calculations are only used for cohorts FA, FS, MA, MS. Validation of
 #' fibre-related parameters and ranges is performed only for those cohorts.
@@ -68,7 +68,7 @@ validate_fibre_output_inputs <- function(
     }
 }
 
-#' Validate inputs for compute_meat_outputs
+#' Validate inputs for calc_meat_production
 #'
 #' @noRd
 validate_meat_outputs_inputs <- function(

@@ -12,10 +12,10 @@
 #'   \item{fecundity_male}{Numeric. Daily number of male offspring per adult female (# offspring/day)}
 #' }
 #' @examples
-#' compute_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)
+#' calc_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)
 #'
 #' @export
-compute_fecundity_rates <- function(
+calc_fecundity_rates <- function(
     parturition_rate,
     litter_size,
     birth_fraction_female
@@ -59,7 +59,7 @@ compute_fecundity_rates <- function(
 #' }
 #'
 #' @export
-compute_transition_probabilities <- function(
+calc_transition_probabilities <- function(
     cohort_duration_days,
     offtake_rate,
     death_rate
@@ -228,7 +228,7 @@ compute_transition_probabilities <- function(
 #' }
 #'
 #' @export
-simulate_steady_state_structure <- function(
+calc_steady_state_structure <- function(
     initial_herd_structure,
     max_simulation_years,
     min_lambda_change,
@@ -400,7 +400,7 @@ simulate_steady_state_structure <- function(
 #' }
 #'
 #' @export
-project_population_size <- function(
+calc_projected_population_size <- function(
     herd_size_total,
     fecundity_female,
     fecundity_male,
@@ -568,7 +568,7 @@ project_population_size <- function(
 #' }
 #'
 #' @export
-summarise_offtake <- function(
+calc_summary_offtake <- function(
     cohort_stock_start,
     cohort_stock_end_projected,
     cohort_stock_average,

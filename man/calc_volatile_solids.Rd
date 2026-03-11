@@ -54,7 +54,7 @@ This function applies an algebraically simplified formulation from Equation 10.2
 
 In this implementation, the function takes \code{dry_matter_intake} directly
 as an input. It can be calculated upstream with
-\code{\link{calc_dry_matter_intake}} as a function of energy requirements and
+\code{\link{calc_ration_intake}} as a function of energy requirements and
 the energy content of the diet.
 
 \deqn{

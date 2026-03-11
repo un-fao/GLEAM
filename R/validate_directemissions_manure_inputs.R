@@ -1,4 +1,4 @@
-#' Validate inputs for run_directemissions_manure
+#' Validate inputs for run_emissions_manure_module
 #'
 #' Validates that cohort-level manure inputs and MMS tables have the expected
 #' structure, required columns, and consistent identifiers.

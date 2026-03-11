@@ -1,6 +1,6 @@
-# ---- test compute_milk_outputs ----
-test_that("compute_milk_outputs returns expected output structure", {
-  result <- compute_milk_outputs(
+# ---- test calc_milk_production ----
+test_that("calc_milk_production returns expected output structure", {
+  result <- calc_milk_production(
     species_short = "CTL",
     cohort_short = "FA",
     milk_yield_day = 10,
@@ -23,8 +23,8 @@ test_that("compute_milk_outputs returns expected output structure", {
   ))
 })
 
-test_that("compute_milk_outputs calculates milk mass production correctly", {
-  result <- compute_milk_outputs(
+test_that("calc_milk_production calculates milk mass production correctly", {
+  result <- calc_milk_production(
     species_short = "BFL",
     cohort_short = "FA",
     milk_yield_day = 20,
@@ -43,8 +43,8 @@ test_that("compute_milk_outputs calculates milk mass production correctly", {
   expect_equal(result$milk_production_mass_cohort, expected_mass)
 })
 
-test_that("compute_milk_outputs calculates milk protein production correctly", {
-  result <- compute_milk_outputs(
+test_that("calc_milk_production calculates milk protein production correctly", {
+  result <- calc_milk_production(
     species_short = "SHP",
     cohort_short = "FA",
     milk_yield_day = 15,
@@ -64,8 +64,8 @@ test_that("compute_milk_outputs calculates milk protein production correctly", {
   expect_equal(result$milk_production_protein_cohort, expected_protein)
 })
 
-test_that("compute_milk_outputs calculates FPCM using energy ratio", {
-  result <- compute_milk_outputs(
+test_that("calc_milk_production calculates FPCM using energy ratio", {
+  result <- calc_milk_production(
     species_short = "SHP",
     cohort_short = "FA",
     milk_yield_day = 12,
@@ -85,8 +85,8 @@ test_that("compute_milk_outputs calculates FPCM using energy ratio", {
   expect_equal(result$milk_production_fpcm_cohort, expected_mass, tolerance = 1e-10)
 })
 
-test_that("compute_milk_outputs calculates FPCM correctly with different composition", {
-  result <- compute_milk_outputs(
+test_that("calc_milk_production calculates FPCM correctly with different composition", {
+  result <- calc_milk_production(
     species_short = "GTS",
     cohort_short = "FA",
     milk_yield_day = 12,
@@ -111,9 +111,9 @@ test_that("compute_milk_outputs calculates FPCM correctly with different composi
   expect_equal(result$milk_production_fpcm_cohort, expected_fpcm, tolerance = 1e-6)
 })
 
-test_that("compute_milk_outputs handles higher fat content correctly", {
+test_that("calc_milk_production handles higher fat content correctly", {
   # Higher fat should result in higher FPCM (energy ratio > 1)
-  standard_result <- compute_milk_outputs(
+  standard_result <- calc_milk_production(
     species_short = "GTS",
     cohort_short = "FA",
     milk_yield_day = 10,
@@ -128,7 +128,7 @@ test_that("compute_milk_outputs handles higher fat content correctly", {
     milk_lactose_fraction_standard = 0.048
   )
 
-  high_fat_result <- compute_milk_outputs(
+  high_fat_result <- calc_milk_production(
     species_short = "GTS",
     cohort_short = "FA",
     milk_yield_day = 10,
@@ -146,8 +146,8 @@ test_that("compute_milk_outputs handles higher fat content correctly", {
   expect_gt(high_fat_result$milk_production_fpcm_cohort, standard_result$milk_production_fpcm_cohort)
 })
 
-test_that("compute_milk_outputs handles zero size", {
-  result <- compute_milk_outputs(
+test_that("calc_milk_production handles zero size", {
+  result <- calc_milk_production(
     species_short = "CTL",
     cohort_short = "FA",
     milk_yield_day = 10,
@@ -167,8 +167,8 @@ test_that("compute_milk_outputs handles zero size", {
   expect_equal(result$milk_production_fpcm_cohort, 0)
 })
 
-test_that("compute_milk_outputs handles zero milking fraction", {
-  result <- compute_milk_outputs(
+test_that("calc_milk_production handles zero milking fraction", {
+  result <- calc_milk_production(
     species_short = "CTL",
     cohort_short = "FA",
     milk_yield_day = 10,
@@ -188,9 +188,9 @@ test_that("compute_milk_outputs handles zero milking fraction", {
   expect_equal(result$milk_production_fpcm_cohort, 0)
 })
 
-test_that("compute_milk_outputs handles validation errors", {
+test_that("calc_milk_production handles validation errors", {
   expect_error(
-    compute_milk_outputs(
+    calc_milk_production(
       species_short = "CTL",
       cohort_short = "FA",
       milk_yield_day = -10, simulation_duration = 365, cohort_stock_size = 100,
@@ -202,7 +202,7 @@ test_that("compute_milk_outputs handles validation errors", {
   )
 
   expect_error(
-    compute_milk_outputs(
+    calc_milk_production(
       species_short = "CTL",
       cohort_short = "FA",
       milk_yield_day = 10, simulation_duration = 365, cohort_stock_size = 100,
@@ -214,7 +214,7 @@ test_that("compute_milk_outputs handles validation errors", {
   )
 
   expect_error(
-    compute_milk_outputs(
+    calc_milk_production(
       species_short = "CTL",
       cohort_short = "FA",
       milk_yield_day = 10, simulation_duration = 365, cohort_stock_size = 100,
@@ -226,8 +226,8 @@ test_that("compute_milk_outputs handles validation errors", {
   )
 })
 
-test_that("compute_milk_outputs returns zeros for PGS", {
-  result <- compute_milk_outputs(
+test_that("calc_milk_production returns zeros for PGS", {
+  result <- calc_milk_production(
     species_short = "PGS",
     cohort_short = "FA",
     milk_yield_day = 10,
@@ -253,9 +253,9 @@ test_that("compute_milk_outputs returns zeros for PGS", {
 })
 
 
-# ---- test compute_fibre_output ----
-test_that("compute_fibre_output returns expected value", {
-  result <- compute_fibre_output(
+# ---- test calc_fibre_production ----
+test_that("calc_fibre_production returns expected value", {
+  result <- calc_fibre_production(
     species_short = "SHP",
     cohort_short = "FS",
     fibre_yield_year = 0.1,
@@ -267,8 +267,8 @@ test_that("compute_fibre_output returns expected value", {
   expect_equal(result, expected)
 })
 
-test_that("compute_fibre_output handles zero fibre yield", {
-  result <- compute_fibre_output(
+test_that("calc_fibre_production handles zero fibre yield", {
+  result <- calc_fibre_production(
     species_short = "SHP",
     cohort_short = "FS",
     fibre_yield_year = 0,
@@ -279,8 +279,8 @@ test_that("compute_fibre_output handles zero fibre yield", {
   expect_equal(result, 0)
 })
 
-test_that("compute_fibre_output handles zero size", {
-  result <- compute_fibre_output(
+test_that("calc_fibre_production handles zero size", {
+  result <- calc_fibre_production(
     species_short = "SHP",
     cohort_short = "FA",
     fibre_yield_year = 0.1,
@@ -291,8 +291,8 @@ test_that("compute_fibre_output handles zero size", {
   expect_equal(result, 0)
 })
 
-test_that("compute_fibre_output handles different assessment durations", {
-  result_365 <- compute_fibre_output(
+test_that("calc_fibre_production handles different assessment durations", {
+  result_365 <- calc_fibre_production(
     species_short = "GTS",
     cohort_short = "MA",
     fibre_yield_year = 0.1,
@@ -300,7 +300,7 @@ test_that("compute_fibre_output handles different assessment durations", {
     cohort_stock_size = 100
   )
 
-  result_180 <- compute_fibre_output(
+  result_180 <- calc_fibre_production(
     species_short = "CML",
     cohort_short = "MA",
     fibre_yield_year = 0.1,
@@ -311,8 +311,8 @@ test_that("compute_fibre_output handles different assessment durations", {
   expect_equal(result_365 / result_180, 365 / 180)
 })
 
-test_that("compute_fibre_output handles large values", {
-  result <- compute_fibre_output(
+test_that("calc_fibre_production handles large values", {
+  result <- calc_fibre_production(
     species_short = "CML",
     cohort_short = "MS",
     fibre_yield_year = 5.0,
@@ -324,8 +324,8 @@ test_that("compute_fibre_output handles large values", {
   expect_equal(result, expected)
 })
 
-test_that("compute_fibre_output returns zero for non-fibre animals", {
-  result <- compute_fibre_output(
+test_that("calc_fibre_production returns zero for non-fibre animals", {
+  result <- calc_fibre_production(
     species_short = "PGS",
     cohort_short = "MS",
     fibre_yield_year = 1,
@@ -338,8 +338,8 @@ test_that("compute_fibre_output returns zero for non-fibre animals", {
 })
 
 
-test_that("compute_fibre_output returns zero for non-fibre animals", {
-  result <- compute_fibre_output(
+test_that("calc_fibre_production returns zero for non-fibre animals", {
+  result <- calc_fibre_production(
     species_short = "CTL",
     cohort_short = "MS",
     fibre_yield_year = 1,
@@ -352,17 +352,17 @@ test_that("compute_fibre_output returns zero for non-fibre animals", {
 })
 
 
-test_that("compute_fibre_output handles validation errors", {
+test_that("calc_fibre_production handles validation errors", {
   expect_error(
-    compute_fibre_output(species_short = "SHP", cohort_short = "MA", fibre_yield_year = -0.1, simulation_duration = 365, cohort_stock_size = 100),
+    calc_fibre_production(species_short = "SHP", cohort_short = "MA", fibre_yield_year = -0.1, simulation_duration = 365, cohort_stock_size = 100),
     "fibre_yield_year"
   )
 })
 
 
-# ---- test compute_meat_outputs ----
-test_that("compute_meat_outputs returns expected output structure", {
-  result <- compute_meat_outputs(
+# ---- test calc_meat_production ----
+test_that("calc_meat_production returns expected output structure", {
+  result <- calc_meat_production(
     offtake_heads_assessment = 10,
     slaughter_weight_cohort = 400,
     carcass_dressing_fraction = 0.55,
@@ -379,8 +379,8 @@ test_that("compute_meat_outputs returns expected output structure", {
   ))
 })
 
-test_that("compute_meat_outputs calculates liveweight correctly", {
-  result <- compute_meat_outputs(
+test_that("calc_meat_production calculates liveweight correctly", {
+  result <- calc_meat_production(
     offtake_heads_assessment = 50,
     slaughter_weight_cohort = 300,
     carcass_dressing_fraction = 0.60,
@@ -392,8 +392,8 @@ test_that("compute_meat_outputs calculates liveweight correctly", {
   expect_equal(result$meat_production_live_weight_cohort, expected_liveweight)
 })
 
-test_that("compute_meat_outputs calculates carcass weight correctly", {
-  result <- compute_meat_outputs(
+test_that("calc_meat_production calculates carcass weight correctly", {
+  result <- calc_meat_production(
     offtake_heads_assessment = 25,
     slaughter_weight_cohort = 450,
     carcass_dressing_fraction = 0.58,
@@ -406,8 +406,8 @@ test_that("compute_meat_outputs calculates carcass weight correctly", {
   expect_equal(result$meat_production_carcass_weight_cohort, expected_carcass)
 })
 
-test_that("compute_meat_outputs calculates boneless meat correctly", {
-  result <- compute_meat_outputs(
+test_that("calc_meat_production calculates boneless meat correctly", {
+  result <- calc_meat_production(
     offtake_heads_assessment = 30,
     slaughter_weight_cohort = 350,
     carcass_dressing_fraction = 0.55,
@@ -421,8 +421,8 @@ test_that("compute_meat_outputs calculates boneless meat correctly", {
   expect_equal(result$meat_production_bone_free_meat_cohort, expected_meat)
 })
 
-test_that("compute_meat_outputs calculates meat protein correctly", {
-  result <- compute_meat_outputs(
+test_that("calc_meat_production calculates meat protein correctly", {
+  result <- calc_meat_production(
     offtake_heads_assessment = 20,
     slaughter_weight_cohort = 400,
     carcass_dressing_fraction = 0.56,
@@ -437,8 +437,8 @@ test_that("compute_meat_outputs calculates meat protein correctly", {
   expect_equal(result$meat_production_protein_cohort, expected_protein)
 })
 
-test_that("compute_meat_outputs handles zero offtake", {
-  result <- compute_meat_outputs(
+test_that("calc_meat_production handles zero offtake", {
+  result <- calc_meat_production(
     offtake_heads_assessment = 0,
     slaughter_weight_cohort = 400,
     carcass_dressing_fraction = 0.55,
@@ -452,8 +452,8 @@ test_that("compute_meat_outputs handles zero offtake", {
   expect_equal(result$meat_production_protein_cohort, 0)
 })
 
-test_that("compute_meat_outputs handles zero slaughter weight", {
-  result <- compute_meat_outputs(
+test_that("calc_meat_production handles zero slaughter weight", {
+  result <- calc_meat_production(
     offtake_heads_assessment = 10,
     slaughter_weight_cohort = 0,
     carcass_dressing_fraction = 0.55,
@@ -467,8 +467,8 @@ test_that("compute_meat_outputs handles zero slaughter weight", {
   expect_equal(result$meat_production_protein_cohort, 0)
 })
 
-test_that("compute_meat_outputs verifies sequential calculation chain", {
-  result <- compute_meat_outputs(
+test_that("calc_meat_production verifies sequential calculation chain", {
+  result <- calc_meat_production(
     offtake_heads_assessment = 100,
     slaughter_weight_cohort = 300,
     carcass_dressing_fraction = 0.50,
@@ -487,9 +487,9 @@ test_that("compute_meat_outputs verifies sequential calculation chain", {
   expect_equal(protein, meat * 0.25)
 })
 
-test_that("compute_meat_outputs handles validation errors", {
+test_that("calc_meat_production handles validation errors", {
   expect_error(
-    compute_meat_outputs(
+    calc_meat_production(
       offtake_heads_assessment = -10, slaughter_weight_cohort = 400,
       carcass_dressing_fraction = 0.55, bone_free_meat_fraction = 0.75,
       meat_protein_fraction = 0.20
@@ -498,7 +498,7 @@ test_that("compute_meat_outputs handles validation errors", {
   )
 
   expect_error(
-    compute_meat_outputs(
+    calc_meat_production(
       offtake_heads_assessment = 10, slaughter_weight_cohort = -400,
       carcass_dressing_fraction = 0.55, bone_free_meat_fraction = 0.75,
       meat_protein_fraction = 0.20
@@ -507,7 +507,7 @@ test_that("compute_meat_outputs handles validation errors", {
   )
 
   expect_error(
-    compute_meat_outputs(
+    calc_meat_production(
       offtake_heads_assessment = 10, slaughter_weight_cohort = 400,
       carcass_dressing_fraction = 1.5, bone_free_meat_fraction = 0.75,
       meat_protein_fraction = 0.20
@@ -516,7 +516,7 @@ test_that("compute_meat_outputs handles validation errors", {
   )
 
   expect_error(
-    compute_meat_outputs(
+    calc_meat_production(
       offtake_heads_assessment = 10, slaughter_weight_cohort = 400,
       carcass_dressing_fraction = 0.55, bone_free_meat_fraction = -0.1,
       meat_protein_fraction = 0.20
@@ -525,7 +525,7 @@ test_that("compute_meat_outputs handles validation errors", {
   )
 
   expect_error(
-    compute_meat_outputs(
+    calc_meat_production(
       offtake_heads_assessment = 10, slaughter_weight_cohort = 400,
       carcass_dressing_fraction = 0.55, bone_free_meat_fraction = 0.75,
       meat_protein_fraction = 1.5

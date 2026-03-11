@@ -26,5 +26,5 @@ attributable to a specific commodity (e.g., meat, milk, fibre).
 This function multiplies total herd-level emissions by the corresponding
 allocation share to estimate the share of emissions allocated to a
 specific output. Allocation shares are typically derived from biophysical
-allocation based on energy requirements (see \code{\link[=run_allocation]{run_allocation()}}).
+allocation based on energy requirements (see \code{\link[=run_allocation_module]{run_allocation_module()}}).
 }

@@ -1,4 +1,4 @@
-#' Validate inputs for calc_diet_co2_feed_fertilizer
+#' Validate inputs for calc_co2_ration_fertilizer
 #'
 #' @noRd
 validate_diet_co2_feed_fertilizer_inputs <- function(
@@ -9,7 +9,7 @@ validate_diet_co2_feed_fertilizer_inputs <- function(
   validate_scalar_numeric_or_na(co2_feed_fertilizer, min_val = 0)
 }
 
-#' Validate inputs for calc_diet_co2_feed_pesticides
+#' Validate inputs for calc_co2_ration_pesticides
 #'
 #' @noRd
 validate_diet_co2_feed_pesticides_inputs <- function(
@@ -20,7 +20,7 @@ validate_diet_co2_feed_pesticides_inputs <- function(
   validate_scalar_numeric_or_na(co2_feed_pesticides, min_val = 0)
 }
 
-#' Validate inputs for calc_diet_co2_feed_crop_operations
+#' Validate inputs for calc_co2_ration_crop_activities
 #'
 #' @noRd
 validate_diet_co2_feed_crop_operations_inputs <- function(
@@ -42,7 +42,7 @@ validate_diet_co2_feed_luc_nopeat_inputs <- function(
   validate_scalar_numeric_or_na(co2_feed_luc_nopeat, min_val = -Inf)
 }
 
-#' Validate inputs for calc_diet_co2_feed_luc_peat
+#' Validate inputs for calc_co2_ration_luc_peat
 #'
 #' @noRd
 validate_diet_co2_feed_luc_peat_inputs <- function(
@@ -64,7 +64,7 @@ validate_diet_n2o_feed_fertilizer_inputs <- function(
   validate_scalar_numeric_or_na(n2o_feed_fertilizer, min_val = 0)
 }
 
-#' Validate inputs for calc_diet_n2o_feed_manure_applied
+#' Validate inputs for calc_n2o_ration_manure
 #'
 #' @noRd
 validate_diet_n2o_feed_manure_applied_inputs <- function(
@@ -86,7 +86,7 @@ validate_diet_n2o_feed_crop_residues_inputs <- function(
   validate_scalar_numeric_or_na(n2o_feed_crop_residues, min_val = 0)
 }
 
-#' Validate inputs for calc_diet_ch4_feed_rice
+#' Validate inputs for calc_ch4_ration_rice
 #'
 #' @noRd
 validate_diet_ch4_feed_rice_inputs <- function(

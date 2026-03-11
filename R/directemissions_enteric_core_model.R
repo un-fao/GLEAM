@@ -36,7 +36,7 @@
 #' ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013). 
 #' 
 #' \code{diet_digestibility_fraction} can be calculated with
-#' \code{\link{calc_diet_digestibility}} - see also \code{\link{run_feed_rations}}.
+#' \code{\link{calc_ration_digestibility}} - see also \code{\link{run_ration_quality_module}}.
 #'
 #' \itemize{
 #'   \item \strong{For \code{CTL} and \code{BFL}:}
@@ -62,8 +62,8 @@
 #' negligible enteric methane production before weaning/rumen development.
 #' 
 #' @seealso
-#'   \code{\link{calc_diet_digestibility}},
-#'   \code{\link{run_feed_rations}}
+#'   \code{\link{calc_ration_digestibility}},
+#'   \code{\link{run_ration_quality_module}}
 #'
 #' @references
 #' Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
@@ -85,7 +85,7 @@
 #' Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 #'
 #' @export
-compute_methane_conversion_factor <- function(
+calc_conversion_factor_ym <- function(
     species_short,
     cohort_short,
     diet_digestibility_fraction
@@ -159,17 +159,17 @@ compute_methane_conversion_factor <- function(
 #' where 55.65 MJ/kg is the energy content of methane.
 #' 
 #' \code{diet_gross_energy} and \code{dry_matter_intake} can be calculated with
-#' \code{\link{calc_diet_gross_energy}} and \code{\link{calc_dry_matter_intake}} - 
-#' see also \code{\link{run_feed_rations}} and \code{\link{run_energy_requirements}}.
+#' \code{\link{calc_ration_gross_energy}} and \code{\link{calc_ration_intake}} - 
+#' see also \code{\link{run_ration_quality_module}} and \code{\link{run_metabolic_energy_req_module}}.
 #' 
 #'
 #' The function returns `0` for chickens.
 #'
 #' @seealso
-#'   \code{\link{calc_diet_gross_energy}},
-#'   \code{\link{calc_dry_matter_intake}},
-#'   \code{\link{run_feed_rations}}
-#'   \code{\link{run_energy_requirements}}
+#'   \code{\link{calc_ration_gross_energy}},
+#'   \code{\link{calc_ration_intake}},
+#'   \code{\link{run_ration_quality_module}}
+#'   \code{\link{run_metabolic_energy_req_module}}
 #'
 #' @references
 #' IPCC. (2019).
@@ -182,7 +182,7 @@ compute_methane_conversion_factor <- function(
 #'
 #'
 #' @export
-compute_daily_enteric_emissions <- function(
+calc_ch4_enteric <- function(
     species_short,
     ch4_conversion_factor_ym,
     ch4_mitigation_factor,

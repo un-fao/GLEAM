@@ -1,4 +1,4 @@
-#' Validate inputs for calc_energy_allocation_milk
+#' Validate inputs for calc_milk_allocation_energy
 #'
 #' Ensures that inputs for the milk energy allocation calculation
 #' are correctly typed and within valid ranges. Specifically:
@@ -9,7 +9,7 @@
 #'   (representing kg per kg milk).
 #'
 #' This validator is designed for internal use in
-#' \code{\link{calc_energy_allocation_milk}}.
+#' \code{\link{calc_milk_allocation_energy}}.
 #'
 #' @param milk_production_fpcm_cohort Numeric scalar. Fat- and protein-corrected
 #'   milk production by cohort (kg/assessment period).
@@ -34,7 +34,7 @@ validate_allocation_milk_inputs <- function(
   validate_param_range(milk_lactose_fraction_standard, "milk_lactose_fraction_standard")
 }
 
-#' Validate inputs for calc_energy_allocation_meat
+#' Validate inputs for calc_meat_allocation_energy
 #'
 #' Ensures that inputs for the meat energy allocation calculation
 #' are correctly typed and within valid ranges. Specifically:
@@ -53,7 +53,7 @@ validate_allocation_milk_inputs <- function(
 #' \code{NA_real_}.
 #'
 #' This validator is designed for internal use in
-#' \code{\link{calc_energy_allocation_meat}}.
+#' \code{\link{calc_meat_allocation_energy}}.
 #'
 #' @param species_short Character scalar. Species code
 #'   (e.g., \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}, \code{CHK}).
@@ -112,7 +112,7 @@ validate_allocation_meat_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_energy_allocation_fibre
+#' Validate inputs for calc_fibre_allocation_energy
 #'
 #' Ensures that inputs for the fibre energy allocation calculation
 #' are correctly typed and within valid ranges. Specifically:
@@ -134,7 +134,7 @@ validate_allocation_meat_inputs <- function(
 #' \code{NA_real_}.
 #'
 #' This validator is designed for internal use in
-#' \code{\link{calc_energy_allocation_fibre}}.
+#' \code{\link{calc_fibre_allocation_energy}}.
 #'
 #' @param species_short Character scalar. Species code
 #'   (e.g., \code{GTS}, \code{SHP}, \code{CML}).
@@ -181,7 +181,7 @@ validate_allocation_fibre_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_energy_allocation_work
+#' Validate inputs for calc_work_allocation_energy
 #'
 #' Ensures that inputs for the work energy allocation calculation
 #' are correctly typed and within valid ranges. Specifically:
@@ -201,7 +201,7 @@ validate_allocation_fibre_inputs <- function(
 #' \code{NA_real_}.
 #'
 #' This validator is designed for internal use in
-#' \code{\link{calc_energy_allocation_work}}.
+#' \code{\link{calc_work_allocation_energy}}.
 #'
 #' @param species_short Character scalar. Species code
 #'   (e.g., \code{CML} for camelids).

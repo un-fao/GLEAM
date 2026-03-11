@@ -1,4 +1,4 @@
-#' Validate inputs for run_herd_simulation
+#' Validate inputs for run_demographic_herd_module
 #'
 #' Validates that cohort_level_data and herd_level_data have the correct structure,
 #' required columns, and proper relationships between them.

@@ -33,17 +33,17 @@ CH4 remaining after mitigation, 1 = no mitigation).}
 \item{herd_level_data}{data.table. Herd-level master table (one row per herd).
 Must include \code{animal} (full species name, e.g. Cattle, Buffalo).}
 
-\item{feed_rations}{data.table. Feed ration shares by cohort (see \code{\link{run_feed_rations}}).}
+\item{feed_rations}{data.table. Feed ration shares by cohort (see \code{\link{run_ration_quality_module}}).}
 
-\item{feed_params}{data.table. Feed nutritional parameters (see \code{\link{run_feed_rations}}).}
+\item{feed_params}{data.table. Feed nutritional parameters (see \code{\link{run_ration_quality_module}}).}
 
-\item{feed_emissions}{data.table. Feed production emission factors (see \code{\link{run_feed_emissions}}).}
+\item{feed_emissions}{data.table. Feed production emission factors (see \code{\link{run_emissions_ration_module}}).}
 
 \item{manure_management_system_fraction}{data.table. Cohort-level manure management
-system fractions (see \code{\link{run_directemissions_manure}}).}
+system fractions (see \code{\link{run_emissions_manure_module}}).}
 
 \item{manure_management_system_factors}{data.table. Manure management
-system factors (see \code{\link{run_directemissions_manure}}).}
+system factors (see \code{\link{run_emissions_manure_module}}).}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days). Used by the herd
 simulation module (when \code{has_herd_structure} is FALSE) and by the production module
@@ -66,7 +66,7 @@ such as \code{growth_rate_herd}; otherwise returns the input
 \code{herd_level_data}.}
 \item{allocation_long}{Herd-level \code{data.table} in long format (one row
 per herd, emission variable, and commodity) with allocation shares.}
-\item{aggregation_results}{Named list from \code{\link{run_aggregation}} with herd-level
+\item{aggregation_results}{Named list from \code{\link{run_aggregation_module}} with herd-level
 totals: \code{results_emissions} (allocated emissions in kg CO₂eq),
 \code{results_feed}, \code{results_production}, \code{results_nitrogen}.}
 }

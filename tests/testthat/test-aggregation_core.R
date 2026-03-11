@@ -1,7 +1,7 @@
-# ---- test calc_totals_by_cohort ----
+# ---- test calc_cohort_totals ----
 
-test_that("calc_totals_by_cohort returns correct value for Production variables", {
-  result <- calc_totals_by_cohort(
+test_that("calc_cohort_totals returns correct value for Production variables", {
+  result <- calc_cohort_totals(
     value = 1000,
     cohort_stock_size = 50,
     simulation_duration = 365,
@@ -14,8 +14,8 @@ test_that("calc_totals_by_cohort returns correct value for Production variables"
   expect_equal(result, 1000)
 })
 
-test_that("calc_totals_by_cohort returns correct value for Emissions variables", {
-  result <- calc_totals_by_cohort(
+test_that("calc_cohort_totals returns correct value for Emissions variables", {
+  result <- calc_cohort_totals(
     value = 0.5,  # kg CH4/head/day
     cohort_stock_size = 100,   # 100 heads
     simulation_duration = 365,  # 365 days
@@ -28,8 +28,8 @@ test_that("calc_totals_by_cohort returns correct value for Emissions variables",
   expect_equal(result, 0.5 * 100 * 365)
 })
 
-test_that("calc_totals_by_cohort returns correct value for Feed variables", {
-  result <- calc_totals_by_cohort(
+test_that("calc_cohort_totals returns correct value for Feed variables", {
+  result <- calc_cohort_totals(
     value = 10,  # kg DMI/head/day
     cohort_stock_size = 30,
     simulation_duration = 365,
@@ -39,8 +39,8 @@ test_that("calc_totals_by_cohort returns correct value for Feed variables", {
   expect_equal(result, 10 * 30 * 365)
 })
 
-test_that("calc_totals_by_cohort returns correct value for NitrogenBalance variables", {
-  result <- calc_totals_by_cohort(
+test_that("calc_cohort_totals returns correct value for NitrogenBalance variables", {
+  result <- calc_cohort_totals(
     value = 0.2,  # kg N/head/day
     cohort_stock_size = 25,
     simulation_duration = 365,
@@ -50,8 +50,8 @@ test_that("calc_totals_by_cohort returns correct value for NitrogenBalance varia
   expect_equal(result, 0.2 * 25 * 365)
 })
 
-test_that("calc_totals_by_cohort handles vectorized inputs", {
-  result <- calc_totals_by_cohort(
+test_that("calc_cohort_totals handles vectorized inputs", {
+  result <- calc_cohort_totals(
     value = c(1000, 0.5, 10),
     cohort_stock_size = c(50, 100, 30),
     simulation_duration = c(365, 365, 365),
@@ -65,9 +65,9 @@ test_that("calc_totals_by_cohort handles vectorized inputs", {
   expect_equal(result[3], 10 * 30 * 365)  # Feed: scaled
 })
 
-test_that("calc_totals_by_cohort validates input lengths", {
+test_that("calc_cohort_totals validates input lengths", {
   expect_error(
-    calc_totals_by_cohort(
+    calc_cohort_totals(
       value = c(100, 200),
       cohort_stock_size = c(50, 100, 150),
       simulation_duration = 365,
@@ -77,9 +77,9 @@ test_that("calc_totals_by_cohort validates input lengths", {
   )
 })
 
-test_that("calc_totals_by_cohort validates variable_type", {
+test_that("calc_cohort_totals validates variable_type", {
   expect_error(
-    calc_totals_by_cohort(
+    calc_cohort_totals(
       value = 100,
       cohort_stock_size = 50,
       simulation_duration = 365,
@@ -89,9 +89,9 @@ test_that("calc_totals_by_cohort validates variable_type", {
   )
 })
 
-test_that("calc_totals_by_cohort validates bounds", {
+test_that("calc_cohort_totals validates bounds", {
   expect_error(
-    calc_totals_by_cohort(
+    calc_cohort_totals(
       value = -10,
       cohort_stock_size = 50,
       simulation_duration = 365,
@@ -100,7 +100,7 @@ test_that("calc_totals_by_cohort validates bounds", {
     "must be non-negative"
   )
   expect_error(
-    calc_totals_by_cohort(
+    calc_cohort_totals(
       value = 100,
       cohort_stock_size = 0,
       simulation_duration = 365,
@@ -109,7 +109,7 @@ test_that("calc_totals_by_cohort validates bounds", {
     "must be positive"
   )
   expect_error(
-    calc_totals_by_cohort(
+    calc_cohort_totals(
       value = 100,
       cohort_stock_size = 50,
       simulation_duration = -10,

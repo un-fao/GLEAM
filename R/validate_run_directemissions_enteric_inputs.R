@@ -1,4 +1,4 @@
-#' Validate inputs for run_directemissions_enteric
+#' Validate inputs for run_emissions_enteric_module
 #'
 #' Validates that cohort-level data has the correct structure, required columns,
 #' valid cohort and species codes, and exactly 6 cohorts per herd_id.
@@ -6,7 +6,7 @@
 #' @param data data.table. Cohort-level data with one row per herd x cohort.
 #'
 #' @noRd
-validate_run_directemissions_enteric_inputs <- function(data) {
+validate_run_emissions_enteric_module_inputs <- function(data) {
 
   # --- Basic type and structure checks ----------------------------------------
   if (!data.table::is.data.table(data)) {

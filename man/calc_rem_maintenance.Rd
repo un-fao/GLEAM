@@ -53,7 +53,7 @@ IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories
 from Livestock and Manure Management, Equation 10.14.
 }
 \seealso{
-\code{\link{calc_diet_digestibility}}
-\code{\link{calc_total_energy_requirement}}
-\code{\link{calc_dry_matter_intake}}
+\code{\link{calc_ration_digestibility}}
+\code{\link{calc_total_metabolic_energy_req}}
+\code{\link{calc_ration_intake}}
 }

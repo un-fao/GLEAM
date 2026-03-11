@@ -1,4 +1,4 @@
-#' Validate inputs for run_weights_calculations
+#' Validate inputs for run_weights_module
 #'
 #' Validates that cohort_level_data and herd_level_data have the correct structure,
 #' required columns, and proper relationships between them.

@@ -125,7 +125,7 @@ calc_feed_digestibility_fraction <- function(
 #'     \code{feed_ration_fraction * feed_digestibility_fraction_pigs}
 #' }
 #' @export
-calc_diet_digestibility <- function(
+calc_ration_digestibility <- function(
     species_short,
     feed_ration_fraction,
     feed_digestibility_fraction_ruminant = NA_real_,
@@ -195,7 +195,7 @@ calc_diet_digestibility <- function(
 #' }
 #'
 #' @export
-calc_diet_metabolizable_energy <- function(
+calc_ration_metabolizable_energy <- function(
     species_short,
     feed_ration_fraction,
     feed_metabolizable_energy_ruminant = NA_real_,
@@ -240,7 +240,7 @@ calc_diet_metabolizable_energy <- function(
 #' \deqn{diet\_gross\_energy = feed\_ration\_fraction \times feed\_gross\_energy}
 #'
 #' @export
-calc_diet_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
+calc_ration_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
   validate_diet_gross_energy_inputs(feed_ration_fraction, feed_gross_energy)
   # Contribution is ration composition share multiplied by gross energy content
   diet_gross_energy <- feed_ration_fraction * feed_gross_energy
@@ -264,7 +264,7 @@ calc_diet_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
 #' \deqn{diet\_nitrogen = feed\_ration\_fraction \times feed\_nitrogen\_content}
 #'
 #' @export
-calc_diet_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_content) {
+calc_ration_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_content) {
   validate_diet_nitrogen_inputs(feed_ration_fraction, feed_nitrogen_content)
   # Contribution is ration composition share multiplied by nitrogen content
   diet_nitrogen <- feed_ration_fraction * feed_nitrogen_content
@@ -317,7 +317,7 @@ calc_diet_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_conte
 #' as a separate fraction of gross energy.
 #'
 #' @export
-calc_urinary_energy_fraction <- function(
+calc_ration_urinary_energy_fraction <- function(
     species_short,
     feed_ration_fraction,
     feed_urinary_energy_ruminant = NA_real_,
@@ -363,7 +363,7 @@ calc_urinary_energy_fraction <- function(
 #' Ash content is expressed as a percentage (g/100g DM); the result is a fraction.
 #'
 #' @export
-calc_diet_ash <- function(feed_ration_fraction, feed_ash_content) {
+calc_ration_ash <- function(feed_ration_fraction, feed_ash_content) {
   validate_diet_ash_inputs(feed_ration_fraction, feed_ash_content)
 
   # Contribution is ration composition share multiplied by feed_ash_content

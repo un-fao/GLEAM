@@ -19,13 +19,13 @@
 #'   CH4 remaining after mitigation, 1 = no mitigation).
 #' @param herd_level_data data.table. Herd-level master table (one row per herd).
 #'   Must include \code{animal} (full species name, e.g. Cattle, Buffalo).
-#' @param feed_rations data.table. Feed ration shares by cohort (see \code{\link{run_feed_rations}}).
-#' @param feed_params data.table. Feed nutritional parameters (see \code{\link{run_feed_rations}}).
-#' @param feed_emissions data.table. Feed production emission factors (see \code{\link{run_feed_emissions}}).
+#' @param feed_rations data.table. Feed ration shares by cohort (see \code{\link{run_ration_quality_module}}).
+#' @param feed_params data.table. Feed nutritional parameters (see \code{\link{run_ration_quality_module}}).
+#' @param feed_emissions data.table. Feed production emission factors (see \code{\link{run_emissions_ration_module}}).
 #' @param manure_management_system_fraction data.table. Cohort-level manure management
-#'   system fractions (see \code{\link{run_directemissions_manure}}).
+#'   system fractions (see \code{\link{run_emissions_manure_module}}).
 #' @param manure_management_system_factors data.table. Manure management
-#'   system factors (see \code{\link{run_directemissions_manure}}).
+#'   system factors (see \code{\link{run_emissions_manure_module}}).
 #' @param simulation_duration Numeric. Length of the assessment period (days). Used by the herd
 #'   simulation module (when \code{has_herd_structure} is FALSE) and by the production module
 #'   (milk, fibre, meat). Defaults to \code{365}.
@@ -44,7 +44,7 @@
 #'       \code{herd_level_data}.}
 #'     \item{allocation_long}{Herd-level \code{data.table} in long format (one row
 #'       per herd, emission variable, and commodity) with allocation shares.}
-#'     \item{aggregation_results}{Named list from \code{\link{run_aggregation}} with herd-level
+#'     \item{aggregation_results}{Named list from \code{\link{run_aggregation_module}} with herd-level
 #'       totals: \code{results_emissions} (allocated emissions in kg CO₂eq),
 #'       \code{results_feed}, \code{results_production}, \code{results_nitrogen}.}
 #'   }
@@ -178,7 +178,7 @@ run_gleam <- function(
     gleam_chrt_data <- data.table::as.data.table(cohort_level_data)
     gleam_hrd_data <- data.table::as.data.table(herd_level_data)
   } else {
-    herd_results <- run_herd_simulation(
+    herd_results <- run_demographic_herd_module(
       cohort_level_data = cohort_level_data,
       herd_level_data = herd_level_data,
       simulation_duration = simulation_duration,
@@ -189,7 +189,7 @@ run_gleam <- function(
   }
 
   # --- Step 3: Run weights at cohort level ------------------------------------
-  weights_results <- run_weights_calculations(
+  weights_results <- run_weights_module(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = herd_level_data,
     show_indicator = show_indicator
@@ -198,7 +198,7 @@ run_gleam <- function(
   gleam_chrt_data <- weights_results$cohort_level_results
 
   # --- Step 4: Summarize feed rations and merge -------------------------------
-  feed_rations_summary <- run_feed_rations(
+  feed_rations_summary <- run_ration_quality_module(
     rations_share = feed_rations,
     feed_params = feed_params,
     show_indicator = show_indicator
@@ -211,7 +211,7 @@ run_gleam <- function(
   )
 
   # --- Step 5: Run energy requirements and DMI --------------------------------
-  gleam_chrt_data <- run_energy_requirements(
+  gleam_chrt_data <- run_metabolic_energy_req_module(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = herd_level_data,
     show_indicator = show_indicator
@@ -219,20 +219,20 @@ run_gleam <- function(
 
   # --- Step 6: Run enteric methane direct emissions ---------------------------
   # ch4_mitigation_factor is optional cohort-level input
-  gleam_chrt_data <- run_directemissions_enteric(
+  gleam_chrt_data <- run_emissions_enteric_module(
     cohort_level_data = gleam_chrt_data,
     show_indicator = show_indicator
   )
 
   # --- Step 7: Run nitrogen balance -------------------------------------------
-  gleam_chrt_data <- run_nitrogen_balance(
+  gleam_chrt_data <- run_nitrogen_balance_module(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = herd_level_data,
     show_indicator = show_indicator
   )
 
   # --- Step 8: Run direct emissions from manure management systems ------------
-  gleam_chrt_data <- run_directemissions_manure(
+  gleam_chrt_data <- run_emissions_manure_module(
     cohort_level_data = gleam_chrt_data,
     manure_management_system_fraction = manure_management_system_fraction,
     manure_management_system_factors = manure_management_system_factors,
@@ -240,7 +240,7 @@ run_gleam <- function(
   )
 
   # --- Step 9: Run feed emissions (diet-level emission factors) ---------------
-  feed_emissions_summary <- run_feed_emissions(
+  feed_emissions_summary <- run_emissions_ration_module(
     rations_share = feed_rations,
     feed_emissions = feed_emissions,
     show_indicator = show_indicator
@@ -252,7 +252,7 @@ run_gleam <- function(
   )
 
   # --- Step 10: Run production (milk, fibre, meat) at cohort level ------------
-  gleam_chrt_data <- run_production_cohort(
+  gleam_chrt_data <- run_production_module(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = herd_level_data,
     simulation_duration = simulation_duration,
@@ -260,7 +260,7 @@ run_gleam <- function(
   )
 
   # --- Step 11: Run allocation (energy allocation terms and commodity shares) -
-  allocation_results <- run_allocation(
+  allocation_results <- run_allocation_module(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = gleam_hrd_data,
     simulation_duration = simulation_duration,
@@ -269,7 +269,7 @@ run_gleam <- function(
   gleam_chrt_data <- allocation_results$cohort_allocation_inputs
 
   # --- Step 12: Run aggregation (herd-level totals, allocated emissions in CO₂eq) ----
-  aggregation_results <- run_aggregation(
+  aggregation_results <- run_aggregation_module(
     cohort_level_data = gleam_chrt_data,
     allocation_herd_long = allocation_results$allocation_long,
     simulation_duration = simulation_duration,

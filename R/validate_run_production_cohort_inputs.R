@@ -1,4 +1,4 @@
-#' Validate inputs for run_production_cohort
+#' Validate inputs for run_production_module
 #'
 #' Validates that cohort_level_data and herd_level_data have the correct structure,
 #' required columns, valid cohort values, and consistent herd_id linkage.
@@ -7,7 +7,7 @@
 #' @param herd_level_data data.table. Herd-level inputs (one row per herd).
 #'
 #' @noRd
-validate_run_production_cohort_inputs <- function(
+validate_run_production_module_inputs <- function(
     cohort_level_data,
     herd_level_data
 ) {

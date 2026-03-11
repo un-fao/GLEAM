@@ -21,7 +21,7 @@
 #' \deqn{diet\_co2\_feed\_fertilizer = feed\_ration\_fraction \times co2\_feed\_fertilizer}
 #' @export
 #'
-calc_diet_co2_feed_fertilizer <- function(
+calc_co2_ration_fertilizer <- function(
     feed_ration_fraction,
     co2_feed_fertilizer
 ) {
@@ -55,7 +55,7 @@ calc_diet_co2_feed_fertilizer <- function(
 #' \deqn{diet\_co2\_feed\_pesticides = feed\_ration\_fraction \times co2\_feed\_pesticides}
 #'
 #' @export
-calc_diet_co2_feed_pesticides <- function(
+calc_co2_ration_pesticides <- function(
     feed_ration_fraction,
     co2_feed_pesticides
 ) {
@@ -92,7 +92,7 @@ calc_diet_co2_feed_pesticides <- function(
 #'   feed\_ration\_fraction \times co2\_feed\_crop\_operations}
 #'
 #' @export
-calc_diet_co2_feed_crop_operations <- function(
+calc_co2_ration_crop_activities <- function(
     feed_ration_fraction,
     co2_feed_crop_operations
 ) {
@@ -127,7 +127,7 @@ calc_diet_co2_feed_crop_operations <- function(
 #' \deqn{diet\_co2\_feed\_luc\_nopeat = feed\_ration\_fraction \times co2\_feed\_luc\_nopeat}
 #'
 #' @export
-calc_diet_co2_feed_luc_nopeat <- function(
+calc_co2_ration_luc_nopeat <- function(
     feed_ration_fraction,
     co2_feed_luc_nopeat
 ) {
@@ -162,7 +162,7 @@ calc_diet_co2_feed_luc_nopeat <- function(
 #' \deqn{diet\_co2\_feed\_luc\_peat = feed\_ration\_fraction \times co2\_feed\_luc\_peat}
 #'
 #' @export
-calc_diet_co2_feed_luc_peat <- function(
+calc_co2_ration_luc_peat <- function(
     feed_ration_fraction,
     co2_feed_luc_peat
 ) {
@@ -197,7 +197,7 @@ calc_diet_co2_feed_luc_peat <- function(
 #' \deqn{diet\_n2o\_feed\_fertilizer = feed\_ration\_fraction \times n2o\_feed\_fertilizer}
 #'
 #' @export
-calc_diet_n2o_feed_fertilizer <- function(
+calc_n2o_ration_fertilizer <- function(
     feed_ration_fraction,
     n2o_feed_fertilizer
 ) {
@@ -233,7 +233,7 @@ calc_diet_n2o_feed_fertilizer <- function(
 #'   feed\_ration\_fraction \times n2o\_feed\_manure\_applied}
 #'
 #' @export
-calc_diet_n2o_feed_manure_applied <- function(
+calc_n2o_ration_manure <- function(
     feed_ration_fraction,
     n2o_feed_manure_applied
 ) {
@@ -269,7 +269,7 @@ calc_diet_n2o_feed_manure_applied <- function(
 #'   feed\_ration\_fraction \times n2o\_feed\_crop\_residues}
 #'
 #' @export
-calc_diet_n2o_feed_crop_residues <- function(
+calc_n2o_ration_crop_residues <- function(
     feed_ration_fraction,
     n2o_feed_crop_residues
 ) {
@@ -303,7 +303,7 @@ calc_diet_n2o_feed_crop_residues <- function(
 #' \deqn{diet\_ch4\_feed\_rice = feed\_ration\_fraction \times ch4\_feed\_rice}
 #'
 #' @export
-calc_diet_ch4_feed_rice <- function(
+calc_ch4_ration_rice <- function(
     feed_ration_fraction,
     ch4_feed_rice
 ) {

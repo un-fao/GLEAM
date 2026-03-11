@@ -1,7 +1,7 @@
-# ---- test calc_energy_allocation_milk ----
+# ---- test calc_milk_allocation_energy ----
 
-test_that("calc_energy_allocation_milk returns correct value for valid inputs", {
-  result <- calc_energy_allocation_milk(
+test_that("calc_milk_allocation_energy returns correct value for valid inputs", {
+  result <- calc_milk_allocation_energy(
     milk_production_fpcm_cohort = 100,
     milk_protein_fraction_standard = 0.033,
     milk_fat_fraction_standard = 0.04,
@@ -14,8 +14,8 @@ test_that("calc_energy_allocation_milk returns correct value for valid inputs", 
   expect_equal(result, energy_standard * 100)
 })
 
-test_that("calc_energy_allocation_milk handles zero milk output", {
-  result <- calc_energy_allocation_milk(
+test_that("calc_milk_allocation_energy handles zero milk output", {
+  result <- calc_milk_allocation_energy(
     milk_production_fpcm_cohort = 0,
     milk_protein_fraction_standard = 0.033,
     milk_fat_fraction_standard = 0.04,
@@ -25,9 +25,9 @@ test_that("calc_energy_allocation_milk handles zero milk output", {
   expect_equal(result, 0)
 })
 
-test_that("calc_energy_allocation_milk validates bounds", {
+test_that("calc_milk_allocation_energy validates bounds", {
   expect_error(
-    calc_energy_allocation_milk(
+    calc_milk_allocation_energy(
       milk_production_fpcm_cohort = -10,
       milk_protein_fraction_standard = 0.033,
       milk_fat_fraction_standard = 0.04,
@@ -36,7 +36,7 @@ test_that("calc_energy_allocation_milk validates bounds", {
     "is out of range"
   )
   expect_error(
-    calc_energy_allocation_milk(
+    calc_milk_allocation_energy(
       milk_production_fpcm_cohort = 100,
       milk_protein_fraction_standard = 1.5,
       milk_fat_fraction_standard = 0.04,
@@ -46,10 +46,10 @@ test_that("calc_energy_allocation_milk validates bounds", {
   )
 })
 
-# ---- test calc_energy_allocation_meat ----
+# ---- test calc_meat_allocation_energy ----
 
-test_that("calc_energy_allocation_meat returns correct value for cattle female", {
-  result <- calc_energy_allocation_meat(
+test_that("calc_meat_allocation_energy returns correct value for cattle female", {
+  result <- calc_meat_allocation_energy(
     species_short = "CTL",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 100,
@@ -65,8 +65,8 @@ test_that("calc_energy_allocation_meat returns correct value for cattle female",
   expect_equal(result, expected_specific * 100)
 })
 
-test_that("calc_energy_allocation_meat returns correct value for cattle male", {
-  result <- calc_energy_allocation_meat(
+test_that("calc_meat_allocation_energy returns correct value for cattle male", {
+  result <- calc_meat_allocation_energy(
     species_short = "CTL",
     cohort_short = "MA",
     meat_production_live_weight_cohort = 150,
@@ -80,8 +80,8 @@ test_that("calc_energy_allocation_meat returns correct value for cattle male", {
   # For CTL/MA: growth_efficiency_factor = 1
 })
 
-test_that("calc_energy_allocation_meat returns correct value for camelids", {
-  result <- calc_energy_allocation_meat(
+test_that("calc_meat_allocation_energy returns correct value for camelids", {
+  result <- calc_meat_allocation_energy(
     species_short = "CML",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 80,
@@ -97,8 +97,8 @@ test_that("calc_energy_allocation_meat returns correct value for camelids", {
   expect_equal(result, expected_specific * 80)
 })
 
-test_that("calc_energy_allocation_meat returns correct value for sheep female", {
-  result <- calc_energy_allocation_meat(
+test_that("calc_meat_allocation_energy returns correct value for sheep female", {
+  result <- calc_meat_allocation_energy(
     species_short = "SHP",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 20,
@@ -113,8 +113,8 @@ test_that("calc_energy_allocation_meat returns correct value for sheep female", 
   expect_equal(result, expected_specific * 20)
 })
 
-test_that("calc_energy_allocation_meat returns correct value for sheep male", {
-  result <- calc_energy_allocation_meat(
+test_that("calc_meat_allocation_energy returns correct value for sheep male", {
+  result <- calc_meat_allocation_energy(
     species_short = "SHP",
     cohort_short = "MA",
     meat_production_live_weight_cohort = 25,
@@ -129,8 +129,8 @@ test_that("calc_energy_allocation_meat returns correct value for sheep male", {
   expect_equal(result, expected_specific * 25)
 })
 
-test_that("calc_energy_allocation_meat returns correct value for goats", {
-  result <- calc_energy_allocation_meat(
+test_that("calc_meat_allocation_energy returns correct value for goats", {
+  result <- calc_meat_allocation_energy(
     species_short = "GTS",
     cohort_short = "FA",
     meat_production_live_weight_cohort = 15,
@@ -145,9 +145,9 @@ test_that("calc_energy_allocation_meat returns correct value for goats", {
   expect_equal(result, expected_specific * 15)
 })
 
-test_that("calc_energy_allocation_meat validates animal species", {
+test_that("calc_meat_allocation_energy validates animal species", {
   expect_error(
-    calc_energy_allocation_meat(
+    calc_meat_allocation_energy(
       species_short = "INVALID",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 100
@@ -156,9 +156,9 @@ test_that("calc_energy_allocation_meat validates animal species", {
   )
 })
 
-test_that("calc_energy_allocation_meat validates cohort codes", {
+test_that("calc_meat_allocation_energy validates cohort codes", {
   expect_error(
-    calc_energy_allocation_meat(
+    calc_meat_allocation_energy(
       species_short = "CTL",
       cohort_short = "INVALID",
       meat_production_live_weight_cohort = 100,
@@ -169,9 +169,9 @@ test_that("calc_energy_allocation_meat validates cohort codes", {
   )
 })
 
-test_that("calc_energy_allocation_meat validates weight bounds for non-PGS", {
+test_that("calc_meat_allocation_energy validates weight bounds for non-PGS", {
   expect_error(
-    calc_energy_allocation_meat(
+    calc_meat_allocation_energy(
       species_short = "CTL",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 100,
@@ -181,7 +181,7 @@ test_that("calc_energy_allocation_meat validates weight bounds for non-PGS", {
     "is out of range"
   )
   expect_error(
-    calc_energy_allocation_meat(
+    calc_meat_allocation_energy(
       species_short = "CTL",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 100,
@@ -192,9 +192,9 @@ test_that("calc_energy_allocation_meat validates weight bounds for non-PGS", {
   )
 })
 
-test_that("calc_energy_allocation_meat validates ratio_me_to_ne for CML only", {
+test_that("calc_meat_allocation_energy validates ratio_me_to_ne for CML only", {
   expect_error(
-    calc_energy_allocation_meat(
+    calc_meat_allocation_energy(
       species_short = "CML",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 80,
@@ -206,7 +206,7 @@ test_that("calc_energy_allocation_meat validates ratio_me_to_ne for CML only", {
   )
   # Non-CML: ratio_me_to_ne is not validated even if negative
   expect_no_error(
-    calc_energy_allocation_meat(
+    calc_meat_allocation_energy(
       species_short = "CTL",
       cohort_short = "FA",
       meat_production_live_weight_cohort = 100,
@@ -217,10 +217,10 @@ test_that("calc_energy_allocation_meat validates ratio_me_to_ne for CML only", {
   )
 })
 
-# ---- test calc_energy_allocation_fibre ----
+# ---- test calc_fibre_allocation_energy ----
 
-test_that("calc_energy_allocation_fibre returns correct value for sheep", {
-  result <- calc_energy_allocation_fibre(
+test_that("calc_fibre_allocation_energy returns correct value for sheep", {
+  result <- calc_fibre_allocation_energy(
     species_short = "SHP",
     cohort_stock_size = 100,
     energy_requirement_fibre_production = 5,
@@ -232,8 +232,8 @@ test_that("calc_energy_allocation_fibre returns correct value for sheep", {
   expect_equal(result, 5 * 365 * 100)
 })
 
-test_that("calc_energy_allocation_fibre returns correct value for goats", {
-  result <- calc_energy_allocation_fibre(
+test_that("calc_fibre_allocation_energy returns correct value for goats", {
+  result <- calc_fibre_allocation_energy(
     species_short = "GTS",
     cohort_stock_size = 100,
     energy_requirement_fibre_production = 4,
@@ -243,8 +243,8 @@ test_that("calc_energy_allocation_fibre returns correct value for goats", {
   expect_equal(result, 4 * 365 * 100)
 })
 
-test_that("calc_energy_allocation_fibre returns correct value for camelids", {
-  result <- calc_energy_allocation_fibre(
+test_that("calc_fibre_allocation_energy returns correct value for camelids", {
+  result <- calc_fibre_allocation_energy(
     species_short = "CML",
     cohort_stock_size = 100,
     energy_requirement_fibre_production = 6,
@@ -257,19 +257,19 @@ test_that("calc_energy_allocation_fibre returns correct value for camelids", {
   expect_equal(result, (6 / 2.33) * 365 * 100)
 })
 
-test_that("calc_energy_allocation_fibre returns zero for non-fibre species (no extra args needed)", {
-  expect_equal(calc_energy_allocation_fibre(species_short = "CTL"), 0)
-  expect_equal(calc_energy_allocation_fibre(species_short = "BFL"), 0)
-  expect_equal(calc_energy_allocation_fibre(species_short = "PGS"), 0)
+test_that("calc_fibre_allocation_energy returns zero for non-fibre species (no extra args needed)", {
+  expect_equal(calc_fibre_allocation_energy(species_short = "CTL"), 0)
+  expect_equal(calc_fibre_allocation_energy(species_short = "BFL"), 0)
+  expect_equal(calc_fibre_allocation_energy(species_short = "PGS"), 0)
 })
 
-test_that("calc_energy_allocation_fibre validates inputs", {
+test_that("calc_fibre_allocation_energy validates inputs", {
   expect_error(
-    calc_energy_allocation_fibre(species_short = "INVALID"),
+    calc_fibre_allocation_energy(species_short = "INVALID"),
     "must be one of"
   )
   expect_error(
-    calc_energy_allocation_fibre(
+    calc_fibre_allocation_energy(
       species_short = "SHP",
       cohort_stock_size = 100,
       energy_requirement_fibre_production = -5,
@@ -279,7 +279,7 @@ test_that("calc_energy_allocation_fibre validates inputs", {
   )
   # ratio_me_to_ne only validated for CML, not SHP
   expect_no_error(
-    calc_energy_allocation_fibre(
+    calc_fibre_allocation_energy(
       species_short = "SHP",
       cohort_stock_size = 100,
       energy_requirement_fibre_production = 5,
@@ -288,7 +288,7 @@ test_that("calc_energy_allocation_fibre validates inputs", {
     )
   )
   expect_error(
-    calc_energy_allocation_fibre(
+    calc_fibre_allocation_energy(
       species_short = "CML",
       cohort_stock_size = 100,
       energy_requirement_fibre_production = 5,
@@ -299,10 +299,10 @@ test_that("calc_energy_allocation_fibre validates inputs", {
   )
 })
 
-# ---- test calc_energy_allocation_work ----
+# ---- test calc_work_allocation_energy ----
 
-test_that("calc_energy_allocation_work returns correct value for camelids", {
-  result <- calc_energy_allocation_work(
+test_that("calc_work_allocation_energy returns correct value for camelids", {
+  result <- calc_work_allocation_energy(
     species_short = "CML",
     cohort_stock_size = 100,
     energy_requirement_work = 10,
@@ -316,8 +316,8 @@ test_that("calc_energy_allocation_work returns correct value for camelids", {
   expect_equal(result, (10 * 365 * 100) / 2.33)
 })
 
-test_that("calc_energy_allocation_work returns correct value for non-camelids (ratio_me_to_ne not needed)", {
-  result <- calc_energy_allocation_work(
+test_that("calc_work_allocation_energy returns correct value for non-camelids (ratio_me_to_ne not needed)", {
+  result <- calc_work_allocation_energy(
     species_short = "CTL",
     cohort_stock_size = 100,
     energy_requirement_work = 8,
@@ -329,8 +329,8 @@ test_that("calc_energy_allocation_work returns correct value for non-camelids (r
   expect_equal(result, 8 * 365 * 100)
 })
 
-test_that("calc_energy_allocation_work handles zero energy requirement", {
-  result <- calc_energy_allocation_work(
+test_that("calc_work_allocation_energy handles zero energy requirement", {
+  result <- calc_work_allocation_energy(
     species_short = "CTL",
     cohort_stock_size = 100,
     energy_requirement_work = 0,
@@ -340,9 +340,9 @@ test_that("calc_energy_allocation_work handles zero energy requirement", {
   expect_equal(result, 0)
 })
 
-test_that("calc_energy_allocation_work validates inputs", {
+test_that("calc_work_allocation_energy validates inputs", {
   expect_error(
-    calc_energy_allocation_work(
+    calc_work_allocation_energy(
       species_short = "INVALID",
       cohort_stock_size = 100,
       energy_requirement_work = 10,
@@ -351,7 +351,7 @@ test_that("calc_energy_allocation_work validates inputs", {
     "must be one of"
   )
   expect_error(
-    calc_energy_allocation_work(
+    calc_work_allocation_energy(
       species_short = "CTL",
       cohort_stock_size = 100,
       energy_requirement_work = -5,
@@ -360,7 +360,7 @@ test_that("calc_energy_allocation_work validates inputs", {
     "is out of range"
   )
   expect_error(
-    calc_energy_allocation_work(
+    calc_work_allocation_energy(
       species_short = "CTL",
       cohort_stock_size = 100,
       energy_requirement_work = 10,
@@ -370,7 +370,7 @@ test_that("calc_energy_allocation_work validates inputs", {
   )
   # ratio_me_to_ne only validated for CML
   expect_error(
-    calc_energy_allocation_work(
+    calc_work_allocation_energy(
       species_short = "CML",
       cohort_stock_size = 100,
       energy_requirement_work = 10,
@@ -380,7 +380,7 @@ test_that("calc_energy_allocation_work validates inputs", {
     "must be a positive numeric value"
   )
   expect_no_error(
-    calc_energy_allocation_work(
+    calc_work_allocation_energy(
       species_short = "CTL",
       cohort_stock_size = 100,
       energy_requirement_work = 10,

@@ -21,7 +21,7 @@ utils::globalVariables(c(
   "duration.MA", "duration.MJ", "duration.MS", "dwg", "female_birth_fraction", "fem_fec",
   "birth_fraction_female", "litter_size", "herd_size_total",
   "fecundity_female", "fecundity_male",
-  "herd_id", "has_all_cohorts", "missing_cohorts", "n_unique", "index", "N",  # Variables used in run_herd_simulation
+  "herd_id", "has_all_cohorts", "missing_cohorts", "n_unique", "index", "N",  # Variables used in run_demographic_herd_module
   "prob_growth.FA", "prob_growth.FB", "prob_growth.FC", "prob_growth.FJ", "prob_growth.FS",
   "prob_growth.MA", "prob_growth.MB", "prob_growth.MC", "prob_growth.MJ", "prob_growth.MS",
   "growth_rate_pop", "initial_weight", "litsize", "mal_fec", "mort_rate.FA",
@@ -44,7 +44,7 @@ utils::globalVariables(c(
   "cohort_stock_size", "offtake_heads", "offtake_heads_assessment", "growth_rate_herd",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
   "variable", "wkg", "variable_name", "offtake_number_assessment",
-  # Columns used in run_weights_calculations and validate_weights_inputs
+  # Columns used in run_weights_module and validate_weights_inputs
   "cohort", "cohort_short", "cohort_duration_days",
   "live_weight_female_adult", "live_weight_male_adult",
   "birth_weight", "slaughter_weight_female", "slaughter_weight_male", "weaning_weight",
@@ -54,7 +54,7 @@ utils::globalVariables(c(
 ))
 
 utils::globalVariables(c(
-  # Columns used in run_feed_rations
+  # Columns used in run_ration_quality_module
   "animal", "species_short", "cohort_short", "feed_id", "feed_name", "category", "feed_ration_fraction",
   "feed_gross_energy", "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
   "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
@@ -76,7 +76,7 @@ utils::globalVariables(c(
   "unique_mms_sets",
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations", "..cols_to_show",
-  # Columns used in run_directemissions_manure
+  # Columns used in run_emissions_manure_module
   "dmi", "n_excretion", "ef4", "ef5", "urinary_energy_fraction", "diet_ash",
   "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
   "mmsdaily", "mmssolid", "mmssolidcov", "mmssolidbulk", "mmssolidadd", "mmsdrylot",
@@ -111,7 +111,7 @@ utils::globalVariables(c(
   "x.milk_protein_fraction", "x.milk_fat_fraction", "x.milk_lactose_fraction",
   "x.milk_protein_fraction_standard", "x.milk_fat_fraction_standard", "x.milk_lactose_fraction_standard",
   "x.fibre_yield_year", "x.carcass_dressing_fraction", "x.bone_free_meat_fraction", "x.meat_protein_fraction",
-  # Columns used in run_feed_emissions and validate_feed_emissions_inputs
+  # Columns used in run_emissions_ration_module and validate_feed_emissions_inputs
   "ch4_feed_rice", "co2_feed_crop_operations", "co2_feed_fertilizer", "co2_feed_luc_nopeat",
   "co2_feed_luc_peat", "co2_feed_pesticides",
   "diet_ch4_feed_rice", "diet_co2_feed_crop_operations", "diet_co2_feed_fertilizer",
@@ -136,13 +136,13 @@ utils::globalVariables(c(
 ))
 
 utils::globalVariables(c(
-  # Columns created by update joins in run_weights_calculations
+  # Columns created by update joins in run_weights_module
   "x.live_weight_female_adult", "x.live_weight_male_adult", "x.birth_weight",
   "x.slaughter_weight_female", "x.slaughter_weight_male", "x.weaning_weight"
 ))
 
 utils::globalVariables(c(
-  # Columns used in run_energy_requirements (cohort-level and results)
+  # Columns used in run_metabolic_energy_req_module (cohort-level and results)
   "cohort_short", "live_weight_cohort_average", "offtake_rate", "low_activity_fraction", "high_activity_fraction",
   "live_weight_cohort_initial", "live_weight_cohort_final", "mature_weight", "daily_weight_gain", "cohort_duration_days",
   "diet_digestibility_fraction", "diet_gross_energy", "diet_metabolizable_energy",
@@ -168,7 +168,7 @@ utils::globalVariables(c(
   # Columns used in indirectemissions feed
   "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
   "feed_emissions_kgGas", "feed_share",
-  # Columns added by run_directemissions_enteric
+  # Columns added by run_emissions_enteric_module
   "ch4_enteric", "ch4_mitigation_factor", "ch4_conversion_factor_ym",
   "species_short", "cohort_short", "diet_digestibility_fraction",
   "diet_gross_energy", "dry_matter_intake",

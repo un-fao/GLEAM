@@ -1,4 +1,4 @@
-#' Validate inputs for calc_diet_digestibility
+#' Validate inputs for calc_ration_digestibility
 #'
 #' @noRd
 validate_diet_digestibility_inputs <- function(
@@ -58,7 +58,7 @@ validate_diet_digestibility_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_diet_metabolizable_energy
+#' Validate inputs for calc_ration_metabolizable_energy
 #'
 #' @noRd
 validate_diet_metabolizable_energy_inputs <- function(
@@ -146,7 +146,7 @@ validate_feed_digestibility_inputs <- function(
   validate_param_range(feed_gross_energy)
 }
 
-#' Validate inputs for calc_diet_gross_energy
+#' Validate inputs for calc_ration_gross_energy
 #'
 #' @noRd
 validate_diet_gross_energy_inputs <- function(feed_ration_fraction, feed_gross_energy) {
@@ -159,7 +159,7 @@ validate_diet_gross_energy_inputs <- function(feed_ration_fraction, feed_gross_e
   validate_param_range(feed_gross_energy)
 }
 
-#' Validate inputs for calc_diet_nitrogen_content
+#' Validate inputs for calc_ration_nitrogen_content
 #'
 #' @noRd
 validate_diet_nitrogen_inputs <- function(feed_ration_fraction, feed_nitrogen_content) {
@@ -172,7 +172,7 @@ validate_diet_nitrogen_inputs <- function(feed_ration_fraction, feed_nitrogen_co
   validate_param_range(feed_nitrogen_content)
 }
 
-#' Validate inputs for calc_urinary_energy_fraction
+#' Validate inputs for calc_ration_urinary_energy_fraction
 #'
 #' @noRd
 validate_urinary_energy_inputs <- function(
@@ -229,7 +229,7 @@ validate_urinary_energy_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_diet_ash
+#' Validate inputs for calc_ration_ash
 #'
 #' @noRd
 validate_diet_ash_inputs <- function(feed_ration_fraction, feed_ash_content) {

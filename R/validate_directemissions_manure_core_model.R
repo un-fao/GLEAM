@@ -126,10 +126,10 @@ validate_mms_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_total_n2o_emissions
+#' Validate inputs for calc_n2o_manure_total
 #'
 #' @noRd
-validate_calc_total_n2o_emissions <- function(
+validate_calc_n2o_manure_total <- function(
     n2o_vol_manure_pasture,
     n2o_leach_manure_pasture,
     n2o_vol_manure_burned,

@@ -100,7 +100,7 @@
 #' Equation 10.
 #' @export
 
-compute_milk_outputs <- function(
+calc_milk_production <- function(
     species_short,  
     cohort_short,
     milk_yield_day,
@@ -214,7 +214,7 @@ compute_milk_outputs <- function(
 #' of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}).
 #'
 #' @export
-compute_fibre_output <- function(
+calc_fibre_production <- function(
     species_short,
     cohort_short,
     fibre_yield_year,
@@ -297,11 +297,11 @@ compute_fibre_output <- function(
 #' }
 #' 
 #' @seealso
-#' \code{\link{run_herd_simulation}}
-#' \code{\link{run_weights_calculations}}
+#' \code{\link{run_demographic_herd_module}}
+#' \code{\link{run_weights_module}}
 #'
 #' @export
-compute_meat_outputs <- function(
+calc_meat_production <- function(
     offtake_heads_assessment,
     slaughter_weight_cohort,
     carcass_dressing_fraction,

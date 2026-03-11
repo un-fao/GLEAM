@@ -79,11 +79,11 @@ be used to derive allocation factors among co-products.
 This function calculates biophysical allocation fractions for commodities
 (meat, milk, fibre, work, eggs) for all species. The allocation is based on
 commodity-specific energy requirements calculated using
-\code{\link{calc_energy_allocation_meat}},
-\code{\link{calc_energy_allocation_milk}},
-\code{\link{calc_energy_allocation_fibre}},
-\code{\link{calc_energy_allocation_work}}, and
-\code{calc_energy_allocation_eggs}.
+\code{\link{calc_meat_allocation_energy}},
+\code{\link{calc_milk_allocation_energy}},
+\code{\link{calc_fibre_allocation_energy}},
+\code{\link{calc_work_allocation_energy}}, and
+\code{calc_eggs_allocation_energy}.
 
 \strong{Pig systems (\code{PGS}).} For pigs, allocation is not based on energy
 partitioning because pig production is treated as functionally single-output
@@ -118,9 +118,9 @@ supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 and Performance (LEAP) Partnership. FAO, Rome, Italy.
 }
 \seealso{
-\code{\link{calc_energy_allocation_meat}},
-\code{\link{calc_energy_allocation_milk}},
-\code{\link{calc_energy_allocation_fibre}},
-\code{\link{calc_energy_allocation_work}},
-\code{calc_energy_allocation_eggs}
+\code{\link{calc_meat_allocation_energy}},
+\code{\link{calc_milk_allocation_energy}},
+\code{\link{calc_fibre_allocation_energy}},
+\code{\link{calc_work_allocation_energy}},
+\code{calc_eggs_allocation_energy}
 }

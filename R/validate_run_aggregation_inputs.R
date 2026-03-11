@@ -1,4 +1,4 @@
-#' Validate inputs for run_aggregation
+#' Validate inputs for run_aggregation_module
 #'
 #' Validates that cohort_level_data and allocation_herd_long have the expected
 #' structure, required columns, and consistent herd_id linkage.
@@ -9,7 +9,7 @@
 #' @param global_warming_potential_set Character. GWP-100 option for CO2eq conversion.
 #'
 #' @noRd
-validate_run_aggregation_inputs <- function(
+validate_run_aggregation_module_inputs <- function(
     cohort_level_data,
     allocation_herd_long,
     simulation_duration,
