@@ -111,10 +111,10 @@ validate_run_gleam_inputs <- function(
     "milk_allocation_energy", "meat_allocation_energy", "fibre_allocation_energy",
     "work_allocation_energy", "egg_allocation_energy",
     # Feed emissions (cohort-level diet emission factors)
-    "diet_co2_feed_fertilizer", "diet_co2_feed_pesticides",
-    "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
-    "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues",
-    "diet_ch4_feed_rice",
+    "co2_ration_fertilizer", "co2_ration_pesticides",
+    "co2_ration_crop_activities", "co2_ration_luc_nopeat", "co2_ration_luc_peat",
+    "n2o_ration_fertilizer", "n2o_ration_manure_applied", "n2o_ration_crop_residues",
+    "ch4_ration_rice",
     # Energy requirements (cohort)
     "metabolic_energy_req_maintenance", "metabolic_energy_req_activity", "metabolic_energy_req_growth",
     "metabolic_energy_req_lactation", "metabolic_energy_req_work",

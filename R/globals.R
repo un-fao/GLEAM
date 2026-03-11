@@ -114,9 +114,9 @@ utils::globalVariables(c(
   # Columns used in run_emissions_ration_module and validate_feed_emissions_inputs
   "ch4_feed_rice", "co2_feed_crop_operations", "co2_feed_fertilizer", "co2_feed_luc_nopeat",
   "co2_feed_luc_peat", "co2_feed_pesticides",
-  "diet_ch4_feed_rice", "diet_co2_feed_crop_operations", "diet_co2_feed_fertilizer",
-  "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat", "diet_co2_feed_pesticides",
-  "diet_n2o_feed_crop_residues", "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied",
+  "ch4_ration_rice", "co2_ration_crop_activities", "co2_ration_fertilizer",
+  "co2_ration_luc_nopeat", "co2_ration_luc_peat", "co2_ration_pesticides",
+  "n2o_ration_crop_residues", "n2o_ration_fertilizer", "n2o_ration_manure_applied",
   "n2o_feed_crop_residues", "n2o_feed_fertilizer", "n2o_feed_manure_applied",
   "feed_name_emissions", "feed_name_input", "n_ids",
   # data.table join prefixes used in run_allocation and run_aggregation

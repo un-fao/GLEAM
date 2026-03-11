@@ -247,17 +247,17 @@ run_aggregation_module <- function(
     list(emissions_source = "n2o_manure_pasture_indirect", label = "ManureIndirect-Pasture_N2O"),
     list(emissions_source = "n2o_manure_other_indirect", label = "ManureIndirect-Other_N2O"),
 
-    list(emissions_source = "diet_co2_feed_fertilizer", label = "Feed-Fertilizer_CO2"),
-    list(emissions_source = "diet_co2_feed_pesticides", label = "Feed-Pesticides_CO2"),
-    list(emissions_source = "diet_co2_feed_crop_operations", label = "Feed-CropOperations_CO2"),
-    list(emissions_source = "diet_co2_feed_luc_nopeat", label = "Feed-LandUseChange_CO2"),
-    list(emissions_source = "diet_co2_feed_luc_peat", label = "Feed-PeatDrainage_CO2"),
+    list(emissions_source = "co2_ration_fertilizer", label = "Feed-Fertilizer_CO2"),
+    list(emissions_source = "co2_ration_pesticides", label = "Feed-Pesticides_CO2"),
+    list(emissions_source = "co2_ration_crop_activities", label = "Feed-CropOperations_CO2"),
+    list(emissions_source = "co2_ration_luc_nopeat", label = "Feed-LandUseChange_CO2"),
+    list(emissions_source = "co2_ration_luc_peat", label = "Feed-PeatDrainage_CO2"),
 
-    list(emissions_source = "diet_n2o_feed_fertilizer", label = "Feed-Fertilizer_N2O"),
-    list(emissions_source = "diet_n2o_feed_manure_applied", label = "Feed-ManureApplication_N2O"),
-    list(emissions_source = "diet_n2o_feed_crop_residues", label = "Feed-CropResidues_N2O"),
+    list(emissions_source = "n2o_ration_fertilizer", label = "Feed-Fertilizer_N2O"),
+    list(emissions_source = "n2o_ration_manure_applied", label = "Feed-ManureApplication_N2O"),
+    list(emissions_source = "n2o_ration_crop_residues", label = "Feed-CropResidues_N2O"),
 
-    list(emissions_source = "diet_ch4_feed_rice", label = "Feed-Rice_CH4")
+    list(emissions_source = "ch4_ration_rice", label = "Feed-Rice_CH4")
   )
   emissions_vars <- sapply(emissions_list, `[[`, "emissions_source")
 

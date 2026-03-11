@@ -750,9 +750,9 @@ calc_allocation_shares <- function(
 #' @param emissions_vars Character. Names of emission variables to which allocation should be applied (e.g.,
 #' "ch4_enteric","ch4_manure_pasture","ch4_manure_burned","ch4_manure_other",
 #' "n2o_manure_pasture_direct","n2o_manure_burned_direct","n2o_manure_other_direct",
-#' "n2o_manure_burned_indirect","n2o_manure_pasture_indirect","n2o_manure_other_indirect", "diet_co2_feed_fertilizer",
-#' "diet_co2_feed_pesticides", "diet_co2_feed_crop_operations", "diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
-#' "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues", "diet_ch4_feed_rice").
+#' "n2o_manure_burned_indirect","n2o_manure_pasture_indirect","n2o_manure_other_indirect", "co2_ration_fertilizer",
+#' "co2_ration_pesticides", "co2_ration_crop_activities", "co2_ration_luc_nopeat", "co2_ration_luc_peat",
+#' "n2o_ration_fertilizer", "n2o_ration_manure_applied", "n2o_ration_crop_residues", "ch4_ration_rice").
 #' @param commodities Character. List of commodity categories to which emissions may be allocated.
 #' List=c("None","Milk","Meat","Fibre","Work","Eggs").
 #' @param non_allocated_emission_sources Character. Emission variables that should not be allocated
