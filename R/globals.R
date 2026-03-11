@@ -119,7 +119,7 @@ utils::globalVariables(c(
   "diet_n2o_feed_crop_residues", "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied",
   "n2o_feed_crop_residues", "n2o_feed_fertilizer", "n2o_feed_manure_applied",
   "feed_name_emissions", "feed_name_input", "n_ids",
-  # data.table join prefixes used in run_allocation
+  # data.table join prefixes used in run_allocation and run_aggregation
   "i.animal", "i.species_short", "x.ratio_me_to_ne"
 ))
 
@@ -173,10 +173,11 @@ utils::globalVariables(c(
   "species_short", "cohort_short", "diet_digestibility_fraction",
   "diet_gross_energy", "dry_matter_intake",
   # Columns used in run_aggregation
-  "value", "value_total", "value_allocated", "value_allocated_co2e", "gwp_factor",
+  "value", "value_total", "value_total_kgGas", "value_total_allocated_kgGas",
+  "value_allocated", "value_allocated_co2e", "gwp_factor",
   "variable_type", "variable_name", "unit", "gas", "allocation_share",
-  "allocation_type", "commodity_name", "commodity_type",
-  "assessment_duration"  # Variable used in run_aggregation
+  "commodity_name", "commodity_type",
+  "assessment_duration", "simulation_duration", "cohort_stock_size"  # run_aggregation and herd_simulation
 ))
 
 # Add species abbreviations

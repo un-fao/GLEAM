@@ -3,8 +3,8 @@
 test_that("calc_totals_by_cohort returns correct value for Production variables", {
   result <- calc_totals_by_cohort(
     value = 1000,
-    size = 50,
-    assessment_duration = 365,
+    cohort_stock_size = 50,
+    simulation_duration = 365,
     variable_type = "Production"
   )
 
@@ -17,22 +17,22 @@ test_that("calc_totals_by_cohort returns correct value for Production variables"
 test_that("calc_totals_by_cohort returns correct value for Emissions variables", {
   result <- calc_totals_by_cohort(
     value = 0.5,  # kg CH4/head/day
-    size = 100,   # 100 heads
-    assessment_duration = 365,  # 365 days
+    cohort_stock_size = 100,   # 100 heads
+    simulation_duration = 365,  # 365 days
     variable_type = "Emissions"
   )
 
   expect_type(result, "double")
   expect_length(result, 1)
-  # Emissions: value * size * assessment_duration
+  # Emissions: value * cohort_stock_size * simulation_duration
   expect_equal(result, 0.5 * 100 * 365)
 })
 
 test_that("calc_totals_by_cohort returns correct value for Feed variables", {
   result <- calc_totals_by_cohort(
     value = 10,  # kg DMI/head/day
-    size = 30,
-    assessment_duration = 365,
+    cohort_stock_size = 30,
+    simulation_duration = 365,
     variable_type = "Feed"
   )
 
@@ -42,8 +42,8 @@ test_that("calc_totals_by_cohort returns correct value for Feed variables", {
 test_that("calc_totals_by_cohort returns correct value for NitrogenBalance variables", {
   result <- calc_totals_by_cohort(
     value = 0.2,  # kg N/head/day
-    size = 25,
-    assessment_duration = 365,
+    cohort_stock_size = 25,
+    simulation_duration = 365,
     variable_type = "NitrogenBalance"
   )
 
@@ -53,8 +53,8 @@ test_that("calc_totals_by_cohort returns correct value for NitrogenBalance varia
 test_that("calc_totals_by_cohort handles vectorized inputs", {
   result <- calc_totals_by_cohort(
     value = c(1000, 0.5, 10),
-    size = c(50, 100, 30),
-    assessment_duration = c(365, 365, 365),
+    cohort_stock_size = c(50, 100, 30),
+    simulation_duration = c(365, 365, 365),
     variable_type = c("Production", "Emissions", "Feed")
   )
 
@@ -69,8 +69,8 @@ test_that("calc_totals_by_cohort validates input lengths", {
   expect_error(
     calc_totals_by_cohort(
       value = c(100, 200),
-      size = c(50, 100, 150),
-      assessment_duration = 365,
+      cohort_stock_size = c(50, 100, 150),
+      simulation_duration = 365,
       variable_type = "Production"
     ),
     "must have the same length"
@@ -81,8 +81,8 @@ test_that("calc_totals_by_cohort validates variable_type", {
   expect_error(
     calc_totals_by_cohort(
       value = 100,
-      size = 50,
-      assessment_duration = 365,
+      cohort_stock_size = 50,
+      simulation_duration = 365,
       variable_type = "Invalid"
     ),
     "must be one of"
@@ -93,8 +93,8 @@ test_that("calc_totals_by_cohort validates bounds", {
   expect_error(
     calc_totals_by_cohort(
       value = -10,
-      size = 50,
-      assessment_duration = 365,
+      cohort_stock_size = 50,
+      simulation_duration = 365,
       variable_type = "Emissions"
     ),
     "must be non-negative"
@@ -102,8 +102,8 @@ test_that("calc_totals_by_cohort validates bounds", {
   expect_error(
     calc_totals_by_cohort(
       value = 100,
-      size = 0,
-      assessment_duration = 365,
+      cohort_stock_size = 0,
+      simulation_duration = 365,
       variable_type = "Emissions"
     ),
     "must be positive"
@@ -111,8 +111,8 @@ test_that("calc_totals_by_cohort validates bounds", {
   expect_error(
     calc_totals_by_cohort(
       value = 100,
-      size = 50,
-      assessment_duration = -10,
+      cohort_stock_size = 50,
+      simulation_duration = -10,
       variable_type = "Emissions"
     ),
     "must be positive"
@@ -201,7 +201,7 @@ test_that("calc_co2eq returns correct value for CH4 with AR6", {
   result <- calc_co2eq(
     gas = "CH4",
     value_allocated = 100,  # kg CH4
-    gwp = "AR6"
+    global_warming_potential_set = "AR6"
   )
 
   expect_type(result, "list")
@@ -214,7 +214,7 @@ test_that("calc_co2eq returns correct value for N2O with AR6", {
   result <- calc_co2eq(
     gas = "N2O",
     value_allocated = 10,  # kg N2O
-    gwp = "AR6"
+    global_warming_potential_set = "AR6"
   )
 
   expect_equal(result$value_co2e, 10 * 273)  # AR6: N2O = 273
@@ -225,7 +225,7 @@ test_that("calc_co2eq returns correct value for CO2", {
   result <- calc_co2eq(
     gas = "CO2",
     value_allocated = 1000,  # kg CO2
-    gwp = "AR6"
+    global_warming_potential_set = "AR6"
   )
 
   expect_equal(result$value_co2e, 1000 * 1)  # CO2 always = 1
@@ -236,7 +236,7 @@ test_that("calc_co2eq handles AR5_excluding_carbon_feedback", {
   result_ch4 <- calc_co2eq(
     gas = "CH4",
     value_allocated = 100,
-    gwp = "AR5_excluding_carbon_feedback"
+    global_warming_potential_set = "AR5_excluding_carbon_feedback"
   )
   expect_equal(result_ch4$value_co2e, 100 * 28)
   expect_equal(result_ch4$gwp, 28)
@@ -244,7 +244,7 @@ test_that("calc_co2eq handles AR5_excluding_carbon_feedback", {
   result_n2o <- calc_co2eq(
     gas = "N2O",
     value_allocated = 10,
-    gwp = "AR5_excluding_carbon_feedback"
+    global_warming_potential_set = "AR5_excluding_carbon_feedback"
   )
   expect_equal(result_n2o$value_co2e, 10 * 265)
   expect_equal(result_n2o$gwp, 265)
@@ -254,7 +254,7 @@ test_that("calc_co2eq handles AR5_including_carbon_feedback", {
   result_ch4 <- calc_co2eq(
     gas = "CH4",
     value_allocated = 100,
-    gwp = "AR5_including_carbon_feedback"
+    global_warming_potential_set = "AR5_including_carbon_feedback"
   )
   expect_equal(result_ch4$value_co2e, 100 * 34)
   expect_equal(result_ch4$gwp, 34)
@@ -262,7 +262,7 @@ test_that("calc_co2eq handles AR5_including_carbon_feedback", {
   result_n2o <- calc_co2eq(
     gas = "N2O",
     value_allocated = 10,
-    gwp = "AR5_including_carbon_feedback"
+    global_warming_potential_set = "AR5_including_carbon_feedback"
   )
   expect_equal(result_n2o$value_co2e, 10 * 298)
   expect_equal(result_n2o$gwp, 298)
@@ -272,7 +272,7 @@ test_that("calc_co2eq handles AR4", {
   result_ch4 <- calc_co2eq(
     gas = "CH4",
     value_allocated = 100,
-    gwp = "AR4"
+    global_warming_potential_set = "AR4"
   )
   expect_equal(result_ch4$value_co2e, 100 * 25)
   expect_equal(result_ch4$gwp, 25)
@@ -280,7 +280,7 @@ test_that("calc_co2eq handles AR4", {
   result_n2o <- calc_co2eq(
     gas = "N2O",
     value_allocated = 10,
-    gwp = "AR4"
+    global_warming_potential_set = "AR4"
   )
   expect_equal(result_n2o$value_co2e, 10 * 298)
   expect_equal(result_n2o$gwp, 298)
@@ -290,7 +290,7 @@ test_that("calc_co2eq handles vectorized inputs", {
   result <- calc_co2eq(
     gas = c("CH4", "N2O", "CO2"),
     value_allocated = c(100, 10, 1000),
-    gwp = "AR6"
+    global_warming_potential_set = "AR6"
   )
 
   expect_type(result, "list")
@@ -304,7 +304,7 @@ test_that("calc_co2eq handles zero emissions", {
   result <- calc_co2eq(
     gas = "CH4",
     value_allocated = 0,
-    gwp = "AR6"
+    global_warming_potential_set = "AR6"
   )
 
   expect_equal(result$value_co2e, 0)
@@ -316,7 +316,7 @@ test_that("calc_co2eq validates GWP version", {
     calc_co2eq(
       gas = "CH4",
       value_allocated = 100,
-      gwp = "INVALID"
+      global_warming_potential_set = "INVALID"
     ),
     "must be one of"
   )
@@ -327,7 +327,7 @@ test_that("calc_co2eq validates input lengths", {
     calc_co2eq(
       gas = c("CH4", "N2O"),
       value_allocated = c(100, 10, 50),
-      gwp = "AR6"
+      global_warming_potential_set = "AR6"
     ),
     "must have the same length"
   )
@@ -338,7 +338,7 @@ test_that("calc_co2eq validates gas types", {
     calc_co2eq(
       gas = "INVALID",
       value_allocated = 100,
-      gwp = "AR6"
+      global_warming_potential_set = "AR6"
     ),
     "must be one of"
   )
@@ -349,7 +349,7 @@ test_that("calc_co2eq validates value_allocated bounds", {
     calc_co2eq(
       gas = "CH4",
       value_allocated = -10,
-      gwp = "AR6"
+      global_warming_potential_set = "AR6"
     ),
     "must be non-negative"
   )

@@ -4,7 +4,7 @@
 \alias{calc_co2eq}
 \title{Convert CH4 and N2O Emissions to CO2-Equivalents Using GWP Factors}
 \usage{
-calc_co2eq(gas, value_allocated, gwp)
+calc_co2eq(gas, value_allocated, global_warming_potential_set)
 }
 \arguments{
 \item{gas}{Character vector. Gas type for each observation. Supported values:
@@ -17,7 +17,7 @@ calc_co2eq(gas, value_allocated, gwp)
 \item{value_allocated}{Numeric vector. Emission values expressed in kg of gas
 (e.g., kg CH4, kg N2O, or kg CO2). Must be the same length as \code{gas}.}
 
-\item{gwp}{Character scalar specifying the 100-year Global Warming Potential
+\item{global_warming_potential_set}{Character scalar specifying the 100-year Global Warming Potential
 (GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
 Must be one of:
 \itemize{

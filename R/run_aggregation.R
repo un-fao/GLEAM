@@ -15,9 +15,9 @@
 #'     format using \code{data.table::melt()}.
 #'   \item \strong{Classify variables.} Group variables into Emissions, Production, Feed, Nitrogen Balance.
 #'   \item \strong{Scale to totals.} Variables expressed per head per day are converted to cohort totals
-#'     over the assessment period using cohort size (\code{size}) and \code{assessment_duration}.
+#'     over the assessment period using \code{cohort_stock_size} and \code{simulation_duration}.
 #'   \item \strong{Aggregate to herd level.} Cohort totals are summed to herd totals within each
-#'     \code{herd_id × Animal_short} group.
+#'     \code{herd_id × species_short} group.
 #'   \item \strong{Merge allocation data:} Combine emissions with allocation shares.
 #'   \item \strong{Allocate emissions.} Emission totals are merged with
 #'     \code{allocation_herd_long} and multiplied by \code{allocation_share} to obtain
@@ -30,27 +30,27 @@
 #'
 #'
 #'
-#' @param data_cohort A `data.table` containing cohort-level data with all
+#' @param cohort_level_data A `data.table` containing cohort-level data with all
 #'   calculated variables. Must include:
 #'   \describe{
-#'     \item{**Feed variables**:}{`dmi` (dry matter intake)}
+#'     \item{**Feed variables**:}{`dry_matter_intake` (kg DM/head/day)}
 #'     \item{**Nitrogen balance**:}{`nitrogen_intake`, `nitrogen_retention`, `nitrogen_excretion`}
 #'     \item{**Production**:}{`milk_production_*_cohort`, `meat_production_*_cohort`, `fibre_production_cohort`}
 #'     \item{**Emissions**:}{`ch4_enteric`, `ch4_manure_*`, `direct_n2o_manure_*`,
 #'       `indirect_n2o_manure_*`}
 #'   }
-#'   Required grouping columns: `herd_id`, `Animal_short`,
-#'    `cohort`, `assessment_duration`, `size`.
+#'   Required grouping columns: `herd_id`, `animal` (full species name, e.g. Cattle, Buffalo;
+#'   mapped to \code{species_short} internally), `cohort_short`, \code{cohort_stock_size}.
 #'
 #' @param allocation_herd_long A `data.table` in long format, typically the
 #'   output of [run_allocation()]. Must include columns:
 #'   \describe{
-#'     \item{**Grouping**:}{`herd_id`, `Animal_short`}
+#'     \item{**Grouping**:}{`herd_id`, `species_short`}
 #'     \item{**Allocation**:}{`commodity_name` (e.g., "Meat", "Milk", "Fibre"),
-#'       `allocation_share` (numeric, 0-1), `allocation_type` (character)}
+#'       `allocation_share` (numeric, 0-1)}
 #'     \item{**Emission source**:}{`variable_name` (emission variable names)}
 #'   }
-#' @param gwp Character scalar specifying the 100-year Global Warming Potential
+#' @param global_warming_potential_set Character scalar specifying the 100-year Global Warming Potential
 #'   (GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
 #'   Must be one of:
 #'   \itemize{
@@ -61,10 +61,12 @@
 #'       (including climate–carbon feedbacks) — CH₄ = 34, N₂O = 298
 #'     \item \code{"AR4"}: IPCC Fourth Assessment Report — CH₄ = 25, N₂O = 298
 #'   }
+#' @param simulation_duration Numeric. Length of the assessment period (days). Used to
+#'   scale per-head-per-day variables to cohort totals. Defaults to \code{365}.
 #'
 #' @return A named list containing:
 #' \describe{
-#'   \item{`data_cohort`}{The raw cohort-level input data and results.}
+#'   \item{`cohort_level_results`}{The raw cohort-level input data and results.}
 #'   \item{`results_herd`}{A `data.table` in long format with:
 #'     \itemize{
 #'       \item Allocated emissions (already converted in kgCO2eq)
@@ -73,14 +75,38 @@
 #'       \item Standardized variable names and units
 #'       \item Commodity classifications and allocation metadata
 #'     }
-#'     Columns include: `herd_id`, `Animal_short`,
-#'     `cohort` (set to "ALL"), `variable_type`, `variable_name`, `unit`, `gas`,
-#'     `gwp`, `allocation_type`, `allocation_share`, `commodity_type`, `commodity_name`,
+#'     Columns include: `herd_id`, `species_short`,
+#'     `cohort_short` (set to "ALL"), `variable_type`, `variable_name`, `unit`, `gas`,
+#'     `gwp`, `allocation_share`, `commodity_type`, `commodity_name`,
 #'     `value_total`.
 #'   }
 #' }
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load cohort-level aggregation input
+#' aggregation_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/aggregation_input_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#'
+#' # Load allocation shares (herd-level, long format)
+#' allocation_long <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/aggregation_allocation_input_data.csv",
+#'   package = "gleam"
+#' ))
+#'
+#' # Run aggregation
+#' results <- run_aggregation(
+#'   cohort_level_data = aggregation_chrt_dt,
+#'   allocation_herd_long = allocation_long,
+#'   simulation_duration = 365,
+#'   global_warming_potential_set = "AR6"
+#' )
+#' head(results$results_herd)
+#' }
 #'
 #' @references
 #' IPCC (2021). *Climate Change 2021: The Physical Science Basis*.
@@ -98,91 +124,170 @@
 #'
 #' @importFrom data.table := .I melt fcase setcolorder rbindlist
 run_aggregation <- function(
-    data_cohort,
+    cohort_level_data,
     allocation_herd_long,
-    gwp = "AR6"
+    simulation_duration = 365,
+    global_warming_potential_set = "AR6"
 ) {
-  # --- Input validation -----------------------------------------------------
-  if (!data.table::is.data.table(data_cohort) || nrow(data_cohort) == 0) {
-    cli::cli_abort("{.arg data_cohort} must be a non-empty data.table.")
-  }
-
-  if (!data.table::is.data.table(allocation_herd_long) || nrow(allocation_herd_long) == 0) {
-    cli::cli_abort("{.arg allocation_herd_long} must be a non-empty data.table.")
-  }
-
-  # Validate required grouping columns
-  required_group_cols <- c(
-    "herd_id", "Animal_short",
-    "cohort", "assessment_duration", "size"
+  # --- Input validation -------------------------------------------------------
+  cohort_level_data <- data.table::as.data.table(cohort_level_data)
+  validate_run_aggregation_inputs(
+    cohort_level_data = cohort_level_data,
+    allocation_herd_long = allocation_herd_long,
+    simulation_duration = simulation_duration,
+    global_warming_potential_set = global_warming_potential_set
   )
-  miss_group <- setdiff(required_group_cols, names(data_cohort))
-  if (length(miss_group)) {
-    cli::cli_abort("Missing required grouping columns in {.arg data_cohort}: {miss_group}.")
-  }
 
-  # Validate GWP option
-  valid_gwp <- c(
-    "AR6", "AR5_excluding_carbon_feedback", "AR5_including_carbon_feedback", "AR4"
-  )
-  if (!gwp %in% valid_gwp) {
-    cli::cli_abort(
-      "{.arg gwp} must be one of: {.val {valid_gwp}}"
+  # Map animal to species_short
+  cohort_level_data[abbr_animals, species_short := i.species_short, on = "animal"]
+
+  # --- Step 1: Define variable groups -----------------------------------------
+  feed_list <- list(
+    list(
+      feed_source = "dry_matter_intake",
+      label = "DryMatterIntake",
+      unit = "kg dry matter"
     )
-  }
-
-  # --- Step 1: Define variable groups ---------------------------------------
-  feed_vars <- c("dmi")
-  nitrogen_balance_vars <- c("dry_matter_intake", "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion")
-  production_vars <- c(
-    "milk_production_mass_cohort", "milk_production_protein_cohort",
-    "milk_production_fpcm_cohort",
-    "meat_production_live_weight_cohort", "meat_production_carcass_weight_cohort",
-    "meat_production_bone_free_meat_cohort", "meat_production_protein_cohort",
-    "fibre_production_cohort"
-  )
-  emissions_vars <- c(
-    "ch4_enteric", "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other",
-    "direct_n2o_manure_pasture", "direct_n2o_manure_burned", "direct_n2o_manure_other",
-    "indirect_n2o_manure_burned", "indirect_n2o_manure_pasture", "indirect_n2o_manure_other",
-    "diet_co2_feed_fertilizer",
-    "diet_co2_feed_pesticides",
-    "diet_co2_feed_crop_operations",
-    "diet_co2_feed_luc_nopeat",
-    "diet_co2_feed_luc_peat",
-    "diet_n2o_feed_fertilizer",
-    "diet_n2o_feed_manure_applied",
-    "diet_n2o_feed_crop_residues",
-    "diet_ch4_feed_rice"
   )
 
-  # Check that required variables exist in data_cohort
+  feed_vars <- sapply(feed_list, `[[`, "feed_source")
+
+  nitrogen_balance_list <- list(
+    list(
+      nitrogen_balance_source = "nitrogen_intake",
+      label = "NitrogenIntake",
+      unit = "kg N"
+    ),
+    list(
+      nitrogen_balance_source = "nitrogen_retention",
+      label = "NitrogenRetention",
+      unit = "kg N"
+    ),
+    list(
+      nitrogen_balance_source = "nitrogen_excretion",
+      label = "NitrogenExcretion",
+      unit = "kg N"
+    )
+  )
+
+  nitrogen_balance_vars <- sapply(nitrogen_balance_list, `[[`, "nitrogen_balance_source")
+
+  production_list <- list(
+    list(
+      production_source = "milk_production_mass_cohort",
+      label = "MilkRaw",
+      unit = "kg",
+      commodity_name = "Milk",
+      commodity_type = "Edible"
+    ),
+    list(
+      production_source = "milk_production_protein_cohort",
+      label = "MilkProtein",
+      unit = "kg protein",
+      commodity_name = "Milk",
+      commodity_type = "Edible"
+    ),
+    list(
+      production_source = "milk_production_fpcm_cohort",
+      label = "MilkFatProteinCorrected",
+      unit = "kg fat-protein corrected",
+      commodity_name = "Milk",
+      commodity_type = "Edible"
+    ),
+    list(
+      production_source = "meat_production_live_weight_cohort",
+      label = "MeatLiveWeight",
+      unit = "kg live weight",
+      commodity_name = "Meat",
+      commodity_type = "Edible"
+    ),
+    list(
+      production_source = "meat_production_carcass_weight_cohort",
+      label = "MeatCarcassWeight",
+      unit = "kg carcass weight",
+      commodity_name = "Meat",
+      commodity_type = "Edible"
+    ),
+    list(
+      production_source = "meat_production_bone_free_meat_cohort",
+      label = "MeatBoneFree",
+      unit = "kg bone-free meat",
+      commodity_name = "Meat",
+      commodity_type = "Edible"
+    ),
+    list(
+      production_source = "meat_production_protein_cohort",
+      label = "MeatProtein",
+      unit = "kg protein",
+      commodity_name = "Meat",
+      commodity_type = "Edible"
+    ),
+    list(
+      production_source = "fibre_production_cohort",
+      label = "Fibre",
+      unit = "kg",
+      commodity_name = "Fibre",
+      commodity_type = "Edible"
+    )
+  )
+
+  production_vars <- sapply(production_list, `[[`, "production_source")
+
+  emissions_list <- list(
+    list(emissions_source = "ch4_enteric", label = "Enteric_CH4"),
+    list(emissions_source = "ch4_manure_pasture", label = "Manure-Pasture_CH4"),
+    list(emissions_source = "ch4_manure_burned", label = "Manure-Burned_CH4"),
+    list(emissions_source = "ch4_manure_other", label = "Manure-Other_CH4"),
+
+    list(emissions_source = "n2o_manure_pasture_direct", label = "ManureDirect-Pasture_N2O"),
+    list(emissions_source = "n2o_manure_burned_direct", label = "ManureDirect-Burned_N2O"),
+    list(emissions_source = "n2o_manure_other_direct", label = "ManureDirect-Other_N2O"),
+
+    list(emissions_source = "n2o_manure_burned_indirect", label = "ManureIndirect-Burned_N2O"),
+    list(emissions_source = "n2o_manure_pasture_indirect", label = "ManureIndirect-Pasture_N2O"),
+    list(emissions_source = "n2o_manure_other_indirect", label = "ManureIndirect-Other_N2O"),
+
+    list(emissions_source = "diet_co2_feed_fertilizer", label = "Feed-Fertilizer_CO2"),
+    list(emissions_source = "diet_co2_feed_pesticides", label = "Feed-Pesticides_CO2"),
+    list(emissions_source = "diet_co2_feed_crop_operations", label = "Feed-CropOperations_CO2"),
+    list(emissions_source = "diet_co2_feed_luc_nopeat", label = "Feed-LandUseChange_CO2"),
+    list(emissions_source = "diet_co2_feed_luc_peat", label = "Feed-PeatDrainage_CO2"),
+
+    list(emissions_source = "diet_n2o_feed_fertilizer", label = "Feed-Fertilizer_N2O"),
+    list(emissions_source = "diet_n2o_feed_manure_applied", label = "Feed-ManureApplication_N2O"),
+    list(emissions_source = "diet_n2o_feed_crop_residues", label = "Feed-CropResidues_N2O"),
+
+    list(emissions_source = "diet_ch4_feed_rice", label = "Feed-Rice_CH4")
+  )
+  emissions_vars <- sapply(emissions_list, `[[`, "emissions_source")
+
+  # Check that required variables exist in cohort_level_data
   all_vars <- unique(
     c(feed_vars, nitrogen_balance_vars, production_vars, emissions_vars)
   )
-  available_vars <- intersect(all_vars, names(data_cohort))
+  available_vars <- intersect(all_vars, names(cohort_level_data))
   if (length(available_vars) == 0) {
     cli::cli_abort(
-      "No recognized variables found in {.arg data_cohort}. Expected variables include: {.val {all_vars}}"
+      "No recognized variables found in {.arg cohort_level_data}.
+      Expected variables include: {.val {all_vars}}"
     )
   }
 
-  # --- Step 2: Reshape data_cohort to long format --------------------------
+  # --- Step 2: Reshape cohort_level_data to long format -----------------------
   data_cohort_long <- data.table::melt(
-    data_cohort,
+    cohort_level_data,
     id.vars = c(
       "herd_id",
-      "Animal_short",
-      "cohort",
-      "assessment_duration",
-      "size"
+      "species_short",
+      "cohort_short",
+      "cohort_stock_size"
     ),
     measure.vars = available_vars,
     variable.name = "variable_name",
     value.name = "value"
   )
 
-  # --- Step 3: Classify variables by type ----------------------------------
+  # --- Step 3: Classify variables by type -------------------------------------
   data_cohort_long[
     , variable_type := data.table::fcase(
       variable_name %in% feed_vars, "Feed",
@@ -193,25 +298,25 @@ run_aggregation <- function(
     )
   ]
 
-  # --- Step 4: Calculate totals by cohort -----------------------------------
-  # Scale per-head-per-day values to cohort totals over assessment duration
+  # --- Step 4: Calculate totals by cohort -------------------------------------
+  # Scale per-head-per-day values to cohort totals over simulation duration
   data_cohort_long[
     , value_total := calc_totals_by_cohort(
       value = value,
-      size = size,
-      assessment_duration = assessment_duration,
+      cohort_stock_size = cohort_stock_size,
+      simulation_duration = simulation_duration,
       variable_type = variable_type
     ),
     by = .I
   ]
 
-  # --- Step 5: Aggregate from cohort to herd level --------------------------
+  # --- Step 5: Aggregate from cohort to herd level ----------------------------
   # Sum all cohort values to get herd-level totals
   data_herd_long <- aggregate_cohort_to_herd(
     data_cohort = data_cohort_long,
     id_cols = c(
       "herd_id",
-      "Animal_short",
+      "species_short",
       "variable_type",
       "variable_name"
     ),
@@ -219,191 +324,99 @@ run_aggregation <- function(
     cohort_short = "cohort_short"
   )
 
-  # --- Step 6: Merge emissions with allocation data --------------------------
+  # --- Step 6: Subsetting datframes by variable_type ----------------------------
+  data_herd_long_production <- data_herd_long[variable_type == "Production"]
+  data_herd_long_nitrogen <- data_herd_long[variable_type == "NitrogenBalance"]
+  data_herd_long_feed <- data_herd_long[variable_type == "Feed"]
+
+  # --- Step 7: Subsetting emissions dataframe and merge emissions with allocation data ---------------------------
   # Only emissions need allocation; other variables are assigned to "ALL"
-  data_herd_long_allocation <- merge(
-    data_herd_long[variable_type == "Emissions", ],
+  data_herd_long_emissions<- merge(
+    data_herd_long[
+      variable_type == "Emissions",
+      .(herd_id, species_short, variable_type, variable_name, value_total_kgGas = value_total)
+    ],
     allocation_herd_long,
-    by = c("herd_id", "Animal_short", "variable_name"),
-    all = TRUE
+    by = c("herd_id", "species_short", "variable_name")
   )
 
-  # --- Step 7: Allocate emissions to commodities -----------------------------
-  data_herd_long_allocation[
-    , value_allocated := calc_allocated_emissions(
-      value = value_total,
+  # --- Step 8: Allocate emissions to commodities ------------------------------
+  data_herd_long_emissions[
+    , value_total_allocated_kgGas := calc_allocated_emissions(
+      value = value_total_kgGas,
       allocation_share = allocation_share
-    )
-  ]
-
-  # --- Step 8: Identify gas type for GWP conversion -------------------------
-  data_herd_long_allocation[
-    , gas := data.table::fcase(
-      grepl("^ch4", variable_name, ignore.case = TRUE), "CH4",
-      grepl("n2o", variable_name, ignore.case = TRUE), "N2O",
-      default = NA_character_
-    )
-  ]
-
-  # --- Step 9: Convert to CO2-equivalents ------------------------------------
-  data_herd_long_allocation[
-    , c("value_allocated_co2e", "gwp") := calc_co2eq(
-      gas = gas,
-      value_allocated = value_allocated,
-      gwp = gwp
-    )
-  ]
-
-  # --- Step 10: Cleaning-up emissions variables ------------------------------
-  subset_allocatedco2e <- data_herd_long_allocation[
-    variable_type == "Emissions",
-    .(
-      herd_id, Animal_short,
-      variable_name, gas, variable_type, commodity_name,
-      allocation_share, commodity_type, value_total = value_allocated_co2e,
-      allocation_type, gwp
-    )
-  ]
-  subset_allocatedco2e[, unit := "kg co2eq"]
-
-  # --- Step 11: Combine the Emissions results allocated with other variables --
-  results_herd <- data.table::rbindlist(
-    list(
-      subset_allocatedco2e,
-      data_herd_long[variable_type != "Emissions"]
     ),
-    use.names = TRUE,
-    fill = TRUE
+    by = .I
+  ]
+
+  # --- Step 9: Identify gas type for GWP conversion ---------------------------
+  data_herd_long_emissions[
+    , gas := data.table::fcase(
+      grepl("ch4", variable_name, ignore.case = TRUE), "CH4",
+      grepl("n2o", variable_name, ignore.case = TRUE), "N2O",
+      grepl("co2", variable_name, ignore.case = TRUE), "CO2"
+    )
+  ]
+
+  # --- Step 10: Convert to CO2-equivalents -------------------------------------
+  data_herd_long_emissions[
+    , c("value_total_allocated_co2eq", "gwp") := calc_co2eq(
+      gas = gas,
+      value_allocated = value_total_allocated_kgGas,
+      global_warming_potential_set = global_warming_potential_set
+    ),
+    by = .I
+  ]
+
+  # --- Step 11: Cleaning-up output tables -----------------------------------------
+
+  # 11.1 Emissions
+  emissions_dt <- data.table::rbindlist(emissions_list)
+  data.table::setnames(emissions_dt, "emissions_source", "variable_name")
+
+  data_herd_long_emissions <- merge(
+    data_herd_long_emissions,
+    emissions_dt,
+    by = "variable_name"
   )
 
-  # --- Step 12: Cleaning-up the table ----------------------------------------
+  # 12.2 Production
+  production_dt <- data.table::rbindlist(production_list)
+  data.table::setnames(production_dt, "production_source", "variable_name")
 
-  # 12.1 Production
-  results_herd[
-    , unit := data.table::fcase(
-      variable_name %in% c("milk_production_mass_cohort", "fibre_production_cohort"), "kg",
-      variable_name %in% c("milk_production_protein_cohort", "meat_production_protein_cohort"), "kg protein",
-      variable_name %in% c("milk_production_fpcm_cohort"), "kg fat-protein corrected",
-      variable_name %in% c("meat_production_live_weight_cohort"), "kg live weight",
-      variable_name %in% c("meat_production_carcass_weight_cohort"), "kg carcass weight",
-      variable_name %in% c("meat_production_bone_free_meat_cohort"), "kg bone-free meat",
-      default = unit
-    )
-  ]
-
-  results_herd[
-    , commodity_name := data.table::fcase(
-      variable_name %in% c("milk_production_mass_cohort", "milk_production_protein_cohort", "milk_production_fpcm_cohort"), "Milk",
-      variable_name %in% c("meat_production_live_weight_cohort", "meat_production_carcass_weight_cohort", "meat_production_bone_free_meat_cohort", "meat_production_protein_cohort"), "Meat",
-      variable_name == "fibre_production_cohort", "Fibre",
-      default = commodity_name
-    )
-  ][
-    , commodity_type := data.table::fcase(
-      variable_type %in% c("Production"), "Edible",
-      default = commodity_type
-    )
-  ]
-
-  # 12.2 Feed & N balance
-  results_herd[
-    , unit := data.table::fcase(
-      variable_name %in% c("DryMatterIntake"), "kg dry matter",
-      variable_name %in% c("NitrogenIntake", "NitrogenRetention", "NitrogenExcretion"), "kg N",
-      default = unit
-    )
-  ]
-
-  results_herd[
-    !variable_type %in% c("Emissions", "Production"),
-    commodity_name := "ALL"
-  ]
-
-  results_herd[
-    !variable_type %in% c("Emissions"),
-    allocation_share := 1
-  ]
-
-  results_herd[
-    !variable_type %in% c("Emissions"),
-    allocation_type := NA
-  ]
-
-  results_herd[
-    !variable_type %in% c("Emissions"),
-    gwp := 1
-  ]
-
-  results_herd[, cohort := "ALL"]
-
-  # --- Step 13: Renaming variables -------------------------------------------
-  # Ensure variable_name is a factor for levels() assignment
-  if (!is.factor(results_herd$variable_name)) {
-    results_herd[, variable_name := as.factor(variable_name)]
-  }
-
-  levels(results_herd$variable_name) <- c(
-    size = "LivestockNumbers",
-    ch4_enteric = "Enteric_CH4",
-    ch4_manure_pasture = "Manure-Pasture_CH4",
-    ch4_manure_burned = "Manure-Burned_CH4",
-    ch4_manure_other = "Manure-Other_CH4",
-    direct_n2o_manure_pasture = "ManureDirect-Pasture_N2O",
-    direct_n2o_manure_burned = "ManureDirect-Burned_N2O",
-    direct_n2o_manure_other = "ManureDirect-Other_N2O",
-    indirect_n2o_manure_burned = "ManureIndirect-Burned_N2O",
-    indirect_n2o_manure_pasture = "ManureIndirect-Pasture_N2O",
-    indirect_n2o_manure_other = "ManureIndirect-Other_N2O",
-    diet_co2_feed_fertilizer = "Feed-Fertilizer_CO2",
-    diet_co2_feed_pesticides = "Feed-Pesticides_CO2",
-    diet_co2_feed_crop_operations = "Feed-CropOperations_CO2",
-    diet_co2_feed_luc_nopeat = "Feed-LandUseChange_CO2",
-    diet_co2_feed_luc_peat = "Feed-PeatDrainage_CO2",
-    diet_n2o_feed_fertilizer = "Feed-Fertilizer_N2O",
-    diet_n2o_feed_manure_applied = "Feed-ManureApplication_N2O",
-    diet_n2o_feed_crop_residues = "Feed-CropResidues_N2O",
-    diet_ch4_feed_rice = "Feed-Rice_CH4",
-    dmi = "DryMatterIntake",
-    nitrogen_intake = "NitrogenIntake",
-    nitrogen_retention = "NitrogenRetention",
-    nitrogen_excretion = "NitrogenExcretion",
-    milk_production_mass_cohort = "MilkRaw",
-    milk_production_protein_cohort = "MilkProtein",
-    milk_production_fpcm_cohort = "MilkFatProteinCorrected",
-    meat_production_live_weight_cohort = "MeatLiveWeight",
-    meat_production_carcass_weight_cohort = "MeatCarcassWeight",
-    meat_production_bone_free_meat_cohort = "MeatBoneFree",
-    meat_production_protein_cohort = "MeatProtein",
-    fibre_production_cohort = "Fibre"
-  )[levels(results_herd$variable_name)]
-
-  # --- Step 14: Variables order ----------------------------------------------
-  variable_order <- c(
-    "herd_id",
-    "Animal_short",
-    "cohort",
-    "variable_type",
-    "variable_name",
-    "unit",
-    "gas",
-    "gwp",
-    "allocation_type",
-    "allocation_share",
-    "commodity_type",
-    "commodity_name",
-    "value_total"
+  data_herd_long_production <- merge(
+    data_herd_long_production,
+    production_dt,
+    by = "variable_name"
   )
 
-  data.table::setcolorder(
-    results_herd,
-    intersect(variable_order, names(results_herd))
+  # 12.3 Feed
+  feed_dt <- data.table::rbindlist(feed_list)
+  data.table::setnames(feed_dt, "feed_source", "variable_name")
+
+  data_herd_long_feed <- merge(
+    data_herd_long_feed,
+    feed_dt,
+    by = "variable_name"
   )
 
-  # --- Return results --------------------------------------------------------
+  # 12.4 Nitrogen balance
+  nitrogen_balance_dt <- data.table::rbindlist(nitrogen_balance_list)
+  data.table::setnames(nitrogen_balance_dt, "nitrogen_balance_source", "variable_name")
+
+  data_herd_long_nitrogen <- merge(
+    data_herd_long_nitrogen,
+    nitrogen_balance_dt,
+    by = "variable_name"
+  )
+
+  # --- Return results ---------------------------------------------------------
   return(
     list(
-      data_cohort = data_cohort,
-      results_herd = results_herd
+      results_emissions = data_herd_long_emissions,
+      results_feed = data_herd_long_feed,
+      results_production = data_herd_long_production,
+      results_nitrogen = data_herd_long_nitrogen
     )
   )
 }

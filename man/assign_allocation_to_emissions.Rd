@@ -27,8 +27,8 @@ row represents an emission source–commodity combination or an unallocated emis
 \item{commodities}{Character. List of commodity categories to which emissions may be allocated.
 List=c("None","Milk","Meat","Fibre","Work","Eggs").}
 
-\item{non_allocated_emission_sources}{Character. Emission variables that should not be allocated across commodities, even if they
-appear in emissions_vars (e.g., "ch4_manure_pasture", "ch4_manure_burned").}
+\item{non_allocated_emission_sources}{Character. Emission variables that should not be allocated
+across commodities, even if they appear in emissions_vars (e.g., "ch4_manure_pasture", "ch4_manure_burned").}
 
 \item{commodity_col}{Character. Name of the column in \code{allocation_herd_long} identifying the commodity category.}
 
