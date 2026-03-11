@@ -40,14 +40,14 @@
 #'
 #' \itemize{
 #'   \item \strong{For \code{CTL} and \code{BFL}:}
-#'     \deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+#'     \deqn{ym = 9.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
 #'
 #'   \item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
 #'     \itemize{
 #'       \item \code{FA} and \code{MA} cohorts: 
-#'       \deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+#'       \deqn{ym = 9.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
 #'       \item \code{FS} and \code{MS} cohorts: 
-#'       \deqn{ym = 7.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+#'       \deqn{ym = 7.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
 #'     }
 #'
 #'   \item \strong{For \code{PGS}:}
@@ -153,7 +153,7 @@ calc_conversion_factor_ym <- function(
 #'@details
 #' The formula used to estimate daily enteric methane emissions is:
 #'
-#' \deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake 
+#' \deqn{CH_4 = \frac{ration\_gross\_energy \times ration\_intake 
 #' \times ch4\_conversion\_factor\_ym}{55.65 \times 100}}
 #' 
 #' where 55.65 MJ/kg is the energy content of methane.
