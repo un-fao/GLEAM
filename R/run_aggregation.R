@@ -50,7 +50,7 @@
 #'       `allocation_share` (numeric, 0-1)}
 #'     \item{**Emission source**:}{`variable_name` (emission variable names)}
 #'   }
-#' @param gwp Character scalar specifying the 100-year Global Warming Potential
+#' @param global_warming_potential_set Character scalar specifying the 100-year Global Warming Potential
 #'   (GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
 #'   Must be one of:
 #'   \itemize{

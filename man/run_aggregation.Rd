@@ -36,7 +36,7 @@ output of \code{\link[=run_allocation]{run_allocation()}}. Must include columns:
 \item{simulation_duration}{Numeric. Length of the assessment period (days). Used to
 scale per-head-per-day variables to cohort totals. Defaults to \code{365}.}
 
-\item{gwp}{Character scalar specifying the 100-year Global Warming Potential
+\item{global_warming_potential_set}{Character scalar specifying the 100-year Global Warming Potential
 (GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
 Must be one of:
 \itemize{
