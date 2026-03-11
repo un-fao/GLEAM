@@ -6,11 +6,11 @@
 \usage{
 calc_allocation_shares(
   species_short,
-  energy_allocation_meat,
-  energy_allocation_milk,
-  energy_allocation_fibre,
-  energy_allocation_work,
-  energy_allocation_eggs
+  meat_allocation_energy,
+  milk_allocation_energy,
+  fibre_allocation_energy,
+  work_allocation_energy,
+  egg_allocation_energy
 )
 }
 \arguments{
@@ -25,31 +25,31 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{energy_allocation_meat}{Numeric. Energy required by a given sex–age cohort for total meat output by cohort
+\item{meat_allocation_energy}{Numeric. Energy required by a given sex–age cohort for total meat output by cohort
 during the assessment period, equal to the energy needed to produce all live-weight gain to reach the target
 slaughter weight (MJ/cohort/assessment period).}
 
-\item{energy_allocation_milk}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
+\item{milk_allocation_energy}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
 period). Non-zero values are applicable only to milk-producing species and cohorts (species=CTL, BFL, CML, SHP, GTS;
 cohorts=FA). All other species–cohort combinations are assigned a value of 0.}
 
-\item{energy_allocation_fibre}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
+\item{fibre_allocation_energy}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
 period).}
 
-\item{energy_allocation_work}{Numeric vector. Energy required to provide all draught power (traction/work) by cohort
+\item{work_allocation_energy}{Numeric vector. Energy required to provide all draught power (traction/work) by cohort
 (MJ/cohort/assessment period).}
 
-\item{energy_allocation_eggs}{Numeric vector. Energy required to produce all eggs during the assessment period
+\item{egg_allocation_energy}{Numeric vector. Energy required to produce all eggs during the assessment period
 (MJ/cohort/assessment period).}
 }
 \value{
 A named list of numeric vectors with same length as input, containing:
 \describe{
-\item{allocation_share_meat}{Numeric. Allocation share assigned to meat (fraction).}
-\item{allocation_share_milk}{Numeric. Allocation share assigned to milk (fraction).}
-\item{allocation_share_fibre}{Numeric. Allocation share assigned to fibre (fraction).}
-\item{allocation_share_work}{Numeric. Allocation share assigned to work (fraction).}
-\item{allocation_share_eggs}{Numeric. Allocation share assigned to eggs (fraction).}
+\item{meat_share_allocation}{Numeric. Allocation share assigned to meat (fraction).}
+\item{milk_share_allocation}{Numeric. Allocation share assigned to milk (fraction).}
+\item{fibre_share_allocation}{Numeric. Allocation share assigned to fibre (fraction).}
+\item{work_share_allocation}{Numeric. Allocation share assigned to work (fraction).}
+\item{eggs_share_allocation}{Numeric. Allocation share assigned to eggs (fraction).}
 }
 }
 \description{

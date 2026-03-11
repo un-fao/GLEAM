@@ -63,7 +63,7 @@ be used to derive allocation factors among co-products.
 Total work-related energy is computed for species (\code{CTL}, \code{BFL}, \code{CML})
 and cohorts (, \code{FA}, \code{MA}) assumed to be potentially involved in draught power generation.
 
-The \code{energy_allocation_work} is calculated as follows:
+The \code{work_allocation_energy} is calculated as follows:
 
 \eqn{energy\_allocation\_work =
 energy\_requirement\_work \times simulation\_duration \times cohort\_stock\_size}

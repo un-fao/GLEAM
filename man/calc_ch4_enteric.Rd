@@ -48,7 +48,7 @@ energy intake, methane conversion factor (ym), and dry matter intake.
 \details{
 The formula used to estimate daily enteric methane emissions is:
 
-\deqn{CH_4 = \frac{diet\_gross\_energy \times dry\_matter\_intake 
+\deqn{CH_4 = \frac{ration\_gross\_energy \times ration\_intake 
 \times ch4\_conversion\_factor\_ym}{55.65 \times 100}}
 
 where 55.65 MJ/kg is the energy content of methane.

@@ -53,14 +53,14 @@ ym is computed using species- and cohort-specific default relationships with die
 
 \itemize{
 \item \strong{For \code{CTL} and \code{BFL}:}
-\deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+\deqn{ym = 9.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
 
 \item \strong{For \code{SHP}, \code{GTS} and \code{CML}:}
 \itemize{
 \item \code{FA} and \code{MA} cohorts:
-\deqn{ym = 9.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+\deqn{ym = 9.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
 \item \code{FS} and \code{MS} cohorts:
-\deqn{ym = 7.75 - 0.05 \times (diet\_digestibility\_fraction \times 100)}
+\deqn{ym = 7.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
 }
 
 \item \strong{For \code{PGS}:}

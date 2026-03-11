@@ -32,7 +32,7 @@ Must be one of:
 \value{
 A named list with two numeric vectors of the same length as input:
 \describe{
-\item{\code{value_co2e}}{CO2-equivalent emissions (kg CO2e).}
+\item{\code{value_co2eq}}{CO2-equivalent emissions (kg CO2e).}
 \item{\code{gwp}}{Global Warming Potential factor applied to each observation
 (kg CO2e/kg gas).}
 }

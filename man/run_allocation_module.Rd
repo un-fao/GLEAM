@@ -78,17 +78,17 @@ A named list of two \code{data.table} objects:
 \item{cohort_allocation_inputs}{A \code{data.table} with the original
 cohort-level input columns plus the following new variables:
 \describe{
-\item{energy_allocation_milk}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
+\item{milk_allocation_energy}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment
 period). }
-\item{energy_allocation_meat}{Numeric. Energy required by a given sex–age cohort for total meat output by cohort
+\item{meat_allocation_energy}{Numeric. Energy required by a given sex–age cohort for total meat output by cohort
 during the assessment period,
 equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment
 period). }
-\item{energy_allocation_fibre}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
+\item{fibre_allocation_energy}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment
 period).}
-\item{energy_allocation_work}{Numeric. Energy required to provide all draught power (traction/work) by cohort
+\item{work_allocation_energy}{Numeric. Energy required to provide all draught power (traction/work) by cohort
 (MJ/cohort/assessment period).}
-\item{energy_allocation_eggs}{Numeric. Energy required for egg production over the assessment period
+\item{egg_allocation_energy}{Numeric. Energy required for egg production over the assessment period
 (MJ/cohort/assessment period). Currently set to 0.}
 }}
 \item{allocation_long}{A herd-level \code{data.table} in long format with one
@@ -112,11 +112,11 @@ allocation should be applied (e.g.,"ch4_enteric", "ch4_manure_pasture",
 "ch4_manure_burned","ch4_manure_other", "n2o_manure_pasture_direct",
 "n2o_manure_burned_direct","n2o_manure_other_direct",
 "n2o_manure_burned_indirect","n2o_manure_pasture_indirect",
-"n2o_manure_other_indirect", "diet_co2_feed_fertilizer",
-"diet_co2_feed_pesticides", "diet_co2_feed_crop_operations",
-"diet_co2_feed_luc_nopeat", "diet_co2_feed_luc_peat",
-"diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied",
-"diet_n2o_feed_crop_residues", "diet_ch4_feed_rice")}
+"n2o_manure_other_indirect", "co2_ration_fertilizer",
+"co2_ration_pesticides", "co2_ration_crop_activities",
+"co2_ration_luc_nopeat", "co2_ration_luc_peat",
+"n2o_ration_fertilizer", "n2o_ration_manure_applied",
+"n2o_ration_crop_residues", "ch4_ration_rice")}
 \item{commodity_name}{Character. List of commodity categories to which emissions may be allocated.
 List=c("None","Milk","Meat","Fibre","Work","Eggs")}
 \item{commodity_type}{Character. Commodity (commodity_name) grouping, either

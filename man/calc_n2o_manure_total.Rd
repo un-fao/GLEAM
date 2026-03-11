@@ -5,40 +5,40 @@
 \title{Calculate total N₂O emissions from manure}
 \usage{
 calc_n2o_manure_total(
-  n2o_vol_manure_pasture,
-  n2o_leach_manure_pasture,
-  n2o_vol_manure_burned,
-  n2o_leach_manure_burned,
-  n2o_vol_manure_other,
-  n2o_leach_manure_other,
+  n2o_manure_pasture_vol,
+  n2o_manure_pasture_leach,
+  n2o_manure_burned_vol,
+  n2o_manure_burned_leach,
+  n2o_manure_other_vol,
+  n2o_manure_other_leach,
   n2o_manure_pasture_direct,
   n2o_manure_burned_direct,
   n2o_manure_other_direct
 )
 }
 \arguments{
-\item{n2o_vol_manure_pasture}{Numeric. Indirect nitrous oxide (N₂O) emissions
+\item{n2o_manure_pasture_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions
 resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
 from manure deposited on pasture (kg N₂O/head/day).}
 
-\item{n2o_leach_manure_pasture}{Numeric. Indirect nitrous oxide (N₂O) emissions
+\item{n2o_manure_pasture_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions
 resulting from leaching and runoff of manure nitrogen from manure deposited on
 pasture (kg N₂O/head/day).}
 
-\item{n2o_vol_manure_burned}{Numeric. Indirect nitrous oxide (N₂O) emissions
+\item{n2o_manure_burned_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions
 resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
 from manure burned for fuel (kg N₂O/head/day).}
 
-\item{n2o_leach_manure_burned}{Numeric. Indirect nitrous oxide (N₂O) emissions
+\item{n2o_manure_burned_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions
 resulting from leaching and runoff of manure nitrogen from manure burned for
 fuel (kg N₂O/head/day).}
 
-\item{n2o_vol_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions
+\item{n2o_manure_other_vol}{Numeric. Indirect nitrous oxide (N₂O) emissions
 resulting from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
 from manure management systems, excluding manure deposited on pasture and
 manure burned for fuel (kg N₂O/head/day).}
 
-\item{n2o_leach_manure_other}{Numeric. Indirect nitrous oxide (N₂O) emissions
+\item{n2o_manure_other_leach}{Numeric. Indirect nitrous oxide (N₂O) emissions
 resulting from leaching and runoff of manure nitrogen from manure management
 systems, excluding losses from manure deposited on pasture and manure burned
 for fuel (kg N₂O/head/day).}
@@ -128,12 +128,12 @@ The following aggregations are applied:
 }
 \examples{
 calc_n2o_manure_total(
-  n2o_vol_manure_pasture = 0.0129,
-  n2o_leach_manure_pasture = 0.0012,
-  n2o_vol_manure_burned = 0,
-  n2o_leach_manure_burned = 0,
-  n2o_vol_manure_other = 0.052,
-  n2o_leach_manure_other = 0.00027,
+  n2o_manure_pasture_vol = 0.0129,
+  n2o_manure_pasture_leach = 0.0012,
+  n2o_manure_burned_vol = 0,
+  n2o_manure_burned_leach = 0,
+  n2o_manure_other_vol = 0.052,
+  n2o_manure_other_leach = 0.00027,
   n2o_manure_pasture_direct = 0.009,
   n2o_manure_burned_direct = 0,
   n2o_manure_other_direct = 0.01033

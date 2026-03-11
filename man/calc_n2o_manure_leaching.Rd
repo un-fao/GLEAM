@@ -52,23 +52,23 @@ management systems.}
 \value{
 A named list with the following elements
 \describe{
-\item{n2o_leach_manure_pasture}{
+\item{n2o_manure_pasture_leach}{
 Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
 runoff of manure nitrogen from manure deposited on pasture
 (kg N₂O/head/day).
 }
-\item{n2o_leach_manure_burned}{
+\item{n2o_manure_burned_leach}{
 Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
 runoff of manure nitrogen from manure burned for fuel
 (kg N₂O/head/day).
 }
-\item{n2o_leach_manure_other}{
+\item{n2o_manure_other_leach}{
 Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
 runoff of manure nitrogen from manure management systems, excluding losses
 from manure deposited on pasture and manure burned for fuel
 (kg N₂O/head/day).
 }
-\item{n2o_leach_manure_all_noburn}{
+\item{n2o_manure_all_noburn_leach}{
 Numeric. Indirect nitrous oxide (N₂O) emissions resulting from leaching and
 runoff of manure nitrogen from manure management systems, excluding losses
 from manure burned for fuel (kg N₂O/head/day).

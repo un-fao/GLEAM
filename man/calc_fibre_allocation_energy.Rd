@@ -67,7 +67,7 @@ fibre-producing species (\code{CML}, \code{SHP},
 \code{GTS}) and applicable cohorts (\code{"FA"}, \code{"FS"}, \code{"MA"},
 \code{"MS"}).
 
-The \code{energy_allocation_fibre} is calculated as follows:
+The \code{fibre_allocation_energy} is calculated as follows:
 
 \eqn{energy\_allocation\_fibre =
 \frac{energy\_requirement\_fibre\_production}{ratio\_me\_to\_ne}

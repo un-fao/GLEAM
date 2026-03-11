@@ -74,7 +74,7 @@ growth, lactation, and maintenance. If the resulting process remains
 multifunctional, these energy terms may subsequently be used to derive
 allocation factors among co-products.
 
-The \code{energy_allocation_meat} is calculated as follows:
+The \code{meat_allocation_energy} is calculated as follows:
 
 \eqn{energy\_allocation\_meat = specific\_energy\_meat \times meat\_production\_live\_weight\_cohort}
 
