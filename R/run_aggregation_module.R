@@ -334,7 +334,7 @@ run_aggregation_module <- function(
   data_herd_long_emissions<- merge(
     data_herd_long[
       variable_type == "Emissions",
-      .(herd_id, species_short, variable_type, variable_name, value_total_kgGas = value_total)
+      .(herd_id, species_short, variable_type, variable_name, value_total_gas = value_total)
     ],
     allocation_herd_long,
     by = c("herd_id", "species_short", "variable_name")
@@ -342,8 +342,8 @@ run_aggregation_module <- function(
 
   # --- Step 8: Allocate emissions to commodities ------------------------------
   data_herd_long_emissions[
-    , value_total_allocated_kgGas := calc_allocated_emissions(
-      value = value_total_kgGas,
+    , value_total_allocated_gas := calc_allocated_emissions(
+      value = value_total_gas,
       allocation_share = allocation_share
     ),
     by = .I
@@ -362,7 +362,7 @@ run_aggregation_module <- function(
   data_herd_long_emissions[
     , c("value_total_allocated_co2eq", "gwp") := calc_co2eq(
       gas = gas,
-      value_allocated = value_total_allocated_kgGas,
+      value_allocated = value_total_allocated_gas,
       global_warming_potential_set = global_warming_potential_set
     ),
     by = .I

@@ -109,7 +109,7 @@ calc_allocated_emissions <- function(
 #'
 #' @return A named list with two numeric vectors of the same length as input:
 #' \describe{
-#'   \item{`value_co2e`}{CO2-equivalent emissions (kg CO2e).}
+#'   \item{`value_co2eq`}{CO2-equivalent emissions (kg CO2e).}
 #'   \item{`gwp`}{Global Warming Potential factor applied to each observation
 #'     (kg CO2e/kg gas).}
 #' }
@@ -136,11 +136,11 @@ calc_co2eq <- function(
   gwp <- unname(gwp_factors[gas])
 
   # Calculate CO2-equivalent emissions
-  value_co2e <- value_allocated * gwp
+  value_co2eq <- value_allocated * gwp
 
   return(
     list(
-      value_co2e = value_co2e,
+      value_co2eq = value_co2eq,
       gwp = gwp
     )
   )

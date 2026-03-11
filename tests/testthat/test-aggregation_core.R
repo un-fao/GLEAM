@@ -205,8 +205,8 @@ test_that("calc_co2eq returns correct value for CH4 with AR6", {
   )
 
   expect_type(result, "list")
-  expect_named(result, c("value_co2e", "gwp"))
-  expect_equal(result$value_co2e, 100 * 27)  # AR6: CH4 = 27
+  expect_named(result, c("value_co2eq", "gwp"))
+  expect_equal(result$value_co2eq, 100 * 27)  # AR6: CH4 = 27
   expect_equal(result$gwp, 27)
 })
 
@@ -217,7 +217,7 @@ test_that("calc_co2eq returns correct value for N2O with AR6", {
     global_warming_potential_set = "AR6"
   )
 
-  expect_equal(result$value_co2e, 10 * 273)  # AR6: N2O = 273
+  expect_equal(result$value_co2eq, 10 * 273)  # AR6: N2O = 273
   expect_equal(result$gwp, 273)
 })
 
@@ -228,7 +228,7 @@ test_that("calc_co2eq returns correct value for CO2", {
     global_warming_potential_set = "AR6"
   )
 
-  expect_equal(result$value_co2e, 1000 * 1)  # CO2 always = 1
+  expect_equal(result$value_co2eq, 1000 * 1)  # CO2 always = 1
   expect_equal(result$gwp, 1)
 })
 
@@ -238,7 +238,7 @@ test_that("calc_co2eq handles AR5_excluding_carbon_feedback", {
     value_allocated = 100,
     global_warming_potential_set = "AR5_excluding_carbon_feedback"
   )
-  expect_equal(result_ch4$value_co2e, 100 * 28)
+  expect_equal(result_ch4$value_co2eq, 100 * 28)
   expect_equal(result_ch4$gwp, 28)
 
   result_n2o <- calc_co2eq(
@@ -246,7 +246,7 @@ test_that("calc_co2eq handles AR5_excluding_carbon_feedback", {
     value_allocated = 10,
     global_warming_potential_set = "AR5_excluding_carbon_feedback"
   )
-  expect_equal(result_n2o$value_co2e, 10 * 265)
+  expect_equal(result_n2o$value_co2eq, 10 * 265)
   expect_equal(result_n2o$gwp, 265)
 })
 
@@ -256,7 +256,7 @@ test_that("calc_co2eq handles AR5_including_carbon_feedback", {
     value_allocated = 100,
     global_warming_potential_set = "AR5_including_carbon_feedback"
   )
-  expect_equal(result_ch4$value_co2e, 100 * 34)
+  expect_equal(result_ch4$value_co2eq, 100 * 34)
   expect_equal(result_ch4$gwp, 34)
 
   result_n2o <- calc_co2eq(
@@ -264,7 +264,7 @@ test_that("calc_co2eq handles AR5_including_carbon_feedback", {
     value_allocated = 10,
     global_warming_potential_set = "AR5_including_carbon_feedback"
   )
-  expect_equal(result_n2o$value_co2e, 10 * 298)
+  expect_equal(result_n2o$value_co2eq, 10 * 298)
   expect_equal(result_n2o$gwp, 298)
 })
 
@@ -274,7 +274,7 @@ test_that("calc_co2eq handles AR4", {
     value_allocated = 100,
     global_warming_potential_set = "AR4"
   )
-  expect_equal(result_ch4$value_co2e, 100 * 25)
+  expect_equal(result_ch4$value_co2eq, 100 * 25)
   expect_equal(result_ch4$gwp, 25)
 
   result_n2o <- calc_co2eq(
@@ -282,7 +282,7 @@ test_that("calc_co2eq handles AR4", {
     value_allocated = 10,
     global_warming_potential_set = "AR4"
   )
-  expect_equal(result_n2o$value_co2e, 10 * 298)
+  expect_equal(result_n2o$value_co2eq, 10 * 298)
   expect_equal(result_n2o$gwp, 298)
 })
 
@@ -294,9 +294,9 @@ test_that("calc_co2eq handles vectorized inputs", {
   )
 
   expect_type(result, "list")
-  expect_length(result$value_co2e, 3)
+  expect_length(result$value_co2eq, 3)
   expect_length(result$gwp, 3)
-  expect_equal(result$value_co2e, c(100 * 27, 10 * 273, 1000 * 1))
+  expect_equal(result$value_co2eq, c(100 * 27, 10 * 273, 1000 * 1))
   expect_equal(result$gwp, c(27, 273, 1))
 })
 
@@ -307,7 +307,7 @@ test_that("calc_co2eq handles zero emissions", {
     global_warming_potential_set = "AR6"
   )
 
-  expect_equal(result$value_co2e, 0)
+  expect_equal(result$value_co2eq, 0)
   expect_equal(result$gwp, 27)
 })
 

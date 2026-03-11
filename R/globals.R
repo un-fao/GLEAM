@@ -173,7 +173,7 @@ utils::globalVariables(c(
   "species_short", "cohort_short", "ration_digestibility_fraction",
   "ration_gross_energy", "ration_intake",
   # Columns used in run_aggregation
-  "value", "value_total", "value_total_kgGas", "value_total_allocated_kgGas",
+  "value", "value_total", "value_total_gas", "value_total_allocated_gas",
   "value_allocated", "value_allocated_co2e", "gwp_factor",
   "variable_type", "variable_name", "unit", "gas", "allocation_share",
   "commodity_name", "commodity_type",
