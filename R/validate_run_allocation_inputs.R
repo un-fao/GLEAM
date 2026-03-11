@@ -33,9 +33,9 @@ validate_run_allocation_module_inputs <- function(
     "milk_production_fpcm_cohort",
     "live_weight_cohort_at_slaughter",
     "meat_production_live_weight_cohort",
-    "energy_requirement_fibre_production",
+    "metabolic_energy_req_fibre_production",
     "cohort_stock_size",
-    "energy_requirement_work"
+    "metabolic_energy_req_work"
   )
   required_herd_cols <- c(
     "herd_id",

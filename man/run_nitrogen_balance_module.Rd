@@ -24,7 +24,7 @@ Supported values include:
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
-\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+\item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
@@ -93,7 +93,7 @@ and computes cohort-level nitrogen balance components following the IPCC Tier 2 
 The following calculation sequence is applied:
 \enumerate{
 \item Daily nitrogen intake is computed using \code{\link{calc_nitrogen_intake}}
-from \code{dry_matter_intake} and \code{ration_nitrogen}.
+from \code{ration_intake} and \code{ration_nitrogen}.
 \item Daily nitrogen retention is computed using \code{\link{calc_nitrogen_retention}}
 from cohort-level and herd-level species parameters.
 \item Daily nitrogen excretion is computed using \code{\link{calc_nitrogen_excretion}}

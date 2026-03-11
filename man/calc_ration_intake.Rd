@@ -6,7 +6,7 @@
 \usage{
 calc_ration_intake(
   species_short,
-  energy_requirement_total,
+  metabolic_energy_req_total,
   ration_gross_energy,
   ration_metabolizable_energy
 )
@@ -23,7 +23,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{energy_requirement_total}{Numeric. Total daily energy requirement (MJ/head/day).
+\item{metabolic_energy_req_total}{Numeric. Total daily energy requirement (MJ/head/day).
 For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
 For CML and PGS the function returns the summed daily metabolizable energy requirement.}
 
@@ -49,14 +49,14 @@ diet energy content (MJ/kg DM).
 \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}}:
 
 \deqn{
-    dry\_matter\_intake = \frac{energy\_requirement\_total}{diet\_gross\_energy}
+    ration\_intake = \frac{metabolic\_energy\_req\_total}{ration\_gross\_energy}
   }
 
 \item \strong{Energy expressed as metabolizable energy requirement -
 \code{CML}, \code{PGS}, \code{CHK}}:
 
 \deqn{
-    dry\_matter\_intake = \frac{energy\_requirement\_total}{diet\_metabolizable\_energy}
+    ration\_intake = \frac{metabolic\_energy\_req\_total}{ration\_metabolizable\_energy}
   }
 }
 }

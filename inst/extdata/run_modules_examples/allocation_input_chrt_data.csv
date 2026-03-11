@@ -1,4 +1,4 @@
-herd_id,cohort_short,milk_production_fpcm_cohort,live_weight_cohort_at_slaughter,meat_production_live_weight_cohort,energy_requirement_fibre_production,cohort_stock_size,energy_requirement_work
+herd_id,cohort_short,milk_production_fpcm_cohort,live_weight_cohort_at_slaughter,meat_production_live_weight_cohort,metabolic_energy_req_fibre_production,cohort_stock_size,metabolic_energy_req_work
 1,FA,3650,550,2500,0,50,0
 1,FS,0,450,1350,0,30,0
 1,FJ,0,200,500,0,25,0

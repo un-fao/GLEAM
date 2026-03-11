@@ -3,13 +3,13 @@
 #' Calculates the daily nitrogen intake per head (kg N/head/day) as the product of feed dry matter
 #' intake (DMI) and diet nitrogen content. 
 #'
-#' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
+#' @param ration_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #' @param ration_nitrogen Numeric. Average nitrogen content of diet (kg N/kg DM).
 #'
 #' @return Numeric. Daily nitrogen intake (kg N/head/day).
 #' 
 #' @details
-#' This approach follows the IPCC Tier 2 approach and estimates \code{dry_matter_intake}  as follows:
+#' This approach follows the IPCC Tier 2 approach and estimates \code{ration_intake}  as follows:
 #'
 #' \eqn{nitrogen\_intake = dry\_matter\_intake \times diet\_nitrogen}
 #' 
@@ -29,11 +29,11 @@
 #' Livestock and Manure Management. Equation 10.32.
 #'
 #' @export
-calc_nitrogen_intake <- function(dry_matter_intake, ration_nitrogen) {
+calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
   # Validate inputs
-  validate_nitrogen_intake_inputs(dry_matter_intake, ration_nitrogen)
+  validate_nitrogen_intake_inputs(ration_intake, ration_nitrogen)
 
-  nitrogen_intake <- dry_matter_intake * ration_nitrogen
+  nitrogen_intake <- ration_intake * ration_nitrogen
 
   return(nitrogen_intake)
 }

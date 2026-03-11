@@ -116,12 +116,12 @@ validate_run_gleam_inputs <- function(
     "diet_n2o_feed_fertilizer", "diet_n2o_feed_manure_applied", "diet_n2o_feed_crop_residues",
     "diet_ch4_feed_rice",
     # Energy requirements (cohort)
-    "energy_requirement_maintenance", "energy_requirement_activity", "energy_requirement_growth",
-    "energy_requirement_lactation", "energy_requirement_work",
-    "energy_requirement_fibre_production", "energy_requirement_pregnancy",
+    "metabolic_energy_req_maintenance", "metabolic_energy_req_activity", "metabolic_energy_req_growth",
+    "metabolic_energy_req_lactation", "metabolic_energy_req_work",
+    "metabolic_energy_req_fibre_production", "metabolic_energy_req_pregnancy",
     "net_energy_maintenance_digestible_energy_ratio",
     "net_energy_growth_digestible_energy_ratio",
-    "energy_requirement_total", "dry_matter_intake",
+    "metabolic_energy_req_total", "ration_intake",
     # Nitrogen balance (cohort)
     "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion",
     # Enteric direct emissions (cohort)

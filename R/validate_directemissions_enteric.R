@@ -27,7 +27,7 @@ validate_ym_inputs <- function(
 #' * For chickens (`CHK`), YM is always `NA` and validation is skipped.
 #' * For other species, numeric parameters are validated against
 #'   \code{parameter_ranges} (ch4_conversion_factor_ym, ch4_mitigation_factor,
-#'   ration_gross_energy, dry_matter_intake).
+#'   ration_gross_energy, ration_intake).
 #'
 #' This validator is designed for internal use in
 #' [calc_ch4_enteric()].
@@ -38,7 +38,7 @@ validate_enteric_emission_inputs <- function(
     ch4_conversion_factor_ym,
     ch4_mitigation_factor,
     ration_gross_energy,
-    dry_matter_intake
+    ration_intake
 ) {
   validate_scalar_character(species_short, "species_short")
 
@@ -50,5 +50,5 @@ validate_enteric_emission_inputs <- function(
   validate_param_range(ch4_conversion_factor_ym, "ch4_conversion_factor_ym")
   validate_param_range(ch4_mitigation_factor, "ch4_mitigation_factor")
   validate_param_range(ration_gross_energy, "ration_gross_energy")
-  validate_param_range(dry_matter_intake, "dry_matter_intake")
+  validate_param_range(ration_intake, "ration_intake")
 }

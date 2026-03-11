@@ -1,4 +1,4 @@
-herd_id,animal,cohort_short,simulation_duration,cohort_stock_size,dry_matter_intake,nitrogen_intake,nitrogen_retention,nitrogen_excretion,ch4_enteric,milk_production_mass_cohort,milk_production_protein_cohort,milk_production_fpcm_cohort,meat_production_live_weight_cohort,meat_production_carcass_weight_cohort,meat_production_bone_free_meat_cohort,meat_production_protein_cohort,fibre_production_cohort
+herd_id,animal,cohort_short,simulation_duration,cohort_stock_size,ration_intake,nitrogen_intake,nitrogen_retention,nitrogen_excretion,ch4_enteric,milk_production_mass_cohort,milk_production_protein_cohort,milk_production_fpcm_cohort,meat_production_live_weight_cohort,meat_production_carcass_weight_cohort,meat_production_bone_free_meat_cohort,meat_production_protein_cohort,fibre_production_cohort
 1,Cattle,FA,365,50,8.5,0.25,0.08,0.17,0.35,3832,126,3650,2500,1300,975,205,0
 1,Cattle,FS,365,30,7.2,0.20,0.06,0.14,0.28,0,0,0,1350,702,527,111,0
 1,Cattle,FJ,365,25,4.0,0.12,0.04,0.08,0.12,0,0,0,500,260,195,41,0

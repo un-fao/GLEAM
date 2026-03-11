@@ -118,7 +118,7 @@ validate_allocation_meat_inputs <- function(
 #' are correctly typed and within valid ranges. Specifically:
 #' * \code{species_short} must be a scalar character.
 #' * \code{species_short} must be one of the supported species codes for allocation.
-#' * \code{energy_requirement_fibre_production} must be non-negative
+#' * \code{metabolic_energy_req_fibre_production} must be non-negative
 #'   (MJ per head per day).
 #' * \code{ratio_me_to_ne} must be positive (used for camelid conversion).
 #' * \code{simulation_duration} must be between 0 and 3650 days.
@@ -127,7 +127,7 @@ validate_allocation_meat_inputs <- function(
 #' \code{GTS}, \code{PGS}, \code{CHK}. Note: Only sheep (SHP), goats (GTS), and
 #' camelids (CML) produce fibre.
 #'
-#' \code{cohort_stock_size}, \code{energy_requirement_fibre_production}, and
+#' \code{cohort_stock_size}, \code{metabolic_energy_req_fibre_production}, and
 #' \code{simulation_duration} are only required (and validated) for fibre-producing
 #' species. \code{ratio_me_to_ne} is only required (and validated) for CML.
 #' For non-fibre species the function returns 0; all numeric args may be
@@ -141,7 +141,7 @@ validate_allocation_meat_inputs <- function(
 #' @param cohort_stock_size Numeric. Population size in the cohort at the start
 #'   of the assessment period (heads). Required for fibre species; may be
 #'   \code{NA} for others.
-#' @param energy_requirement_fibre_production Numeric. Fibre energy demand
+#' @param metabolic_energy_req_fibre_production Numeric. Fibre energy demand
 #'   (MJ per head per day). Required for fibre species; may be \code{NA} for others.
 #' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy to net energy
 #'   (ME/NE). Required only for CML; may be \code{NA} for other species.
@@ -152,7 +152,7 @@ validate_allocation_meat_inputs <- function(
 validate_allocation_fibre_inputs <- function(
     species_short,
     cohort_stock_size = NA_real_,
-    energy_requirement_fibre_production = NA_real_,
+    metabolic_energy_req_fibre_production = NA_real_,
     ratio_me_to_ne = NA_real_,
     simulation_duration = NA_real_
 ) {
@@ -168,7 +168,7 @@ validate_allocation_fibre_inputs <- function(
   # Non-fibre species: all numeric args are unused — no further validation
   if (!species_short %in% c("SHP", "GTS", "CML")) return()
 
-  validate_param_range(energy_requirement_fibre_production, "energy_requirement_fibre_production")
+  validate_param_range(metabolic_energy_req_fibre_production, "metabolic_energy_req_fibre_production")
   validate_param_range(cohort_stock_size, "cohort_stock_size")
   validate_param_range(simulation_duration, "simulation_duration")
 
@@ -187,7 +187,7 @@ validate_allocation_fibre_inputs <- function(
 #' are correctly typed and within valid ranges. Specifically:
 #' * \code{species_short} must be a scalar character.
 #' * \code{species_short} must be one of the supported species codes for allocation.
-#' * \code{energy_requirement_work} must be non-negative (MJ per head per day).
+#' * \code{metabolic_energy_req_work} must be non-negative (MJ per head per day).
 #' * \code{ratio_me_to_ne} must be positive (used for camelid conversion).
 #' * \code{simulation_duration} must be between 0 and 3650 days.
 #'
@@ -195,7 +195,7 @@ validate_allocation_fibre_inputs <- function(
 #' \code{GTS}, \code{PGS}, \code{CHK}. Note: Camelids (CML) require the
 #' \code{ratio_me_to_ne} conversion factor; other species use direct calculation.
 #'
-#' \code{species_short}, \code{cohort_stock_size}, \code{energy_requirement_work},
+#' \code{species_short}, \code{cohort_stock_size}, \code{metabolic_energy_req_work},
 #' and \code{simulation_duration} are required for all species.
 #' \code{ratio_me_to_ne} is only required (and validated) for CML; defaults to
 #' \code{NA_real_}.
@@ -207,7 +207,7 @@ validate_allocation_fibre_inputs <- function(
 #'   (e.g., \code{CML} for camelids).
 #' @param cohort_stock_size Numeric. Population size in the cohort at the start
 #'   of the assessment period (heads).
-#' @param energy_requirement_work Numeric. Energy required for work/draught power
+#' @param metabolic_energy_req_work Numeric. Energy required for work/draught power
 #'   (MJ per head per day).
 #' @param simulation_duration Numeric. Length of the assessment period (days).
 #' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy to net energy
@@ -217,7 +217,7 @@ validate_allocation_fibre_inputs <- function(
 validate_allocation_work_inputs <- function(
     species_short,
     cohort_stock_size,
-    energy_requirement_work,
+    metabolic_energy_req_work,
     simulation_duration,
     ratio_me_to_ne = NA_real_
 ) {
@@ -230,7 +230,7 @@ validate_allocation_work_inputs <- function(
     )
   }
 
-  validate_param_range(energy_requirement_work, "energy_requirement_work")
+  validate_param_range(metabolic_energy_req_work, "metabolic_energy_req_work")
   validate_param_range(cohort_stock_size, "cohort_stock_size")
   validate_param_range(simulation_duration, "simulation_duration")
 

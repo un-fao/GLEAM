@@ -36,7 +36,7 @@ validate_directemissions_manure_inputs <- function(
 
   # --- Required columns validation --------------------------------------------
   required_input_cols <- c(
-    "herd_id", "cohort_short", "dry_matter_intake",
+    "herd_id", "cohort_short", "ration_intake",
     "ration_digestibility_fraction", "nitrogen_excretion",
     "ration_urinary_energy_fraction", "ration_ash"
   )

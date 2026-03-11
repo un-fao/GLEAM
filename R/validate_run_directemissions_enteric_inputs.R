@@ -20,7 +20,7 @@ validate_run_emissions_enteric_module_inputs <- function(data) {
   # --- Required columns validation --------------------------------------------
   required_cols <- c(
     "herd_id", "animal", "cohort_short", "ration_digestibility_fraction",
-    "ration_gross_energy", "dry_matter_intake"
+    "ration_gross_energy", "ration_intake"
   )
   missing_cols <- setdiff(required_cols, names(data))
   if (length(missing_cols) > 0) {

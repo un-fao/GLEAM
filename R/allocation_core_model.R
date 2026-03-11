@@ -317,7 +317,7 @@ calc_meat_allocation_energy <- function(
 #'   }
 #' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
 #' FS, FA, MJ, MS, MA).
-#' @param energy_requirement_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
+#' @param metabolic_energy_req_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 #' Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
 #' for CML.
 #' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
@@ -362,7 +362,7 @@ calc_meat_allocation_energy <- function(
 #'
 #' for sheep (\code{SHP}) and goats (\code{GTS}).
 #'
-#' where \code{energy_requirement_fibre_production} can be computed using
+#' where \code{metabolic_energy_req_fibre_production} can be computed using
 #'   \code{\link{calc_metabolic_energy_req_fibre}} (see also
 #'   \code{\link{run_metabolic_energy_req_module}}).
 #'
@@ -400,22 +400,22 @@ calc_meat_allocation_energy <- function(
 calc_fibre_allocation_energy <- function(
     species_short,
     cohort_stock_size = NA_real_,
-    energy_requirement_fibre_production = NA_real_,
+    metabolic_energy_req_fibre_production = NA_real_,
     ratio_me_to_ne = NA_real_,
     simulation_duration = NA_real_
 ) {
   validate_allocation_fibre_inputs(
     species_short, cohort_stock_size,
-    energy_requirement_fibre_production, ratio_me_to_ne, simulation_duration
+    metabolic_energy_req_fibre_production, ratio_me_to_ne, simulation_duration
   )
 
   if (species_short %in% c("GTS", "SHP")) {
     # Sheep and goats: direct NE calculation
-    energy_allocation_fibre <- energy_requirement_fibre_production *
+    energy_allocation_fibre <- metabolic_energy_req_fibre_production *
       simulation_duration * cohort_stock_size
   } else if (species_short == "CML") {
     # Camelids: convert ME to NE using ratio_me_to_ne (ME/NE)
-    energy_allocation_fibre <- (energy_requirement_fibre_production / ratio_me_to_ne) *
+    energy_allocation_fibre <- (metabolic_energy_req_fibre_production / ratio_me_to_ne) *
       simulation_duration * cohort_stock_size
   } else {
     # Other species: no fibre production
@@ -442,7 +442,7 @@ calc_fibre_allocation_energy <- function(
 #'     \item \code{GTS}: goats
 #'   }
 #' @param cohort_stock_size Numeric. Population size in the cohort at the start of the assessment period (heads).
-#' @param energy_requirement_work Numeric. Energy required for work, used to estimate the energy required for draught
+#' @param metabolic_energy_req_work Numeric. Energy required for work, used to estimate the energy required for draught
 #' power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
 #' SHP, GTS and as metabolizable energy for CML and PGS.
 #' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy converted to net energy (fraction).
@@ -484,7 +484,7 @@ calc_fibre_allocation_energy <- function(
 #'
 #' for camels (\code{CML}).
 #'
-#' where \code{energy_requirement_work} can be computed using
+#' where \code{metabolic_energy_req_work} can be computed using
 #'   \code{\link{calc_metabolic_energy_req_work}} (see also
 #'   \code{\link{run_metabolic_energy_req_module}}).
 #'
@@ -522,14 +522,14 @@ calc_fibre_allocation_energy <- function(
 calc_work_allocation_energy <- function(
     species_short,
     cohort_stock_size,
-    energy_requirement_work,
+    metabolic_energy_req_work,
     simulation_duration,
     ratio_me_to_ne = NA_real_
 ) {
   validate_allocation_work_inputs(
     species_short,
     cohort_stock_size,
-    energy_requirement_work,
+    metabolic_energy_req_work,
     simulation_duration,
     ratio_me_to_ne
   )
@@ -537,11 +537,11 @@ calc_work_allocation_energy <- function(
   if (species_short == "CML") {
     # Camelids: convert ME to NE using ratio_me_to_ne (ME/NE)
     energy_allocation_work <- (
-      energy_requirement_work * simulation_duration * cohort_stock_size
+      metabolic_energy_req_work * simulation_duration * cohort_stock_size
     ) / ratio_me_to_ne
   } else {
     # Other species: direct calculation
-    energy_allocation_work <- energy_requirement_work * simulation_duration * cohort_stock_size
+    energy_allocation_work <- metabolic_energy_req_work * simulation_duration * cohort_stock_size
   }
 
   return(energy_allocation_work)

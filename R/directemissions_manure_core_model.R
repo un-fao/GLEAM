@@ -6,7 +6,7 @@
 #' VS is a key intermediate variable required for estimating methane (CH₄)
 #' emissions from manure management systems under IPCC methodologies.
 #'
-#' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
+#' @param ration_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #' @param ration_urinary_energy_fraction Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).
 #' @param ration_ash Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).
@@ -34,7 +34,7 @@
 #' **Implementation note.**
 #' This function applies an algebraically simplified formulation from Equation 10.24 of IPCC.
 #'
-#' In this implementation, the function takes \code{dry_matter_intake} directly
+#' In this implementation, the function takes \code{ration_intake} directly
 #' as an input. It can be calculated upstream with
 #' \code{\link{calc_ration_intake}} as a function of energy requirements and
 #' the energy content of the diet.
@@ -62,7 +62,7 @@
 #' 
 #' @examples
 #' calc_volatile_solids <- calc_volatile_solids(
-#'   dry_matter_intake = 5,
+#'   ration_intake = 5,
 #'   ration_digestibility_fraction = 0.6,
 #'   ration_urinary_energy_fraction = 0.04,
 #'   ration_ash = 0.08
@@ -77,16 +77,16 @@
 #' @export
 
 calc_volatile_solids <- function(
-    dry_matter_intake,
+    ration_intake,
     ration_digestibility_fraction,
     ration_urinary_energy_fraction,
     ration_ash
 ) {
   validate_calc_volatile_solids(
-    dry_matter_intake, ration_digestibility_fraction, ration_urinary_energy_fraction, ration_ash
+    ration_intake, ration_digestibility_fraction, ration_urinary_energy_fraction, ration_ash
   )
 
-  volatile_solids <- dry_matter_intake * (1 - ration_digestibility_fraction + ration_urinary_energy_fraction) * (1 - ration_ash)
+  volatile_solids <- ration_intake * (1 - ration_digestibility_fraction + ration_urinary_energy_fraction) * (1 - ration_ash)
 
   return(volatile_solids)
 }

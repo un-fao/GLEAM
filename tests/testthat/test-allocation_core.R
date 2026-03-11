@@ -223,7 +223,7 @@ test_that("calc_fibre_allocation_energy returns correct value for sheep", {
   result <- calc_fibre_allocation_energy(
     species_short = "SHP",
     cohort_stock_size = 100,
-    energy_requirement_fibre_production = 5,
+    metabolic_energy_req_fibre_production = 5,
     simulation_duration = 365
   )
 
@@ -236,7 +236,7 @@ test_that("calc_fibre_allocation_energy returns correct value for goats", {
   result <- calc_fibre_allocation_energy(
     species_short = "GTS",
     cohort_stock_size = 100,
-    energy_requirement_fibre_production = 4,
+    metabolic_energy_req_fibre_production = 4,
     simulation_duration = 365
   )
 
@@ -247,13 +247,13 @@ test_that("calc_fibre_allocation_energy returns correct value for camelids", {
   result <- calc_fibre_allocation_energy(
     species_short = "CML",
     cohort_stock_size = 100,
-    energy_requirement_fibre_production = 6,
+    metabolic_energy_req_fibre_production = 6,
     ratio_me_to_ne = 2.33,
     simulation_duration = 365
   )
 
   expect_type(result, "double")
-  # For camelids: (energy_requirement / ratio_me_to_ne) * simulation_duration * cohort_stock_size
+  # For camelids: (metabolic_energy_req / ratio_me_to_ne) * simulation_duration * cohort_stock_size
   expect_equal(result, (6 / 2.33) * 365 * 100)
 })
 
@@ -272,7 +272,7 @@ test_that("calc_fibre_allocation_energy validates inputs", {
     calc_fibre_allocation_energy(
       species_short = "SHP",
       cohort_stock_size = 100,
-      energy_requirement_fibre_production = -5,
+      metabolic_energy_req_fibre_production = -5,
       simulation_duration = 365
     ),
     "is out of range"
@@ -282,7 +282,7 @@ test_that("calc_fibre_allocation_energy validates inputs", {
     calc_fibre_allocation_energy(
       species_short = "SHP",
       cohort_stock_size = 100,
-      energy_requirement_fibre_production = 5,
+      metabolic_energy_req_fibre_production = 5,
       ratio_me_to_ne = -0.1,
       simulation_duration = 365
     )
@@ -291,7 +291,7 @@ test_that("calc_fibre_allocation_energy validates inputs", {
     calc_fibre_allocation_energy(
       species_short = "CML",
       cohort_stock_size = 100,
-      energy_requirement_fibre_production = 5,
+      metabolic_energy_req_fibre_production = 5,
       ratio_me_to_ne = -0.1,
       simulation_duration = 365
     ),
@@ -305,7 +305,7 @@ test_that("calc_work_allocation_energy returns correct value for camelids", {
   result <- calc_work_allocation_energy(
     species_short = "CML",
     cohort_stock_size = 100,
-    energy_requirement_work = 10,
+    metabolic_energy_req_work = 10,
     simulation_duration = 365,
     ratio_me_to_ne = 2.33
   )
@@ -320,7 +320,7 @@ test_that("calc_work_allocation_energy returns correct value for non-camelids (r
   result <- calc_work_allocation_energy(
     species_short = "CTL",
     cohort_stock_size = 100,
-    energy_requirement_work = 8,
+    metabolic_energy_req_work = 8,
     simulation_duration = 365
   )
 
@@ -333,7 +333,7 @@ test_that("calc_work_allocation_energy handles zero energy requirement", {
   result <- calc_work_allocation_energy(
     species_short = "CTL",
     cohort_stock_size = 100,
-    energy_requirement_work = 0,
+    metabolic_energy_req_work = 0,
     simulation_duration = 365
   )
 
@@ -345,7 +345,7 @@ test_that("calc_work_allocation_energy validates inputs", {
     calc_work_allocation_energy(
       species_short = "INVALID",
       cohort_stock_size = 100,
-      energy_requirement_work = 10,
+      metabolic_energy_req_work = 10,
       simulation_duration = 365
     ),
     "must be one of"
@@ -354,7 +354,7 @@ test_that("calc_work_allocation_energy validates inputs", {
     calc_work_allocation_energy(
       species_short = "CTL",
       cohort_stock_size = 100,
-      energy_requirement_work = -5,
+      metabolic_energy_req_work = -5,
       simulation_duration = 365
     ),
     "is out of range"
@@ -363,7 +363,7 @@ test_that("calc_work_allocation_energy validates inputs", {
     calc_work_allocation_energy(
       species_short = "CTL",
       cohort_stock_size = 100,
-      energy_requirement_work = 10,
+      metabolic_energy_req_work = 10,
       simulation_duration = 5000
     ),
     "is out of range"
@@ -373,7 +373,7 @@ test_that("calc_work_allocation_energy validates inputs", {
     calc_work_allocation_energy(
       species_short = "CML",
       cohort_stock_size = 100,
-      energy_requirement_work = 10,
+      metabolic_energy_req_work = 10,
       simulation_duration = 365,
       ratio_me_to_ne = -0.1
     ),
@@ -383,7 +383,7 @@ test_that("calc_work_allocation_energy validates inputs", {
     calc_work_allocation_energy(
       species_short = "CTL",
       cohort_stock_size = 100,
-      energy_requirement_work = 10,
+      metabolic_energy_req_work = 10,
       simulation_duration = 365,
       ratio_me_to_ne = -0.1
     )

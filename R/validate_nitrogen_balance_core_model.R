@@ -1,8 +1,8 @@
 #' Validate inputs for calc_nitrogen_intake
 #'
 #' @noRd
-validate_nitrogen_intake_inputs <- function(dry_matter_intake, ration_nitrogen) {
-  validate_param_range(dry_matter_intake, "dry_matter_intake")
+validate_nitrogen_intake_inputs <- function(ration_intake, ration_nitrogen) {
+  validate_param_range(ration_intake, "ration_intake")
   validate_param_range(ration_nitrogen, "ration_nitrogen")
 }
 

@@ -4,10 +4,10 @@
 \alias{calc_nitrogen_intake}
 \title{Compute Daily Nitrogen Intake}
 \usage{
-calc_nitrogen_intake(dry_matter_intake, ration_nitrogen)
+calc_nitrogen_intake(ration_intake, ration_nitrogen)
 }
 \arguments{
-\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+\item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 
 \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 }
@@ -19,7 +19,7 @@ Calculates the daily nitrogen intake per head (kg N/head/day) as the product of 
 intake (DMI) and diet nitrogen content.
 }
 \details{
-This approach follows the IPCC Tier 2 approach and estimates \code{dry_matter_intake}  as follows:
+This approach follows the IPCC Tier 2 approach and estimates \code{ration_intake}  as follows:
 
 \eqn{nitrogen\_intake = dry\_matter\_intake \times diet\_nitrogen}
 }

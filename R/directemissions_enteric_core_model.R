@@ -146,7 +146,7 @@ calc_conversion_factor_ym <- function(
 #'     measures with a direct effect on enteric methane emissions, such as the use of feed
 #'     additives or methane inhibitors.
 #' @param ration_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
-#' @param dry_matter_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
+#' @param ration_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #'
 #' @return Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).
 #'
@@ -158,7 +158,7 @@ calc_conversion_factor_ym <- function(
 #' 
 #' where 55.65 MJ/kg is the energy content of methane.
 #' 
-#' \code{ration_gross_energy} and \code{dry_matter_intake} can be calculated with
+#' \code{ration_gross_energy} and \code{ration_intake} can be calculated with
 #' \code{\link{calc_ration_gross_energy}} and \code{\link{calc_ration_intake}} - 
 #' see also \code{\link{run_ration_quality_module}} and \code{\link{run_metabolic_energy_req_module}}.
 #' 
@@ -187,15 +187,15 @@ calc_ch4_enteric <- function(
     ch4_conversion_factor_ym,
     ch4_mitigation_factor,
     ration_gross_energy,
-    dry_matter_intake
+    ration_intake
 ) {
   validate_enteric_emission_inputs(
     species_short, ch4_conversion_factor_ym, ch4_mitigation_factor,
-    ration_gross_energy, dry_matter_intake
+    ration_gross_energy, ration_intake
   )
 
   if (species_short %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
-    ch4_enteric <- ration_gross_energy * dry_matter_intake *
+    ch4_enteric <- ration_gross_energy * ration_intake *
       (ch4_conversion_factor_ym / 100) * ch4_mitigation_factor / 55.65
   } else if (species_short == "CHK") {
     ch4_enteric <- 0

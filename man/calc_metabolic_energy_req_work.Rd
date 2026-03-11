@@ -7,7 +7,7 @@
 calc_metabolic_energy_req_work(
   species_short,
   cohort_short,
-  energy_requirement_maintenance = NA_real_,
+  metabolic_energy_req_maintenance = NA_real_,
   draught_work_hours_female = NA_real_,
   draught_work_hours_male = NA_real_,
   draught_fraction_female = NA_real_,
@@ -37,7 +37,7 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{energy_requirement_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed
+\item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed
 to keep the animal at equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 

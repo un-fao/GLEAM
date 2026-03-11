@@ -49,7 +49,7 @@ feed_urinary_energy_ruminant,0,TRUE,0.5,TRUE
 feed_urinary_energy_pigs,0,TRUE,0.5,TRUE
 feed_urinary_energy_chicken,0,TRUE,0.5,TRUE
 feed_ash,0,TRUE,25,TRUE
-dry_matter_intake,0,TRUE,Inf,TRUE
+ration_intake,0,TRUE,Inf,TRUE
 ration_digestibility_fraction,0,TRUE,1,TRUE
 ration_urinary_energy_fraction,0,TRUE,0.2,TRUE
 ration_ash,0,TRUE,0.2,TRUE
@@ -78,8 +78,8 @@ milk_lactose_fraction_standard,0,TRUE,1,TRUE
 milk_production_fpcm_cohort,0,TRUE,Inf,TRUE
 simulation_duration,0,FALSE,3650,TRUE
 cohort_stock_size,0,TRUE,Inf,TRUE
-energy_requirement_fibre_production,0,TRUE,Inf,TRUE
-energy_requirement_work,0,TRUE,Inf,TRUE
+metabolic_energy_req_fibre_production,0,TRUE,Inf,TRUE
+metabolic_energy_req_work,0,TRUE,Inf,TRUE
 energy_allocation_milk,0,TRUE,Inf,TRUE
 energy_allocation_fibre,0,TRUE,Inf,TRUE
 energy_allocation_work,0,TRUE,Inf,TRUE

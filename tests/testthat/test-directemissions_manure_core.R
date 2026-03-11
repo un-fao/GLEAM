@@ -1,7 +1,7 @@
 # ---- test calc_volatile_solids ----
 test_that("calc_volatile_solids produces expected results", {
   result <- calc_volatile_solids(
-    dry_matter_intake = 5,
+    ration_intake = 5,
     ration_digestibility_fraction = 0.6,
     ration_urinary_energy_fraction = 0.04,
     ration_ash = 0.08
@@ -13,7 +13,7 @@ test_that("calc_volatile_solids produces expected results", {
 
 test_that("calc_volatile_solids produces expected results", {
   result <- calc_volatile_solids(
-    dry_matter_intake = 4,
+    ration_intake = 4,
     ration_digestibility_fraction = 0.7,
     ration_urinary_energy_fraction = 0.02,
     ration_ash = 0.06

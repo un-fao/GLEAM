@@ -5,14 +5,14 @@
 \title{Calculate Volatile Solids for Manure Emissions}
 \usage{
 calc_volatile_solids(
-  dry_matter_intake,
+  ration_intake,
   ration_digestibility_fraction,
   ration_urinary_energy_fraction,
   ration_ash
 )
 }
 \arguments{
-\item{dry_matter_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+\item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 
@@ -52,7 +52,7 @@ organic matter into volatile solids using the energy density of dry matter.
 \strong{Implementation note.}
 This function applies an algebraically simplified formulation from Equation 10.24 of IPCC.
 
-In this implementation, the function takes \code{dry_matter_intake} directly
+In this implementation, the function takes \code{ration_intake} directly
 as an input. It can be calculated upstream with
 \code{\link{calc_ration_intake}} as a function of energy requirements and
 the energy content of the diet.
@@ -78,7 +78,7 @@ to the IPCC approach and fully consistent with Equation 10.24.
 }
 \examples{
 calc_volatile_solids <- calc_volatile_solids(
-  dry_matter_intake = 5,
+  ration_intake = 5,
   ration_digestibility_fraction = 0.6,
   ration_urinary_energy_fraction = 0.04,
   ration_ash = 0.08

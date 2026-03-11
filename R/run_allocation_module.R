@@ -23,12 +23,12 @@
 #'       \item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 #'       \item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by
 #'       cohort (kg/cohort/assessment period).}
-#'       \item{energy_requirement_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
+#'       \item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 #'       Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
 #'       for CML.}
 #'       \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
 #'       FS, FA, MJ, MS, MA).}
-#'       \item{energy_requirement_work}{Numeric. Energy required for work, used to estimate the energy required for draught
+#'       \item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught
 #'       power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
 #'       SHP, GTS and as metabolizable energy for CML.}
 #'   }
@@ -275,7 +275,7 @@ run_allocation_module <- function(
     energy_allocation_fibre := calc_fibre_allocation_energy(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_stock_size = cohort_stock_size,
-      energy_requirement_fibre_production = energy_requirement_fibre_production,
+      metabolic_energy_req_fibre_production = metabolic_energy_req_fibre_production,
       ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne],
       simulation_duration = simulation_duration
     ),
@@ -288,7 +288,7 @@ run_allocation_module <- function(
     energy_allocation_work := calc_work_allocation_energy(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_stock_size = cohort_stock_size,
-      energy_requirement_work = energy_requirement_work,
+      metabolic_energy_req_work = metabolic_energy_req_work,
       ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne],
       simulation_duration = simulation_duration
     ),

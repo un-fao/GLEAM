@@ -33,7 +33,7 @@
 #' @param cohort_level_data A `data.table` containing cohort-level data with all
 #'   calculated variables. Must include:
 #'   \describe{
-#'     \item{**Feed variables**:}{`dry_matter_intake` (kg DM/head/day)}
+#'     \item{**Feed variables**:}{`ration_intake` (kg DM/head/day)}
 #'     \item{**Nitrogen balance**:}{`nitrogen_intake`, `nitrogen_retention`, `nitrogen_excretion`}
 #'     \item{**Production**:}{`milk_production_*_cohort`, `meat_production_*_cohort`, `fibre_production_cohort`}
 #'     \item{**Emissions**:}{`ch4_enteric`, `ch4_manure_*`, `direct_n2o_manure_*`,
@@ -144,7 +144,7 @@ run_aggregation_module <- function(
   # --- Step 1: Define variable groups -----------------------------------------
   feed_list <- list(
     list(
-      feed_source = "dry_matter_intake",
+      feed_source = "ration_intake",
       label = "DryMatterIntake",
       unit = "kg dry matter"
     )
