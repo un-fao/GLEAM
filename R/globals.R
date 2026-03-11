@@ -50,12 +50,12 @@ utils::globalVariables(c(
   "live_weight_at_birth", "live_weight_female_at_slaughter", "live_weight_male_at_slaughter", "live_weight_at_weaning",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
   "live_weight_cohort_at_slaughter", "live_weight_cohort_average",
-  "live_weight_cohort_final", "animal"
+  "live_weight_cohort_final"
 ))
 
 utils::globalVariables(c(
   # Columns used in run_ration_quality_module
-  "animal", "species_short", "cohort_short", "feed_id", "feed_name", "category", "feed_ration_fraction",
+  "species_short", "cohort_short", "feed_id", "feed_name", "category", "feed_ration_fraction",
   "feed_gross_energy", "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
   "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
   "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
@@ -120,7 +120,7 @@ utils::globalVariables(c(
   "n2o_feed_crop_residues", "n2o_feed_fertilizer", "n2o_feed_manure_applied",
   "feed_name_emissions", "feed_name_input", "n_ids",
   # data.table join prefixes used in run_allocation and run_aggregation
-  "i.animal", "i.species_short", "x.ratio_me_to_ne"
+  "i.species_short", "x.ratio_me_to_ne"
 ))
 
 utils::globalVariables(c(
@@ -180,8 +180,3 @@ utils::globalVariables(c(
   "assessment_duration", "simulation_duration", "cohort_stock_size"  # run_aggregation and herd_simulation
 ))
 
-# Add species abbreviations
-abbr_animals <- data.table::data.table(
-  animal = c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels"),
-  species_short = c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
-)

@@ -38,9 +38,9 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
     )
   }
 
-  # --- Required columns: herd (herd_id, animal, herd-level vars) --------------
+  # --- Required columns: herd (herd_id, species_short, herd-level vars) -------
   required_herd_cols <- c(
-    "herd_id", "animal",
+    "herd_id", "species_short",
     "milk_protein_fraction", "milk_yield_day", "fibre_yield_year",
     "litter_size", "parturition_rate",
     "live_weight_at_weaning", "live_weight_at_birth", "pregnancy_duration"
@@ -101,13 +101,13 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
     )
   }
 
-  # --- Herd: valid animal (full names, mapped via abbr_animals) ---------------
-  valid_animals <- c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels")
-  invalid_animals <- setdiff(unique(herd_level_data$animal), valid_animals)
-  if (length(invalid_animals) > 0) {
+  # --- Herd: valid species_short codes ----------------------------------------
+  valid_species <- c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
+  invalid_species <- setdiff(unique(herd_level_data$species_short), valid_species)
+  if (length(invalid_species) > 0) {
     cli::cli_abort(
-      "Invalid {.var animal} values in {.arg herd_level_data}: {.val {invalid_animals}}.
-      Must be one of: {.val {valid_animals}}"
+      "Invalid {.var species_short} values in {.arg herd_level_data}: {.val {invalid_species}}.
+      Must be one of: {.val {valid_species}}"
     )
   }
 

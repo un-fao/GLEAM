@@ -19,7 +19,7 @@ validate_run_emissions_enteric_module_inputs <- function(data) {
 
   # --- Required columns validation --------------------------------------------
   required_cols <- c(
-    "herd_id", "animal", "cohort_short", "ration_digestibility_fraction",
+    "herd_id", "species_short", "cohort_short", "ration_digestibility_fraction",
     "ration_gross_energy", "ration_intake"
   )
   missing_cols <- setdiff(required_cols, names(data))
@@ -29,9 +29,9 @@ validate_run_emissions_enteric_module_inputs <- function(data) {
     )
   }
 
-  # --- Valid cohort and animal (full name) codes ------------------------------
+  # --- Valid cohort and species_short codes -----------------------------------
   valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-  valid_animals_full <- c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels")
+  valid_species <- c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
 
   invalid_cohorts <- setdiff(unique(data$cohort_short), valid_cohorts)
   if (length(invalid_cohorts) > 0) {
@@ -41,11 +41,11 @@ validate_run_emissions_enteric_module_inputs <- function(data) {
     )
   }
 
-  invalid_animals <- setdiff(unique(data$animal), valid_animals_full)
-  if (length(invalid_animals) > 0) {
+  invalid_species <- setdiff(unique(data$species_short), valid_species)
+  if (length(invalid_species) > 0) {
     cli::cli_abort(
-      "Invalid {.var animal} values in {.arg data}: {.val {invalid_animals}}.
-      Must be one of: {.val {valid_animals_full}}"
+      "Invalid {.var species_short} values in {.arg data}: {.val {invalid_species}}.
+      Must be one of: {.val {valid_species}}"
     )
   }
 

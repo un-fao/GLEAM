@@ -39,7 +39,7 @@ validate_run_allocation_module_inputs <- function(
   )
   required_herd_cols <- c(
     "herd_id",
-    "animal",
+    "species_short",
     "live_weight_at_birth",
     "milk_protein_fraction_standard",
     "milk_fat_fraction_standard",

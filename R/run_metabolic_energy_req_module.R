@@ -32,7 +32,7 @@
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'     \item{animal}{Character. Livestock category name used to map to a species short code via an
+#'     \item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
 #'     internal lookup table. Supported values include:
 #'     \itemize{
 #'     \item \code{Cattle}
@@ -89,7 +89,7 @@
 #'
 #' @details
 #' This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
-#' maps \code{animal} to a species short code (\code{species_short}) via \code{abbr_animals},
+#' uses \code{species_short} directly for all species-specific energy calculations,
 #' and computes IPCC Tier 2 energy partition components and derived feed intake metrics by cohort.
 #'
 #' Energy requirements are expressed as:
@@ -177,10 +177,7 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
-  # --- Step 3: Map full animal names to species_short -------------------------
-  herd_level_data[abbr_animals, species_short := i.species_short, on = "animal"]
-
-  # --- Step 4: Maintenance energy (MJ/day) ------------------------------------
+  # --- Step 3: Maintenance energy (MJ/day) ------------------------------------
   cohort_level_data[
     ,
     metabolic_energy_req_maintenance := calc_metabolic_energy_req_maintenance(
@@ -194,7 +191,7 @@ run_metabolic_energy_req_module <- function(
     by = .I
   ]
 
-  # --- Step 5: Activity energy (MJ/day) ---------------------------------------
+  # --- Step 4: Activity energy (MJ/day) ---------------------------------------
   cohort_level_data[
     ,
     metabolic_energy_req_activity := calc_metabolic_energy_req_activity(
@@ -208,7 +205,7 @@ run_metabolic_energy_req_module <- function(
     by = .I
   ]
 
-  # --- Step 6: Growth energy (MJ/day) -----------------------------------------
+  # --- Step 5: Growth energy (MJ/day) -----------------------------------------
   cohort_level_data[
     ,
     metabolic_energy_req_growth := calc_metabolic_energy_req_growth(
@@ -225,7 +222,7 @@ run_metabolic_energy_req_module <- function(
     by = .I
   ]
 
-  # --- Step 7: Lactation energy (MJ/day) --------------------------------------
+  # --- Step 6: Lactation energy (MJ/day) --------------------------------------
   cohort_level_data[
     ,
     metabolic_energy_req_lactation := calc_metabolic_energy_req_lactation(
@@ -246,7 +243,7 @@ run_metabolic_energy_req_module <- function(
     by = .I
   ]
 
-  # --- Step 8: Work energy (MJ/day) ------------------------------------------
+  # --- Step 7: Work energy (MJ/day) ------------------------------------------
   cohort_level_data[
     ,
     metabolic_energy_req_work := calc_metabolic_energy_req_work(
@@ -261,7 +258,7 @@ run_metabolic_energy_req_module <- function(
     by = .I
   ]
 
-  # --- Step 9: Fibre production energy (MJ/day) ------------------------------
+  # --- Step 8: Fibre production energy (MJ/day) ------------------------------
   cohort_level_data[
     ,
     metabolic_energy_req_fibre_production := calc_metabolic_energy_req_fibre(
@@ -290,7 +287,7 @@ run_metabolic_energy_req_module <- function(
     by = .I
   ]
 
-  # --- Step 11: Diet NE fractions ---------------------------------------------
+  # --- Step 10: Diet NE fractions ---------------------------------------------
   cohort_level_data[
     ,
     net_energy_maintenance_digestible_energy_ratio := calc_rem_maintenance(
@@ -329,7 +326,7 @@ run_metabolic_energy_req_module <- function(
     by = .I
   ]
 
-  # --- Step 13: Dry matter intake (kg DM/day) ---------------------------------
+  # --- Step 12: Dry matter intake (kg DM/day) ---------------------------------
   cohort_level_data[
     ,
     ration_intake := calc_ration_intake(

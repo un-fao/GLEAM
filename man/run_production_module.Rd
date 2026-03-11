@@ -111,7 +111,7 @@ The function returns milk, fibre, and meat outputs for each cohort.
 }
 \details{
 This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
-maps \code{animal} to a species short code (\code{species_short}) via \code{abbr_animals},
+uses \code{species_short} directly for all species-specific production calculations,
 and computes production outputs by cohort.
 
 The following calculation sequence is applied:

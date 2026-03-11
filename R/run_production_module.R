@@ -96,7 +96,7 @@
 #'
 #' @details
 #' This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
-#' maps \code{animal} to a species short code (\code{species_short}) via \code{abbr_animals},
+#' uses \code{species_short} directly for all species-specific production calculations,
 #' and computes production outputs by cohort.
 #'
 #' The following calculation sequence is applied:
@@ -159,14 +159,6 @@ run_production_module <- function(
   # --- Step 2: Create working copy --------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
   
-  # --- Step 3: Map full animal names to species_short ------------------------
-  herd_level_data <- merge(
-    herd_level_data,
-    abbr_animals,
-    by = "animal",
-    all.x = TRUE
-  )
-
   # --- Step 3: Compute milk production outputs --------------------------------
   milk_output_cols <- c(
     "milk_production_mass_cohort",

@@ -12,17 +12,16 @@ following minimum data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each
 cohort belonging to the same herd.}
-\item{animal}{
-Character. Livestock category name used to map to a species short code via an
-internal lookup table. Supported values include:
+\item{species_short}{
+Character. Species short code. Supported values include:
 \itemize{
-\item \code{Cattle}
-\item \code{Buffalo}
-\item \code{Sheep}
-\item \code{Goats}
-\item \code{Chicken}
-\item \code{Pigs}
-\item \code{Camels}
+\item \code{CTL} (Cattle)
+\item \code{BFL} (Buffalo)
+\item \code{SHP} (Sheep)
+\item \code{GTS} (Goats)
+\item \code{CHK} (Chicken)
+\item \code{PGS} (Pigs)
+\item \code{CML} (Camels)
 }
 }
 \item{cohort_short}{
@@ -86,7 +85,7 @@ reporting). If provided, it should uniquely identify the same feed component as 
 }
 \value{
 data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
-\code{animal}, and \code{cohort_short} with the following columns:
+\code{species_short}, and \code{cohort_short} with the following columns:
 \describe{
 \item{ration_gross_energy}{Numeric. Average gross energy content of the diet
 (MJ/kg DM).}
@@ -110,7 +109,7 @@ parameters.
 }
 \details{
 This function joins \code{rations_share} with \code{feed_params} by \code{feed_id},
-maps \code{animal} to a species short code, and computes ration-weighted nutritional
+uses \code{species_short} directly, and computes ration-weighted nutritional
 metrics by cohort.
 
 The following calculation sequence is applied:
@@ -127,7 +126,7 @@ and \code{feed_gross_energy} using \code{\link{calc_feed_digestibility_fraction}
 \item ash using \code{\link{calc_ration_ash}}
 }
 \item Cohort-level nutritional metrics are obtained for the whole feed ration by summing contributions across
-feed components within each \code{herd_id}, \code{animal}, and \code{cohort_short}.
+feed components within each \code{herd_id}, \code{species_short}, and \code{cohort_short}.
 }
 }
 \examples{

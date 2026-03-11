@@ -39,8 +39,7 @@
 #'     \item{**Emissions**:}{`ch4_enteric`, `ch4_manure_*`, `direct_n2o_manure_*`,
 #'       `indirect_n2o_manure_*`}
 #'   }
-#'   Required grouping columns: `herd_id`, `animal` (full species name, e.g. Cattle, Buffalo;
-#'   mapped to \code{species_short} internally), `cohort_short`, \code{cohort_stock_size}.
+#'   Required grouping columns: `herd_id`, `species_short` (e.g. CTL, BFL, SHP), `cohort_short`, \code{cohort_stock_size}.
 #'
 #' @param allocation_herd_long A `data.table` in long format, typically the
 #'   output of [run_allocation_module()]. Must include columns:
@@ -137,9 +136,6 @@ run_aggregation_module <- function(
     simulation_duration = simulation_duration,
     global_warming_potential_set = global_warming_potential_set
   )
-
-  # Map animal to species_short
-  cohort_level_data[abbr_animals, species_short := i.species_short, on = "animal"]
 
   # --- Step 1: Define variable groups -----------------------------------------
   feed_list <- list(

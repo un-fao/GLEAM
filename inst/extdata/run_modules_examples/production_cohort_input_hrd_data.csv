@@ -1,7 +1,7 @@
-herd_id,animal,milk_yield_day,lactating_females_fraction,milk_protein_fraction,milk_fat_fraction,milk_lactose_fraction,milk_protein_fraction_standard,milk_fat_fraction_standard,milk_lactose_fraction_standard,fibre_yield_year,carcass_dressing_fraction,bone_free_meat_fraction,meat_protein_fraction
-1,Cattle,10,0.4,0.033,0.04,0.048,0.033,0.04,0.048,0,0.52,0.75,0.21
-2,Buffalo,8,0.35,0.032,0.045,0.047,0.033,0.04,0.048,0,0.52,0.74,0.2
-3,Sheep,1.5,0.3,0.055,0.06,0.045,0.033,0.04,0.048,3,0.5,0.72,0.2
-4,Goats,1.2,0.3,0.032,0.045,0.046,0.033,0.04,0.048,2,0.5,0.72,0.2
-5,Camels,5,0.3,0.031,0.035,0.048,0.033,0.04,0.048,1,0.48,0.74,0.2
-6,Pigs,0,0,0.032,0.04,0.048,0.033,0.04,0.048,0,0.72,0.58,0.21
+herd_id,species_short,milk_yield_day,lactating_females_fraction,milk_protein_fraction,milk_fat_fraction,milk_lactose_fraction,milk_protein_fraction_standard,milk_fat_fraction_standard,milk_lactose_fraction_standard,fibre_yield_year,carcass_dressing_fraction,bone_free_meat_fraction,meat_protein_fraction
+1,CTL,10,0.4,0.033,0.04,0.048,0.033,0.04,0.048,0,0.52,0.75,0.21
+2,BFL,8,0.35,0.032,0.045,0.047,0.033,0.04,0.048,0,0.52,0.74,0.2
+3,SHP,1.5,0.3,0.055,0.06,0.045,0.033,0.04,0.048,3,0.5,0.72,0.2
+4,GTS,1.2,0.3,0.032,0.045,0.046,0.033,0.04,0.048,2,0.5,0.72,0.2
+5,CML,5,0.3,0.031,0.035,0.048,0.033,0.04,0.048,1,0.48,0.74,0.2
+6,PGS,0,0,0.032,0.04,0.048,0.033,0.04,0.048,0,0.72,0.58,0.21

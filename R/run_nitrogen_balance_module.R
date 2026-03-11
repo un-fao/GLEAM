@@ -27,7 +27,7 @@
 #'   \describe{
 #'    \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 #'     to the same herd.}
-#'       \item{animal}{Character. Livestock category name used to map to a species short code via an
+#'       \item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
 #'        internal lookup table. Supported values include:
 #'        \itemize{
 #'        \item \code{Cattle}
@@ -74,7 +74,7 @@
 #'
 #' @details
 #' This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
-#' maps \code{animal} to species short code (\code{species_short}) via \code{abbr_animals},
+#' uses \code{species_short} directly for all species-specific nitrogen balance calculations,
 #' and computes cohort-level nitrogen balance components following the IPCC Tier 2 structure.
 #'
 #' The following calculation sequence is applied:
@@ -128,16 +128,9 @@ run_nitrogen_balance_module <- function(
     cli::cli_status("\U1F552 Calculating nitrogen balance, please wait\U2026")
   }
 
-  # --- Step 2: Create working copies; map animal -> species_short (herd) ------
+  # --- Step 2: Create working copies ------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
-
-  herd_level_data <- merge(
-    herd_level_data,
-    abbr_animals,
-    by = "animal",
-    all.x = TRUE
-  )
 
   # --- Step 3: Intake – N consumed per head/day -------------------------------
   cohort_level_data[

@@ -31,7 +31,7 @@ validate_run_aggregation_module_inputs <- function(
   }
 
   # --- Required columns: cohort level -----------------------------------------
-  required_cohort_cols <- c("herd_id", "cohort_short", "cohort_stock_size")
+  required_cohort_cols <- c("herd_id", "species_short", "cohort_short", "cohort_stock_size")
   missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
   if (length(missing_cohort_cols) > 0) {
     cli::cli_abort(
@@ -39,12 +39,6 @@ validate_run_aggregation_module_inputs <- function(
     )
   }
 
-  # Cohort must have either animal or species_short (for mapping to species_short)
-  if (!"animal" %in% names(cohort_level_data) && !"species_short" %in% names(cohort_level_data)) {
-    cli::cli_abort(
-      "{.arg cohort_level_data} must contain either {.var animal} or {.var species_short}."
-    )
-  }
 
   # --- Required columns: allocation ------------------------------------------
   required_allocation_cols <- c(
@@ -88,22 +82,11 @@ validate_run_aggregation_module_inputs <- function(
   }
 
   # --- Build cohort (herd_id, species_short) set for cross-validation ----------
-  cohort_check <- data.table::copy(cohort_level_data)
-  if (!"species_short" %in% names(cohort_check) && "animal" %in% names(cohort_check)) {
-    cohort_check[abbr_animals, species_short := i.species_short, on = "animal"]
-    unmapped <- cohort_check[is.na(species_short), unique(animal)]
-    if (length(unmapped) > 0) {
-      cli::cli_abort(
-        "Unknown {.var animal} values in {.arg cohort_level_data}: {.val {unmapped}}.
-        Must be one of: {.val {abbr_animals$animal}}"
-      )
-    }
-  }
-  cohort_herd_species <- unique(cohort_check[, .(herd_id, species_short)])
+  cohort_herd_species <- unique(cohort_level_data[, .(herd_id, species_short)])
   allocation_herd_species <- unique(allocation_herd_long[, .(herd_id, species_short)])
 
   # --- Cross-table: cohort herd_ids in allocation ----------------------------
-  cohort_herd_ids <- unique(cohort_check$herd_id)
+  cohort_herd_ids <- unique(cohort_level_data$herd_id)
   allocation_herd_ids <- unique(allocation_herd_long$herd_id)
 
   missing_in_allocation <- setdiff(cohort_herd_ids, allocation_herd_ids)

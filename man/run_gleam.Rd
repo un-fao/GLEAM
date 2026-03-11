@@ -25,13 +25,13 @@ run herd simulation first using \code{cohort_level_data} and \code{herd_level_da
 
 \item{cohort_level_data}{data.table. Cohort-level master table. Must have one row
 per cohort (6 cohorts per herd: FJ, FS, FA, MJ, MS, MA) and must include
-\code{animal} (full species name, e.g. Cattle, Buffalo) for each cohort. Data
+\code{species_short} (e.g. CTL, BFL, SHP) for each cohort. Data
 should not include columns that GLEAM calculates (validation will block them).
 May optionally include \code{ch4_mitigation_factor} (fraction of baseline enteric
 CH4 remaining after mitigation, 1 = no mitigation).}
 
 \item{herd_level_data}{data.table. Herd-level master table (one row per herd).
-Must include \code{animal} (full species name, e.g. Cattle, Buffalo).}
+Must include \code{species_short} (e.g. CTL, BFL, SHP).}
 
 \item{feed_rations}{data.table. Feed ration shares by cohort (see \code{\link{run_ration_quality_module}}).}
 

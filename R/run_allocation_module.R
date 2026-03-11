@@ -38,7 +38,7 @@
 #'   \describe{
 #'    \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 #'     to the same herd.}
-#'       \item{animal}{Character. Livestock category name used to map to a species short code via an
+#'       \item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
 #'        internal lookup table. Supported values include:
 #'        \itemize{
 #'        \item \code{Cattle}
@@ -239,10 +239,7 @@ run_allocation_module <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
-  # --- Step 3: Map animal to species_short in herd table ----------------------
-  herd_level_data[abbr_animals, species_short := i.species_short, on = "animal"]
-
-  # --- Step 4: Calculate cohort-level energy allocations ----------------------
+  # --- Step 3: Calculate cohort-level energy allocations ----------------------
   # Milk energy allocation: based on FPCM (fat- and protein-corrected milk) output
   cohort_level_data[
     ,
@@ -298,7 +295,7 @@ run_allocation_module <- function(
   # Eggs energy allocation: placeholder (not currently implemented)
   cohort_level_data[, egg_allocation_energy := 0]
 
-  # --- Step 5: Aggregate from cohort to herd level --------------------------
+  # --- Step 4: Aggregate from cohort to herd level --------------------------
   # Sum energy allocations by herd_id to get herd-level totals
   allocation_herd <- calc_cohort_to_herd_aggregation(
     data_cohort = cohort_level_data,
@@ -313,14 +310,14 @@ run_allocation_module <- function(
     cohort_short = "cohort_short"
   )
 
-  # Add species_short and animal for downstream --------------------------------
+  # Add species_short for downstream -------------------------------------------
   allocation_herd[
     herd_level_data,
-    `:=`(species_short = i.species_short, animal = i.animal),
+    `:=`(species_short = i.species_short),
     on = "herd_id"
   ]
 
-  # --- Step 6: Calculate allocation shares per commodity ----------------------
+  # --- Step 5: Calculate allocation shares per commodity ----------------------
   allocation_herd[
     ,
     c(
@@ -389,7 +386,7 @@ run_allocation_module <- function(
     commodity_type := "Non-Edible"
   ]
 
-  # --- Step 8: Assigning allocation to emission sources -----------------------
+  # --- Step 7: Assigning allocation to emission sources -----------------------
   allocation_herd_long <- assign_allocation_shares(
     allocation_herd_long = allocation_herd_long,
     emissions_vars = c(
