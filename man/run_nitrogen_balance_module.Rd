@@ -35,7 +35,7 @@ the following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 to the same herd.}
-\item{animal}{Character. Livestock category name used to map to a species short code via an
+\item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
 internal lookup table. Supported values include:
 \itemize{
 \item \code{Cattle}
@@ -87,7 +87,7 @@ by applying IPCC Tier 2 approach.
 }
 \details{
 This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
-maps \code{animal} to species short code (\code{species_short}) via \code{abbr_animals},
+uses \code{species_short} directly for all species-specific nitrogen balance calculations,
 and computes cohort-level nitrogen balance components following the IPCC Tier 2 structure.
 
 The following calculation sequence is applied:

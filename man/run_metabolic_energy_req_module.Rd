@@ -40,7 +40,7 @@ run_metabolic_energy_req_module(
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{animal}{Character. Livestock category name used to map to a species short code via an
+\item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
 internal lookup table. Supported values include:
 \itemize{
 \item \code{Cattle}
@@ -102,7 +102,7 @@ by applying the IPCC Tier 2 energy partitioning functions.
 }
 \details{
 This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
-maps \code{animal} to a species short code (\code{species_short}) via \code{abbr_animals},
+uses \code{species_short} directly for all species-specific energy calculations,
 and computes IPCC Tier 2 energy partition components and derived feed intake metrics by cohort.
 
 Energy requirements are expressed as:

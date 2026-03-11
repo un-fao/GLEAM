@@ -45,7 +45,7 @@ requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 to the same herd.}
-\item{animal}{Character. Livestock category name used to map to a species short code via an
+\item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
 internal lookup table. Supported values include:
 \itemize{
 \item \code{Cattle}

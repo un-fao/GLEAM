@@ -21,8 +21,7 @@ calculated variables. Must include:
 \item{\strong{Emissions}:}{\code{ch4_enteric}, \verb{ch4_manure_*}, \verb{direct_n2o_manure_*},
 \verb{indirect_n2o_manure_*}}
 }
-Required grouping columns: \code{herd_id}, \code{animal} (full species name, e.g. Cattle, Buffalo;
-mapped to \code{species_short} internally), \code{cohort_short}, \code{cohort_stock_size}.}
+Required grouping columns: \code{herd_id}, \code{species_short} (e.g. CTL, BFL, SHP), \code{cohort_short}, \code{cohort_stock_size}.}
 
 \item{allocation_herd_long}{A \code{data.table} in long format, typically the
 output of \code{\link[=run_allocation_module]{run_allocation_module()}}. Must include columns:

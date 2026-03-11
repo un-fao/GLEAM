@@ -81,12 +81,12 @@ validate_run_gleam_inputs <- function(
   }
 
   # --- Required columns in cohort_level_data ----------------------------------
-  required_cohort_cols <- c("herd_id", "animal", "cohort_short")
+  required_cohort_cols <- c("herd_id", "species_short", "cohort_short")
   missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
   if (length(missing_cohort_cols) > 0L) {
     cli::cli_abort(
       "Missing required columns in {.arg cohort_level_data}: {.val {missing_cohort_cols}}.
-      {.var animal} (e.g. Cattle, Buffalo) must be present for each cohort."
+      {.var species_short} (e.g. CTL, BFL, SHP) must be present for each cohort."
     )
   }
 

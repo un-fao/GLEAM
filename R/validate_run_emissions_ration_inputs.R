@@ -28,7 +28,7 @@ validate_run_emissions_ration_module_inputs <- function(
 
   # --- Required columns validation --------------------------------------------
   required_rations_cols <- c(
-    "herd_id", "animal", "feed_name", "feed_id", "cohort_short",
+    "herd_id", "species_short", "feed_name", "feed_id", "cohort_short",
     "feed_ration_fraction"
   )
 
@@ -63,21 +63,21 @@ validate_run_emissions_ration_module_inputs <- function(
   ration_sums <- rations_share[
     ,
     .(feed_ration_sum = sum(feed_ration_fraction)),
-    by = .(herd_id, animal, cohort_short)
+    by = .(herd_id, species_short, cohort_short)
   ]
   invalid_ration_sums <- ration_sums[abs(feed_ration_sum - 1) > 1e-6]
   if (nrow(invalid_ration_sums) > 0) {
     cli::cli_abort(
-      "Feed emissions fractions must sum to 1 within each herd_id, animal, and cohort_short."
+      "Feed emissions fractions must sum to 1 within each herd_id, species_short, and cohort_short."
     )
   }
 
   # --- Rations_share key uniqueness -------------------------------------------
-  # Prevent duplicate feed lines within a herd/cohort (and animal).
-  # Expected grain: one row per feed per herd_id x animal x cohort_short.
-  ration_scope <- c("herd_id", "animal", "cohort_short")
+  # Prevent duplicate feed lines within a herd/cohort.
+  # Expected grain: one row per feed per herd_id x species_short x cohort_short.
+  ration_scope <- c("herd_id", "species_short", "cohort_short")
 
-  # 1) feed_id must be unique within herd/animal/cohort
+  # 1) feed_id must be unique within herd/species/cohort
   dup_feed_id_rows <- rations_share[
     duplicated(rations_share[, c(ration_scope, "feed_id"), with = FALSE]) |
       duplicated(rations_share[, c(ration_scope, "feed_id"), with = FALSE], fromLast = TRUE),
@@ -88,14 +88,14 @@ validate_run_emissions_ration_module_inputs <- function(
   if (nrow(dup_feed_id_rows) > 0) {
     preview <- utils::head(unique(dup_feed_id_rows), 10)
     cli::cli_abort(c(
-      "{.arg rations_share} contains duplicated {.arg feed_id} within herd/cohort/animal.",
+      "{.arg rations_share} contains duplicated {.arg feed_id} within herd/cohort/species_short.",
       "i" = "Expected unique rows by: {.val {c(ration_scope, 'feed_id')}}",
       "i" = "Duplicate keys (first 10):",
       "x" = paste(utils::capture.output(print(preview)), collapse = "\n")
     ))
   }
 
-  # 2) feed_name must be unique within herd/animal/cohort
+  # 2) feed_name must be unique within herd/species/cohort
   dup_feed_name_rows <- rations_share[
     duplicated(rations_share[, c(ration_scope, "feed_name"), with = FALSE]) |
       duplicated(rations_share[, c(ration_scope, "feed_name"), with = FALSE], fromLast = TRUE),
@@ -106,7 +106,7 @@ validate_run_emissions_ration_module_inputs <- function(
   if (nrow(dup_feed_name_rows) > 0) {
     preview <- utils::head(unique(dup_feed_name_rows), 10)
     cli::cli_abort(c(
-      "{.arg rations_share} contains duplicated {.arg feed_name} within herd/cohort/animal.",
+      "{.arg rations_share} contains duplicated {.arg feed_name} within herd/cohort/species_short.",
       "i" = "Expected unique rows by: {.val {c(ration_scope, 'feed_name')}}",
       "i" = "Duplicate keys (first 10):",
       "x" = paste(utils::capture.output(print(preview)), collapse = "\n")

@@ -102,15 +102,12 @@ run_emissions_enteric_module <- function(
   # --- Step 2: Create working copy --------------------------------------------
   enteric_results <- data.table::copy(cohort_level_data)
 
-  # --- Step 3: Map full animal names to species_short -------------------------
-  enteric_results[abbr_animals, species_short := i.species_short, on = "animal"]
-
   # Use mitigation factor from data if present; otherwise default to 1.
   if (!"ch4_mitigation_factor" %in% names(enteric_results)) {
     enteric_results[, ch4_mitigation_factor := 1]
   }
 
-  # --- Step 4: Compute methane conversion factor (ym) -------------------------
+  # --- Step 3: Compute methane conversion factor (ym) -------------------------
   enteric_results[
     ,
     ch4_conversion_factor_ym := calc_conversion_factor_ym(
@@ -121,7 +118,7 @@ run_emissions_enteric_module <- function(
     by = .I
   ]
 
-  # --- Step 5: Compute enteric methane emissions (kg CH4/head/day) ------------
+  # --- Step 4: Compute enteric methane emissions (kg CH4/head/day) ------------
   enteric_results[
     ,
     ch4_enteric := calc_ch4_enteric(
@@ -139,9 +136,6 @@ run_emissions_enteric_module <- function(
     cli::cli_status_clear()
     cli::cli_alert_success("Enteric methane emissions calculation complete.")
   }
-
-  # Drop species_short (internal scientific layer only, never user-facing)
-  enteric_results[, species_short := NULL]
 
   return(enteric_results)
 }

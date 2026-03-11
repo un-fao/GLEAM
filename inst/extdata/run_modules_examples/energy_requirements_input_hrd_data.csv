@@ -1,7 +1,7 @@
-herd_id,animal,age_first_parturition,lactating_females_fraction,milk_yield_day,milk_fat_fraction,non_productive_duration,pregnancy_duration,litter_size,death_rate_juvenile,live_weight_at_birth,live_weight_at_weaning,lactation_duration,parturition_rate,egg_average_weight,draught_work_hours_female,draught_work_hours_male,draught_fraction_female,draught_fraction_male,fibre_yield_year
-1,Cattle,730,0.4,10,0.04,,283,1,0.05,35,200,210,0.9,,0,2,0,0.2,
-2,Buffalo,800,0.35,8,0.045,,300,1,0.05,40,220,220,0.85,,0,2,0,0.2,
-3,Sheep,540,0.3,1.5,0.06,,150,1.5,0.08,3.5,20,150,1,,,,,,3
-4,Goats,500,0.3,1.2,0.045,,150,1.6,0.08,3,18,150,1,,,,,,2
-5,Camels,1500,0.3,5,0.035,,390,1,0.03,35,180,240,0.6,,0,1,0,0.1,1
-6,Pigs,365,,,,90,115,10,0.1,1.5,20,28,2.2,0,,,,,
+herd_id,species_short,age_first_parturition,lactating_females_fraction,milk_yield_day,milk_fat_fraction,non_productive_duration,pregnancy_duration,litter_size,death_rate_juvenile,live_weight_at_birth,live_weight_at_weaning,lactation_duration,parturition_rate,egg_average_weight,draught_work_hours_female,draught_work_hours_male,draught_fraction_female,draught_fraction_male,fibre_yield_year
+1,CTL,730,0.4,10,0.04,,283,1,0.05,35,200,210,0.9,,0,2,0,0.2,
+2,BFL,800,0.35,8,0.045,,300,1,0.05,40,220,220,0.85,,0,2,0,0.2,
+3,SHP,540,0.3,1.5,0.06,,150,1.5,0.08,3.5,20,150,1,,,,,,3
+4,GTS,500,0.3,1.2,0.045,,150,1.6,0.08,3,18,150,1,,,,,,2
+5,CML,1500,0.3,5,0.035,,390,1,0.03,35,180,240,0.6,,0,1,0,0.1,1
+6,PGS,365,,,,90,115,10,0.1,1.5,20,28,2.2,0,,,,,

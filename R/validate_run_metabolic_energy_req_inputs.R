@@ -1,7 +1,7 @@
 #' Validate inputs for run_metabolic_energy_req_module
 #'
 #' Validates that cohort_level_data and herd_level_data have the correct structure,
-#' required columns, valid cohort and animal values, and consistent herd_id linkage.
+#' required columns, valid cohort and species_short values, and consistent herd_id linkage.
 #'
 #' @param cohort_level_data data.table. Cohort-level inputs (one row per herd-cohort).
 #' @param herd_level_data data.table. Herd-level inputs (one row per herd).
@@ -36,7 +36,7 @@ validate_run_metabolic_energy_req_module_inputs <- function(
     "ration_digestibility_fraction", "ration_gross_energy", "ration_metabolizable_energy"
   )
   required_herd_cols <- c(
-    "herd_id", "animal",
+    "herd_id", "species_short",
     "age_first_parturition", "lactating_females_fraction", "milk_yield_day", "milk_fat_fraction",
     "non_productive_duration", "pregnancy_duration", "litter_size", "death_rate_juvenile",
     "live_weight_at_birth", "live_weight_at_weaning",
@@ -110,12 +110,12 @@ validate_run_metabolic_energy_req_module_inputs <- function(
     )
   }
 
-  valid_animals <- c("Cattle", "Buffalo", "Sheep", "Goats", "Chicken", "Pigs", "Camels")
-  invalid_animals <- setdiff(unique(herd_level_data$animal), valid_animals)
-  if (length(invalid_animals) > 0) {
+  valid_species <- c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
+  invalid_species <- setdiff(unique(herd_level_data$species_short), valid_species)
+  if (length(invalid_species) > 0) {
     cli::cli_abort(
-      "Invalid {.field animal} values in {.arg herd_level_data}: {.val {invalid_animals}}.
-      Must be one of: {.val {valid_animals}}"
+      "Invalid {.field species_short} values in {.arg herd_level_data}: {.val {invalid_species}}.
+      Must be one of: {.val {valid_species}}"
     )
   }
 

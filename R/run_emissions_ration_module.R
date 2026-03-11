@@ -9,17 +9,16 @@
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each
 #'     cohort belonging to the same herd.}
-#'     \item{animal}{
-#'     Character. Livestock category name used to map to a species short code via an
-#'     internal lookup table. Supported values include:
+#'     \item{species_short}{
+#'     Character. Species short code. Supported values include:
 #'     \itemize{
-#'     \item \code{Cattle}
-#'     \item \code{Buffalo}
-#'     \item \code{Sheep}
-#'     \item \code{Goats}
-#'     \item \code{Chicken}
-#'     \item \code{Pigs}
-#'     \item \code{Camels}
+#'     \item \code{CTL} (Cattle)
+#'     \item \code{BFL} (Buffalo)
+#'     \item \code{SHP} (Sheep)
+#'     \item \code{GTS} (Goats)
+#'     \item \code{CHK} (Chicken)
+#'     \item \code{PGS} (Pigs)
+#'     \item \code{CML} (Camels)
 #'     }
 #'     }
 #'     \item{cohort_short}{
@@ -81,7 +80,7 @@
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'
 #' @return data.table. Cohort-level emission factors summarized by \code{herd_id},
-#'   \code{animal}, and \code{cohort_short} with the following columns:
+#'   \code{species_short}, and \code{cohort_short} with the following columns:
 #'   \describe{
 #'     \item{co2_ration_fertilizer}{
 #'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
@@ -123,7 +122,7 @@
 #'
 #' @details
 #' This function joins \code{rations_share} with \code{feed_emissions} by \code{feed_id},
-#' maps \code{animal} to a species short code, and computes ration-weighted emission
+#' uses \code{species_short} directly, and computes ration-weighted emission
 #' factors by cohort.
 #'
 #' The following calculation sequence is applied:
@@ -149,7 +148,7 @@
 #'   }
 #'
 #'   \item \strong{Aggregate to cohort-level diet emission factors} by summing feed-component contributions
-#'   across all feeds within each group \code{(herd_id, animal, cohort_short)}.
+#'   across all feeds within each group \code{(herd_id, species_short, cohort_short)}.
 #' }
 #'
 #' For each emission source, cohort-level dietary emission factors are computed as:
@@ -320,7 +319,7 @@ run_emissions_ration_module <- function(
       n2o_ration_crop_residues = sum(n2o_ration_crop_residues, na.rm = TRUE),
       ch4_ration_rice = sum(ch4_ration_rice, na.rm = TRUE)
     ),
-    by = .(herd_id, animal, cohort_short)
+    by = .(herd_id, species_short, cohort_short)
   ]
 
   # Clear progress indicator if it was shown
