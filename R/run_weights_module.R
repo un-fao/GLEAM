@@ -105,7 +105,7 @@ run_weights_module <- function(
 ) {
 
   # --- Step 1: Validate Inputs -----------------------------------------------
-  validate_weights_inputs(cohort_level_data, herd_level_data)
+  validate_run_weights_module_inputs(cohort_level_data, herd_level_data)
 
   # Show progress indicator if requested
   if (show_indicator) {

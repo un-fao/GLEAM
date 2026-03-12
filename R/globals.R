@@ -42,7 +42,7 @@ utils::globalVariables(c(
   "cohort_stock_size", "offtake_heads", "offtake_heads_assessment", "growth_rate_herd",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
   "variable", "variable_name",
-  # Columns used in run_weights_module and validate_weights_inputs
+  # Columns used in run_weights_module and validate_run_weights_module_inputs
   "cohort", "cohort_short", "cohort_duration_days",
   "live_weight_female_adult", "live_weight_male_adult",
   "live_weight_at_birth", "live_weight_female_at_slaughter", "live_weight_male_at_slaughter", "live_weight_at_weaning",

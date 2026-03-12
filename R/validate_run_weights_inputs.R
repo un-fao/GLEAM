@@ -7,7 +7,7 @@
 #' @param herd_level_data data.table. Herd-level data with one row per herd.
 #'
 #' @noRd
-validate_weights_inputs <- function(
+validate_run_weights_module_inputs <- function(
     cohort_level_data,
     herd_level_data
 ) {
