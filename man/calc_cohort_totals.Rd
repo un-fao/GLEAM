@@ -7,7 +7,10 @@
 calc_cohort_totals(
   value,
   cohort_stock_size,
+  ration_intake,
+  feed_emissions_list,
   simulation_duration,
+  variable_name,
   variable_type
 )
 }
@@ -16,7 +19,31 @@ calc_cohort_totals(
 
 \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
 
+\item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+
+\item{feed_emissions_list}{List of emission-source definitions for feed-related
+emissions. Each element is a list with two character fields:
+\describe{
+\item{emissions_source}{List of variables = "co2_ration_fertilizer",
+"co2_ration_pesticides", "co2_ration_crop_activities",
+"co2_ration_luc_nopeat", "co2_ration_luc_peat",
+"n2o_ration_fertilizer", "n2o_ration_manure_applied",
+"n2o_ration_crop_residues", "ch4_ration_rice"}
+\item{label}{Human-readable output label.}
+}}
+
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
+
+\item{variable_name}{Character. Names of emission variables to which
+allocation should be applied (e.g., "ch4_enteric", "ch4_manure_pasture",
+"ch4_manure_burned", "ch4_manure_other", "n2o_manure_pasture_direct",
+"n2o_manure_burned_direct", "n2o_manure_other_direct",
+"n2o_manure_burned_indirect", "n2o_manure_pasture_indirect",
+"n2o_manure_other_indirect", "co2_ration_fertilizer",
+"co2_ration_pesticides", "co2_ration_crop_activities",
+"co2_ration_luc_nopeat", "co2_ration_luc_peat",
+"n2o_ration_fertilizer", "n2o_ration_manure_applied",
+"n2o_ration_crop_residues", "ch4_ration_rice")}
 
 \item{variable_type}{Character. Variable group classification.
 Supported values include:
@@ -47,6 +74,9 @@ duration to obtain cohort-level totals.
 For production variables:
 \deqn{value\_total = value}
 
-For emissions, feed, and nitrogen balance variables:
+For emissions (except emissions from feed), feed, and nitrogen balance variables:
 \deqn{value\_total = value \times cohort\_stock\_size \times simulation\_duration}
+
+For emissions from feed:
+\deqn{value\_total = value \times ration\_intake \times cohort\_stock\_size \times simulation\_duration / 100}
 }
