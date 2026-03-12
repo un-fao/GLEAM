@@ -483,6 +483,32 @@ balance, all scaled to the assessment duration.}
 Runs the full GLEAM pipeline from master herd and cohort inputs through all
 modules: herd (optional), weights, ration quality, energy requirements,
 manure emissions, feed emissions, allocation, and aggregation.
+\if{html}{\out{<br>}}
+\if{html}{\out{<br>}}
+\strong{Common identifiers}:
+Several input tables share the following identifier columns. Their supported
+values are listed once here and referenced throughout.
+\if{html}{\out{<br>}}
+\if{html}{\out{<br>}}
+\strong{\code{species_short}} --- Character. Species code:
+\itemize{
+\item \code{CTL}: Cattle
+\item \code{BFL}: Buffalo
+\item \code{SHP}: Sheep
+\item \code{GTS}: Goats
+\item \code{CHK}: Chicken
+\item \code{PGS}: Pigs
+\item \code{CML}: Camels
+}
+\strong{\code{cohort_short}} --- Character. Sex- and age-specific cohort code:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}
 }
 \details{
 The GLEAM package implements the core computational engine of the Global
@@ -529,33 +555,6 @@ table.
 All inputs containing \code{herd_id} must refer to the same herd set.
 Validation blocks variables that are expected to be produced internally.
 }
-\section{Common identifiers}{
-
-Several input tables share the following identifier columns. Their supported
-values are listed once here and referenced throughout.
-
-\strong{\code{species_short}} --- Character. Species code:
-\itemize{
-\item \code{CTL}: Cattle
-\item \code{BFL}: Buffalo
-\item \code{SHP}: Sheep
-\item \code{GTS}: Goats
-\item \code{CHK}: Chicken
-\item \code{PGS}: Pigs
-\item \code{CML}: Camels
-}
-
-\strong{\code{cohort_short}} --- Character. Sex- and age-specific cohort code:
-\itemize{
-\item \code{FA}: adult females (from age at first parturition)
-\item \code{FS}: sub-adult females (from weaning to age at first parturition)
-\item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{MA}: adult males (from age at first breeding)
-\item \code{MS}: sub-adult males (from weaning to age at first breeding)
-\item \code{MJ}: juvenile males (from birth to weaning)
-}
-}
-
 \examples{
 \dontrun{
 # --- Shared data loading ---

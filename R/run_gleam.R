@@ -3,11 +3,13 @@
 #' Runs the full GLEAM pipeline from master herd and cohort inputs through all
 #' modules: herd (optional), weights, ration quality, energy requirements,
 #' manure emissions, feed emissions, allocation, and aggregation.
-#'
-#' @section Common identifiers:
+#' <br>
+#' <br>
+#' \strong{Common identifiers}:
 #' Several input tables share the following identifier columns. Their supported
 #' values are listed once here and referenced throughout.
-#'
+#' <br>
+#' <br>
 #' \strong{\code{species_short}} --- Character. Species code:
 #' \itemize{
 #'   \item \code{CTL}: Cattle
@@ -18,7 +20,6 @@
 #'   \item \code{PGS}: Pigs
 #'   \item \code{CML}: Camels
 #' }
-#'
 #' \strong{\code{cohort_short}} --- Character. Sex- and age-specific cohort code:
 #' \itemize{
 #'   \item \code{FA}: adult females (from age at first parturition)
