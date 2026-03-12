@@ -320,14 +320,14 @@ run_aggregation_module <- function(
     cohort_short = "cohort_short"
   )
 
-  # --- Step 6: Subsetting datframes by variable_type ----------------------------
+  # --- Step 6: Subsetting datframes by variable_type --------------------------
   data_herd_long_production <- data_herd_long[variable_type == "Production"]
   data_herd_long_nitrogen <- data_herd_long[variable_type == "NitrogenBalance"]
   data_herd_long_feed <- data_herd_long[variable_type == "Feed"]
 
-  # --- Step 7: Subsetting emissions dataframe and merge emissions with allocation data ---------------------------
+  # --- Step 7: Subsetting emissions dataframe and merge emissions with allocation data
   # Only emissions need allocation; other variables are assigned to "ALL"
-  data_herd_long_emissions<- merge(
+  data_herd_long_emissions <- merge(
     data_herd_long[
       variable_type == "Emissions",
       .(herd_id, species_short, variable_type, variable_name, value_total_gas = value_total)
@@ -354,7 +354,7 @@ run_aggregation_module <- function(
     )
   ]
 
-  # --- Step 10: Convert to CO2-equivalents -------------------------------------
+  # --- Step 10: Convert to CO2-equivalents ------------------------------------
   data_herd_long_emissions[
     , c("value_total_allocated_co2eq", "gwp") := calc_co2eq(
       gas = gas,
@@ -364,7 +364,7 @@ run_aggregation_module <- function(
     by = .I
   ]
 
-  # --- Step 11: Cleaning-up output tables -----------------------------------------
+  # --- Step 11: Cleaning-up output tables -------------------------------------
 
   # 11.1 Emissions
   emissions_dt <- data.table::rbindlist(emissions_list)
