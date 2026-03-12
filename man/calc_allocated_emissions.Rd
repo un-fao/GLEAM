@@ -7,24 +7,26 @@
 calc_allocated_emissions(value, allocation_share)
 }
 \arguments{
-\item{value}{Numeric vector. Total emissions at herd-level by source
-(kg gas).}
+\item{value}{Numeric. Total herd-level emissions by source before allocation to commodities (kg gas).}
 
-\item{allocation_share}{Numeric vector. Fraction of emissions to allocate
-to different commodities (between 0 and 1). Must be the same length
-as \code{value}.}
+\item{allocation_share}{Numeric. Allocation share assigned to the commodity for the corresponding emission source (fraction).}
 }
 \value{
-Numeric vector. Allocated emissions (kg gas) for each
-commodity-emission combination.
+Numeric. Allocated emissions for each commodity–emission combination (kg gas).
 }
 \description{
-Applies allocation shares to total emissions to compute emissions
-attributable to a specific commodity (e.g., meat, milk, fibre).
+Computes emissions attributable to specific commodities by applying
+allocation shares to total herd-level emissions.
 }
 \details{
-This function multiplies total herd-level emissions by the corresponding
-allocation share to estimate the share of emissions allocated to a
-specific output. Allocation shares are typically derived from biophysical
-allocation based on energy requirements (see \code{\link[=run_allocation_module]{run_allocation_module()}}).
+Allocation shares represent the fraction of total emissions assigned to
+each commodity (e.g., meat, milk, fibre).
+See \code{\link[=run_allocation_module]{run_allocation_module()}} for additional details.
+
+Allocated emissions are calculated as:
+
+\deqn{value\_allocated = value \times allocation\_share}
+}
+\seealso{
+\code{\link[=run_allocation_module]{run_allocation_module()}}
 }
