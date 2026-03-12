@@ -37,7 +37,7 @@ calc_fecundity_rates <- function(
 #' Compute Transition Probabilities for Sex-Age Classes
 #'
 #' Calculates hazard rates and daily transition probabilities (death, offtake, survival, and growth)
-#' across different sex-age cohorts. Converts annual inputs to daily hazards, then derives daily probabilities 
+#' across different sex-age cohorts. Converts annual inputs to daily hazards, then derives daily probabilities
 #' from those hazards.
 #'
 #' @param cohort_duration_days Numeric vector of length 6. Amount of time that each animal spends in a specific cohort (days).
@@ -48,13 +48,13 @@ calc_fecundity_rates <- function(
 #' \describe{
 #'   \item{hazard_death}{Numeric vector of length 6. Instantaneous mortality hazard rate for the 6 sex–age cohorts. Represents the  risk of death per unit time (day⁻¹) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
 #'   \item{hazard_offtake}{Numeric vector of length 6. Instantaneous offtake hazard rate for the 6 sex-age cohorts. Represents the risk to leave the herd through planned removals per unit of time (day⁻¹) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
-#'   \item{probability_death}{Named numeric vector of length 10. Probability of animal dying within the model time interval for 10 cohorts (fraction). 
+#'   \item{probability_death}{Named numeric vector of length 10. Probability of animal dying within the model time interval for 10 cohorts (fraction).
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
-#'   \item{probability_offtake}{Named numeric vector of length 10. Probability that an animal will be removed from the herd within the model time interval for 10 cohorts (fraction).  
+#'   \item{probability_offtake}{Named numeric vector of length 10. Probability that an animal will be removed from the herd within the model time interval for 10 cohorts (fraction).
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
-#'   \item{probability_survival}{Named numeric vector of length 10. Probability that an animal remains alive in the herd within the model time interval for 10 cohorts (fraction). 
+#'   \item{probability_survival}{Named numeric vector of length 10. Probability that an animal remains alive in the herd within the model time interval for 10 cohorts (fraction).
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
-#'   \item{probability_growth}{Named numeric vector of length 10. Probability of growing into the next age class for 10 cohorts (fraction) 
+#'   \item{probability_growth}{Named numeric vector of length 10. Probability of growing into the next age class for 10 cohorts (fraction)
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 #' }
 #'
@@ -196,7 +196,7 @@ calc_transition_probabilities <- function(
 
 #' Simulate Steady-State Population Structure
 #'
-#' 
+#'
 #'Simulates population dynamics over time until a steady state is reached.
 #'The steady state is defined as a constant sex–age cohort structure over time,
 #'with population size potentially growing or declining at a constant rate.
@@ -204,15 +204,15 @@ calc_transition_probabilities <- function(
 #'offtake, and fecundity parameters.
 #'
 #'
-#' @param initial_herd_structure Named numeric vector of length 6. Initial number of individuals in each of the 6 sex-age classes used 
-#' to bootstrap the steady-state simulation (# heads). 
-#' These values are used as starting points for the iterative simulation and do not affect the final steady-state results (only convergence speed). 
+#' @param initial_herd_structure Named numeric vector of length 6. Initial number of individuals in each of the 6 sex-age classes used
+#' to bootstrap the steady-state simulation (# heads).
+#' These values are used as starting points for the iterative simulation and do not affect the final steady-state results (only convergence speed).
 #' Must be named with: \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}.
 #' @param max_simulation_years Numeric. Maximum number of years to simulate (years).
 #' @param min_lambda_change Numeric. Convergence threshold for changes in cohort-specific growth rates of sex–age cohort proportions (lambda). Iterations of the herd simulation stop when the absolute change in lambda between successive iterations falls below this threshold.
 #' @param fecundity_female Numeric. Daily number of female offspring per adult female (# offspring/day)
 #' @param fecundity_male Numeric. Daily number of male offspring per adult female (# offspring/day)
-#' @param probability_death Named numeric vector of length 10. Probability of animal dying within the model time interval for 10 cohorts (fraction) 
+#' @param probability_death Named numeric vector of length 10. Probability of animal dying within the model time interval for 10 cohorts (fraction)
 #' (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling).
 #' @param probability_offtake Named numeric vector of length 10. Probability that an animal will be removed from the herd within the model time interval for 10 cohorts (fraction).
 #' (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling).
@@ -372,13 +372,13 @@ calc_steady_state_structure <- function(
 #' Project One Year of Steady-State Population Dynamics
 #'
 #' Simulates one year of population dynamics under steady-state assumptions using demographic parameters
-#' and returns population size statistics and offtake results. The steady state is defined as a constant 
+#' and returns population size statistics and offtake results. The steady state is defined as a constant
 #' sex–age cohort structure over time, with population size potentially growing or declining at a constant rate.
 #'
 #' @param herd_size_total Numeric. Total population size at the start of the year, including all cohorts (# heads)
 #' @param fecundity_female Numeric. Daily number of female offspring per adult female (# offspring/day)
 #' @param fecundity_male Numeric. Daily number of male offspring per adult female (# offspring/day)
-#' @param probability_death Named numeric vector of length 10. Probability of animal dying within the model time interval for 10 cohorts (fraction) 
+#' @param probability_death Named numeric vector of length 10. Probability of animal dying within the model time interval for 10 cohorts (fraction)
 #' (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling).
 #' @param probability_offtake Named numeric vector of length 10. Probability that an animal will be removed from the herd within the model time interval for 10 cohorts (fraction).
 #' (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling).
@@ -392,10 +392,10 @@ calc_steady_state_structure <- function(
 #' \describe{
 #'   \item{cohort_stock_start}{Numeric vector of length 6. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
 #'   \item{cohort_stock_end_projected}{Numeric vector of length 6. Population size in each of the 6 sex–age cohorts at the end of the year, projected using the steady-state growth rate (# heads). (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
-#'   \item{cohort_stock_end_exact_simulated}{Numeric vector of length 10. Population size in each of 10 sex–age cohort at the end of the year, based on a demographic daily simulation over 365 days (# heads) 
+#'   \item{cohort_stock_end_exact_simulated}{Numeric vector of length 10. Population size in each of 10 sex–age cohort at the end of the year, based on a demographic daily simulation over 365 days (# heads)
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 #'   \item{cohort_stock_average}{Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts over the year (# heads). Estimated from cohort_stock_start and cohort_stock_end_projected  (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
-#'   \item{cohort_offtake_heads}{Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year) 
+#'   \item{cohort_offtake_heads}{Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year)
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 #' }
 #'
@@ -545,13 +545,13 @@ calc_projected_population_size <- function(
 #' Summarise Offtake and Stock Variation for a Steady-State Year
 #'
 #' Computes annual offtake quantities and rates, as well as stock variation and their combined values
-#' across 6 sex-age classes based on steady-state population projections. The steady state is defined as a constant 
+#' across 6 sex-age classes based on steady-state population projections. The steady state is defined as a constant
 #' sex–age cohort structure over time, with population size potentially growing or declining at a constant rate.
 #'
 #' @param cohort_stock_start Numeric vector of length 6. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})
 #' @param cohort_stock_end_projected Numeric vector of length 6. Population size in each of the 6 sex–age cohorts at the end of the year, projected using the steady-state growth rate (# heads). (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})
 #' @param cohort_stock_average Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts over the year (# heads). Estimated from cohort_stock_start and cohort_stock_end_projected  (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})
-#' @param cohort_offtake_heads Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year) 
+#' @param cohort_offtake_heads Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year)
 #' (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)
 #' @param simulation_duration Numeric. Length of the assessment period (days)
 #'
@@ -608,8 +608,8 @@ calc_summary_offtake <- function(
   offtake_stock_plus_variation_rate_to_stock_start <- offtake_stock_variation_heads / cohort_stock_start
   offtake_stock_plus_variation_rate_to_stock_average <- offtake_stock_variation_heads / cohort_stock_average
 
-  # Calculate the scaled offtake number by assessment_duration
-  # If assessment_duration = 365 this variable will be equal to offtake_number
+  # Calculate the scaled offtake number by simulation_duration
+  # If simulation_duration = 365 this variable will be equal to offtake_number
 
   offtake_heads_assessment <- offtake_heads / 365 * simulation_duration
 

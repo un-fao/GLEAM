@@ -13,19 +13,17 @@
 # This is a standard and CRAN-friendly practice for packages using
 # dynamic column references or pipelines.
 utils::globalVariables(c(
-  ".", ":=", ".I", ".N", ".SD", "..cols_to_drop", "..final_cols", "ADM0_CODE", "AFKG", "AMKG", "Animal_short",
-  "animal_short", "size",
-  "COUNTRY", "HerdType_short", "LPS_short", "MFSKG", "MMSKG", "WA", "afc", "ckg",
+  ".", ":=", ".I", ".N", ".SD", "..cols_to_drop", "..final_cols",
+  "COUNTRY", "mal_fec",
   "count", "daily_weight_gain", "duration", "duration.FA", "duration.FJ", "duration.FS",
   "cohort_duration_days", "death_rate",
-  "duration.MA", "duration.MJ", "duration.MS", "dwg", "female_birth_fraction", "fem_fec",
+  "duration.MA", "duration.MJ", "duration.MS", "female_birth_fraction", "fem_fec",
   "birth_fraction_female", "litter_size", "herd_size_total",
   "fecundity_female", "fecundity_male",
   "herd_id", "has_all_cohorts", "missing_cohorts", "n_unique", "index", "N",  # Variables used in run_demographic_herd_module
   "prob_growth.FA", "prob_growth.FB", "prob_growth.FC", "prob_growth.FJ", "prob_growth.FS",
   "prob_growth.MA", "prob_growth.MB", "prob_growth.MC", "prob_growth.MJ", "prob_growth.MS",
-  "growth_rate_pop", "initial_weight", "litsize", "mal_fec", "mort_rate.FA",
-  "mort_rate.FJ", "mort_rate.FS", "mort_rate.MA", "mort_rate.MJ", "mort_rate.MS",
+  "mort_rate.FA", "mort_rate.FJ", "mort_rate.FS", "mort_rate.MA", "mort_rate.MJ", "mort_rate.MS",
   "offtake.FA", "offtake.FB", "offtake.FC", "offtake.FJ", "offtake.FS", "offtake.MA",
   "offtake.MB", "offtake.MC", "offtake.MJ", "offtake.MS", "offtake_rate",
   "offtake_rate.FA", "offtake_rate.FJ", "offtake_rate.FS", "offtake_rate.MA",
@@ -39,11 +37,11 @@ utils::globalVariables(c(
   "size.FS", "size.MA", "size.MJ", "size.MS", "size_avg.FA", "size_avg.FJ",
   "size_avg.FS", "size_avg.MA", "size_avg.MJ", "size_avg.MS", "size_end.FA",
   "size_end.FJ", "size_end.FS", "size_end.MA", "size_end.MJ", "size_end.MS",
-  "size_total", "slaughter_weight", "structure.FA", "structure.FB", "structure.FJ",
+  "structure.FA", "structure.FB", "structure.FJ",
   "probability_death", "probability_offtake", "probability_survival", "probability_growth",
   "cohort_stock_size", "offtake_heads", "offtake_heads_assessment", "growth_rate_herd",
   "structure.FS", "structure.MA", "structure.MB", "structure.MJ", "structure.MS",
-  "variable", "wkg", "variable_name", "offtake_number_assessment",
+  "variable", "variable_name",
   # Columns used in run_weights_module and validate_weights_inputs
   "cohort", "cohort_short", "cohort_duration_days",
   "live_weight_female_adult", "live_weight_male_adult",
@@ -67,7 +65,7 @@ utils::globalVariables(c(
   "ration_urinary_energy_fraction", "ration_ash",
   "feed_digestibility_fraction_ruminant", "feed_digestibility_fraction_pigs",
   "feed_digestibility_fraction_chicken",
-  "diet_dig", "diet_ge", "diet_me", "feed_ration_sum",
+  "feed_ration_sum",
   "ration_intake", "nitrogen_excretion", "volatile_solids", "total_fraction",
   "n2o_manure_pasture_vol", "n2o_manure_burned_vol", "n2o_manure_other_vol",
   "n2o_manure_pasture_leach", "n2o_manure_burned_leach", "n2o_manure_other_leach",
@@ -77,7 +75,7 @@ utils::globalVariables(c(
   # Variables used with .. for validation
   "..numeric_cols_feed", "..numeric_cols_rations", "..cols_to_show",
   # Columns used in run_emissions_manure_module
-  "dmi", "n_excretion", "ef4", "ef5", "ration_urinary_energy_fraction", "ration_ash",
+  "dmi", "ef4", "ef5", "ration_urinary_energy_fraction", "ration_ash",
   "mms_all_b0", "mms_all", "mmspasture_b0", "mmspasture",
   "mmsdaily", "mmssolid", "mmssolidcov", "mmssolidbulk", "mmssolidadd", "mmsdrylot",
   "mmspit1", "mmspit3", "mmspit4", "mmspit6", "mmspit12",
@@ -102,7 +100,7 @@ utils::globalVariables(c(
   "x.species_short", "x.milk_protein_fraction", "x.milk_yield_day",
   "x.fibre_yield_year", "x.litter_size", "x.parturition_rate",
   "x.live_weight_at_weaning", "x.live_weight_at_birth", "x.age_first_parturition",
-  "Item_Name", "dmi", "milk_yield",
+  "dmi", "milk_yield",
   # Columns used in run_production_cohort (cohort-level + outputs)
   "cohort_stock_size", "offtake_heads_assessment", "live_weight_cohort_at_slaughter",
   "fibre_production_cohort",
@@ -125,8 +123,7 @@ utils::globalVariables(c(
 
 utils::globalVariables(c(
   # Columns used in run_allocation
-  "slaughterLW", "initialLW", "meat_production_live_weight_cohort",
-  "milk_production_fpcm_cohort", "nefibre", "nework",
+  "meat_production_live_weight_cohort", "milk_production_fpcm_cohort",
   "milk_allocation_energy", "meat_allocation_energy",
   "fibre_allocation_energy", "work_allocation_energy", "egg_allocation_energy",
   "total_allocation_energy", "meat_share_allocation", "milk_share_allocation",
@@ -160,23 +157,15 @@ utils::globalVariables(c(
 ))
 
 utils::globalVariables(c(
-  # Columns used in run_energy_on_farm
-  "energy_onfarm", "VarName", "RefYear", "Item", "V1", "GWP",
-  "onfarm_emissions", "Unit",
-  # Variables used with .. for column selection
-  "..energy_select_cols", "..emission_factor_merge_cols", "..output_cols",
-  # Columns used in indirectemissions feed
-  "EF", "Item_Name", "Trade", "TradeOption_selected", "dmi_byfeed", "dmi_total",
-  "feed_emissions_kgGas", "feed_share",
+  "Item", "V1", "GWP", "Unit",
   # Columns added by run_emissions_enteric_module
   "ch4_enteric", "ch4_mitigation_factor", "ch4_conversion_factor_ym",
   "species_short", "cohort_short", "ration_digestibility_fraction",
   "ration_gross_energy", "ration_intake",
   # Columns used in run_aggregation
   "value", "value_total", "value_total_gas", "value_total_allocated_gas",
-  "value_allocated", "value_allocated_co2e", "gwp_factor",
+  "value_allocated", "gwp_factor",
   "variable_type", "variable_name", "unit", "gas", "allocation_share",
   "commodity_name", "commodity_type",
-  "assessment_duration", "simulation_duration", "cohort_stock_size"  # run_aggregation and herd_simulation
+  "simulation_duration", "cohort_stock_size"  # run_aggregation and herd_simulation
 ))
-
