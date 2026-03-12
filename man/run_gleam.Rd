@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_gleam.R
 \name{run_gleam}
 \alias{run_gleam}
-\title{Run the GLEAM pipeline}
+\title{Run Global Livestock Environmental Assessment Model (GLEAM) Pipeline}
 \usage{
 run_gleam(
   has_herd_structure = FALSE,
@@ -19,66 +19,789 @@ run_gleam(
 )
 }
 \arguments{
-\item{has_herd_structure}{Logical. If TRUE, use \code{cohort_level_data} directly
-as the cohort-level input for the weights module (skip herd simulation). If FALSE,
-run herd simulation first using \code{cohort_level_data} and \code{herd_level_data}.}
+\item{has_herd_structure}{Logical. If \code{TRUE}, \code{cohort_level_data} is treated
+as an existing herd structure and the demographic herd simulation step is
+skipped. If \code{FALSE}, herd structure is first generated from
+\code{cohort_level_data} and \code{herd_level_data} using
+\code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}.}
 
-\item{cohort_level_data}{data.table. Cohort-level master table. Must have one row
-per cohort (6 cohorts per herd: FJ, FS, FA, MJ, MS, MA) and must include
-\code{species_short} (e.g. CTL, BFL, SHP) for each cohort. Data
-should not include columns that GLEAM calculates (validation will block them).
-May optionally include \code{ch4_mitigation_factor} (fraction of baseline enteric
-CH4 remaining after mitigation, 1 = no mitigation).}
+\item{cohort_level_data}{data.table. Cohort-level master input table with the
+following data requirement:
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd, repeated for
+each cohort belonging to the same herd.}
+\item{species_short}{Character. Species short code. Supported values include:
+\itemize{
+\item \code{CTL} (Cattle)
+\item \code{BFL} (Buffalo)
+\item \code{SHP} (Sheep)
+\item \code{GTS} (Goats)
+\item \code{CHK} (Chicken)
+\item \code{PGS} (Pigs)
+\item \code{CML} (Camels)
+}}
+\item{cohort_short}{Character. Sex- and age-specific cohort code
+describing the production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal
+spends in a specific cohort (days).}
+\item{offtake_rate}{Numeric. Annual proportion of animals removed from the
+herd for each sex-age cohort (fraction).}
+\item{low_activity_fraction}{Numeric. Proportion of the assessment period
+during which the animal performs low-intensity movement typical of
+stall-feeding or near-field grazing, characterized by minimal walking
+distances and flat terrain  (fraction).}
+\item{high_activity_fraction}{Numeric. Proportion of the assessment
+period during which the animal engages in sustained locomotion
+associated with herding or long-distance grazing, typically involving
+extended walking distances and/or uneven or hilly terrain (fraction).}
+}
+Additional requirements depend on \code{has_herd_structure}:
+\describe{
+\item{If \code{has_herd_structure = FALSE}}{\code{cohort_level_data} must also include
+\describe{
+\item{death_rate}{Numeric vector of legth 6. Fraction of deaths in a
+herd over a year for each sex-age cohort (fraction).}
+}}
+\item{If \code{has_herd_structure = TRUE}}{\code{cohort_level_data} must also include
+\describe{
+\item{cohort_stock_size}{Numeric. Average population size in each of
+the 6 sex-age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
+\item{offtake_heads_assessment}{Numeric. Total number of animals
+removed via offtake over the assessment period, aggregated to 6
+sex-age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ,
+MS, MA).}
+}}
+\item{Optional for both cases}{\code{ch4_mitigation_factor}: Numeric.
+Optional. Multiplicative mitigation factor applied to baseline enteric
+methane (CH4) emissions (dimensionless). If not provided, a default
+value of \code{1} (no mitigation) is used. Values lower than 1 represent
+proportional reductions (e.g., \code{0.90} = 10\\% reduction). This
+factor can represent mitigation measures with a direct effect on enteric
+methane emissions, such as the use of feed additives or methane
+inhibitors.}
+}}
 
-\item{herd_level_data}{data.table. Herd-level master table (one row per herd).
-Must include \code{species_short} (e.g. CTL, BFL, SHP).}
+\item{herd_level_data}{data.table. Herd-level master input table (one row per
+\code{herd_id}) with the following data requirement:
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd, repeated for
+each cohort belonging to the same herd.}
+\item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP,
+GTS, CHK, PGS, CML). Used to
+internal lookup table. Supported values include:
+\itemize{
+\item \code{Cattle}
+\item \code{Buffalo}
+\item \code{Sheep}
+\item \code{Goats}
+\item \code{Chicken}
+\item \code{Pigs}
+\item \code{Camels}
+}}
+\item{live_weight_female_adult}{Numeric. Live weight of adult females (kg)}
+\item{live_weight_male_adult}{Numeric. Live weight of adult males (kg)}
+\item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
+\item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg)}
+\item{live_weight_female_at_slaughter}{Numeric. Slaughter weight of female sub-adult animals (kg)}
+\item{live_weight_male_at_slaughter}{Numeric. Slaughter weight of male sub-adult animals (kg)}
+\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
+\item{lactating_females_fraction}{Numeric. Proportion of adult females
+that are lactating during the assessment period (fraction). Required
+only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_yield_day}{Numeric.  Average milk yield per milk-producing
+animal during the assessment duration (kg/head/day). This value is
+calculated as the total quantity of milk produced for human consumption
+by milk-producing animals during the assessment period, divided by the
+number of milk-producing animals, and the length of the assessment
+period (days). Required only for species = CML, CTL, BFL, SHP, and
+GTS.}
+\item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat / kg milk).
+Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein / kg milk).
+Required only for species = CML, CTL, BFL, SHP, and GTS.}
+\item{milk_lactose_fraction}{Numeric. Milk lactose fraction (kg
+lactose/kg milk). Required only for species = CML, CTL, BFL, SHP, and
+GTS.}
+\item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
+Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}
+\item{milk_fat_fraction_standard}{Numeric. Standard fat content of milk,
+used to calculate Fat-protein-corrected milk (FPCM), (kg fat/kg milk).
+Suggested value = 0.04.}
+\item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate
+Fat-protein-corrected milk (FPCM), (kg lactose/kg milk). Suggested value = 0.048.}
+\item{non_productive_duration}{Numeric. Period during which the animal is
+not performing any productive physiological function such as pregnancy or
+lactation (days). Required only for PGS.}
+\item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
+\item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a
+year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
+\item{lactation_duration}{Numeric. Duration of the lactation period,
+defined as the number of days during which the animal is lactating
+(days). Required only for PGS.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions
+per female animal (# parturitions/adult female/year). A herd-level
+reproductive performance indicator calculated as the total number of
+parturitions (deliveries) occurring during a year divided by the number
+of adult females potentially able to give birth during that year.}
+\item{litter_size}{Numeric. Average number of offspring born per
+parturition (# offsprings/parturition). This value can be calculated as
+the total number of offspring born divided by the total number of
+parturitions during the year.}
+\item{draught_work_hours_female}{Numeric. Average daily working time per
+adult female (hours/head/day). Required only for species = CML, CTL, and
+BFL.}
+\item{draught_work_hours_male}{Numeric. Average daily working time per
+adult male (hours/head/day). Required only for species = CML, CTL, and
+BFL.}
+\item{draught_fraction_female}{Numeric. Fraction of adult females
+involved in draught work (fraction). Required only for species = CML,
+CTL, and BFL.}
+\item{draught_fraction_male}{Numeric. Fraction of adult males involved in
+draught work (fraction). Required only for species = CML, CTL, and BFL.}
+\item{fibre_yield_year}{Numeric. Annual production yield of fibre, such
+as wool, cashmere, mohair (kg/head/year). Required only for species =
+CML, SHP, and GTS.}
+\item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
+(fraction).}
+\item{bone_free_meat_fraction}{Numeric. Ratio of bone-free-meat to carcass weight (fraction).}
+\item{meat_protein_fraction}{Numeric. Protein content of bone-free-meat (kg protein/kg bone-free-meat).}
+\item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
+species_short = CML. Suggested value = 0.43.}
+}
+Additional requirements when \code{has_herd_structure = FALSE}:
+\describe{
+\item{birth_fraction_female}{Numeric. Female birth fraction, defined as
+the probability that a newborn offspring is female (fraction). Can be
+calculated  as the number of female offspring born divided by the total
+number of offspring born.}
+\item{herd_size_total}{Numeric. Total population size at the start of
+the year, including all cohorts (# heads).}
+}}
 
-\item{feed_rations}{data.table. Feed ration shares by cohort (see \code{\link{run_ration_quality_module}}).}
+\item{feed_rations}{data.table. Cohort-level feed ration shares, typically the
+same input used by \code{\link[=run_ration_quality_module]{run_ration_quality_module()}} and
+\code{\link[=run_emissions_ration_module]{run_emissions_ration_module()}}. Minimum data requirement:
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd, repeated for
+each cohort belonging to the same herd.}
+\item{species_short}{Character. Species short code. Supported values include:
+\itemize{
+\item \code{CTL} (Cattle)
+\item \code{BFL} (Buffalo)
+\item \code{SHP} (Sheep)
+\item \code{GTS} (Goats)
+\item \code{CHK} (Chicken)
+\item \code{PGS} (Pigs)
+\item \code{CML} (Camels)
+}}
+\item{cohort_short}{Character. Sex- and age-specific cohort code
+describing the production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
+\item{feed_id}{Character. Unique identifier for the feed component, used
+to join feed ration data with feed parameter tables.}
+\item{feed_name}{Character. Feed component name (optional, for
+readability and reporting). If provided, it should uniquely identify the
+same feed component as \code{feed_id}.}
+\item{feed_ration_fraction}{Numeric. Proportion of a specific feed
+component in the total ration, expressed as its fraction of diet dry
+matter intake (fraction). Within each herd_id and cohort, proportions
+should sum to 1.}
+}}
 
-\item{feed_params}{data.table. Feed nutritional parameters (see \code{\link{run_ration_quality_module}}).}
+\item{feed_params}{data.table. Feed nutritional parameters with the following
+minimum data requirement:
+\describe{
+\item{feed_id}{Character. Unique identifier for the feed component, used
+to join feed ration data with feed parameter tables.}
+\item{feed_gross_energy}{Numeric. Gross energy content of a feed
+component, representing the total chemical energy released upon complete
+combustion of the feed (MJ/kg DM).}
+\item{feed_digestible_energy_ruminant}{Numeric. Digestible energy content
+of a feed component for ruminants, representing the energy absorbed by
+the animal after fecal losses (MJ/kg DM).}
+\item{feed_digestible_energy_pigs}{Numeric. Digestible energy content of
+a feed component for pigs, representing the energy absorbed by the animal
+after fecal losses (MJ/kg DM).}
+\item{feed_metabolizable_energy_ruminant}{Numeric. Metabolizable energy
+content of a feed component for ruminants, representing digestible energy
+minus energy losses in urine and gaseous products of digestion
+(MJ/kg DM).}
+\item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy
+content of a feed component for pigs, representing digestible energy
+minus energy losses in urine and gaseous products of digestion
+(MJ/kg DM).}
+\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy
+content of a feed component for chickens, representing digestible energy
+minus energy losses in uric acid and gaseous products of digestion
+(MJ/kg DM).}
+\item{feed_nitrogen_content}{Numeric. Nitrogen content of a feed component (kg N/kg DM).}
+\item{feed_urinary_energy_ruminant}{Numeric. Fraction of feed's gross
+energy that is excreted in urine for ruminants (fraction).}
+\item{feed_urinary_energy_pigs}{Numeric. Fraction of feed's gross energy
+that is excreted in urine for pigs (fraction).}
+\item{feed_ash}{Numeric. Average ash content by feed component,
+calculated as a fraction of the dry matter intake (g ash/100g DM).}
+\item{category}{Character. Feed category (optional). If provided, it
+should be used consistently  with \code{feed_id}, for a coherent result.}
+\item{feed_name}{Character. Feed component name (optional, for
+readability and reporting). If provided, it should uniquely identify the
+same feed component as \code{feed_id}.}
+}}
 
-\item{feed_emissions}{data.table. Feed production emission factors (see \code{\link{run_emissions_ration_module}}).}
+\item{feed_emissions}{data.table. Emission factors of individual feed components with the
+following data requirement:
+\describe{
+\item{feed_id}{Character. Unique identifier for the feed component, used
+to join feed ration data with feed parameter tables.}
+\item{feed_name}{Character. Feed component name (optional, for
+readability and reporting). If provided, it should uniquely identify the
+same feed component as \code{feed_id}.}
+\item{co2_feed_fertilizer}{Numeric. Carbon dioxide (CO₂) emission factor
+of a feed component, representing CO₂ emissions from fertilizer
+manufacture in feed production, expressed per kilogram of dry matter
+intake (g CO₂/kg DM).}
+\item{co2_feed_pesticides}{Numeric. Carbon dioxide (CO₂) emission factor
+of a feed component, representing CO₂ emissions from pesticide
+manufacture in feed production, expressed per kilogram of dry matter
+intake (g CO₂/kg DM).}
+\item{co2_feed_crop_operations}{Numeric. Carbon dioxide (CO₂) emission
+factor of a feed component, representing CO₂ emissions from on-field
+agricultural activities in feed production, expressed per kilogram of dry
+matter intake (kg CO₂/kg DM).}
+\item{co2_feed_luc_nopeat}{Numeric. Carbon dioxide (CO₂) emission factor
+of a feed component, representing CO₂ emissions from land-use change in
+feed production (excluding peatland drainage), expressed per kilogram of
+dry matter intake (g CO₂/kg DM).}
+\item{co2_feed_luc_peat}{Numeric. Carbon dioxide (CO₂) emission factor of
+a feed component, representing CO₂ emissions from peatland drainage in
+feed production, expressed per kilogram of dry matter intake
+(g CO₂/kg DM).}
+\item{n2o_feed_fertilizer}{Numeric. Nitrous oxide (N₂O) emission factor
+of a feed component, representing N₂O emissions from fertilizer use in
+feed production, expressed per kg of dry matter intake (g N₂O/kg DM).}
+\item{n2o_feed_manure_applied}{Numeric. Nitrous oxide (N₂O) emission
+factor of a feed component, representing N₂O emissions from manure
+applied to or deposited on soil in feed production, expressed per kg of
+dry matter intake (g N₂O/kg DM).}
+\item{n2o_feed_crop_residues}{Numeric. Nitrous oxide (N₂O) emission
+factor of a feed component, representing N₂O emissions from crop
+residues decomposition in feed production, expressed per kg of dry matter
+intake (g N₂O/kg DM).}
+\item{ch4_feed_rice}{Numeric. Methane (CH₄) emission factor of a feed
+component, representing CH₄ emissions from rice cultivation in feed
+production, expressed per kg of dry matter intake (g CH₄/kg DM).}
+}}
 
-\item{manure_management_system_fraction}{data.table. Cohort-level manure management
-system fractions (see \code{\link{run_emissions_manure_module}}).}
+\item{manure_management_system_fraction}{data.table. Cohort-level manure
+management system fractions passed to \code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}} with:
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd, repeated for
+each cohort belonging to the same herd.}
+\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+}}
+\item{manure_management_system}{Character. Name identifying the manure
+management system. The identifiers mms_pasture and mms_burned are
+reserved for manure deposited on pasture and manure burned for fuel,
+respectively. No specific naming convention is required for other manure
+management systems, which are grouped and handled as "other" systems.}
+\item{manure_management_system_fraction}{Numeric. Fraction of total
+manure excreted by animals in a given herd and cohort that is handled in
+a specific manure management system. Values range from 0 to 1. The sum
+of all fractions for each herd_id must equal 1.}
+}}
 
-\item{manure_management_system_factors}{data.table. Manure management
-system factors (see \code{\link{run_emissions_manure_module}}).}
+\item{manure_management_system_factors}{data.table. Manure management system
+factor table passed to \code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}} with:
+\describe{
+\item{manure_management_system}{Character. Name identifying the manure
+management system. The identifiers mms_pasture and mms_burned are
+reserved for manure deposited on pasture and manure burned for fuel,
+respectively. No specific naming convention is required for other manure
+management systems, which are grouped and handled as "other" systems.}
+\item{ratio_m3CH4_to_kgCH4}{Numeric. Conversion factor used to convert
+methane (CH₄) from volumetric unit (m³) to a mass unit (kg). This value
+represents the density of methane. It defaults to 0.67 kg/m³}
+\item{methane_conversion_factor_mcf}{Numeric. Methane (CH₄) conversion
+factor represents the portion or degree of the maximum methane producing
+capacity (Bo) that is effectively achieved within a specific manure
+management system. It represents the extent to which the theoretical
+methane yield is realized based on management practices and environmental
+conditions, specifically the temperature of the system, the retention
+time of the organic material, and the degree of anaerobic conditions
+present. The value theoretically ranges from 0 to 100 percent. Default
+values can be selected from Table 10.17 of IPCC guidelines
+(IPCC 2006, 2019).}
+\item{ch4_max_producing_capacity_bo}{Numeric. Maximum methane (CH₄)
+producing capacity (B0) for all systems (m³ CH₄/kg VS). The value is
+region- and species-specific, and represents the theoretical maximum
+methane yield per unit of volatile solids. Default can be selected from
+Table 10.16 (IPCC, 2019) or from Tables 10A-4 to 10A-9 (IPCC, 2006).}
+\item{n2o_ef3}{Numeric. Emission factor for direct nitrous oxide (N₂O)
+emissions for each manure management system, representing nitrous oxide
+emitted per unit of nitrogen from nitrification and denitrification
+processes occuring during manure storage and treatment (kg N₂O–N per
+kg N). Default values can be selected from Table 10.21 and Table 11.1
+(for manure deposited on pasture) in IPCC Guidelines (IPCC 2006, 2019).}
+\item{n2o_ef4}{Numeric. Emission factor for indirect nitrous oxide (N₂O)
+emissions resulting from atmospheric deposition of volatilised nitrogen
+(NH₃–N and NOₓ–N) onto soils and water surfaces (kg N₂O–N /
+(kg NH₃–N + NOₓ–N)). Default values can be selected from Table 11.3 in
+IPCC Guidelines (IPCC 2006, 2019).}
+\item{nitrogen_fracgas}{Numeric. Fraction of manure nitrogen excreted by
+a given livestock category that is lost through volatilisation as
+ammonia (NH₃) and nitrogen oxides (NOₓ) within a specific manure
+management system. This parameter represents the share of excreted
+nitrogen that is mineralised and released to the atmosphere during
+manure collection, storage, and treatment. It is expressed as a
+dimensionless fraction (0-1). Default values are provided in Table 10.22
+of IPCC Guidelines (IPCC 2006, 2019).}
+\item{n2o_ef5}{Numeric. Emission factor for indirect nitrous oxide (N₂O)
+emissions resulting from nitrogen leaching and runoff, expressed as
+kilograms of N₂O–N per kilogram of nitrogen leached or lost through
+runoff (kg N₂O–N/kg N). Default values can be selected from Table 11.3
+in IPCC Guidelines (IPCC 2006, 2019).}
+\item{nitrogen_fracleach}{Numeric. Fraction of manure nitrogen excreted
+by a given livestock category that is lost through leaching and runoff
+from a specific manure management system. This parameter is highly
+uncertain and is used to estimate indirect N₂O emissions from nitrogen
+that enters the surrounding environment of the storage facility. It is
+expressed as a dimensionless fraction (0-1). Default values are provided
+in Table 10.22 of IPCC Guidelines (IPCC 2006, 2019).}
+}}
 
-\item{simulation_duration}{Numeric. Length of the assessment period (days). Used by the herd
-simulation module (when \code{has_herd_structure} is FALSE) and by the production module
-(milk, fibre, meat). Defaults to \code{365}.}
+\item{simulation_duration}{Numeric. Length of the assessment period in days.
+Used by the demographic herd simulation step when
+\code{has_herd_structure = FALSE}, and by the production and aggregation
+steps. Defaults to \code{365}.}
 
-\item{global_warming_potential_set}{Character. GWP-100 option for converting CH₄ and N₂O to CO₂-equivalents
-in aggregation results. One of \code{"AR6"} (default), \code{"AR5_excluding_carbon_feedback"},
-\code{"AR5_including_carbon_feedback"}, \code{"AR4"}.}
+\item{global_warming_potential_set}{Character. Settings for the
+100-year Global Warming Potential (GWP-100) conversion factors used to
+express CH₄ and N₂O emissions as CO₂eq. Must be one of:
+\itemize{
+\item \code{"AR6"}: IPCC Sixth Assessment Report (IPCC, 2021) — CH4 = 27, N2O = 273
+\item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment
+Report (excluding climate–carbon feedbacks) (IPCC, 2013)  — CH4 = 28, N2O = 265
+\item \code{"AR5_including_carbon_feedback"}: IPCC Fifth Assessment
+Report (including climate–carbon feedbacks) (IPCC, 2013) — CH4 = 34, N2O = 298
+\item \code{"AR4"}: IPCC Fourth Assessment Report (IPCC, 2007) — CH4 = 25, N2O = 298
+}}
 
-\item{show_indicator}{Logical. Whether to display progress indicators during the pipeline run.}
+\item{show_indicator}{Logical. Whether to display progress indicators during
+the pipeline run. Defaults to \code{TRUE}.}
 }
 \value{
-A named list containing:
+A named list with the following elements:
 \describe{
-\item{cohort_level_results}{Cohort-level \code{data.table} with all computed
-outputs.}
-\item{herd_level_results}{Herd-level \code{data.table} (one row per herd).
-When \code{has_herd_structure} is FALSE, includes herd simulation outputs
-such as \code{growth_rate_herd}; otherwise returns the input
-\code{herd_level_data}.}
-\item{allocation_long}{Herd-level \code{data.table} in long format (one row
-per herd, emission variable, and commodity) with allocation shares.}
-\item{aggregation_results}{Named list from \code{\link{run_aggregation_module}} with herd-level
-totals: \code{results_emissions} (allocated emissions in kg CO₂eq),
-\code{results_feed}, \code{results_production}, \code{results_nitrogen}.}
+\item{cohort_level_results}{A cohort-level \code{data.table} containing the
+original input columns plus all variables generated across the full GLEAM
+pipeline. Calculated variables include:
+\describe{
+\item{\strong{Demographic herd simulation outputs}}{
+\describe{
+\item{cohort_stock_size}{Numeric vector of length 6. Average
+population size in each of the 6 sex-age cohorts (# heads)
+(cohorts = (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS},
+\code{MA})).}
+\item{offtake_heads}{Numeric vector of length 6. Total number of
+animals removed via offtake over the year, aggregated to 6 sex-age
+cohorts (heads/year) (cohorts = \code{FJ}, \code{FS}, \code{FA},
+\code{MJ}, \code{MS}, \code{MA}).}
+\item{offtake_heads_assessment}{Numeric vector of legth 6. Total
+number of animals removed via offtake over the assessment period,
+aggregated to 6 sex-age cohorts (heads/assessment period)
+(cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS},
+\code{MA}).}
+}}
+\item{\strong{Weight variables}}{
+\describe{
+\item{live_weight_mature_stage}{Numeric. Mature (adult) live weight
+that the animal can attain under given biological and management
+conditions (kg).}
+\item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
+\item{live_weight_cohort_potential_final}{Numeric. Potential final
+live weight attainable at the end of the cohort stage in the absence
+of offtake (kg). (For juveniles: equals weaning weight; For
+subadults: equals adult live weight; For adults: equals adult live
+weight)}
+\item{live_weight_cohort_at_slaughter}{Numeric. Live weight at
+slaughter for animals removed from the cohort (kg).}
+\item{live_weight_cohort_average}{Numeric. Average live weight over
+the cohort stage. Computed by accounting for the share of offtaken
+animals within the cohort, using their slaughter weight, and the
+potential final weight of animals that remain in the cohort (kg).}
+\item{live_weight_cohort_final}{Numeric. Live weight at the end of
+the cohort stage, accounting for both surviving and offtaken
+animals. Computed as a weighted average of the potential final weight
+of surviving animals and the slaughter weight of offtaken animals,
+based on the offtake rate (kg).}
+\item{daily_weight_gain}{Numeric. Average live weight gain of the
+cohort over the cohort stage (kg/head/day).}
+}}
+\item{\strong{Ration quality variables}}{
+\describe{
+\item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{ration_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
+\item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
+\item{ration_digestibility_fraction}{Numeric. Average digestibility
+of the feed ration, expressed as ratio of digestible (or
+metabolizable, for poultry) to gross energy content (fraction).}
+\item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's
+gross energy that is excreted in urine (fraction).}
+\item{ration_ash}{Numeric. Average ash content of feed, calculated as
+a fraction of the dry matter intake (kg ash/kg DM).}
+}}
+\item{\strong{Energy requirement variables}}{
+\describe{
+\item{metabolic_energy_req_maintenance}{Numeric. Energy required for
+maintenance, defined as the amount of energy needed to keep the
+animal at equilibrium such that body energy is neither gained nor
+lost. Expressed as net energy for CTL, BFL, SHP, GTS and as
+metabolizable energy for CML and PGS (MJ/head/day).}
+\item{metabolic_energy_req_activity}{Numeric. Energy required for
+activity, defined as the amount of energy needed to support animal
+movement and physical activity (MJ/head/day). Expressed as net
+energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML
+and PGS.}
+\item{metabolic_energy_req_growth}{Numeric. Energy required for
+growth (i.e., weight gain) (MJ/head/day). Expressed as net energy
+for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{metabolic_energy_req_lactation}{Numeric. Energy required for
+lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP,
+GTS and as metabolizable energy for CML and PGS.}
+\item{metabolic_energy_req_work}{Numeric. Energy required for work,
+used to estimate the energy required for draught power for CTL, BFL
+and CML (MJ/head/day). Assumed to be 0 for other species. Expressed
+as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
+CML and PGS.}
+\item{metabolic_energy_req_fibre_production}{Numeric. Energy required
+for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for
+other species. (MJ/head/day).  Expressed as net energy for CTL, BFL,
+SHP, GTS and as metabolizable energy for CML and PGS
+(MJ/head/day).}
+\item{metabolic_energy_req_pregnancy}{Numeric. Energy required for
+pregnancy for pregnant females (MJ/head/day). Expressed as net
+energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML
+and PGS.}
+\item{net_energy_maintenance_digestible_energy_ratio}{Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).}
+\item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).}
+\item{metabolic_energy_req_total}{Numeric. Total daily energy
+requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is
+expressed as gross energy intake requirement (GE). For CML and PGS
+the function returns the summed daily metabolizable energy
+requirement.}
+\item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+}}
+\item{\strong{Enteric emission variables}}{
+\describe{
+\item{ch4_mitigation_factor}{Added by the function if not provided as input.}
+\item{ch4_conversion_factor_ym}{Numeric. Methane (CH₄) conversion
+factor (ym), representing the percentage of  gross energy of the
+feed ration that is converted to CH₄ (percentage).}
+\item{ch4_enteric}{Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).}
+}}
+\item{\strong{Nitrogen balance variables}}{
+\describe{
+\item{nitrogen_intake}{Numeric. Daily nitrogen intake (kg N/head/day).}
+\item{nitrogen_retention}{Numeric. Daily nitrogen retention in animal
+body tissues and products (e.g., growth, pregnancy, milk...)
+(kg N/head/day)}
+\item{nitrogen_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
+}}
+\item{\strong{Manure emission variables}}{
+\describe{
+\item{volatile_solids}{Numeric. Total volatile solids (VS) excreted
+per animal per day, representing the organic material in livestock
+manure and consisting of both biodegradable and non-biodegradable
+fractions (kg VS/head/day).}
+\item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH₄/head/day).}
+\item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH₄/head/day).}
+\item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure
+management systems, excluding emissions from manure deposited on
+pasture and burned for fuel (kg CH₄/head/day).}
+\item{ch4_manure_all_noburn}{Numeric. Methane (CH₄) emissions from manure management systems, excluding manure burned for fuel (kg CH₄/head/day).}
+\item{n2o_manure_pasture_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure deposited on pasture (kg N₂O/head/day).}
+\item{n2o_manure_burned_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_other_direct}{Numeric. Direct nitrous oxide (N₂O)
+emissions from manure management systems, excluding emissions from
+manure deposited on pasture and burned for fuel
+(kg N₂O/head/day).}
+\item{n2o_manure_all_noburn_direct}{Numeric. Direct nitrous oxide
+(N₂O) emissions from manure management systems, excluding emissions
+from manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_pasture_vol}{Numeric. Indirect nitrous oxide (N₂O)
+emissions resulting from atmospheric deposition of volatilised
+nitrogen (NH₃ and NOₓ) from manure deposited on pasture
+(kg N₂O/head/day).}
+\item{n2o_manure_burned_vol}{Numeric. Indirect nitrous oxide (N₂O)
+emissions resulting from atmospheric deposition of volatilised
+nitrogen (NH₃ and NOₓ) from manure burned for fuel
+(kg N₂O/head/day).}
+\item{n2o_manure_other_vol}{Numeric. Indirect nitrous oxide (N₂O)
+emissions resulting from atmospheric deposition of volatilised
+nitrogen (NH₃ and NOₓ) from manure management systems, excluding
+manure deposited on pasture and manure burned for fuel
+(kg N₂O/head/day).}
+\item{n2o_manure_all_noburn_vol}{Numeric. Indirect nitrous oxide
+(N₂O) emissions resulting from atmospheric deposition of volatilised
+nitrogen (NH₃ and NOₓ) from manure management systems, excluding
+losses from manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_pasture_leach}{Numeric. Indirect nitrous oxide
+(N₂O) emissions resulting from leaching and runoff of manure
+nitrogen from manure deposited on pasture (kg N₂O/head/day).}
+\item{n2o_manure_burned_leach}{Numeric. Indirect nitrous oxide (N₂O)
+emissions resulting from leaching and runoff of manure nitrogen from
+manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_other_leach}{Numeric. Indirect nitrous oxide (N₂O)
+emissions resulting from leaching and runoff of manure nitrogen from
+manure management systems, excluding losses from manure deposited on
+pasture and manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_all_noburn_leach}{Numeric. Indirect nitrous oxide
+(N₂O) emissions resulting from leaching and runoff of manure
+nitrogen from manure management systems, excluding losses from
+manure burned for fuel (kg N₂O/head/day).}
+\item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous
+oxide (N₂O) emissions from manure deposited on pasture. Includes
+emissions from atmospheric deposition of volatilised nitrogen (NH₃
+and NOₓ) and from leaching and runoff of manure nitrogen
+(kg N₂O/head/day).}
+\item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous
+oxide (N₂O) emissions originating from manure burned for fuel.
+Includes emissions from atmospheric deposition of volatilised
+nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure
+nitrogen (kg N₂O/head/day).}
+\item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous
+oxide (N₂O) emissions originating from manure management systems,
+excluding manure deposited on pasture and burned for fuel. Includes
+emissions from atmospheric deposition of volatilised nitrogen (NH₃
+and NOₓ) and from leaching and runoff of manure nitrogen.}
+\item{n2o_manure_pasture_total}{Numeric. Total nitrous oxide
+emissions from manure deposited on pasture. Includes direct
+emissions and indirect emissions from volatilisation, leaching, and
+runoff (kg N₂O/head/day).}
+\item{n2o_manure_burned_total}{Numeric. Total nitrous oxide
+emissions (N₂O) from manure burned for fuel. Includes direct
+emissions and indirect emissions from volatilisation, leaching, and
+runoff (kg N₂O/head/day).}
+\item{n2o_manure_other_total}{Numeric. Total nitrous oxide (N₂O)
+emissions from manure management systems, excluding manure deposited
+on pasture and manure burned for fuel. Includes direct emissions and
+indirect emissions from volatilisation, leaching, and runoff
+(kg N₂O/head/day).}
+}}
+\item{\strong{Feed production emission variables}}{
+\describe{
+\item{co2_ration_fertilizer}{Numeric. Diet-level average carbon
+dioxide (CO₂) emission factor from fertilizer manufacture in feed
+production (g CO₂/kg DM).}
+\item{co2_ration_pesticides}{Numeric. Diet-level average carbon
+dioxide (CO₂) emission factor from pesticide manufacture in feed
+production (g CO₂/kg DM).}
+\item{co2_ration_crop_activities}{Numeric. Diet-level average carbon
+dioxide (CO₂) emission factor from on-field agricultural activities
+in feed production (g CO₂/kg DM).}
+\item{co2_ration_luc_nopeat}{Numeric. Diet-level average carbon
+dioxide (CO₂) emission factor from land-use change (excluding
+peatland drainage) in feed production (g CO₂/kg DM).}
+\item{co2_ration_luc_peat}{Numeric. Diet-level average carbon
+dioxide (CO₂) emission factor from peatland drainage in feed
+production (g CO₂/kg DM).}
+\item{n2o_ration_fertilizer}{Numeric. Diet-level average nitrous
+oxide (N₂O) emission factor from fertilizer use in feed production
+(g N₂O/kg DM).}
+\item{n2o_ration_manure_applied}{Numeric. Diet-level average nitrous
+oxide (N₂O) emission factor from manure applied to or deposited on
+soil in feed production (g N₂O/kg DM).}
+\item{n2o_ration_crop_residues}{Numeric. Diet-level average nitrous
+oxide (N₂O) emission factor from crop residues decomposition in feed
+production (g N₂O/kg DM).}
+\item{ch4_ration_rice}{Numeric. Diet-level average methane (CH₄)
+emission factor from rice cultivation in feed production
+(g CH₄/kg DM).}
+}}
+\item{\strong{Production variables}}{
+\describe{
+\item{milk_production_mass_cohort}{Numeric. Total milk production
+produced over the assessment period
+(kg/cohort/assessment period).}
+\item{milk_production_protein_cohort}{Numeric. Total milk protein
+production produced over the assessment period
+(kg protein/cohort/assessment period).}
+\item{milk_production_fpcm_cohort}{Numeric. Total
+fat-protein-corrected milk (FPCM) produced over the assessment
+period (kg/cohort/assessment period).}
+\item{fibre_production_cohort}{Numeric. Total fibre produced over the
+assessment period by cohort (kg /cohort/assessment period).}
+\item{meat_production_live_weight_cohort}{Numeric . Total meat
+produced as live weight over the assessment period by cohort
+(kg/cohort/assessment period).}
+\item{meat_production_carcass_weight_cohort}{Numeric. Total meat as
+carcass weight (excluding organs, and other by-products after
+dressing) produced over the assessment period by cohort
+(kg/cohort/assessment period).}
+\item{meat_production_bone_free_meat_cohort}{Numeric. Total
+bone-free-meat (excluding bones, organs, and other by-products after
+dressing and bone removal) produced over the assessment period by
+cohort (kg/cohort/assessment period).}
+\item{meat_production_protein_cohort}{Numeric. Total meat protein
+(excluding bones, organs, and other by-products after dressing and
+bone removal) produced over the assessment period by cohort
+(kg protein/cohort/assessment period).}
+}}
+\item{\strong{Allocation variables}}{
+\describe{
+\item{milk_allocation_energy}{Numeric. Energy required to produce
+total milk output by cohort (MJ/cohort/assessment period). }
+\item{meat_allocation_energy}{Numeric. Energy required by a given
+sex-age cohort for total meat output by cohort during the assessment
+period, equal to the energy needed to produce all live-weight gain to
+reach the target slaughter weight
+(MJ/cohort/assessment period). }
+\item{fibre_allocation_energy}{Numeric. Energy required to produce
+all fibre output by cohort (MJ/cohort/assessment period).}
+\item{work_allocation_energy}{Numeric. Energy required to provide
+all draught power (traction/work) by cohort
+(MJ/cohort/assessment period).}
+\item{egg_allocation_energy}{Numeric. Energy required for egg
+production over the assessment period
+(MJ/cohort/assessment period). Currently set to 0.}
+}}
+}}
+
+\item{herd_level_results}{A herd-level \code{data.table}. When
+\code{has_herd_structure = FALSE}, this is the herd-level output returned by
+\code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}; when \code{has_herd_structure = TRUE}, it
+is the supplied \code{herd_level_data}. Additional calculated variable when
+\code{has_herd_structure = FALSE}:
+\describe{
+\item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).}
+}}
+
+\item{allocation_long}{A herd-level \code{data.table} in long format with
+one row per herd, commodity, and emission source combination, containing
+the following columns:
+\describe{
+\item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{species_short}{Character. Code identifying the livestock species. Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
+\item{variable_name}{Character. Names of emission variables to which
+allocation should be applied (e.g.,"ch4_enteric",
+"ch4_manure_pasture", "ch4_manure_burned","ch4_manure_other",
+"n2o_manure_pasture_direct", "n2o_manure_burned_direct",
+"n2o_manure_other_direct", "n2o_manure_burned_indirect",
+"n2o_manure_pasture_indirect", "n2o_manure_other_indirect",
+"co2_ration_fertilizer", "co2_ration_pesticides",
+"co2_ration_crop_activities", "co2_ration_luc_nopeat",
+"co2_ration_luc_peat", "n2o_ration_fertilizer",
+"n2o_ration_manure_applied", "n2o_ration_crop_residues",
+"ch4_ration_rice")}
+\item{commodity_name}{Character. List of commodity categories to which
+emissions may be allocated. List=c("None","Milk","Meat","Fibre","Work","Eggs")}
+\item{commodity_type}{Character. Commodity (commodity_name) grouping,
+either \code{"Edible"} or \code{"Non-Edible"}.}
+\item{allocation_share}{Numeric. Allocation share assigned to the
+commodity for the corresponding emission source (fraction).}
+}}
+
+\item{aggregation_results}{A named list from \code{\link[=run_aggregation_module]{run_aggregation_module()}}
+containing \code{results_emissions}, \code{results_feed},
+\code{results_production}, and \code{results_nitrogen}. These tables
+summarise herd-level emissions, feed variables, production variables, and
+nitrogen balance variables, scaled to the assessment duration.}
 }
 }
 \description{
-Runs the core sequence of model modules to generate cohort-level outputs for a
-livestock production system: herd simulation (optional), weights, feed rations,
-energy requirements and DMI, enteric methane direct emissions, nitrogen balance,
-direct emissions from manure management systems, feed emissions, production (milk, fibre, meat),
-and allocation shares.
-Accepts primary inputs only: one cohort-level master table, one herd-level master table,
-feed rations, feed parameters, feed emissions, and manure management system tables.
+Runs the full GLEAM workflow from master herd and cohort inputs through herd
+simulation (optional), weights, ration quality, energy requirements, enteric
+and manure emissions, feed emissions, production, allocation, and final
+herd-level aggregation.
+}
+\details{
+This function is a high-level orchestrator for the package workflow. It
+validates the primary inputs, runs the required module sequence, and returns
+both the fully populated cohort-level results and the final herd-level
+summaries.
+
+The GLEAM package implements the core computational engine of the Global
+Livestock Environmental Assessment Model (GLEAM), developed by the Food and
+Agriculture Organization of the United Nations (FAO). The package provides a
+modular and reproducible workflow for quantifying greenhouse gas emissions
+from livestock systems using a Life Cycle Assessment (LCA) approach based on
+the IPCC Tier 2 methodology.
+
+The pipeline covers seven livestock species identified by
+\code{species_short}: \code{CTL} (Cattle), \code{BFL} (Buffalo),
+\code{CML} (Camels), \code{SHP} (Sheep), \code{GTS} (Goats),
+\code{PGS} (Pigs), and \code{CHK} (Chickens). Within each herd, animals are
+organised into six sex-age cohorts identified by \code{cohort_short}:
+\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, and \code{MA}.
+These herd-level and cohort-level data structures are used consistently
+across all modules in the workflow.
+
+The assessment period is specified in days through
+\code{simulation_duration}, typically \code{365} for an annual assessment.
+Intermediate per-head per-day variables produced by several modules are
+carried through the cohort workflow and then scaled to cohort and herd totals
+in the final aggregation step.
+
+The pipeline follows this calculation sequence:
+\enumerate{
+\item If \code{has_herd_structure = FALSE}, generate herd structure with
+\code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}; otherwise use the supplied cohort and herd
+tables directly.
+\item Compute cohort weights with \code{\link[=run_weights_module]{run_weights_module()}}.
+\item Summarise ration quality with \code{\link[=run_ration_quality_module]{run_ration_quality_module()}} and merge
+the resulting ration variables into the cohort table.
+\item Compute energy requirements and dry matter intake with
+\code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
+\item Compute enteric methane emissions with
+\code{\link[=run_emissions_enteric_module]{run_emissions_enteric_module()}}.
+\item Compute nitrogen intake, retention, and excretion with
+\code{\link[=run_nitrogen_balance_module]{run_nitrogen_balance_module()}}.
+\item Compute manure management emissions with
+\code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}}.
+\item Summarise feed production emissions with
+\code{\link[=run_emissions_ration_module]{run_emissions_ration_module()}} and merge the resulting diet-level emission
+factors into the cohort table.
+\item Compute production outputs with \code{\link[=run_production_module]{run_production_module()}}.
+\item Compute commodity allocation terms and shares with
+\code{\link[=run_allocation_module]{run_allocation_module()}}.
+\item Aggregate cohort outputs to herd-level results and CO2eq metrics with
+\code{\link[=run_aggregation_module]{run_aggregation_module()}}.
+}
+
+All pipeline inputs that contain \code{herd_id} must refer to the same herd
+set. Validation also blocks users from supplying variables that are expected to
+be produced internally by the pipeline.
 }
 \examples{
 # Example 1: You do NOT have herd structure — use cohort input for herd simulation.
@@ -93,14 +816,14 @@ master_hrd_lvl_dt <- data.table::fread(
 file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
 )
 feed_rations_chrt_dt <- data.table::fread(
-file.path(path_run_gleam_examples, "feed_rations_share_chrt_data.csv")
+file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
 )
 feed_params_dt <- data.table::fread(system.file(
-  "extdata/Parameters/feed/feed_params.csv",
+  "extdata/run_gleam_examples/feed_quality.csv",
   package = "gleam"
 ))
 feed_emissions_dt <- data.table::fread(system.file(
-  "extdata/Parameters/feed/feed_emission_factors.csv",
+  "extdata/run_gleam_examples/feed_emission_factors.csv",
   package = "gleam"
 ))
 
@@ -138,14 +861,14 @@ master_hrd_lvl_dt <- data.table::fread(
 file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
 )
 feed_rations_chrt_dt <- data.table::fread(
-file.path(path_run_gleam_examples, "feed_rations_share_chrt_data.csv")
+file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
 )
 feed_params_dt <- data.table::fread(system.file(
-  "extdata/Parameters/feed/feed_params.csv",
+  "extdata/run_gleam_examples/feed_quality.csv",
   package = "gleam"
 ))
 feed_emissions_dt <- data.table::fread(system.file(
-  "extdata/Parameters/feed/feed_emission_factors.csv",
+  "extdata/run_gleam_examples/feed_emission_factors.csv",
   package = "gleam"
 ))
 
@@ -171,4 +894,17 @@ results <- run_gleam(
 print(results$cohort_level_results)
 print(results$allocation_long)
 }
+}
+\seealso{
+\code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}},
+\code{\link[=run_weights_module]{run_weights_module()}},
+\code{\link[=run_ration_quality_module]{run_ration_quality_module()}},
+\code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}},
+\code{\link[=run_emissions_enteric_module]{run_emissions_enteric_module()}},
+\code{\link[=run_nitrogen_balance_module]{run_nitrogen_balance_module()}},
+\code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}},
+\code{\link[=run_emissions_ration_module]{run_emissions_ration_module()}},
+\code{\link[=run_production_module]{run_production_module()}},
+\code{\link[=run_allocation_module]{run_allocation_module()}},
+\code{\link[=run_aggregation_module]{run_aggregation_module()}}
 }

@@ -1,5 +1,5 @@
 #' Run Aggregation Pipeline: Final Herd-Level Results
-#' 
+#'
 #' This function represents the final step of the Global Livestock Environmental
 #' Assessment Model (GLEAM) computational pipeline. It generates final herd-level
 #' results by aggregating key cohort-level outputs, scaling variables over the
@@ -123,11 +123,14 @@
 #'     \item \code{"AR4"}: IPCC Fourth Assessment Report (IPCC, 2007) — CH4 = 25, N2O = 298
 #'   }
 #'
+#' @param show_indicator Logical. Whether to display progress indicators during
+#'   the pipeline run. Defaults to `TRUE`.
+#'
 #' @return A named list with the following elements:
 #' \describe{
 #'   \item{results_emissions}{A \code{data.table} containing herd-level emissions
-#'   scaled to the assessment duration and allocated to commodities. Includes gas type, 
-#'   allocation shares, commodity metadata, GWP factors, and emissions expressed both as 
+#'   scaled to the assessment duration and allocated to commodities. Includes gas type,
+#'   allocation shares, commodity metadata, GWP factors, and emissions expressed both as
 #'   allocated gas mass (kg gas) and as CO₂-equivalents (kg CO₂eq).}
 #'
 #'   \item{results_feed}{A \code{data.table} containing herd-level feed variables,
@@ -193,7 +196,8 @@ run_aggregation_module <- function(
     cohort_level_data,
     allocation_herd_long,
     simulation_duration = 365,
-    global_warming_potential_set = "AR6"
+    global_warming_potential_set = "AR6",
+    show_indicator = TRUE
 ) {
   # --- Input validation -------------------------------------------------------
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
@@ -203,6 +207,11 @@ run_aggregation_module <- function(
     simulation_duration = simulation_duration,
     global_warming_potential_set = global_warming_potential_set
   )
+
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Aggregating results, please wait\U2026")
+  }
 
   # --- Step 1: Define variable groups -----------------------------------------
   feed_list <- list(
@@ -387,14 +396,14 @@ run_aggregation_module <- function(
     cohort_short = "cohort_short"
   )
 
-  # --- Step 6: Subsetting datframes by variable_type ----------------------------
+  # --- Step 6: Subsetting datframes by variable_type --------------------------
   data_herd_long_production <- data_herd_long[variable_type == "Production"]
   data_herd_long_nitrogen <- data_herd_long[variable_type == "NitrogenBalance"]
   data_herd_long_feed <- data_herd_long[variable_type == "Feed"]
 
-  # --- Step 7: Subsetting emissions dataframe and merge emissions with allocation data ---------------------------
+  # --- Step 7: Subsetting emissions dataframe and merge emissions with allocation data
   # Only emissions need allocation; other variables are assigned to "ALL"
-  data_herd_long_emissions<- merge(
+  data_herd_long_emissions <- merge(
     data_herd_long[
       variable_type == "Emissions",
       .(herd_id, species_short, variable_type, variable_name, value_total_gas = value_total)
@@ -421,7 +430,7 @@ run_aggregation_module <- function(
     )
   ]
 
-  # --- Step 10: Convert to CO2-equivalents -------------------------------------
+  # --- Step 10: Convert to CO2-equivalents ------------------------------------
   data_herd_long_emissions[
     , c("value_total_allocated_co2eq", "gwp") := calc_co2eq(
       gas = gas,
@@ -431,7 +440,7 @@ run_aggregation_module <- function(
     by = .I
   ]
 
-  # --- Step 11: Cleaning-up output tables -----------------------------------------
+  # --- Step 11: Cleaning-up output tables -------------------------------------
 
   # 11.1 Emissions
   emissions_dt <- data.table::rbindlist(emissions_list)
@@ -472,6 +481,12 @@ run_aggregation_module <- function(
     nitrogen_balance_dt,
     by = "variable_name"
   )
+
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Aggregation complete.")
+  }
 
   # --- Return results ---------------------------------------------------------
   return(

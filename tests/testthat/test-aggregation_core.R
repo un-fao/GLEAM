@@ -92,15 +92,6 @@ test_that("calc_cohort_totals validates variable_type", {
 test_that("calc_cohort_totals validates bounds", {
   expect_error(
     calc_cohort_totals(
-      value = -10,
-      cohort_stock_size = 50,
-      simulation_duration = 365,
-      variable_type = "Emissions"
-    ),
-    "must be non-negative"
-  )
-  expect_error(
-    calc_cohort_totals(
       value = 100,
       cohort_stock_size = 0,
       simulation_duration = 365,
@@ -172,13 +163,6 @@ test_that("calc_allocated_emissions validates input lengths", {
 })
 
 test_that("calc_allocated_emissions validates bounds", {
-  expect_error(
-    calc_allocated_emissions(
-      value = -100,
-      allocation_share = 0.5
-    ),
-    "must be non-negative"
-  )
   expect_error(
     calc_allocated_emissions(
       value = 100,
@@ -341,16 +325,5 @@ test_that("calc_co2eq validates gas types", {
       global_warming_potential_set = "AR6"
     ),
     "must be one of"
-  )
-})
-
-test_that("calc_co2eq validates value_allocated bounds", {
-  expect_error(
-    calc_co2eq(
-      gas = "CH4",
-      value_allocated = -10,
-      global_warming_potential_set = "AR6"
-    ),
-    "must be non-negative"
   )
 })

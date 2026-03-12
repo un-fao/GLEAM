@@ -185,19 +185,11 @@ validate_run_emissions_ration_module_inputs <- function(
   # --- Emissions value validation (type + range) ------------------------------
   emissions_value_cols <- setdiff(required_emissions_cols, "feed_id")
 
-  # 1) Type checks: must be numeric. NA allowed.
+  # Type checks: must be numeric. NA allowed.
   for (col in emissions_value_cols) {
     x <- feed_emissions[[col]]
     if (!is.numeric(x)) {
       cli::cli_abort("{.arg {col}} must be a single numeric (scalar). NA is allowed.")
-    }
-  }
-
-  # 2) Range checks: must be >= 0. NA allowed.
-  for (col in emissions_value_cols) {
-    x <- feed_emissions[[col]]
-    if (any(!is.na(x) & x < 0)) {
-      cli::cli_abort("{.arg {col}} must be >= 0.")
     }
   }
 }

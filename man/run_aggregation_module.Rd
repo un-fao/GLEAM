@@ -8,7 +8,8 @@ run_aggregation_module(
   cohort_level_data,
   allocation_herd_long,
   simulation_duration = 365,
-  global_warming_potential_set = "AR6"
+  global_warming_potential_set = "AR6",
+  show_indicator = TRUE
 )
 }
 \arguments{
@@ -128,6 +129,9 @@ Report (excluding climate–carbon feedbacks) (IPCC, 2013)  — CH4 = 28, N2O = 
 Report (including climate–carbon feedbacks) (IPCC, 2013) — CH4 = 34, N2O = 298
 \item \code{"AR4"}: IPCC Fourth Assessment Report (IPCC, 2007) — CH4 = 25, N2O = 298
 }}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during
+the pipeline run. Defaults to \code{TRUE}.}
 }
 \value{
 A named list with the following elements:

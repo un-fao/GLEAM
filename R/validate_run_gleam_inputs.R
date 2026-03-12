@@ -19,6 +19,7 @@
 #'   management system fractions.
 #' @param manure_management_system_factors data.table. manure management system factors.
 #' @param simulation_duration Numeric. Length of the assessment period (days).
+#' @param global_warming_potential_set Character. GWP-100 option (AR6, AR5_excluding_carbon_feedback, etc.).
 #'
 #' @noRd
 validate_run_gleam_inputs <- function(
@@ -30,7 +31,8 @@ validate_run_gleam_inputs <- function(
     feed_emissions,
     manure_management_system_fraction,
     manure_management_system_factors,
-    simulation_duration
+    simulation_duration,
+    global_warming_potential_set
 ) {
 
   # --- simulation_duration: must be a single positive numeric ------------------
@@ -54,6 +56,20 @@ validate_run_gleam_inputs <- function(
   if (is.na(has_herd_structure)) {
     cli::cli_abort(
       "{.arg has_herd_structure} must be TRUE or FALSE, not NA."
+    )
+  }
+
+  # --- global_warming_potential_set: must be a valid GWP option ----------------
+  valid_gwp <- c(
+    "AR6", "AR5_excluding_carbon_feedback", "AR5_including_carbon_feedback", "AR4"
+  )
+  if (!is.character(global_warming_potential_set) || length(global_warming_potential_set) != 1L) {
+    cli::cli_abort("{.arg global_warming_potential_set} must be a single character value.")
+  }
+  if (!global_warming_potential_set %in% valid_gwp) {
+    cli::cli_abort(
+      "{.arg global_warming_potential_set} must be one of: {.val {valid_gwp}}.
+      Got: {.val {global_warming_potential_set}}"
     )
   }
 
