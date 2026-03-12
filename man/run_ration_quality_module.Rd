@@ -137,7 +137,7 @@ feed_rations_chrt_dt <- data.table::fread(system.file(
   package = "gleam"
 ))
 feed_params_dt <- data.table::fread(system.file(
-  "extdata/Parameters/feed/feed_params.csv",
+  "extdata/run_modules_examples/feed_params.csv",
   package = "gleam"
 ))
 

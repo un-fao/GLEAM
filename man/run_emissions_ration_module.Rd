@@ -188,7 +188,7 @@ rations_share <- data.table::fread(system.file(
 
 # Load table with feed emission factors
 feed_emissions <- data.table::fread(system.file(
-  "extdata/Parameters/feed/feed_emission_factors.csv",
+  "extdata/run_modules_examples/feed_emission_factors.csv",
   package = "gleam"
 ))
 
