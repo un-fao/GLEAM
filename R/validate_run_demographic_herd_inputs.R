@@ -13,105 +13,32 @@ validate_run_demographic_herd_module_inputs <- function(
 ) {
 
   # --- Basic type and structure checks ----------------------------------------
-  if (!data.table::is.data.table(cohort_level_data)) {
-    cli::cli_abort("{.arg cohort_level_data} must be a data.table.")
-  }
-  if (!data.table::is.data.table(herd_level_data)) {
-    cli::cli_abort("{.arg herd_level_data} must be a data.table.")
-  }
+  # Ensure inputs are data.tables with at least one row
+  check_data_table(cohort_level_data, "cohort_level_data")
+  check_data_table(herd_level_data, "herd_level_data")
 
-  if (nrow(cohort_level_data) == 0) {
-    cli::cli_abort("{.arg cohort_level_data} must contain at least one row.")
-  }
-  if (nrow(herd_level_data) == 0) {
-    cli::cli_abort("{.arg herd_level_data} must contain at least one row.")
-  }
-
-  # --- Required columns validation --------------------------------------------
+  # --- Required columns -------------------------------------------------------
+  # Verify all module-specific columns are present
   required_cohort_cols <- c(
     "herd_id", "cohort_short", "cohort_duration_days", "offtake_rate", "death_rate"
   )
   required_herd_cols <- c(
     "herd_id", "parturition_rate", "litter_size", "birth_fraction_female", "herd_size_total"
   )
+  check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
+  check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
 
-  missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
-  if (length(missing_cohort_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg cohort_level_data}: {.val {missing_cohort_cols}}"
-    )
-  }
-
-  missing_herd_cols <- setdiff(required_herd_cols, names(herd_level_data))
-  if (length(missing_herd_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg herd_level_data}: {.val {missing_herd_cols}}"
-    )
-  }
-
-  # --- Cohort data validation -------------------------------------------------
+  # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------
+  # Must use valid GLEAM cohort codes; each herd must have all 6 cohorts
   validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
+  check_cohort_completeness(cohort_level_data, "cohort_level_data")
 
-  # Combined validation: check that each herd has exactly 6 cohorts and all required ones
-  cohort_completeness <- cohort_level_data[
-    , list(
-      count = .N,
-      has_all_cohorts = setequal(cohort_short, gleam_cohorts),
-      missing_cohorts = paste(setdiff(gleam_cohorts, cohort_short), collapse = ", ")
-    ),
-    by = herd_id
-  ]
+  # --- Herd: one row per herd_id -----------------------------------------------
+  check_herd_id_unique(herd_level_data, "herd_level_data")
 
-  # Check for herds with wrong count
-  wrong_count <- cohort_completeness[count != 6]
-  if (nrow(wrong_count) > 0) {
-    cli::cli_abort(
-      "Each herd_id must have exactly 6 rows in {.arg cohort_level_data} (one per cohort).
-      Found incorrect counts for herd_ids: {.val {wrong_count$herd_id}}"
-    )
-  }
-
-  # Check for herds missing required cohorts or having duplicates
-  # If count == 6 but has_all_cohorts == FALSE, there must be duplicates
-  incomplete_herds <- cohort_completeness[has_all_cohorts == FALSE]
-  if (nrow(incomplete_herds) > 0) {
-    missing_info <- incomplete_herds[
-      , paste0(herd_id, " (missing: ", missing_cohorts, ")"),
-      by = herd_id
-    ]$V1
-    cli::cli_abort(
-      "Each herd_id must have exactly one row for each of the 6 cohorts in {.arg cohort_level_data}.
-      Incomplete or duplicate cohorts found for herd_ids: {.val {missing_info}}"
-    )
-  }
-
-  # --- Herd-level data validation ---------------------------------------------
-  # Check for duplicate herd_ids in herd_level_data
-  herd_id_counts <- herd_level_data[, .N, by = herd_id]
-  duplicate_herds <- herd_id_counts[N > 1]
-  if (nrow(duplicate_herds) > 0) {
-    cli::cli_abort(
-      "Each herd_id must appear exactly once in {.arg herd_level_data}.
-      Found duplicates for herd_ids: {.val {duplicate_herds$herd_id}}"
-    )
-  }
-
-  # --- Cross-table validation -------------------------------------------------
-  # Validate that herd_ids match between the two tables
-  cohort_herd_ids <- unique(cohort_level_data$herd_id)
-  herd_level_herd_ids <- unique(herd_level_data$herd_id)
-
-  missing_in_herd_level <- setdiff(cohort_herd_ids, herd_level_herd_ids)
-  if (length(missing_in_herd_level) > 0) {
-    cli::cli_abort(
-      "Herd IDs in {.arg cohort_level_data} not found in {.arg herd_level_data}: {.val {missing_in_herd_level}}"
-    )
-  }
-
-  missing_in_cohort <- setdiff(herd_level_herd_ids, cohort_herd_ids)
-  if (length(missing_in_cohort) > 0) {
-    cli::cli_abort(
-      "Herd IDs in {.arg herd_level_data} not found in {.arg cohort_level_data}: {.val {missing_in_cohort}}"
-    )
-  }
+  # --- Cross-table: same herd_id set ------------------------------------------
+  check_herd_id_consistency(
+    cohort_level_data, herd_level_data,
+    "cohort_level_data", "herd_level_data"
+  )
 }

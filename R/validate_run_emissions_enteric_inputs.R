@@ -9,59 +9,23 @@
 validate_run_emissions_enteric_module_inputs <- function(data) {
 
   # --- Basic type and structure checks ----------------------------------------
-  if (!data.table::is.data.table(data)) {
-    cli::cli_abort("{.arg data} must be a data.table.")
-  }
+  # Ensure input is a data.table with at least one row
+  check_data_table(data, "data")
 
-  if (nrow(data) == 0) {
-    cli::cli_abort("{.arg data} must contain at least one row.")
-  }
-
-  # --- Required columns validation --------------------------------------------
+  # --- Required columns -------------------------------------------------------
+  # Verify all module-specific columns are present
   required_cols <- c(
     "herd_id", "species_short", "cohort_short", "ration_digestibility_fraction",
     "ration_gross_energy", "ration_intake"
   )
-  missing_cols <- setdiff(required_cols, names(data))
-  if (length(missing_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg data}: {.val {missing_cols}}"
-    )
-  }
+  check_required_columns(data, required_cols, "data")
 
   # --- Valid cohort and species_short codes -----------------------------------
+  # Must use valid GLEAM codes; each herd must have all 6 cohorts
   validate_cohort_short_values(data$cohort_short, data_arg = "data")
   validate_species_short_values(data$species_short, data_arg = "data")
 
   # --- Cohort completeness per herd_id ----------------------------------------
-  # Each herd_id must have exactly 6 rows (one per cohort).
-  cohort_completeness <- data[
-    ,
-    list(
-      count = .N,
-      has_all_cohorts = setequal(cohort_short, gleam_cohorts),
-      missing_cohorts = paste(setdiff(gleam_cohorts, cohort_short), collapse = ", ")
-    ),
-    by = herd_id
-  ]
-
-  wrong_count <- cohort_completeness[count != 6]
-  if (nrow(wrong_count) > 0) {
-    cli::cli_abort(
-      "Each herd_id must have exactly 6 rows in {.arg data} (one per cohort).
-      Found incorrect counts for herd_ids: {.val {wrong_count$herd_id}}"
-    )
-  }
-
-  incomplete_herds <- cohort_completeness[has_all_cohorts == FALSE]
-  if (nrow(incomplete_herds) > 0) {
-    missing_info <- incomplete_herds[
-      , paste0(herd_id, " (missing: ", missing_cohorts, ")"),
-      by = herd_id
-    ]$V1
-    cli::cli_abort(
-      "Each herd_id must have exactly one row for each of the 6 cohorts in {.arg data}.
-      Incomplete or duplicate cohorts found for herd_ids: {.val {missing_info}}"
-    )
-  }
+  # Each herd_id must have exactly 6 rows (one per cohort)
+  check_cohort_completeness(data, "data")
 }
