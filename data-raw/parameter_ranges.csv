@@ -44,7 +44,7 @@ feed_digestibility_fraction_chicken,0,TRUE,1,TRUE
 feed_metabolizable_energy_ruminant,0,TRUE,45,TRUE
 feed_metabolizable_energy_pigs,0,TRUE,45,TRUE
 feed_metabolizable_energy_chicken,0,TRUE,45,TRUE
-feed_nitrogen_content,0,TRUE,0.1,TRUE
+feed_nitrogen_content,0,TRUE,0.15,TRUE
 feed_urinary_energy_ruminant,0,TRUE,0.5,TRUE
 feed_urinary_energy_pigs,0,TRUE,0.5,TRUE
 feed_urinary_energy_chicken,0,TRUE,0.5,TRUE
