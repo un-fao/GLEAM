@@ -30,22 +30,19 @@ validate_run_emissions_enteric_module_inputs <- function(data) {
   }
 
   # --- Valid cohort and species_short codes -----------------------------------
-  valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-  valid_species <- c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
-
-  invalid_cohorts <- setdiff(unique(data$cohort_short), valid_cohorts)
+  invalid_cohorts <- setdiff(unique(data$cohort_short), gleam_cohorts)
   if (length(invalid_cohorts) > 0) {
     cli::cli_abort(
       "Invalid {.var cohort_short} values in {.arg data}: {.val {invalid_cohorts}}.
-      Must be one of: {.val {valid_cohorts}}"
+      Must be one of: {.val {gleam_cohorts}}"
     )
   }
 
-  invalid_species <- setdiff(unique(data$species_short), valid_species)
+  invalid_species <- setdiff(unique(data$species_short), gleam_species)
   if (length(invalid_species) > 0) {
     cli::cli_abort(
       "Invalid {.var species_short} values in {.arg data}: {.val {invalid_species}}.
-      Must be one of: {.val {valid_species}}"
+      Must be one of: {.val {gleam_species}}"
     )
   }
 
@@ -55,8 +52,8 @@ validate_run_emissions_enteric_module_inputs <- function(data) {
     ,
     list(
       count = .N,
-      has_all_cohorts = setequal(cohort_short, valid_cohorts),
-      missing_cohorts = paste(setdiff(valid_cohorts, cohort_short), collapse = ", ")
+      has_all_cohorts = setequal(cohort_short, gleam_cohorts),
+      missing_cohorts = paste(setdiff(gleam_cohorts, cohort_short), collapse = ", ")
     ),
     by = herd_id
   ]

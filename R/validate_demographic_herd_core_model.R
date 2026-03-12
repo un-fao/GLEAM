@@ -111,7 +111,7 @@ validate_steady_state_inputs <- function(
     probability_growth
 ) {
   # Define expected names
-  six_cohort_names <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  six_cohort_names <- gleam_cohorts
   ten_cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
 
   # Vector inputs with required names
@@ -150,7 +150,7 @@ validate_population_size_inputs <- function(
     cohort_share
 ) {
   # Expected cohort names
-  six_cohort_names <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  six_cohort_names <- gleam_cohorts
   eight_cohort_names <- c("FB", "FJ", "FS", "FA", "MB", "MJ", "MS", "MA")
   ten_cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
 

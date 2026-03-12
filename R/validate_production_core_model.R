@@ -21,7 +21,7 @@ validate_milk_outputs_inputs <- function(
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
   
-  if (species_short %in% c("CTL", "BFL", "GTS", "SHP", "CML")) {
+  if (species_short %in% gleam_species_milk_producers) {
     if (cohort_short == "FA") {
     # Scalar numeric inputs (only used for FA)
     validate_scalar_numeric(simulation_duration, "simulation_duration")

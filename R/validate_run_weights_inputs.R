@@ -56,15 +56,12 @@ validate_run_weights_module_inputs <- function(
   }
 
   # --- Cohort data validation -------------------------------------------------
-  # Define valid cohort codes
-  valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-
   # Check for invalid cohort values
-  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), valid_cohorts)
+  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), gleam_cohorts)
   if (length(invalid_cohorts) > 0) {
     cli::cli_abort(
       "Invalid cohort values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
-      Must be one of: {.val {valid_cohorts}}"
+      Must be one of: {.val {gleam_cohorts}}"
     )
   }
 
@@ -72,8 +69,8 @@ validate_run_weights_module_inputs <- function(
   cohort_completeness <- cohort_level_data[
     , list(
       count = .N,
-      has_all_cohorts = setequal(cohort_short, valid_cohorts),
-      missing_cohorts = paste(setdiff(valid_cohorts, cohort_short), collapse = ", ")
+      has_all_cohorts = setequal(cohort_short, gleam_cohorts),
+      missing_cohorts = paste(setdiff(gleam_cohorts, cohort_short), collapse = ", ")
     ),
     by = herd_id
   ]

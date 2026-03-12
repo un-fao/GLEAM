@@ -81,17 +81,15 @@ validate_allocation_meat_inputs <- function(
   validate_scalar_character(cohort_short, "cohort_short")
   validate_scalar_numeric(meat_production_live_weight_cohort, "meat_production_live_weight_cohort")
 
-  valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "PGS", "CHK")
-  if (!species_short %in% valid_animals) {
+  if (!species_short %in% gleam_species) {
     cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{valid_animals}')}"
+      "{.arg species_short} must be one of: {cli::format_inline('{gleam_species}')}"
     )
   }
 
-  valid_cohorts <- c("FA", "MA", "FS", "MS", "FJ", "MJ")
-  if (!cohort_short %in% valid_cohorts) {
+  if (!cohort_short %in% gleam_cohorts) {
     cli::cli_abort(
-      "{.arg cohort_short} must be one of: {cli::format_inline('{valid_cohorts}')}"
+      "{.arg cohort_short} must be one of: {cli::format_inline('{gleam_cohorts}')}"
     )
   }
 
@@ -158,10 +156,9 @@ validate_allocation_fibre_inputs <- function(
 ) {
   validate_scalar_character(species_short, "species_short")
 
-  valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "PGS", "CHK")
-  if (!species_short %in% valid_animals) {
+  if (!species_short %in% gleam_species) {
     cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{valid_animals}')}"
+      "{.arg species_short} must be one of: {cli::format_inline('{gleam_species}')}"
     )
   }
 
@@ -223,10 +220,9 @@ validate_allocation_work_inputs <- function(
 ) {
   validate_scalar_character(species_short, "species_short")
 
-  valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "PGS", "CHK")
-  if (!species_short %in% valid_animals) {
+  if (!species_short %in% gleam_species) {
     cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{valid_animals}')}"
+      "{.arg species_short} must be one of: {cli::format_inline('{gleam_species}')}"
     )
   }
 

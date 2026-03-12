@@ -226,10 +226,9 @@ validate_param_range <- function(
 #' @noRd
 validate_animal_species <- function(species_short) {
   validate_scalar_character(species_short, "species_short")
-  valid_species <- c("CTL", "BFL", "SHP", "GTS", "PGS", "CHK", "CML")
-  if (!species_short %in% valid_species) {
+  if (!species_short %in% gleam_species) {
     cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{valid_species}')}"
+      "{.arg species_short} must be one of: {cli::format_inline('{gleam_species}')}"
     )
   }
 }
@@ -243,10 +242,9 @@ validate_animal_species <- function(species_short) {
 #' @noRd
 validate_cohort_code <- function(cohort_short) {
   validate_scalar_character(cohort_short, "cohort_short")
-  valid_cohorts <- c("FA", "FS", "FJ", "MA", "MS", "MJ")
-  if (!cohort_short %in% valid_cohorts) {
+  if (!cohort_short %in% gleam_cohorts) {
     cli::cli_abort(
-      "{.arg cohort_short} must be one of: {cli::format_inline('{valid_cohorts}')}"
+      "{.arg cohort_short} must be one of: {cli::format_inline('{gleam_cohorts}')}"
     )
   }
 }

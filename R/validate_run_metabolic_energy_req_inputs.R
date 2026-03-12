@@ -61,21 +61,19 @@ validate_run_metabolic_energy_req_module_inputs <- function(
   }
 
   # --- Cohort data validation -------------------------------------------------
-  valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-
-  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), valid_cohorts)
+  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), gleam_cohorts)
   if (length(invalid_cohorts) > 0) {
     cli::cli_abort(
       "Invalid cohort_short values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
-      Must be one of: {.val {valid_cohorts}}"
+      Must be one of: {.val {gleam_cohorts}}"
     )
   }
 
   cohort_completeness <- cohort_level_data[
     , list(
       count = .N,
-      has_all_cohorts = setequal(cohort_short, valid_cohorts),
-      missing_cohorts = paste(setdiff(valid_cohorts, cohort_short), collapse = ", ")
+      has_all_cohorts = setequal(cohort_short, gleam_cohorts),
+      missing_cohorts = paste(setdiff(gleam_cohorts, cohort_short), collapse = ", ")
     ),
     by = herd_id
   ]
@@ -110,12 +108,11 @@ validate_run_metabolic_energy_req_module_inputs <- function(
     )
   }
 
-  valid_species <- c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
-  invalid_species <- setdiff(unique(herd_level_data$species_short), valid_species)
+  invalid_species <- setdiff(unique(herd_level_data$species_short), gleam_species)
   if (length(invalid_species) > 0) {
     cli::cli_abort(
       "Invalid {.field species_short} values in {.arg herd_level_data}: {.val {invalid_species}}.
-      Must be one of: {.val {valid_species}}"
+      Must be one of: {.val {gleam_species}}"
     )
   }
 

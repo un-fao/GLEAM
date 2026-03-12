@@ -133,7 +133,7 @@ calc_milk_production <- function(
   milk_protein_production <- 0
   fpcm_production <- 0
   
-  if (species_short %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
+  if (species_short %in% gleam_species_milk_producers) {
     if (cohort_short == "FA") {
 
     # Energy content of standard milk (Mcal/kg) - IDF 2022 formula

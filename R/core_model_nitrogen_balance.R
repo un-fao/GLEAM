@@ -190,7 +190,7 @@ calc_nitrogen_retention <- function(
     live_weight_at_weaning, live_weight_at_birth, pregnancy_duration, cohort_duration_days
   )
 
-  if (species_short %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
+  if (species_short %in% gleam_species_milk_producers) {
     tissue_n <- ifelse(species_short %in% c("CTL", "BFL"), 0.0326, 0.026)
     milk_n <- milk_protein_fraction / 6.25
     fibre_n <- 0.134
@@ -288,7 +288,7 @@ calc_nitrogen_excretion <- function(
   # Validate inputs
   validate_nitrogen_excretion_inputs(species_short, nitrogen_intake, nitrogen_retention)
 
-  if (species_short %in% c("CTL", "BFL", "CML", "GTS", "SHP", "PGS")) {
+  if (species_short %in% gleam_species_non_poultry) {
     nitrogen_excretion <- nitrogen_intake - nitrogen_retention
   } else {
     nitrogen_excretion <- 0  # not implemented yet
