@@ -1,4 +1,4 @@
-#' Run Allocation Shares
+﻿#' Run Allocation Shares
 #'
 #' Computes biophysical allocation shares for livestock commodities by calculating
 #' cohort-level energy requirements for meat, milk, fibre, work, and eggs,
@@ -389,20 +389,9 @@ run_allocation_module <- function(
   # --- Step 7: Assigning allocation to emission sources -----------------------
   allocation_herd_long <- assign_allocation_shares(
     allocation_herd_long = allocation_herd_long,
-    emissions_vars = c(
-      "ch4_enteric", "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other",
-      "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
-      "n2o_manure_burned_indirect", "n2o_manure_pasture_indirect", "n2o_manure_other_indirect",
-      "co2_ration_fertilizer", "co2_ration_pesticides", "co2_ration_crop_activities",
-      "co2_ration_luc_nopeat", "co2_ration_luc_peat", "n2o_ration_fertilizer",
-      "n2o_ration_manure_applied", "n2o_ration_crop_residues", "ch4_ration_rice"
-    ),
+    emissions_vars = sapply(gleam_emissions_meta, `[[`, "emissions_source"),
     commodities = c("Other", "Milk", "Meat", "Fibre", "Work", "Eggs"),
-    non_allocated_emission_sources = c(
-      "ch4_manure_pasture", "ch4_manure_burned",
-      "n2o_manure_pasture_direct", "n2o_manure_burned_direct",
-      "n2o_manure_burned_indirect", "n2o_manure_pasture_indirect"
-    ),
+    non_allocated_emission_sources = gleam_non_allocated_emissions,
     commodity_col = "commodity_name",
     allocation_col = "allocation_share"
   )

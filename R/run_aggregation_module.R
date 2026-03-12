@@ -213,124 +213,10 @@ run_aggregation_module <- function(
   }
 
   # --- Step 1: Define variable groups -----------------------------------------
-  feed_list <- list(
-    list(
-      feed_source = "ration_intake",
-      label = "DryMatterIntake",
-      unit = "kg dry matter"
-    )
-  )
-
-  feed_vars <- sapply(feed_list, `[[`, "feed_source")
-
-  nitrogen_balance_list <- list(
-    list(
-      nitrogen_balance_source = "nitrogen_intake",
-      label = "NitrogenIntake",
-      unit = "kg N"
-    ),
-    list(
-      nitrogen_balance_source = "nitrogen_retention",
-      label = "NitrogenRetention",
-      unit = "kg N"
-    ),
-    list(
-      nitrogen_balance_source = "nitrogen_excretion",
-      label = "NitrogenExcretion",
-      unit = "kg N"
-    )
-  )
-
-  nitrogen_balance_vars <- sapply(nitrogen_balance_list, `[[`, "nitrogen_balance_source")
-
-  production_list <- list(
-    list(
-      production_source = "milk_production_mass_cohort",
-      label = "MilkRaw",
-      unit = "kg",
-      commodity_name = "Milk",
-      commodity_type = "Edible"
-    ),
-    list(
-      production_source = "milk_production_protein_cohort",
-      label = "MilkProtein",
-      unit = "kg protein",
-      commodity_name = "Milk",
-      commodity_type = "Edible"
-    ),
-    list(
-      production_source = "milk_production_fpcm_cohort",
-      label = "MilkFatProteinCorrected",
-      unit = "kg fat-protein corrected",
-      commodity_name = "Milk",
-      commodity_type = "Edible"
-    ),
-    list(
-      production_source = "meat_production_live_weight_cohort",
-      label = "MeatLiveWeight",
-      unit = "kg live weight",
-      commodity_name = "Meat",
-      commodity_type = "Edible"
-    ),
-    list(
-      production_source = "meat_production_carcass_weight_cohort",
-      label = "MeatCarcassWeight",
-      unit = "kg carcass weight",
-      commodity_name = "Meat",
-      commodity_type = "Edible"
-    ),
-    list(
-      production_source = "meat_production_bone_free_meat_cohort",
-      label = "MeatBoneFree",
-      unit = "kg bone-free meat",
-      commodity_name = "Meat",
-      commodity_type = "Edible"
-    ),
-    list(
-      production_source = "meat_production_protein_cohort",
-      label = "MeatProtein",
-      unit = "kg protein",
-      commodity_name = "Meat",
-      commodity_type = "Edible"
-    ),
-    list(
-      production_source = "fibre_production_cohort",
-      label = "Fibre",
-      unit = "kg",
-      commodity_name = "Fibre",
-      commodity_type = "Edible"
-    )
-  )
-
-  production_vars <- sapply(production_list, `[[`, "production_source")
-
-  emissions_list <- list(
-    list(emissions_source = "ch4_enteric", label = "Enteric_CH4"),
-    list(emissions_source = "ch4_manure_pasture", label = "Manure-Pasture_CH4"),
-    list(emissions_source = "ch4_manure_burned", label = "Manure-Burned_CH4"),
-    list(emissions_source = "ch4_manure_other", label = "Manure-Other_CH4"),
-
-    list(emissions_source = "n2o_manure_pasture_direct", label = "ManureDirect-Pasture_N2O"),
-    list(emissions_source = "n2o_manure_burned_direct", label = "ManureDirect-Burned_N2O"),
-    list(emissions_source = "n2o_manure_other_direct", label = "ManureDirect-Other_N2O"),
-
-    list(emissions_source = "n2o_manure_burned_indirect", label = "ManureIndirect-Burned_N2O"),
-    list(emissions_source = "n2o_manure_pasture_indirect", label = "ManureIndirect-Pasture_N2O"),
-    list(emissions_source = "n2o_manure_other_indirect", label = "ManureIndirect-Other_N2O"),
-
-    list(emissions_source = "co2_ration_fertilizer", label = "Feed-Fertilizer_CO2"),
-    list(emissions_source = "co2_ration_pesticides", label = "Feed-Pesticides_CO2"),
-    list(emissions_source = "co2_ration_crop_activities", label = "Feed-CropOperations_CO2"),
-    list(emissions_source = "co2_ration_luc_nopeat", label = "Feed-LandUseChange_CO2"),
-    list(emissions_source = "co2_ration_luc_peat", label = "Feed-PeatDrainage_CO2"),
-
-    list(emissions_source = "n2o_ration_fertilizer", label = "Feed-Fertilizer_N2O"),
-    list(emissions_source = "n2o_ration_manure_applied", label = "Feed-ManureApplication_N2O"),
-    list(emissions_source = "n2o_ration_crop_residues", label = "Feed-CropResidues_N2O"),
-
-    list(emissions_source = "ch4_ration_rice", label = "Feed-Rice_CH4")
-  )
-  emissions_vars <- sapply(emissions_list, `[[`, "emissions_source")
+  feed_vars <- sapply(gleam_feed_meta, `[[`, "feed_source")
+  nitrogen_balance_vars <- sapply(gleam_nitrogen_balance_meta, `[[`, "nitrogen_balance_source")
+  production_vars <- sapply(gleam_production_meta, `[[`, "production_source")
+  emissions_vars <- sapply(gleam_emissions_meta, `[[`, "emissions_source")
 
   # Check that required variables exist in cohort_level_data
   all_vars <- unique(
@@ -442,7 +328,7 @@ run_aggregation_module <- function(
   # --- Step 11: Cleaning-up output tables -------------------------------------
 
   # 11.1 Emissions
-  emissions_dt <- data.table::rbindlist(emissions_list)
+  emissions_dt <- data.table::rbindlist(gleam_emissions_meta)
   data.table::setnames(emissions_dt, "emissions_source", "variable_name")
 
   data_herd_long_emissions <- merge(
@@ -452,7 +338,7 @@ run_aggregation_module <- function(
   )
 
   # 12.2 Production
-  production_dt <- data.table::rbindlist(production_list)
+  production_dt <- data.table::rbindlist(gleam_production_meta)
   data.table::setnames(production_dt, "production_source", "variable_name")
 
   data_herd_long_production <- merge(
@@ -462,7 +348,7 @@ run_aggregation_module <- function(
   )
 
   # 12.3 Feed
-  feed_dt <- data.table::rbindlist(feed_list)
+  feed_dt <- data.table::rbindlist(gleam_feed_meta)
   data.table::setnames(feed_dt, "feed_source", "variable_name")
 
   data_herd_long_feed <- merge(
@@ -472,7 +358,7 @@ run_aggregation_module <- function(
   )
 
   # 12.4 Nitrogen balance
-  nitrogen_balance_dt <- data.table::rbindlist(nitrogen_balance_list)
+  nitrogen_balance_dt <- data.table::rbindlist(gleam_nitrogen_balance_meta)
   data.table::setnames(nitrogen_balance_dt, "nitrogen_balance_source", "variable_name")
 
   data_herd_long_nitrogen <- merge(

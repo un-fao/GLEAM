@@ -29,7 +29,7 @@ validate_maintenance_inputs <- function(
     validate_param_range(age_first_parturition, "age_first_parturition")
   }
 
-  if (species_short == "SHP" && cohort_short %in% c("MA", "MS", "MJ")) {
+  if (species_short == "SHP" && cohort_short %in% gleam_cohorts_male) {
     validate_param_range(offtake_rate, "offtake_rate")
   }
 }

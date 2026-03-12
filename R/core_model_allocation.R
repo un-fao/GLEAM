@@ -252,7 +252,7 @@ calc_meat_allocation_energy <- function(
 
   if (species_short %in% c("CTL", "BFL")) {
     # Cattle and Buffalo: use growth efficiency factor based on cohort
-    growth_efficiency_factor <- if (cohort_short %in% c("FA", "FS", "FJ")) 0.8 else 1
+    growth_efficiency_factor <- if (cohort_short %in% gleam_cohorts_female) 0.8 else 1
     specific_energy_meat <- (
       22.02 * (((live_weight_cohort_at_slaughter - live_weight_at_birth) / 2) /
                  (growth_efficiency_factor * live_weight_cohort_at_slaughter))^0.75 *
@@ -267,7 +267,7 @@ calc_meat_allocation_energy <- function(
 
   } else if (species_short == "SHP") {
     # Sheep: coefficients vary by cohort (female vs male)
-    if (cohort_short %in% c("FA", "FS", "FJ")) {
+    if (cohort_short %in% gleam_cohorts_female) {
       a <- 2.1
       b <- 0.45
     } else {

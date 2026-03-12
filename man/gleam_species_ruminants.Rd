@@ -11,8 +11,8 @@ A character vector of length 4.
 gleam_species_ruminants
 }
 \description{
-Cattle, Buffalo, Sheep, Goats. Energy requirements for these species are
-expressed as net energy (NE) and converted to gross energy (GE) via
-digestibility ratios. Camels use metabolizable energy (ME) instead.
+Cattle, Buffalo, Sheep, Goats. Energy requirements are expressed as net
+energy (NE) and converted to gross energy (GE) via digestibility ratios.
+Camels use metabolizable energy (ME) instead.
 }
 \keyword{internal}
