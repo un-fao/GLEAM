@@ -1,87 +1,169 @@
-#' Aggregation Pipeline: Final Herd-Level Results
+#' Run Aggregation Pipeline: Final Herd-Level Results
 #'
 #' This function represents the final step of the Global Livestock Environmental
-#' Assessment Model (GLEAM) computational pipeline.
-#' It consolidates cohort-level outputs into standardized herd-level totals for reporting.
-#' The function (i) scales per-head-per-day variables to cohort totals over the assessment
-#' period, (ii) aggregates cohorts to herd level, (iii) allocates emissions to commodities
-#' using allocation shares, and (iv) converts CH₄ and N₂O emissions to CO₂-equivalents using
-#' a selected GWP-100 option.
+#' Assessment Model (GLEAM) computational pipeline. It generates final herd-level
+#' results by aggregating key cohort-level outputs, scaling variables over the
+#' assessment duration, allocating emissions to commodities, and converting CH₄
+#' and N₂O emissions to CO₂-equivalents (CO₂eq) using selected 100-year Global
+#' Warming Potential (GWP-100) factors.
 #'
-#'
-#' The function follows this workflow:
-#' \enumerate{
-#'   \item \strong{Reshape to long format.} Cohort-level variables are converted from wide to long
-#'     format using \code{data.table::melt()}.
-#'   \item \strong{Classify variables.} Group variables into Emissions, Production, Feed, Nitrogen Balance.
-#'   \item \strong{Scale to totals.} Variables expressed per head per day are converted to cohort totals
-#'     over the assessment period using \code{cohort_stock_size} and \code{simulation_duration}.
-#'   \item \strong{Aggregate to herd level.} Cohort totals are summed to herd totals within each
-#'     \code{herd_id × species_short} group.
-#'   \item \strong{Merge allocation data:} Combine emissions with allocation shares.
-#'   \item \strong{Allocate emissions.} Emission totals are merged with
-#'     \code{allocation_herd_long} and multiplied by \code{allocation_share} to obtain
-#'     commodity-specific emissions. Non-emission variables are assigned to commodity \code{"ALL"}
-#'     with \code{allocation_share = 1}.
-#'   \item \strong{Convert to CO₂eq.} Allocated CH₄ and N₂O emissions are converted to CO₂eq using
-#'     the selected GWP-100 option. Results are stored as \code{value_total} with \code{unit = "kg CO₂eq"}.
-#'   \item \strong{Standardize output:} Rename variables, assign units, and format final results.
-#' }
-#'
-#'
-#'
-#' @param cohort_level_data A `data.table` containing cohort-level data with all
-#'   calculated variables. Must include:
+#' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
 #'   \describe{
-#'     \item{**Feed variables**:}{`ration_intake` (kg DM/head/day)}
-#'     \item{**Nitrogen balance**:}{`nitrogen_intake`, `nitrogen_retention`, `nitrogen_excretion`}
-#'     \item{**Production**:}{`milk_production_*_cohort`, `meat_production_*_cohort`, `fibre_production_cohort`}
-#'     \item{**Emissions**:}{`ch4_enteric`, `ch4_manure_*`, `direct_n2o_manure_*`,
-#'       `indirect_n2o_manure_*`}
-#'   }
-#'   Required grouping columns: `herd_id`, `species_short` (e.g. CTL, BFL, SHP), `cohort_short`, \code{cohort_stock_size}.
-#'
-#' @param allocation_herd_long A `data.table` in long format, typically the
-#'   output of [run_allocation_module()]. Must include columns:
-#'   \describe{
-#'     \item{**Grouping**:}{`herd_id`, `species_short`}
-#'     \item{**Allocation**:}{`commodity_name` (e.g., "Meat", "Milk", "Fibre"),
-#'       `allocation_share` (numeric, 0-1)}
-#'     \item{**Emission source**:}{`variable_name` (emission variable names)}
-#'   }
-#' @param global_warming_potential_set Character scalar specifying the 100-year Global Warming Potential
-#'   (GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
-#'   Must be one of:
-#'   \itemize{
-#'     \item \code{"AR6"} (default): IPCC Sixth Assessment Report — CH₄ = 27, N₂O = 273
-#'     \item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment Report
-#'       (excluding climate–carbon feedbacks) — CH₄ = 28, N₂O = 265
-#'     \item \code{"AR5_including_carbon_feedback"}: IPCC Fifth Assessment Report
-#'       (including climate–carbon feedbacks) — CH₄ = 34, N₂O = 298
-#'     \item \code{"AR4"}: IPCC Fourth Assessment Report — CH₄ = 25, N₂O = 298
-#'   }
-#' @param simulation_duration Numeric. Length of the assessment period (days). Used to
-#'   scale per-head-per-day variables to cohort totals. Defaults to \code{365}.
-#' @param show_indicator Logical. Whether to display a progress indicator during aggregation.
-#'   Defaults to \code{TRUE}.
-#'
-#' @return A named list containing:
-#' \describe{
-#'   \item{`cohort_level_results`}{The raw cohort-level input data and results.}
-#'   \item{`results_herd`}{A `data.table` in long format with:
-#'     \itemize{
-#'       \item Allocated emissions (already converted in kgCO2eq)
-#'       \item Production variables (milk, meat, fibre)
-#'       \item Feed and nitrogen balance variables
-#'       \item Standardized variable names and units
-#'       \item Commodity classifications and allocation metadata
+#'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'     \item{species_short}{Character. Livestock species code. Supported values include:
+#'       \itemize{
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'       }}
+#'     \item{cohort_short}{Character. Sex- and age-specific cohort code. Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females
+#'         \item \code{FS}: sub-adult females
+#'         \item \code{FJ}: juvenile females
+#'         \item \code{MA}: adult males
+#'         \item \code{MS}: sub-adult males
+#'         \item \code{MJ}: juvenile males
+#'       }}
+#'     \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
+#'     \item{\strong{Feed variables}}{
+#'       \describe{
+#'         \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+#'       }
 #'     }
-#'     Columns include: `herd_id`, `species_short`,
-#'     `cohort_short` (set to "ALL"), `variable_type`, `variable_name`, `unit`, `gas`,
-#'     `gwp`, `allocation_share`, `commodity_type`, `commodity_name`,
-#'     `value_total`.
+#'     \item{\strong{Nitrogen balance variables}}{
+#'       \describe{
+#'         \item{nitrogen_intake}{Numeric. Daily nitrogen intake (kg N/head/day)}
+#'         \item{nitrogen_retention}{Numeric. Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day).}
+#'         \item{nitrogen_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day)}
+#'       }
+#'     }
+#'     \item{\strong{Production variables}}{
+#'       \describe{
+#'         \item{milk_production_mass_cohort}{Numeric. Total milk production produced over the assessment period (kg/cohort/assessment period).}
+#'         \item{milk_production_protein_cohort}{Numeric. Total milk protein production produced over the assessment period (kg protein/cohort/assessment period).}
+#'         \item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment period (kg/cohort/assessment period).}
+#'         \item{meat_production_live_weight_cohort}{Numeric . Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
+#'         \item{meat_production_carcass_weight_cohort}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
+#'         \item{meat_production_bone_free_meat_cohort}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg/cohort/assessment period)}
+#'         \item{meat_production_protein_cohort}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/assessment period).}
+#'         \item{fibre_production_cohort}{Numeric. Total fibre produced over the assessment period by cohort (kg/cohort/assessment period)}
+#'       }
+#'     }
+#'     \item{\strong{Emission variables}}{
+#'       \describe{
+#'         \item{ch4_enteric}{Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).}
+#'         \item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH₄/head/day)}
+#'         \item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH₄/head/day)}
+#'         \item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH₄/head/day)}
+#'         \item{n2o_manure_pasture_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure deposited on pasture (kg N₂O/head/day)}
+#'         \item{n2o_manure_burned_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure burned for fuel (kg N₂O/head/day)}
+#'         \item{n2o_manure_other_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg N₂O/head/day)}
+#'         \item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions from manure deposited on pasture. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
+#'         \item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
+#'         \item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
+#'         \item{co2_ration_fertilizer}{Numeric. Diet-level average carbon dioxide (CO₂) emission factor from fertilizer manufacture in feed production (g CO₂/kg DM).}
+#'         \item{co2_ration_pesticides}{Numeric. Diet-level average carbon dioxide (CO₂) emission factor from pesticide manufacture in feed production (g CO₂/kg DM).}
+#'         \item{co2_ration_crop_activities}{Numeric. Diet-level average carbon dioxide (CO₂) emission factor from on-field agricultural activities in feed production (g CO₂/kg DM).}
+#'         \item{co2_ration_luc_nopeat}{Numeric. Diet-level average carbon dioxide (CO₂) emission factor from land-use change (excluding peatland drainage) in feed production (g CO₂/kg DM).}
+#'         \item{co2_ration_luc_peat}{Numeric. Diet-level average carbon dioxide (CO₂) emission factor from  peatland drainage in feed production (g CO₂/kg DM).}
+#'         \item{n2o_ration_fertilizer}{Numeric. Diet-level average nitrous oxide (N₂O) emission factor from fertilizer use in feed production (g N₂O/kg DM).}
+#'         \item{n2o_ration_manure_applied}{Numeric. Diet-level average nitrous oxide (N₂O) emission factor from manure applied to or deposited on soil in feed production (g N₂O/kg DM).}
+#'         \item{n2o_ration_crop_residues}{Numeric. Diet-level average nitrous oxide (N₂O) emission factor from crop residues decomposition in feed production (g N₂O/kg DM).}
+#'         \item{ch4_ration_rice}{Numeric. Diet-level average methane (CH₄) emission factor from rice cultivation in feed production (g CH₄/kg DM).}
+#'       }
+#'     }
 #'   }
+#'
+#' @param allocation_herd_long data.table. Herd-level allocation table in long format, typically generated by [run_allocation_module()], with the following data requirements:
+#'   \describe{
+#'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
+#'     to the same herd.}
+#'     \item{species_short}{Character. Code identifying the livestock species.
+#'     Supported values include:
+#'       \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'       }}
+#'     \item{variable_name}{Character. Names of emission variables to which
+#'     allocation should be applied (e.g., "ch4_enteric", "ch4_manure_pasture",
+#'     "ch4_manure_burned", "ch4_manure_other", "n2o_manure_pasture_direct",
+#'     "n2o_manure_burned_direct", "n2o_manure_other_direct",
+#'     "n2o_manure_burned_indirect", "n2o_manure_pasture_indirect",
+#'     "n2o_manure_other_indirect", "co2_ration_fertilizer",
+#'     "co2_ration_pesticides", "co2_ration_crop_activities",
+#'     "co2_ration_luc_nopeat", "co2_ration_luc_peat",
+#'     "n2o_ration_fertilizer", "n2o_ration_manure_applied",
+#'     "n2o_ration_crop_residues", "ch4_ration_rice")}
+#'     \item{commodity_name}{Character. List of commodity categories to which emissions may be allocated.
+#'     List = c("None", "Milk", "Meat", "Fibre", "Work", "Eggs")}
+#'     \item{commodity_type}{Character. Commodity (commodity_name) grouping, either
+#'     \code{"Edible"} or \code{"Non-Edible"}.}
+#'     \item{allocation_share}{Numeric. Allocation share assigned to the commodity for the corresponding emission source (fraction).}
+#'   }
+#'
+#' @param simulation_duration Numeric. Length of the assessment period (days).
+#' @param global_warming_potential_set Character. Settings for the
+#'   100-year Global Warming Potential (GWP-100) conversion factors used to
+#'   express CH₄ and N₂O emissions as CO₂eq. Must be one of:
+#'   \itemize{
+#'     \item \code{"AR6"}: IPCC Sixth Assessment Report (IPCC, 2021) — CH4 = 27, N2O = 273
+#'     \item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment
+#'       Report (excluding climate–carbon feedbacks) (IPCC, 2013)  — CH4 = 28, N2O = 265
+#'     \item \code{"AR5_including_carbon_feedback"}: IPCC Fifth Assessment
+#'       Report (including climate–carbon feedbacks) (IPCC, 2013) — CH4 = 34, N2O = 298
+#'     \item \code{"AR4"}: IPCC Fourth Assessment Report (IPCC, 2007) — CH4 = 25, N2O = 298
+#'   }
+#'
+#' @param show_indicator Logical. Whether to display progress indicators during
+#'   the pipeline run. Defaults to `TRUE`.
+#'
+#' @return A named list with the following elements:
+#' \describe{
+#'   \item{results_emissions}{A \code{data.table} containing herd-level emissions
+#'   scaled to the assessment duration and allocated to commodities. Includes gas type,
+#'   allocation shares, commodity metadata, GWP factors, and emissions expressed both as
+#'   allocated gas mass (kg gas) and as CO₂-equivalents (kg CO₂eq).}
+#'
+#'   \item{results_feed}{A \code{data.table} containing herd-level feed variables,
+#'   aggregated at herd level and scaled to the assessment duration.}
+#'
+#'   \item{results_production}{A \code{data.table} containing herd-level production
+#'   variables aggregated from cohort-level values over the assessment duration.}
+#'
+#'   \item{results_nitrogen}{A \code{data.table} containing herd-level nitrogen
+#'   balance variables aggregated from cohort-level values and scaled to the
+#'   assessment duration.}
 #' }
+#'
+#' @details
+#' This function performs the following calculation sequence:
+#' \enumerate{
+#'   \item Cohort-level variables are reshaped from wide to long format.
+#'   \item Variables are classified into \code{"Feed"}, \code{"NitrogenBalance"}, \code{"Production"}, and \code{"Emissions"}.
+#'   \item Cohort totals are calculated using [calc_cohort_totals()]. Production variables are retained as provided, whereas emissions, feed, and nitrogen balance variables are scaled using cohort stock size and simulation duration.
+#'   \item Cohort totals are aggregated to herd level within each \code{herd_id × species_short × variable_type × variable_name} group.
+#'   \item Herd-level emissions are merged with commodity allocation shares from \code{allocation_herd_long}.
+#'   \item Emissions are allocated to commodities using [calc_allocated_emissions()].
+#'   \item Gas type is identified from the emission variable name as \code{"CH4"}, \code{"N2O"}, or \code{"CO2"}.
+#'   \item Allocated CH₄, N₂O, and CO₂ emissions are converted to CO₂-equivalents (CO₂eq) using [calc_co2eq()] and the selected GWP-100 option.
+#'   \item Final output tables are produced summarising herd-level results for emissions, feed, production, and nitrogen balance variables.
+#' }
+#'
+#' @seealso
+#' [calc_cohort_totals()],
+#' [calc_cohort_to_herd_aggregation()],
+#' [calc_allocated_emissions()],
+#' [calc_co2eq()],
+#' [run_allocation_module()]
 #'
 #' @export
 #'
@@ -108,20 +190,6 @@
 #' )
 #' head(results$results_herd)
 #' }
-#'
-#' @references
-#' IPCC (2021). *Climate Change 2021: The Physical Science Basis*.
-#' Contribution of Working Group I to the Sixth Assessment Report of the
-#' Intergovernmental Panel on Climate Change. Cambridge University Press.
-#'
-#' IPCC (2013). *Climate Change 2013: The Physical Science Basis*.
-#' Contribution of Working Group I to the Fifth Assessment Report of the
-#' Intergovernmental Panel on Climate Change. Cambridge University Press.
-#'
-#' IPCC (2007). *Climate Change 2007: The Physical Science Basis*.
-#' Contribution of Working Group I to the Fourth Assessment Report of the
-#' Intergovernmental Panel on Climate Change. Cambridge University Press.
-#'
 #'
 #' @importFrom data.table := .I melt fcase setcolorder rbindlist
 run_aggregation_module <- function(

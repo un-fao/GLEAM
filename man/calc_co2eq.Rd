@@ -2,50 +2,61 @@
 % Please edit documentation in R/aggregation_core_model.R
 \name{calc_co2eq}
 \alias{calc_co2eq}
-\title{Convert CH4 and N2O Emissions to CO2-Equivalents Using GWP Factors}
+\title{Convert CH₄ and N₂O emissions to CO₂-equivalents (CO₂eq) using GWP factors}
 \usage{
 calc_co2eq(gas, value_allocated, global_warming_potential_set)
 }
 \arguments{
-\item{gas}{Character vector. Gas type for each observation. Supported values:
+\item{gas}{Character. Gas type for each observation. Supported values:
 \itemize{
-\item \code{"CH4"}: Methane
-\item \code{"N2O"}: Nitrous oxide
-\item \code{"CO2"}: Carbon dioxide (GWP = 1)
+\item \code{"CH4"}: methane (CH₄)
+\item \code{"N2O"}: nitrous oxide (N₂O)
+\item \code{"CO2"}: carbon dioxide (CO₂)
 }}
 
-\item{value_allocated}{Numeric vector. Emission values expressed in kg of gas
-(e.g., kg CH4, kg N2O, or kg CO2). Must be the same length as \code{gas}.}
+\item{value_allocated}{Numeric. Allocated emissions for each commodity–emission combination (kg gas).}
 
-\item{global_warming_potential_set}{Character scalar specifying the 100-year Global Warming Potential
-(GWP-100) conversion factors used to express CH₄ and N₂O emissions as CO₂-equivalents.
-Must be one of:
+\item{global_warming_potential_set}{Character. Settings for the
+100-year Global Warming Potential (GWP-100) conversion factors used to
+express CH₄ and N₂O emissions as CO₂eq. Must be one of:
 \itemize{
-\item \code{"AR6"} (default): IPCC Sixth Assessment Report — CH₄ = 27, N₂O = 273
-\item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment Report
-(excluding climate–carbon feedbacks) — CH₄ = 28, N₂O = 265
-\item \code{"AR5_including_carbon_feedback"}: IPCC Fifth Assessment Report
-(including climate–carbon feedbacks) — CH₄ = 34, N₂O = 298
-\item \code{"AR4"}: IPCC Fourth Assessment Report — CH₄ = 25, N₂O = 298
+\item \code{"AR6"}: IPCC Sixth Assessment Report (IPCC, 2021) — CH4 = 27, N2O = 273
+\item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment
+Report (excluding climate–carbon feedbacks) (IPCC, 2013)  — CH4 = 28, N2O = 265
+\item \code{"AR5_including_carbon_feedback"}: IPCC Fifth Assessment
+Report (including climate–carbon feedbacks) (IPCC, 2013) — CH4 = 34, N2O = 298
+\item \code{"AR4"}: IPCC Fourth Assessment Report (IPCC, 2007) — CH4 = 25, N2O = 298
 }}
 }
 \value{
-A named list with two numeric vectors of the same length as input:
+List with elements:
 \describe{
-\item{\code{value_co2eq}}{CO2-equivalent emissions (kg CO2e).}
-\item{\code{gwp}}{Global Warming Potential factor applied to each observation
-(kg CO2e/kg gas).}
+\item{value_co2eq}{Numeric vector. Emissions expressed as CO₂-equivalents (kg CO₂e).}
+\item{gwp}{Numeric vector. Global Warming Potential factor applied to each observation (kg CO₂e/kg gas).}
 }
 }
 \description{
-Computes CO2-equivalent (CO2e) emissions for CH4 and N2O based on different
+Computes CO₂-equivalent (CO₂eq) emissions for CH₄ and N₂O based on
 100-year Global Warming Potentials (GWP) reported in IPCC assessment reports.
-The function is vectorized and returns both the CO2e values and the GWP factor
-applied for each observation.
 }
 \details{
-GWP factors convert emissions of different greenhouse gases to a common
-CO2-equivalent basis, allowing for comparison and aggregation of emissions
-from different sources. The function supports multiple IPCC assessment
-report versions to maintain consistency with different reporting standards.
+CO2-equivalent emissions are calculated as:
+
+\deqn{value\_co2eq = value\_allocated \times gwp}
+
+where \code{gwp} is the gas-specific 100-year Global Warming Potential
+factor from the selected IPCC assessment report.
+}
+\references{
+IPCC (2007). Climate Change 2007: The Physical Science Basis. Contribution
+of Working Group I to the Fourth Assessment Report of the Intergovernmental
+Panel on Climate Change.
+
+IPCC (2013). Climate Change 2013: The Physical Science Basis. Contribution
+of Working Group I to the Fifth Assessment Report of the Intergovernmental
+Panel on Climate Change.
+
+IPCC (2021). Climate Change 2021: The Physical Science Basis. Contribution
+of Working Group I to the Sixth Assessment Report of the Intergovernmental
+Panel on Climate Change.
 }

@@ -12,36 +12,41 @@ calc_cohort_totals(
 )
 }
 \arguments{
-\item{value}{Numeric vector. Variable value expressed in:
+\item{value}{Numeric. Variable value expressed as (unit)/head/day for non-production variables and (unit)/cohort/assessment duration for production variables. Production variables are those included in production_list.}
+
+\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
+
+\item{simulation_duration}{Numeric. Length of the assessment period (days).}
+
+\item{variable_type}{Character. Variable group classification.
+Supported values include:
 \itemize{
-\item kg (unit)/head/day for non-production variables
-\item kg/cohort/assessment duration for production variables
-}}
-
-\item{cohort_stock_size}{Numeric. Population size in each of the 6 sex–age cohorts at the
-start of the year (# heads). (cohorts = FJ, FS, FA, MJ, MS, MA)}
-
-\item{simulation_duration}{Numeric. Length of the assessment period (days)}
-
-\item{variable_type}{Character vector. Variable group classification:
-\itemize{
-\item \code{"Production"}: Production outputs (already at cohort level)
-\item \code{"Emissions"}, \code{"Feed"}, \code{"NitrogenBalance"}: Per-head-per-day values
+\item \code{"Production"}: variables already expressed at the cohort level
+for the full assessment duration
+\item \code{"Emissions"}: variables expressed per head per day
+\item \code{"Feed"}: variables expressed per head per day
+\item \code{"NitrogenBalance"}: variables expressed per head per day
 }}
 }
 \value{
-Numeric vector. Value harmonized at cohort and assessment duration
-level (kg/cohort/assessment duration).
+Numeric. Variable value expressed as (unit)/cohort/assessment duration for all variables.
 }
 \description{
-Calculates the total value for each variable at the cohort level over the
-entire assessment duration. This function harmonizes values to a common
-unit (kg/cohort/assessment duration) by accounting for cohort size and
-assessment duration.
+Computes the total value for each variable at the cohort level over the
+full assessment period. Values are harmonized to a common unit
+(\code{kg/cohort/assessment duration}) by accounting for cohort stock size
+and simulation duration.
 }
 \details{
 Production variables are already expressed at the cohort level for the
-entire assessment duration, so they are returned as-is. All other variables
-(emissions, feed, nitrogen balance) are expressed per head per day and need
-to be scaled by cohort size and assessment duration.
+entire assessment duration and are therefore returned unchanged.
+All other variables (emissions, feed, and nitrogen balance) are expressed
+per head per day and are scaled by cohort stock size and simulation
+duration to obtain cohort-level totals.
+
+For production variables:
+\deqn{value\_total = value}
+
+For emissions, feed, and nitrogen balance variables:
+\deqn{value\_total = value \times cohort\_stock\_size \times simulation\_duration}
 }
