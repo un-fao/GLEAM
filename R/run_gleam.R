@@ -165,7 +165,8 @@ run_gleam <- function(
     feed_emissions = feed_emissions,
     manure_management_system_fraction = manure_management_system_fraction,
     manure_management_system_factors = manure_management_system_factors,
-    simulation_duration = simulation_duration
+    simulation_duration = simulation_duration,
+    global_warming_potential_set = global_warming_potential_set
   )
 
   # Show progress indicator if requested
