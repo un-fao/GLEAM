@@ -62,10 +62,10 @@
 #' file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
 #' )
 #' feed_rations_chrt_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "feed_rations_share_chrt_data.csv")
+#' file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
 #' )
 #' feed_params_dt <- data.table::fread(system.file(
-#'   "extdata/run_gleam_examples/feed_params.csv",
+#'   "extdata/run_gleam_examples/feed_quality.csv",
 #'   package = "gleam"
 #' ))
 #' feed_emissions_dt <- data.table::fread(system.file(
@@ -107,10 +107,10 @@
 #' file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
 #' )
 #' feed_rations_chrt_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "feed_rations_share_chrt_data.csv")
+#' file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
 #' )
 #' feed_params_dt <- data.table::fread(system.file(
-#'   "extdata/run_gleam_examples/feed_params.csv",
+#'   "extdata/run_gleam_examples/feed_quality.csv",
 #'   package = "gleam"
 #' ))
 #' feed_emissions_dt <- data.table::fread(system.file(

@@ -180,7 +180,7 @@
 #'
 #' # Load table with ration shares
 #' rations_share <- data.table::fread(system.file(
-#'   "extdata/run_modules_examples/feed_rations_share_chrt_data.csv",
+#'   "extdata/run_modules_examples/feed_rations_share_chrt.csv",
 #'   package = "gleam"
 #' ))
 #'

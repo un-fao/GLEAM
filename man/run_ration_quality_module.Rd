@@ -133,11 +133,11 @@ feed components within each \code{herd_id}, \code{species_short}, and \code{coho
 \dontrun{
 # Load feed rations inputs (cohort-level shares and feed parameters)
 feed_rations_chrt_dt <- data.table::fread(system.file(
-  "extdata/run_modules_examples/feed_rations_share_chrt_data.csv",
+  "extdata/run_modules_examples/feed_rations_share_chrt.csv",
   package = "gleam"
 ))
 feed_params_dt <- data.table::fread(system.file(
-  "extdata/run_modules_examples/feed_params.csv",
+  "extdata/run_modules_examples/feed_quality.csv",
   package = "gleam"
 ))
 
