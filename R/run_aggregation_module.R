@@ -62,6 +62,8 @@
 #'   }
 #' @param simulation_duration Numeric. Length of the assessment period (days). Used to
 #'   scale per-head-per-day variables to cohort totals. Defaults to \code{365}.
+#' @param show_indicator Logical. Whether to display a progress indicator during aggregation.
+#'   Defaults to \code{TRUE}.
 #'
 #' @return A named list containing:
 #' \describe{
@@ -126,7 +128,8 @@ run_aggregation_module <- function(
     cohort_level_data,
     allocation_herd_long,
     simulation_duration = 365,
-    global_warming_potential_set = "AR6"
+    global_warming_potential_set = "AR6",
+    show_indicator = TRUE
 ) {
   # --- Input validation -------------------------------------------------------
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
@@ -136,6 +139,11 @@ run_aggregation_module <- function(
     simulation_duration = simulation_duration,
     global_warming_potential_set = global_warming_potential_set
   )
+
+  # Show progress indicator if requested
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Aggregating results, please wait\U2026")
+  }
 
   # --- Step 1: Define variable groups -----------------------------------------
   feed_list <- list(
@@ -405,6 +413,12 @@ run_aggregation_module <- function(
     nitrogen_balance_dt,
     by = "variable_name"
   )
+
+  # Clear progress indicator if it was shown
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Aggregation complete.")
+  }
 
   # --- Return results ---------------------------------------------------------
   return(

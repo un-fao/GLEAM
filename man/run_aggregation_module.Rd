@@ -8,7 +8,8 @@ run_aggregation_module(
   cohort_level_data,
   allocation_herd_long,
   simulation_duration = 365,
-  global_warming_potential_set = "AR6"
+  global_warming_potential_set = "AR6",
+  show_indicator = TRUE
 )
 }
 \arguments{
@@ -46,6 +47,9 @@ Must be one of:
 (including climate–carbon feedbacks) — CH₄ = 34, N₂O = 298
 \item \code{"AR4"}: IPCC Fourth Assessment Report — CH₄ = 25, N₂O = 298
 }}
+
+\item{show_indicator}{Logical. Whether to display a progress indicator during aggregation.
+Defaults to \code{TRUE}.}
 }
 \value{
 A named list containing:

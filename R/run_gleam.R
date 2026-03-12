@@ -1011,7 +1011,8 @@ run_gleam <- function(
     cohort_level_data = gleam_chrt_data,
     allocation_herd_long = allocation_results$allocation_long,
     simulation_duration = simulation_duration,
-    global_warming_potential_set = global_warming_potential_set
+    global_warming_potential_set = global_warming_potential_set,
+    show_indicator = show_indicator
   )
 
   # Clear progress indicator if it was shown
