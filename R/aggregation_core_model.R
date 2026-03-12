@@ -37,7 +37,10 @@
 calc_cohort_totals <- function(
     value,
     cohort_stock_size,
+    ration_intake,
+    feed_emissions_list,
     simulation_duration,
+    variable_name,
     variable_type
 ) {
   validate_totals_by_cohort_inputs(
@@ -46,12 +49,19 @@ calc_cohort_totals <- function(
 
   # Production variables are already at cohort level for entire assessment
   # Use ifelse to handle both scalar and vector inputs
-  value_total <- ifelse(
-    variable_type == "Production",
-    value,
+  value_total <- if (variable_type == "Production") {
+    
+    value
+    
+  } else if (variable_type == "Emissions" && variable_name %in% feed_emissions_list) {
+    
+    value * ration_intake * cohort_stock_size * simulation_duration / 1000
+    
+  } else {
+    
     value * cohort_stock_size * simulation_duration
-  )
-
+  }
+    
   return(value_total)
 }
 

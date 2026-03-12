@@ -304,8 +304,21 @@ run_aggregation_module <- function(
   )
 
   production_vars <- sapply(production_list, `[[`, "production_source")
+  
+  feed_emissions_list <- list(list(emissions_source = "co2_ration_fertilizer", label = "Feed-Fertilizer_CO2"),
+                              list(emissions_source = "co2_ration_pesticides", label = "Feed-Pesticides_CO2"),
+                              list(emissions_source = "co2_ration_crop_activities", label = "Feed-CropOperations_CO2"),
+                              list(emissions_source = "co2_ration_luc_nopeat", label = "Feed-LandUseChange_CO2"),
+                              list(emissions_source = "co2_ration_luc_peat", label = "Feed-PeatDrainage_CO2"),
+                              
+                              list(emissions_source = "n2o_ration_fertilizer", label = "Feed-Fertilizer_N2O"),
+                              list(emissions_source = "n2o_ration_manure_applied", label = "Feed-ManureApplication_N2O"),
+                              list(emissions_source = "n2o_ration_crop_residues", label = "Feed-CropResidues_N2O"),
+                              
+                              list(emissions_source = "ch4_ration_rice", label = "Feed-Rice_CH4"))
 
-  emissions_list <- list(
+  emissions_list <- c(
+    list(
     list(emissions_source = "ch4_enteric", label = "Enteric_CH4"),
     list(emissions_source = "ch4_manure_pasture", label = "Manure-Pasture_CH4"),
     list(emissions_source = "ch4_manure_burned", label = "Manure-Burned_CH4"),
@@ -317,20 +330,13 @@ run_aggregation_module <- function(
 
     list(emissions_source = "n2o_manure_burned_indirect", label = "ManureIndirect-Burned_N2O"),
     list(emissions_source = "n2o_manure_pasture_indirect", label = "ManureIndirect-Pasture_N2O"),
-    list(emissions_source = "n2o_manure_other_indirect", label = "ManureIndirect-Other_N2O"),
-
-    list(emissions_source = "co2_ration_fertilizer", label = "Feed-Fertilizer_CO2"),
-    list(emissions_source = "co2_ration_pesticides", label = "Feed-Pesticides_CO2"),
-    list(emissions_source = "co2_ration_crop_activities", label = "Feed-CropOperations_CO2"),
-    list(emissions_source = "co2_ration_luc_nopeat", label = "Feed-LandUseChange_CO2"),
-    list(emissions_source = "co2_ration_luc_peat", label = "Feed-PeatDrainage_CO2"),
-
-    list(emissions_source = "n2o_ration_fertilizer", label = "Feed-Fertilizer_N2O"),
-    list(emissions_source = "n2o_ration_manure_applied", label = "Feed-ManureApplication_N2O"),
-    list(emissions_source = "n2o_ration_crop_residues", label = "Feed-CropResidues_N2O"),
-
-    list(emissions_source = "ch4_ration_rice", label = "Feed-Rice_CH4")
+    list(emissions_source = "n2o_manure_other_indirect", label = "ManureIndirect-Other_N2O")
+  ),
+  feed_emissions_list
   )
+  
+  
+  
   emissions_vars <- sapply(emissions_list, `[[`, "emissions_source")
 
   # Check that required variables exist in cohort_level_data
@@ -352,7 +358,8 @@ run_aggregation_module <- function(
       "herd_id",
       "species_short",
       "cohort_short",
-      "cohort_stock_size"
+      "cohort_stock_size",
+      "ration_intake"
     ),
     measure.vars = available_vars,
     variable.name = "variable_name",
@@ -376,7 +383,10 @@ run_aggregation_module <- function(
     , value_total := calc_cohort_totals(
       value = value,
       cohort_stock_size = cohort_stock_size,
+      ration_intake = ration_intake,
+      feed_emissions_list = feed_emissions_list,
       simulation_duration = simulation_duration,
+      variable_name = variable_name,
       variable_type = variable_type
     ),
     by = .I
