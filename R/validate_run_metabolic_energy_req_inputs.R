@@ -61,13 +61,7 @@ validate_run_metabolic_energy_req_module_inputs <- function(
   }
 
   # --- Cohort data validation -------------------------------------------------
-  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), gleam_cohorts)
-  if (length(invalid_cohorts) > 0) {
-    cli::cli_abort(
-      "Invalid cohort_short values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
-      Must be one of: {.val {gleam_cohorts}}"
-    )
-  }
+  validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
 
   cohort_completeness <- cohort_level_data[
     , list(
@@ -108,13 +102,7 @@ validate_run_metabolic_energy_req_module_inputs <- function(
     )
   }
 
-  invalid_species <- setdiff(unique(herd_level_data$species_short), gleam_species)
-  if (length(invalid_species) > 0) {
-    cli::cli_abort(
-      "Invalid {.field species_short} values in {.arg herd_level_data}: {.val {invalid_species}}.
-      Must be one of: {.val {gleam_species}}"
-    )
-  }
+  validate_species_short_values(herd_level_data$species_short, data_arg = "herd_level_data")
 
   # --- Cross-table validation -------------------------------------------------
   cohort_herd_ids <- unique(cohort_level_data$herd_id)

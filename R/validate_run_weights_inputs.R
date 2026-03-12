@@ -56,14 +56,7 @@ validate_run_weights_module_inputs <- function(
   }
 
   # --- Cohort data validation -------------------------------------------------
-  # Check for invalid cohort values
-  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), gleam_cohorts)
-  if (length(invalid_cohorts) > 0) {
-    cli::cli_abort(
-      "Invalid cohort values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
-      Must be one of: {.val {gleam_cohorts}}"
-    )
-  }
+  validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
 
   # Combined validation: check that each herd has exactly 6 cohorts and all required ones
   cohort_completeness <- cohort_level_data[

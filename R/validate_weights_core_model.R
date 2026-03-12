@@ -29,11 +29,7 @@ validate_cohort_weight_inputs <- function(
   }
 
   # Cohort-specific required inputs (non-NA)
-  if (!cohort_short %in% gleam_cohorts) {
-    cli::cli_abort(
-      "Invalid cohort value: {.val {cohort_short}}. Must be one of: {.val {gleam_cohorts}}"
-    )
-  }
+  validate_cohort_code(cohort_short)
 
   required_by_cohort <- switch(
     cohort_short,

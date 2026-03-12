@@ -248,3 +248,57 @@ validate_cohort_code <- function(cohort_short) {
     )
   }
 }
+
+#' Validate species_short values in a column or vector
+#'
+#' Ensures that all unique values in \code{x} are valid species short codes.
+#' Used by run-level validators when checking \code{species_short} columns in
+#' data.tables.
+#'
+#' @param x Character vector of species codes (e.g. from \code{data$species_short}).
+#' @param column_name String. Name of the column for error messages (default:
+#'   \code{"species_short"}).
+#' @param data_arg String. Name of the data argument for error messages (e.g.
+#'   \code{"cohort_level_data"}, \code{"herd_level_data"}, \code{"data"}).
+#'
+#' @noRd
+validate_species_short_values <- function(
+    x,
+    column_name = "species_short",
+    data_arg = "data"
+) {
+  invalid <- setdiff(unique(x), gleam_species)
+  if (length(invalid) > 0) {
+    cli::cli_abort(
+      "Invalid {.var {column_name}} values in {.arg {data_arg}}: {.val {invalid}}.
+      Must be one of: {.val {gleam_species}}"
+    )
+  }
+}
+
+#' Validate cohort_short values in a column or vector
+#'
+#' Ensures that all unique values in \code{x} are valid cohort short codes.
+#' Used by run-level validators when checking \code{cohort_short} columns in
+#' data.tables.
+#'
+#' @param x Character vector of cohort codes (e.g. from \code{data$cohort_short}).
+#' @param column_name String. Name of the column for error messages (default:
+#'   \code{"cohort_short"}).
+#' @param data_arg String. Name of the data argument for error messages (e.g.
+#'   \code{"cohort_level_data"}, \code{"herd_level_data"}, \code{"data"}).
+#'
+#' @noRd
+validate_cohort_short_values <- function(
+    x,
+    column_name = "cohort_short",
+    data_arg = "data"
+) {
+  invalid <- setdiff(unique(x), gleam_cohorts)
+  if (length(invalid) > 0) {
+    cli::cli_abort(
+      "Invalid {.var {column_name}} values in {.arg {data_arg}}: {.val {invalid}}.
+      Must be one of: {.val {gleam_cohorts}}"
+    )
+  }
+}

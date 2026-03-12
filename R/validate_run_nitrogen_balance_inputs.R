@@ -53,13 +53,7 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
   }
 
   # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------
-  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), gleam_cohorts)
-  if (length(invalid_cohorts) > 0) {
-    cli::cli_abort(
-      "Invalid {.var cohort_short} values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
-      Must be one of: {.val {gleam_cohorts}}"
-    )
-  }
+  validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
 
   cohort_completeness <- cohort_level_data[
     , list(
@@ -101,13 +95,7 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
   }
 
   # --- Herd: valid species_short codes ----------------------------------------
-  invalid_species <- setdiff(unique(herd_level_data$species_short), gleam_species)
-  if (length(invalid_species) > 0) {
-    cli::cli_abort(
-      "Invalid {.var species_short} values in {.arg herd_level_data}: {.val {invalid_species}}.
-      Must be one of: {.val {gleam_species}}"
-    )
-  }
+  validate_species_short_values(herd_level_data$species_short, data_arg = "herd_level_data")
 
   # --- Cross-table: same herd_id set ------------------------------------------
   cohort_herd_ids <- sort(unique(cohort_level_data$herd_id))

@@ -116,13 +116,7 @@ validate_run_aggregation_module_inputs <- function(
   }
 
   # --- Valid cohort_short values ----------------------------------------------
-  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), gleam_cohorts)
-  if (length(invalid_cohorts) > 0) {
-    cli::cli_abort(
-      "Invalid {.var cohort_short} values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
-      Must be one of: {.val {gleam_cohorts}}"
-    )
-  }
+  validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
 
   # --- cohort_stock_size non-negative ----------------------------------------
   if (any(cohort_level_data$cohort_stock_size < 0, na.rm = TRUE)) {

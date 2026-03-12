@@ -96,27 +96,11 @@ validate_run_emissions_manure_module_inputs <- function(
   }
 
   # --- Cohort data validation -------------------------------------------------
-  invalid_input_cohorts <- setdiff(
-    unique(cohort_level_data$cohort_short),
-    gleam_cohorts
+  validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
+  validate_cohort_short_values(
+    manure_management_system_fraction$cohort_short,
+    data_arg = "manure_management_system_fraction"
   )
-  if (length(invalid_input_cohorts) > 0) {
-    cli::cli_abort(
-      "Invalid cohort values in {.arg cohort_level_data}: {.val {invalid_input_cohorts}}.
-      Must be one of: {.val {gleam_cohorts}}"
-    )
-  }
-
-  invalid_fraction_cohorts <- setdiff(
-    unique(manure_management_system_fraction$cohort_short),
-    gleam_cohorts
-  )
-  if (length(invalid_fraction_cohorts) > 0) {
-    cli::cli_abort(
-      "Invalid cohort values in {.arg manure_management_system_fraction}: {.val {invalid_fraction_cohorts}}.
-      Must be one of: {.val {gleam_cohorts}}"
-    )
-  }
 
   # Each herd must have all 6 cohorts in both cohort-level tables
   cohort_completeness <- cohort_level_data[

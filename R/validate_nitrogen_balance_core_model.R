@@ -23,23 +23,8 @@ validate_nitrogen_retention_inputs <- function(
     pregnancy_duration = NA_real_,
     cohort_duration_days = NA_real_
 ) {
-  # Character inputs
-  validate_scalar_character(species_short, "species_short")
-  validate_scalar_character(cohort_short, "cohort_short")
-
-  # Validate animal species
-  if (!species_short %in% gleam_species) {
-    cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{gleam_species}')}"
-    )
-  }
-
-  # Validate cohort
-  if (!cohort_short %in% gleam_cohorts) {
-    cli::cli_abort(
-      "{.arg cohort_short} must be one of: {cli::format_inline('{gleam_cohorts}')}"
-    )
-  }
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
 
   # Range checks: only for args used by this species/cohort
   if (species_short == "CHK") {
@@ -91,16 +76,7 @@ validate_nitrogen_retention_inputs <- function(
 #'
 #' @noRd
 validate_nitrogen_excretion_inputs <- function(species_short, nitrogen_intake, nitrogen_retention) {
-  # Character input
-  validate_scalar_character(species_short, "species_short")
-
-  # Validate animal species
-  if (!species_short %in% gleam_species) {
-    cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{gleam_species}')}"
-    )
-  }
-
+  validate_animal_species(species_short)
   validate_scalar_numeric(nitrogen_intake, "nitrogen_intake")
   validate_scalar_numeric(nitrogen_retention, "nitrogen_retention")
 

@@ -77,21 +77,9 @@ validate_allocation_meat_inputs <- function(
     live_weight_at_birth = NA_real_,
     ratio_me_to_ne = NA_real_
 ) {
-  validate_scalar_character(species_short, "species_short")
-  validate_scalar_character(cohort_short, "cohort_short")
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
   validate_scalar_numeric(meat_production_live_weight_cohort, "meat_production_live_weight_cohort")
-
-  if (!species_short %in% gleam_species) {
-    cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{gleam_species}')}"
-    )
-  }
-
-  if (!cohort_short %in% gleam_cohorts) {
-    cli::cli_abort(
-      "{.arg cohort_short} must be one of: {cli::format_inline('{gleam_cohorts}')}"
-    )
-  }
 
   validate_param_range(meat_production_live_weight_cohort, "meat_production_live_weight_cohort")
 
@@ -154,13 +142,7 @@ validate_allocation_fibre_inputs <- function(
     ratio_me_to_ne = NA_real_,
     simulation_duration = NA_real_
 ) {
-  validate_scalar_character(species_short, "species_short")
-
-  if (!species_short %in% gleam_species) {
-    cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{gleam_species}')}"
-    )
-  }
+  validate_animal_species(species_short)
 
   # Non-fibre species: all numeric args are unused — no further validation
   if (!species_short %in% c("SHP", "GTS", "CML")) return()
@@ -218,13 +200,7 @@ validate_allocation_work_inputs <- function(
     simulation_duration,
     ratio_me_to_ne = NA_real_
 ) {
-  validate_scalar_character(species_short, "species_short")
-
-  if (!species_short %in% gleam_species) {
-    cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{gleam_species}')}"
-    )
-  }
+  validate_animal_species(species_short)
 
   validate_param_range(metabolic_energy_req_work, "metabolic_energy_req_work")
   validate_param_range(cohort_stock_size, "cohort_stock_size")
