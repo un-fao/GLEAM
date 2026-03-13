@@ -67,7 +67,7 @@ calc_transition_probabilities <- function(
   validate_transition_inputs(cohort_duration_days, offtake_rate, death_rate)
 
   # Define cohort names for clarity
-  six_cohort_names <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  six_cohort_names <- gleam_cohorts
   ten_cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
 
   # Prevent 0/0 in downstream hazard math by ensuring each cohort has at least
@@ -354,7 +354,7 @@ calc_steady_state_structure <- function(
     structure["MB"] + structure["MJ"],
     structure[c("MS", "MA")]
   )
-  names(share) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  names(share) <- gleam_cohorts
 
   # Compute steady-state annual growth rate
   growth_rate_herd <- (fem_juv_fec[days_steady] / fem_juv_fec[days_steady - 1])^365 - 1
@@ -617,7 +617,7 @@ calc_summary_offtake <- function(
   names(stock_variation_heads) <- names(offtake_heads) <- names(offtake_heads_assessment) <-
     names(offtake_rate_to_stock_start) <- names(offtake_rate_to_stock_average) <-
     names(offtake_stock_variation_heads) <- names(offtake_stock_plus_variation_rate_to_stock_start) <-
-    names(offtake_stock_plus_variation_rate_to_stock_average) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+    names(offtake_stock_plus_variation_rate_to_stock_average) <- gleam_cohorts
 
   return(
     list(

@@ -226,10 +226,9 @@ validate_param_range <- function(
 #' @noRd
 validate_animal_species <- function(species_short) {
   validate_scalar_character(species_short, "species_short")
-  valid_species <- c("CTL", "BFL", "SHP", "GTS", "PGS", "CHK", "CML")
-  if (!species_short %in% valid_species) {
+  if (!species_short %in% gleam_species) {
     cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{valid_species}')}"
+      "{.arg species_short} must be one of: {cli::format_inline('{gleam_species}')}"
     )
   }
 }
@@ -243,10 +242,185 @@ validate_animal_species <- function(species_short) {
 #' @noRd
 validate_cohort_code <- function(cohort_short) {
   validate_scalar_character(cohort_short, "cohort_short")
-  valid_cohorts <- c("FA", "FS", "FJ", "MA", "MS", "MJ")
-  if (!cohort_short %in% valid_cohorts) {
+  if (!cohort_short %in% gleam_cohorts) {
     cli::cli_abort(
-      "{.arg cohort_short} must be one of: {cli::format_inline('{valid_cohorts}')}"
+      "{.arg cohort_short} must be one of: {cli::format_inline('{gleam_cohorts}')}"
+    )
+  }
+}
+
+#' Validate species_short values in a column or vector
+#'
+#' Ensures that all unique values in \code{x} are valid species short codes.
+#' Used by run-level validators when checking \code{species_short} columns in
+#' data.tables.
+#'
+#' @param x Character vector of species codes (e.g. from \code{data$species_short}).
+#' @param column_name String. Name of the column for error messages (default:
+#'   \code{"species_short"}).
+#' @param data_arg String. Name of the data argument for error messages (e.g.
+#'   \code{"cohort_level_data"}, \code{"herd_level_data"}, \code{"data"}).
+#'
+#' @noRd
+validate_species_short_values <- function(
+    x,
+    column_name = "species_short",
+    data_arg = "data"
+) {
+  invalid <- setdiff(unique(x), gleam_species)
+  if (length(invalid) > 0) {
+    cli::cli_abort(
+      "Invalid {.var {column_name}} values in {.arg {data_arg}}: {.val {invalid}}.
+      Must be one of: {.val {gleam_species}}"
+    )
+  }
+}
+
+#' Validate cohort_short values in a column or vector
+#'
+#' Ensures that all unique values in \code{x} are valid cohort short codes.
+#' Used by run-level validators when checking \code{cohort_short} columns in
+#' data.tables.
+#'
+#' @param x Character vector of cohort codes (e.g. from \code{data$cohort_short}).
+#' @param column_name String. Name of the column for error messages (default:
+#'   \code{"cohort_short"}).
+#' @param data_arg String. Name of the data argument for error messages (e.g.
+#'   \code{"cohort_level_data"}, \code{"herd_level_data"}, \code{"data"}).
+#'
+#' @noRd
+validate_cohort_short_values <- function(
+    x,
+    column_name = "cohort_short",
+    data_arg = "data"
+) {
+  invalid <- setdiff(unique(x), gleam_cohorts)
+  if (length(invalid) > 0) {
+    cli::cli_abort(
+      "Invalid {.var {column_name}} values in {.arg {data_arg}}: {.val {invalid}}.
+      Must be one of: {.val {gleam_cohorts}}"
+    )
+  }
+}
+
+# --- Run-level validation helpers (cohort + herd structure) --------------------
+# Shared checks used by validate_run_*_inputs across weights, demographic_herd,
+# metabolic_energy_req, nitrogen_balance, production, emissions, allocation.
+
+#' Check that a table is a non-empty data.table
+#'
+#' Validates type and presence of at least one row. Used at the start of
+#' run-level validators.
+#'
+#' @param x Object to check.
+#' @param arg_name String. Argument name for error messages.
+#' @noRd
+check_data_table <- function(x, arg_name) {
+  if (!data.table::is.data.table(x)) {
+    cli::cli_abort("{.arg {arg_name}} must be a data.table.")
+  }
+  if (nrow(x) == 0) {
+    cli::cli_abort("{.arg {arg_name}} must contain at least one row.")
+  }
+}
+
+#' Check that a data.table has all required columns
+#'
+#' Reports which required columns are missing. Call after check_data_table.
+#'
+#' @param data data.table.
+#' @param required_cols Character vector of column names.
+#' @param arg_name String. Argument name for error messages.
+#' @noRd
+check_required_columns <- function(data, required_cols, arg_name) {
+  missing <- setdiff(required_cols, names(data))
+  if (length(missing) > 0) {
+    cli::cli_abort(
+      "Missing required columns in {.arg {arg_name}}: {.val {missing}}"
+    )
+  }
+}
+
+#' Check cohort completeness: exactly 6 rows per herd_id, all 6 cohort codes present
+#'
+#' Each herd must have exactly 6 rows (one per FJ, FS, FA, MJ, MS, MA) with no
+#' duplicates or missing cohorts. Assumes validate_cohort_short_values was
+#' already called on the cohort_short column.
+#'
+#' @param cohort_level_data data.table with herd_id and cohort_short.
+#' @param data_arg String. Argument name for error messages.
+#' @noRd
+check_cohort_completeness <- function(cohort_level_data, data_arg = "cohort_level_data") {
+  # Aggregate per herd: row count and whether all 6 cohorts are present
+  cohort_completeness <- cohort_level_data[
+    , list(
+      count = .N,
+      has_all_cohorts = setequal(cohort_short, gleam_cohorts),
+      missing_cohorts = paste(setdiff(gleam_cohorts, cohort_short), collapse = ", ")
+    ),
+    by = herd_id
+  ]
+  wrong_count <- cohort_completeness[count != 6]
+  if (nrow(wrong_count) > 0) {
+    cli::cli_abort(
+      "Each herd_id must have exactly 6 rows in {.arg {data_arg}} (one per cohort).
+      Found incorrect counts for herd_ids: {.val {wrong_count$herd_id}}"
+    )
+  }
+  incomplete_herds <- cohort_completeness[has_all_cohorts == FALSE]
+  if (nrow(incomplete_herds) > 0) {
+    missing_info <- incomplete_herds[
+      , paste0(herd_id, " (missing: ", missing_cohorts, ")"),
+      by = herd_id
+    ]$V1
+    cli::cli_abort(
+      "Each herd_id must have exactly one row for each of the 6 cohorts in {.arg {data_arg}}.
+      Incomplete or duplicate cohorts found for herd_ids: {.val {missing_info}}"
+    )
+  }
+}
+
+#' Check that herd_id appears exactly once per row in herd-level data
+#'
+#' @param herd_level_data data.table with herd_id column.
+#' @param arg_name String. Argument name for error messages.
+#' @noRd
+check_herd_id_unique <- function(herd_level_data, arg_name = "herd_level_data") {
+  herd_id_counts <- herd_level_data[, .N, by = herd_id]
+  duplicate_herds <- herd_id_counts[N > 1]
+  if (nrow(duplicate_herds) > 0) {
+    cli::cli_abort(
+      "Each herd_id must appear exactly once in {.arg {arg_name}}.
+      Found duplicates for herd_ids: {.val {duplicate_herds$herd_id}}"
+    )
+  }
+}
+
+#' Check that cohort_level_data and herd_level_data share the same herd_id set
+#'
+#' @param cohort_level_data data.table with herd_id.
+#' @param herd_level_data data.table with herd_id.
+#' @param cohort_arg String. Argument name for cohort table in error messages.
+#' @param herd_arg String. Argument name for herd table in error messages.
+#' @noRd
+check_herd_id_consistency <- function(
+    cohort_level_data,
+    herd_level_data,
+    cohort_arg = "cohort_level_data",
+    herd_arg = "herd_level_data"
+) {
+  cohort_herd_ids <- unique(cohort_level_data$herd_id)
+  herd_level_herd_ids <- unique(herd_level_data$herd_id)
+  missing_in_herd_level <- setdiff(cohort_herd_ids, herd_level_herd_ids)
+  if (length(missing_in_herd_level) > 0) {
+    cli::cli_abort(
+      "Herd IDs in {.arg {cohort_arg}} not found in {.arg {herd_arg}}: {.val {missing_in_herd_level}}"
+    )
+  }
+  missing_in_cohort <- setdiff(herd_level_herd_ids, cohort_herd_ids)
+  if (length(missing_in_cohort) > 0) {
+    cli::cli_abort(
+      "Herd IDs in {.arg {herd_arg}} not found in {.arg {cohort_arg}}: {.val {missing_in_cohort}}"
     )
   }
 }

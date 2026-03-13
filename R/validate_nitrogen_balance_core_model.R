@@ -23,25 +23,8 @@ validate_nitrogen_retention_inputs <- function(
     pregnancy_duration = NA_real_,
     cohort_duration_days = NA_real_
 ) {
-  # Character inputs
-  validate_scalar_character(species_short, "species_short")
-  validate_scalar_character(cohort_short, "cohort_short")
-
-  # Validate animal species
-  valid_species <- c("PGS", "CML", "CTL", "BFL", "SHP", "GTS", "CHK")
-  if (!species_short %in% valid_species) {
-    cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{valid_species}')}"
-    )
-  }
-
-  # Validate cohort
-  valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-  if (!cohort_short %in% valid_cohorts) {
-    cli::cli_abort(
-      "{.arg cohort_short} must be one of: {cli::format_inline('{valid_cohorts}')}"
-    )
-  }
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
 
   # Range checks: only for args used by this species/cohort
   if (species_short == "CHK") {
@@ -63,7 +46,7 @@ validate_nitrogen_retention_inputs <- function(
     } else {
       validate_param_range(daily_weight_gain, "daily_weight_gain")
     }
-  } else if (species_short %in% c("CTL", "BFL", "SHP", "GTS", "CML")) {
+  } else if (species_short %in% gleam_species_milk_producers) {
     if (cohort_short == "FA") {
       if (!is.na(milk_protein_fraction)) validate_param_range(milk_protein_fraction, "milk_protein_fraction")
       if (!is.na(milk_yield_day)) validate_param_range(milk_yield_day, "milk_yield_day")
@@ -93,17 +76,7 @@ validate_nitrogen_retention_inputs <- function(
 #'
 #' @noRd
 validate_nitrogen_excretion_inputs <- function(species_short, nitrogen_intake, nitrogen_retention) {
-  # Character input
-  validate_scalar_character(species_short, "species_short")
-
-  # Validate animal species
-  valid_species <- c("CTL", "BFL", "CML", "GTS", "SHP", "PGS", "CHK")
-  if (!species_short %in% valid_species) {
-    cli::cli_abort(
-      "{.arg species_short} must be one of: {cli::format_inline('{valid_species}')}"
-    )
-  }
-
+  validate_animal_species(species_short)
   validate_scalar_numeric(nitrogen_intake, "nitrogen_intake")
   validate_scalar_numeric(nitrogen_retention, "nitrogen_retention")
 

@@ -1415,7 +1415,7 @@ calc_rem_maintenance <- function(
   validate_rem_inputs(species_short, ration_digestibility_fraction)
   # Only ruminants: cattle, buffalo, sheep, goats
 
-  if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
+  if (species_short %in% gleam_species_ruminants) {
     # Polynomial fit from GLEAM
     net_energy_maintenance_digestible_energy_ratio <- 1.123 - (0.004092 * (ration_digestibility_fraction * 100)) +
       (0.00001126 * (ration_digestibility_fraction * 100)^2) - (25.4 / (ration_digestibility_fraction * 100))
@@ -1485,7 +1485,7 @@ calc_reg_growth <- function(
   validate_reg_inputs(species_short, ration_digestibility_fraction)
   # Only ruminants: cattle, buffalo, sheep, goats
 
-  if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
+  if (species_short %in% gleam_species_ruminants) {
     # Polynomial fit
     net_energy_growth_digestible_energy_ratio <- 1.164 - (0.005160 * (ration_digestibility_fraction * 100)) +
       (0.00001308 * (ration_digestibility_fraction * 100)^2) - (37.4 / (ration_digestibility_fraction * 100))
@@ -1766,7 +1766,7 @@ calc_ration_intake <- function(
   # Validate inputs
   validate_dmi_inputs(species_short, metabolic_energy_req_total, ration_gross_energy, ration_metabolizable_energy)
   # Ruminants: use gross energy
-  if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
+  if (species_short %in% gleam_species_ruminants) {
     ration_intake <- metabolic_energy_req_total / ration_gross_energy
   } else if (species_short %in% c("PGS", "CHK", "CML")) {
     # Monogastrics/camelids: use metabolizable energy

@@ -29,15 +29,10 @@ validate_diet_digestibility_inputs <- function(
     }
   }
 
-  valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "CHK", "PGS")
-  if (!species_short %in% valid_animals) {
-    cli::cli_abort(
-      "Invalid species_short value: {.val {species_short}}. Must be one of: {.val {valid_animals}}"
-    )
-  }
+  validate_animal_species(species_short)
 
   # Require the species-specific digestibility input to be present (non-NA)
-  required_by_animal <- if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+  required_by_animal <- if (species_short %in% gleam_species_milk_producers) {
     c("feed_digestibility_fraction_ruminant")
   } else if (species_short == "CHK") {
     c("feed_digestibility_fraction_chicken")
@@ -68,7 +63,7 @@ validate_ration_metabolizable_energy_inputs <- function(
     feed_metabolizable_energy_pigs,
     feed_metabolizable_energy_chicken
 ) {
-  validate_scalar_character(species_short, "species_short")
+  validate_animal_species(species_short)
   validate_scalar_numeric(feed_ration_fraction, "feed_ration_fraction")
   validate_param_range(feed_ration_fraction)
   # Ensure all metabolizable energy inputs are scalar numerics (NA allowed)
@@ -88,15 +83,8 @@ validate_ration_metabolizable_energy_inputs <- function(
     }
   }
 
-  valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "CHK", "PGS")
-  if (!species_short %in% valid_animals) {
-    cli::cli_abort(
-      "Invalid species_short value: {.val {species_short}}. Must be one of: {.val {valid_animals}}"
-    )
-  }
-
   # Require the species-specific ME input to be present (non-NA)
-  required_by_animal <- if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+  required_by_animal <- if (species_short %in% gleam_species_milk_producers) {
     c("feed_metabolizable_energy_ruminant")
   } else if (species_short == "CHK") {
     c("feed_metabolizable_energy_chicken")
@@ -201,14 +189,9 @@ validate_urinary_energy_inputs <- function(
     }
   }
 
-  valid_animals <- c("CTL", "BFL", "CML", "SHP", "GTS", "CHK", "PGS")
-  if (!species_short %in% valid_animals) {
-    cli::cli_abort(
-      "Invalid species_short value: {.val {species_short}}. Must be one of: {.val {valid_animals}}"
-    )
-  }
+  validate_animal_species(species_short)
 
-  required_by_animal <- if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+  required_by_animal <- if (species_short %in% gleam_species_milk_producers) {
     c("feed_urinary_energy_ruminant")
   } else if (species_short == "CHK") {
     c("feed_urinary_energy_chicken")

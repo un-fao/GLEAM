@@ -14,25 +14,10 @@ validate_run_emissions_manure_module_inputs <- function(
     manure_management_system_factors
 ) {
   # --- Basic type and structure checks ----------------------------------------
-  if (!data.table::is.data.table(cohort_level_data)) {
-    cli::cli_abort("{.arg cohort_level_data} must be a data.table.")
-  }
-  if (!data.table::is.data.table(manure_management_system_fraction)) {
-    cli::cli_abort("{.arg manure_management_system_fraction} must be a data.table.")
-  }
-  if (!data.table::is.data.table(manure_management_system_factors)) {
-    cli::cli_abort("{.arg manure_management_system_factors} must be a data.table.")
-  }
-
-  if (nrow(cohort_level_data) == 0) {
-    cli::cli_abort("{.arg cohort_level_data} must contain at least one row.")
-  }
-  if (nrow(manure_management_system_fraction) == 0) {
-    cli::cli_abort("{.arg manure_management_system_fraction} must contain at least one row.")
-  }
-  if (nrow(manure_management_system_factors) == 0) {
-    cli::cli_abort("{.arg manure_management_system_factors} must contain at least one row.")
-  }
+  # Ensure all inputs are data.tables with at least one row
+  check_data_table(cohort_level_data, "cohort_level_data")
+  check_data_table(manure_management_system_fraction, "manure_management_system_fraction")
+  check_data_table(manure_management_system_factors, "manure_management_system_factors")
 
   # --- Required columns validation --------------------------------------------
   required_input_cols <- c(
@@ -49,32 +34,9 @@ validate_run_emissions_manure_module_inputs <- function(
     "n2o_ef3", "n2o_ef4", "n2o_ef5", "nitrogen_fracgas", "nitrogen_fracleach"
   )
 
-  missing_input_cols <- setdiff(
-    required_input_cols, names(cohort_level_data)
-  )
-  if (length(missing_input_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg cohort_level_data}: {.val {missing_input_cols}}"
-    )
-  }
-
-  missing_fraction_cols <- setdiff(
-    required_fraction_cols, names(manure_management_system_fraction)
-  )
-  if (length(missing_fraction_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg manure_management_system_fraction}: {.val {missing_fraction_cols}}"
-    )
-  }
-
-  missing_factors_cols <- setdiff(
-    required_factors_cols, names(manure_management_system_factors)
-  )
-  if (length(missing_factors_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg manure_management_system_factors}: {.val {missing_factors_cols}}"
-    )
-  }
+  check_required_columns(cohort_level_data, required_input_cols, "cohort_level_data")
+  check_required_columns(manure_management_system_fraction, required_fraction_cols, "manure_management_system_fraction")
+  check_required_columns(manure_management_system_factors, required_factors_cols, "manure_management_system_factors")
 
   # --- Missing key values -----------------------------------------------------
   if (any(is.na(cohort_level_data$herd_id)) ||
@@ -96,63 +58,23 @@ validate_run_emissions_manure_module_inputs <- function(
   }
 
   # --- Cohort data validation -------------------------------------------------
-  valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-
-  invalid_input_cohorts <- setdiff(
-    unique(cohort_level_data$cohort_short),
-    valid_cohorts
+  # Valid cohort codes in both cohort-level tables
+  validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
+  validate_cohort_short_values(
+    manure_management_system_fraction$cohort_short,
+    data_arg = "manure_management_system_fraction"
   )
-  if (length(invalid_input_cohorts) > 0) {
-    cli::cli_abort(
-      "Invalid cohort values in {.arg cohort_level_data}: {.val {invalid_input_cohorts}}.
-      Must be one of: {.val {valid_cohorts}}"
-    )
-  }
 
-  invalid_fraction_cohorts <- setdiff(
-    unique(manure_management_system_fraction$cohort_short),
-    valid_cohorts
-  )
-  if (length(invalid_fraction_cohorts) > 0) {
-    cli::cli_abort(
-      "Invalid cohort values in {.arg manure_management_system_fraction}: {.val {invalid_fraction_cohorts}}.
-      Must be one of: {.val {valid_cohorts}}"
-    )
-  }
+  # Each herd must have all 6 cohorts in cohort_level_data (one row per herd-cohort)
+  check_cohort_completeness(cohort_level_data, "cohort_level_data")
 
-  # Each herd must have all 6 cohorts in both cohort-level tables
-  cohort_completeness <- cohort_level_data[
-    , list(
-      count = .N,
-      has_all_cohorts = setequal(cohort_short, valid_cohorts),
-      missing_cohorts = paste(setdiff(valid_cohorts, cohort_short), collapse = ", ")
-    ),
-    by = herd_id
-  ]
-  wrong_count <- cohort_completeness[count != 6]
-  if (nrow(wrong_count) > 0) {
-    cli::cli_abort(
-      "Each herd_id must have exactly 6 rows in {.arg cohort_level_data} (one per cohort).
-      Found incorrect counts for herd_ids: {.val {wrong_count$herd_id}}"
-    )
-  }
-  incomplete_herds <- cohort_completeness[has_all_cohorts == FALSE]
-  if (nrow(incomplete_herds) > 0) {
-    missing_info <- incomplete_herds[
-      , paste0(herd_id, " (missing: ", missing_cohorts, ")"),
-      by = herd_id
-    ]$V1
-    cli::cli_abort(
-      "Each herd_id must have exactly one row for each of the 6 cohorts in {.arg cohort_level_data}.
-      Incomplete or duplicate cohorts found for herd_ids: {.val {missing_info}}"
-    )
-  }
-
+  # Fraction table: each herd must have all 6 cohorts present (may have multiple rows per
+  # cohort when multiple manure management systems exist)
   fraction_cohort_completeness <- manure_management_system_fraction[
     , list(
       count = data.table::uniqueN(cohort_short),
-      has_all_cohorts = setequal(cohort_short, valid_cohorts),
-      missing_cohorts = paste(setdiff(valid_cohorts, cohort_short), collapse = ", ")
+      has_all_cohorts = setequal(cohort_short, gleam_cohorts),
+      missing_cohorts = paste(setdiff(gleam_cohorts, cohort_short), collapse = ", ")
     ),
     by = herd_id
   ]

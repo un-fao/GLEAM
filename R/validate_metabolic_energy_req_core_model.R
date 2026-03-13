@@ -29,7 +29,7 @@ validate_maintenance_inputs <- function(
     validate_param_range(age_first_parturition, "age_first_parturition")
   }
 
-  if (species_short == "SHP" && cohort_short %in% c("MA", "MS", "MJ")) {
+  if (species_short == "SHP" && cohort_short %in% gleam_cohorts_male) {
     validate_param_range(offtake_rate, "offtake_rate")
   }
 }
@@ -371,7 +371,7 @@ validate_rem_inputs <- function(
     ration_digestibility_fraction
 ) {
   validate_animal_species(species_short)
-  if (!species_short %in% c("CTL", "BFL", "SHP", "GTS")) return()
+  if (!species_short %in% gleam_species_ruminants) return()
   validate_param_range(ration_digestibility_fraction, "ration_digestibility_fraction")
 }
 
@@ -386,7 +386,7 @@ validate_reg_inputs <- function(
     ration_digestibility_fraction
 ) {
   validate_animal_species(species_short)
-  if (!species_short %in% c("CTL", "BFL", "SHP", "GTS")) return()
+  if (!species_short %in% gleam_species_ruminants) return()
   validate_param_range(ration_digestibility_fraction, "ration_digestibility_fraction")
 }
 
@@ -417,7 +417,7 @@ validate_total_energy_inputs <- function(
   validate_scalar_numeric(metabolic_energy_req_fibre_production, "metabolic_energy_req_fibre_production")
   validate_param_range(ration_digestibility_fraction, "ration_digestibility_fraction")
 
-  if (species_short %in% c("CTL", "BFL", "SHP", "GTS")) {
+  if (species_short %in% gleam_species_ruminants) {
     validate_scalar_numeric(
       net_energy_maintenance_digestible_energy_ratio,
       "net_energy_maintenance_digestible_energy_ratio"

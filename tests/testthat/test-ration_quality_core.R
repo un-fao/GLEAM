@@ -75,7 +75,7 @@ test_that("calc_ration_metabolizable_energy rejects invalid species_short", {
       feed_metabolizable_energy_pigs = 12,
       feed_metabolizable_energy_chicken = 14
     ),
-    "Invalid species_short value"
+    "`species_short` must be one of"
   )
 })
 
@@ -244,7 +244,7 @@ test_that("calc_ration_urinary_energy_fraction rejects invalid species_short", {
       feed_urinary_energy_pigs = 0.02,
       feed_urinary_energy_chicken = 0.04
     ),
-    "Invalid species_short value"
+    "`species_short` must be one of"
   )
 })
 

@@ -10,124 +10,40 @@
 #'
 #' @noRd
 validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_level_data) {
-
   # --- Basic type and structure checks ----------------------------------------
-  if (!data.table::is.data.table(cohort_level_data)) {
-    cli::cli_abort("{.arg cohort_level_data} must be a data.table.")
-  }
-  if (!data.table::is.data.table(herd_level_data)) {
-    cli::cli_abort("{.arg herd_level_data} must be a data.table.")
-  }
+  # Ensure inputs are data.tables with at least one row
+  check_data_table(cohort_level_data, "cohort_level_data")
+  check_data_table(herd_level_data, "herd_level_data")
 
-  if (nrow(cohort_level_data) == 0) {
-    cli::cli_abort("{.arg cohort_level_data} must contain at least one row.")
-  }
-  if (nrow(herd_level_data) == 0) {
-    cli::cli_abort("{.arg herd_level_data} must contain at least one row.")
-  }
-
-  # --- Required columns: cohort (herd_id, cohort_short, cohort-level vars) ----
+  # --- Required columns -------------------------------------------------------
+  # Verify all module-specific columns are present
   required_cohort_cols <- c(
     "herd_id", "cohort_short",
     "ration_intake", "ration_nitrogen", "daily_weight_gain", "cohort_duration_days"
   )
-  missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
-  if (length(missing_cohort_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg cohort_level_data}: {.val {missing_cohort_cols}}"
-    )
-  }
-
-  # --- Required columns: herd (herd_id, species_short, herd-level vars) -------
   required_herd_cols <- c(
     "herd_id", "species_short",
     "milk_protein_fraction", "milk_yield_day", "fibre_yield_year",
     "litter_size", "parturition_rate",
     "live_weight_at_weaning", "live_weight_at_birth", "pregnancy_duration"
   )
-  missing_herd_cols <- setdiff(required_herd_cols, names(herd_level_data))
-  if (length(missing_herd_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg herd_level_data}: {.val {missing_herd_cols}}"
-    )
-  }
+  check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
+  check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
 
   # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------
-  valid_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
-  invalid_cohorts <- setdiff(unique(cohort_level_data$cohort_short), valid_cohorts)
-  if (length(invalid_cohorts) > 0) {
-    cli::cli_abort(
-      "Invalid {.var cohort_short} values in {.arg cohort_level_data}: {.val {invalid_cohorts}}.
-      Must be one of: {.val {valid_cohorts}}"
-    )
-  }
+  # Must use valid GLEAM cohort codes; each herd must have all 6 cohorts
+  validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
+  check_cohort_completeness(cohort_level_data, "cohort_level_data")
 
-  cohort_completeness <- cohort_level_data[
-    , list(
-      count = .N,
-      has_all_cohorts = setequal(cohort_short, valid_cohorts),
-      missing_cohorts = paste(setdiff(valid_cohorts, cohort_short), collapse = ", ")
-    ),
-    by = herd_id
-  ]
-
-  wrong_count <- cohort_completeness[count != 6]
-  if (nrow(wrong_count) > 0) {
-    cli::cli_abort(
-      "Each herd_id must have exactly 6 rows in {.arg cohort_level_data} (one per cohort).
-      Found incorrect counts for herd_ids: {.val {wrong_count$herd_id}}"
-    )
-  }
-
-  incomplete_herds <- cohort_completeness[has_all_cohorts == FALSE]
-  if (nrow(incomplete_herds) > 0) {
-    missing_info <- incomplete_herds[
-      , paste0(herd_id, " (missing: ", missing_cohorts, ")"),
-      by = herd_id
-    ]$V1
-    cli::cli_abort(
-      "Each herd_id must have exactly one row for each of the 6 cohorts in {.arg cohort_level_data}.
-      Incomplete or duplicate cohorts found for herd_ids: {.val {missing_info}}"
-    )
-  }
-
-  # --- Herd: unique herd_id ---------------------------------------------------
-  herd_id_counts <- herd_level_data[, .N, by = herd_id]
-  duplicate_herds <- herd_id_counts[N > 1]
-  if (nrow(duplicate_herds) > 0) {
-    cli::cli_abort(
-      "Each herd_id must appear exactly once in {.arg herd_level_data}.
-      Found duplicates for herd_ids: {.val {duplicate_herds$herd_id}}"
-    )
-  }
-
-  # --- Herd: valid species_short codes ----------------------------------------
-  valid_species <- c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
-  invalid_species <- setdiff(unique(herd_level_data$species_short), valid_species)
-  if (length(invalid_species) > 0) {
-    cli::cli_abort(
-      "Invalid {.var species_short} values in {.arg herd_level_data}: {.val {invalid_species}}.
-      Must be one of: {.val {valid_species}}"
-    )
-  }
+  # --- Herd: unique herd_id, valid species_short ------------------------------
+  # One row per herd; species codes must be valid GLEAM codes
+  check_herd_id_unique(herd_level_data, "herd_level_data")
+  validate_species_short_values(herd_level_data$species_short, data_arg = "herd_level_data")
 
   # --- Cross-table: same herd_id set ------------------------------------------
-  cohort_herd_ids <- sort(unique(cohort_level_data$herd_id))
-  herd_level_herd_ids <- sort(unique(herd_level_data$herd_id))
-
-  missing_in_herd_level <- setdiff(cohort_herd_ids, herd_level_herd_ids)
-  if (length(missing_in_herd_level) > 0) {
-    cli::cli_abort(
-      "Herd IDs in {.arg cohort_level_data} not found in {.arg herd_level_data}:
-      {.val {missing_in_herd_level}}"
-    )
-  }
-
-  missing_in_cohort <- setdiff(herd_level_herd_ids, cohort_herd_ids)
-  if (length(missing_in_cohort) > 0) {
-    cli::cli_abort(
-      "Herd IDs in {.arg herd_level_data} not found in {.arg cohort_level_data}:
-      {.val {missing_in_cohort}}"
-    )
-  }
+  # Cohort and herd tables must cover identical herd_id sets
+  check_herd_id_consistency(
+    cohort_level_data, herd_level_data,
+    "cohort_level_data", "herd_level_data"
+  )
 }

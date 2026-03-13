@@ -141,7 +141,7 @@ calc_ration_digestibility <- function(
   )
 
   # Apply the species-specific digestibility coefficient
-  if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+  if (species_short %in% gleam_species_milk_producers) {
     ration_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_ruminant
   } else if (species_short == "CHK") {
     ration_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_chicken
@@ -211,7 +211,7 @@ calc_ration_metabolizable_energy <- function(
   )
 
   # Apply the species-specific metabolizable energy parameter
-  if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+  if (species_short %in% gleam_species_milk_producers) {
     ration_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_ruminant
   } else if (species_short == "CHK") {
     ration_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_chicken
@@ -333,7 +333,7 @@ calc_ration_urinary_energy_fraction <- function(
   )
 
   # Apply the species-specific diet_urinary_energy
-  if (species_short %in% c("CTL", "BFL", "CML", "SHP", "GTS")) {
+  if (species_short %in% gleam_species_milk_producers) {
     ration_urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_ruminant
   } else if (species_short == "CHK") {
     ration_urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_chicken

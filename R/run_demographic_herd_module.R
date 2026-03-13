@@ -209,7 +209,7 @@ run_demographic_herd_module <- function(
   unique_herd_ids <- unique(cohort_level_results$herd_id)
 
   # Define valid cohort names (used for result mapping loop)
-  cohort_order <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  cohort_order <- gleam_cohorts
 
   # --- Step 3: Process Each Herd ---------------------------------------------
   for (current_herd_id in unique_herd_ids) {

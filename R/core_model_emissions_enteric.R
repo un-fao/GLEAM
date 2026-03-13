@@ -194,7 +194,7 @@ calc_ch4_enteric <- function(
     ration_gross_energy, ration_intake
   )
 
-  if (species_short %in% c("CTL", "BFL", "CML", "PGS", "SHP", "GTS")) {
+  if (species_short %in% gleam_species_non_poultry) {
     ch4_enteric <- ration_gross_energy * ration_intake *
       (ch4_conversion_factor_ym / 100) * ch4_mitigation_factor / 55.65
   } else if (species_short == "CHK") {
