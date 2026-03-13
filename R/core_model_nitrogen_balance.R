@@ -226,8 +226,6 @@ calc_nitrogen_retention <- function(
       nitrogen_retention <- 0.025 * daily_weight_gain
     }
 
-  } else if (species_short == "CHK") {
-    nitrogen_retention <- 0  # not implemented yet
   }
 
   return(nitrogen_retention)
@@ -288,10 +286,6 @@ calc_nitrogen_excretion <- function(
   # Validate inputs
   validate_nitrogen_excretion_inputs(species_short, nitrogen_intake, nitrogen_retention)
 
-  if (species_short %in% gleam_species_non_poultry) {
-    nitrogen_excretion <- nitrogen_intake - nitrogen_retention
-  } else {
-    nitrogen_excretion <- 0  # not implemented yet
-  }
+  nitrogen_excretion <- nitrogen_intake - nitrogen_retention
   return(nitrogen_excretion)
 }

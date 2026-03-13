@@ -5,7 +5,7 @@
 \alias{gleam_species}
 \title{Valid species short codes}
 \format{
-A character vector of length 7.
+A character vector of length 6.
 }
 \usage{
 gleam_species

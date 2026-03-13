@@ -35,7 +35,7 @@ validate_run_ration_quality_module_inputs <- function(
     "feed_id", "feed_gross_energy",
     "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
     "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
-    "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
+    "feed_nitrogen_content",
     "feed_urinary_energy_ruminant", "feed_urinary_energy_pigs",
     "feed_ash"
   )

@@ -19,7 +19,6 @@ Character. Species short code. Supported values include:
 \item \code{BFL} (Buffalo)
 \item \code{SHP} (Sheep)
 \item \code{GTS} (Goats)
-\item \code{CHK} (Chicken)
 \item \code{PGS} (Pigs)
 \item \code{CML} (Camels)
 }
@@ -64,9 +63,6 @@ energy losses in urine and gaseous products of digestion (MJ/kg DM).}
 \item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy content
 of a feed component for pigs, representing digestible energy minus energy losses
 in urine and gaseous products of digestion (MJ/kg DM).}
-\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy
-content of a feed component for chickens, representing digestible energy minus
-energy losses in uric acid and gaseous products of digestion (MJ/kg DM).}
 \item{feed_nitrogen_content}{Numeric. Nitrogen content of a feed component
 (kg N/kg DM).}
 \item{feed_urinary_energy_ruminant}{Numeric. Fraction of feed's gross energy
@@ -93,8 +89,7 @@ data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
 content of the diet (MJ/kg DM).}
 \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed
-ration, expressed as ratio of digestible (or metabolizable, for poultry) to
-gross energy content (fraction).}
+ration, expressed as ratio of digestible to gross energy content (fraction).}
 \item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that
 is excreted in urine (fraction).}
 \item{ration_ash}{Numeric. Average ash content of feed, calculated as a fraction

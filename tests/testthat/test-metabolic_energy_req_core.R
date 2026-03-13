@@ -385,7 +385,6 @@ test_that("calc_rem_maintenance returns correct values for ruminants", {
 
 test_that("calc_rem_maintenance returns NA for non-ruminants", {
   expect_true(is.na(calc_rem_maintenance(species_short = "PGS", ration_digestibility_fraction = 0.75)))
-  expect_true(is.na(calc_rem_maintenance(species_short = "CHK", ration_digestibility_fraction = 0.70)))
   expect_true(is.na(calc_rem_maintenance(species_short = "CML", ration_digestibility_fraction = 0.60)))
 })
 
@@ -402,7 +401,6 @@ test_that("calc_reg_growth returns correct values for ruminants", {
 
 test_that("calc_reg_growth returns NA for non-ruminants", {
   expect_true(is.na(calc_reg_growth(species_short = "PGS", ration_digestibility_fraction = 0.75)))
-  expect_true(is.na(calc_reg_growth(species_short = "CHK", ration_digestibility_fraction = 0.70)))
   expect_true(is.na(calc_reg_growth(species_short = "CML", ration_digestibility_fraction = 0.60)))
 })
 
@@ -465,12 +463,6 @@ test_that("calc_ration_intake uses metabolizable energy for monogastrics", {
     species_short = "PGS", metabolic_energy_req_total = 15.0, ration_gross_energy = 18.0, ration_metabolizable_energy = 13.5
   )
   expected <- 15.0 / 13.5
-  expect_equal(result, expected)
-
-  result <- calc_ration_intake(
-    species_short = "CHK", metabolic_energy_req_total = 8.0, ration_gross_energy = 16.5, ration_metabolizable_energy = 11.0
-  )
-  expected <- 8.0 / 11.0
   expect_equal(result, expected)
 
   result <- calc_ration_intake(
