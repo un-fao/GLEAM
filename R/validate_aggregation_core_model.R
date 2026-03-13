@@ -1,42 +1,33 @@
 #' Validate inputs for calc_cohort_totals
 #'
 #' Ensures that inputs for the cohort totals calculation are correctly typed
-#' and within valid ranges. Specifically:
-#' * All numeric inputs must be numeric vectors of the same length.
-#' * `value` must be non-negative.
+#' and within valid ranges.
+#'
+#' * `value`, `cohort_stock_size`, `ration_intake`, `simulation_duration` must be numeric.
 #' * `cohort_stock_size` must be positive (number of heads).
 #' * `simulation_duration` must be positive (days).
-#' * `variable_type` must be a character vector with valid values.
-#'
-#' Valid variable types: `"Production"`, `"Emissions"`, `"Feed"`, `"NitrogenBalance"`.
+#' * `variable_name` and `variable_type` must be character.
+#' * `variable_type` must be one of: \code{"Production"}, \code{"Emissions"},
+#'   \code{"Feed"}, \code{"NitrogenBalance"}.
 #'
 #' This validator is designed for internal use in [calc_cohort_totals()].
 #'
-#' @param value Numeric vector. Variable value (kg/head/day or kg/cohort/assessment duration).
-#' @param cohort_stock_size Numeric vector. Number of heads in the cohort.
-#' @param simulation_duration Numeric vector. Duration of the assessment (days).
-#' @param variable_type Character vector. Variable group classification.
+#' @param value Numeric. Variable value (kg/head/day or kg/cohort/assessment duration).
+#' @param cohort_stock_size Numeric. Number of heads in the cohort.
+#' @param ration_intake Numeric. Daily dry matter intake (kg DM/head/day).
+#' @param simulation_duration Numeric. Duration of the assessment (days).
+#' @param variable_name Character. Variable identifier (e.g. emission source name).
+#' @param variable_type Character. Variable group classification.
 #'
 #' @noRd
 validate_totals_by_cohort_inputs <- function(
     value,
     cohort_stock_size,
+    ration_intake,
     simulation_duration,
+    variable_name,
     variable_type
 ) {
-  # Check that all inputs are vectors of the same length
-  lengths <- c(
-    length(value),
-    length(cohort_stock_size),
-    length(simulation_duration),
-    length(variable_type)
-  )
-
-  if (length(unique(lengths)) > 1) {
-    cli::cli_abort(
-      "All inputs to {.fun calc_cohort_totals} must have the same length."
-    )
-  }
 
   # Validate numeric inputs
   if (!is.numeric(value)) {
@@ -45,11 +36,17 @@ validate_totals_by_cohort_inputs <- function(
   if (!is.numeric(cohort_stock_size)) {
     cli::cli_abort("{.arg cohort_stock_size} must be numeric.")
   }
+  if (!is.numeric(ration_intake)) {
+    cli::cli_abort("{.arg ration_intake} must be numeric.")
+  }
   if (!is.numeric(simulation_duration)) {
     cli::cli_abort("{.arg simulation_duration} must be numeric.")
   }
 
-  # Validate variable_type
+  # Validate character inputs
+  if (!is.character(variable_name)) {
+    cli::cli_abort("{.arg variable_name} must be character.")
+  }
   if (!is.character(variable_type)) {
     cli::cli_abort("{.arg variable_type} must be character.")
   }
