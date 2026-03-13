@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_metabolic_energy_req_module.R
 \name{run_metabolic_energy_req_module}
 \alias{run_metabolic_energy_req_module}
-\title{Run Energy Requirements and Dry Matter Intake Calculation}
+\title{Run Metabolic Energy Requirements and Dry Matter Intake Calculation}
 \usage{
 run_metabolic_energy_req_module(
   cohort_level_data,
@@ -139,20 +139,20 @@ The following calculation sequence is applied:
 }
 \examples{
 \dontrun{
-# Load energy requirements inputs (cohort and herd-level)
-energy_requirements_chrt_dt <- data.table::fread(system.file(
-  "extdata/run_modules_examples/energy_requirements_input_chrt_data.csv",
+# Load metabolic energy requirements inputs (cohort and herd-level)
+metabolic_energy_req_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/metabolic_energy_req_input_chrt_data.csv",
   package = "gleam"
 ))
-energy_requirements_hrd_dt <- data.table::fread(system.file(
-  "extdata/run_modules_examples/energy_requirements_input_hrd_data.csv",
+metabolic_energy_req_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/metabolic_energy_req_input_hrd_data.csv",
   package = "gleam"
 ))
 
-# Run energy requirement and feed ration calculations
+# Run metabolic energy requirement and rations calculations
 results <- run_metabolic_energy_req_module(
-  cohort_level_data = energy_requirements_chrt_dt,
-  herd_level_data = energy_requirements_hrd_dt
+  cohort_level_data = metabolic_energy_req_chrt_dt,
+  herd_level_data = metabolic_energy_req_hrd_dt
 )
 }
 

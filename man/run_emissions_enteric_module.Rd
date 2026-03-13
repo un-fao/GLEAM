@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_emissions_enteric_module.R
 \name{run_emissions_enteric_module}
 \alias{run_emissions_enteric_module}
-\title{Run Enteric Methane (CH₄) Direct Emissions}
+\title{Run Enteric Methane (CH₄) Direct Emissions Calculation}
 \usage{
 run_emissions_enteric_module(cohort_level_data, show_indicator = TRUE)
 }
@@ -72,12 +72,12 @@ This function performs the following calculation sequence:
 \dontrun{
 # Load example input (6 herd_ids, cohort-level; only required columns)
 input_path <- system.file(
-  "extdata/run_modules_examples/directemissions_enteric_input_chrt_data.csv",
+  "extdata/run_modules_examples/emissions_enteric_input_chrt_data.csv",
   package = "gleam"
 )
-directemissions_enteric_input_chrt_data <- data.table::fread(input_path)
+emissions_enteric_input_chrt_data <- data.table::fread(input_path)
 results <- run_emissions_enteric_module(
-cohort_level_data = directemissions_enteric_input_chrt_data
+cohort_level_data = emissions_enteric_input_chrt_data
 )
 }
 

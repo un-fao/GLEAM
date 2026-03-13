@@ -1,4 +1,4 @@
-#' Run Enteric Methane (CH₄) Direct Emissions
+#' Run Enteric Methane (CH₄) Direct Emissions Calculation
 #'
 #' Computes daily enteric methane emissions by cohort (kg CH₄/head/day) using a Tier 2
 #'  IPCC approach, by applying species-, cohort- and diet-specific methane
@@ -76,12 +76,12 @@
 #' \dontrun{
 #' # Load example input (6 herd_ids, cohort-level; only required columns)
 #' input_path <- system.file(
-#'   "extdata/run_modules_examples/directemissions_enteric_input_chrt_data.csv",
+#'   "extdata/run_modules_examples/emissions_enteric_input_chrt_data.csv",
 #'   package = "gleam"
 #' )
-#' directemissions_enteric_input_chrt_data <- data.table::fread(input_path)
+#' emissions_enteric_input_chrt_data <- data.table::fread(input_path)
 #' results <- run_emissions_enteric_module(
-#' cohort_level_data = directemissions_enteric_input_chrt_data
+#' cohort_level_data = emissions_enteric_input_chrt_data
 #' )
 #' }
 #'
