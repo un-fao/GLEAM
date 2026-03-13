@@ -123,21 +123,21 @@ calc_allocated_emissions <- function(
 }
 
 
-#' Convert CH₄ and N₂O emissions to CO₂-equivalents (CO₂eq) using GWP factors
+#' Convert CH4 and N2O emissions to CO2-equivalents (CO2eq) using GWP factors
 #'
-#' Computes CO₂-equivalent (CO₂eq) emissions for CH₄ and N₂O based on
+#' Computes CO2-equivalent (CO2eq) emissions for CH4 and N2O based on
 #' 100-year Global Warming Potentials (GWP) reported in IPCC assessment reports.
 #'
 #' @param gas Character. Gas type for each observation. Supported values:
 #'   \itemize{
-#'     \item \code{"CH4"}: methane (CH₄)
-#'     \item \code{"N2O"}: nitrous oxide (N₂O)
-#'     \item \code{"CO2"}: carbon dioxide (CO₂)
+#'     \item \code{"CH4"}: methane (CH4)
+#'     \item \code{"N2O"}: nitrous oxide (N2O)
+#'     \item \code{"CO2"}: carbon dioxide (CO2)
 #'   }
 #' @param value_allocated  Numeric. Allocated emissions for each commodity–emission combination (kg gas).
 #' @param global_warming_potential_set Character. Settings for the
 #'   100-year Global Warming Potential (GWP-100) conversion factors used to
-#'   express CH₄ and N₂O emissions as CO₂eq. Must be one of:
+#'   express CH4 and N2O emissions as CO2eq. Must be one of:
 #'   \itemize{
 #'     \item \code{"AR6"}: IPCC Sixth Assessment Report (IPCC, 2021) — CH4 = 27, N2O = 273
 #'     \item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment
@@ -149,8 +149,8 @@ calc_allocated_emissions <- function(
 #'
 #' @return List with elements:
 #' \describe{
-#'   \item{value_co2eq}{Numeric vector. Emissions expressed as CO₂-equivalents (kg CO₂e).}
-#'   \item{gwp}{Numeric vector. Global Warming Potential factor applied to each observation (kg CO₂e/kg gas).}
+#'   \item{value_co2eq}{Numeric vector. Emissions expressed as CO2-equivalents (kg CO2e).}
+#'   \item{gwp}{Numeric vector. Global Warming Potential factor applied to each observation (kg CO2e/kg gas).}
 #' }
 #'
 #' @details

@@ -27,7 +27,7 @@ Numeric. Total volatile solids (VS) excreted per animal per day, representing th
 Computes daily volatile solids (VS) excretion in manure (kg VS/head/day).
 VS represent the organic fraction of manure dry matter,
 including both biodegradable and non-biodegradable organic material.
-VS is a key intermediate variable required for estimating methane (CH₄)
+VS is a key intermediate variable required for estimating methane (CH4)
 emissions from manure management systems under IPCC methodologies.
 }
 \details{
