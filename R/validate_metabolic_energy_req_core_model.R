@@ -15,7 +15,7 @@ validate_maintenance_inputs <- function(
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
-  validate_positive_numeric(live_weight_cohort_average, "live_weight_cohort_average")
+  validate_positive_numeric(live_weight_cohort_average)
 
   if (species_short %in% c("CTL", "BFL") && cohort_short == "FA") {
     validate_param_range(lactating_females_fraction, "lactating_females_fraction")
@@ -50,8 +50,8 @@ validate_activity_inputs <- function(
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
-  validate_positive_numeric(metabolic_energy_req_maintenance, "metabolic_energy_req_maintenance")
-  validate_positive_numeric(live_weight_cohort_average, "live_weight_cohort_average")
+  validate_positive_numeric(metabolic_energy_req_maintenance)
+  validate_positive_numeric(live_weight_cohort_average)
 
   validate_param_range(low_activity_fraction, "low_activity_fraction")
   validate_param_range(high_activity_fraction, "high_activity_fraction")
@@ -201,12 +201,12 @@ validate_lactation_inputs <- function(
   # --- Pigs: litter size, death rate, birth/weaning weights, reproductive durations ---
   if (species_short == "PGS") {
     validate_param_range(litter_size, "litter_size")
-    validate_fraction(death_rate_juvenile, "death_rate_juvenile")
+    validate_fraction(death_rate_juvenile)
     validate_param_range(live_weight_at_birth, "live_weight_at_birth")
     validate_param_range(live_weight_at_weaning, "live_weight_at_weaning")
-    validate_positive_numeric(lactation_duration, "lactation_duration")
-    validate_positive_numeric(non_productive_duration, "non_productive_duration")
-    validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+    validate_positive_numeric(lactation_duration)
+    validate_positive_numeric(non_productive_duration)
+    validate_positive_numeric(pregnancy_duration)
     if (live_weight_at_birth >= live_weight_at_weaning) {
       cli::cli_abort("{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}.")
     }
@@ -237,7 +237,7 @@ validate_work_inputs <- function(
 
   # Cattle and buffalo: use maintenance and draught hours/fractions (sex-specific)
   if (species_short %in% c("CTL", "BFL")) {
-    validate_positive_numeric(metabolic_energy_req_maintenance, "metabolic_energy_req_maintenance")
+    validate_positive_numeric(metabolic_energy_req_maintenance)
     if (cohort_short == "MA") {
       validate_param_range(draught_work_hours_male, "draught_work_hours_male")
       validate_param_range(draught_fraction_male, "draught_fraction_male")
@@ -310,9 +310,9 @@ validate_pregnancy_inputs <- function(
 
   # --- Cattle and buffalo: FA uses parturition + pregnancy duration; FS uses duration + offtake ---
   if (species_short %in% c("CTL", "BFL")) {
-    validate_positive_numeric(metabolic_energy_req_maintenance, "metabolic_energy_req_maintenance")
+    validate_positive_numeric(metabolic_energy_req_maintenance)
     validate_param_range(parturition_rate, "parturition_rate")
-    validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+    validate_positive_numeric(pregnancy_duration)
     if (cohort_short == "FA") return()
     validate_param_range(cohort_duration_days, "cohort_duration_days")
     validate_param_range(offtake_rate, "offtake_rate")
@@ -321,12 +321,12 @@ validate_pregnancy_inputs <- function(
 
   # --- Camels: FA uses maintenance + parturition; FS uses maintenance + duration + offtake ---
   if (species_short == "CML") {
-    validate_positive_numeric(metabolic_energy_req_maintenance, "metabolic_energy_req_maintenance")
+    validate_positive_numeric(metabolic_energy_req_maintenance)
     if (cohort_short == "FA") {
       validate_param_range(parturition_rate, "parturition_rate")
       return()
     }
-    validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+    validate_positive_numeric(pregnancy_duration)
     validate_param_range(cohort_duration_days, "cohort_duration_days")
     validate_param_range(offtake_rate, "offtake_rate")
     return()
@@ -334,14 +334,14 @@ validate_pregnancy_inputs <- function(
 
   # --- Sheep and goats: FA uses maintenance + parturition + litter + pregnancy; FS uses duration + offtake ---
   if (species_short %in% c("SHP", "GTS")) {
-    validate_positive_numeric(metabolic_energy_req_maintenance, "metabolic_energy_req_maintenance")
+    validate_positive_numeric(metabolic_energy_req_maintenance)
     if (cohort_short == "FA") {
       validate_param_range(parturition_rate, "parturition_rate")
       validate_param_range(litter_size, "litter_size")
-      validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+      validate_positive_numeric(pregnancy_duration)
       return()
     }
-    validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+    validate_positive_numeric(pregnancy_duration)
     validate_param_range(cohort_duration_days, "cohort_duration_days")
     validate_param_range(offtake_rate, "offtake_rate")
     return()
@@ -350,9 +350,9 @@ validate_pregnancy_inputs <- function(
   # --- Pigs: FA uses litter + gest/lact/idle durations; FS also uses cohort_duration and offtake ---
   if (species_short == "PGS") {
     validate_param_range(litter_size, "litter_size")
-    validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
-    validate_positive_numeric(non_productive_duration, "non_productive_duration")
-    validate_positive_numeric(lactation_duration, "lactation_duration")
+    validate_positive_numeric(pregnancy_duration)
+    validate_positive_numeric(non_productive_duration)
+    validate_positive_numeric(lactation_duration)
     if (cohort_short == "FA") return()
     validate_param_range(cohort_duration_days, "cohort_duration_days")
     validate_param_range(offtake_rate, "offtake_rate")
@@ -408,23 +408,21 @@ validate_total_energy_inputs <- function(
     ration_digestibility_fraction
 ) {
   validate_animal_species(species_short)
-  validate_scalar_numeric(metabolic_energy_req_maintenance, "metabolic_energy_req_maintenance")
-  validate_scalar_numeric(metabolic_energy_req_activity, "metabolic_energy_req_activity")
-  validate_scalar_numeric(metabolic_energy_req_lactation, "metabolic_energy_req_lactation")
-  validate_scalar_numeric(metabolic_energy_req_work, "metabolic_energy_req_work")
-  validate_scalar_numeric(metabolic_energy_req_pregnancy, "metabolic_energy_req_pregnancy")
-  validate_scalar_numeric(metabolic_energy_req_growth, "metabolic_energy_req_growth")
-  validate_scalar_numeric(metabolic_energy_req_fibre_production, "metabolic_energy_req_fibre_production")
+  validate_scalar_numeric(metabolic_energy_req_maintenance)
+  validate_scalar_numeric(metabolic_energy_req_activity)
+  validate_scalar_numeric(metabolic_energy_req_lactation)
+  validate_scalar_numeric(metabolic_energy_req_work)
+  validate_scalar_numeric(metabolic_energy_req_pregnancy)
+  validate_scalar_numeric(metabolic_energy_req_growth)
+  validate_scalar_numeric(metabolic_energy_req_fibre_production)
   validate_param_range(ration_digestibility_fraction, "ration_digestibility_fraction")
 
   if (species_short %in% gleam_species_ruminants) {
     validate_scalar_numeric(
-      net_energy_maintenance_digestible_energy_ratio,
-      "net_energy_maintenance_digestible_energy_ratio"
+      net_energy_maintenance_digestible_energy_ratio
     )
     validate_scalar_numeric(
-      net_energy_growth_digestible_energy_ratio,
-      "net_energy_growth_digestible_energy_ratio"
+      net_energy_growth_digestible_energy_ratio
     )
   }
 }
@@ -439,7 +437,7 @@ validate_dmi_inputs <- function(
     ration_metabolizable_energy
 ) {
   validate_animal_species(species_short)
-  validate_positive_numeric(metabolic_energy_req_total, "metabolic_energy_req_total")
+  validate_positive_numeric(metabolic_energy_req_total)
   validate_param_range(ration_gross_energy, "ration_gross_energy")
   validate_param_range(ration_metabolizable_energy, "ration_metabolizable_energy")
 }

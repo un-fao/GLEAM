@@ -37,7 +37,7 @@ validate_nitrogen_retention_inputs <- function(
       validate_param_range(live_weight_at_birth, "live_weight_at_birth")
     } else if (cohort_short == "FS") {
       validate_param_range(daily_weight_gain, "daily_weight_gain")
-      validate_positive_numeric(pregnancy_duration, "pregnancy_duration")
+      validate_positive_numeric(pregnancy_duration)
       validate_param_range(cohort_duration_days, "cohort_duration_days")
       validate_param_range(litter_size, "litter_size")
       validate_param_range(parturition_rate, "parturition_rate")
@@ -77,8 +77,8 @@ validate_nitrogen_retention_inputs <- function(
 #' @noRd
 validate_nitrogen_excretion_inputs <- function(species_short, nitrogen_intake, nitrogen_retention) {
   validate_animal_species(species_short)
-  validate_scalar_numeric(nitrogen_intake, "nitrogen_intake")
-  validate_scalar_numeric(nitrogen_retention, "nitrogen_retention")
+  validate_scalar_numeric(nitrogen_intake)
+  validate_scalar_numeric(nitrogen_retention)
 
   # Excretion = intake - retention; expect nitrogen_intake >= nitrogen_retention for valid excretion
   if (species_short != "CHK" && nitrogen_intake < nitrogen_retention) {

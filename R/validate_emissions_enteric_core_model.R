@@ -14,8 +14,8 @@ validate_ym_inputs <- function(
     cohort_short,
     ration_digestibility_fraction
 ) {
-  validate_scalar_character(species_short, "species_short")
-  validate_scalar_character(cohort_short, "cohort_short")
+  validate_scalar_character(species_short)
+  validate_scalar_character(cohort_short)
   validate_param_range(ration_digestibility_fraction, "ration_digestibility_fraction")
 }
 
@@ -40,7 +40,7 @@ validate_enteric_emission_inputs <- function(
     ration_gross_energy,
     ration_intake
 ) {
-  validate_scalar_character(species_short, "species_short")
+  validate_scalar_character(species_short)
 
   # Special case: chickens always return NA for now
   if (species_short == "CHK") {

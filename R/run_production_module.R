@@ -146,7 +146,7 @@ run_production_module <- function(
 
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_production_module_inputs(cohort_level_data, herd_level_data)
-  validate_scalar_numeric(simulation_duration, "simulation_duration")
+  validate_scalar_numeric(simulation_duration)
   if (simulation_duration <= 0) {
     cli::cli_abort("{.arg simulation_duration} must be positive.")
   }

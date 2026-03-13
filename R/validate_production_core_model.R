@@ -24,8 +24,8 @@ validate_milk_outputs_inputs <- function(
   if (species_short %in% gleam_species_milk_producers) {
     if (cohort_short == "FA") {
     # Scalar numeric inputs (only used for FA)
-    validate_scalar_numeric(simulation_duration, "simulation_duration")
-    validate_scalar_numeric(cohort_stock_size, "cohort_stock_size")
+    validate_scalar_numeric(simulation_duration)
+    validate_scalar_numeric(cohort_stock_size)
 
     # Range checks via parameter_ranges
     validate_param_range(milk_yield_day, "milk_yield_day")
@@ -59,8 +59,8 @@ validate_fibre_output_inputs <- function(
   if (species_short %in% c("GTS", "SHP", "CML")) {
     if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
     # Scalar numeric inputs (only used for fibre-producing cohorts)
-    validate_scalar_numeric(simulation_duration, "simulation_duration")
-    validate_scalar_numeric(cohort_stock_size, "cohort_stock_size")
+    validate_scalar_numeric(simulation_duration)
+    validate_scalar_numeric(cohort_stock_size)
 
     # Range checks via parameter_ranges
     validate_param_range(fibre_yield_year, "fibre_yield_year")

@@ -137,7 +137,7 @@ validate_co2eq_inputs <- function(
     global_warming_potential_set
 ) {
   # Validate gwp is scalar character
-  validate_scalar_character(global_warming_potential_set, "global_warming_potential_set")
+  validate_scalar_character(global_warming_potential_set)
 
   # Validate GWP version
   valid_gwp <- c(

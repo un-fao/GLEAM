@@ -79,7 +79,7 @@ validate_allocation_meat_inputs <- function(
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
-  validate_scalar_numeric(meat_production_live_weight_cohort, "meat_production_live_weight_cohort")
+  validate_scalar_numeric(meat_production_live_weight_cohort)
 
   validate_param_range(meat_production_live_weight_cohort, "meat_production_live_weight_cohort")
 
