@@ -14,9 +14,9 @@ validate_ym_inputs <- function(
     cohort,
     diet_dig
 ) {
-  validate_scalar_character(animal, "animal")
-  validate_scalar_character(cohort, "cohort")
-  validate_scalar_numeric(diet_dig, "diet_dig")
+  validate_scalar_character(animal)
+  validate_scalar_character(cohort)
+  validate_scalar_numeric(diet_dig)
 
   # Basic bounds consistent with a digestibility fraction (0–1)
   if (diet_dig < 0 || diet_dig > 1) {
@@ -46,17 +46,17 @@ validate_enteric_emission_inputs <- function(
     diet_ge,
     dmi
 ) {
-  validate_scalar_character(animal, "animal")
+  validate_scalar_character(animal)
 
   # Special case: chickens always return NA for now
   if (animal == "CHK") {
     return(invisible(TRUE))
   }
 
-  validate_scalar_numeric(ym, "ym")
-  validate_scalar_numeric(diet_ge, "diet_ge")
-  validate_scalar_numeric(dmi, "dmi")
-  validate_scalar_numeric(ch4_mitigation_factor, "ch4_mitigation_factor")
+  validate_scalar_numeric(ym)
+  validate_scalar_numeric(diet_ge)
+  validate_scalar_numeric(dmi)
+  validate_scalar_numeric(ch4_mitigation_factor)
 
 
   # Minimal, generic bounds

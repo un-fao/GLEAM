@@ -10,8 +10,8 @@
 #'
 #' @noRd
 validate_onfarm_emission_inputs <- function(energy_onfarm, emission_factor) {
-  validate_scalar_numeric(energy_onfarm, "energy_onfarm")
-  validate_scalar_numeric(emission_factor, "emission_factor")
+  validate_scalar_numeric(energy_onfarm)
+  validate_scalar_numeric(emission_factor)
 
   # Basic bounds: both values must be non-negative
   if (energy_onfarm < 0) {

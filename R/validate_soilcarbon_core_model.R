@@ -27,15 +27,15 @@ validate_soilcarbon_inputs <- function(
     soil_type_params,
     luc_factors
 ) {
-  validate_scalar_numeric(area, "area")
-  validate_scalar_character(climate_zone, "climate_zone")
-  validate_scalar_character(soil_type, "soil_type")
-  validate_scalar_character(management_start, "management_start")
-  validate_scalar_character(management_end, "management_end")
+  validate_scalar_numeric(area)
+  validate_scalar_character(climate_zone)
+  validate_scalar_character(soil_type)
+  validate_scalar_character(management_start)
+  validate_scalar_character(management_end)
 
   # Optional numeric SOC reference
   if (!is.na(soil_carbon_reference)) {
-    validate_scalar_numeric(soil_carbon_reference, "soil_carbon_reference")
+    validate_scalar_numeric(soil_carbon_reference)
   }
 
   # Data.table structure checks

@@ -18,16 +18,16 @@ validate_milk_outputs_inputs <- function(
   validate_cohort_code(cohort)
   
   # Scalar numeric inputs
-  validate_scalar_numeric(milk_yield, "milk_yield")
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
-  validate_scalar_numeric(size, "size")
-  validate_scalar_numeric(milking_fraction, "milking_fraction")
-  validate_scalar_numeric(milk_protein, "milk_protein")
-  validate_scalar_numeric(milk_fat, "milk_fat")
-  validate_scalar_numeric(lactose, "lactose")
-  validate_scalar_numeric(standard_protein, "standard_protein")
-  validate_scalar_numeric(standard_fat, "standard_fat")
-  validate_scalar_numeric(standard_lactose, "standard_lactose")
+  validate_scalar_numeric(milk_yield)
+  validate_scalar_numeric(assessment_duration)
+  validate_scalar_numeric(size)
+  validate_scalar_numeric(milking_fraction)
+  validate_scalar_numeric(milk_protein)
+  validate_scalar_numeric(milk_fat)
+  validate_scalar_numeric(lactose)
+  validate_scalar_numeric(standard_protein)
+  validate_scalar_numeric(standard_fat)
+  validate_scalar_numeric(standard_lactose)
 
   # Basic range checks for milk composition (fractions)
   if (milk_protein < 0 || milk_protein > 1) {
@@ -77,9 +77,9 @@ validate_fibre_output_inputs <- function(
   validate_cohort_code(cohort)
   
   # Scalar numeric inputs
-  validate_scalar_numeric(fibre_prod, "fibre_prod")
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
-  validate_scalar_numeric(size, "size")
+  validate_scalar_numeric(fibre_prod)
+  validate_scalar_numeric(assessment_duration)
+  validate_scalar_numeric(size)
 
   # Non-negative checks
   if (fibre_prod < 0) {
@@ -104,11 +104,11 @@ validate_meat_outputs_inputs <- function(
     meat_protein
 ) {
   # Scalar numeric inputs
-  validate_scalar_numeric(offtake_number_assessment, "offtake_number_assessment")
-  validate_scalar_numeric(slaughter_weight, "slaughter_weight")
-  validate_scalar_numeric(carcass_dressing_percentage, "carcass_dressing_percentage")
-  validate_scalar_numeric(bone_free_meat_fraction, "bone_free_meat_fraction")
-  validate_scalar_numeric(meat_protein, "meat_protein")
+  validate_scalar_numeric(offtake_number_assessment)
+  validate_scalar_numeric(slaughter_weight)
+  validate_scalar_numeric(carcass_dressing_percentage)
+  validate_scalar_numeric(bone_free_meat_fraction)
+  validate_scalar_numeric(meat_protein)
 
   # Non-negative checks
   if (offtake_number_assessment < 0) {

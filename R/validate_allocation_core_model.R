@@ -22,10 +22,10 @@ validate_allocation_milk_inputs <- function(
     standard_fat,
     standard_lactose
 ) {
-  validate_scalar_numeric(milk_fpcm_output, "milk_fpcm_output")
-  validate_scalar_numeric(standard_protein, "standard_protein")
-  validate_scalar_numeric(standard_fat, "standard_fat")
-  validate_scalar_numeric(standard_lactose, "standard_lactose")
+  validate_scalar_numeric(milk_fpcm_output)
+  validate_scalar_numeric(standard_protein)
+  validate_scalar_numeric(standard_fat)
+  validate_scalar_numeric(standard_lactose)
 
   # Basic bounds: all should be non-negative
   if (milk_fpcm_output < 0) {
@@ -73,12 +73,12 @@ validate_allocation_meat_inputs <- function(
     output_meat_production_liveweight,
     ratio_ne_to_me
 ) {
-  validate_scalar_character(animal, "animal")
-  validate_scalar_character(cohort_code, "cohort_code")
-  validate_scalar_numeric(slaughter_liveweight, "slaughter_liveweight")
-  validate_scalar_numeric(birth_liveweight, "birth_liveweight")
-  validate_scalar_numeric(output_meat_production_liveweight, "output_meat_production_liveweight")
-  validate_scalar_numeric(ratio_ne_to_me, "ratio_ne_to_me")
+  validate_scalar_character(animal)
+  validate_scalar_character(cohort_code)
+  validate_scalar_numeric(slaughter_liveweight)
+  validate_scalar_numeric(birth_liveweight)
+  validate_scalar_numeric(output_meat_production_liveweight)
+  validate_scalar_numeric(ratio_ne_to_me)
   
 
   # Validate animal species
@@ -144,11 +144,11 @@ validate_allocation_fibre_inputs <- function(
     ratio_ne_to_me,
     assessment_duration
 ) {
-  validate_scalar_character(animal, "animal")
-  validate_scalar_numeric(fibre_energy_requirement, "fibre_energy_requirement")
-  validate_scalar_numeric(ratio_ne_to_me, "ratio_ne_to_me")
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
-  validate_scalar_numeric(size, "size")
+  validate_scalar_character(animal)
+  validate_scalar_numeric(fibre_energy_requirement)
+  validate_scalar_numeric(ratio_ne_to_me)
+  validate_scalar_numeric(assessment_duration)
+  validate_scalar_numeric(size)
 
   # Validate animal species
   # Note: Allocation module uses these specific species codes
@@ -206,11 +206,11 @@ validate_allocation_work_inputs <- function(
     assessment_duration
     
 ) {
-  validate_scalar_character(animal, "animal")
-  validate_scalar_numeric(work_energy_requirement, "work_energy_requirement")
-  validate_scalar_numeric(ratio_ne_to_me, "ratio_ne_to_me")
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
-  validate_scalar_numeric(size, "size")
+  validate_scalar_character(animal)
+  validate_scalar_numeric(work_energy_requirement)
+  validate_scalar_numeric(ratio_ne_to_me)
+  validate_scalar_numeric(assessment_duration)
+  validate_scalar_numeric(size)
 
   # Validate animal species
   # Note: Allocation module uses these specific species codes

@@ -146,7 +146,7 @@ validate_co2eq_inputs <- function(
     gwp
 ) {
   # Validate gwp is scalar character
-  validate_scalar_character(gwp, "gwp")
+  validate_scalar_character(gwp)
 
   # Validate GWP version
   valid_gwp <- c(

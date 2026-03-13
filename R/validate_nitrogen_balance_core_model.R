@@ -2,8 +2,8 @@
 #'
 #' @noRd
 validate_nitrogen_intake_inputs <- function(dmi, diet_nitrogen) {
-  validate_scalar_numeric(dmi, "dmi")
-  validate_scalar_numeric(diet_nitrogen, "diet_nitrogen")
+  validate_scalar_numeric(dmi)
+  validate_scalar_numeric(diet_nitrogen)
 
   # Basic range checks for nitrogen balance parameters
   if (dmi < 0) {
@@ -31,8 +31,8 @@ validate_nitrogen_retention_inputs <- function(
     afc = NA_real_
 ) {
   # Character inputs
-  validate_scalar_character(animal, "animal")
-  validate_scalar_character(cohort, "cohort")
+  validate_scalar_character(animal)
+  validate_scalar_character(cohort)
 
   # Validate animal species
   valid_animals <- c("PGS", "CML", "CTL", "BFL", "SHP", "GTS", "CHK")
@@ -116,7 +116,7 @@ validate_nitrogen_retention_inputs <- function(
 #' @noRd
 validate_nitrogen_excretion_inputs <- function(animal, n_intake, n_retention) {
   # Character input
-  validate_scalar_character(animal, "animal")
+  validate_scalar_character(animal)
 
   # Validate animal species
   valid_animals <- c("CTL", "BFL", "CML", "GTS", "SHP", "PGS", "CHK")
@@ -127,8 +127,8 @@ validate_nitrogen_excretion_inputs <- function(animal, n_intake, n_retention) {
   }
 
   # Numeric inputs (allow NA)
-  validate_scalar_numeric(n_intake, "n_intake")
-  validate_scalar_numeric(n_retention, "n_retention")
+  validate_scalar_numeric(n_intake)
+  validate_scalar_numeric(n_retention)
 
   # Basic range checks
   if (n_intake < 0 || n_intake > 10) {

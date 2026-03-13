@@ -98,7 +98,7 @@ run_production_cohort <- function(
   }
 
 
-  validate_scalar_numeric(assessment_duration, "assessment_duration")
+  validate_scalar_numeric(assessment_duration)
 
   # --- Step 2: Compute milk production outputs --------------------------------
   milk_output_cols <- c(

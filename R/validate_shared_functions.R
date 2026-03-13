@@ -6,9 +6,10 @@
 #'
 #' @param x The object to validate.
 #' @param arg_name String. The name of the argument to use in the error message.
+#'   Defaults to the deparsed name of `x`.
 #'
 #' @noRd
-validate_scalar_numeric <- function(x, arg_name) {
+validate_scalar_numeric <- function(x, arg_name = deparse(substitute(x))) {
   # Check if the input is numeric, scalar, and not missing
   if (!is.numeric(x) || length(x) != 1 || is.na(x)) {
     cli::cli_abort("{.arg {arg_name}} must be a single numeric value.")
@@ -23,9 +24,10 @@ validate_scalar_numeric <- function(x, arg_name) {
 #'
 #' @param x The object to validate.
 #' @param arg_name A string. The name of the argument (used in the error message).
+#'   Defaults to the deparsed name of `x`.
 #'
 #' @noRd
-validate_scalar_character <- function(x, arg_name) {
+validate_scalar_character <- function(x, arg_name = deparse(substitute(x))) {
   if (!is.character(x) || length(x) != 1 || is.na(x)) {
     cli::cli_abort("{.arg {arg_name}} must be a single character value.")
   }
@@ -40,13 +42,14 @@ validate_scalar_character <- function(x, arg_name) {
 #' This version checks type, length, presence of names, and (optionally) required names.
 #'
 #' @param x The object to validate.
-#' @param arg_name String. The argument name for error reporting (not evaluated).
 #' @param expected_length Integer. Required length of the vector.
 #' @param expected_names Character vector. Optional. Set of required names.
+#' @param arg_name String. The argument name for error reporting.
+#'   Defaults to the deparsed name of `x`.
 #'
 #' @noRd
 validate_named_numeric_vector <- function(
-    x, arg_name, expected_length, expected_names = NULL
+    x, expected_length, expected_names = NULL, arg_name = deparse(substitute(x))
 ) {
   if (!is.numeric(x) || length(x) != expected_length || is.null(names(x))) {
     cli::cli_abort("{.arg {arg_name}} must be a numeric vector of length {expected_length} with names.")
@@ -85,7 +88,7 @@ normalize_rate <- function(x, lower = 0, upper = 1) {
 #' @param arg_name String. The name of the argument to use in the error message.
 #'
 #' @noRd
-validate_fraction <- function(x, arg_name) {
+validate_fraction <- function(x, arg_name = deparse(substitute(x))) {
   validate_scalar_numeric(x, arg_name)
   if (x < 0 || x > 1) {
     cli::cli_abort("{.arg {arg_name}} must be between 0 and 1.")
@@ -100,7 +103,7 @@ validate_fraction <- function(x, arg_name) {
 #' @param arg_name String. The name of the argument to use in the error message.
 #'
 #' @noRd
-validate_positive_numeric <- function(x, arg_name) {
+validate_positive_numeric <- function(x, arg_name = deparse(substitute(x))) {
   validate_scalar_numeric(x, arg_name)
   if (x <= 0) {
     cli::cli_abort("{.arg {arg_name}} must be positive.")
@@ -118,14 +121,16 @@ validate_positive_numeric <- function(x, arg_name) {
 #'   - upper_inclusive (logical)
 #'
 #' @param x Numeric scalar or named numeric vector to validate.
+#' @param parameter_ranges_data Data.table of rules.
+#'   Defaults to "data-raw/parameter_ranges.csv" loaded as internal data.
 #' @param arg_name Character scalar: must match one `variable_name`.
-#' @param parameter_ranges_data Data.table of rules. Defaults to "data-raw/parameter_ranges.csv" loaded as internal data.
+#'   Defaults to the deparsed name of `x`.
 #'
 #' @noRd
 validate_param_range <- function(
     x,
-    arg_name = deparse(substitute(x)),
-    parameter_ranges_data = parameter_ranges
+    parameter_ranges_data = parameter_ranges,
+    arg_name = deparse(substitute(x))
 ) {
 
   # Type and missingness checks
@@ -198,7 +203,7 @@ validate_param_range <- function(
 #'
 #' @noRd
 validate_animal_species <- function(species_short) {
-  validate_scalar_character(species_short, "species_short")
+  validate_scalar_character(species_short)
   valid_species <- c("CTL", "BFL", "SHP", "GTS", "PGS", "CHK", "CML")
   if (!species_short %in% valid_species) {
     cli::cli_abort(
@@ -215,7 +220,7 @@ validate_animal_species <- function(species_short) {
 #'
 #' @noRd
 validate_cohort_code <- function(cohort_short) {
-  validate_scalar_character(cohort_short, "cohort_short")
+  validate_scalar_character(cohort_short)
   valid_cohorts <- c("FA", "FS", "FJ", "MA", "MS", "MJ")
   if (!cohort_short %in% valid_cohorts) {
     cli::cli_abort(
