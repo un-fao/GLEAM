@@ -149,7 +149,7 @@
 #'   package = "gleam"
 #' ))
 #'
-#' # Run energy requirement and DMI calculations
+#' # Run energy requirement and feed ration calculations
 #' results <- run_metabolic_energy_req_module(
 #'   cohort_level_data = energy_requirements_chrt_dt,
 #'   herd_level_data = energy_requirements_hrd_dt
@@ -170,7 +170,7 @@ run_metabolic_energy_req_module <- function(
 
   # Show progress indicator if requested
   if (show_indicator) {
-    cli::cli_status("\U1F552 Calculating energy requirements and DMI, please wait\U2026")
+    cli::cli_status("\U1F552 Calculating energy requirements and ration, please wait\U2026")
   }
 
   # --- Step 2: Create working copies ------------------------------------------
