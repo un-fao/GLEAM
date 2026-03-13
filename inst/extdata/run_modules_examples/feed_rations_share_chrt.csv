@@ -1,128 +1,397 @@
-"herd_id","species_short","cohort_short","feed_id","feed_name","feed_ration_fraction"
-1,"CTL","FA","F1","Fresh grass, natural pastures",0.6
-1,"CTL","FA","F2","Wheat, straw",0.1
-1,"CTL","FA","F211","Cake of Groundnuts",0.1
-1,"CTL","FA","F332","Beet pulp",0.05
-1,"CTL","FA","F5","Maize (corn)",0.15
-1,"CTL","FJ","F160","Raw milk of cattle",1
-1,"CTL","FS","F1","Fresh grass, natural pastures",0.35
-1,"CTL","FS","F144","Beets for fodder",0.2
-1,"CTL","FS","F2","Wheat, straw",0.15
-1,"CTL","FS","F5","Maize (corn)",0.3
-1,"CTL","MA","F1","Fresh grass, natural pastures",0.65
-1,"CTL","MA","F2","Wheat, straw",0.15
-1,"CTL","MA","F5","Maize (corn)",0.2
-1,"CTL","MJ","F1","Fresh grass, natural pastures",0.4
-1,"CTL","MJ","F160","Raw milk of cattle",0.4
-1,"CTL","MJ","F5","Maize (corn)",0.2
-1,"CTL","MS","F1","Fresh grass, natural pastures",0.55
-1,"CTL","MS","F2","Wheat, straw",0.15
-1,"CTL","MS","F5","Maize (corn)",0.3
-2,"BFL","FA","F1","Fresh grass, natural pastures",0.45
-2,"BFL","FA","F136","Forage and silage, maize",0.2
-2,"BFL","FA","F309","Bran of Rice",0.15
-2,"BFL","FA","F5","Maize (corn)",0.05
-2,"BFL","FA","F6","Rice, straw",0.15
-2,"BFL","FJ","F161","Raw milk of buffalo",1
-2,"BFL","FS","F1","Fresh grass, natural pastures",0.6
-2,"BFL","FS","F5","Maize (corn)",0.25
-2,"BFL","FS","F6","Rice, straw",0.05
-2,"BFL","FS","F309","Bran of Rice",0.1
-2,"BFL","MA","F1","Fresh grass, natural pastures",0.3
-2,"BFL","MA","F5","Maize (corn)",0.2
-2,"BFL","MA","F6","Rice, straw",0.5
-2,"BFL","MJ","F161","Raw milk of buffalo",1
-2,"BFL","MS","F1","Fresh grass, natural pastures",0.3
-2,"BFL","MS","F5","Maize (corn)",0.2
-2,"BFL","MS","F6","Rice, straw",0.5
-3,"SHP","FA","F11","Barley",0.3
-3,"SHP","FA","F137","Forage and silage, alfalfa",0.25
-3,"SHP","FA","F2","Wheat, straw",0.25
-3,"SHP","FA","F221","Cake of Cottonseed",0.1
-3,"SHP","FA","F308","Bran of Wheat",0.1
-3,"SHP","FJ","F162","Raw milk of sheep",1
-3,"SHP","FS","F11","Barley",0.25
-3,"SHP","FS","F137","Forage and silage, alfalfa",0.3
-3,"SHP","FS","F2","Wheat, straw",0.25
-3,"SHP","FS","F221","Cake of Cottonseed",0.1
-3,"SHP","FS","F308","Bran of Wheat",0.1
-3,"SHP","MA","F11","Barley",0.35
-3,"SHP","MA","F137","Forage and silage, alfalfa",0.2
-3,"SHP","MA","F2","Wheat, straw",0.3
-3,"SHP","MA","F221","Cake of Cottonseed",0.05
-3,"SHP","MA","F308","Bran of Wheat",0.1
-3,"SHP","MJ","F162","Raw milk of sheep",1
-3,"SHP","MS","F11","Barley",0.3
-3,"SHP","MS","F137","Forage and silage, alfalfa",0.25
-3,"SHP","MS","F2","Wheat, straw",0.3
-3,"SHP","MS","F221","Cake of Cottonseed",0.05
-3,"SHP","MS","F308","Bran of Wheat",0.1
-4,"GTS","FA","F1","Fresh grass, natural pastures",0.45
-4,"GTS","FA","F132","Sugar cane, tops",0.2
-4,"GTS","FA","F210","Cake of Soya beans",0.1
-4,"GTS","FA","F5","Maize (corn)",0.15
-4,"GTS","FA","F97","Cassava, dry",0.1
-4,"GTS","FJ","F163","Raw milk of goats",1
-4,"GTS","FS","F1","Fresh grass, natural pastures",0.4
-4,"GTS","FS","F132","Sugar cane, tops",0.2
-4,"GTS","FS","F210","Cake of Soya beans",0.1
-4,"GTS","FS","F5","Maize (corn)",0.15
-4,"GTS","FS","F97","Cassava, dry",0.15
-4,"GTS","MA","F1","Fresh grass, natural pastures",0.5
-4,"GTS","MA","F132","Sugar cane, tops",0.2
-4,"GTS","MA","F210","Cake of Soya beans",0.1
-4,"GTS","MA","F5","Maize (corn)",0.15
-4,"GTS","MA","F97","Cassava, dry",0.05
-4,"GTS","MJ","F163","Raw milk of goats",1
-4,"GTS","MS","F1","Fresh grass, natural pastures",0.45
-4,"GTS","MS","F132","Sugar cane, tops",0.2
-4,"GTS","MS","F210","Cake of Soya beans",0.1
-4,"GTS","MS","F5","Maize (corn)",0.15
-4,"GTS","MS","F97","Cassava, dry",0.1
-5,"CML","FA","F1","Fresh grass, natural pastures",0.3
-5,"CML","FA","F147.1","Hay, from natural grasses",0.2
-5,"CML","FA","F221","Cake of Cottonseed",0.1
-5,"CML","FA","F295","Molasses (from cane)",0.05
-5,"CML","FA","F308","Bran of Wheat",0.15
-5,"CML","FA","F8","Sorghum, stover",0.2
-5,"CML","FJ","F164","Raw milk of camel",1
-5,"CML","FS","F1","Fresh grass, natural pastures",0.35
-5,"CML","FS","F147.1","Hay, from natural grasses",0.25
-5,"CML","FS","F16","Millet, stover",0.2
-5,"CML","FS","F211","Cake of Groundnuts",0.08
-5,"CML","FS","F295","Molasses (from cane)",0.02
-5,"CML","FS","F308","Bran of Wheat",0.1
-5,"CML","MA","F1","Fresh grass, natural pastures",0.35
-5,"CML","MA","F147.1","Hay, from natural grasses",0.25
-5,"CML","MA","F221","Cake of Cottonseed",0.1
-5,"CML","MA","F295","Molasses (from cane)",0.05
-5,"CML","MA","F8","Sorghum, stover",0.25
-5,"CML","MJ","F164","Raw milk of camel",1
-5,"CML","MS","F1","Fresh grass, natural pastures",0.3
-5,"CML","MS","F147.1","Hay, from natural grasses",0.25
-5,"CML","MS","F16","Millet, stover",0.25
-5,"CML","MS","F211","Cake of Groundnuts",0.07
-5,"CML","MS","F295","Molasses (from cane)",0.03
-5,"CML","MS","F311","Bran of Maize",0.1
-6,"PGS","FA","F210","Cake of Soya beans",0.2
-6,"PGS","FA","F295","Molasses (from cane)",0.05
-6,"PGS","FA","F3","Wheat",0.2
-6,"PGS","FA","F308","Bran of Wheat",0.1
-6,"PGS","FA","F5","Maize (corn)",0.45
-6,"PGS","FJ","F345","Raw milk of pig",1
-6,"PGS","FS","F210","Cake of Soya beans",0.2
-6,"PGS","FS","F295","Molasses (from cane)",0.05
-6,"PGS","FS","F3","Wheat",0.2
-6,"PGS","FS","F311","Bran of Maize",0.15
-6,"PGS","FS","F5","Maize (corn)",0.4
-6,"PGS","MA","F210","Cake of Soya beans",0.2
-6,"PGS","MA","F295","Molasses (from cane)",0.05
-6,"PGS","MA","F3","Wheat",0.15
-6,"PGS","MA","F308","Bran of Wheat",0.1
-6,"PGS","MA","F5","Maize (corn)",0.5
-6,"PGS","MJ","F345","Raw milk of pig",1
-6,"PGS","MS","F210","Cake of Soya beans",0.2
-6,"PGS","MS","F295","Molasses (from cane)",0.05
-6,"PGS","MS","F3","Wheat",0.15
-6,"PGS","MS","F311","Bran of Maize",0.15
-6,"PGS","MS","F5","Maize (corn)",0.45
+herd_id	species_short	cohort_short	feed_id	feed_name	feed_ration_fraction
+1	CTL	FA	F308	Bran of Wheat	0.04
+1	CTL	FA	F335	Brewing or distilling dregs and waste	0.05
+1	CTL	FA	F221	Cake of Cottonseed	0.02
+1	CTL	FA	F210	Cake of Soya beans	0.05
+1	CTL	FA	F136	Forage and silage, maize	0.3
+1	CTL	FA	F148	Hay, from cultivated grasses	0.2
+1	CTL	FA	F5	Maize (corn)	0.2
+1	CTL	FA	F27	Mixed grain	0.04
+1	CTL	FA	F151	Other grasses, for forage	0.1
+1	CTL	FJ	F160	Raw milk of cattle	1
+1	CTL	FS	F308	Bran of Wheat	0.04
+1	CTL	FS	F335	Brewing or distilling dregs and waste	0.05
+1	CTL	FS	F221	Cake of Cottonseed	0.02
+1	CTL	FS	F210	Cake of Soya beans	0.05
+1	CTL	FS	F136	Forage and silage, maize	0.3
+1	CTL	FS	F148	Hay, from cultivated grasses	0.2
+1	CTL	FS	F5	Maize (corn)	0.2
+1	CTL	FS	F27	Mixed grain	0.04
+1	CTL	FS	F151	Other grasses, for forage	0.1
+1	CTL	MA	F308	Bran of Wheat	0.04
+1	CTL	MA	F335	Brewing or distilling dregs and waste	0.05
+1	CTL	MA	F221	Cake of Cottonseed	0.02
+1	CTL	MA	F210	Cake of Soya beans	0.05
+1	CTL	MA	F136	Forage and silage, maize	0.3
+1	CTL	MA	F148	Hay, from cultivated grasses	0.2
+1	CTL	MA	F5	Maize (corn)	0.2
+1	CTL	MA	F27	Mixed grain	0.04
+1	CTL	MA	F151	Other grasses, for forage	0.1
+1	CTL	MJ	F160	Raw milk of cattle	1
+1	CTL	MS	F308	Bran of Wheat	0.04
+1	CTL	MS	F335	Brewing or distilling dregs and waste	0.05
+1	CTL	MS	F221	Cake of Cottonseed	0.02
+1	CTL	MS	F210	Cake of Soya beans	0.05
+1	CTL	MS	F136	Forage and silage, maize	0.3
+1	CTL	MS	F148	Hay, from cultivated grasses	0.2
+1	CTL	MS	F5	Maize (corn)	0.2
+1	CTL	MS	F27	Mixed grain	0.04
+1	CTL	MS	F151	Other grasses, for forage	0.1
+2	CTL	FA	F308	Bran of Wheat	0.02
+2	CTL	FA	F1	Fresh grass, natural pastures	0.7
+2	CTL	FA	F147.1	Hay, from natural grasses	0.28
+2	CTL	FJ	F160	Raw milk of cattle	1
+2	CTL	FS	F308	Bran of Wheat	0.02
+2	CTL	FS	F1	Fresh grass, natural pastures	0.7
+2	CTL	FS	F147.1	Hay, from natural grasses	0.28
+2	CTL	MA	F308	Bran of Wheat	0.02
+2	CTL	MA	F1	Fresh grass, natural pastures	0.7
+2	CTL	MA	F147.1	Hay, from natural grasses	0.28
+2	CTL	MJ	F160	Raw milk of cattle	1
+2	CTL	MS	F308	Bran of Wheat	0.02
+2	CTL	MS	F1	Fresh grass, natural pastures	0.7
+2	CTL	MS	F147.1	Hay, from natural grasses	0.28
+3	SHP	FA	F10	Barley, straw	0.06
+3	SHP	FA	F332	Beet pulp	0.15
+3	SHP	FA	F308	Bran of Wheat	0.1
+3	SHP	FA	F215	Cake of Rapeseed	0
+3	SHP	FA	F210	Cake of Soya beans	0.04
+3	SHP	FA	F149.2	Hay for forage, from legumes, cultivated	0.04
+3	SHP	FA	F148	Hay, from cultivated grasses	0.2
+3	SHP	FA	F5	Maize (corn)	0.02
+3	SHP	FA	F329	Maize Gluten meal	0.01
+3	SHP	FA	F27	Mixed grain	0.04
+3	SHP	FA	F153.2	Mixed grass and legumes, for forage, cultivated	0.04
+3	SHP	FA	F151	Other grasses, for forage	0.2
+3	SHP	FA	F2	Wheat, straw	0.1
+3	SHP	FJ	F162	Raw milk of sheep	1
+3	SHP	FS	F10	Barley, straw	0.06
+3	SHP	FS	F332	Beet pulp	0.15
+3	SHP	FS	F308	Bran of Wheat	0.1
+3	SHP	FS	F215	Cake of Rapeseed	0
+3	SHP	FS	F210	Cake of Soya beans	0.04
+3	SHP	FS	F149.2	Hay for forage, from legumes, cultivated	0.04
+3	SHP	FS	F148	Hay, from cultivated grasses	0.2
+3	SHP	FS	F5	Maize (corn)	0.02
+3	SHP	FS	F329	Maize Gluten meal	0.01
+3	SHP	FS	F27	Mixed grain	0.04
+3	SHP	FS	F153.2	Mixed grass and legumes, for forage, cultivated	0.04
+3	SHP	FS	F151	Other grasses, for forage	0.2
+3	SHP	FS	F2	Wheat, straw	0.1
+3	SHP	MA	F10	Barley, straw	0.06
+3	SHP	MA	F332	Beet pulp	0.15
+3	SHP	MA	F308	Bran of Wheat	0.1
+3	SHP	MA	F215	Cake of Rapeseed	0
+3	SHP	MA	F210	Cake of Soya beans	0.04
+3	SHP	MA	F149.2	Hay for forage, from legumes, cultivated	0.04
+3	SHP	MA	F148	Hay, from cultivated grasses	0.2
+3	SHP	MA	F5	Maize (corn)	0.02
+3	SHP	MA	F329	Maize Gluten meal	0.01
+3	SHP	MA	F27	Mixed grain	0.04
+3	SHP	MA	F153.2	Mixed grass and legumes, for forage, cultivated	0.04
+3	SHP	MA	F151	Other grasses, for forage	0.2
+3	SHP	MA	F2	Wheat, straw	0.1
+3	SHP	MJ	F162	Raw milk of sheep	1
+3	SHP	MS	F10	Barley, straw	0.06
+3	SHP	MS	F332	Beet pulp	0.15
+3	SHP	MS	F308	Bran of Wheat	0.1
+3	SHP	MS	F215	Cake of Rapeseed	0
+3	SHP	MS	F210	Cake of Soya beans	0.04
+3	SHP	MS	F149.2	Hay for forage, from legumes, cultivated	0.04
+3	SHP	MS	F148	Hay, from cultivated grasses	0.2
+3	SHP	MS	F5	Maize (corn)	0.02
+3	SHP	MS	F329	Maize Gluten meal	0.01
+3	SHP	MS	F27	Mixed grain	0.04
+3	SHP	MS	F153.2	Mixed grass and legumes, for forage, cultivated	0.04
+3	SHP	MS	F151	Other grasses, for forage	0.2
+3	SHP	MS	F2	Wheat, straw	0.1
+4	SHP	FA	F308	Bran of Wheat	0.02
+4	SHP	FA	F221	Cake of Cottonseed	0.02
+4	SHP	FA	F1	Fresh grass, natural pastures	0.45
+4	SHP	FA	F147.1	Hay, from natural grasses	0.51
+4	SHP	FJ	F162	Raw milk of sheep	1
+4	SHP	FS	F308	Bran of Wheat	0.02
+4	SHP	FS	F221	Cake of Cottonseed	0.02
+4	SHP	FS	F1	Fresh grass, natural pastures	0.45
+4	SHP	FS	F147.1	Hay, from natural grasses	0.51
+4	SHP	MA	F308	Bran of Wheat	0.02
+4	SHP	MA	F221	Cake of Cottonseed	0.02
+4	SHP	MA	F1	Fresh grass, natural pastures	0.45
+4	SHP	MA	F147.1	Hay, from natural grasses	0.51
+4	SHP	MJ	F162	Raw milk of sheep	1
+4	SHP	MS	F308	Bran of Wheat	0.02
+4	SHP	MS	F221	Cake of Cottonseed	0.02
+4	SHP	MS	F1	Fresh grass, natural pastures	0.45
+4	SHP	MS	F147.1	Hay, from natural grasses	0.51
+5	GTS	FA	F332	Beet pulp	0.1
+5	GTS	FA	F308	Bran of Wheat	0.1
+5	GTS	FA	F215	Cake of Rapeseed	0.02
+5	GTS	FA	F210	Cake of Soya beans	0.1
+5	GTS	FA	F148	Hay, from cultivated grasses	0.3
+5	GTS	FA	F5	Maize (corn)	0.02
+5	GTS	FA	F329	Maize Gluten meal	0.01
+5	GTS	FA	F27	Mixed grain	0.05
+5	GTS	FA	F153.2	Mixed grass and legumes, for forage, cultivated	0.1
+5	GTS	FA	F151	Other grasses, for forage	0.2
+5	GTS	FJ	F163	Raw milk of goats	1
+5	GTS	FS	F332	Beet pulp	0.1
+5	GTS	FS	F308	Bran of Wheat	0.1
+5	GTS	FS	F215	Cake of Rapeseed	0.02
+5	GTS	FS	F210	Cake of Soya beans	0.1
+5	GTS	FS	F148	Hay, from cultivated grasses	0.3
+5	GTS	FS	F5	Maize (corn)	0.02
+5	GTS	FS	F329	Maize Gluten meal	0.01
+5	GTS	FS	F27	Mixed grain	0.05
+5	GTS	FS	F153.2	Mixed grass and legumes, for forage, cultivated	0.1
+5	GTS	FS	F151	Other grasses, for forage	0.2
+5	GTS	MA	F332	Beet pulp	0.1
+5	GTS	MA	F308	Bran of Wheat	0.1
+5	GTS	MA	F215	Cake of Rapeseed	0.02
+5	GTS	MA	F210	Cake of Soya beans	0.1
+5	GTS	MA	F148	Hay, from cultivated grasses	0.3
+5	GTS	MA	F5	Maize (corn)	0.02
+5	GTS	MA	F329	Maize Gluten meal	0.01
+5	GTS	MA	F27	Mixed grain	0.05
+5	GTS	MA	F153.2	Mixed grass and legumes, for forage, cultivated	0.1
+5	GTS	MA	F151	Other grasses, for forage	0.2
+5	GTS	MJ	F163	Raw milk of goats	1
+5	GTS	MS	F332	Beet pulp	0.1
+5	GTS	MS	F308	Bran of Wheat	0.1
+5	GTS	MS	F215	Cake of Rapeseed	0.02
+5	GTS	MS	F210	Cake of Soya beans	0.1
+5	GTS	MS	F148	Hay, from cultivated grasses	0.3
+5	GTS	MS	F5	Maize (corn)	0.02
+5	GTS	MS	F329	Maize Gluten meal	0.01
+5	GTS	MS	F27	Mixed grain	0.05
+5	GTS	MS	F153.2	Mixed grass and legumes, for forage, cultivated	0.1
+5	GTS	MS	F151	Other grasses, for forage	0.2
+6	GTS	FA	F1	Fresh grass, natural pastures	0.5
+6	GTS	FA	F147.1	Hay, from natural grasses	0.5
+6	GTS	FJ	F163	Raw milk of goats	1
+6	GTS	FS	F1	Fresh grass, natural pastures	0.5
+6	GTS	FS	F147.1	Hay, from natural grasses	0.5
+6	GTS	MA	F1	Fresh grass, natural pastures	0.5
+6	GTS	MA	F147.1	Hay, from natural grasses	0.5
+6	GTS	MJ	F163	Raw milk of goats	1
+6	GTS	MS	F1	Fresh grass, natural pastures	0.5
+6	GTS	MS	F147.1	Hay, from natural grasses	0.5
+7	BFL	FA	F332	Beet pulp	0.08
+7	BFL	FA	F335	Brewing or distilling dregs and waste	0.1
+7	BFL	FA	F215	Cake of Rapeseed	0.02
+7	BFL	FA	F210	Cake of Soya beans	0.02
+7	BFL	FA	F136	Forage and silage, maize	0.4
+7	BFL	FA	F148	Hay, from cultivated grasses	0.2
+7	BFL	FA	F5	Maize (corn)	0.03
+7	BFL	FA	F329	Maize Gluten meal	0.02
+7	BFL	FA	F27	Mixed grain	0.07
+7	BFL	FA	F2	Wheat, straw	0.06
+7	BFL	FJ	F161	Raw milk of buffalo	1
+7	BFL	FS	F332	Beet pulp	0.08
+7	BFL	FS	F335	Brewing or distilling dregs and waste	0.1
+7	BFL	FS	F215	Cake of Rapeseed	0.02
+7	BFL	FS	F210	Cake of Soya beans	0.02
+7	BFL	FS	F136	Forage and silage, maize	0.4
+7	BFL	FS	F148	Hay, from cultivated grasses	0.2
+7	BFL	FS	F5	Maize (corn)	0.03
+7	BFL	FS	F329	Maize Gluten meal	0.02
+7	BFL	FS	F27	Mixed grain	0.07
+7	BFL	FS	F2	Wheat, straw	0.06
+7	BFL	MA	F332	Beet pulp	0.08
+7	BFL	MA	F335	Brewing or distilling dregs and waste	0.1
+7	BFL	MA	F215	Cake of Rapeseed	0.02
+7	BFL	MA	F210	Cake of Soya beans	0.02
+7	BFL	MA	F136	Forage and silage, maize	0.4
+7	BFL	MA	F148	Hay, from cultivated grasses	0.2
+7	BFL	MA	F5	Maize (corn)	0.03
+7	BFL	MA	F329	Maize Gluten meal	0.02
+7	BFL	MA	F27	Mixed grain	0.07
+7	BFL	MA	F2	Wheat, straw	0.06
+7	BFL	MJ	F161	Raw milk of buffalo	1
+7	BFL	MS	F332	Beet pulp	0.08
+7	BFL	MS	F335	Brewing or distilling dregs and waste	0.1
+7	BFL	MS	F215	Cake of Rapeseed	0.02
+7	BFL	MS	F210	Cake of Soya beans	0.02
+7	BFL	MS	F136	Forage and silage, maize	0.4
+7	BFL	MS	F148	Hay, from cultivated grasses	0.2
+7	BFL	MS	F5	Maize (corn)	0.03
+7	BFL	MS	F329	Maize Gluten meal	0.02
+7	BFL	MS	F27	Mixed grain	0.07
+7	BFL	MS	F2	Wheat, straw	0.06
+8	BFL	FA	F309	Bran of Rice	0.06
+8	BFL	FA	F221	Cake of Cottonseed	0.05
+8	BFL	FA	F1	Fresh grass, natural pastures	0.03
+8	BFL	FA	F147.1	Hay, from natural grasses	0.4
+8	BFL	FA	F5	Maize (corn)	0.01
+8	BFL	FA	F4	Maize (corn), stover	0.02
+8	BFL	FA	F16	Millet, stover	0.01
+8	BFL	FA	F27	Mixed grain	0.03
+8	BFL	FA	F6	Rice, straw	0.06
+8	BFL	FA	F132	Sugar cane, tops	0.03
+8	BFL	FA	F2	Wheat, straw	0.3
+8	BFL	FJ	F161	Raw milk of buffalo	1
+8	BFL	FS	F309	Bran of Rice	0.06
+8	BFL	FS	F221	Cake of Cottonseed	0.05
+8	BFL	FS	F1	Fresh grass, natural pastures	0.03
+8	BFL	FS	F147.1	Hay, from natural grasses	0.4
+8	BFL	FS	F5	Maize (corn)	0.01
+8	BFL	FS	F4	Maize (corn), stover	0.02
+8	BFL	FS	F16	Millet, stover	0.01
+8	BFL	FS	F27	Mixed grain	0.03
+8	BFL	FS	F6	Rice, straw	0.06
+8	BFL	FS	F132	Sugar cane, tops	0.03
+8	BFL	FS	F2	Wheat, straw	0.3
+8	BFL	MA	F309	Bran of Rice	0.06
+8	BFL	MA	F221	Cake of Cottonseed	0.05
+8	BFL	MA	F1	Fresh grass, natural pastures	0.03
+8	BFL	MA	F147.1	Hay, from natural grasses	0.4
+8	BFL	MA	F5	Maize (corn)	0.01
+8	BFL	MA	F4	Maize (corn), stover	0.02
+8	BFL	MA	F16	Millet, stover	0.01
+8	BFL	MA	F27	Mixed grain	0.03
+8	BFL	MA	F6	Rice, straw	0.06
+8	BFL	MA	F132	Sugar cane, tops	0.03
+8	BFL	MA	F2	Wheat, straw	0.3
+8	BFL	MJ	F161	Raw milk of buffalo	1
+8	BFL	MS	F309	Bran of Rice	0.06
+8	BFL	MS	F221	Cake of Cottonseed	0.05
+8	BFL	MS	F1	Fresh grass, natural pastures	0.03
+8	BFL	MS	F147.1	Hay, from natural grasses	0.4
+8	BFL	MS	F5	Maize (corn)	0.01
+8	BFL	MS	F4	Maize (corn), stover	0.02
+8	BFL	MS	F16	Millet, stover	0.01
+8	BFL	MS	F27	Mixed grain	0.03
+8	BFL	MS	F6	Rice, straw	0.06
+8	BFL	MS	F132	Sugar cane, tops	0.03
+8	BFL	MS	F2	Wheat, straw	0.3
+9	PGS	FA	F11	Barley	0.14
+9	PGS	FA	F308	Bran of Wheat	0.08
+9	PGS	FA	F210	Cake of Soya beans	0.15
+9	PGS	FA	F214	Cake of Sunflower seed	0.15
+9	PGS	FA	F5	Maize (corn)	0.15
+9	PGS	FA	F118	Peas, dry	0.03
+9	PGS	FA	F3	Wheat	0.3
+9	PGS	FJ	F345	Raw milk of pig	1
+9	PGS	FS	F11	Barley	0.14
+9	PGS	FS	F308	Bran of Wheat	0.08
+9	PGS	FS	F210	Cake of Soya beans	0.15
+9	PGS	FS	F214	Cake of Sunflower seed	0.15
+9	PGS	FS	F5	Maize (corn)	0.15
+9	PGS	FS	F118	Peas, dry	0.03
+9	PGS	FS	F3	Wheat	0.3
+9	PGS	MA	F11	Barley	0.14
+9	PGS	MA	F308	Bran of Wheat	0.08
+9	PGS	MA	F210	Cake of Soya beans	0.15
+9	PGS	MA	F214	Cake of Sunflower seed	0.15
+9	PGS	MA	F5	Maize (corn)	0.15
+9	PGS	MA	F118	Peas, dry	0.03
+9	PGS	MA	F3	Wheat	0.3
+9	PGS	MJ	F345	Raw milk of pig	1
+9	PGS	MS	F11	Barley	0.14
+9	PGS	MS	F308	Bran of Wheat	0.08
+9	PGS	MS	F210	Cake of Soya beans	0.15
+9	PGS	MS	F214	Cake of Sunflower seed	0.15
+9	PGS	MS	F5	Maize (corn)	0.15
+9	PGS	MS	F118	Peas, dry	0.03
+9	PGS	MS	F3	Wheat	0.3
+10	PGS	FA	F54	Banana fruit	0.1
+10	PGS	FA	F53	Banana stems	0.1
+10	PGS	FA	F110	Beans, dry	0.03
+10	PGS	FA	F109	Beans, straw	0.2
+10	PGS	FA	F311	Bran of Maize	0.01
+10	PGS	FA	F221	Cake of Cottonseed	0.01
+10	PGS	FA	F210	Cake of Soya beans	0.1
+10	PGS	FA	F214	Cake of Sunflower seed	0.08
+10	PGS	FA	F96	Cassava, fresh	0.08
+10	PGS	FA	F1	Fresh grass, natural pastures	0.02
+10	PGS	FA	F5	Maize (corn)	0.1
+10	PGS	FA	F17	Millet	0.01
+10	PGS	FA	F7	Rice	0.02
+10	PGS	FA	F9	Sorghum	0.02
+10	PGS	FA	F132	Sugar cane, tops	0.1
+10	PGS	FA	F2	Wheat, straw	0.02
+10	PGS	FJ	F345	Raw milk of pig	1
+10	PGS	FS	F54	Banana fruit	0.1
+10	PGS	FS	F53	Banana stems	0.1
+10	PGS	FS	F110	Beans, dry	0.03
+10	PGS	FS	F109	Beans, straw	0.2
+10	PGS	FS	F311	Bran of Maize	0.01
+10	PGS	FS	F221	Cake of Cottonseed	0.01
+10	PGS	FS	F210	Cake of Soya beans	0.1
+10	PGS	FS	F214	Cake of Sunflower seed	0.08
+10	PGS	FS	F96	Cassava, fresh	0.08
+10	PGS	FS	F1	Fresh grass, natural pastures	0.02
+10	PGS	FS	F5	Maize (corn)	0.1
+10	PGS	FS	F17	Millet	0.01
+10	PGS	FS	F7	Rice	0.02
+10	PGS	FS	F9	Sorghum	0.02
+10	PGS	FS	F132	Sugar cane, tops	0.1
+10	PGS	FS	F2	Wheat, straw	0.02
+10	PGS	MA	F54	Banana fruit	0.1
+10	PGS	MA	F53	Banana stems	0.1
+10	PGS	MA	F110	Beans, dry	0.03
+10	PGS	MA	F109	Beans, straw	0.2
+10	PGS	MA	F311	Bran of Maize	0.01
+10	PGS	MA	F221	Cake of Cottonseed	0.01
+10	PGS	MA	F210	Cake of Soya beans	0.1
+10	PGS	MA	F214	Cake of Sunflower seed	0.08
+10	PGS	MA	F96	Cassava, fresh	0.08
+10	PGS	MA	F1	Fresh grass, natural pastures	0.02
+10	PGS	MA	F5	Maize (corn)	0.1
+10	PGS	MA	F17	Millet	0.01
+10	PGS	MA	F7	Rice	0.02
+10	PGS	MA	F9	Sorghum	0.02
+10	PGS	MA	F132	Sugar cane, tops	0.1
+10	PGS	MA	F2	Wheat, straw	0.02
+10	PGS	MJ	F345	Raw milk of pig	1
+10	PGS	MS	F54	Banana fruit	0.1
+10	PGS	MS	F53	Banana stems	0.1
+10	PGS	MS	F110	Beans, dry	0.03
+10	PGS	MS	F109	Beans, straw	0.2
+10	PGS	MS	F311	Bran of Maize	0.01
+10	PGS	MS	F221	Cake of Cottonseed	0.01
+10	PGS	MS	F210	Cake of Soya beans	0.1
+10	PGS	MS	F214	Cake of Sunflower seed	0.08
+10	PGS	MS	F96	Cassava, fresh	0.08
+10	PGS	MS	F1	Fresh grass, natural pastures	0.02
+10	PGS	MS	F5	Maize (corn)	0.1
+10	PGS	MS	F17	Millet	0.01
+10	PGS	MS	F7	Rice	0.02
+10	PGS	MS	F9	Sorghum	0.02
+10	PGS	MS	F132	Sugar cane, tops	0.1
+10	PGS	MS	F2	Wheat, straw	0.02
+11	CML	FA	F314	Bran of Millet	0.07
+11	CML	FA	F221	Cake of Cottonseed	0.09
+11	CML	FA	F1	Fresh grass, natural pastures	0.8
+11	CML	FA	F147.1	Hay, from natural grasses	0.04
+11	CML	FJ	F164	Raw milk of camel	1
+11	CML	FS	F314	Bran of Millet	0.07
+11	CML	FS	F221	Cake of Cottonseed	0.09
+11	CML	FS	F1	Fresh grass, natural pastures	0.8
+11	CML	FS	F147.1	Hay, from natural grasses	0.04
+11	CML	MA	F314	Bran of Millet	0.07
+11	CML	MA	F221	Cake of Cottonseed	0.09
+11	CML	MA	F1	Fresh grass, natural pastures	0.8
+11	CML	MA	F147.1	Hay, from natural grasses	0.04
+11	CML	MJ	F164	Raw milk of camel	1
+11	CML	MS	F314	Bran of Millet	0.07
+11	CML	MS	F221	Cake of Cottonseed	0.09
+11	CML	MS	F1	Fresh grass, natural pastures	0.8
+11	CML	MS	F147.1	Hay, from natural grasses	0.04
+12	CML	FA	F308	Bran of Wheat	0.02
+12	CML	FA	F221	Cake of Cottonseed	0.02
+12	CML	FA	F148	Hay, from cultivated grasses	0.46
+12	CML	FA	F151	Other grasses, for forage	0.5
+12	CML	FJ	F164	Raw milk of camel	1
+12	CML	FS	F308	Bran of Wheat	0.02
+12	CML	FS	F221	Cake of Cottonseed	0.02
+12	CML	FS	F148	Hay, from cultivated grasses	0.46
+12	CML	FS	F151	Other grasses, for forage	0.5
+12	CML	MA	F308	Bran of Wheat	0.02
+12	CML	MA	F221	Cake of Cottonseed	0.02
+12	CML	MA	F148	Hay, from cultivated grasses	0.46
+12	CML	MA	F151	Other grasses, for forage	0.5
+12	CML	MJ	F164	Raw milk of camel	1
+12	CML	MS	F308	Bran of Wheat	0.02
+12	CML	MS	F221	Cake of Cottonseed	0.02
+12	CML	MS	F148	Hay, from cultivated grasses	0.46
+12	CML	MS	F151	Other grasses, for forage	0.5

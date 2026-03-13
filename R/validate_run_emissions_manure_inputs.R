@@ -215,7 +215,8 @@ validate_run_emissions_manure_module_inputs <- function(
   }
 
   # --- MMS consistency checks -------------------------------------------------
-  # MMS list must be consistent between fraction and factors for each herd_id
+  # Every MMS used in fraction must have a corresponding entry in factors.
+  # Factors may contain additional MMS entries — that is allowed.
   mms_fraction_by_herd <- manure_management_system_fraction[
     , .(mms_list = list(sort(unique(manure_management_system)))),
     by = herd_id
@@ -225,7 +226,7 @@ validate_run_emissions_manure_module_inputs <- function(
     by = herd_id
   ]
 
-  # Ensure herd_ids match between the two MMS tables
+  # Every herd_id in fraction must have factors coverage
   missing_in_factors_from_fraction <- setdiff(
     mms_fraction_by_herd$herd_id,
     mms_factors_by_herd$herd_id
@@ -236,33 +237,33 @@ validate_run_emissions_manure_module_inputs <- function(
       {.arg manure_management_system_factors}: {.val {missing_in_factors_from_fraction}}"
     )
   }
-  missing_in_fraction_from_factors <- setdiff(
-    mms_factors_by_herd$herd_id,
-    mms_fraction_by_herd$herd_id
-  )
-  if (length(missing_in_fraction_from_factors) > 0) {
-    cli::cli_abort(
-      "Herd IDs in {.arg manure_management_system_factors} not found in
-      {.arg manure_management_system_fraction}: {.val {missing_in_fraction_from_factors}}"
-    )
-  }
 
   merged_mms <- merge(
     mms_fraction_by_herd,
     mms_factors_by_herd,
     by = "herd_id",
-    all = TRUE,
     suffixes = c("_fraction", "_factors")
   )
 
-  mismatched_mms <- merged_mms[
-    !mapply(setequal, mms_list_fraction, mms_list_factors),
+  # Check that every MMS in fraction is covered by factors (subset, not equality)
+  missing_mms_coverage <- merged_mms[
+    mapply(function(frac, fact) length(setdiff(frac, fact)) > 0,
+           mms_list_fraction, mms_list_factors),
     herd_id
   ]
-  if (length(mismatched_mms) > 0) {
+  if (length(missing_mms_coverage) > 0) {
+    details <- merged_mms[
+      herd_id %in% missing_mms_coverage,
+      .(herd_id,
+        missing = mapply(function(frac, fact) paste(setdiff(frac, fact), collapse = ", "),
+                         mms_list_fraction, mms_list_factors))
+    ]
     cli::cli_abort(
-      "Mismatch in manure_management_system lists between {.arg manure_management_system_fraction} and
-      {.arg manure_management_system_factors} for herd_ids: {.val {mismatched_mms}}"
+      c(
+        "Some {.var manure_management_system} values in {.arg manure_management_system_fraction}
+        have no matching entry in {.arg manure_management_system_factors}.",
+        "i" = "Affected herd_ids and missing systems: {.val {details[, paste0(herd_id, ': ', missing)]}}"
+      )
     )
   }
 

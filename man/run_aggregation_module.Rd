@@ -195,7 +195,6 @@ results <- run_aggregation_module(
   simulation_duration = 365,
   global_warming_potential_set = "AR6"
 )
-head(results$results_herd)
 }
 
 }
