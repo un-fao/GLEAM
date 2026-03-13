@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_emissions_ration.R
 \name{calc_n2o_ration_crop_residues}
 \alias{calc_n2o_ration_crop_residues}
-\title{Calculate a ration component's contribution to nitrous oxide (N₂O) emissions from crop residues decomposition}
+\title{Calculate a ration component's contribution to nitrous oxide (N2O) emissions from crop residues decomposition}
 \usage{
 calc_n2o_ration_crop_residues(feed_ration_fraction, n2o_feed_crop_residues)
 }
@@ -11,17 +11,17 @@ calc_n2o_ration_crop_residues(feed_ration_fraction, n2o_feed_crop_residues)
 ration, expressed as its fraction of diet dry matter intake (fraction). Within
 each herd_id and cohort, proportions should sum to 1.}
 
-\item{n2o_feed_crop_residues}{Numeric. Nitrous oxide (N₂O) emission factor of a feed component,
-representing N₂O emissions from crop residues decomposition in feed production,
-expressed per kg of dry matter intake (g N₂O/kg DM).}
+\item{n2o_feed_crop_residues}{Numeric. Nitrous oxide (N2O) emission factor of a feed component,
+representing N2O emissions from crop residues decomposition in feed production,
+expressed per kg of dry matter intake (g N2O/kg DM).}
 }
 \value{
 Numeric. Contribution of an individual feed component to the diet-level
-average nitrous oxide (N₂O) emission factor from crop residues decomposition
-in feed production (g N₂O/kg DM).
+average nitrous oxide (N2O) emission factor from crop residues decomposition
+in feed production (g N2O/kg DM).
 }
 \description{
-Computes the contribution of an individual feed component to nitrous oxide (N₂O)
+Computes the contribution of an individual feed component to nitrous oxide (N2O)
 emissions from crop residues decomposition in feed production,
 using feed-specific emission factors weighted by the component's share in the ration.
 }

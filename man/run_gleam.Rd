@@ -281,179 +281,125 @@ A named list with four elements:
 \item{cohort_level_results}{A cohort-level \code{data.table} containing the
 original input columns plus all variables generated across the pipeline.
 Calculated variables are grouped below by module.
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\\subsection\{Demographic herd simulation\}\{
+\subsection{Demographic herd simulation}{
 Computed when \code{has_herd_structure = FALSE}:
-\\describe\{
-  \\item\{cohort_stock_size\}\{Average population per cohort (heads).\}
-  \\item\{offtake_heads\}\{Animals removed via offtake per year per cohort
-    (heads/year).\}
-  \\item\{offtake_heads_assessment\}\{Animals removed via offtake over the
-    assessment period per cohort (heads/assessment period).\}
-\}\}
-
-\\subsection\{Weight variables\}\{
-\\describe\{
-  \\item\{live_weight_mature_stage\}\{Mature (adult) live weight attainable
-    under given conditions (kg).\}
-  \\item\{live_weight_cohort_initial\}\{Live weight at cohort stage start
-    (kg).\}
-  \\item\{live_weight_cohort_potential_final\}\{Potential final live weight
-    in the absence of offtake (kg). Equals weaning weight for juveniles,
-    adult weight for sub-adults and adults.\}
-  \\item\{live_weight_cohort_at_slaughter\}\{Slaughter weight for offtaken
-    animals (kg).\}
-  \\item\{live_weight_cohort_average\}\{Average live weight over the cohort
-    stage, weighted by offtaken vs. remaining animals (kg).\}
-  \\item\{live_weight_cohort_final\}\{End-of-stage live weight as a weighted
-    average of surviving and offtaken animals (kg).\}
-  \\item\{daily_weight_gain\}\{Average daily weight gain (kg/head/day).\}
-\}\}
-
-\\subsection\{Ration quality variables\}\{
-\\describe\{
-  \\item\{ration_gross_energy\}\{Diet gross energy (MJ/kg DM).\}
-  \\item\{ration_metabolizable_energy\}\{Diet metabolizable energy
-    (MJ/kg DM).\}
-  \\item\{ration_nitrogen\}\{Diet nitrogen content (kg N/kg DM).\}
-  \\item\{ration_digestibility_fraction\}\{Diet digestibility: ratio of
-    digestible (or metabolizable for poultry) to gross energy
-    (fraction).\}
-  \\item\{ration_urinary_energy_fraction\}\{Fraction of diet gross energy
-    excreted in urine (fraction).\}
-  \\item\{ration_ash\}\{Diet ash content (g ash/100 g DM).\}
-\}\}
-
-\\subsection\{Energy requirement variables\}\{
-Expressed as net energy for CTL, BFL, SHP, GTS; as metabolizable energy
-for CML and PGS unless stated otherwise.
-\\describe\{
-  \\item\{metabolic_energy_req_maintenance\}\{Energy for maintenance: keeping
-    body energy at equilibrium (MJ/head/day).\}
-  \\item\{metabolic_energy_req_activity\}\{Energy for movement and physical
-    activity (MJ/head/day).\}
-  \\item\{metabolic_energy_req_growth\}\{Energy for weight gain
-    (MJ/head/day).\}
-  \\item\{metabolic_energy_req_lactation\}\{Energy for lactation
-    (MJ/head/day).\}
-  \\item\{metabolic_energy_req_work\}\{Energy for draught power; CTL, BFL,
-    CML only, 0 for others (MJ/head/day).\}
-  \\item\{metabolic_energy_req_fibre_production\}\{Energy for fibre
-    synthesis; SHP, GTS, CML only, 0 for others (MJ/head/day).\}
-  \\item\{metabolic_energy_req_pregnancy\}\{Energy for pregnancy
-    (MJ/head/day).\}
-  \\item\{net_energy_maintenance_digestible_energy_ratio\}\{Net energy for
-    maintenance to digestible energy ratio (fraction).\}
-  \\item\{net_energy_growth_digestible_energy_ratio\}\{Net energy for growth
-    to digestible energy ratio (fraction).\}
-  \\item\{metabolic_energy_req_total\}\{Total daily energy requirement
-    (MJ/head/day). Gross energy intake for CTL, BFL, SHP, GTS; summed
-    metabolizable energy for CML, PGS.\}
-  \\item\{ration_intake\}\{Average daily dry matter intake
-    (kg DM/head/day).\}
-\}\}
-
-\\subsection\{Enteric emission variables\}\{
-\\describe\{
-  \\item\{ch4_mitigation_factor\}\{Mitigation factor (added if not provided
-    as input).\}
-  \\item\{ch4_conversion_factor_ym\}\{CH4 conversion factor (Ym):
-    percentage of gross energy converted to CH4 (percent).\}
-  \\item\{ch4_enteric\}\{Daily enteric CH4 emissions
-    (kg CH4/head/day).\}
-\}\}
-
-\\subsection\{Nitrogen balance variables\}\{
-\\describe\{
-  \\item\{nitrogen_intake\}\{Daily N intake (kg N/head/day).\}
-  \\item\{nitrogen_retention\}\{Daily N retained in tissues and products
-    (kg N/head/day).\}
-  \\item\{nitrogen_excretion\}\{Daily N excretion (kg N/head/day).\}
-\}\}
-
-\\subsection\{Manure emission variables\}\{
-All in kg/head/day. For each manure pathway (\code{pasture},
-\code{burned}, \code{other}, \code{all_noburn}), the following
-variables are produced, where \code{{pathway}} is one of the four
-pathway names:
-\\describe\{
-  \\item\{volatile_solids\}\{Total volatile solids excreted
-    (kg VS/head/day).\}
-  \\item\{ch4_manure_\{pathway\}\}\{CH4 emissions from manure.\}
-  \\item\{n2o_manure_\{pathway\}_direct\}\{Direct N2O emissions.\}
-  \\item\{n2o_manure_\{pathway\}_vol\}\{Indirect N2O from
-    volatilisation of NH3 and NOx.\}
-  \\item\{n2o_manure_\{pathway\}_leach\}\{Indirect N2O from
-    leaching and runoff.\}
-  \\item\{n2o_manure_\{pathway\}_indirect\}\{Total indirect N2O
-    (volatilisation + leaching).\}
-  \\item\{n2o_manure_\{pathway\}_total\}\{Total N2O (direct +
-    indirect).\}
-\}\}
-
-\\subsection\{Feed production emission variables\}\{
-Diet-level averages per kg DM.
-\\describe\{
-  \\item\{co2_ration_fertilizer\}\{CO2 from fertilizer manufacture
-    (g CO2/kg DM).\}
-  \\item\{co2_ration_pesticides\}\{CO2 from pesticide manufacture
-    (g CO2/kg DM).\}
-  \\item\{co2_ration_crop_activities\}\{CO2 from on-field activities
-    (g CO2/kg DM).\}
-  \\item\{co2_ration_luc_nopeat\}\{CO2 from land-use change, excl.
-    peatland (g CO2/kg DM).\}
-  \\item\{co2_ration_luc_peat\}\{CO2 from peatland drainage
-    (g CO2/kg DM).\}
-  \\item\{n2o_ration_fertilizer\}\{N2O from fertilizer use
-    (g N2O/kg DM).\}
-  \\item\{n2o_ration_manure_applied\}\{N2O from manure applied to soil
-    (g N2O/kg DM).\}
-  \\item\{n2o_ration_crop_residues\}\{N2O from crop residues
-    (g N2O/kg DM).\}
-  \\item\{ch4_ration_rice\}\{CH4 from rice cultivation
-    (g CH4/kg DM).\}
-\}\}
-
-\\subsection\{Production variables\}\{
-Per cohort per assessment period.
-\\describe\{
-  \\item\{milk_production_mass_cohort\}\{Total milk produced (kg).\}
-  \\item\{milk_production_protein_cohort\}\{Total milk protein (kg protein).\}
-  \\item\{milk_production_fpcm_cohort\}\{Fat-protein-corrected milk (kg).\}
-  \\item\{fibre_production_cohort\}\{Total fibre produced (kg).\}
-  \\item\{meat_production_live_weight_cohort\}\{Total meat as live weight
-    (kg).\}
-  \\item\{meat_production_carcass_weight_cohort\}\{Total meat as carcass
-    weight (kg).\}
-  \\item\{meat_production_bone_free_meat_cohort\}\{Total bone-free meat
-    (kg).\}
-  \\item\{meat_production_protein_cohort\}\{Total meat protein (kg protein).\}
-\}\}
-
-\\subsection\{Allocation variables\}\{
-Energy allocated per commodity, per cohort per assessment period (MJ).
-\\describe\{
-  \\item\{milk_allocation_energy\}\{Energy for milk production.\}
-  \\item\{meat_allocation_energy\}\{Energy for meat production (live-weight
-    gain to slaughter weight).\}
-  \\item\{fibre_allocation_energy\}\{Energy for fibre production.\}
-  \\item\{work_allocation_energy\}\{Energy for draught power.\}
-  \\item\{egg_allocation_energy\}\{Energy for egg production (currently 0).\}
-\}\}
-}\if{html}{\out{</div>}}
-
+\describe{
+\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex-age cohorts (# heads). (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
+\item{offtake_heads}{Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex-age cohorts (heads/year) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
+\item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex-age cohorts (heads/assessment period) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
+}}
+\subsection{Weight variables}{
+\describe{
+\item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
+\item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
+\item{live_weight_cohort_potential_final}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
+\item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
+\item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
+\item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
+\item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
+}}
+\subsection{Ration quality variables}{
+\describe{
+\item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
+\item{ration_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
+\item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).}
+\item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
+\item{ration_ash}{Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).}
+}}
+\subsection{Energy requirement variables}{
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS unless stated otherwise.
+\describe{
+\item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{metabolic_energy_req_activity}{Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{metabolic_energy_req_growth}{Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{metabolic_energy_req_lactation}{Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day). Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{metabolic_energy_req_pregnancy}{Numeric. Energy required for pregnancy for pregnant females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+\item{net_energy_maintenance_digestible_energy_ratio}{Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).}
+\item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).}
+\item{metabolic_energy_req_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). For CML and PGS the function returns the summed daily metabolizable energy requirement.}
+\item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
+}}
+\subsection{Enteric emission variables}{
+\describe{
+\item{ch4_mitigation_factor}{Numeric. Multiplicative mitigation factor applied to baseline enteric methane (CH4) emissions (dimensionless). If not provided, a default value of \code{1} (no mitigation) is used.}
+\item{ch4_conversion_factor_ym}{Numeric. Methane (CH4) conversion factor (ym), representing the percentage of gross energy of the feed ration that is converted to CH4 (percentage).}
+\item{ch4_enteric}{Numeric. Average daily enteric methane (CH4) emissions (kg CH4/head/day).}
+}}
+\subsection{Nitrogen balance variables}{
+\describe{
+\item{nitrogen_intake}{Numeric. Daily nitrogen intake (kg N/head/day).}
+\item{nitrogen_retention}{Numeric. Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day).}
+\item{nitrogen_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day).}
+}}
+\subsection{Manure emission variables}{
+\describe{
+\item{volatile_solids}{Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
+\item{ch4_manure_pasture}{Numeric. Methane (CH4) emissions from manure deposited on pasture (kg CH4/head/day).}
+\item{ch4_manure_burned}{Numeric. Methane (CH4) emissions from manure burned for fuel (kg CH4/head/day).}
+\item{ch4_manure_other}{Numeric. Methane (CH4) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH4/head/day).}
+\item{ch4_manure_all_noburn}{Numeric. Methane (CH4) emissions from manure management systems, excluding manure burned for fuel (kg CH4/head/day).}
+\item{n2o_manure_pasture_direct}{Numeric. Direct nitrous oxide (N2O) emissions from manure deposited on pasture (kg N2O/head/day).}
+\item{n2o_manure_burned_direct}{Numeric. Direct nitrous oxide (N2O) emissions from manure burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_other_direct}{Numeric. Direct nitrous oxide (N2O) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_all_noburn_direct}{Numeric. Direct nitrous oxide (N2O) emissions from manure management systems, excluding emissions from manure burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_pasture_vol}{Numeric. Indirect nitrous oxide (N2O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH3 and NOx) from manure deposited on pasture (kg N2O/head/day).}
+\item{n2o_manure_burned_vol}{Numeric. Indirect nitrous oxide (N2O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH3 and NOx) from manure burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_other_vol}{Numeric. Indirect nitrous oxide (N2O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH3 and NOx) from manure management systems, excluding manure deposited on pasture and manure burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_all_noburn_vol}{Numeric. Indirect nitrous oxide (N2O) emissions resulting from atmospheric deposition of volatilised nitrogen (NH3 and NOx) from manure management systems, excluding losses from manure burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_pasture_leach}{Numeric. Indirect nitrous oxide (N2O) emissions resulting from leaching and runoff of manure nitrogen from manure deposited on pasture (kg N2O/head/day).}
+\item{n2o_manure_burned_leach}{Numeric. Indirect nitrous oxide (N2O) emissions resulting from leaching and runoff of manure nitrogen from manure burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_other_leach}{Numeric. Indirect nitrous oxide (N2O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure deposited on pasture and manure burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_all_noburn_leach}{Numeric. Indirect nitrous oxide (N2O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure burned for fuel (kg N2O/head/day).}
+\item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions from manure deposited on pasture. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
+\item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions originating from manure burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
+\item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen.}
+\item{n2o_manure_pasture_total}{Numeric. Total nitrous oxide emissions from manure deposited on pasture. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N2O/head/day).}
+\item{n2o_manure_burned_total}{Numeric. Total nitrous oxide emissions (N2O) from manure burned for fuel. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N2O/head/day).}
+\item{n2o_manure_other_total}{Numeric. Total nitrous oxide (N2O) emissions from manure management systems, excluding manure deposited on pasture and manure burned for fuel. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N2O/head/day).}
+}}
+\subsection{Feed production emission variables}{
+\describe{
+\item{co2_ration_fertilizer}{Numeric. Diet-level average carbon dioxide (CO2) emission factor from fertilizer manufacture in feed production (g CO2/kg DM).}
+\item{co2_ration_pesticides}{Numeric. Diet-level average carbon dioxide (CO2) emission factor from pesticide manufacture in feed production (g CO2/kg DM).}
+\item{co2_ration_crop_activities}{Numeric. Diet-level average carbon dioxide (CO2) emission factor from on-field agricultural activities in feed production (g CO2/kg DM).}
+\item{co2_ration_luc_nopeat}{Numeric. Diet-level average carbon dioxide (CO2) emission factor from land-use change (excluding peatland drainage) in feed production (g CO2/kg DM).}
+\item{co2_ration_luc_peat}{Numeric. Diet-level average carbon dioxide (CO2) emission factor from peatland drainage in feed production (g CO2/kg DM).}
+\item{n2o_ration_fertilizer}{Numeric. Diet-level average nitrous oxide (N2O) emission factor from fertilizer use in feed production (g N2O/kg DM).}
+\item{n2o_ration_manure_applied}{Numeric. Diet-level average nitrous oxide (N2O) emission factor from manure applied to or deposited on soil in feed production (g N2O/kg DM).}
+\item{n2o_ration_crop_residues}{Numeric. Diet-level average nitrous oxide (N2O) emission factor from crop residues decomposition in feed production (g N2O/kg DM).}
+\item{ch4_ration_rice}{Numeric. Diet-level average methane (CH4) emission factor from rice cultivation in feed production (g CH4/kg DM).}
+}}
+\subsection{Production variables}{
+\describe{
+\item{milk_production_mass_cohort}{Numeric. Total milk production produced over the assessment period (kg/cohort/assessment period).}
+\item{milk_production_protein_cohort}{Numeric. Total milk protein production produced over the assessment period (kg protein/cohort/assessment period).}
+\item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment period (kg/cohort/assessment period).}
+\item{fibre_production_cohort}{Numeric. Total fibre produced over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_carcass_weight_cohort}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_bone_free_meat_cohort}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg/cohort/assessment period).}
+\item{meat_production_protein_cohort}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/assessment period).}
+}}
+\subsection{Allocation variables}{
+\describe{
+\item{milk_allocation_energy}{Numeric. Energy required to produce total milk output by cohort (MJ/cohort/assessment period). Non-zero values are applicable only to milk-producing species and cohorts (species = CTL, BFL, CML, SHP, GTS; cohorts = FA). All other species-cohort combinations are assigned a value of 0.}
+\item{meat_allocation_energy}{Numeric. Energy required by a given sex-age cohort for total meat output by cohort during the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period).}
+\item{fibre_allocation_energy}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).}
+\item{work_allocation_energy}{Numeric. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).}
+\item{egg_allocation_energy}{Numeric. Energy required for egg production over the assessment period (MJ/cohort/assessment period). Currently set to 0.}
+}}
 }
-
 \item{herd_level_results}{A herd-level \code{data.table}. When
 \code{has_herd_structure = FALSE}, the output from
 \code{\link{run_demographic_herd_module}}, including:
 \describe{
-\item{growth_rate_herd}{Annualised herd growth rate at steady state
-(fraction).}
+\item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction).}
 }
 When \code{has_herd_structure = TRUE}, the supplied
 \code{herd_level_data} is returned unchanged.}
-
 \item{allocation_long}{A herd-level \code{data.table} in long format with
 one row per herd \eqn{\times}{x} commodity \eqn{\times}{x} emission
 source:
@@ -470,7 +416,6 @@ source:
 \item{allocation_share}{Numeric. Allocation share for this
 commodity-emission combination (fraction).}
 }}
-
 \item{aggregation_results}{A named list from
 \code{\link{run_aggregation_module}} with elements
 \code{results_emissions}, \code{results_feed},
