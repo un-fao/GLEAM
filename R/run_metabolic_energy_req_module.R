@@ -170,7 +170,9 @@ run_metabolic_energy_req_module <- function(
 
   # Show progress indicator if requested
   if (show_indicator) {
-    cli::cli_status("\U1F552 Calculating energy requirements and ration, please wait\U2026")
+    cli::cli_status(
+      "\U1F552 Calculating metabolic energy requirements and ration, please wait\U2026"
+    )
   }
 
   # --- Step 2: Create working copies ------------------------------------------
@@ -341,7 +343,7 @@ run_metabolic_energy_req_module <- function(
   # Clear progress indicator if it was shown
   if (show_indicator) {
     cli::cli_status_clear()
-    cli::cli_alert_success("Energy requirements calculation complete.")
+    cli::cli_alert_success("Metabolic energy requirements calculation complete.")
   }
 
   return(cohort_level_data)

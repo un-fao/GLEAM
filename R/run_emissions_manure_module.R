@@ -252,7 +252,7 @@ run_emissions_manure_module <- function(
 
   # Show progress indicator if requested
   if (show_indicator) {
-    cli::cli_status("\U1F552 Calculating direct emissions from manure management systems\u2026")
+    cli::cli_status("\U1F552 Calculating emissions from manure management systems\u2026")
   }
 
   # --- Step 2: Prepare inputs -------------------------------------------------
@@ -471,7 +471,7 @@ run_emissions_manure_module <- function(
   # Clear progress indicator if it was shown
   if (show_indicator) {
     cli::cli_status_clear()
-    cli::cli_alert_success("Direct emissions from manure management calculation complete.")
+    cli::cli_alert_success("Emissions from manure management calculation complete.")
   }
 
   return(cohort_level_data)
