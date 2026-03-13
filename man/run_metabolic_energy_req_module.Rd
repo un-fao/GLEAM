@@ -149,7 +149,7 @@ energy_requirements_hrd_dt <- data.table::fread(system.file(
   package = "gleam"
 ))
 
-# Run energy requirement and DMI calculations
+# Run energy requirement and feed ration calculations
 results <- run_metabolic_energy_req_module(
   cohort_level_data = energy_requirements_chrt_dt,
   herd_level_data = energy_requirements_hrd_dt

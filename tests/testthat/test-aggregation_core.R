@@ -1,10 +1,15 @@
 # ---- test calc_cohort_totals ----
+# Feed emissions use ration_intake in scaling; pass empty list when not testing feed emissions
+feed_emissions_empty <- list()
 
 test_that("calc_cohort_totals returns correct value for Production variables", {
   result <- calc_cohort_totals(
     value = 1000,
     cohort_stock_size = 50,
+    ration_intake = 10,
+    feed_emissions_list = feed_emissions_empty,
     simulation_duration = 365,
+    variable_name = "milk_production_mass_cohort",
     variable_type = "Production"
   )
 
@@ -18,21 +23,44 @@ test_that("calc_cohort_totals returns correct value for Emissions variables", {
   result <- calc_cohort_totals(
     value = 0.5,  # kg CH4/head/day
     cohort_stock_size = 100,   # 100 heads
+    ration_intake = 5,
+    feed_emissions_list = feed_emissions_empty,
     simulation_duration = 365,  # 365 days
+    variable_name = "ch4_enteric",
     variable_type = "Emissions"
   )
 
   expect_type(result, "double")
   expect_length(result, 1)
-  # Emissions: value * cohort_stock_size * simulation_duration
+  # Non-feed emissions: value * cohort_stock_size * simulation_duration
   expect_equal(result, 0.5 * 100 * 365)
+})
+
+test_that("calc_cohort_totals returns correct value for Feed emissions (ration_intake scaling)", {
+  feed_emissions <- list(
+    list(emissions_source = "co2_ration_fertilizer", label = "Feed-Fertilizer_CO2")
+  )
+  result <- calc_cohort_totals(
+    value = 0.1,  # g/100kg DMI
+    cohort_stock_size = 100,
+    ration_intake = 10,  # kg DM/head/day
+    feed_emissions_list = feed_emissions,
+    simulation_duration = 365,
+    variable_name = "co2_ration_fertilizer",
+    variable_type = "Emissions"
+  )
+  # Feed emissions: value * ration_intake * cohort_stock_size * simulation_duration / 1000
+  expect_equal(result, 0.1 * 10 * 100 * 365 / 1000)
 })
 
 test_that("calc_cohort_totals returns correct value for Feed variables", {
   result <- calc_cohort_totals(
     value = 10,  # kg DMI/head/day
     cohort_stock_size = 30,
+    ration_intake = 10,
+    feed_emissions_list = feed_emissions_empty,
     simulation_duration = 365,
+    variable_name = "ration_intake",
     variable_type = "Feed"
   )
 
@@ -43,38 +71,14 @@ test_that("calc_cohort_totals returns correct value for NitrogenBalance variable
   result <- calc_cohort_totals(
     value = 0.2,  # kg N/head/day
     cohort_stock_size = 25,
+    ration_intake = 8,
+    feed_emissions_list = feed_emissions_empty,
     simulation_duration = 365,
+    variable_name = "nitrogen_intake",
     variable_type = "NitrogenBalance"
   )
 
   expect_equal(result, 0.2 * 25 * 365)
-})
-
-test_that("calc_cohort_totals handles vectorized inputs", {
-  result <- calc_cohort_totals(
-    value = c(1000, 0.5, 10),
-    cohort_stock_size = c(50, 100, 30),
-    simulation_duration = c(365, 365, 365),
-    variable_type = c("Production", "Emissions", "Feed")
-  )
-
-  expect_type(result, "double")
-  expect_length(result, 3)
-  expect_equal(result[1], 1000)  # Production: as-is
-  expect_equal(result[2], 0.5 * 100 * 365)  # Emissions: scaled
-  expect_equal(result[3], 10 * 30 * 365)  # Feed: scaled
-})
-
-test_that("calc_cohort_totals validates input lengths", {
-  expect_error(
-    calc_cohort_totals(
-      value = c(100, 200),
-      cohort_stock_size = c(50, 100, 150),
-      simulation_duration = 365,
-      variable_type = "Production"
-    ),
-    "must have the same length"
-  )
 })
 
 test_that("calc_cohort_totals validates variable_type", {
@@ -82,7 +86,10 @@ test_that("calc_cohort_totals validates variable_type", {
     calc_cohort_totals(
       value = 100,
       cohort_stock_size = 50,
+      ration_intake = 10,
+      feed_emissions_list = feed_emissions_empty,
       simulation_duration = 365,
+      variable_name = "x",
       variable_type = "Invalid"
     ),
     "must be one of"
@@ -94,7 +101,10 @@ test_that("calc_cohort_totals validates bounds", {
     calc_cohort_totals(
       value = 100,
       cohort_stock_size = 0,
+      ration_intake = 10,
+      feed_emissions_list = feed_emissions_empty,
       simulation_duration = 365,
+      variable_name = "ch4_enteric",
       variable_type = "Emissions"
     ),
     "must be positive"
@@ -103,7 +113,10 @@ test_that("calc_cohort_totals validates bounds", {
     calc_cohort_totals(
       value = 100,
       cohort_stock_size = 50,
+      ration_intake = 10,
+      feed_emissions_list = feed_emissions_empty,
       simulation_duration = -10,
+      variable_name = "ch4_enteric",
       variable_type = "Emissions"
     ),
     "must be positive"

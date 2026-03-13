@@ -250,6 +250,26 @@ gleam_emissions_meta <- list(
   list(emissions_source = "ch4_ration_rice", label = "Feed-Rice_CH4")
 )
 
+#' Feed-related emission sources
+#'
+#' Emission variables expressed per kg dry matter intake (g/kg DM). Passed to
+#' \code{calc_cohort_totals()} to apply ration_intake scaling. All other
+#' emissions use cohort_stock_size * simulation_duration only.
+#'
+#' @format A list of lists with \code{emissions_source} and \code{label}.
+#' @keywords internal
+gleam_feed_emissions_meta <- list(
+  list(emissions_source = "co2_ration_fertilizer", label = "Feed-Fertilizer_CO2"),
+  list(emissions_source = "co2_ration_pesticides", label = "Feed-Pesticides_CO2"),
+  list(emissions_source = "co2_ration_crop_activities", label = "Feed-CropOperations_CO2"),
+  list(emissions_source = "co2_ration_luc_nopeat", label = "Feed-LandUseChange_CO2"),
+  list(emissions_source = "co2_ration_luc_peat", label = "Feed-PeatDrainage_CO2"),
+  list(emissions_source = "n2o_ration_fertilizer", label = "Feed-Fertilizer_N2O"),
+  list(emissions_source = "n2o_ration_manure_applied", label = "Feed-ManureApplication_N2O"),
+  list(emissions_source = "n2o_ration_crop_residues", label = "Feed-CropResidues_N2O"),
+  list(emissions_source = "ch4_ration_rice", label = "Feed-Rice_CH4")
+)
+
 #' Emission sources excluded from commodity allocation
 #'
 #' These pasture and burn emission sources are not allocated to individual

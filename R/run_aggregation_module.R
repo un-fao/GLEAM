@@ -213,10 +213,14 @@ run_aggregation_module <- function(
   }
 
   # --- Step 1: Define variable groups -----------------------------------------
+  # Variable metadata from gleam_constants; feed_emissions_list for calc_cohort_totals scaling
   feed_vars <- sapply(gleam_feed_meta, `[[`, "feed_source")
   nitrogen_balance_vars <- sapply(gleam_nitrogen_balance_meta, `[[`, "nitrogen_balance_source")
   production_vars <- sapply(gleam_production_meta, `[[`, "production_source")
-  emissions_vars <- sapply(gleam_emissions_meta, `[[`, "emissions_source")
+
+  feed_emissions_list <- gleam_feed_emissions_meta
+  emissions_list <- gleam_emissions_meta
+  emissions_vars <- sapply(emissions_list, `[[`, "emissions_source")
 
   # Check that required variables exist in cohort_level_data
   all_vars <- unique(
@@ -237,11 +241,13 @@ run_aggregation_module <- function(
       "herd_id",
       "species_short",
       "cohort_short",
-      "cohort_stock_size"
+      "cohort_stock_size",
+      "ration_intake"
     ),
     measure.vars = available_vars,
     variable.name = "variable_name",
-    value.name = "value"
+    value.name = "value",
+    variable.factor = FALSE
   )
 
   # --- Step 3: Classify variables by type -------------------------------------
@@ -261,7 +267,10 @@ run_aggregation_module <- function(
     , value_total := calc_cohort_totals(
       value = value,
       cohort_stock_size = cohort_stock_size,
+      ration_intake = ration_intake,
+      feed_emissions_list = feed_emissions_list,
       simulation_duration = simulation_duration,
+      variable_name = variable_name,
       variable_type = variable_type
     ),
     by = .I
