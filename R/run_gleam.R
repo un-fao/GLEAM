@@ -791,7 +791,7 @@ run_gleam <- function(
   )
   gleam_chrt_data <- allocation_results$cohort_allocation_inputs
 
-  # --- Step 12: Run aggregation (herd-level totals, allocated emissions in CO₂eq) ----
+  # --- Step 12: Run aggregation (herd-level totals, allocated emissions in CO2eq) ----
   aggregation_results <- run_aggregation_module(
     cohort_level_data = gleam_chrt_data,
     allocation_herd_long = allocation_results$allocation_long,

@@ -29,8 +29,8 @@
 #' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of 
 #' digestible (or metabolizable, for poultry) to gross energy content (fraction).
 #'
-#' @return Numeric. Methane (CH₄) conversion factor (ym), representing the percentage of  gross energy 
-#' of the feed ration that is converted to CH₄ (percentage).
+#' @return Numeric. Methane (CH4) conversion factor (ym), representing the percentage of  gross energy 
+#' of the feed ration that is converted to CH4 (percentage).
 #'
 #'@details
 #' ym is computed using species- and cohort-specific default relationships with diet digestibility (Opio et al., 2013). 
@@ -124,7 +124,7 @@ calc_conversion_factor_ym <- function(
 
 #' Compute Daily Enteric Methane Emissions
 #'
-#' Calculates daily enteric methane emissions (kg CH₄/head/day) based on gross
+#' Calculates daily enteric methane emissions (kg CH4/head/day) based on gross
 #' energy intake, methane conversion factor (ym), and dry matter intake.
 #'
 #' @param species_short Character. Code identifying the livestock species.
@@ -137,10 +137,10 @@ calc_conversion_factor_ym <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param ch4_conversion_factor_ym Numeric. Methane (CH₄) conversion factor (ym), 
-#' representing the percentage of  gross energy of the feed ration that is converted to CH₄ (percentage)
+#' @param ch4_conversion_factor_ym Numeric. Methane (CH4) conversion factor (ym), 
+#' representing the percentage of  gross energy of the feed ration that is converted to CH4 (percentage)
 #' @param ch4_mitigation_factor Numeric. Optional. Multiplicative mitigation factor applied to
-#'     baseline enteric methane (CH₄) emissions (dimensionless). If not provided, a default
+#'     baseline enteric methane (CH4) emissions (dimensionless). If not provided, a default
 #'     value of \code{1} (no mitigation) is used. Values lower than 1 represent proportional
 #'     reductions (e.g., \code{0.90} = 10% reduction). This factor can represent mitigation
 #'     measures with a direct effect on enteric methane emissions, such as the use of feed
@@ -148,7 +148,7 @@ calc_conversion_factor_ym <- function(
 #' @param ration_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
 #' @param ration_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #'
-#' @return Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).
+#' @return Numeric. Average daily enteric methane (CH4) emissions (kg CH4/head/day).
 #'
 #'@details
 #' The formula used to estimate daily enteric methane emissions is:

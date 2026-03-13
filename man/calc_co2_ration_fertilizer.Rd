@@ -2,7 +2,7 @@
 % Please edit documentation in R/emissions_ration_core_model.R
 \name{calc_co2_ration_fertilizer}
 \alias{calc_co2_ration_fertilizer}
-\title{Calculate a ration component's contribution to carbon dioxide (CO₂) emissions from fertilizer manufacture}
+\title{Calculate a ration component's contribution to carbon dioxide (CO2) emissions from fertilizer manufacture}
 \usage{
 calc_co2_ration_fertilizer(feed_ration_fraction, co2_feed_fertilizer)
 }
@@ -11,17 +11,17 @@ calc_co2_ration_fertilizer(feed_ration_fraction, co2_feed_fertilizer)
 the total ration, expressed as its fraction of diet dry matter (fraction). Within
 each herd_id and cohort, proportions should sum to 1.}
 
-\item{co2_feed_fertilizer}{Numeric. Carbon dioxide (CO₂) emission factor of a
-feed component, representing CO₂ emissions from fertilizer manufacture in feed
-production, expressed per kilogram of dry matter intake (g CO₂/kg DM).}
+\item{co2_feed_fertilizer}{Numeric. Carbon dioxide (CO2) emission factor of a
+feed component, representing CO2 emissions from fertilizer manufacture in feed
+production, expressed per kilogram of dry matter intake (g CO2/kg DM).}
 }
 \value{
 Numeric. Contribution of an individual feed component to the diet-level average
-carbon dioxide (CO₂) emission factor from fertilizer manufacture in feed production
-(g CO₂/kg DM).
+carbon dioxide (CO2) emission factor from fertilizer manufacture in feed production
+(g CO2/kg DM).
 }
 \description{
-Computes the contribution of an individual feed component to carbon dioxide (CO₂)
+Computes the contribution of an individual feed component to carbon dioxide (CO2)
 emissions from fertilizer manufacture in feed production,
 using feed-specific emission factors weighted by the component's share in the ration.
 }

@@ -62,25 +62,25 @@ run_aggregation_module(
 }
 \item{\strong{Emission variables}}{
 \describe{
-\item{ch4_enteric}{Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).}
-\item{ch4_manure_pasture}{Numeric. Methane (CH₄) emissions from manure deposited on pasture (kg CH₄/head/day)}
-\item{ch4_manure_burned}{Numeric. Methane (CH₄) emissions from manure burned for fuel (kg CH₄/head/day)}
-\item{ch4_manure_other}{Numeric. Methane (CH₄) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH₄/head/day)}
-\item{n2o_manure_pasture_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure deposited on pasture (kg N₂O/head/day)}
-\item{n2o_manure_burned_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure burned for fuel (kg N₂O/head/day)}
-\item{n2o_manure_other_direct}{Numeric. Direct nitrous oxide (N₂O) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg N₂O/head/day)}
-\item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions from manure deposited on pasture. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
-\item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
-\item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N₂O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ) and from leaching and runoff of manure nitrogen (kg N₂O/head/day).}
-\item{co2_ration_fertilizer}{Numeric. Diet-level average carbon dioxide (CO₂) emission factor from fertilizer manufacture in feed production (g CO₂/kg DM).}
-\item{co2_ration_pesticides}{Numeric. Diet-level average carbon dioxide (CO₂) emission factor from pesticide manufacture in feed production (g CO₂/kg DM).}
-\item{co2_ration_crop_activities}{Numeric. Diet-level average carbon dioxide (CO₂) emission factor from on-field agricultural activities in feed production (g CO₂/kg DM).}
-\item{co2_ration_luc_nopeat}{Numeric. Diet-level average carbon dioxide (CO₂) emission factor from land-use change (excluding peatland drainage) in feed production (g CO₂/kg DM).}
-\item{co2_ration_luc_peat}{Numeric. Diet-level average carbon dioxide (CO₂) emission factor from  peatland drainage in feed production (g CO₂/kg DM).}
-\item{n2o_ration_fertilizer}{Numeric. Diet-level average nitrous oxide (N₂O) emission factor from fertilizer use in feed production (g N₂O/kg DM).}
-\item{n2o_ration_manure_applied}{Numeric. Diet-level average nitrous oxide (N₂O) emission factor from manure applied to or deposited on soil in feed production (g N₂O/kg DM).}
-\item{n2o_ration_crop_residues}{Numeric. Diet-level average nitrous oxide (N₂O) emission factor from crop residues decomposition in feed production (g N₂O/kg DM).}
-\item{ch4_ration_rice}{Numeric. Diet-level average methane (CH₄) emission factor from rice cultivation in feed production (g CH₄/kg DM).}
+\item{ch4_enteric}{Numeric. Average daily enteric methane (CH4) emissions (kg CH4/head/day).}
+\item{ch4_manure_pasture}{Numeric. Methane (CH4) emissions from manure deposited on pasture (kg CH4/head/day)}
+\item{ch4_manure_burned}{Numeric. Methane (CH4) emissions from manure burned for fuel (kg CH4/head/day)}
+\item{ch4_manure_other}{Numeric. Methane (CH4) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg CH4/head/day)}
+\item{n2o_manure_pasture_direct}{Numeric. Direct nitrous oxide (N2O) emissions from manure deposited on pasture (kg N2O/head/day)}
+\item{n2o_manure_burned_direct}{Numeric. Direct nitrous oxide (N2O) emissions from manure burned for fuel (kg N2O/head/day)}
+\item{n2o_manure_other_direct}{Numeric. Direct nitrous oxide (N2O) emissions from manure management systems, excluding emissions from manure deposited on pasture and burned for fuel (kg N2O/head/day)}
+\item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions from manure deposited on pasture. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
+\item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions originating from manure burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
+\item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
+\item{co2_ration_fertilizer}{Numeric. Diet-level average carbon dioxide (CO2) emission factor from fertilizer manufacture in feed production (g CO2/kg DM).}
+\item{co2_ration_pesticides}{Numeric. Diet-level average carbon dioxide (CO2) emission factor from pesticide manufacture in feed production (g CO2/kg DM).}
+\item{co2_ration_crop_activities}{Numeric. Diet-level average carbon dioxide (CO2) emission factor from on-field agricultural activities in feed production (g CO2/kg DM).}
+\item{co2_ration_luc_nopeat}{Numeric. Diet-level average carbon dioxide (CO2) emission factor from land-use change (excluding peatland drainage) in feed production (g CO2/kg DM).}
+\item{co2_ration_luc_peat}{Numeric. Diet-level average carbon dioxide (CO2) emission factor from  peatland drainage in feed production (g CO2/kg DM).}
+\item{n2o_ration_fertilizer}{Numeric. Diet-level average nitrous oxide (N2O) emission factor from fertilizer use in feed production (g N2O/kg DM).}
+\item{n2o_ration_manure_applied}{Numeric. Diet-level average nitrous oxide (N2O) emission factor from manure applied to or deposited on soil in feed production (g N2O/kg DM).}
+\item{n2o_ration_crop_residues}{Numeric. Diet-level average nitrous oxide (N2O) emission factor from crop residues decomposition in feed production (g N2O/kg DM).}
+\item{ch4_ration_rice}{Numeric. Diet-level average methane (CH4) emission factor from rice cultivation in feed production (g CH4/kg DM).}
 }
 }
 }}
@@ -120,7 +120,7 @@ List = c("None", "Milk", "Meat", "Fibre", "Work", "Eggs")}
 
 \item{global_warming_potential_set}{Character. Settings for the
 100-year Global Warming Potential (GWP-100) conversion factors used to
-express CH₄ and N₂O emissions as CO₂eq. Must be one of:
+express CH4 and N2O emissions as CO2eq. Must be one of:
 \itemize{
 \item \code{"AR6"}: IPCC Sixth Assessment Report (IPCC, 2021) — CH4 = 27, N2O = 273
 \item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment
@@ -139,7 +139,7 @@ A named list with the following elements:
 \item{results_emissions}{A \code{data.table} containing herd-level emissions
 scaled to the assessment duration and allocated to commodities. Includes gas type,
 allocation shares, commodity metadata, GWP factors, and emissions expressed both as
-allocated gas mass (kg gas) and as CO₂-equivalents (kg CO₂eq).}
+allocated gas mass (kg gas) and as CO2-equivalents (kg CO2eq).}
 
 \item{results_feed}{A \code{data.table} containing herd-level feed variables,
 aggregated at herd level and scaled to the assessment duration.}
@@ -156,8 +156,8 @@ assessment duration.}
 This function represents the final step of the Global Livestock Environmental
 Assessment Model (GLEAM) computational pipeline. It generates final herd-level
 results by aggregating key cohort-level outputs, scaling variables over the
-assessment duration, allocating emissions to commodities, and converting CH₄
-and N₂O emissions to CO₂-equivalents (CO₂eq) using selected 100-year Global
+assessment duration, allocating emissions to commodities, and converting CH4
+and N2O emissions to CO2-equivalents (CO2eq) using selected 100-year Global
 Warming Potential (GWP-100) factors.
 }
 \details{
@@ -170,7 +170,7 @@ This function performs the following calculation sequence:
 \item Herd-level emissions are merged with commodity allocation shares from \code{allocation_herd_long}.
 \item Emissions are allocated to commodities using \code{\link[=calc_allocated_emissions]{calc_allocated_emissions()}}.
 \item Gas type is identified from the emission variable name as \code{"CH4"}, \code{"N2O"}, or \code{"CO2"}.
-\item Allocated CH₄, N₂O, and CO₂ emissions are converted to CO₂-equivalents (CO₂eq) using \code{\link[=calc_co2eq]{calc_co2eq()}} and the selected GWP-100 option.
+\item Allocated CH4, N2O, and CO2 emissions are converted to CO2-equivalents (CO2eq) using \code{\link[=calc_co2eq]{calc_co2eq()}} and the selected GWP-100 option.
 \item Final output tables are produced summarising herd-level results for emissions, feed, production, and nitrogen balance variables.
 }
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/emissions_manure_core_model.R
 \name{calc_n2o_manure_volatilization}
 \alias{calc_n2o_manure_volatilization}
-\title{Calculate indirect Nitrous Oxide (N₂O) emissions from manure volatilization}
+\title{Calculate indirect Nitrous Oxide (N2O) emissions from manure volatilization}
 \usage{
 calc_n2o_manure_volatilization(
   ratio_N2ON_to_N2O = 44/28,
@@ -11,7 +11,7 @@ calc_n2o_manure_volatilization(
 )
 }
 \arguments{
-\item{ratio_N2ON_to_N2O}{Numeric. Conversion factor from kg N₂O–N to kg N₂O,
+\item{ratio_N2ON_to_N2O}{Numeric. Conversion factor from kg N2O–N to kg N2O,
 based on molecular weights. Defaults to 44/28.}
 
 \item{nitrogen_excretion}{Numeric. Daily nitrogen excretion
@@ -28,16 +28,16 @@ Values range from 0 to 1. The sum of all fractions for each herd_id
 must equal 1.
 }
 \item{n2o_ef4}{
-Numeric. Emission factor for indirect nitrous oxide (N₂O) emissions
+Numeric. Emission factor for indirect nitrous oxide (N2O) emissions
 resulting from atmospheric deposition of volatilised nitrogen
-(NH₃–N and NOₓ–N) onto soils and water surfaces
-(kg N₂O–N per kg NH₃–N + NOₓ–N).
+(NH3–N and NOx–N) onto soils and water surfaces
+(kg N2O–N per kg NH3–N + NOx–N).
 Default values can be selected from Table 11.3 in IPCC Guidelines (IPCC 2006, 2019).
 }
 \item{nitrogen_fracgas}{
 Numeric. Fraction of manure nitrogen excreted by a given livestock
-category that is lost through volatilisation as ammonia (NH₃)
-and nitrogen oxides (NOₓ) within a specific manure management system.
+category that is lost through volatilisation as ammonia (NH3)
+and nitrogen oxides (NOx) within a specific manure management system.
 This parameter represents the share of excreted nitrogen that is
 mineralised and released to the atmosphere during manure collection,
 storage, and treatment. It is expressed as a dimensionless fraction
@@ -57,37 +57,37 @@ management systems.}
 A named list with the following elements:
 \describe{
 \item{n2o_manure_pasture_vol}{
-Numeric. Indirect nitrous oxide (N₂O) emissions resulting from
-atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
-from manure deposited on pasture (kg N₂O/head/day).
+Numeric. Indirect nitrous oxide (N2O) emissions resulting from
+atmospheric deposition of volatilised nitrogen (NH3 and NOx)
+from manure deposited on pasture (kg N2O/head/day).
 }
 \item{n2o_manure_burned_vol}{
-Numeric. Indirect nitrous oxide (N₂O) emissions resulting from
-atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
-from manure burned for fuel (kg N₂O/head/day).
+Numeric. Indirect nitrous oxide (N2O) emissions resulting from
+atmospheric deposition of volatilised nitrogen (NH3 and NOx)
+from manure burned for fuel (kg N2O/head/day).
 }
 \item{n2o_manure_other_vol}{
-Numeric. Indirect nitrous oxide (N₂O) emissions resulting from
-atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
+Numeric. Indirect nitrous oxide (N2O) emissions resulting from
+atmospheric deposition of volatilised nitrogen (NH3 and NOx)
 from manure management systems, excluding manure deposited on
-pasture and manure burned for fuel (kg N₂O/head/day).
+pasture and manure burned for fuel (kg N2O/head/day).
 }
 \item{n2o_manure_all_noburn_vol}{
-Numeric. Indirect nitrous oxide (N₂O) emissions resulting from
-atmospheric deposition of volatilised nitrogen (NH₃ and NOₓ)
+Numeric. Indirect nitrous oxide (N2O) emissions resulting from
+atmospheric deposition of volatilised nitrogen (NH3 and NOx)
 from manure management systems, excluding losses from manure
-burned for fuel (kg N₂O/head/day).
+burned for fuel (kg N2O/head/day).
 }
 }
 }
 \description{
-Computes daily indirect nitrous oxide (N₂O) emissions resulting from
-atmospheric deposition of volatilised nitrogen (NH₃–N and NOₓ–N) from manure
+Computes daily indirect nitrous oxide (N2O) emissions resulting from
+atmospheric deposition of volatilised nitrogen (NH3–N and NOx–N) from manure
 management systems and separates emissions from manure deposited on pasture, manure burned for fuel, and
 all other manure management systems.
 }
 \details{
-This calculation follows the Tier 2 methodology for indirect N₂O
+This calculation follows the Tier 2 methodology for indirect N2O
 emissions from manure management as defined in the IPCC Guidelines in Equations 10.26 (IPCC, 2006, 2019),
 10.27 (IPCC, 2006) and 10.28 (IPCC, 2019).
 
@@ -95,7 +95,7 @@ In the IPCC formulation, indirect emissions from atmospheric deposition
 of volatilised nitrogen are calculated as:
 
 \deqn{
-  N₂O_{G(mm)} =
+  N[2]O_{G(mm)} =
   \frac{44}{28}
   \sum_{S} \left(
     N \times AWMS_S \times FracGas_{S} \times EF4
@@ -104,13 +104,13 @@ of volatilised nitrogen are calculated as:
 
 where:
 \describe{
-\item{\eqn{N₂O_G(mm)}}{Indirect N₂O emissions due to volatilization of N from Manure Management.}
-\item{\eqn{44/28}}{Conversion factor from N₂O-N to N₂O.}
+\item{\eqn{N[2]O_G(mm)}}{Indirect N2O emissions due to volatilization of N from Manure Management.}
+\item{\eqn{44/28}}{Conversion factor from N2O-N to N2O.}
 \item{\eqn{N}}{Nitrogen excreted (kg N).}
 \item{\eqn{AWMS_S}}{Fraction of excreted nitrogen managed in manure
 management system \eqn{S}.}
-\item{\eqn{FracGas_{S}}}{Fraction of nitrogen volatilised as NH₃–N and NOₓ–N in manure management system \eqn{S}.}
-\item{\eqn{EF4}}{Emission factor for indirect N₂O emissions from atmospheric deposition (kg N₂O-N per kg NH₃–N + NOₓ–N).}
+\item{\eqn{FracGas_{S}}}{Fraction of nitrogen volatilised as NH3–N and NOx–N in manure management system \eqn{S}.}
+\item{\eqn{EF4}}{Emission factor for indirect N2O emissions from atmospheric deposition (kg N2O-N per kg NH3–N + NOx–N).}
 }
 
 In this implementation, calculations are performed at daily,
@@ -118,7 +118,7 @@ per-head resolution using \code{nitrogen_excretion}
 (kg N/head/day):
 
 \deqn{
-  N₂O =
+  N2O =
   nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times
   \sum_{S} \left(
     manure\_management\_system\_fraction \times

@@ -1,6 +1,6 @@
-#' Run Enteric Methane (CH₄) Direct Emissions
+#' Run Enteric Methane (CH4) Direct Emissions
 #'
-#' Computes daily enteric methane emissions by cohort (kg CH₄/head/day) using a Tier 2
+#' Computes daily enteric methane emissions by cohort (kg CH4/head/day) using a Tier 2
 #'  IPCC approach, by applying species-, cohort- and diet-specific methane
 #'  conversion factors (ym).
 #'
@@ -33,7 +33,7 @@
 #'     \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 #'     \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'     \item{ch4_mitigation_factor}{Numeric. Optional. Multiplicative mitigation factor applied to
-#'     baseline enteric methane (CH₄) emissions (dimensionless). If not provided, a default
+#'     baseline enteric methane (CH4) emissions (dimensionless). If not provided, a default
 #'     value of \code{1} (no mitigation) is used. Values lower than 1 represent proportional
 #'     reductions (e.g., \code{0.90} = 10% reduction). This factor can represent mitigation
 #'     measures with a direct effect on enteric methane emissions, such as the use of feed
@@ -46,9 +46,9 @@
 #' @return A \code{data.table} with the original input columns plus the following new variables:
 #'   \describe{
 #'   \item{ch4_mitigation_factor}{Added by the function if not provided as input.}
-#'     \item{ch4_conversion_factor_ym}{Numeric. Methane (CH₄) conversion factor (ym),
-#'     representing the percentage of  gross energy of the feed ration that is converted to CH₄ (percentage).}
-#'     \item{ch4_enteric}{Numeric. Average daily enteric methane (CH₄) emissions (kg CH₄/head/day).}
+#'     \item{ch4_conversion_factor_ym}{Numeric. Methane (CH4) conversion factor (ym),
+#'     representing the percentage of  gross energy of the feed ration that is converted to CH4 (percentage).}
+#'     \item{ch4_enteric}{Numeric. Average daily enteric methane (CH4) emissions (kg CH4/head/day).}
 #'   }
 #'
 #' @details

@@ -266,7 +266,7 @@ calc_nitrogen_retention <- function(
 #' where all quantities are expressed in kg N/head/day.
 #'
 #' This quantity forms the basis for subsequent calculations of nitrous oxide
-#' (N₂O) emissions from manure management under
+#' (N2O) emissions from manure management under
 #' the IPCC Tier 2 methodology.
 #' 
 #'

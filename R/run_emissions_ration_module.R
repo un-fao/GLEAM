@@ -48,33 +48,33 @@
 #'     to join feed ration data with feed parameter tables.}
 #'     \item{feed_name}{Character. Feed component name (optional, for readability and
 #'     reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
-#'     \item{co2_feed_fertilizer}{Numeric. Carbon dioxide (CO₂) emission factor of a
-#'     feed component, representing CO₂ emissions from fertilizer manufacture in feed
-#'     production, expressed per kilogram of dry matter intake (g CO₂/kg DM).}
-#'     \item{co2_feed_pesticides}{Numeric. Carbon dioxide (CO₂) emission factor of a
-#'     feed component, representing CO₂ emissions from pesticide manufacture in feed
-#'     production, expressed per kilogram of dry matter intake (g CO₂/kg DM).}
-#'     \item{co2_feed_crop_operations}{Numeric. Carbon dioxide (CO₂) emission factor of a
-#'     feed component, representing CO₂ emissions from on-field agricultural activities in
-#'     feed production, expressed per kilogram of dry matter intake (kg CO₂/kg DM).}
-#'     \item{co2_feed_luc_nopeat}{Numeric. Carbon dioxide (CO₂) emission factor of a
-#'     feed component, representing CO₂ emissions from land-use change in feed production
-#'     (excluding peatland drainage), expressed per kilogram of dry matter intake (g CO₂/kg DM).}
-#'     \item{co2_feed_luc_peat}{Numeric. Carbon dioxide (CO₂) emission factor of a
-#'     feed component, representing CO₂ emissions from peatland drainage in feed production,
-#'     expressed per kilogram of dry matter intake (g CO₂/kg DM).}
-#'     \item{n2o_feed_fertilizer}{Numeric. Nitrous oxide (N₂O) emission factor of a
-#'     feed component, representing N₂O emissions from fertilizer use in feed production,
-#'     expressed per kg of dry matter intake (g N₂O/kg DM).}
-#'     \item{n2o_feed_manure_applied}{Numeric. Nitrous oxide (N₂O) emission factor of a
-#'     feed component, representing N₂O emissions from manure applied to or deposited
-#'     on soil in feed production, expressed per kg of dry matter intake (g N₂O/kg DM).}
-#'     \item{n2o_feed_crop_residues}{Numeric. Nitrous oxide (N₂O) emission factor of a
-#'     feed component, representing N₂O emissions from crop residues decomposition in
-#'     feed production, expressed per kg of dry matter intake (g N₂O/kg DM).}
-#'     \item{ch4_feed_rice}{Numeric. Methane (CH₄) emission factor of a feed component,
-#'     representing CH₄ emissions from rice cultivation in feed production,
-#'     expressed per kg of dry matter intake (g CH₄/kg DM).}
+#'     \item{co2_feed_fertilizer}{Numeric. Carbon dioxide (CO2) emission factor of a
+#'     feed component, representing CO2 emissions from fertilizer manufacture in feed
+#'     production, expressed per kilogram of dry matter intake (g CO2/kg DM).}
+#'     \item{co2_feed_pesticides}{Numeric. Carbon dioxide (CO2) emission factor of a
+#'     feed component, representing CO2 emissions from pesticide manufacture in feed
+#'     production, expressed per kilogram of dry matter intake (g CO2/kg DM).}
+#'     \item{co2_feed_crop_operations}{Numeric. Carbon dioxide (CO2) emission factor of a
+#'     feed component, representing CO2 emissions from on-field agricultural activities in
+#'     feed production, expressed per kilogram of dry matter intake (kg CO2/kg DM).}
+#'     \item{co2_feed_luc_nopeat}{Numeric. Carbon dioxide (CO2) emission factor of a
+#'     feed component, representing CO2 emissions from land-use change in feed production
+#'     (excluding peatland drainage), expressed per kilogram of dry matter intake (g CO2/kg DM).}
+#'     \item{co2_feed_luc_peat}{Numeric. Carbon dioxide (CO2) emission factor of a
+#'     feed component, representing CO2 emissions from peatland drainage in feed production,
+#'     expressed per kilogram of dry matter intake (g CO2/kg DM).}
+#'     \item{n2o_feed_fertilizer}{Numeric. Nitrous oxide (N2O) emission factor of a
+#'     feed component, representing N2O emissions from fertilizer use in feed production,
+#'     expressed per kg of dry matter intake (g N2O/kg DM).}
+#'     \item{n2o_feed_manure_applied}{Numeric. Nitrous oxide (N2O) emission factor of a
+#'     feed component, representing N2O emissions from manure applied to or deposited
+#'     on soil in feed production, expressed per kg of dry matter intake (g N2O/kg DM).}
+#'     \item{n2o_feed_crop_residues}{Numeric. Nitrous oxide (N2O) emission factor of a
+#'     feed component, representing N2O emissions from crop residues decomposition in
+#'     feed production, expressed per kg of dry matter intake (g N2O/kg DM).}
+#'     \item{ch4_feed_rice}{Numeric. Methane (CH4) emission factor of a feed component,
+#'     representing CH4 emissions from rice cultivation in feed production,
+#'     expressed per kg of dry matter intake (g CH4/kg DM).}
 #'   }
 #'
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
@@ -83,40 +83,40 @@
 #'   \code{species_short}, and \code{cohort_short} with the following columns:
 #'   \describe{
 #'     \item{co2_ration_fertilizer}{
-#'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
-#'       fertilizer manufacture in feed production (g CO₂/kg DM).
+#'       Numeric. Diet-level average carbon dioxide (CO2) emission factor from
+#'       fertilizer manufacture in feed production (g CO2/kg DM).
 #'     }
 #'     \item{co2_ration_pesticides}{
-#'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
-#'       pesticide manufacture in feed production (g CO₂/kg DM).
+#'       Numeric. Diet-level average carbon dioxide (CO2) emission factor from
+#'       pesticide manufacture in feed production (g CO2/kg DM).
 #'     }
 #'     \item{co2_ration_crop_activities}{
-#'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
-#'       on-field agricultural activities in feed production (g CO₂/kg DM).
+#'       Numeric. Diet-level average carbon dioxide (CO2) emission factor from
+#'       on-field agricultural activities in feed production (g CO2/kg DM).
 #'     }
 #'     \item{co2_ration_luc_nopeat}{
-#'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
-#'       land-use change (excluding peatland drainage) in feed production (g CO₂/kg DM).
+#'       Numeric. Diet-level average carbon dioxide (CO2) emission factor from
+#'       land-use change (excluding peatland drainage) in feed production (g CO2/kg DM).
 #'     }
 #'     \item{co2_ration_luc_peat}{
-#'       Numeric. Diet-level average carbon dioxide (CO₂) emission factor from
-#'       peatland drainage in feed production (g CO₂/kg DM).
+#'       Numeric. Diet-level average carbon dioxide (CO2) emission factor from
+#'       peatland drainage in feed production (g CO2/kg DM).
 #'     }
 #'     \item{n2o_ration_fertilizer}{
-#'       Numeric. Diet-level average nitrous oxide (N₂O) emission factor from
-#'       fertilizer use in feed production (g N₂O/kg DM).
+#'       Numeric. Diet-level average nitrous oxide (N2O) emission factor from
+#'       fertilizer use in feed production (g N2O/kg DM).
 #'     }
 #'     \item{n2o_ration_manure_applied}{
-#'       Numeric. Diet-level average nitrous oxide (N₂O) emission factor from
-#'       manure applied to or deposited on soil in feed production (g N₂O/kg DM).
+#'       Numeric. Diet-level average nitrous oxide (N2O) emission factor from
+#'       manure applied to or deposited on soil in feed production (g N2O/kg DM).
 #'     }
 #'     \item{n2o_ration_crop_residues}{
-#'       Numeric. Diet-level average nitrous oxide (N₂O) emission factor from
-#'       crop residues decomposition in feed production (g N₂O/kg DM).
+#'       Numeric. Diet-level average nitrous oxide (N2O) emission factor from
+#'       crop residues decomposition in feed production (g N2O/kg DM).
 #'     }
 #'     \item{ch4_ration_rice}{
-#'       Numeric. Diet-level average methane (CH₄) emission factor from
-#'       rice cultivation in feed production (g CH₄/kg DM).
+#'       Numeric. Diet-level average methane (CH4) emission factor from
+#'       rice cultivation in feed production (g CH4/kg DM).
 #'     }
 #'   }
 #'
@@ -136,15 +136,15 @@
 #'   by the corresponding feed emission factor.
 #'   Each contribution is computed using the specific helper below (called with \code{by = .I}):
 #'   \itemize{
-#'     \item CO₂ fertilizer: \code{\link{calc_co2_ration_fertilizer}}
-#'     \item CO₂ pesticides: \code{\link{calc_co2_ration_pesticides}}
-#'     \item CO₂ crop operations: \code{\link{calc_co2_ration_crop_activities}}
-#'     \item CO₂ land-use change (no peat): \code{\link{calc_co2_ration_luc_nopeat}}
-#'     \item CO₂ land-use change (peat): \code{\link{calc_co2_ration_luc_peat}}
-#'     \item N₂O fertilizer: \code{\link{calc_n2o_ration_fertilizer}}
-#'     \item N₂O manure applied: \code{\link{calc_n2o_ration_manure}}
-#'     \item N₂O crop residues: \code{\link{calc_n2o_ration_crop_residues}}
-#'     \item CH₄ rice cultivation: \code{\link{calc_ch4_ration_rice}}
+#'     \item CO2 fertilizer: \code{\link{calc_co2_ration_fertilizer}}
+#'     \item CO2 pesticides: \code{\link{calc_co2_ration_pesticides}}
+#'     \item CO2 crop operations: \code{\link{calc_co2_ration_crop_activities}}
+#'     \item CO2 land-use change (no peat): \code{\link{calc_co2_ration_luc_nopeat}}
+#'     \item CO2 land-use change (peat): \code{\link{calc_co2_ration_luc_peat}}
+#'     \item N2O fertilizer: \code{\link{calc_n2o_ration_fertilizer}}
+#'     \item N2O manure applied: \code{\link{calc_n2o_ration_manure}}
+#'     \item N2O crop residues: \code{\link{calc_n2o_ration_crop_residues}}
+#'     \item CH4 rice cultivation: \code{\link{calc_ch4_ration_rice}}
 #'   }
 #'
 #'   \item \strong{Aggregate to cohort-level diet emission factors} by summing feed-component contributions

@@ -37,8 +37,8 @@ production stage of the animals. Supported values include:
 digestible (or metabolizable, for poultry) to gross energy content (fraction).}
 }
 \value{
-Numeric. Methane (CH₄) conversion factor (ym), representing the percentage of  gross energy
-of the feed ration that is converted to CH₄ (percentage).
+Numeric. Methane (CH4) conversion factor (ym), representing the percentage of  gross energy
+of the feed ration that is converted to CH4 (percentage).
 }
 \description{
 Calculates the methane conversion factor (ym, \% of dietary gross energy in feed converted to methane)
