@@ -14,7 +14,7 @@ a transparent and reproducible modeling framework.
 
 The **official GLEAM workflow** allows users to:
 
-- Simulate steady-state herd dynamics to disaggreate animal herds into age and sex-specific cohorts
+- Simulate steady-state herd dynamics to disaggregate animal herds into age and sex-specific cohorts
 - Compute annual production of animal products and herd growth rate
 - Estimate animal energy requirements for maintenance, activity, growth, lactation, pregnancy, work, eggs, and fiber production
 - Compute nutritional contributions of user-defined feed rations per cohort
