@@ -6,14 +6,34 @@
 # all other files reference these objects.
 
 # --- Valid input codes -------------------------------------------------------
+#
+# Single source of truth for species: the named vector maps code -> full name.
+# gleam_species (codes only) is derived from it for validation and subsetting.
+
+#' Species code -> full name mapping
+#'
+#' Maps each species short code to its full common name. Used for display and
+#' documentation. \code{gleam_species} is derived from this as the vector of codes.
+#'
+#' @format A named character vector of length 7.
+#' @keywords internal
+gleam_species_names <- c(
+  CTL = "Cattle",
+  BFL = "Buffalo",
+  SHP = "Sheep",
+  GTS = "Goats",
+  CHK = "Chicken",
+  PGS = "Pigs",
+  CML = "Camels"
+)
 
 #' Valid species short codes
 #'
-#' All livestock species supported by GLEAM.
+#' All livestock species supported by GLEAM. Derived from \code{gleam_species_names}.
 #'
 #' @format A character vector of length 7.
 #' @keywords internal
-gleam_species <- c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
+gleam_species <- names(gleam_species_names)
 
 #' Valid cohort short codes
 #'
@@ -24,6 +44,7 @@ gleam_species <- c("CTL", "BFL", "SHP", "GTS", "CHK", "PGS", "CML")
 gleam_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
 # --- Species sub-groups ------------------------------------------------------
+# Derived from gleam_species
 
 #' Ruminant species (four-stomach, NE-based energy system)
 #'
@@ -33,7 +54,7 @@ gleam_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 #'
 #' @format A character vector of length 4.
 #' @keywords internal
-gleam_species_ruminants <- c("CTL", "BFL", "SHP", "GTS")
+gleam_species_ruminants <- setdiff(gleam_species, c("CHK", "PGS", "CML"))
 
 #' Milk-producing species
 #'
@@ -43,7 +64,7 @@ gleam_species_ruminants <- c("CTL", "BFL", "SHP", "GTS")
 #'
 #' @format A character vector of length 5.
 #' @keywords internal
-gleam_species_milk_producers <- c("CTL", "BFL", "CML", "SHP", "GTS")
+gleam_species_milk_producers <- setdiff(gleam_species, c("CHK", "PGS"))
 
 #' Non-poultry species (species with non-zero enteric CH4 and N excretion)
 #'
@@ -53,7 +74,7 @@ gleam_species_milk_producers <- c("CTL", "BFL", "CML", "SHP", "GTS")
 #'
 #' @format A character vector of length 6.
 #' @keywords internal
-gleam_species_non_poultry <- c("CTL", "BFL", "CML", "SHP", "GTS", "PGS")
+gleam_species_non_poultry <- setdiff(gleam_species, "CHK")
 
 # --- Cohort sub-groups -------------------------------------------------------
 

@@ -11,6 +11,6 @@ A character vector of length 7.
 gleam_species
 }
 \description{
-All livestock species supported by GLEAM.
+All livestock species supported by GLEAM. Derived from \code{gleam_species_names}.
 }
 \keyword{internal}
