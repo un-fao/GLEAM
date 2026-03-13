@@ -11,6 +11,7 @@ A character vector of length 6.
 gleam_cohorts
 }
 \description{
-All sex- and age-class cohort codes recognised by GLEAM.
+All sex- and age-class cohort codes recognised by GLEAM. Derived from
+\code{gleam_cohorts_names}.
 }
 \keyword{internal}

@@ -35,13 +35,35 @@ gleam_species_names <- c(
 #' @keywords internal
 gleam_species <- names(gleam_species_names)
 
+# --- Cohort codes ------------------------------------------------------------
+#
+# Single source of truth for cohorts: named vector maps code -> full name.
+# gleam_cohorts (codes only) is derived from it.
+
+#' Cohort code -> full name mapping
+#'
+#' Maps each cohort short code to its descriptive name (sex and age class).
+#' \code{gleam_cohorts} is derived from this as the vector of codes.
+#'
+#' @format A named character vector of length 6.
+#' @keywords internal
+gleam_cohorts_names <- c(
+  FJ = "Juvenile female",
+  FS = "Sub-adult female",
+  FA = "Adult female",
+  MJ = "Juvenile male",
+  MS = "Sub-adult male",
+  MA = "Adult male"
+)
+
 #' Valid cohort short codes
 #'
-#' All sex- and age-class cohort codes recognised by GLEAM.
+#' All sex- and age-class cohort codes recognised by GLEAM. Derived from
+#' \code{gleam_cohorts_names}.
 #'
 #' @format A character vector of length 6.
 #' @keywords internal
-gleam_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+gleam_cohorts <- names(gleam_cohorts_names)
 
 # --- Species sub-groups ------------------------------------------------------
 # Derived from gleam_species
@@ -77,16 +99,17 @@ gleam_species_milk_producers <- setdiff(gleam_species, c("CHK", "PGS"))
 gleam_species_non_poultry <- setdiff(gleam_species, "CHK")
 
 # --- Cohort sub-groups -------------------------------------------------------
+# Derived from gleam_cohorts via setdiff (F* = female, M* = male)
 
-#' Female cohort codes
+#' Male cohort codes (M-prefix)
 #' @format A character vector of length 3.
 #' @keywords internal
-gleam_cohorts_female <- c("FA", "FS", "FJ")
+gleam_cohorts_male <- grep("^M", gleam_cohorts, value = TRUE)
 
-#' Male cohort codes
+#' Female cohort codes (complement of male in gleam_cohorts)
 #' @format A character vector of length 3.
 #' @keywords internal
-gleam_cohorts_male <- c("MA", "MS", "MJ")
+gleam_cohorts_female <- setdiff(gleam_cohorts, gleam_cohorts_male)
 
 # --- Pipeline variable metadata ----------------------------------------------
 #

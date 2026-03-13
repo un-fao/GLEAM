@@ -3,7 +3,7 @@
 \docType{data}
 \name{gleam_cohorts_female}
 \alias{gleam_cohorts_female}
-\title{Female cohort codes}
+\title{Female cohort codes (complement of male in gleam_cohorts)}
 \format{
 A character vector of length 3.
 }
@@ -11,6 +11,6 @@ A character vector of length 3.
 gleam_cohorts_female
 }
 \description{
-Female cohort codes
+Female cohort codes (complement of male in gleam_cohorts)
 }
 \keyword{internal}
