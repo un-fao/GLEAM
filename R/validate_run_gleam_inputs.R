@@ -2,7 +2,8 @@
 #'
 #' Validates \code{has_herd_structure} (boolean), requires direct input tables
 #' (\code{cohort_level_data}, \code{herd_level_data}, \code{feed_rations},
-#' \code{feed_params}), and ensures cohort/herd/feed_rations share the same
+#' \code{feed_params}, \code{manure_management_system_fraction},
+#' \code{manure_management_system_factors}), and ensures all inputs share the same
 #' \code{herd_id} set. Ensures input tables do not contain columns that GLEAM
 #' calculates internally (e.g. \code{cohort_stock_size}, \code{daily_weight_gain}).
 #' Schema checks for cohort/herd data are done in the respective run_* functions.
@@ -13,6 +14,12 @@
 #' @param herd_level_data data.table. Herd-level master table.
 #' @param feed_rations data.table. Feed ration shares by cohort.
 #' @param feed_params data.table. Feed nutritional parameters.
+#' @param feed_emissions data.table. Feed production emission factors.
+#' @param manure_management_system_fraction data.table. Cohort-level manure
+#'   management system fractions.
+#' @param manure_management_system_factors data.table. manure management system factors.
+#' @param simulation_duration Numeric. Length of the assessment period (days).
+#' @param global_warming_potential_set Character. GWP-100 option (AR6, AR5_excluding_carbon_feedback, etc.).
 #'
 #' @noRd
 validate_run_gleam_inputs <- function(
@@ -20,8 +27,25 @@ validate_run_gleam_inputs <- function(
     cohort_level_data,
     herd_level_data,
     feed_rations,
-    feed_params
+    feed_params,
+    feed_emissions,
+    manure_management_system_fraction,
+    manure_management_system_factors,
+    simulation_duration,
+    global_warming_potential_set
 ) {
+
+  # --- simulation_duration: must be a single positive numeric ------------------
+  if (
+    !is.numeric(simulation_duration) ||
+    length(simulation_duration) != 1L ||
+    is.na(simulation_duration)
+  ) {
+    cli::cli_abort("{.arg simulation_duration} must be a single numeric value.")
+  }
+  if (simulation_duration <= 0) {
+    cli::cli_abort("{.arg simulation_duration} must be positive (days).")
+  }
 
   # --- has_herd_structure: must be a single boolean ---------------------------
   if (!is.logical(has_herd_structure) || length(has_herd_structure) != 1L) {
@@ -32,6 +56,20 @@ validate_run_gleam_inputs <- function(
   if (is.na(has_herd_structure)) {
     cli::cli_abort(
       "{.arg has_herd_structure} must be TRUE or FALSE, not NA."
+    )
+  }
+
+  # --- global_warming_potential_set: must be a valid GWP option ----------------
+  valid_gwp <- c(
+    "AR6", "AR5_excluding_carbon_feedback", "AR5_including_carbon_feedback", "AR4"
+  )
+  if (!is.character(global_warming_potential_set) || length(global_warming_potential_set) != 1L) {
+    cli::cli_abort("{.arg global_warming_potential_set} must be a single character value.")
+  }
+  if (!global_warming_potential_set %in% valid_gwp) {
+    cli::cli_abort(
+      "{.arg global_warming_potential_set} must be one of: {.val {valid_gwp}}.
+      Got: {.val {global_warming_potential_set}}"
     )
   }
 
@@ -48,6 +86,25 @@ validate_run_gleam_inputs <- function(
   if (is.null(feed_params) || !is.data.frame(feed_params)) {
     cli::cli_abort("{.arg feed_params} must be a data frame (e.g. data.table).")
   }
+  if (is.null(feed_emissions) || !is.data.frame(feed_emissions)) {
+    cli::cli_abort("{.arg feed_emissions} must be a data frame (e.g. data.table).")
+  }
+  if (is.null(manure_management_system_fraction) || !is.data.frame(manure_management_system_fraction)) {
+    cli::cli_abort("{.arg manure_management_system_fraction} must be a data frame (e.g. data.table).")
+  }
+  if (is.null(manure_management_system_factors) || !is.data.frame(manure_management_system_factors)) {
+    cli::cli_abort("{.arg manure_management_system_factors} must be a data frame (e.g. data.table).")
+  }
+
+  # --- Required columns in cohort_level_data ----------------------------------
+  required_cohort_cols <- c("herd_id", "species_short", "cohort_short")
+  missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
+  if (length(missing_cohort_cols) > 0L) {
+    cli::cli_abort(
+      "Missing required columns in {.arg cohort_level_data}: {.val {missing_cohort_cols}}.
+      {.var species_short} (e.g. CTL, BFL, SHP) must be present for each cohort."
+    )
+  }
 
   # --- Block calculated (intermediate) variables in input tables ---------------
   # Columns that GLEAM computes; users must not provide them as inputs.
@@ -55,19 +112,47 @@ validate_run_gleam_inputs <- function(
     # Herd simulation (cohort and herd)
     "cohort_stock_size", "offtake_heads", "offtake_heads_assessment", "growth_rate_herd",
     # Weights (cohort)
-    "mature_weight", "live_weight_cohort_initial", "live_weight_cohort_potential_final",
-    "slaughter_weight_cohort", "live_weight_cohort_average", "live_weight_cohort_final",
+    "live_weight_mature_stage", "live_weight_cohort_initial", "live_weight_cohort_potential_final",
+    "live_weight_cohort_at_slaughter", "live_weight_cohort_average", "live_weight_cohort_final",
     "daily_weight_gain",
+    # Production cohort (cohort-level outputs)
+    "milk_production_mass_cohort", "milk_production_protein_cohort", "milk_production_fpcm_cohort",
+    "fibre_production_cohort",
+    "meat_production_live_weight_cohort", "meat_production_carcass_weight_cohort",
+    "meat_production_bone_free_meat_cohort", "meat_production_protein_cohort",
     # Feed rations (cohort-level outputs merged into pipeline)
-    "diet_gross_energy", "diet_metabolizable_energy", "diet_nitrogen",
-    "diet_digestibility_fraction", "urinary_energy_fraction", "diet_ash",
+    "ration_gross_energy", "ration_metabolizable_energy", "ration_nitrogen",
+    "ration_digestibility_fraction", "ration_urinary_energy_fraction", "ration_ash",
+    # Allocation (cohort-level energy allocation terms)
+    "milk_allocation_energy", "meat_allocation_energy", "fibre_allocation_energy",
+    "work_allocation_energy", "egg_allocation_energy",
+    # Feed emissions (cohort-level diet emission factors)
+    "co2_ration_fertilizer", "co2_ration_pesticides",
+    "co2_ration_crop_activities", "co2_ration_luc_nopeat", "co2_ration_luc_peat",
+    "n2o_ration_fertilizer", "n2o_ration_manure_applied", "n2o_ration_crop_residues",
+    "ch4_ration_rice",
     # Energy requirements (cohort)
-    "energy_requirement_maintenance", "energy_requirement_activity", "energy_requirement_growth",
-    "energy_requirement_lactation", "energy_requirement_work",
-    "energy_requirement_fibre_production", "energy_requirement_pregnancy",
+    "metabolic_energy_req_maintenance", "metabolic_energy_req_activity", "metabolic_energy_req_growth",
+    "metabolic_energy_req_lactation", "metabolic_energy_req_work",
+    "metabolic_energy_req_fibre_production", "metabolic_energy_req_pregnancy",
     "net_energy_maintenance_digestible_energy_ratio",
     "net_energy_growth_digestible_energy_ratio",
-    "energy_requirement_total", "dry_matter_intake"
+    "metabolic_energy_req_total", "ration_intake",
+    # Nitrogen balance (cohort)
+    "nitrogen_intake", "nitrogen_retention", "nitrogen_excretion",
+    # Enteric direct emissions (cohort)
+    "ch4_conversion_factor_ym", "ch4_enteric",
+    # Manure direct emissions (cohort)
+    "volatile_solids",
+    "ch4_manure_pasture", "ch4_manure_burned", "ch4_manure_other", "ch4_manure_all_noburn",
+    "n2o_manure_pasture_direct", "n2o_manure_burned_direct", "n2o_manure_other_direct",
+    "n2o_manure_all_noburn_direct",
+    "n2o_manure_pasture_vol", "n2o_manure_burned_vol", "n2o_manure_other_vol",
+    "n2o_manure_all_noburn_vol",
+    "n2o_manure_pasture_leach", "n2o_manure_burned_leach", "n2o_manure_other_leach",
+    "n2o_manure_all_noburn_leach",
+    "n2o_manure_pasture_indirect", "n2o_manure_burned_indirect", "n2o_manure_other_indirect",
+    "n2o_manure_pasture_total", "n2o_manure_burned_total", "n2o_manure_other_total"
   )
   # When has_herd_structure is TRUE, the provided herd structure should structure inputs.
   cohort_blocklist <- if (has_herd_structure) {
@@ -93,6 +178,9 @@ validate_run_gleam_inputs <- function(
   check_no_calculated_columns(cohort_level_data, "cohort_level_data", blocklist = cohort_blocklist)
   check_no_calculated_columns(herd_level_data, "herd_level_data")
   check_no_calculated_columns(feed_rations, "feed_rations")
+  check_no_calculated_columns(feed_emissions, "feed_emissions")
+  check_no_calculated_columns(manure_management_system_fraction, "manure_management_system_fraction")
+  check_no_calculated_columns(manure_management_system_factors, "manure_management_system_factors")
 
   # --- Herd ID consistency: same length and content across all inputs ---------
   # Helper: extract sorted unique herd_id from a table, or NULL if missing/empty.
@@ -116,6 +204,16 @@ validate_run_gleam_inputs <- function(
   # Weights and feed inputs
   herd_ids_feed <- unique_herd_ids(feed_rations)
   if (!is.null(herd_ids_feed)) herd_id_sets[["feed_rations"]] <- herd_ids_feed
+
+  herd_ids_mms_fraction <- unique_herd_ids(manure_management_system_fraction)
+  if (!is.null(herd_ids_mms_fraction)) {
+    herd_id_sets[["manure_management_system_fraction"]] <- herd_ids_mms_fraction
+  }
+
+  herd_ids_mms_factors <- unique_herd_ids(manure_management_system_factors)
+  if (!is.null(herd_ids_mms_factors)) {
+    herd_id_sets[["manure_management_system_factors"]] <- herd_ids_mms_factors
+  }
 
   # At least one input must supply a non-empty herd_id set.
   if (length(herd_id_sets) == 0L) {

@@ -1,68 +1,62 @@
-#' Validate inputs for calc_totals_by_cohort
+#' Validate inputs for calc_cohort_totals
 #'
 #' Ensures that inputs for the cohort totals calculation are correctly typed
-#' and within valid ranges. Specifically:
-#' * All numeric inputs must be numeric vectors of the same length.
-#' * `value` must be non-negative.
-#' * `size` must be positive (number of heads).
-#' * `assessment_duration` must be positive (days).
-#' * `variable_type` must be a character vector with valid values.
+#' and within valid ranges.
 #'
-#' Valid variable types: `"Production"`, `"Emissions"`, `"Feed"`, `"NitrogenBalance"`.
+#' * `value`, `cohort_stock_size`, `ration_intake`, `simulation_duration` must be numeric.
+#' * `cohort_stock_size` must be positive (number of heads).
+#' * `simulation_duration` must be positive (days).
+#' * `variable_name` and `variable_type` must be character.
+#' * `variable_type` must be one of: \code{"Production"}, \code{"Emissions"},
+#'   \code{"Feed"}, \code{"NitrogenBalance"}.
 #'
-#' This validator is designed for internal use in [calc_totals_by_cohort()].
+#' This validator is designed for internal use in [calc_cohort_totals()].
 #'
-#' @param value Numeric vector. Variable value (kg/head/day or kg/cohort/assessment duration).
-#' @param size Numeric vector. Number of heads in the cohort.
-#' @param assessment_duration Numeric vector. Duration of the assessment (days).
-#' @param variable_type Character vector. Variable group classification.
+#' @param value Numeric. Variable value (kg/head/day or kg/cohort/assessment duration).
+#' @param cohort_stock_size Numeric. Number of heads in the cohort.
+#' @param ration_intake Numeric. Daily dry matter intake (kg DM/head/day).
+#' @param simulation_duration Numeric. Duration of the assessment (days).
+#' @param variable_name Character. Variable identifier (e.g. emission source name).
+#' @param variable_type Character. Variable group classification.
 #'
 #' @noRd
 validate_totals_by_cohort_inputs <- function(
     value,
-    size,
-    assessment_duration,
+    cohort_stock_size,
+    ration_intake,
+    simulation_duration,
+    variable_name,
     variable_type
 ) {
-  # Check that all inputs are vectors of the same length
-  lengths <- c(
-    length(value),
-    length(size),
-    length(assessment_duration),
-    length(variable_type)
-  )
-
-  if (length(unique(lengths)) > 1) {
-    cli::cli_abort(
-      "All inputs to {.fun calc_totals_by_cohort} must have the same length."
-    )
-  }
 
   # Validate numeric inputs
   if (!is.numeric(value)) {
     cli::cli_abort("{.arg value} must be numeric.")
   }
-  if (!is.numeric(size)) {
-    cli::cli_abort("{.arg size} must be numeric.")
+  if (!is.numeric(cohort_stock_size)) {
+    cli::cli_abort("{.arg cohort_stock_size} must be numeric.")
   }
-  if (!is.numeric(assessment_duration)) {
-    cli::cli_abort("{.arg assessment_duration} must be numeric.")
+  if (!is.numeric(ration_intake)) {
+    cli::cli_abort("{.arg ration_intake} must be numeric.")
+  }
+  if (!is.numeric(simulation_duration)) {
+    cli::cli_abort("{.arg simulation_duration} must be numeric.")
   }
 
-  # Validate variable_type
+  # Validate character inputs
+  if (!is.character(variable_name)) {
+    cli::cli_abort("{.arg variable_name} must be character.")
+  }
   if (!is.character(variable_type)) {
     cli::cli_abort("{.arg variable_type} must be character.")
   }
 
   # Validate bounds
-  if (any(value < 0)) {
-    cli::cli_abort("{.arg value} must be non-negative.")
+  if (any(cohort_stock_size <= 0)) {
+    cli::cli_abort("{.arg cohort_stock_size} must be positive.")
   }
-  if (any(size <= 0)) {
-    cli::cli_abort("{.arg size} must be positive.")
-  }
-  if (any(assessment_duration <= 0)) {
-    cli::cli_abort("{.arg assessment_duration} must be positive.")
+  if (any(simulation_duration <= 0)) {
+    cli::cli_abort("{.arg simulation_duration} must be positive.")
   }
 
   # Validate variable_type values
@@ -111,9 +105,6 @@ validate_allocated_emissions_inputs <- function(
   }
 
   # Validate bounds
-  if (any(value < 0)) {
-    cli::cli_abort("{.arg value} must be non-negative.")
-  }
   if (any(allocation_share < 0 | allocation_share > 1)) {
     cli::cli_abort("{.arg allocation_share} must be between 0 and 1.")
   }
@@ -143,10 +134,10 @@ validate_allocated_emissions_inputs <- function(
 validate_co2eq_inputs <- function(
     gas,
     value_allocated,
-    gwp
+    global_warming_potential_set
 ) {
   # Validate gwp is scalar character
-  validate_scalar_character(gwp, "gwp")
+  validate_scalar_character(global_warming_potential_set, "global_warming_potential_set")
 
   # Validate GWP version
   valid_gwp <- c(
@@ -155,9 +146,9 @@ validate_co2eq_inputs <- function(
     "AR5_including_carbon_feedback",
     "AR4"
   )
-  if (!gwp %in% valid_gwp) {
+  if (!global_warming_potential_set %in% valid_gwp) {
     cli::cli_abort(
-      "{.arg gwp} must be one of: {cli::format_inline('{valid_gwp}')}"
+      "{.arg global_warming_potential_set} must be one of: {cli::format_inline('{valid_gwp}')}"
     )
   }
 
@@ -184,8 +175,5 @@ validate_co2eq_inputs <- function(
   # Validate value_allocated
   if (!is.numeric(value_allocated)) {
     cli::cli_abort("{.arg value_allocated} must be numeric.")
-  }
-  if (any(value_allocated < 0)) {
-    cli::cli_abort("{.arg value_allocated} must be non-negative.")
   }
 }
