@@ -1,4 +1,4 @@
-#' Run Energy Requirements and Dry Matter Intake Calculation
+#' Run Metabolic Energy Requirements and Dry Matter Intake Calculation
 #'
 #' Computes cohort-level daily energy requirements (MJ/head/day) and feed dry matter intake (kg DM/head/day)
 #' by applying the IPCC Tier 2 energy partitioning functions.
@@ -139,20 +139,20 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Load energy requirements inputs (cohort and herd-level)
-#' energy_requirements_chrt_dt <- data.table::fread(system.file(
-#'   "extdata/run_modules_examples/energy_requirements_input_chrt_data.csv",
+#' # Load metabolic energy requirements inputs (cohort and herd-level)
+#' metabolic_energy_req_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/metabolic_energy_req_input_chrt_data.csv",
 #'   package = "gleam"
 #' ))
-#' energy_requirements_hrd_dt <- data.table::fread(system.file(
-#'   "extdata/run_modules_examples/energy_requirements_input_hrd_data.csv",
+#' metabolic_energy_req_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/metabolic_energy_req_input_hrd_data.csv",
 #'   package = "gleam"
 #' ))
 #'
-#' # Run energy requirement and feed ration calculations
+#' # Run metabolic energy requirement and rations calculations
 #' results <- run_metabolic_energy_req_module(
-#'   cohort_level_data = energy_requirements_chrt_dt,
-#'   herd_level_data = energy_requirements_hrd_dt
+#'   cohort_level_data = metabolic_energy_req_chrt_dt,
+#'   herd_level_data = metabolic_energy_req_hrd_dt
 #' )
 #' }
 #'
@@ -170,7 +170,9 @@ run_metabolic_energy_req_module <- function(
 
   # Show progress indicator if requested
   if (show_indicator) {
-    cli::cli_status("\U1F552 Calculating energy requirements and ration, please wait\U2026")
+    cli::cli_status(
+      "\U1F552 Calculating metabolic energy requirements and ration, please wait\U2026"
+    )
   }
 
   # --- Step 2: Create working copies ------------------------------------------
@@ -341,7 +343,7 @@ run_metabolic_energy_req_module <- function(
   # Clear progress indicator if it was shown
   if (show_indicator) {
     cli::cli_status_clear()
-    cli::cli_alert_success("Energy requirements calculation complete.")
+    cli::cli_alert_success("Metabolic energy requirements calculation complete.")
   }
 
   return(cohort_level_data)

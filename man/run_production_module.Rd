@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_production_module.R
 \name{run_production_module}
 \alias{run_production_module}
-\title{Run Production Cohort}
+\title{Run Production Calculation}
 \usage{
 run_production_module(
   cohort_level_data,
@@ -125,20 +125,20 @@ For species/cohorts where milk or fibre production is not applicable, outputs ar
 }
 \examples{
 \dontrun{
-# Load production cohort inputs (cohort and herd-level)
-production_cohort_chrt_dt <- data.table::fread(system.file(
-  "extdata/run_modules_examples/production_cohort_input_chrt_data.csv",
+# Load production inputs (cohort and herd-level)
+production_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/production_input_chrt_data.csv",
   package = "gleam"
 ))
-production_cohort_hrd_dt <- data.table::fread(system.file(
-  "extdata/run_modules_examples/production_cohort_input_hrd_data.csv",
+production_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/production_input_hrd_data.csv",
   package = "gleam"
 ))
 
-# Run production cohort calculations
+# Run production calculations
 results <- run_production_module(
-  cohort_level_data = production_cohort_chrt_dt,
-  herd_level_data = production_cohort_hrd_dt,
+  cohort_level_data = production_chrt_dt,
+  herd_level_data = production_hrd_dt,
   simulation_duration = 365
 )
 }

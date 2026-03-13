@@ -1,4 +1,4 @@
-#' Run Production Cohort
+#' Run Production Calculation
 #'
 #' Computes cohort-level production outputs over the assessment period by combining
 #' cohort-level herd structure inputs with herd-level production parameters.
@@ -101,9 +101,9 @@
 #'
 #' The following calculation sequence is applied:
 #' \enumerate{
-#'   \item Milk outputs are computed using \code{\link{calc_milk_production}} 
-#'   \item Fibre outputs are computed using \code{\link{calc_fibre_production}} 
-#'   \item Meat outputs are computed using \code{\link{calc_meat_production}} 
+#'   \item Milk outputs are computed using \code{\link{calc_milk_production}}
+#'   \item Fibre outputs are computed using \code{\link{calc_fibre_production}}
+#'   \item Meat outputs are computed using \code{\link{calc_meat_production}}
 #' }
 #'
 #' For species/cohorts where milk or fibre production is not applicable, outputs are returned as zero.
@@ -115,20 +115,20 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Load production cohort inputs (cohort and herd-level)
-#' production_cohort_chrt_dt <- data.table::fread(system.file(
-#'   "extdata/run_modules_examples/production_cohort_input_chrt_data.csv",
+#' # Load production inputs (cohort and herd-level)
+#' production_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/production_input_chrt_data.csv",
 #'   package = "gleam"
 #' ))
-#' production_cohort_hrd_dt <- data.table::fread(system.file(
-#'   "extdata/run_modules_examples/production_cohort_input_hrd_data.csv",
+#' production_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/production_input_hrd_data.csv",
 #'   package = "gleam"
 #' ))
 #'
-#' # Run production cohort calculations
+#' # Run production calculations
 #' results <- run_production_module(
-#'   cohort_level_data = production_cohort_chrt_dt,
-#'   herd_level_data = production_cohort_hrd_dt,
+#'   cohort_level_data = production_chrt_dt,
+#'   herd_level_data = production_hrd_dt,
 #'   simulation_duration = 365
 #' )
 #' }
@@ -158,7 +158,7 @@ run_production_module <- function(
 
   # --- Step 2: Create working copy --------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
-  
+
   # --- Step 3: Compute milk production outputs --------------------------------
   milk_output_cols <- c(
     "milk_production_mass_cohort",

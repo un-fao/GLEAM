@@ -1,4 +1,4 @@
-#' Run Direct Emissions From Manure
+#' Run Emissions From Manure Calculation
 #'
 #' Run emissions (cohort-level) from manure management systems (MMS)
 #'
@@ -204,9 +204,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Load direct emissions manure inputs (cohort-level and system lookups)
-#' directemissions_manure_input_chrt_data <- data.table::fread(system.file(
-#'   "extdata/run_modules_examples/directemissions_manure_input_chrt_data.csv",
+#' # Load emissions manure inputs (cohort-level and system lookups)
+#' emissions_manure_input_chrt_data <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/emissions_manure_input_chrt_data.csv",
 #'   package = "gleam"
 #' ))
 #' manure_management_system_factors <- data.table::fread(system.file(
@@ -219,7 +219,7 @@
 #' ))
 #'
 #' results <- run_emissions_manure_module(
-#'   cohort_level_data = directemissions_manure_input_chrt_data,
+#'   cohort_level_data = emissions_manure_input_chrt_data,
 #'   manure_management_system_fraction = manure_management_system_fraction,
 #'   manure_management_system_factors = manure_management_system_factors
 #' )
@@ -252,7 +252,7 @@ run_emissions_manure_module <- function(
 
   # Show progress indicator if requested
   if (show_indicator) {
-    cli::cli_status("\U1F552 Calculating direct emissions from manure management systems\u2026")
+    cli::cli_status("\U1F552 Calculating emissions from manure management systems\u2026")
   }
 
   # --- Step 2: Prepare inputs -------------------------------------------------
@@ -471,7 +471,7 @@ run_emissions_manure_module <- function(
   # Clear progress indicator if it was shown
   if (show_indicator) {
     cli::cli_status_clear()
-    cli::cli_alert_success("Direct emissions from manure management calculation complete.")
+    cli::cli_alert_success("Emissions from manure management calculation complete.")
   }
 
   return(cohort_level_data)

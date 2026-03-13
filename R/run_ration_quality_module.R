@@ -159,7 +159,7 @@ run_ration_quality_module <- function(
 
   # Show progress indicator if requested
   if (show_indicator) {
-    cli::cli_status("\U1F552 Aggregating feed rations, please wait\U2026")
+    cli::cli_status("\U1F552 Aggregating ration quality, please wait\U2026")
   }
 
   # --- Step 2: Create working copies -----------------------------------------
@@ -271,7 +271,7 @@ run_ration_quality_module <- function(
   # Clear progress indicator if it was shown
   if (show_indicator) {
     cli::cli_status_clear()
-    cli::cli_alert_success("Feed rations aggregation complete.")
+    cli::cli_alert_success("Ration quality aggregation complete.")
   }
 
   return(rations_summary)
