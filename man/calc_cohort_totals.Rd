@@ -78,5 +78,5 @@ For emissions (except emissions from feed), feed, and nitrogen balance variables
 \deqn{value\_total = value \times cohort\_stock\_size \times simulation\_duration}
 
 For emissions from feed:
-\deqn{value\_total = value \times ration\_intake \times cohort\_stock\_size \times simulation\_duration / 100}
+\deqn{value\_total = value \times ration\_intake \times cohort\_stock\_size \times simulation\_duration / 1000}
 }

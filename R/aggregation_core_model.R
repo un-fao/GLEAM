@@ -39,7 +39,7 @@
 #'     "n2o_ration_fertilizer", "n2o_ration_manure_applied",
 #'     "n2o_ration_crop_residues", "ch4_ration_rice")
 #'
-#' @return Numeric. Variable value expressed as (unit)/cohort/assessment duration for all variables. 
+#' @return Numeric. Variable value expressed as (unit)/cohort/assessment duration for all variables.
 #'
 #' @details
 #' Production variables are already expressed at the cohort level for the
@@ -47,7 +47,7 @@
 #' All other variables (emissions, feed, and nitrogen balance) are expressed
 #' per head per day and are scaled by cohort stock size and simulation
 #' duration to obtain cohort-level totals.
-#' 
+#'
 #' For production variables:
 #' \deqn{value\_total = value}
 #'
@@ -55,8 +55,8 @@
 #' \deqn{value\_total = value \times cohort\_stock\_size \times simulation\_duration}
 #'
 #' For emissions from feed:
-#' \deqn{value\_total = value \times ration\_intake \times cohort\_stock\_size \times simulation\_duration / 100}
-#' 
+#' \deqn{value\_total = value \times ration\_intake \times cohort\_stock\_size \times simulation\_duration / 1000}
+#'
 #' @export
 calc_cohort_totals <- function(
     value,
@@ -68,24 +68,23 @@ calc_cohort_totals <- function(
     variable_type
 ) {
   validate_totals_by_cohort_inputs(
-    value, cohort_stock_size, simulation_duration, variable_type
+    value, cohort_stock_size, ration_intake,
+    simulation_duration, variable_name, variable_type
   )
 
+  # Extract emission source names
+  feed_emissions_sources <- sapply(feed_emissions_list, `[[`, "emissions_source")
+
   # Production variables are already at cohort level for entire assessment
-  # Use ifelse to handle both scalar and vector inputs
+  # Feed emissions use ration_intake in the scaling; other emissions/feed/N use stock*duration only
   value_total <- if (variable_type == "Production") {
-    
     value
-    
-  } else if (variable_type == "Emissions" && variable_name %in% feed_emissions_list) {
-    
+  } else if (variable_type == "Emissions" && variable_name %in% feed_emissions_sources) {
     value * ration_intake * cohort_stock_size * simulation_duration / 1000
-    
   } else {
-    
     value * cohort_stock_size * simulation_duration
   }
-    
+
   return(value_total)
 }
 
@@ -99,17 +98,17 @@ calc_cohort_totals <- function(
 #' @param allocation_share Numeric. Allocation share assigned to the commodity for the corresponding emission source (fraction).
 #'
 #' @return Numeric. Allocated emissions for each commodity–emission combination (kg gas).
-#' 
+#'
 #' @details
 #' Allocation shares represent the fraction of total emissions assigned to
 #' each commodity (e.g., meat, milk, fibre).
 #' See [run_allocation_module()] for additional details.
-#' 
+#'
 #' Allocated emissions are calculated as:
 #'
 #' \deqn{value\_allocated = value \times allocation\_share}
 #'
-#' @seealso 
+#' @seealso
 #' [run_allocation_module()]
 #'
 #' @export
@@ -174,7 +173,7 @@ calc_allocated_emissions <- function(
 #' IPCC (2021). Climate Change 2021: The Physical Science Basis. Contribution
 #' of Working Group I to the Sixth Assessment Report of the Intergovernmental
 #' Panel on Climate Change.
-#' 
+#'
 #' @export
 calc_co2eq <- function(
     gas,
