@@ -714,7 +714,7 @@ run_gleam <- function(
   # --- Step 3: Run weights at cohort level ------------------------------------
   weights_results <- run_weights_module(
     cohort_level_data = gleam_chrt_data,
-    herd_level_data = herd_level_data,
+    herd_level_data = gleam_hrd_data,
     show_indicator = show_indicator
   )
 
@@ -736,7 +736,7 @@ run_gleam <- function(
   # --- Step 5: Run energy requirements and DMI --------------------------------
   gleam_chrt_data <- run_metabolic_energy_req_module(
     cohort_level_data = gleam_chrt_data,
-    herd_level_data = herd_level_data,
+    herd_level_data = gleam_hrd_data,
     show_indicator = show_indicator
   )
 
@@ -750,7 +750,7 @@ run_gleam <- function(
   # --- Step 7: Run nitrogen balance -------------------------------------------
   gleam_chrt_data <- run_nitrogen_balance_module(
     cohort_level_data = gleam_chrt_data,
-    herd_level_data = herd_level_data,
+    herd_level_data = gleam_hrd_data,
     show_indicator = show_indicator
   )
 
@@ -777,12 +777,12 @@ run_gleam <- function(
   # --- Step 10: Run production (milk, fibre, meat) at cohort level ------------
   gleam_chrt_data <- run_production_module(
     cohort_level_data = gleam_chrt_data,
-    herd_level_data = herd_level_data,
+    herd_level_data = gleam_hrd_data,
     simulation_duration = simulation_duration,
     show_indicator = show_indicator
   )
 
-  # --- Step 11: Run allocation (energy allocation terms and commodity shares) -
+  # --- Step 11: Run allocation (energy allocation terms and commodity shares) ------------
   allocation_results <- run_allocation_module(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = gleam_hrd_data,
@@ -809,7 +809,7 @@ run_gleam <- function(
 
   return(
     list(
-      cohort_level_results = gleam_chrt_data,
+      cohort_level_results = gleam_hrd_data,
       herd_level_results = gleam_hrd_data,
       allocation_long = allocation_results$allocation_long,
       aggregation_results = list(
