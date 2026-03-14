@@ -12,6 +12,9 @@ vignette: >
   %\VignetteIndexEntry{GLEAM R Package Overview}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+resource_files:
+ - images/overview_GLEAM_Ecosystem.png
+  
 ---
 
 ```{r setup, include = FALSE}
@@ -43,6 +46,9 @@ web applications, dashboards, data infrastructure, and capacity-building tools.
 This vignette provides an overview of the R package specifically; a brief
 description of the wider ecosystem is given in Section 9.
 
+```{r, echo=FALSE, eval = TRUE, out.width="90%", fig.cap="Species currently covered in GLEAM"}
+knitr::include_graphics("images/overview_AnimalSilhouette.png")
+```
 
 # Installation
 
@@ -338,6 +344,10 @@ and leaching fractions.
 
 ## LCA approach and system boundary
 
+```{r, echo=FALSE, eval = TRUE, out.width="100%", fig.cap="Livestock agrifood systems and the GLEAM system boundary"}
+knitr::include_graphics("images/overview_GLEAM_SystemBoundary.png")
+```
+
 GLEAM applies a cradle-to-processing-point Life Cycle Assessment (LCA)
 framework. The system boundary encompasses:
 
@@ -398,6 +408,10 @@ developed by FAO. The ecosystem integrates data, models, analytical tools, and
 capacity-building resources to support sustainable livestock system
 transformation.
 
+```{r, echo=FALSE, eval = TRUE, out.width="100%", fig.cap="The GLEAM model within the GLEAM ecosystem"}
+knitr::include_graphics("images/overview_GLEAM_Ecosystem.png")
+```
+
 - **GLEAM Model** (this R package): the analytical engine implementing the
   core equations and pipeline. Enables reproducible research, batch
   processing, and custom workflows.
@@ -417,9 +431,8 @@ transformation.
 - **GLEAM Support**: training packages and e-learning courses on livestock
   environmental impact assessment and GLEAM methodology.
 
-Furhter information on the GLEAM ecosystem and updates of its components can be found on the [FAO GLEAM website ](https://www.fao.org/gleam/en/)
-The development of these tools is supported by the German Federal Ministry of
-Food and Agriculture [BMELH ](https://www.bmleh.de/EN/Home/home_node.html).
+Further information on the GLEAM ecosystem and updates of its components can be found on the [FAO GLEAM website ](https://www.fao.org/gleam/en/).
+
 
 
 # Further Resources
@@ -464,6 +477,20 @@ impacts of livestock systems at global scale. Key milestones include:
   2019 IPCC Refinement, and the GLEAM Dashboard.
 - **2024–present**: GLEAM-X initiative delivering an open-source R package and
   interactive web application.
+
+```{r, echo=FALSE, eval = TRUE, out.width="100%", fig.cap="The history of the GLEAM model with different versions and major releases"}
+knitr::include_graphics("images/overview_GLEAM_TimeLine.png")
+```
+
+## Resource partner
+
+The development of the GLEAM ecosystem was supported by the German Federal Ministry of
+Food, Agriculture, and Regional Identity  
+[BMELH](https://www.bmleh.de/EN/Home/home_node.html)
+
+```{r, echo=FALSE, eval = TRUE, out.width="30%", fig.cap=""}
+knitr::include_graphics("images/overview_Logo_BMLEH_EN.png")
+```
 
 ---
 
