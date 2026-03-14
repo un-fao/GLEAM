@@ -433,6 +433,24 @@ knitr::include_graphics("images/overview_GLEAM_Ecosystem.png")
 
 Further information on the GLEAM ecosystem and updates of its components can be found on the [FAO GLEAM website ](https://www.fao.org/gleam/en/).
 
+# History of GLEAM
+
+GLEAM builds on nearly two decades of FAO work on assessing the environmental
+impacts of livestock systems at global scale. Key milestones include:
+
+- **2006**: Pre-GLEAM era of non-spatial global assessments.
+- **2010–2013**: Launch of GLEAM v1 with spatially explicit LCA using
+  2005 reference-year data.
+- **2017**: Release of GLEAM v2 and the GLEAM-i interactive web tool.
+- **2023**: Release of GLEAM v3 with 2015 reference-year data, based on the
+  2019 IPCC Refinement, and the GLEAM Dashboard.
+- **2024**: GLEAM-Water. The first global assessment of water use in livestock agri-food systems  
+- **2026–present**: GLEAM-X initiative delivering an open-source R package and
+  interactive web application.
+
+```{r, echo=FALSE, eval = TRUE, out.width="100%", fig.cap="The history of the GLEAM model with different versions and major releases"}
+knitr::include_graphics("images/overview_GLEAM_TimeLine.png")
+```
 
 
 # Further Resources
@@ -463,26 +481,10 @@ Further information on the GLEAM ecosystem and updates of its components can be 
 - [FAO. 2023](https://openknowledge.fao.org/handle/20.500.14283/cc9029en) *Pathways towards lower emissions — A global assessment of the
   greenhouse gas emissions and mitigation options from livestock agrifood
   systems*. FAO, Rome. DOI: 10.4060/cc9029en.
+- [Wisser, D. et al.](https://doi.org/10.3390/w16121681) Water Use in Livestock Agri-Food Systems and Its Contribution to Local Water Scarcity: A Spatially Distributed Global Analysis. Water, 16(12), 1681. https://doi.org/10.3390/w16121681
 
-## History of GLEAM
 
-GLEAM builds on nearly two decades of FAO work on assessing the environmental
-impacts of livestock systems at global scale. Key milestones include:
-
-- **2006**: Pre-GLEAM era of non-spatial global assessments.
-- **2010–2013**: Launch of GLEAM v1 with spatially explicit LCA using
-  2005 reference-year data.
-- **2017**: Release of GLEAM v2 and the GLEAM-i interactive web tool.
-- **2023**: Release of GLEAM v3 with 2015 reference-year data, based on the
-  2019 IPCC Refinement, and the GLEAM Dashboard.
-- **2024–present**: GLEAM-X initiative delivering an open-source R package and
-  interactive web application.
-
-```{r, echo=FALSE, eval = TRUE, out.width="100%", fig.cap="The history of the GLEAM model with different versions and major releases"}
-knitr::include_graphics("images/overview_GLEAM_TimeLine.png")
-```
-
-## Resource partner
+# Resource partner
 
 The development of the GLEAM ecosystem was supported by the German Federal Ministry of
 Food, Agriculture, and Regional Identity  
