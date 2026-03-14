@@ -356,7 +356,7 @@ Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for C
 \item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions from manure deposited on pasture. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
 \item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions originating from manure burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
 \item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen.}
-\item{n2o_manure_pasture_total}{Numeric. Total nitrous oxide emissions from manure deposited on pasture. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N2O/head/day).}
+\item{n2o_manure_pasture_total}{Numeric. Total nitrous oxide emissions (N2O) from manure deposited on pasture. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N2O/head/day).}
 \item{n2o_manure_burned_total}{Numeric. Total nitrous oxide emissions (N2O) from manure burned for fuel. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N2O/head/day).}
 \item{n2o_manure_other_total}{Numeric. Total nitrous oxide (N2O) emissions from manure management systems, excluding manure deposited on pasture and manure burned for fuel. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N2O/head/day).}
 }}
@@ -426,7 +426,7 @@ balance, all scaled to the assessment duration.}
 }
 \description{
 Runs the full GLEAM pipeline from master herd and cohort inputs through all
-modules: herd (optional), weights, ration quality, energy requirements,
+modules: herd (optional), weights, ration quality, energy requirements, enteric fermentation emissions, nitrogene balance,
 manure emissions, feed emissions, allocation, and aggregation.
 \if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
