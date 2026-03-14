@@ -4,7 +4,7 @@ herd_id	parturition_rate	litter_size	birth_fraction_female	herd_size_total
 3	0.93	1	0.5	5560000
 4	0.745	1	0.5	7980000
 5	0.82	1	0.5	1340000
-6	0.91	1	0.5	2e+05
+6	0.91	1.7	0.5	2e+05
 7	0.8	1	0.5	334000
 8	0.835	1	0.5	92800000
 9	2.33	13.5	0.5	26100000

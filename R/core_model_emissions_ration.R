@@ -1,19 +1,19 @@
-#' Calculate a ration component's contribution to carbon dioxide (CO₂) emissions from fertilizer manufacture
+#' Calculate a ration component's contribution to carbon dioxide (CO2) emissions from fertilizer manufacture
 #'
-#' Computes the contribution of an individual feed component to carbon dioxide (CO₂)
+#' Computes the contribution of an individual feed component to carbon dioxide (CO2)
 #' emissions from fertilizer manufacture in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in
 #' the total ration, expressed as its fraction of diet dry matter (fraction). Within
 #' each herd_id and cohort, proportions should sum to 1.
-#' @param co2_feed_fertilizer Numeric. Carbon dioxide (CO₂) emission factor of a
-#' feed component, representing CO₂ emissions from fertilizer manufacture in feed
-#' production, expressed per kilogram of dry matter intake (g CO₂/kg DM).
+#' @param co2_feed_fertilizer Numeric. Carbon dioxide (CO2) emission factor of a
+#' feed component, representing CO2 emissions from fertilizer manufacture in feed
+#' production, expressed per kilogram of dry matter intake (g CO2/kg DM).
 #'
 #' @return Numeric. Contribution of an individual feed component to the diet-level average
-#' carbon dioxide (CO₂) emission factor from fertilizer manufacture in feed production
-#' (g CO₂/kg DM).
+#' carbon dioxide (CO2) emission factor from fertilizer manufacture in feed production
+#' (g CO2/kg DM).
 #'
 #' @details
 #' The contribution is computed as:
@@ -32,22 +32,22 @@ calc_co2_ration_fertilizer <- function(
   return(co2_ration_fertilizer)
 }
 
-#' Calculate a ration component's contribution to carbon dioxide (CO₂) emissions from pesticide manufacture
+#' Calculate a ration component's contribution to carbon dioxide (CO2) emissions from pesticide manufacture
 #'
-#' Computes the contribution of an individual feed component to carbon dioxide (CO₂)
+#' Computes the contribution of an individual feed component to carbon dioxide (CO2)
 #' emissions from pesticide manufacture in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the total
 #' ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #' each herd_id and cohort, proportions should sum to 1.
-#' @param co2_feed_pesticides Numeric. Carbon dioxide (CO₂) emission factor of a
-#' feed component, representing CO₂ emissions from pesticide manufacture in feed
-#' production, expressed per kilogram of dry matter intake (g CO₂/kg DM).
+#' @param co2_feed_pesticides Numeric. Carbon dioxide (CO2) emission factor of a
+#' feed component, representing CO2 emissions from pesticide manufacture in feed
+#' production, expressed per kilogram of dry matter intake (g CO2/kg DM).
 #'
 #' @return Numeric. Contribution of an individual feed component to the diet-level average
-#' carbon dioxide (CO₂) emission factor from pesticide manufacture in feed production
-#' (g CO₂/kg DM).
+#' carbon dioxide (CO2) emission factor from pesticide manufacture in feed production
+#' (g CO2/kg DM).
 #'
 #' @details
 #' The contribution is computed as:
@@ -67,9 +67,9 @@ calc_co2_ration_pesticides <- function(
 }
 
 
-#' Calculate a ration component's contribution to carbon dioxide (CO₂) emissions from on-field agricultural activities
+#' Calculate a ration component's contribution to carbon dioxide (CO2) emissions from on-field agricultural activities
 #'
-#' Computes the contribution of an individual feed component to carbon dioxide (CO₂)
+#' Computes the contribution of an individual feed component to carbon dioxide (CO2)
 #' emissions from on-field agricultural activities in feed production (e.g energy use for tillage and
 #' machinery operations), using feed-specific emission factors weighted by
 #' the component's share in the ration.
@@ -77,13 +77,13 @@ calc_co2_ration_pesticides <- function(
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the total
 #' ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #' each herd_id and cohort, proportions should sum to 1.
-#' @param co2_feed_crop_operations Numeric. Carbon dioxide (CO₂) emission factor of a
-#' feed component, representing CO₂ emissions from on-field agricultural activities
-#' in feed production, expressed per kilogram of dry matter intake (kg CO₂/kg DM).
+#' @param co2_feed_crop_operations Numeric. Carbon dioxide (CO2) emission factor of a
+#' feed component, representing CO2 emissions from on-field agricultural activities
+#' in feed production, expressed per kilogram of dry matter intake (kg CO2/kg DM).
 #'
 #' @return Numeric. Contribution of an individual feed component to the diet-level
-#' average carbon dioxide (CO₂) emission factor from on-field agricultural activities
-#' in feed production (g CO₂/kg DM).
+#' average carbon dioxide (CO2) emission factor from on-field agricultural activities
+#' in feed production (g CO2/kg DM).
 #'
 #' @details
 #' The contribution is computed as:
@@ -104,22 +104,22 @@ calc_co2_ration_crop_activities <- function(
 }
 
 
-#' Calculate a ration component's contribution to carbon dioxide (CO₂) emissions from land-use change (excluding peatland drainage)
+#' Calculate a ration component's contribution to carbon dioxide (CO2) emissions from land-use change (excluding peatland drainage)
 #'
-#' Computes the contribution of an individual feed component to carbon dioxide (CO₂)
+#' Computes the contribution of an individual feed component to carbon dioxide (CO2)
 #' emissions from land-use change in feed production (excluding peatland drainage),
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the total
 #' ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #' each herd_id and cohort, proportions should sum to 1.
-#' @param co2_feed_luc_nopeat Numeric. Carbon dioxide (CO₂) emission factor of a feed component,
-#' representing CO₂ emissions from land-use change in feed production (excluding peatland drainage),
-#' expressed per kilogram of dry matter intake (g CO₂/kg DM).
+#' @param co2_feed_luc_nopeat Numeric. Carbon dioxide (CO2) emission factor of a feed component,
+#' representing CO2 emissions from land-use change in feed production (excluding peatland drainage),
+#' expressed per kilogram of dry matter intake (g CO2/kg DM).
 #'
 #' @return Numeric. Contribution of an individual feed component to the diet-level
-#' average carbon dioxide (CO₂) emission factor from land-use change (excluding peatland drainage)
-#' in feed production (g CO₂/kg DM).
+#' average carbon dioxide (CO2) emission factor from land-use change (excluding peatland drainage)
+#' in feed production (g CO2/kg DM).
 #'
 #' @details
 #' The contribution is computed as:
@@ -139,22 +139,22 @@ calc_co2_ration_luc_nopeat <- function(
 }
 
 
-#' Calculate a ration component's contribution to carbon dioxide (CO₂) emissions from peatland drainage
+#' Calculate a ration component's contribution to carbon dioxide (CO2) emissions from peatland drainage
 #'
-#' Computes the contribution of an individual feed component to carbon dioxide (CO₂)
+#' Computes the contribution of an individual feed component to carbon dioxide (CO2)
 #' emissions from peatland drainage in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the total
 #' ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #' each herd_id and cohort, proportions should sum to 1.
-#' @param co2_feed_luc_peat Numeric. Carbon dioxide (CO₂) emission factor of a feed component,
-#' representing CO₂ emissions from peatland drainage in feed production,
-#' expressed per kilogram of dry matter intake (g CO₂/kg DM).
+#' @param co2_feed_luc_peat Numeric. Carbon dioxide (CO2) emission factor of a feed component,
+#' representing CO2 emissions from peatland drainage in feed production,
+#' expressed per kilogram of dry matter intake (g CO2/kg DM).
 #'
 #' @return Numeric. Contribution of an individual feed component to the diet-level
-#' average carbon dioxide (CO₂) emission factor from  peatland drainage in feed
-#' production (g CO₂/kg DM).
+#' average carbon dioxide (CO2) emission factor from  peatland drainage in feed
+#' production (g CO2/kg DM).
 #'
 #' @details
 #' The contribution is computed as:
@@ -174,22 +174,22 @@ calc_co2_ration_luc_peat <- function(
 }
 
 
-#' Calculate a ration component's contribution to nitrous oxide (N₂O) emissions from fertilizer use
+#' Calculate a ration component's contribution to nitrous oxide (N2O) emissions from fertilizer use
 #'
-#' Computes the contribution of an individual feed component to nitrous oxide (N₂O)
+#' Computes the contribution of an individual feed component to nitrous oxide (N2O)
 #' emissions from synthetic fertilizer in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the total
 #' ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #' each herd_id and cohort, proportions should sum to 1.
-#' @param n2o_feed_fertilizer Numeric. Nitrous oxide (N₂O) emission factor of a feed component,
-#' representing N₂O emissions from fertilizer use in feed production,
-#' expressed per kg of dry matter intake (g N₂O/kg DM).
+#' @param n2o_feed_fertilizer Numeric. Nitrous oxide (N2O) emission factor of a feed component,
+#' representing N2O emissions from fertilizer use in feed production,
+#' expressed per kg of dry matter intake (g N2O/kg DM).
 #'
 #' @return Numeric. Contribution of an individual feed component to the diet-level
-#' average nitrous oxide (N₂O) emission factor from fertilizer use in feed
-#' production (g N₂O/kg DM).
+#' average nitrous oxide (N2O) emission factor from fertilizer use in feed
+#' production (g N2O/kg DM).
 #'
 #' @details
 #' The contribution is computed as:
@@ -209,22 +209,22 @@ calc_n2o_ration_fertilizer <- function(
 }
 
 
-#' Calculate a ration component's contribution to nitrous oxide (N₂O) emissions from manure application and deposition
+#' Calculate a ration component's contribution to nitrous oxide (N2O) emissions from manure application and deposition
 #'
-#' Computes the contribution of an individual feed component to nitrous oxide (N₂O)
+#' Computes the contribution of an individual feed component to nitrous oxide (N2O)
 #' emissions from manure application to or deposition on soil in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the total
 #' ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #' each herd_id and cohort, proportions should sum to 1.
-#' @param n2o_feed_manure_applied Numeric. Nitrous oxide (N₂O) emission factor of a feed component,
-#' representing N₂O emissions from manure applied to or deposited on soil in feed production,
-#' expressed per kg of dry matter intake (g N₂O/kg DM).
+#' @param n2o_feed_manure_applied Numeric. Nitrous oxide (N2O) emission factor of a feed component,
+#' representing N2O emissions from manure applied to or deposited on soil in feed production,
+#' expressed per kg of dry matter intake (g N2O/kg DM).
 #'
 #' @return Numeric. Contribution of an individual feed component to the diet-level
-#' average nitrous oxide (N₂O) emission factor from manure applied to or deposited on
-#' soil in feed production (g N₂O/kg DM).
+#' average nitrous oxide (N2O) emission factor from manure applied to or deposited on
+#' soil in feed production (g N2O/kg DM).
 #'
 #' @details
 #' The contribution is computed as:
@@ -245,22 +245,22 @@ calc_n2o_ration_manure <- function(
 }
 
 
-#' Calculate a ration component's contribution to nitrous oxide (N₂O) emissions from crop residues decomposition
+#' Calculate a ration component's contribution to nitrous oxide (N2O) emissions from crop residues decomposition
 #'
-#' Computes the contribution of an individual feed component to nitrous oxide (N₂O)
+#' Computes the contribution of an individual feed component to nitrous oxide (N2O)
 #' emissions from crop residues decomposition in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the total
 #' ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #' each herd_id and cohort, proportions should sum to 1.
-#' @param n2o_feed_crop_residues Numeric. Nitrous oxide (N₂O) emission factor of a feed component,
-#' representing N₂O emissions from crop residues decomposition in feed production,
-#' expressed per kg of dry matter intake (g N₂O/kg DM).
+#' @param n2o_feed_crop_residues Numeric. Nitrous oxide (N2O) emission factor of a feed component,
+#' representing N2O emissions from crop residues decomposition in feed production,
+#' expressed per kg of dry matter intake (g N2O/kg DM).
 #'
 #' @return Numeric. Contribution of an individual feed component to the diet-level
-#' average nitrous oxide (N₂O) emission factor from crop residues decomposition
-#' in feed production (g N₂O/kg DM).
+#' average nitrous oxide (N2O) emission factor from crop residues decomposition
+#' in feed production (g N2O/kg DM).
 #'
 #' @details
 #' The contribution is computed as:
@@ -281,21 +281,21 @@ calc_n2o_ration_crop_residues <- function(
 }
 
 
-#' Calculate a ration component's contribution to methane (CH₄) emissions from rice cultivation
+#' Calculate a ration component's contribution to methane (CH4) emissions from rice cultivation
 #'
-#' Computes the contribution of an individual feed component to methane (CH₄)
+#' Computes the contribution of an individual feed component to methane (CH4)
 #' emissions from rice cultivation in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the total
 #' ration, expressed as its fraction of diet dry matter intake (fraction). Within
 #' each herd_id and cohort, proportions should sum to 1.
-#' @param ch4_feed_rice Numeric. Methane (CH₄) emission factor of a feed component,
-#' representing CH₄ emissions from rice cultivation in feed production,
-#' expressed per kg of dry matter intake (g CH₄/kg DM).
+#' @param ch4_feed_rice Numeric. Methane (CH4) emission factor of a feed component,
+#' representing CH4 emissions from rice cultivation in feed production,
+#' expressed per kg of dry matter intake (g CH4/kg DM).
 #'
 #' @return Numeric. Contribution of an individual feed component to the diet-level
-#' average methane (CH₄) emission factor from rice cultivation in feed production (g CH₄/kg DM).
+#' average methane (CH4) emission factor from rice cultivation in feed production (g CH4/kg DM).
 #'
 #' @details
 #' The contribution is computed as:

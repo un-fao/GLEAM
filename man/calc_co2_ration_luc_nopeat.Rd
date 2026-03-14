@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_emissions_ration.R
 \name{calc_co2_ration_luc_nopeat}
 \alias{calc_co2_ration_luc_nopeat}
-\title{Calculate a ration component's contribution to carbon dioxide (CO₂) emissions from land-use change (excluding peatland drainage)}
+\title{Calculate a ration component's contribution to carbon dioxide (CO2) emissions from land-use change (excluding peatland drainage)}
 \usage{
 calc_co2_ration_luc_nopeat(feed_ration_fraction, co2_feed_luc_nopeat)
 }
@@ -11,17 +11,17 @@ calc_co2_ration_luc_nopeat(feed_ration_fraction, co2_feed_luc_nopeat)
 ration, expressed as its fraction of diet dry matter intake (fraction). Within
 each herd_id and cohort, proportions should sum to 1.}
 
-\item{co2_feed_luc_nopeat}{Numeric. Carbon dioxide (CO₂) emission factor of a feed component,
-representing CO₂ emissions from land-use change in feed production (excluding peatland drainage),
-expressed per kilogram of dry matter intake (g CO₂/kg DM).}
+\item{co2_feed_luc_nopeat}{Numeric. Carbon dioxide (CO2) emission factor of a feed component,
+representing CO2 emissions from land-use change in feed production (excluding peatland drainage),
+expressed per kilogram of dry matter intake (g CO2/kg DM).}
 }
 \value{
 Numeric. Contribution of an individual feed component to the diet-level
-average carbon dioxide (CO₂) emission factor from land-use change (excluding peatland drainage)
-in feed production (g CO₂/kg DM).
+average carbon dioxide (CO2) emission factor from land-use change (excluding peatland drainage)
+in feed production (g CO2/kg DM).
 }
 \description{
-Computes the contribution of an individual feed component to carbon dioxide (CO₂)
+Computes the contribution of an individual feed component to carbon dioxide (CO2)
 emissions from land-use change in feed production (excluding peatland drainage),
 using feed-specific emission factors weighted by the component's share in the ration.
 }
