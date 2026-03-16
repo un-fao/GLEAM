@@ -346,7 +346,7 @@ run_aggregation_module <- function(
     by = "variable_name"
   )
 
-  # 12.2 Production
+  # 11.2 Production
   production_dt <- data.table::rbindlist(gleam_production_meta)
   data.table::setnames(production_dt, "production_source", "variable_name")
 
@@ -356,7 +356,7 @@ run_aggregation_module <- function(
     by = "variable_name"
   )
 
-  # 12.3 Feed
+  # 11.3 Feed
   feed_dt <- data.table::rbindlist(gleam_feed_meta)
   data.table::setnames(feed_dt, "feed_source", "variable_name")
 
@@ -366,7 +366,7 @@ run_aggregation_module <- function(
     by = "variable_name"
   )
 
-  # 12.4 Nitrogen balance
+  # 11.4 Nitrogen balance
   nitrogen_balance_dt <- data.table::rbindlist(gleam_nitrogen_balance_meta)
   data.table::setnames(nitrogen_balance_dt, "nitrogen_balance_source", "variable_name")
 
