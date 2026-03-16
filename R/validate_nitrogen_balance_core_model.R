@@ -2,8 +2,8 @@
 #'
 #' @noRd
 validate_nitrogen_intake_inputs <- function(ration_intake, ration_nitrogen) {
-  validate_param_range(ration_intake, "ration_intake")
-  validate_param_range(ration_nitrogen, "ration_nitrogen")
+  validate_param_range(ration_intake)
+  validate_param_range(ration_nitrogen)
 }
 
 #' Validate inputs for calc_nitrogen_retention
@@ -31,36 +31,36 @@ validate_nitrogen_retention_inputs <- function(
     # nothing to validate
   } else if (species_short == "PGS") {
     if (cohort_short == "FA") {
-      validate_param_range(litter_size, "litter_size")
-      validate_param_range(parturition_rate, "parturition_rate")
-      validate_param_range(live_weight_at_weaning, "live_weight_at_weaning")
-      validate_param_range(live_weight_at_birth, "live_weight_at_birth")
+      validate_param_range(litter_size)
+      validate_param_range(parturition_rate)
+      validate_param_range(live_weight_at_weaning)
+      validate_param_range(live_weight_at_birth)
     } else if (cohort_short == "FS") {
-      validate_param_range(daily_weight_gain, "daily_weight_gain")
+      validate_param_range(daily_weight_gain)
       validate_positive_numeric(pregnancy_duration)
-      validate_param_range(cohort_duration_days, "cohort_duration_days")
-      validate_param_range(litter_size, "litter_size")
-      validate_param_range(parturition_rate, "parturition_rate")
-      validate_param_range(live_weight_at_weaning, "live_weight_at_weaning")
-      validate_param_range(live_weight_at_birth, "live_weight_at_birth")
+      validate_param_range(cohort_duration_days)
+      validate_param_range(litter_size)
+      validate_param_range(parturition_rate)
+      validate_param_range(live_weight_at_weaning)
+      validate_param_range(live_weight_at_birth)
     } else {
-      validate_param_range(daily_weight_gain, "daily_weight_gain")
+      validate_param_range(daily_weight_gain)
     }
   } else if (species_short %in% gleam_species_milk_producers) {
     if (cohort_short == "FA") {
-      if (!is.na(milk_protein_fraction)) validate_param_range(milk_protein_fraction, "milk_protein_fraction")
-      if (!is.na(milk_yield_day)) validate_param_range(milk_yield_day, "milk_yield_day")
-      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain, "daily_weight_gain")
+      if (!is.na(milk_protein_fraction)) validate_param_range(milk_protein_fraction)
+      if (!is.na(milk_yield_day)) validate_param_range(milk_yield_day)
+      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain)
       if (species_short %in% c("SHP", "GTS", "CML") && !is.na(fibre_yield_year)) {
-        validate_param_range(fibre_yield_year, "fibre_yield_year")
+        validate_param_range(fibre_yield_year)
       }
     } else if (cohort_short %in% c("FS", "MA", "MS")) {
-      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain, "daily_weight_gain")
+      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain)
       if (species_short %in% c("SHP", "GTS", "CML") && !is.na(fibre_yield_year)) {
-        validate_param_range(fibre_yield_year, "fibre_yield_year")
+        validate_param_range(fibre_yield_year)
       }
     } else {
-      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain, "daily_weight_gain")
+      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain)
     }
   }
 

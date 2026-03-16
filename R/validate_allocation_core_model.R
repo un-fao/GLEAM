@@ -28,10 +28,10 @@ validate_allocation_milk_inputs <- function(
     milk_lactose_fraction_standard
 ) {
   # Range checks via parameter_ranges
-  validate_param_range(milk_production_fpcm_cohort, "milk_production_fpcm_cohort")
-  validate_param_range(milk_protein_fraction_standard, "milk_protein_fraction_standard")
-  validate_param_range(milk_fat_fraction_standard, "milk_fat_fraction_standard")
-  validate_param_range(milk_lactose_fraction_standard, "milk_lactose_fraction_standard")
+  validate_param_range(milk_production_fpcm_cohort)
+  validate_param_range(milk_protein_fraction_standard)
+  validate_param_range(milk_fat_fraction_standard)
+  validate_param_range(milk_lactose_fraction_standard)
 }
 
 #' Validate inputs for calc_meat_allocation_energy
@@ -81,12 +81,12 @@ validate_allocation_meat_inputs <- function(
   validate_cohort_code(cohort_short)
   validate_scalar_numeric(meat_production_live_weight_cohort)
 
-  validate_param_range(meat_production_live_weight_cohort, "meat_production_live_weight_cohort")
+  validate_param_range(meat_production_live_weight_cohort)
 
   # Slaughter and birth weight only needed for non-PGS species
   if (species_short != "PGS") {
-    validate_param_range(live_weight_cohort_at_slaughter, "live_weight_cohort_at_slaughter")
-    validate_param_range(live_weight_at_birth, "live_weight_at_birth")
+    validate_param_range(live_weight_cohort_at_slaughter)
+    validate_param_range(live_weight_at_birth)
   }
 
   # ratio_me_to_ne only needed for CML
@@ -147,9 +147,9 @@ validate_allocation_fibre_inputs <- function(
   # Non-fibre species: all numeric args are unused — no further validation
   if (!species_short %in% c("SHP", "GTS", "CML")) return()
 
-  validate_param_range(metabolic_energy_req_fibre_production, "metabolic_energy_req_fibre_production")
-  validate_param_range(cohort_stock_size, "cohort_stock_size")
-  validate_param_range(simulation_duration, "simulation_duration")
+  validate_param_range(metabolic_energy_req_fibre_production)
+  validate_param_range(cohort_stock_size)
+  validate_param_range(simulation_duration)
 
   # ratio_me_to_ne only needed for CML
   if (species_short == "CML") {
@@ -202,9 +202,9 @@ validate_allocation_work_inputs <- function(
 ) {
   validate_animal_species(species_short)
 
-  validate_param_range(metabolic_energy_req_work, "metabolic_energy_req_work")
-  validate_param_range(cohort_stock_size, "cohort_stock_size")
-  validate_param_range(simulation_duration, "simulation_duration")
+  validate_param_range(metabolic_energy_req_work)
+  validate_param_range(cohort_stock_size)
+  validate_param_range(simulation_duration)
 
   # ratio_me_to_ne only needed for CML
   if (species_short == "CML") {

@@ -16,7 +16,7 @@ validate_ym_inputs <- function(
 ) {
   validate_scalar_character(species_short)
   validate_scalar_character(cohort_short)
-  validate_param_range(ration_digestibility_fraction, "ration_digestibility_fraction")
+  validate_param_range(ration_digestibility_fraction)
 }
 
 #' Validate inputs for calc_ch4_enteric
@@ -47,8 +47,8 @@ validate_enteric_emission_inputs <- function(
     return()
   }
 
-  validate_param_range(ch4_conversion_factor_ym, "ch4_conversion_factor_ym")
-  validate_param_range(ch4_mitigation_factor, "ch4_mitigation_factor")
-  validate_param_range(ration_gross_energy, "ration_gross_energy")
-  validate_param_range(ration_intake, "ration_intake")
+  validate_param_range(ch4_conversion_factor_ym)
+  validate_param_range(ch4_mitigation_factor)
+  validate_param_range(ration_gross_energy)
+  validate_param_range(ration_intake)
 }
