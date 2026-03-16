@@ -171,17 +171,17 @@ custom workflows. The pipeline consists of the following steps:
 
 | # | Module | Function | Key outputs |
 |---|--------|----------|-------------|
-| 1 | Herd simulation (optional) | `run_demographic_herd_module()` | Cohort sizes, offtake numbers, herd growth rate |
-| 2 | Cohort weights | `run_weights_module()` | Initial, average, and final live weights; daily weight gain |
-| 3 | Ration nutritional content | `run_ration_quality_module()` | Diet gross energy, digestibility, nitrogen, ash |
-| 4 | Energy requirements and ration intake | `run_metabolic_energy_req_module()` | Energy partitions (maintenance, growth, lactation, etc.); dry matter intake |
-| 5 | Enteric emissions | `run_emissions_enteric_module()` | Enteric CH₄ emissions |
-| 6 | Nitrogen balance | `run_nitrogen_balance_module()` | Nitrogen intake, retention, and excretion |
-| 7 | Manure emissions | `run_emissions_manure_module()` | CH₄ and N₂O from manure management |
-| 8 | Feed production emissions | `run_emissions_ration_module()` | GHG from feed production |
-| 9 | Production outputs | `run_production_module()` | Production of milk, meat, and fibre |
-| 10 | Emission allocation | `run_allocation_module()` | Biophysical allocation shares and allocated emissions per commodity |
-| 11 | Aggregation and reporting | `run_aggregation_module()` | Herd-level aggregation of emissions and conversion to CO₂eq |
+| 1 | Herd simulation (optional) | [`run_demographic_herd_module()`](../reference/run_demographic_herd_module.html) | Cohort sizes, offtake numbers, herd growth rate |
+| 2 | Cohort weights | [`run_weights_module()`](../reference/run_weights_module.html) | Initial, average, and final live weights; daily weight gain |
+| 3 | Ration nutritional content | [`run_ration_quality_module()`](../reference/run_ration_quality_module.html) | Diet gross energy, digestibility, nitrogen, ash |
+| 4 | Metabolic energy requirements and ration intake | [`run_metabolic_energy_req_module()`](../reference/run_metabolic_energy_req_module.html) | Energy partitions (maintenance, growth, lactation, etc.); dry matter intake |
+| 5 | Enteric emissions | [`run_emissions_enteric_module()`](../reference/run_emissions_enteric_module.html) | Enteric CH₄ emissions |
+| 6 | Nitrogen balance | [`run_nitrogen_balance_module()`](../reference/run_nitrogen_balance_module.html) | Nitrogen intake, retention, and excretion |
+| 7 | Manure emissions | [`run_emissions_manure_module()`](../reference/run_emissions_manure_module.html) | CH₄ and N₂O from manure management |
+| 8 | Feed production emissions | [`run_emissions_ration_module()`](../reference/run_emissions_ration_module.html) | GHG from feed production |
+| 9 | Production outputs | [`run_production_module()`](../reference/run_production_module.html) | Production of milk, meat, and fibre |
+| 10 | Emission allocation | [`run_allocation_module()`](../reference/run_allocation_module.html) | Biophysical allocation shares and allocated emissions per commodity |
+| 11 | Aggregation and reporting | [`run_aggregation_module()`](../reference/run_aggregation_module.html) | Herd-level aggregation of emissions and conversion to CO₂eq |
 
 Each module validates its inputs before execution, checking for required
 columns, valid value ranges, and consistency across data tables. This ensures
@@ -193,6 +193,11 @@ run_*_module()          # orchestrator: validates, calls core functions, assembl
     └─ core_model_*.R     # scientific functions: one exported function per quantity
          └─ validate_*.R  # input guards: called first in every function
 ```
+
+```{r, echo=FALSE, eval = TRUE, out.width="90%", fig.cap="Overview of the GLEAM pipeline wih the different modules"}
+knitr::include_graphics("images/gleamx_package_module_pipeline.png")
+```
+
 
 ## Running individual modules
 
@@ -208,6 +213,9 @@ energy_results <- run_metabolic_energy_req_module(
   herd_level_data   = my_herd_data
 )
 ```
+
+An overview of all modules, their inputs and outputs is provided in the [Module Overview vignette](gleam-modules-overview.html).
+
 
 ## Using individual scientific functions
 
