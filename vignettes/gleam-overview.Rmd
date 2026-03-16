@@ -186,7 +186,13 @@ custom workflows. The pipeline consists of the following steps:
 Each module validates its inputs before execution, checking for required
 columns, valid value ranges, and consistency across data tables. This ensures
 that errors are caught early and do not propagate silently through the
-pipeline.
+pipeline. A three-tier structure is implemented consistently throughout:
+```{r }
+run_*_module()          # orchestrator: validates, calls core functions, assembles output
+    └─ core_model_*.R     # scientific functions: one exported function per quantity
+         └─ validate_*.R  # input guards: called first in every function
+```
+Every public function calls its validator before any computation. Constants are centralized in `gleam_constants.R`.
 
 ## Running individual modules
 
