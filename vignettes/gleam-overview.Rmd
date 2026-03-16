@@ -194,10 +194,26 @@ run_*_module()          # orchestrator: validates, calls core functions, assembl
          └─ validate_*.R  # input guards: called first in every function
 ```
 
-```{r, echo=FALSE, eval = TRUE, out.width="90%", fig.cap="Overview of the GLEAM pipeline wih the different modules"}
-knitr::include_graphics("images/gleamx_package_module_pipeline.png")
-```
+<details open>
+<summary><strong>Overview of the GLEAM pipeline wih the different modules:</strong></summary>
 
+<div style="position:relative; overflow:visible; margin:1em 0;">
+  <img src="images/gleamx_package_module_pipeline.png"
+       alt="Overview of the GLEAM pipeline with the different modules"
+       style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:top left; position:relative; z-index:1;"
+       onclick="
+         if(this.style.transform === 'scale(3)'){
+           this.style.transform='scale(1)';
+           this.style.cursor='zoom-in';
+           this.style.zIndex='1';
+         } else {
+           this.style.transform='scale(3)';
+           this.style.cursor='zoom-out';
+           this.style.zIndex='9999';
+         }">
+</div>
+
+</details>
 
 ## Running individual modules
 
