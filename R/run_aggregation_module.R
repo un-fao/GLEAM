@@ -83,16 +83,10 @@
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 #'     to the same herd.}
+#'   
 #'     \item{species_short}{Character. Code identifying the livestock species.
-#'     Supported values include:
-#'       \itemize{
-#'         \item \code{PGS}: pigs
-#'         \item \code{CML}: camels
-#'         \item \code{CTL}: cattle
-#'         \item \code{BFL}: buffalo
-#'         \item \code{SHP}: sheep
-#'         \item \code{GTS}: goats
-#'       }}
+#'     Supported values include PGS, CML, CTL, BFL, SHP, GTS
+#'   
 #'     \item{variable_name}{Character. Names of emission variables to which
 #'     allocation should be applied (e.g., "ch4_enteric", "ch4_manure_pasture",
 #'     "ch4_manure_burned", "ch4_manure_other", "n2o_manure_pasture_direct",
