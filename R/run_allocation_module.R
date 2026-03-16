@@ -1,4 +1,4 @@
-﻿#' Run Allocation Shares
+#' Run Allocation Shares
 #'
 #' Computes biophysical allocation shares for livestock commodities by calculating
 #' cohort-level energy requirements for meat, milk, fibre, work, and eggs,
@@ -38,17 +38,9 @@
 #'   \describe{
 #'    \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 #'     to the same herd.}
-#'       \item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
+#'       \item{species_short}{Character. Species short code (CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
 #'        internal lookup table. Supported values include:
-#'        \itemize{
-#'        \item \code{Cattle}
-#'        \item \code{Buffalo}
-#'        \item \code{Sheep}
-#'        \item \code{Goats}
-#'        \item \code{Chicken}
-#'        \item \code{Pigs}
-#'        \item \code{Camels}
-#'        }}
+#'      
 #'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
 #'     Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033.}

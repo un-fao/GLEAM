@@ -132,7 +132,7 @@
 #'         \item `cohort_stock_size` - Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts (# heads) (cohorts = (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)).
 #'         This corresponds to `cohort_stock_start` returned by \code{\link{calc_projected_population_size}}, as it reflects the size of the population by cohort while preserving the total population size (`herd_size_total`) provided in the inputs.
 #'         \item `offtake_heads` - Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`).
-#'         \item `offtake_heads_assessment` - Numeric vector of legth 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`).
+#'         \item `offtake_heads_assessment` - Numeric vector of length 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`).
 #'       }
 #'     }
 #'     \item{`herd_level_results`}{A `data.table` with one row per herd containing all original
