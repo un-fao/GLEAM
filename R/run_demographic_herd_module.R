@@ -89,10 +89,10 @@
 #' Lesnoff, M. (2013). \emph{DYNMOD: A spreadsheet interface for demographic projections of tropical
 #' livestock populations, User's manual}. CIRAD, Montpellier, France.
 #'
-#' @param cohort_level_data A `data.table` with the one row per herd and cohort, and the following mandatory columns::
+#' @param cohort_level_data A `data.table` with the one row per herd and cohort, and the following mandatory columns:
 #'   \describe{
 #'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'     \item{`cohort_short`}{"Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+#'     \item{`cohort_short`}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -102,9 +102,9 @@
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'     }
 #'       }
-#'     \item{`cohort_duration_days`}{Numeric vector of legth 6. Amount of time that each animal spends in a specific cohort (days).}
-#'     \item{`offtake_rate`}{Numeric vector of legth 6. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
-#'     \item{`death_rate`}{Numeric vector of legth 6. Fraction of deaths in a herd over a year for each sex-age cohort (fraction).}
+#'     \item{`cohort_duration_days`}{Numeric vector of length 6. Amount of time that each animal spends in a specific cohort (days).}
+#'     \item{`offtake_rate`}{Numeric vector of length 6. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
+#'     \item{`death_rate`}{Numeric vector of length 6. Fraction of deaths in a herd over a year for each sex-age cohort (fraction).}
 #'   }
 #' @param herd_level_data A `data.table` with one row per herd, and the following mandatory columns:
 #'   \describe{
