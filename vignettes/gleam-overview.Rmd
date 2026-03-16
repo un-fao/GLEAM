@@ -59,7 +59,7 @@ Install the package from the FAO GitHub repository:
 install.packages("devtools")
 
 # Install the gleam package from GitHub
-devtools::install_git("https://github.com/APPLITICS/gleam.git")
+devtools::install_git("https://github.com/un-fao/GLEAM.git")
 ```
 
 The package depends on `data.table` for all data manipulation. All input and
