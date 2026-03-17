@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_demographic_herd.R
 \name{calc_transition_probabilities}
 \alias{calc_transition_probabilities}
-\title{Compute Transition Probabilities for Sex-Age Classes}
+\title{Calculate transition probabilities for sex-age classes}
 \usage{
 calc_transition_probabilities(cohort_duration_days, offtake_rate, death_rate)
 }
@@ -27,9 +27,14 @@ A named list with:
 \item{probability_growth}{Named numeric vector of length 10. Probability of growing into the next age class for 10 cohorts (fraction)
 (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 }
+
+This function is part of the \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}.
 }
 \description{
 Calculates hazard rates and daily transition probabilities (death, offtake, survival, and growth)
 across different sex-age cohorts. Converts annual inputs to daily hazards, then derives daily probabilities
 from those hazards.
+}
+\seealso{
+\code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}
 }

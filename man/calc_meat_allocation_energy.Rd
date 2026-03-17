@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_allocation.R
 \name{calc_meat_allocation_energy}
 \alias{calc_meat_allocation_energy}
-\title{Meat Energy Requirement for Allocation}
+\title{Calculate meat energy requirements (for biophysical allocation)}
 \usage{
 calc_meat_allocation_energy(
   species_short,
@@ -54,9 +54,9 @@ period).
 For pigs (\code{PGS}), the function returns \code{0} by design.
 }
 \description{
-Computes the energy required for meat production over the assessment period
-(MJ/cohort/assessment period), based on total live weight produced by the
-cohort.
+Calculates the energy required for meat production over the assessment period
+(MJ/cohort/assessment period), based on total live weight gained by the
+cohort from birth to slaughter.
 }
 \details{
 This function provides the meat-related energy term used in a biophysical
@@ -104,10 +104,12 @@ energy formulations (further details in \code{\link{calc_metabolic_energy_req_gr
 \item \strong{For \code{PGS}}:
 
 Growth energy is not calculated in this
-function and \code{NA} is returned. In downstream processing,
+function and \code{0} is returned. In downstream processing,
 \code{\link{calc_allocation_shares}} assigns 100\% of the allocation to the
 edible meat commodity for pig systems.
 }
+
+This function is part of the \code{\link[=run_allocation_module]{run_allocation_module()}}.
 }
 \references{
 ISO. (2006). \emph{Environmental management — Life cycle assessment —
@@ -136,6 +138,7 @@ supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 and Performance (LEAP) Partnership. FAO, Rome, Italy.
 }
 \seealso{
+\code{\link{run_allocation_module}},
 \code{\link{calc_meat_production}},
 \code{\link{run_production_module}},
 \code{\link{calc_allocation_shares}}

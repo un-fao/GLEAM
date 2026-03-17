@@ -1,11 +1,12 @@
-#' Calculate Totals by Cohort
+#' Calculate totals by cohort
 #'
-#' Computes the total value for each variable at the cohort level over the
+#' Calculates the total value for each variable at the cohort level over the
 #' full assessment period. Values are harmonized to a common unit
 #' (\code{kg/cohort/assessment duration}) by accounting for cohort stock size
 #' and simulation duration.
 #'
-#' @param value Numeric. Variable value expressed as (unit)/head/day for non-production variables and (unit)/cohort/assessment duration for production variables. Production variables are those included in production_list.
+#' @param value Numeric. Variable value expressed as (unit)/head/day for non-production variables and (unit)/cohort/assessment duration for production variables. 
+#' Production variables can be explored from the list 'gleam_production_meta'.
 #' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
 #' @param ration_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 #' @param feed_emissions_list List of emission-source definitions for feed-related
@@ -54,8 +55,13 @@
 #' For emissions (except emissions from feed), feed, and nitrogen balance variables:
 #' \deqn{value\_total = value \times cohort\_stock\_size \times simulation\_duration}
 #'
-#' For emissions from feed:
+#' For feed emissions variables:
 #' \deqn{value\_total = value \times ration\_intake \times cohort\_stock\_size \times simulation\_duration / 1000}
+#' 
+#' This function is part of the [run_aggregation_module()].
+#' 
+#' @seealso
+#' [run_aggregation_module()]
 #'
 #' @export
 calc_cohort_totals <- function(
@@ -89,10 +95,10 @@ calc_cohort_totals <- function(
 }
 
 
-#' Calculate Allocated Emissions
+#' Calculate allocated greenhouse gas emissions (GHG)
 #'
-#' Computes emissions attributable to specific commodities by applying
-#' allocation shares to total herd-level emissions.
+#' Calculates the greenhouse gas emissions (GHG) attributable to specific commodities
+#' by applying allocation shares to total herd-level emissions.
 #'
 #' @param value Numeric. Total herd-level emissions by source before allocation to commodities (kg gas).
 #' @param allocation_share Numeric. Allocation share assigned to the commodity for the corresponding emission source (fraction).
@@ -108,7 +114,10 @@ calc_cohort_totals <- function(
 #'
 #' \deqn{value\_allocated = value \times allocation\_share}
 #'
+#' This function is part of the [run_aggregation_module()].
+#'
 #' @seealso
+#' [run_aggregation_module()],
 #' [run_allocation_module()]
 #'
 #' @export
@@ -123,9 +132,9 @@ calc_allocated_emissions <- function(
 }
 
 
-#' Convert CH4 and N2O emissions to CO2-equivalents (CO2eq) using GWP factors
+#' Convert methane (CH4) and nitrous oxide (N2O) emissions to CO2-equivalents (CO2eq) using Global Warming Potentials (GWP) factors
 #'
-#' Computes CO2-equivalent (CO2eq) emissions for CH4 and N2O based on
+#' Calculates CO2-equivalent (CO2eq) emissions for CH4 and N2O based on
 #' 100-year Global Warming Potentials (GWP) reported in IPCC assessment reports.
 #'
 #' @param gas Character. Gas type for each observation. Supported values:
@@ -149,8 +158,8 @@ calc_allocated_emissions <- function(
 #'
 #' @return List with elements:
 #' \describe{
-#'   \item{value_co2eq}{Numeric vector. Emissions expressed as CO2-equivalents (kg CO2e).}
-#'   \item{gwp}{Numeric vector. Global Warming Potential factor applied to each observation (kg CO2e/kg gas).}
+#'   \item{value_co2eq}{Numeric vector. Emissions expressed as CO2-equivalents (kg CO2eq).}
+#'   \item{gwp}{Numeric vector. Global Warming Potential factor applied to each observation (kg CO2eq/kg gas).}
 #' }
 #'
 #' @details
@@ -160,6 +169,11 @@ calc_allocated_emissions <- function(
 #'
 #' where \code{gwp} is the gas-specific 100-year Global Warming Potential
 #' factor from the selected IPCC assessment report.
+#'
+#' This function is part of the [run_aggregation_module()].
+#'
+#' @seealso
+#' [run_aggregation_module()],
 #'
 #' @references
 #' IPCC (2007). Climate Change 2007: The Physical Science Basis. Contribution

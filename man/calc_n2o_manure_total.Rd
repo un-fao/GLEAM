@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_emissions_manure.R
 \name{calc_n2o_manure_total}
 \alias{calc_n2o_manure_total}
-\title{Calculate total N2O emissions from manure}
+\title{Calculate total Nitrous Oxide (N2O) emissions from manure}
 \usage{
 calc_n2o_manure_total(
   n2o_manure_pasture_vol,
@@ -139,4 +139,9 @@ calc_n2o_manure_total(
   n2o_manure_other_direct = 0.01033
 )
 
+This function is part of the [run_emissions_manure_module()].
+
+}
+\seealso{
+\code{\link{run_emissions_manure_module}}
 }

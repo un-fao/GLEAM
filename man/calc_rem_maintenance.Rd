@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_rem_maintenance}
 \alias{calc_rem_maintenance}
-\title{Calculate Ratio of Net Energy available for Maintenance in the diet (REM - Net Energy for Maintenance / Digestible Energy)}
+\title{Calculate ratio of net energy available for maintenance in the diet (REM - Net Energy for Maintenance / Digestible Energy)}
 \usage{
 calc_rem_maintenance(species_short, ration_digestibility_fraction = NA_real_)
 }
@@ -25,7 +25,7 @@ the feed ration, expressed as ratio of digestible to gross energy content (fract
 Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).
 }
 \description{
-Computes the ratio of net energy available in the diet for maintenance to digestible energy.
+Calculates the ratio of net energy available in the diet for maintenance to digestible energy.
 }
 \details{
 This component follows the IPCC Tier 2 partitioning approach and it returns the value for
@@ -40,6 +40,8 @@ net\_energy\_maintenance\_digestible\_energy\_ratio =
 
 For the Other species REM is not applicable and the function
 returns \code{NA_real_}.
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 Gibbs M.J., Johnson D.E. (1993) \emph{Livestock Emissions}.
@@ -53,6 +55,7 @@ IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories
 from Livestock and Manure Management, Equation 10.14.
 }
 \seealso{
+\code{\link{run_metabolic_energy_req_module}},
 \code{\link{calc_ration_digestibility}}
 \code{\link{calc_total_metabolic_energy_req}}
 \code{\link{calc_ration_intake}}

@@ -46,7 +46,7 @@ of metabolizable energy to gross energy content (fraction).
 }
 }
 \description{
-Computes species-specific feed digestibility fractions by feed component.
+Calculates species-specific feed digestibility fractions by feed component.
 }
 \details{
 Digestibility is computed as the ratio of usable energy to gross energy:
@@ -56,6 +56,11 @@ For ruminants and pigs, usable energy is represented by \code{digestible_energy}
 which accounts for fecal energy losses. For chickens, \code{metabolizable_energy}
 (ME) is used instead of \code{digestible_energy} because urinary losses (excreted as uric acid) and fecal
 excretions are voided together, making fecal energy losses difficult to measure
-separately. \code{metabolizable_energy} therefore provides a more appropriate and
+separately. Therefore, \code{metabolizable_energy} provides a more appropriate and
 standard measure of usable dietary energy in poultry nutrition.
+
+This function is part of the \code{\link[=run_ration_quality_module]{run_ration_quality_module()}}.
+}
+\seealso{
+\code{\link{run_ration_quality_module}}
 }

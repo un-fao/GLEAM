@@ -1,8 +1,8 @@
-#' Run Herd Simulation
+#' Run Demographic Herd Module Pipeline
 #'
 #' This function takes herd- and cohort-level demographic inputs and estimates a steady-state
 #' sex–age herd structure compatible with downstream calculations in the Global Livestock
-#' Environmental Assessment Model (GLEAM). In addition to cohort population sizes, it derives
+#' Environmental Assessment Model (GLEAM) computational pipeline [run_gleam()]. In addition to cohort population sizes, it derives
 #' population growth rates, and offtake numbers.
 #' The steady state is defined as a constant sex–age cohort structure over time,
 #' with population size potentially growing or declining at a constant rate. 
@@ -110,7 +110,7 @@
 #'   \describe{
 #'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 #'     \item{`parturition_rate`}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
-#'     \item{`litter_size`}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+#'     \item{`litter_size`}{Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 #'     \item{`birth_fraction_female`}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
 #'     \item{`herd_size_total`}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
 #'   }

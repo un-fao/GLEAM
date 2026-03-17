@@ -1,13 +1,13 @@
-#' Calculate Volatile Solids for Manure Emissions
+#' Calculate Volatile Solids (VS)
 #'
-#' Computes daily volatile solids (VS) excretion in manure (kg VS/head/day).
+#' Calculates daily volatile solids (VS) excretion in manure (kg VS/head/day).
 #' VS represent the organic fraction of manure dry matter,
 #' including both biodegradable and non-biodegradable organic material.
 #' VS is a key intermediate variable required for estimating methane (CH4)
 #' emissions from manure management systems under IPCC methodologies.
 #'
 #' @param ration_intake Numeric. Average daily dry matter intake of feed (kg DM/head/day).
-#' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
+#' @param ration_digestibility_fraction Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #' @param ration_urinary_energy_fraction Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).
 #' @param ration_ash Numeric. Average ash content of feed, calculated as a fraction of the dry matter intake (kg ash/kg DM).
 #'
@@ -50,15 +50,20 @@
 #' The volatile solids excretion is then calculated as:
 #'
 #' \deqn{
-#'   volatile\_solids =
-#'   dry\_matter\_intake \times (1 - diet\_digestibility\_fraction + urinary\_energy\_fraction)
-#'   \times (1 - diet\_ash)
+#' volatile\_solids =
+#' dry\_matter\_intake \times
+#' (1 - diet\_digestibility\_fraction + urinary\_energy\_fraction) \times
+#' (1 - diet\_ash)
 #' }
 #'
 #'   
 #' The resulting calculations are algebraically equivalent 
 #' to the IPCC approach and fully consistent with Equation 10.24.
 #'
+#' This function is part of the [run_emissions_manure_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_manure_module}}
 #' 
 #' @examples
 #' calc_volatile_solids <- calc_volatile_solids(
@@ -93,13 +98,15 @@ calc_volatile_solids <- function(
 
 #' Calculate methane (CH4) emissions from manure management systems
 #'
-#' Computes daily methane emissions from manure management using IPCC-based parameters and
+#' Calculates daily methane emissions from manure management using IPCC-based parameters and
 #' separates emissions from manure deposited on pasture, manure burned for fuel, and all other manure
 #' management systems.
 #'
-#' @param ratio_m3CH4_to_kgCH4 Numeric. Conversion factor used to convert methane (CH4) from volumetric unit (m3) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m3.
+#' @param ratio_m3CH4_to_kgCH4 Numeric. Conversion factor used to convert methane (CH4) 
+#' from volumetric unit (m3) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m3.
 #'
-#' @param volatile_solids Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
+#' @param volatile_solids Numeric. Total volatile solids (VS) excreted per animal per day, 
+#' representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
 #'
 #' @param ... A variable number of manure management system (MMS) arguments.
 #'   Each MMS must be provided as a named numeric vector with exactly the
@@ -108,7 +115,7 @@ calc_volatile_solids <- function(
 #'     \item{manure_management_system_fraction}{
 #'       Numeric. Fraction of total manure excreted by animals in a given herd
 #'       and cohort that is handled in a specific manure management system.
-#'       Values range from 0 to 1. The sum of all fractions for each herd_id
+#'       Values ranges from 0 to 1. The sum of all fractions for each herd_id
 #'       must equal 1.
 #'     }
 #'     \item{methane_conversion_factor_mcf}{
@@ -153,7 +160,7 @@ calc_volatile_solids <- function(
 #'
 #' In the IPCC formulation, emissions are determined by combining:
 #' \itemize{
-#'   \item daily volatile solids excretion (\code{volatile_solids}),
+#'   \item daily volatile solids excretion (\code{volatile_solids}) - see \code{\link{calc_volatile_solids}},
 #'   \item the maximum methane-producing capacity (\code{b0}),
 #'   \item the methane conversion factor (\code{mcf}) for each manure
 #'         management system,
@@ -200,6 +207,12 @@ calc_volatile_solids <- function(
 #'     ch4_max_producing_capacity_bo = 0.13
 #'   )
 #' )
+#'
+#' This function is part of the [run_emissions_manure_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_manure_module}},
+#'   \code{\link{calc_volatile_solids}}
 #'
 #' @references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
@@ -277,7 +290,7 @@ calc_ch4_manure <- function(
 
 #' Calculate direct Nitrous Oxide (N2O) emissions from manure management systems
 #'
-#' Computes daily direct nitrous oxide (N2O) emissions from manure management
+#' Calculates daily direct nitrous oxide (N2O) emissions from manure management
 #' using IPCC-based parameters and separates emissions from manure deposited on pasture,
 #' manure burned for fuel, and all other manure management systems.
 #'
@@ -294,7 +307,7 @@ calc_ch4_manure <- function(
 #'     \item{manure_management_system_fraction}{
 #'       Numeric. Fraction of total manure excreted by animals in a given
 #'       herd and cohort that is handled in a specific manure management
-#'       system. Value range from 0 to 1. The sum of all fractions for each herd_id must equal 1.
+#'       system. Value ranges from 0 to 1. The sum of all fractions for each herd_id must equal 1.
 #'     }
 #'     \item{n2o_ef3}{
 #'       Numeric. Emission factor for direct nitrous oxide (N2O)
@@ -393,12 +406,18 @@ calc_ch4_manure <- function(
 #' Daily emissions are computed as:
 #'
 #' \deqn{
-#'   N2O =
-#'   nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times
-#'   \sum \left(
-#'     manure\_management\_system\_fraction \times n2o\_ef3
-#'   \right)
+#' \begin{aligned}
+#' N2O &= nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times \\
+#' & \sum \left(
+#' manure\_management\_system\_fraction \times n2o\_ef3
+#' \right)
+#' \end{aligned}
 #' }
+#' 
+#' This function is part of the [run_emissions_manure_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_manure_module}}
 #' 
 #' @references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
@@ -462,7 +481,7 @@ calc_n2o_manure_direct <- function(
 
 #' Calculate indirect Nitrous Oxide (N2O) emissions from manure volatilization
 #'
-#' Computes daily indirect nitrous oxide (N2O) emissions resulting from
+#' Calculates daily indirect nitrous oxide (N2O) emissions resulting from
 #' atmospheric deposition of volatilised nitrogen (NH3–N and NOx–N) from manure
 #' management systems and separates emissions from manure deposited on pasture, manure burned for fuel, and
 #' all other manure management systems.
@@ -480,7 +499,7 @@ calc_n2o_manure_direct <- function(
 #'     \item{manure_management_system_fraction}{
 #'       Numeric. Fraction of total manure excreted by animals in a given herd
 #'       and cohort that is handled in a specific manure management system.
-#'       Values range from 0 to 1. The sum of all fractions for each herd_id
+#'       Values ranges from 0 to 1. The sum of all fractions for each herd_id
 #'       must equal 1.
 #'     }
 #'     \item{n2o_ef4}{
@@ -593,14 +612,20 @@ calc_n2o_manure_direct <- function(
 #' (kg N/head/day):
 #'
 #' \deqn{
-#'   N2O =
-#'   nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times
-#'   \sum_{S} \left(
-#'     manure\_management\_system\_fraction \times
-#'     nitrogen\_fracgas \times
-#'     n2o\_ef4
-#'   \right)
+#' \begin{aligned}
+#' N_2O &= nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times \\
+#' & \sum_{S} \left(
+#' manure\_management\_system\_fraction \times
+#' nitrogen\_fracgas \times
+#' n2o\_ef4
+#' \right)
+#' \end{aligned}
 #' }
+#' 
+#' This function is part of the [run_emissions_manure_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_manure_module}}
 #' 
 #' @references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
@@ -671,7 +696,7 @@ calc_n2o_manure_volatilization <- function(
 
 #' Calculate indirect Nitrous Oxide (N2O) emissions from manure leaching and runoff
 #'
-#' Computes daily indirect nitrous oxide (N2O) emissions resulting from nitrogen
+#' Calculates daily indirect nitrous oxide (N2O) emissions resulting from nitrogen
 #' leaching and runoff from manure management systems and separates emissions
 #' from manure deposited on pasture, manure burned for fuel, and all other manure management systems.
 #'
@@ -688,7 +713,7 @@ calc_n2o_manure_volatilization <- function(
 #'     \item{manure_management_system_fraction}{
 #'       Numeric. Fraction of total manure excreted by animals in a given herd
 #'       and cohort that is handled in a specific manure management system.
-#'       Values range from 0 to 1. The sum of all fractions for each herd_id
+#'       Values ranges from 0 to 1. The sum of all fractions for each herd_id
 #'       must equal 1.
 #'     }
 #'     \item{n2o_ef5}{
@@ -799,14 +824,20 @@ calc_n2o_manure_volatilization <- function(
 #' resolution using \code{nitrogen_excretion} (kg N/head/day):
 #'
 #' \deqn{
-#'   N2O =
-#'   nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times
-#'   \sum_{S} \left(
-#'     manure\_management\_system\_fraction \times
-#'     nitrogen\_fracleach \times
-#'     n2o\_ef5
-#'   \right)
+#' \begin{aligned}
+#' N_2O &= nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times \\
+#' & \sum_{S} \left(
+#' manure\_management\_system\_fraction \times
+#' nitrogen\_fracleach \times
+#' n2o\_ef5
+#' \right)
+#' \end{aligned}
 #' }
+#'
+#' This function is part of the [run_emissions_manure_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_manure_module}}
 #'
 #' @references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
@@ -874,10 +905,10 @@ calc_n2o_manure_leaching <- function(
   )
 }
 
-#' Calculate total N2O emissions from manure
+#' Calculate total Nitrous Oxide (N2O) emissions from manure
 #'
 #' Aggregates direct and indirect nitrous oxide (N2O) emissions from manure, by
-#' manure management system group (deposited on pasture, burned for fuel, and all other systems).
+#' manure management system group (deposited on pasture, burned for fuel, and all other systems). 
 #' Indirect emissions include contributions from volatilization and from leaching
 #' and runoff.
 #'
@@ -987,6 +1018,11 @@ calc_n2o_manure_leaching <- function(
 #'   n2o_manure_burned_direct = 0,
 #'   n2o_manure_other_direct = 0.01033
 #' )
+#'
+#' This function is part of the [run_emissions_manure_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_manure_module}}
 #'
 #' @export
 calc_n2o_manure_total <- function(

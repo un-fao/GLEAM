@@ -1,4 +1,4 @@
-#' Compute Daily Nitrogen Intake
+#' Calculate daily nitrogen intake
 #'
 #' Calculates the daily nitrogen intake per head (kg N/head/day) as the product of feed dry matter
 #' intake (DMI) and diet nitrogen content. 
@@ -13,7 +13,10 @@
 #'
 #' \eqn{nitrogen\_intake = dry\_matter\_intake \times diet\_nitrogen}
 #' 
+#' This function is part of the [run_nitrogen_balance_module()].
+#' 
 #' @seealso
+#' \code{\link{run_nitrogen_balance_module}},
 #' \code{\link{calc_ration_intake}}, 
 #' \code{\link{run_metabolic_energy_req_module}},
 #' \code{\link{calc_ration_nitrogen_content}}, 
@@ -38,7 +41,7 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
   return(nitrogen_intake)
 }
 
-#' Compute Daily Nitrogen Retention
+#' Calculate daily nitrogen retention
 #'
 #' Calculates daily nitrogen retention per animal by species and cohort (kg N/head/day).
 #' Nitrogen retention represents the portion of consumed nitrogen that is
@@ -154,6 +157,11 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #'     content per unit of live weight gain, following IPCC (2019).  
 #' }
 #'
+#' This function is part of the [run_nitrogen_balance_module()].
+#' 
+#' @seealso
+#' \code{\link{run_nitrogen_balance_module}}
+#'
 #'@references
 #' Ministry for Primary Industries (MPI). (2025).
 #' \emph{Detailed methodologies for agricultural greenhouse gas emission calculation:
@@ -233,7 +241,7 @@ calc_nitrogen_retention <- function(
   return(nitrogen_retention)
 }
 
-#' Compute Daily Nitrogen Excretion
+#' Calculate daily nitrogen excretion
 #'
 #' Calculates daily nitrogen excretion per animal (kg N/head/day) as the difference between
 #' nitrogen intake and nitrogen retention.
@@ -275,8 +283,10 @@ calc_nitrogen_retention <- function(
 #' Greenhouse Gas Inventories}, Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.31A.
 #'
+#' This function is part of the [run_nitrogen_balance_module()].
+#' 
 #' @seealso
-#' \code{\link{calc_nitrogen_intake}}, 
+#' \code{\link{run_nitrogen_balance_module}},
 #' \code{\link{calc_nitrogen_retention}}
 #'
 #' @export

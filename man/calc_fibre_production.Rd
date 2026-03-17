@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_production.R
 \name{calc_fibre_production}
 \alias{calc_fibre_production}
-\title{Compute Fibre Production}
+\title{Calculate fibre production}
 \usage{
 calc_fibre_production(
   species_short,
@@ -47,7 +47,7 @@ FS, FA, MJ, MS, MA).}
 Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).
 }
 \description{
-Computes fibre production for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
+Calculates fibre production for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
 of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}) over the assessment period
 (kg/cohort/assessment period).
 }
@@ -59,4 +59,9 @@ Fibre production outputs are computed as follows:
 
 Non-zero fibre outputs are only expected for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
 of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}).
+
+This function is part of the \code{\link[=run_production_module]{run_production_module()}}.
+}
+\seealso{
+\code{\link{run_production_module}}
 }

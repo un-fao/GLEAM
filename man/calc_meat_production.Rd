@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_production.R
 \name{calc_meat_production}
 \alias{calc_meat_production}
-\title{Compute Meat Production Outputs}
+\title{Calculate meat production}
 \usage{
 calc_meat_production(
   offtake_heads_assessment,
@@ -41,7 +41,7 @@ over the assessment period by cohort (kg protein/cohort/assessment period).}
 }
 }
 \description{
-Computes cohort-level meat production outputs over the assessment period based on
+Calculates cohort-level meat production outputs over the assessment period based on
 the number of animals removed from the herd (offtake). The function returns
 multiple production metrics expressed in live weight, carcass weight,
 bone-free meat, and meat protein (kg/cohort/assessment period).
@@ -52,7 +52,7 @@ Meat production outputs are computed as follows:
 \item \strong{\code{meat_production_live_weight_cohort}} is computed as:
 
 \eqn{meat\_production\_live\_weight\_cohort =
-  offtake\_heads\_assessment \times slaughter\_weight\_cohort}
+  offtake\_heads\_assessment \times live\_weight\_cohort\_at\_slaughter}
 
 \item \strong{\code{meat_production_carcass_weight_cohort}} is computed as:
 
@@ -69,8 +69,11 @@ Meat production outputs are computed as follows:
 \eqn{meat\_production\_protein\_cohort =
   meat\_production\_bone\_free\_meat\_cohort \times meat\_protein\_fraction}
 }
+
+This function is part of the \code{\link[=run_production_module]{run_production_module()}}.
 }
 \seealso{
-\code{\link{run_demographic_herd_module}}
+\code{\link{run_production_module}},
+\code{\link{run_demographic_herd_module}},
 \code{\link{run_weights_module}}
 }

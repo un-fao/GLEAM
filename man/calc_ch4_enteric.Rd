@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_emissions_enteric.R
 \name{calc_ch4_enteric}
 \alias{calc_ch4_enteric}
-\title{Compute Daily Enteric Methane Emissions}
+\title{Calculate daily enteric methane emissions}
 \usage{
 calc_ch4_enteric(
   species_short,
@@ -25,7 +25,7 @@ Supported values include:
 }}
 
 \item{ch4_conversion_factor_ym}{Numeric. Methane (CH4) conversion factor (ym),
-representing the percentage of  gross energy of the feed ration that is converted to CH4 (percentage)}
+representing the percentage of  gross energy of the feed ration that is converted to CH4 (percentage).}
 
 \item{ch4_mitigation_factor}{Numeric. Optional. Multiplicative mitigation factor applied to
 baseline enteric methane (CH4) emissions (dimensionless). If not provided, a default
@@ -54,10 +54,12 @@ The formula used to estimate daily enteric methane emissions is:
 where 55.65 MJ/kg is the energy content of methane.
 
 \code{ration_gross_energy} and \code{ration_intake} can be calculated with
-\code{\link{calc_ration_gross_energy}} and \code{\link{calc_ration_intake}} -
-see also \code{\link{run_ration_quality_module}} and \code{\link{run_metabolic_energy_req_module}}.
+\code{\link{calc_ration_gross_energy}} and \code{\link{calc_ration_intake}} (
+see also \code{\link{run_ration_quality_module}} and \code{\link{run_metabolic_energy_req_module}}).
 
 The function returns \code{0} for chickens.
+
+This function is part of the \code{\link[=run_emissions_enteric_module]{run_emissions_enteric_module()}}.
 }
 \references{
 IPCC. (2019).
@@ -69,6 +71,7 @@ IPCC. (2006).
 Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 }
 \seealso{
+\code{\link{run_emissions_enteric_module}},
 \code{\link{calc_ration_gross_energy}},
 \code{\link{calc_ration_intake}},
 \code{\link{run_ration_quality_module}}

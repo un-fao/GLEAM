@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_nitrogen_balance.R
 \name{calc_nitrogen_intake}
 \alias{calc_nitrogen_intake}
-\title{Compute Daily Nitrogen Intake}
+\title{Calculate daily nitrogen intake}
 \usage{
 calc_nitrogen_intake(ration_intake, ration_nitrogen)
 }
@@ -22,6 +22,8 @@ intake (DMI) and diet nitrogen content.
 This approach follows the IPCC Tier 2 approach and estimates \code{ration_intake}  as follows:
 
 \eqn{nitrogen\_intake = dry\_matter\_intake \times diet\_nitrogen}
+
+This function is part of the \code{\link[=run_nitrogen_balance_module]{run_nitrogen_balance_module()}}.
 }
 \references{
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
@@ -33,6 +35,7 @@ Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.32.
 }
 \seealso{
+\code{\link{run_nitrogen_balance_module}},
 \code{\link{calc_ration_intake}},
 \code{\link{run_metabolic_energy_req_module}},
 \code{\link{calc_ration_nitrogen_content}},

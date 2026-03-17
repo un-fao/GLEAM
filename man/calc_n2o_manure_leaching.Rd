@@ -20,7 +20,7 @@ following fields:
 \item{manure_management_system_fraction}{
 Numeric. Fraction of total manure excreted by animals in a given herd
 and cohort that is handled in a specific manure management system.
-Values range from 0 to 1. The sum of all fractions for each herd_id
+Values ranges from 0 to 1. The sum of all fractions for each herd_id
 must equal 1.
 }
 \item{n2o_ef5}{
@@ -76,7 +76,7 @@ from manure burned for fuel (kg N2O/head/day).
 }
 }
 \description{
-Computes daily indirect nitrous oxide (N2O) emissions resulting from nitrogen
+Calculates daily indirect nitrous oxide (N2O) emissions resulting from nitrogen
 leaching and runoff from manure management systems and separates emissions
 from manure deposited on pasture, manure burned for fuel, and all other manure management systems.
 }
@@ -111,14 +111,17 @@ In this implementation, calculations are performed at daily, per-head
 resolution using \code{nitrogen_excretion} (kg N/head/day):
 
 \deqn{
-  N2O =
-  nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times
-  \sum_{S} \left(
-    manure\_management\_system\_fraction \times
-    nitrogen\_fracleach \times
-    n2o\_ef5
-  \right)
+\begin{aligned}
+N_2O &= nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times \\
+& \sum_{S} \left(
+manure\_management\_system\_fraction \times
+nitrogen\_fracleach \times
+n2o\_ef5
+\right)
+\end{aligned}
 }
+
+This function is part of the \code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}}.
 }
 \examples{
 calc_n2o_manure_leaching(
@@ -153,4 +156,7 @@ Chapter 10: Emissions from Livestock and Manure Management. Equations 10.27; 10.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories},
 Volume 4, Chapter 10: Emissions from Livestock and Manure Management. Equations 10.28; 10.29.
+}
+\seealso{
+\code{\link{run_emissions_manure_module}}
 }

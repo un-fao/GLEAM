@@ -21,7 +21,7 @@ average carbon dioxide (CO2) emission factor from land-use change (excluding pea
 in feed production (g CO2/kg DM).
 }
 \description{
-Computes the contribution of an individual feed component to carbon dioxide (CO2)
+Calculates the contribution of an individual feed component to carbon dioxide (CO2)
 emissions from land-use change in feed production (excluding peatland drainage),
 using feed-specific emission factors weighted by the component's share in the ration.
 }
@@ -29,4 +29,9 @@ using feed-specific emission factors weighted by the component's share in the ra
 The contribution is computed as:
 
 \deqn{diet\_co2\_feed\_luc\_nopeat = feed\_ration\_fraction \times co2\_feed\_luc\_nopeat}
+
+This function is part of the \code{\link[=run_emissions_ration_module]{run_emissions_ration_module()}}.
+}
+\seealso{
+\code{\link{run_emissions_ration_module}}
 }

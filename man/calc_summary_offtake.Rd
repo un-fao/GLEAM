@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_demographic_herd.R
 \name{calc_summary_offtake}
 \alias{calc_summary_offtake}
-\title{Summarise Offtake and Stock Variation for a Steady-State Year}
+\title{Summarise offtake and stock Variation for a steady-state year}
 \usage{
 calc_summary_offtake(
   cohort_stock_start,
@@ -36,9 +36,14 @@ A named list with:
 \item{offtake_stock_plus_variation_rate_to_stock_start}{Numeric vector of length 6. Offtake plus stock-variation rate relative to starting population size (fraction) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
 \item{offtake_stock_plus_variation_rate_to_stock_average}{Numeric vector of length 6.  Offtake plus stock-variation rate relative to average population size (fraction) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
 }
+
+This function is part of the \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}.
 }
 \description{
-Computes annual offtake quantities and rates, as well as stock variation and their combined values
+Calculates annual offtake quantities and rates, as well as stock variation and their combined values
 across 6 sex-age classes based on steady-state population projections. The steady state is defined as a constant
 sex–age cohort structure over time, with population size potentially growing or declining at a constant rate.
+}
+\seealso{
+\code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}
 }

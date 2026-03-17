@@ -2,14 +2,14 @@
 % Please edit documentation in R/core_model_demographic_herd.R
 \name{calc_fecundity_rates}
 \alias{calc_fecundity_rates}
-\title{Compute Daily Fecundity Rates}
+\title{Calculate daily fecundity rates}
 \usage{
 calc_fecundity_rates(parturition_rate, litter_size, birth_fraction_female)
 }
 \arguments{
 \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
 
-\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
 \item{birth_fraction_female}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
 }
@@ -19,6 +19,8 @@ A named list with two elements:
 \item{fecundity_female}{Numeric. Daily number of female offspring per adult female (# offspring/day)}
 \item{fecundity_male}{Numeric. Daily number of male offspring per adult female (# offspring/day)}
 }
+
+This function is part of the \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}.
 }
 \description{
 Calculates the daily number of male and female offspring produced per adult female.
@@ -26,4 +28,7 @@ Calculates the daily number of male and female offspring produced per adult fema
 \examples{
 calc_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)
 
+}
+\seealso{
+\code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}
 }

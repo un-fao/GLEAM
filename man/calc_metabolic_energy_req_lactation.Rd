@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_metabolic_energy_req_lactation}
 \alias{calc_metabolic_energy_req_lactation}
-\title{Calculate Energy for Lactation}
+\title{Calculate metabolic energy requirements for lactation}
 \usage{
 calc_metabolic_energy_req_lactation(
   species_short,
@@ -58,7 +58,7 @@ any productive physiological function such as pregnancy or lactation (days). Req
 
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 
-\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition).
+\item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition).
 This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
 \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
@@ -77,7 +77,7 @@ A herd-level reproductive performance indicator calculated as the total number o
 Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the energy requirement for lactation by cohort (MJ/head/day), defined as the
+Calculates the energy requirement for lactation by cohort (MJ/head/day), defined as the
 energy needed to support milk production by lactating females.
 }
 \details{
@@ -102,7 +102,7 @@ Total milk production includes:
 In general form, lactation energy is computed as:
 
 \deqn{
-energy\_requirement\_lactation =
+metabolic\_energy\_req\_lactation =
 (milk\_yield \times lactating\_females\_fraction + milk\_for\_offspring)
 \times energy\_milk
 }
@@ -130,7 +130,7 @@ milk\_for\_offspring =
 \frac{parturition\_rate \times 5 \times (weaning\_weight - birth\_weight)}{365}
 }
 
-For \code{SHP} and \code{GTS}, \code{milk_for_offspring} is multiplied by
+For \strong{SHP} and \strong{GTS}, \code{milk_for_offspring} is multiplied by
 \code{litter_size} to account for multiple offspring per birth.
 
 \strong{PGS} (NRC, 1998):
@@ -140,13 +140,16 @@ Lactation energy accounts only for the milk consumed directly by offspring
 in lactation (\code{cadj}):
 
 \deqn{
-energy\_requirement\_lactation =
-litter\_size \times (1 - 0.5 \times death\_rate\_juvenile)
-\times \left(
-\frac{0.02059 \times (weaning\_weight - birth\_weight) \times 1000}{lactation\_duration}
+\begin{aligned}
+metabolic\_energy\_req\_lactation &=
+litter\_size \times (1 - 0.5 \times death\_rate\_juvenile) \times \\
+& \left(
+\frac{0.02059 \times (weaning\_weight - birth\_weight) \times 1000}
+{lactation\_duration}
 - \frac{0.3766}{0.67}
 \right)
 \times cadj
+\end{aligned}
 }
 
 where:
@@ -162,6 +165,8 @@ where:
   cadj = \frac{lactation\_duration}{non\_productive\_duration + pregnancy\_duration + lactation\_duration}
   }
 }
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 AFRC (1998) \emph{The Nutrition of Goats.}
@@ -185,4 +190,7 @@ NRC (1989) \emph{Nutrient Requirements of Dairy Cattle},
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
 Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+}
+\seealso{
+\code{\link{run_metabolic_energy_req_module}}
 }

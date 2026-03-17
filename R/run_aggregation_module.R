@@ -1,10 +1,8 @@
-#' Run Aggregation Pipeline: Final Herd-Level Results
+#' Run Aggregation Module Pipeline
 #'
-#' This function represents the final step of the Global Livestock Environmental
-#' Assessment Model (GLEAM) computational pipeline. It generates final herd-level
-#' results by aggregating key cohort-level outputs, scaling variables over the
-#' assessment duration, allocating emissions to commodities, and converting CH4
-#' and N2O emissions to CO2-equivalents (CO2eq) using selected 100-year Global
+#' This function generates final herd-level results by aggregating key cohort-level outputs, 
+#' scaling variables over the assessment duration, allocating emissions to commodities, and 
+#' converting methane (CH4) and nitrous oxide (N2O) emissions to CO2-equivalents (CO2eq) using selected 100-year Global
 #' Warming Potential (GWP-100) factors.
 #'
 #' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
@@ -31,19 +29,19 @@
 #'       }}
 #'     \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
 #'     \item{\strong{Feed variables}}{
-#'       \describe{
+#'       \itemize{
 #'         \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'       }
 #'     }
 #'     \item{\strong{Nitrogen balance variables}}{
-#'       \describe{
+#'       \itemize{
 #'         \item{nitrogen_intake}{Numeric. Daily nitrogen intake (kg N/head/day)}
-#'         \item{nitrogen_retention}{Numeric. Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day).}
+#'         \item{nitrogen_retention}{Numeric. Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)}
 #'         \item{nitrogen_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day)}
 #'       }
 #'     }
 #'     \item{\strong{Production variables}}{
-#'       \describe{
+#'       \itemize{
 #'         \item{milk_production_mass_cohort}{Numeric. Total milk production produced over the assessment period (kg/cohort/assessment period).}
 #'         \item{milk_production_protein_cohort}{Numeric. Total milk protein production produced over the assessment period (kg protein/cohort/assessment period).}
 #'         \item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment period (kg/cohort/assessment period).}
@@ -55,7 +53,7 @@
 #'       }
 #'     }
 #'     \item{\strong{Emission variables}}{
-#'       \describe{
+#'       \itemize{
 #'         \item{ch4_enteric}{Numeric. Average daily enteric methane (CH4) emissions (kg CH4/head/day).}
 #'         \item{ch4_manure_pasture}{Numeric. Methane (CH4) emissions from manure deposited on pasture (kg CH4/head/day)}
 #'         \item{ch4_manure_burned}{Numeric. Methane (CH4) emissions from manure burned for fuel (kg CH4/head/day)}
@@ -83,10 +81,8 @@
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 #'     to the same herd.}
-#'   
 #'     \item{species_short}{Character. Code identifying the livestock species.
-#'     Supported values include PGS, CML, CTL, BFL, SHP, GTS
-#'   
+#'     Supported values include PGS, CML, CTL, BFL, SHP, GTS}
 #'     \item{variable_name}{Character. Names of emission variables to which
 #'     allocation should be applied (e.g., "ch4_enteric", "ch4_manure_pasture",
 #'     "ch4_manure_burned", "ch4_manure_other", "n2o_manure_pasture_direct",
@@ -139,20 +135,23 @@
 #' }
 #'
 #' @details
-#' This function performs the following calculation sequence:
+#' This function represents the final step of the Global Livestock Environmental
+#' Assessment Model (GLEAM) computational pipeline [run_gleam()] and performs the following calculation sequence:
 #' \enumerate{
 #'   \item Cohort-level variables are reshaped from wide to long format.
 #'   \item Variables are classified into \code{"Feed"}, \code{"NitrogenBalance"}, \code{"Production"}, and \code{"Emissions"}.
-#'   \item Cohort totals are calculated using [calc_cohort_totals()]. Production variables are retained as provided, whereas emissions, feed, and nitrogen balance variables are scaled using cohort stock size and simulation duration.
+#'   \item Cohort totals are calculated using [calc_cohort_totals()]. Production variables are retained as provided, whereas emissions, 
+#'   feed, and nitrogen balance variables are scaled using cohort stock size and simulation duration.
 #'   \item Cohort totals are aggregated to herd level within each \code{herd_id × species_short × variable_type × variable_name} group.
 #'   \item Herd-level emissions are merged with commodity allocation shares from \code{allocation_herd_long}.
 #'   \item Emissions are allocated to commodities using [calc_allocated_emissions()].
 #'   \item Gas type is identified from the emission variable name as \code{"CH4"}, \code{"N2O"}, or \code{"CO2"}.
 #'   \item Allocated CH4, N2O, and CO2 emissions are converted to CO2-equivalents (CO2eq) using [calc_co2eq()] and the selected GWP-100 option.
-#'   \item Final output tables are produced summarising herd-level results for emissions, feed, production, and nitrogen balance variables.
+#'   \item Final output tables are produced summarizing herd-level results for emissions, feed, production, and nitrogen balance variables.
 #' }
 #'
 #' @seealso
+#' [run_gleam()],
 #' [calc_cohort_totals()],
 #' [calc_cohort_to_herd_aggregation()],
 #' [calc_allocated_emissions()],

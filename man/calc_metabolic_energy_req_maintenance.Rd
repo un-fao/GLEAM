@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_metabolic_energy_req_maintenance}
 \alias{calc_metabolic_energy_req_maintenance}
-\title{Calculate Energy for Maintenance}
+\title{Calculate metabolic energy requirements for maintenance}
 \usage{
 calc_metabolic_energy_req_maintenance(
   species_short,
@@ -55,14 +55,14 @@ Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
 CML and PGS (MJ/head/day).
 }
 \description{
-Computes the energy requirement for maintenance by cohort (MJ/head/day),
+Calculates the energy requirement for maintenance by cohort (MJ/head/day),
 defined as the energy required to maintain basal physiological functions at equilibrium,
 with no net gain or loss of body energy.
 }
 \details{
 This approach follows the IPCC Tier 2 partitioning method and applies:
 
-\eqn{energy\_requirement\_maintenance = cmain \times average\_weight^{0.75}}
+\eqn{metabolic\_energy\_req\_maintenance = cmain \times average\_weight^{0.75}}
 
 where \eqn{cmain} is a category-specific coefficient (MJ/day/kg\eqn{^{0.75}}) that reflects
 basal metabolic requirements and varies by species, physiological status, and sex.
@@ -120,6 +120,8 @@ For selected cohorts, \eqn{cmain} is computed as a weighted average to account f
 \itemize{
 \item All cohorts: \eqn{cmain = 0.4435}
 }
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 NRC (1998). \emph{Nutrient Requirements of Swine},
@@ -143,5 +145,6 @@ Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 }
 \seealso{
+\code{\link{run_metabolic_energy_req_module}},
 \code{\link{calc_avg_weights}}
 }

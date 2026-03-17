@@ -8,7 +8,7 @@ calc_co2_ration_fertilizer(feed_ration_fraction, co2_feed_fertilizer)
 }
 \arguments{
 \item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in
-the total ration, expressed as its fraction of diet dry matter (fraction). Within
+the total ration,as its fraction of diet dry matter intake (fraction). Within
 each herd_id and cohort, proportions should sum to 1.}
 
 \item{co2_feed_fertilizer}{Numeric. Carbon dioxide (CO2) emission factor of a
@@ -21,7 +21,7 @@ carbon dioxide (CO2) emission factor from fertilizer manufacture in feed product
 (g CO2/kg DM).
 }
 \description{
-Computes the contribution of an individual feed component to carbon dioxide (CO2)
+Calculates the contribution of an individual feed component to carbon dioxide (CO2)
 emissions from fertilizer manufacture in feed production,
 using feed-specific emission factors weighted by the component's share in the ration.
 }
@@ -29,4 +29,9 @@ using feed-specific emission factors weighted by the component's share in the ra
 The contribution is computed as:
 
 \deqn{diet\_co2\_feed\_fertilizer = feed\_ration\_fraction \times co2\_feed\_fertilizer}
+
+This function is part of the \code{\link[=run_emissions_ration_module]{run_emissions_ration_module()}}.
+}
+\seealso{
+\code{\link{run_emissions_ration_module}}
 }
