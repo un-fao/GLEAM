@@ -181,7 +181,6 @@ calc_conversion_factor_ym <- function(
 #' \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
 #' Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 #'
-#'
 #' @export
 calc_ch4_enteric <- function(
     species_short,
