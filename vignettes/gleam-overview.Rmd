@@ -39,7 +39,7 @@ camels (CML), sheep (SHP), goats (GTS), pigs (PGS), and chickens (CHK). It
 estimates emissions from enteric fermentation, manure management, and feed
 production, and allocates them to livestock commodities (meat, milk, fibre,
 and work) using a biophysical energy-based allocation framework consistent
-with ISO 14044 and the IDF Global Carbon Footprint Standard.
+with ISO 14044, LEAP guidelines and the IDF Global Carbon Footprint Standard.
 
 The package is part of the broader GLEAM ecosystem, which includes interactive
 web applications, dashboards, data infrastructure, and capacity-building tools.
@@ -108,7 +108,7 @@ herd-level parameters and total population size.
 
 ## Assessment period
 
-The assessment period defines the time window over which emissions and
+The assessment period (`cohort_short`) defines the time window over which emissions and
 production are computed. It is specified in days (typically 365 for a standard
 annual assessment). Per-head, per-day intermediate values are scaled to cohort
 totals over the assessment period in the aggregation step. The assessment
@@ -264,7 +264,8 @@ A `data.table` with one row per herd × cohort (six rows per herd).
 | Column | Type | Description |
 |--------|------|-------------|
 | `herd_id` | Character | Unique herd identifier, repeated for each cohort |
-| `cohort_short` | Character | Sex–age cohort code (see Section 3.2) |
+| `species_short` | Character | Livestock species code (see [species codes](#species-codes)) |
+| `cohort_short` | Character | Sex–age cohort code (see [cohort codes](#cohort-codes)) |
 | `cohort_duration_days` | Numeric | Time each animal spends in the cohort (days) |
 | `offtake_rate` | Numeric | Annual proportion of animals removed from the herd per cohort (fraction) |
 | `death_rate` | Numeric | Annual death fraction per cohort (fraction); required when `has_herd_structure = FALSE` |
@@ -493,22 +494,43 @@ knitr::include_graphics("images/overview_GLEAM_TimeLine.png")
   `inst/extdata/run_gleam_examples/`.
 
 ## Methodological references
-- [IPCC 2019](https://www.ipcc-nggip.iges.or.jp/public/2019rf/index.html).  *2019 Refinement to the 2006 IPCC Guidelines for National
-  Greenhouse Gas Inventories*, Volume 4, Chapter 10: Emissions from Livestock
-  and Manure Management
-- [IPCC 2006](https://www.ipcc-nggip.iges.or.jp/public/2006gl/index.html). *2006 IPCC Guidelines for National Greenhouse Gas Inventories*,
-  Volume 4, Chapter 10.
-- [IDF 2022](https://shop.fil-idf.org/products/the-idf-global-carbon-footprint-standard-for-the-dairy-sector) *The IDF Global Carbon Footprint Standard for the Dairy Sector*.
-  Bulletin of the IDF No. 520/2022.
-- [FAO LEAP](https://www.fao.org/partnerships/leap/en) guidelines for livestock supply chains (large ruminants, small
-  ruminants, poultry, pigs, feed).
+  - **IPCC. (2019).**  
+  *2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories.*  
+  Volume 4, Chapter 10: Emissions from Livestock and Manure Management.  
+  https://www.ipcc-nggip.iges.or.jp/public/2019rf/index.html
+
+- **IPCC. (2006).**  
+  *2006 IPCC Guidelines for National Greenhouse Gas Inventories.*  
+  Volume 4, Chapter 10: Emissions from Livestock and Manure Management.  
+  https://www.ipcc-nggip.iges.or.jp/public/2006gl/index.html
+
+- **IDF. (2022).**  
+  *The IDF Global Carbon Footprint Standard for the Dairy Sector.*  
+  Bulletin of the IDF No. 520/2022.  
+  https://shop.fil-idf.org/products/the-idf-global-carbon-footprint-standard-for-the-dairy-sector
+
+- **FAO LEAP.**  
+  *Guidelines for livestock supply chains (large ruminants, small ruminants, poultry, pigs, feed).*  
+  https://www.fao.org/partnerships/leap/en
+
+  
 
 ## GLEAM publications
 
-- [Gerber, P.J. et al. 2013](https://www.fao.org/4/i3437e/i3437e04.pdf). *Tackling climate change through livestock: A global assessment of emissions and mitigation opportunities*. FAO, Rome.
-- [FAO. 2023](https://openknowledge.fao.org/handle/20.500.14283/cc9029en). *Pathways towards lower emissions — A global assessment of the greenhouse gas emissions and mitigation options from livestock agrifood systems*. FAO, Rome. DOI: 10.4060/cc9029en.
-- [Wisser, D. et al.](https://doi.org/10.3390/w16121681) *Water Use in Livestock Agri-Food Systems and Its Contribution to Local Water Scarcity: A Spatially Distributed Global Analysis*. Water, 16(12), 1681. https://doi.org/10.3390/w16121681
+- **Gerber, P.J., Steinfeld, H., Henderson, B., Mottet, A., Opio, C., Dijkman, J., Falcucci, A., & Tempio, G. (2013).**  
+  *Tackling climate change through livestock: A global assessment of emissions and mitigation opportunities.*  
+  FAO, Rome.  
+  https://www.fao.org/4/i3437e/i3437e04.pdf
 
+- **FAO. (2023).**  
+  *Pathways towards lower emissions — A global assessment of the greenhouse gas emissions and mitigation options from livestock agrifood systems.*  
+  FAO, Rome.  
+  DOI: https://doi.org/10.4060/cc9029en
+
+- **Wisser, D., Grogan, D.S., Lanzoni, L., Tempio, G., Cinardi, G., Prusevich, A., & Glidden, S. (2024).**  
+  *Water Use in Livestock Agri-Food Systems and Its Contribution to Local Water Scarcity: A Spatially Distributed Global Analysis.*  *Water*, 16(12), 1681.  
+  https://doi.org/10.3390/w16121681
+  
 
 # Resource partner
 
