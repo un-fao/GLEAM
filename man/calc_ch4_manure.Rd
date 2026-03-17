@@ -132,4 +132,7 @@ Livestock and Manure Management. Equation 10.23.
 \seealso{
 \code{\link{run_emissions_manure_module}},
 \code{\link{calc_volatile_solids}}
+
+\code{\link{run_emissions_manure_module}},
+\code{\link{calc_volatile_solids}}
 }

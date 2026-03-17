@@ -141,7 +141,6 @@ calc_n2o_manure_total(
   n2o_manure_other_direct = 0.01033
 )
 
-
 }
 \seealso{
 \code{\link{run_emissions_manure_module}}

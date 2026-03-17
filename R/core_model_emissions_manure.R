@@ -213,6 +213,10 @@ calc_volatile_solids <- function(
 #'     ch4_max_producing_capacity_bo = 0.13
 #'   )
 #' )
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_manure_module}},
+#'   \code{\link{calc_volatile_solids}}
 #'
 #' @references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
@@ -1020,7 +1024,6 @@ calc_n2o_manure_leaching <- function(
 #'   n2o_manure_burned_direct = 0,
 #'   n2o_manure_other_direct = 0.01033
 #' )
-#'
 #' 
 #' @seealso
 #'   \code{\link{run_emissions_manure_module}}
