@@ -262,7 +262,7 @@ validate_work_inputs <- function(
 #'
 #' Fibre is only computed for SHP, GTS, CML and only for cohorts FA, FS, MA, MS.
 #' For those cases fibre_yield_year is required and must be >= 0.
-#' For non-fibre species (CTL, BFL, PGS, CHK) fibre_yield_year must be NA.
+#' For non-fibre species (CTL, BFL, PGS) fibre_yield_year must be NA.
 #' For fibre species but juvenile cohorts (FJ, MJ) fibre is not used; NA is allowed.
 #'
 #' @noRd
@@ -287,7 +287,7 @@ validate_fibre_inputs <- function(
 #' Validate inputs for calc_metabolic_energy_req_pregnancy
 #'
 #' Pregnancy is computed only for female cohorts (FA, FS) and only for CTL, BFL, CML, SHP, GTS, PGS.
-#' CHK is not applicable. Only the arguments used for that species and cohort are required and validated.
+#' Only the arguments used for that species and cohort are required and validated.
 #'
 #' @noRd
 validate_pregnancy_inputs <- function(
@@ -305,7 +305,6 @@ validate_pregnancy_inputs <- function(
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
 
-  if (species_short == "CHK") return()
   if (!cohort_short %in% c("FA", "FS")) return()
 
   # --- Cattle and buffalo: FA uses parturition + pregnancy duration; FS uses duration + offtake ---
@@ -363,7 +362,7 @@ validate_pregnancy_inputs <- function(
 #' Validate inputs for calc_rem_maintenance
 #'
 #' ration_digestibility_fraction is only used (and required) for ruminants (CTL, BFL, SHP, GTS).
-#' For PGS, CHK, CML the function returns NA and the argument may be NA.
+#' For PGS, CML the function returns NA and the argument may be NA.
 #'
 #' @noRd
 validate_rem_inputs <- function(
@@ -378,7 +377,7 @@ validate_rem_inputs <- function(
 #' Validate inputs for calc_reg_growth
 #'
 #' ration_digestibility_fraction is only used (and required) for ruminants (CTL, BFL, SHP, GTS).
-#' For PGS, CHK, CML the function returns NA and the argument may be NA.
+#' For PGS, CML the function returns NA and the argument may be NA.
 #'
 #' @noRd
 validate_reg_inputs <- function(

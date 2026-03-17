@@ -5,7 +5,7 @@
 \alias{gleam_species_names}
 \title{Species code -> full name mapping}
 \format{
-A named character vector of length 7.
+A named character vector of length 6.
 }
 \usage{
 gleam_species_names

@@ -53,7 +53,7 @@ diet energy content (MJ/kg DM).
   }
 
 \item \strong{Energy expressed as metabolizable energy requirement -
-\code{CML}, \code{PGS}, \code{CHK}}:
+\code{CML}, \code{PGS}}:
 
 \deqn{
     ration\_intake = \frac{metabolic\_energy\_req\_total}{ration\_metabolizable\_energy}

@@ -8,8 +8,7 @@ calc_ration_metabolizable_energy(
   species_short,
   feed_ration_fraction,
   feed_metabolizable_energy_ruminant = NA_real_,
-  feed_metabolizable_energy_pigs = NA_real_,
-  feed_metabolizable_energy_chicken = NA_real_
+  feed_metabolizable_energy_pigs = NA_real_
 )
 }
 \arguments{
@@ -22,7 +21,6 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
-\item \code{CHK}: chickens
 }}
 
 \item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the
@@ -36,10 +34,6 @@ losses in urine and gaseous products of digestion (MJ/kg DM).}
 \item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy content of a
 feed component for pigs, representing digestible energy minus energy losses in
 urine and gaseous products of digestion (MJ/kg DM).}
-
-\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy content
-of a feed component for chickens, representing digestible energy minus energy
-losses in uric acid and gaseous products of digestion (MJ/kg DM).}
 }
 \value{
 Numeric. Contribution of the feed component to total diet metabolizable energy content (MJ/kg DM).
@@ -54,8 +48,6 @@ The metabolizable energy contribution uses the animal-specific parameter:
 \itemize{
 \item Ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}):
 \code{feed_ration_fraction * feed_metabolizable_energy_ruminant}
-\item Chickens (\code{CHK}):
-\code{feed_ration_fraction * feed_metabolizable_energy_chicken}
 \item Pigs (\code{PGS}):
 \code{feed_ration_fraction * feed_metabolizable_energy_pigs}
 }

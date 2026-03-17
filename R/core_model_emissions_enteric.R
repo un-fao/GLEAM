@@ -117,8 +117,6 @@ calc_conversion_factor_ym <- function(
     } else {
       ch4_conversion_factor_ym <- 1.01
     }
-  } else if (species_short == "CHK") {
-    ch4_conversion_factor_ym <- 0
   }
 
   return(ch4_conversion_factor_ym)
@@ -199,12 +197,8 @@ calc_ch4_enteric <- function(
     ration_gross_energy, ration_intake
   )
 
-  if (species_short %in% gleam_species_non_poultry) {
-    ch4_enteric <- ration_gross_energy * ration_intake *
-      (ch4_conversion_factor_ym / 100) * ch4_mitigation_factor / 55.65
-  } else if (species_short == "CHK") {
-    ch4_enteric <- 0
-  }
+  ch4_enteric <- ration_gross_energy * ration_intake *
+    (ch4_conversion_factor_ym / 100) * ch4_mitigation_factor / 55.65
 
   return(ch4_enteric)
 }

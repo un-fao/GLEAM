@@ -31,7 +31,7 @@ validate_run_metabolic_energy_req_module_inputs <- function(
     "age_first_parturition", "lactating_females_fraction", "milk_yield_day", "milk_fat_fraction",
     "non_productive_duration", "pregnancy_duration", "litter_size", "death_rate_juvenile",
     "live_weight_at_birth", "live_weight_at_weaning",
-    "lactation_duration", "parturition_rate", "egg_average_weight",
+    "lactation_duration", "parturition_rate",
     "draught_work_hours_female", "draught_work_hours_male",
     "draught_fraction_female", "draught_fraction_male",
     "fibre_yield_year"
