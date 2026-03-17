@@ -237,7 +237,7 @@ gleam_emissions_meta <- list(
 
   list(emissions_source = "co2_ration_fertilizer", label = "Feed-Fertilizer_CO2"),
   list(emissions_source = "co2_ration_pesticides", label = "Feed-Pesticides_CO2"),
-  list(emissions_source = "co2_ration_crop_activities", label = "Feed-CropOperations_CO2"),
+  list(emissions_source = "co2_ration_crop_activities", label = "Feed-CropActivities_CO2"),
   list(emissions_source = "co2_ration_luc_nopeat", label = "Feed-LandUseChange_CO2"),
   list(emissions_source = "co2_ration_luc_peat", label = "Feed-PeatDrainage_CO2"),
 
@@ -259,7 +259,7 @@ gleam_emissions_meta <- list(
 gleam_feed_emissions_meta <- list(
   list(emissions_source = "co2_ration_fertilizer", label = "Feed-Fertilizer_CO2"),
   list(emissions_source = "co2_ration_pesticides", label = "Feed-Pesticides_CO2"),
-  list(emissions_source = "co2_ration_crop_activities", label = "Feed-CropOperations_CO2"),
+  list(emissions_source = "co2_ration_crop_activities", label = "Feed-CropActivities_CO2"),
   list(emissions_source = "co2_ration_luc_nopeat", label = "Feed-LandUseChange_CO2"),
   list(emissions_source = "co2_ration_luc_peat", label = "Feed-PeatDrainage_CO2"),
   list(emissions_source = "n2o_ration_fertilizer", label = "Feed-Fertilizer_N2O"),
