@@ -15,14 +15,13 @@
 #' Maps each species short code to its full common name. Used for display and
 #' documentation. \code{gleam_species} is derived from this as the vector of codes.
 #'
-#' @format A named character vector of length 7.
+#' @format A named character vector of length 6.
 #' @keywords internal
 gleam_species_names <- c(
   CTL = "Cattle",
   BFL = "Buffalo",
   SHP = "Sheep",
   GTS = "Goats",
-  CHK = "Chicken",
   PGS = "Pigs",
   CML = "Camels"
 )
@@ -31,7 +30,7 @@ gleam_species_names <- c(
 #'
 #' All livestock species supported by GLEAM. Derived from \code{gleam_species_names}.
 #'
-#' @format A character vector of length 7.
+#' @format A character vector of length 6.
 #' @keywords internal
 gleam_species <- names(gleam_species_names)
 
@@ -76,7 +75,7 @@ gleam_cohorts <- names(gleam_cohorts_names)
 #'
 #' @format A character vector of length 4.
 #' @keywords internal
-gleam_species_ruminants <- setdiff(gleam_species, c("CHK", "PGS", "CML"))
+gleam_species_ruminants <- setdiff(gleam_species, c("PGS", "CML"))
 
 #' Milk-producing species
 #'
@@ -86,17 +85,16 @@ gleam_species_ruminants <- setdiff(gleam_species, c("CHK", "PGS", "CML"))
 #'
 #' @format A character vector of length 5.
 #' @keywords internal
-gleam_species_milk_producers <- setdiff(gleam_species, c("CHK", "PGS"))
+gleam_species_milk_producers <- setdiff(gleam_species, "PGS")
 
-#' Non-poultry species (species with non-zero enteric CH4 and N excretion)
+#' Species with non-zero enteric CH4 and N excretion
 #'
-#' All species except Chicken (\code{CHK}). Used for enteric methane emission
-#' calculations and nitrogen excretion models, where poultry produce negligible
-#' enteric CH4 and the N-excretion pathway is not yet implemented.
+#' All supported species. Used for enteric methane emission calculations and
+#' nitrogen excretion models. (Legacy alias; equivalent to \code{gleam_species}.)
 #'
 #' @format A character vector of length 6.
 #' @keywords internal
-gleam_species_non_poultry <- setdiff(gleam_species, "CHK")
+gleam_species_non_poultry <- gleam_species
 
 # --- Cohort sub-groups -------------------------------------------------------
 # Derived from gleam_cohorts via setdiff (F* = female, M* = male)

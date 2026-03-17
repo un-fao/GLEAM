@@ -8,8 +8,7 @@ calc_ration_urinary_energy_fraction(
   species_short,
   feed_ration_fraction,
   feed_urinary_energy_ruminant = NA_real_,
-  feed_urinary_energy_pigs = NA_real_,
-  feed_urinary_energy_chicken = 0
+  feed_urinary_energy_pigs = NA_real_
 )
 }
 \arguments{
@@ -22,7 +21,6 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
-\item \code{CHK}: chickens
 }}
 
 \item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the
@@ -34,9 +32,6 @@ is excreted in urine for ruminants (fraction).}
 
 \item{feed_urinary_energy_pigs}{Numeric. Fraction of feed's gross energy that
 is excreted in urine for pigs (fraction).}
-
-\item{feed_urinary_energy_chicken}{Numeric. Fraction of feed's gross energy that
-is excreted in uric acid for chickens (fraction). Default = 0.}
 }
 \value{
 Numeric. Contribution of the feed component to the fraction of total diet
@@ -51,14 +46,7 @@ The urinary energy fraction contribution uses the animal-specific parameter:
 \itemize{
 \item Ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}):
 \code{feed_ration_fraction * feed_urinary_energy_ruminant}
-\item Chickens (\code{CHK}):
-\code{feed_ration_fraction * feed_urinary_energy_chicken}
 \item Pigs (\code{PGS}):
 \code{feed_ration_fraction * feed_urinary_energy_pigs}
 }
-
-For chickens, \code{feed_urinary_energy_chicken} defaults to 0 because urinary
-energy losses are accounted for within \code{metabolizable_energy} in poultry
-nutrition (urine and feces are excreted together), and are therefore not modeled
-as a separate fraction of gross energy.
 }

@@ -34,7 +34,7 @@ production stage of the animals. Supported values include:
 }}
 
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of
-digestible (or metabolizable, for poultry) to gross energy content (fraction).}
+digestible to gross energy content (fraction).}
 }
 \value{
 Numeric. Methane (CH4) conversion factor (ym), representing the percentage of  gross energy

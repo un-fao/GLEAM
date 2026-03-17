@@ -780,7 +780,6 @@ calc_metabolic_energy_req_lactation <- function(
 #'   \itemize{
 #'     \item \code{PGS}: pigs
 #'     \item \code{CML}: camels
-#'     \item \code{CHK}: chickens
 #'     \item \code{CTL}: cattle
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
@@ -949,7 +948,7 @@ calc_metabolic_energy_req_work <- function(
     } else {
       metabolic_energy_req_work <- 0
     }
-  } else if (species_short %in% c("SHP", "GTS", "PGS", "CHK")) {
+  } else if (species_short %in% c("SHP", "GTS", "PGS")) {
     metabolic_energy_req_work <- 0 # No work for these species
   }
   return(metabolic_energy_req_work)
@@ -1088,7 +1087,7 @@ calc_metabolic_energy_req_fibre <- function(
     } else {
       metabolic_energy_req_fibre_production <- 0
     }
-  } else if (species_short %in% c("CTL", "BFL", "PGS", "CHK")) {
+  } else if (species_short %in% c("CTL", "BFL", "PGS")) {
     metabolic_energy_req_fibre_production <- 0 # Not applicable
   }
   return(metabolic_energy_req_fibre_production)
@@ -1349,8 +1348,6 @@ calc_metabolic_energy_req_pregnancy <- function(
     } else {
       metabolic_energy_req_pregnancy <- 0
     }
-  } else if (species_short == "CHK") {
-    metabolic_energy_req_pregnancy <- 0 # Not applicable
   }
   return(metabolic_energy_req_pregnancy)
 }
@@ -1419,7 +1416,7 @@ calc_rem_maintenance <- function(
     # Polynomial fit from GLEAM
     net_energy_maintenance_digestible_energy_ratio <- 1.123 - (0.004092 * (ration_digestibility_fraction * 100)) +
       (0.00001126 * (ration_digestibility_fraction * 100)^2) - (25.4 / (ration_digestibility_fraction * 100))
-  } else if (species_short %in% c("PGS", "CHK", "CML")) {
+  } else if (species_short %in% c("PGS", "CML")) {
     net_energy_maintenance_digestible_energy_ratio <- NA_real_ # Not applicable
   }
   return(net_energy_maintenance_digestible_energy_ratio)
@@ -1489,7 +1486,7 @@ calc_reg_growth <- function(
     # Polynomial fit
     net_energy_growth_digestible_energy_ratio <- 1.164 - (0.005160 * (ration_digestibility_fraction * 100)) +
       (0.00001308 * (ration_digestibility_fraction * 100)^2) - (37.4 / (ration_digestibility_fraction * 100))
-  } else if (species_short %in% c("PGS", "CHK", "CML")) {
+  } else if (species_short %in% c("PGS", "CML")) {
     net_energy_growth_digestible_energy_ratio <- NA_real_ # Not applicable
   }
   return(net_energy_growth_digestible_energy_ratio)
@@ -1691,9 +1688,6 @@ calc_total_metabolic_energy_req <- function(
   } else if (species_short == "PGS") {
     metabolic_energy_req_total <- metabolic_energy_req_maintenance + metabolic_energy_req_activity +
       metabolic_energy_req_lactation + metabolic_energy_req_pregnancy + metabolic_energy_req_growth
-  } else if (species_short == "CHK") {
-    metabolic_energy_req_total <- metabolic_energy_req_maintenance + metabolic_energy_req_activity +
-      metabolic_energy_req_growth + metabolic_energy_req_egg_deposition
   }
   return(metabolic_energy_req_total)
 }
@@ -1736,7 +1730,7 @@ calc_total_metabolic_energy_req <- function(
 #'   }
 #'
 #'   \item \strong{Energy expressed as metabolizable energy requirement - 
-#'   \code{CML}, \code{PGS}, \code{CHK}}:
+#'   \code{CML}, \code{PGS}}:
 #'
 #'   \deqn{
 #'     ration\_intake = \frac{metabolic\_energy\_req\_total}{ration\_metabolizable\_energy}
@@ -1768,7 +1762,7 @@ calc_ration_intake <- function(
   # Ruminants: use gross energy
   if (species_short %in% gleam_species_ruminants) {
     ration_intake <- metabolic_energy_req_total / ration_gross_energy
-  } else if (species_short %in% c("PGS", "CHK", "CML")) {
+  } else if (species_short %in% c("PGS", "CML")) {
     # Monogastrics/camelids: use metabolizable energy
     ration_intake <- metabolic_energy_req_total / ration_metabolizable_energy
   }

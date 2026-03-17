@@ -3,7 +3,7 @@
 \docType{data}
 \name{gleam_species_non_poultry}
 \alias{gleam_species_non_poultry}
-\title{Non-poultry species (species with non-zero enteric CH4 and N excretion)}
+\title{Species with non-zero enteric CH4 and N excretion}
 \format{
 A character vector of length 6.
 }
@@ -11,8 +11,7 @@ A character vector of length 6.
 gleam_species_non_poultry
 }
 \description{
-All species except Chicken (\code{CHK}). Used for enteric methane emission
-calculations and nitrogen excretion models, where poultry produce negligible
-enteric CH4 and the N-excretion pathway is not yet implemented.
+All supported species. Used for enteric methane emission calculations and
+nitrogen excretion models. (Legacy alias; equivalent to \code{gleam_species}.)
 }
 \keyword{internal}

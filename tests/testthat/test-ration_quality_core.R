@@ -4,21 +4,9 @@ test_that("calc_ration_digestibility selects ruminant digestibility", {
     species_short = "CTL",
     feed_ration_fraction = 0.6,
     feed_digestibility_fraction_ruminant = 0.7,
-    feed_digestibility_fraction_pigs = 0.5,
-    feed_digestibility_fraction_chicken = 0.4
+    feed_digestibility_fraction_pigs = 0.5
   )
   expect_equal(value, 0.42)
-})
-
-test_that("calc_ration_digestibility selects chicken digestibility", {
-  value <- calc_ration_digestibility(
-    species_short = "CHK",
-    feed_ration_fraction = 0.6,
-    feed_digestibility_fraction_ruminant = 0.7,
-    feed_digestibility_fraction_pigs = 0.5,
-    feed_digestibility_fraction_chicken = 0.4
-  )
-  expect_equal(value, 0.24)
 })
 
 test_that("calc_ration_digestibility selects pig digestibility", {
@@ -26,8 +14,7 @@ test_that("calc_ration_digestibility selects pig digestibility", {
     species_short = "PGS",
     feed_ration_fraction = 0.6,
     feed_digestibility_fraction_ruminant = 0.7,
-    feed_digestibility_fraction_pigs = 0.5,
-    feed_digestibility_fraction_chicken = 0.4
+    feed_digestibility_fraction_pigs = 0.5
   )
   expect_equal(value, 0.3)
 })
@@ -38,21 +25,9 @@ test_that("calc_ration_metabolizable_energy selects ruminant ME", {
     species_short = "CTL",
     feed_ration_fraction = 0.6,
     feed_metabolizable_energy_ruminant = 10,
-    feed_metabolizable_energy_pigs = 12,
-    feed_metabolizable_energy_chicken = 14
+    feed_metabolizable_energy_pigs = 12
   )
   expect_equal(value, 6)
-})
-
-test_that("calc_ration_metabolizable_energy selects chicken ME", {
-  value <- calc_ration_metabolizable_energy(
-    species_short = "CHK",
-    feed_ration_fraction = 0.6,
-    feed_metabolizable_energy_ruminant = 10,
-    feed_metabolizable_energy_pigs = 12,
-    feed_metabolizable_energy_chicken = 14
-  )
-  expect_equal(value, 8.4)
 })
 
 test_that("calc_ration_metabolizable_energy selects pig ME", {
@@ -60,8 +35,7 @@ test_that("calc_ration_metabolizable_energy selects pig ME", {
     species_short = "PGS",
     feed_ration_fraction = 0.6,
     feed_metabolizable_energy_ruminant = 10,
-    feed_metabolizable_energy_pigs = 12,
-    feed_metabolizable_energy_chicken = 14
+    feed_metabolizable_energy_pigs = 12
   )
   expect_equal(value, 7.2)
 })
@@ -72,8 +46,7 @@ test_that("calc_ration_metabolizable_energy rejects invalid species_short", {
       species_short = "DOG",
       feed_ration_fraction = 0.6,
       feed_metabolizable_energy_ruminant = 10,
-      feed_metabolizable_energy_pigs = 12,
-      feed_metabolizable_energy_chicken = 14
+      feed_metabolizable_energy_pigs = 12
     ),
     "`species_short` must be one of"
   )
@@ -85,8 +58,7 @@ test_that("calc_ration_digestibility rejects NA inputs", {
       species_short = "CTL",
       feed_ration_fraction = NA_real_,
       feed_digestibility_fraction_ruminant = 0.7,
-      feed_digestibility_fraction_pigs = 0.5,
-      feed_digestibility_fraction_chicken = 0.4
+      feed_digestibility_fraction_pigs = 0.5
     ),
     "must be a single numeric value"
   )
@@ -98,22 +70,10 @@ test_that("calc_ration_metabolizable_energy rejects NA inputs", {
       species_short = "CTL",
       feed_ration_fraction = 0.6,
       feed_metabolizable_energy_ruminant = NA_real_,
-      feed_metabolizable_energy_pigs = 12,
-      feed_metabolizable_energy_chicken = 14
+      feed_metabolizable_energy_pigs = 12
     ),
     "Missing required metabolizable energy inputs"
   )
-})
-
-test_that("calc_ration_metabolizable_energy allows NA for unused animals", {
-  value <- calc_ration_metabolizable_energy(
-    species_short = "CHK",
-    feed_ration_fraction = 0.6,
-    feed_metabolizable_energy_ruminant = NA_real_,
-    feed_metabolizable_energy_pigs = NA_real_,
-    feed_metabolizable_energy_chicken = 14
-  )
-  expect_equal(value, 8.4)
 })
 
 test_that("calc_ration_digestibility allows NA for unused animals", {
@@ -121,8 +81,7 @@ test_that("calc_ration_digestibility allows NA for unused animals", {
     species_short = "PGS",
     feed_ration_fraction = 0.6,
     feed_digestibility_fraction_ruminant = NA_real_,
-    feed_digestibility_fraction_pigs = 0.5,
-    feed_digestibility_fraction_chicken = NA_real_
+    feed_digestibility_fraction_pigs = 0.5
   )
   expect_equal(value, 0.3)
 })
@@ -130,11 +89,10 @@ test_that("calc_ration_digestibility allows NA for unused animals", {
 test_that("calc_ration_digestibility rejects missing required inputs by species_short", {
   expect_error(
     calc_ration_digestibility(
-      species_short = "CHK",
+      species_short = "PGS",
       feed_ration_fraction = 0.6,
       feed_digestibility_fraction_ruminant = 0.7,
-      feed_digestibility_fraction_pigs = 0.5,
-      feed_digestibility_fraction_chicken = NA_real_
+      feed_digestibility_fraction_pigs = NA_real_
     ),
     "Missing required digestibility inputs"
   )
@@ -145,7 +103,6 @@ test_that("calc_feed_digestibility_fraction computes ratios", {
   results <- calc_feed_digestibility_fraction(
     feed_digestible_energy_ruminant = 8,
     feed_digestible_energy_pigs = 7,
-    feed_metabolizable_energy_chicken = 6,
     feed_gross_energy = 16
   )
 
@@ -153,8 +110,7 @@ test_that("calc_feed_digestibility_fraction computes ratios", {
     results,
     list(
       feed_digestibility_fraction_ruminant = 0.5,
-      feed_digestibility_fraction_pigs = 0.4375,
-      feed_digestibility_fraction_chicken = 0.375
+      feed_digestibility_fraction_pigs = 0.4375
     )
   )
 })
@@ -163,7 +119,6 @@ test_that("calc_feed_digestibility_fraction treats NA numerator as zero", {
   results <- calc_feed_digestibility_fraction(
     feed_digestible_energy_ruminant = NA_real_,
     feed_digestible_energy_pigs = 7,
-    feed_metabolizable_energy_chicken = 6,
     feed_gross_energy = 16
   )
 
@@ -171,8 +126,7 @@ test_that("calc_feed_digestibility_fraction treats NA numerator as zero", {
     results,
     list(
       feed_digestibility_fraction_ruminant = 0,
-      feed_digestibility_fraction_pigs = 0.4375,
-      feed_digestibility_fraction_chicken = 0.375
+      feed_digestibility_fraction_pigs = 0.4375
     )
   )
 })
@@ -207,21 +161,9 @@ test_that("calc_ration_urinary_energy_fraction selects ruminant urinary energy",
     species_short = "CTL",
     feed_ration_fraction = 0.6,
     feed_urinary_energy_ruminant = 0.12,
-    feed_urinary_energy_pigs = 0.02,
-    feed_urinary_energy_chicken = 0.04
+    feed_urinary_energy_pigs = 0.02
   )
   expect_equal(value, 0.072)
-})
-
-test_that("calc_ration_urinary_energy_fraction selects chicken urinary energy", {
-  value <- calc_ration_urinary_energy_fraction(
-    species_short = "CHK",
-    feed_ration_fraction = 0.6,
-    feed_urinary_energy_ruminant = 0.12,
-    feed_urinary_energy_pigs = 0.02,
-    feed_urinary_energy_chicken = 0.04
-  )
-  expect_equal(value, 0.024)
 })
 
 test_that("calc_ration_urinary_energy_fraction selects pig urinary energy", {
@@ -229,8 +171,7 @@ test_that("calc_ration_urinary_energy_fraction selects pig urinary energy", {
     species_short = "PGS",
     feed_ration_fraction = 0.6,
     feed_urinary_energy_ruminant = 0.12,
-    feed_urinary_energy_pigs = 0.02,
-    feed_urinary_energy_chicken = 0.04
+    feed_urinary_energy_pigs = 0.02
   )
   expect_equal(value, 0.012)
 })
@@ -241,8 +182,7 @@ test_that("calc_ration_urinary_energy_fraction rejects invalid species_short", {
       species_short = "DOG",
       feed_ration_fraction = 0.6,
       feed_urinary_energy_ruminant = 0.12,
-      feed_urinary_energy_pigs = 0.02,
-      feed_urinary_energy_chicken = 0.04
+      feed_urinary_energy_pigs = 0.02
     ),
     "`species_short` must be one of"
   )
@@ -250,23 +190,21 @@ test_that("calc_ration_urinary_energy_fraction rejects invalid species_short", {
 
 test_that("calc_ration_urinary_energy_fraction allows NA for unused animals", {
   value <- calc_ration_urinary_energy_fraction(
-    species_short = "CHK",
+    species_short = "PGS",
     feed_ration_fraction = 0.6,
     feed_urinary_energy_ruminant = NA_real_,
-    feed_urinary_energy_pigs = NA_real_,
-    feed_urinary_energy_chicken = 0.04
+    feed_urinary_energy_pigs = 0.02
   )
-  expect_equal(value, 0.024)
+  expect_equal(value, 0.012)
 })
 
 test_that("calc_ration_urinary_energy_fraction rejects missing required inputs", {
   expect_error(
     calc_ration_urinary_energy_fraction(
-      species_short = "CHK",
+      species_short = "PGS",
       feed_ration_fraction = 0.6,
       feed_urinary_energy_ruminant = 0.12,
-      feed_urinary_energy_pigs = 0.02,
-      feed_urinary_energy_chicken = NA_real_
+      feed_urinary_energy_pigs = NA_real_
     ),
     "Missing required urinary energy inputs"
   )
