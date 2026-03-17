@@ -117,8 +117,6 @@ calc_conversion_factor_ym <- function(
     } else {
       ch4_conversion_factor_ym <- 1.01
     }
-  } else if (species_short == "CHK") {
-    ch4_conversion_factor_ym <- 0
   }
 
   return(ch4_conversion_factor_ym)
@@ -165,8 +163,6 @@ calc_conversion_factor_ym <- function(
 #' \code{\link{calc_ration_gross_energy}} and \code{\link{calc_ration_intake}} (
 #' see also \code{\link{run_ration_quality_module}} and \code{\link{run_metabolic_energy_req_module}}).
 #'
-#' The function returns `0` for chickens.
-#' 
 #' This function is part of the [run_emissions_enteric_module()].
 #' 
 #' @seealso
@@ -199,12 +195,8 @@ calc_ch4_enteric <- function(
     ration_gross_energy, ration_intake
   )
 
-  if (species_short %in% gleam_species_non_poultry) {
-    ch4_enteric <- ration_gross_energy * ration_intake *
-      (ch4_conversion_factor_ym / 100) * ch4_mitigation_factor / 55.65
-  } else if (species_short == "CHK") {
-    ch4_enteric <- 0
-  }
+  ch4_enteric <- ration_gross_energy * ration_intake *
+    (ch4_conversion_factor_ym / 100) * ch4_mitigation_factor / 55.65
 
   return(ch4_enteric)
 }

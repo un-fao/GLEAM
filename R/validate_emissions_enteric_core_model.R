@@ -24,8 +24,7 @@ validate_ym_inputs <- function(
 #' Ensures that inputs for the daily enteric methane emissions calculation
 #' are valid. Specifically:
 #' * `species_short` must be a scalar character.
-#' * For chickens (`CHK`), YM is always `NA` and validation is skipped.
-#' * For other species, numeric parameters are validated against
+#' * Numeric parameters are validated against
 #'   \code{parameter_ranges} (ch4_conversion_factor_ym, ch4_mitigation_factor,
 #'   ration_gross_energy, ration_intake).
 #'
@@ -41,12 +40,6 @@ validate_enteric_emission_inputs <- function(
     ration_intake
 ) {
   validate_scalar_character(species_short, "species_short")
-
-  # Special case: chickens always return NA for now
-  if (species_short == "CHK") {
-    return()
-  }
-
   validate_param_range(ch4_conversion_factor_ym, "ch4_conversion_factor_ym")
   validate_param_range(ch4_mitigation_factor, "ch4_mitigation_factor")
   validate_param_range(ration_gross_energy, "ration_gross_energy")

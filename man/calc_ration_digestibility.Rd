@@ -8,8 +8,7 @@ calc_ration_digestibility(
   species_short,
   feed_ration_fraction,
   feed_digestibility_fraction_ruminant = NA_real_,
-  feed_digestibility_fraction_pigs = NA_real_,
-  feed_digestibility_fraction_chicken = NA_real_
+  feed_digestibility_fraction_pigs = NA_real_
 )
 }
 \arguments{
@@ -22,7 +21,6 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
-\item \code{CHK}: chickens
 }}
 
 \item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the
@@ -36,10 +34,6 @@ content (fraction).}
 \item{feed_digestibility_fraction_pigs}{Numeric. Digestibility of a feed component
 for pigs, expressed as the ratio of digestible energy to gross energy content
 (fraction).}
-
-\item{feed_digestibility_fraction_chicken}{Numeric. Digestibility of a feed
-component for chickens, expressed as the ratio of metabolizable energy to gross
-energy content (fraction).}
 }
 \value{
 Numeric. Contribution of the feed component to total diet digestibility (fraction).
@@ -53,8 +47,6 @@ The digestibility contribution uses the animal-specific digestibility ratio:
 \itemize{
 \item Ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}):
 \code{feed_ration_fraction * feed_digestibility_fraction_ruminant}
-\item Chickens (\code{CHK}):
-\code{feed_ration_fraction * feed_digestibility_fraction_chicken}
 \item Pigs (\code{PGS}):
 \code{feed_ration_fraction * feed_digestibility_fraction_pigs}
 }
