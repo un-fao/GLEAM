@@ -121,6 +121,8 @@ calc_ch4_manure(
   )
 )
 
+This function is part of the [run_emissions_manure_module()].
+
 }
 \references{
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
@@ -130,6 +132,9 @@ IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories
 Livestock and Manure Management. Equation 10.23.
 }
 \seealso{
+\code{\link{run_emissions_manure_module}},
+\code{\link{calc_volatile_solids}}
+
 \code{\link{run_emissions_manure_module}},
 \code{\link{calc_volatile_solids}}
 }
