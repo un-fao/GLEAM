@@ -21,7 +21,7 @@ average carbon dioxide (CO2) emission factor from  peatland drainage in feed
 production (g CO2/kg DM).
 }
 \description{
-Computes the contribution of an individual feed component to carbon dioxide (CO2)
+Calculates the contribution of an individual feed component to carbon dioxide (CO2)
 emissions from peatland drainage in feed production,
 using feed-specific emission factors weighted by the component's share in the ration.
 }
@@ -29,4 +29,9 @@ using feed-specific emission factors weighted by the component's share in the ra
 The contribution is computed as:
 
 \deqn{diet\_co2\_feed\_luc\_peat = feed\_ration\_fraction \times co2\_feed\_luc\_peat}
+
+This function is part of the \code{\link[=run_emissions_ration_module]{run_emissions_ration_module()}}.
+}
+\seealso{
+\code{\link{run_emissions_ration_module}}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_aggregation.R
 \name{calc_cohort_totals}
 \alias{calc_cohort_totals}
-\title{Calculate Totals by Cohort}
+\title{Calculate totals by cohort}
 \usage{
 calc_cohort_totals(
   value,
@@ -15,7 +15,8 @@ calc_cohort_totals(
 )
 }
 \arguments{
-\item{value}{Numeric. Variable value expressed as (unit)/head/day for non-production variables and (unit)/cohort/assessment duration for production variables. Production variables are those included in production_list.}
+\item{value}{Numeric. Variable value expressed as (unit)/head/day for non-production variables and (unit)/cohort/assessment duration for production variables.
+Production variables can be explored from the list 'gleam_production_meta'.}
 
 \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
 
@@ -59,7 +60,7 @@ for the full assessment duration
 Numeric. Variable value expressed as (unit)/cohort/assessment duration for all variables.
 }
 \description{
-Computes the total value for each variable at the cohort level over the
+Calculates the total value for each variable at the cohort level over the
 full assessment period. Values are harmonized to a common unit
 (\code{kg/cohort/assessment duration}) by accounting for cohort stock size
 and simulation duration.
@@ -77,6 +78,11 @@ For production variables:
 For emissions (except emissions from feed), feed, and nitrogen balance variables:
 \deqn{value\_total = value \times cohort\_stock\_size \times simulation\_duration}
 
-For emissions from feed:
+For feed emissions variables:
 \deqn{value\_total = value \times ration\_intake \times cohort\_stock\_size \times simulation\_duration / 1000}
+
+This function is part of the \code{\link[=run_aggregation_module]{run_aggregation_module()}}.
+}
+\seealso{
+\code{\link[=run_aggregation_module]{run_aggregation_module()}}
 }

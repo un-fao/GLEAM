@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_aggregation.R
 \name{calc_allocated_emissions}
 \alias{calc_allocated_emissions}
-\title{Calculate Allocated Emissions}
+\title{Calculate allocated greenhouse gas emissions (GHG)}
 \usage{
 calc_allocated_emissions(value, allocation_share)
 }
@@ -15,8 +15,8 @@ calc_allocated_emissions(value, allocation_share)
 Numeric. Allocated emissions for each commodity–emission combination (kg gas).
 }
 \description{
-Computes emissions attributable to specific commodities by applying
-allocation shares to total herd-level emissions.
+Calculates the greenhouse gas emissions (GHG) attributable to specific commodities
+by applying allocation shares to total herd-level emissions.
 }
 \details{
 Allocation shares represent the fraction of total emissions assigned to
@@ -26,7 +26,10 @@ See \code{\link[=run_allocation_module]{run_allocation_module()}} for additional
 Allocated emissions are calculated as:
 
 \deqn{value\_allocated = value \times allocation\_share}
+
+This function is part of the \code{\link[=run_aggregation_module]{run_aggregation_module()}}.
 }
 \seealso{
+\code{\link[=run_aggregation_module]{run_aggregation_module()}},
 \code{\link[=run_allocation_module]{run_allocation_module()}}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_allocation.R
 \name{assign_allocation_shares}
 \alias{assign_allocation_shares}
-\title{Assign Allocation shares to emission variables by commodity}
+\title{Assign allocation shares to emission variables by commodity}
 \usage{
 assign_allocation_shares(
   allocation_herd_long,
@@ -25,7 +25,7 @@ row represents an emission source–commodity combination or an unallocated emis
 "n2o_ration_fertilizer", "n2o_ration_manure_applied", "n2o_ration_crop_residues", "ch4_ration_rice").}
 
 \item{commodities}{Character. List of commodity categories to which emissions may be allocated.
-List=c("None","Milk","Meat","Fibre","Work","Eggs").}
+For example: c("None","Milk","Meat","Fibre","Work","Eggs").}
 
 \item{non_allocated_emission_sources}{Character. Emission variables that should not be allocated
 across commodities, even if they appear in emissions_vars (e.g., "ch4_manure_pasture", "ch4_manure_burned").}
@@ -48,6 +48,8 @@ Expands commodity-level allocation shares across emission sources and applies
 predefined allocation rules for excluded emission sources.
 }
 \details{
+The function assigns commodity allocation shares to emission sources while also allowing for the
+implementation of specific allocation rules.
 Emission sources listed in \code{non_allocated_emission_sources} (e.g., emissions from manure
 burned as fuel or manure deposited on pasture) are treated as not attributable
 to livestock commodities under the chosen goal and scope. Consequently,
@@ -69,6 +71,8 @@ allocated to livestock commodities in order to avoid double counting.
 When upstream feed production is included in the inventory, emission factors of feed items
 already account for this source.
 }
+
+This function is part of the \code{\link[=run_allocation_module]{run_allocation_module()}}.
 }
 \references{
 IDF. (2022). \emph{The IDF Global Carbon Footprint Standard for the Dairy
@@ -86,4 +90,7 @@ Assessment and Performance (LEAP) Partnership. FAO, Rome, Italy.
 FAO. (2016c). \emph{Greenhouse gas emissions and fossil energy use from poultry
 supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 and Performance (LEAP) Partnership. FAO, Rome, Italy.
+}
+\seealso{
+\code{\link[=run_allocation_module]{run_allocation_module()}}
 }

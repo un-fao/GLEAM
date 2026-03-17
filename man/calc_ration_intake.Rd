@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_ration_intake}
 \alias{calc_ration_intake}
-\title{Calculate Daily Dry Matter Intake}
+\title{Calculate daily ration intake in dry matter}
 \usage{
 calc_ration_intake(
   species_short,
@@ -35,7 +35,7 @@ For CML and PGS the function returns the summed daily metabolizable energy requi
 Numeric. Average daily dry matter intake of feed (kg DM/head/day).
 }
 \description{
-Computes daily feed intake as dry matter intake (DMI) per animal (kg DM/head/day) from the
+Calculates daily feed intake as dry matter intake (DMI) per animal (kg DM/head/day) from the
 animal's daily energy requirement and the diet energy density.
 }
 \details{
@@ -59,6 +59,8 @@ diet energy content (MJ/kg DM).
     ration\_intake = \frac{metabolic\_energy\_req\_total}{ration\_metabolizable\_energy}
   }
 }
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories},
@@ -68,6 +70,7 @@ IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Gre
 Volume 4 (AFOLU), Chapter 10: \emph{Emissions from Livestock and Manure Management}.
 }
 \seealso{
+\code{\link{run_metabolic_energy_req_module}},
 \code{\link{calc_total_metabolic_energy_req}}
 \code{\link{calc_ration_gross_energy}}
 \code{\link{calc_ration_metabolizable_energy}}

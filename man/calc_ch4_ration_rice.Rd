@@ -20,7 +20,7 @@ Numeric. Contribution of an individual feed component to the diet-level
 average methane (CH4) emission factor from rice cultivation in feed production (g CH4/kg DM).
 }
 \description{
-Computes the contribution of an individual feed component to methane (CH4)
+Calculates the contribution of an individual feed component to methane (CH4)
 emissions from rice cultivation in feed production,
 using feed-specific emission factors weighted by the component's share in the ration.
 }
@@ -28,4 +28,9 @@ using feed-specific emission factors weighted by the component's share in the ra
 The contribution is computed as:
 
 \deqn{diet\_ch4\_feed\_rice = feed\_ration\_fraction \times ch4\_feed\_rice}
+
+This function is part of the \code{\link[=run_emissions_ration_module]{run_emissions_ration_module()}}.
+}
+\seealso{
+\code{\link{run_emissions_ration_module}}
 }

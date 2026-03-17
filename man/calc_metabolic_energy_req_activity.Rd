@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_metabolic_energy_req_activity}
 \alias{calc_metabolic_energy_req_activity}
-\title{Calculate Energy for Activity}
+\title{Calculate metabolic energy requirements for activity}
 \usage{
 calc_metabolic_energy_req_activity(
   species_short,
@@ -56,17 +56,17 @@ Numeric. Energy required for activity, defined as the amount of energy needed to
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the energy requirement for activity by cohort (MJ/head/day),
+Calculates the energy requirement for activity by cohort (MJ/head/day),
 defined as the amount of energy needed to support animal movement and physical activity.
 }
 \details{
 This approach follows the IPCC Tier 2 energy partitioning method and applies:
 
-\eqn{energy\_requirement\_activity = cact \times energy\_requirement\_maintenance}
+\eqn{metabolic\_energy\_req\_activity = cact \times metabolic\_energy\_req\_maintenance}
 
 For \code{SHP} and \code{GTS}, activity energy is calculated as:
 
-\eqn{energy\_requirement\_activity = cact \times live\_weight\_cohort\_average}
+\eqn{metabolic\_energy\_req\_activity = cact \times live\_weight\_cohort\_average}
 
 where
 
@@ -103,6 +103,8 @@ over the assessment period to account for variation in management and grazing in
 \itemize{
 \item \code{all activity levels}: \eqn{cact = 0.125}
 }
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 NRC (1998). \emph{Nutrient Requirements of Swine},
@@ -125,6 +127,7 @@ Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 }
 \seealso{
-\code{\link{calc_metabolic_energy_req_maintenance}}
+\code{\link{run_metabolic_energy_req_module}},
+\code{\link{calc_metabolic_energy_req_maintenance}},
 \code{\link{calc_avg_weights}}
 }

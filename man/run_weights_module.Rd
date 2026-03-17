@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_weights_module.R
 \name{run_weights_module}
 \alias{run_weights_module}
-\title{Run weight calculations}
+\title{Run Weights Module Pipeline}
 \usage{
 run_weights_module(cohort_level_data, herd_level_data, show_indicator = TRUE)
 }
@@ -34,7 +34,8 @@ herd \eqn{\times} cohort. Must include:
 \item \code{live_weight_male_at_slaughter} Numeric. Slaughter weight of male sub-adult animals (kg)
 }}
 
-\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.
+Defaults to \code{TRUE}.}
 }
 \value{
 A named list with two \code{data.table}s:
@@ -54,14 +55,16 @@ additional columns:
 }
 }
 \description{
-Computes cohort-level live weight metrics by combining cohort-level inputs with
+Calculates cohort-level live weight metrics by combining cohort-level inputs with
 herd-level biological parameters. The function appends cohort weights
 (initial, potential final, slaughter), then derives average and final live
 weights accounting for offtake, and finally computes average daily live weight
 gain over each cohort stage.
 }
 \details{
-The calculation pipeline is composed of the following steps:
+This function represents the intermediate module of the Global Livestock Environmental
+Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to estimate animals' live
+weight and is composed of the following steps:
 
 \enumerate{
 \item \strong{Cohort-stage weight assignment} using \code{\link{calc_cohort_weights}}.
@@ -74,9 +77,6 @@ Herd-level biological parameters are matched to each cohort row by
 \item \strong{Calculation of average daily live weight gain} using
 \code{\link{calc_daily_weight_gain}}.
 }
-
-All cohort-level computations are evaluated row-wise using
-\code{by = .I} from \pkg{data.table}.
 }
 \examples{
 \dontrun{
@@ -103,6 +103,7 @@ print(results$herd_level_results)
 
 }
 \seealso{
+\code{\link{run_gleam}},
 \code{\link{calc_cohort_weights}},
 \code{\link{calc_avg_weights}},
 \code{\link{calc_daily_weight_gain}},

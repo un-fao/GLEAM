@@ -17,7 +17,7 @@ each herd_id and cohort, proportions should sum to 1.}
 Numeric. Contribution of the feed component to total diet nitrogen content (kg N/kg DM).
 }
 \description{
-Computes the contribution of a single feed component to diet nitrogen content by
+Calculates the contribution of a single feed component to diet nitrogen content by
 weighting feed nitrogen content by its ration composition share.
 }
 \details{

@@ -1,6 +1,6 @@
-#' Compute Milk Production Outputs
+#' Calculate milk production
 #'
-#' Computes total milk production for the producing cohort (\code{FA}) of milk-producing species
+#' Calculates total milk production for the producing cohort (\code{FA}) of milk-producing species
 #' (\code{CML}, \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}) over the assessment period and returns
 #' multiple production metrics: total milk mass, milk protein, and fat-protein-corrected milk (FPCM)
 #' (kg/cohort/assessment period).
@@ -93,6 +93,11 @@
 #' Non-zero milk outputs are only expected for adult female cohorts of
 #' milk-producing species.
 #'
+#' This function is part of the [run_production_module()].
+#' 
+#' @seealso
+#' \code{\link{run_production_module}}
+#'
 #' @references
 #' International Dairy Federation (IDF). 2022.
 #' \emph{The IDF Global Carbon Footprint Standard for the Dairy Sector}.
@@ -170,9 +175,9 @@ calc_milk_production <- function(
   ))
 }
 
-#' Compute Fibre Production
+#' Calculate fibre production
 #'
-#' Computes fibre production for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
+#' Calculates fibre production for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
 #' of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}) over the assessment period
 #' (kg/cohort/assessment period).
 #' 
@@ -212,6 +217,11 @@ calc_milk_production <- function(
 #'
 #' Non-zero fibre outputs are only expected for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
 #' of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}).
+#' 
+#' This function is part of the [run_production_module()].
+#' 
+#' @seealso
+#' \code{\link{run_production_module}}
 #'
 #' @export
 calc_fibre_production <- function(
@@ -243,9 +253,9 @@ calc_fibre_production <- function(
   return(fibre_production_cohort)
 }
 
-#' Compute Meat Production Outputs
+#' Calculate meat production
 #'
-#' Computes cohort-level meat production outputs over the assessment period based on
+#' Calculates cohort-level meat production outputs over the assessment period based on
 #' the number of animals removed from the herd (offtake). The function returns
 #' multiple production metrics expressed in live weight, carcass weight,
 #' bone-free meat, and meat protein (kg/cohort/assessment period).
@@ -278,7 +288,7 @@ calc_fibre_production <- function(
 #'   \item \strong{\code{meat_production_live_weight_cohort}} is computed as:
 #'
 #'   \eqn{meat\_production\_live\_weight\_cohort =
-#'   offtake\_heads\_assessment \times slaughter\_weight\_cohort}
+#'   offtake\_heads\_assessment \times live\_weight\_cohort\_at\_slaughter}
 #'
 #'   \item \strong{\code{meat_production_carcass_weight_cohort}} is computed as:
 #'
@@ -296,8 +306,11 @@ calc_fibre_production <- function(
 #'   meat\_production\_bone\_free\_meat\_cohort \times meat\_protein\_fraction}
 #' }
 #' 
+#' This function is part of the [run_production_module()].
+#' 
 #' @seealso
-#' \code{\link{run_demographic_herd_module}}
+#' \code{\link{run_production_module}},
+#' \code{\link{run_demographic_herd_module}},
 #' \code{\link{run_weights_module}}
 #'
 #' @export

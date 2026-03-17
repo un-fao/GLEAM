@@ -18,7 +18,7 @@ a fraction of the dry matter intake (g ash/100g DM).}
 Numeric. Contribution of the feed component to total diet ash content (kg ash/kg DM).
 }
 \description{
-Computes the contribution of a single feed component to diet ash content by
+Calculates the contribution of a single feed component to diet ash content by
 weighting feed ash content by its ration composition share.
 }
 \details{
@@ -26,4 +26,9 @@ The ash contribution is defined as:
 \deqn{ration\_ash = feed\_ration\_fraction \times feed\_ash / 100}
 
 Ash content is expressed as a percentage (g/100g DM); the result is a fraction.
+
+This function is part of the \code{\link[=run_ration_quality_module]{run_ration_quality_module()}}.
+}
+\seealso{
+\code{\link{run_ration_quality_module}}
 }

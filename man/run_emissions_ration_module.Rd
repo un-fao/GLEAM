@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_emissions_ration_module.R
 \name{run_emissions_ration_module}
 \alias{run_emissions_ration_module}
-\title{Calculate cohort-level average greenhouse gas (GHG) emission factors for feed rations}
+\title{Run Emissions from Feed Production Module Pipeline}
 \usage{
 run_emissions_ration_module(
   rations_share,
@@ -16,18 +16,16 @@ following minimum data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each
 cohort belonging to the same herd.}
-\item{species_short}{
-Character. Species short code. Supported values include:
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
 \itemize{
-\item \code{CTL} (Cattle)
-\item \code{BFL} (Buffalo)
-\item \code{SHP} (Sheep)
-\item \code{GTS} (Goats)
-\item \code{CHK} (Chicken)
-\item \code{PGS} (Pigs)
-\item \code{CML} (Camels)
-}
-}
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 \item{cohort_short}{
 Character. Sex- and age-specific cohort code describing the production stage
 of the animals. Supported values include:
@@ -84,7 +82,8 @@ representing CH4 emissions from rice cultivation in feed production,
 expressed per kg of dry matter intake (g CH4/kg DM).}
 }}
 
-\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.
+Defaults to \code{TRUE}.}
 }
 \value{
 data.table. Cohort-level emission factors summarized by \code{herd_id},
@@ -134,7 +133,10 @@ weighting emission factors of individual feed components by diet composition.
 Returns diet-level average GHG emission factors by gas and emission source for each cohort.
 }
 \details{
-This function joins \code{rations_share} with \code{feed_emissions} by \code{feed_id},
+This function represents the intermediate module of the Global Livestock Environmental
+Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to estimate emissions from
+feed production used in the animal's ration.
+The function joins \code{rations_share} with \code{feed_emissions} by \code{feed_id},
 uses \code{species_short} directly, and computes ration-weighted emission
 factors by cohort.
 
@@ -200,6 +202,7 @@ result <- run_emissions_ration_module(
 }
 }
 \seealso{
+\code{\link{run_gleam}},
 \code{\link{calc_co2_ration_fertilizer}},
 \code{\link{calc_co2_ration_pesticides}},
 \code{\link{calc_co2_ration_crop_activities}},

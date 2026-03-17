@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_allocation.R
 \name{calc_milk_allocation_energy}
 \alias{calc_milk_allocation_energy}
-\title{Milk Energy Requirement for Allocation}
+\title{Calculate milk energy requirements (for biophysical allocation)}
 \usage{
 calc_milk_allocation_energy(
   milk_production_fpcm_cohort,
@@ -35,7 +35,7 @@ cohorts=FA).
 All other species–cohort combinations are assigned a value of 0.
 }
 \description{
-Computes the energy required for milk production over the assessment period
+Calculates the energy required for milk production over the assessment period
 (MJ/cohort/assessment period), based on total fat- and protein-corrected milk
 (FPCM) produced by the cohort.
 }
@@ -72,6 +72,8 @@ following IDF (2022) (MJ/kg milk).
 (see also \code{\link{run_production_module}}).
 
 }
+
+This function is part of the \code{\link[=run_allocation_module]{run_allocation_module()}}.
 }
 \references{
 ISO. (2006). \emph{Environmental management — Life cycle assessment —
@@ -100,6 +102,7 @@ supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 and Performance (LEAP) Partnership. FAO, Rome, Italy.
 }
 \seealso{
+\code{\link{run_allocation_module}},
 \code{\link{calc_milk_production}},
 \code{\link{run_production_module}}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_allocation.R
 \name{calc_work_allocation_energy}
 \alias{calc_work_allocation_energy}
-\title{Work Energy Requirement for Allocation}
+\title{Calculate work energy requirements (for biophysical allocation)}
 \usage{
 calc_work_allocation_energy(
   species_short,
@@ -40,7 +40,7 @@ period).
 Non-zero values are expected only for draught or work-producing species (CTL, BFL CML).
 }
 \description{
-Computes the energy required for animal work over the assessment period
+Calculates the energy required for animal work over the assessment period
 (MJ/cohort/assessment period), based on the daily energy requirement for work,
 cohort size, and assessment duration.
 }
@@ -56,7 +56,7 @@ In accordance with ISO 14044:2006 (Section 4.3.4.2, Step 2), known processing or
 biophysical relationships may be used to assign shared inputs and outputs of a
 single production unit to individual products or sub-units. In livestock systems,
 this includes apportioning shared feed and energy use according to physiological
-energy requirements (e.g., net energy for lactation, growth..etc.). If the
+energy requirements (e.g., net energy for lactation, growth, etc.). If the
 resulting process remains multifunctional, these energy terms may subsequently
 be used to derive allocation factors among co-products.
 
@@ -79,6 +79,8 @@ for camels (\code{CML}).
 where \code{metabolic_energy_req_work} can be computed using
 \code{\link{calc_metabolic_energy_req_work}} (see also
 \code{\link{run_metabolic_energy_req_module}}).
+
+This function is part of the \code{\link[=run_allocation_module]{run_allocation_module()}}.
 }
 \references{
 ISO. (2006). \emph{Environmental management — Life cycle assessment —
@@ -107,6 +109,7 @@ supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 and Performance (LEAP) Partnership. FAO, Rome, Italy.
 }
 \seealso{
+\code{\link{run_allocation_module}},
 \code{\link{calc_metabolic_energy_req_work}},
 \code{\link{run_metabolic_energy_req_module}}
 }

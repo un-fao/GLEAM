@@ -44,20 +44,25 @@
 #'   \item \strong{Subadults} (\code{"FS"}, \code{"MS"}):
 #'   \itemize{
 #'     \item \code{live_weight_cohort_initial = live_weight_at_weaning}
-#'     \item \code{live_weight_cohort_potential_final} equals the adult weight for the cohort sex
+#'     \item \code{live_weight_cohort_potential_final} = adult weight for the cohort sex
 #'       (\code{live_weight_female_adult} for \code{"FS"}, \code{live_weight_male_adult} for \code{"MS"})
-#'     \item \code{live_weight_cohort_at_slaughter} equals the subadult slaughter weight for the cohort sex
+#'     \item \code{live_weight_cohort_at_slaughter} = subadult slaughter weight for the cohort sex
 #'       (\code{live_weight_female_at_slaughter} for \code{"FS"}, \code{live_weight_male_at_slaughter} for \code{"MS"})
 #'   }
 #'
 #'   \item \strong{Adults} (\code{"FA"}, \code{"MA"}):
 #'   \itemize{
-#'     \item \code{live_weight_cohort_initial = live_weight_female_adult} for \code{"FA"} and
-#'       \code{live_weight_cohort_initial = live_weight_male_adult} for \code{"MA"}
-#'     \item \code{live_weight_cohort_potential_final} equals the adult weight for the cohort sex
-#'     \item \code{live_weight_cohort_at_slaughter} equals the adult weight for the cohort sex
+#'     \item \code{live_weight_cohort_initial = live_weight_female_adult} for \code{"FA"},
+#'       and \code{live_weight_cohort_initial = live_weight_male_adult} for \code{"MA"}
+#'     \item \code{live_weight_cohort_potential_final} = adult weight for the cohort sex
+#'     \item \code{live_weight_cohort_at_slaughter} = adult weight for the cohort sex
 #'   }
 #' }
+#'
+#' This function is part of the [run_weights_module()].
+#' 
+#' @seealso
+#' \code{\link{run_weights_module}}
 #'
 #' @export
 calc_cohort_weights <- function(
@@ -124,7 +129,7 @@ calc_cohort_weights <- function(
 
 #' Calculate average and final live weights by cohort
 #'
-#' Computes the average and final live weight for a given
+#' Calculates the average and final live weight for a given
 #' sex–age cohort based on initial weight, 
 #' potential final weight, slaughter weight, and the offtake rate.
 #'
@@ -145,11 +150,20 @@ calc_cohort_weights <- function(
 #' remaining animals reach the potential final live weight.
 #'
 #' The final live weight is computed as:
-#' \deqn{live\_weight\_cohort\_final = (1 - offtake\_rate) \times live\_weight\_cohort\_potential\_final +
-#'       offtake\_rate \times slaughter\_weight\_cohort}
+#' \deqn{
+#' live\_weight\_cohort_final =
+#' (1 - offtake\_rate) \times live\_weight\_cohort\_potential\_final +
+#' offtake\_rate \times live\_weight\_cohort\_at\_slaughter
+#' }
 #'
 #' The average live weight over the stage is approximated as:
-#' \deqn{live\_weight\_cohort\_average = (live\_weight\_cohort\_initial + live\_weight\_cohort\_final)/2}
+#' \deqn{live\_weight\_cohort\_average = 
+#' (live\_weight\_cohort\_initial + live\_weight\_cohort\_final)/2}
+#'
+#' This function is part of the [run_weights_module()].
+#' 
+#' @seealso
+#' \code{\link{run_weights_module}}
 #'
 #' @export
 calc_avg_weights <- function(
@@ -185,7 +199,7 @@ calc_avg_weights <- function(
 
 #' Calculate daily weight gain by cohort
 #' 
-#' Computes average daily weight gain for a given
+#' Calculates average daily weight gain for a given
 #' sex–age cohort based on the difference between potential final and initial live weights.
 #'
 #' @param live_weight_cohort_potential_final Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)
@@ -199,7 +213,13 @@ calc_avg_weights <- function(
 #' potential final live weight and the initial live weight, divided by the
 #' duration of the cohort stage:
 #'
-#' \deqn{daily\_weight\_gain = (live\_weight\_cohort\_potential\_final - live\_weight\_cohort\_initial) / cohort\_duration\_days}
+#' \deqn{daily\_weight\_gain = 
+#' (live\_weight\_cohort\_potential\_final - live\_weight\_cohort\_initial) / cohort\_duration\_days}
+#'
+#' This function is part of the [run_weights_module()].
+#' 
+#' @seealso
+#' \code{\link{run_weights_module}}
 #'
 #' @export
 calc_daily_weight_gain <- function(

@@ -1,4 +1,4 @@
-#' Run Global Livestock Environmental Assessment Model (GLEAM) Pipeline
+#' Run the full Global Livestock Environmental Assessment Model (GLEAM) Pipeline
 #'
 #' Runs the full GLEAM pipeline from master herd and cohort inputs through all
 #' modules: herd (optional), weights, ration quality, energy requirements,
@@ -283,8 +283,8 @@
 #'       N2O = 298.
 #'   }
 #'
-#' @param show_indicator Logical. Display progress indicators during the
-#'   pipeline run. Default: \code{TRUE}.
+#' @param show_indicator Logical. Whether to display progress indicators during calculations.
+#'   Defaults to \code{TRUE}.
 #'
 #' @return A named list with four elements:
 #' \describe{

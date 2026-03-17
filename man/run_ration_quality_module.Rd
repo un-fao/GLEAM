@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_ration_quality_module.R
 \name{run_ration_quality_module}
 \alias{run_ration_quality_module}
-\title{Calculate Feed Intake Metrics}
+\title{Run Ration Quality Module Pipeline}
 \usage{
 run_ration_quality_module(rations_share, feed_params, show_indicator = TRUE)
 }
@@ -12,18 +12,16 @@ following minimum data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each
 cohort belonging to the same herd.}
-\item{species_short}{
-Character. Species short code. Supported values include:
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
 \itemize{
-\item \code{CTL} (Cattle)
-\item \code{BFL} (Buffalo)
-\item \code{SHP} (Sheep)
-\item \code{GTS} (Goats)
-\item \code{CHK} (Chicken)
-\item \code{PGS} (Pigs)
-\item \code{CML} (Camels)
-}
-}
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 \item{cohort_short}{
 Character. Sex- and age-specific cohort code describing the production stage
 of the animals. Supported values include:
@@ -81,7 +79,8 @@ used consistently  with \code{feed_id}, for a coherent result.}
 reporting). If provided, it should uniquely identify the same feed component as \code{feed_id}.}
 }}
 
-\item{show_indicator}{Logical. Whether to display progress indicators during calculations.}
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.
+Defaults to \code{TRUE}.}
 }
 \value{
 data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
@@ -102,12 +101,15 @@ of the dry matter intake (kg ash/kg DM).}
 }
 }
 \description{
-Computes cohort-level diet nutritional metrics (gross and metabolizable energy
+Calculates cohort-level diet nutritional metrics (gross and metabolizable energy
 content, digestibility, nitrogen content, urinary energy losses, and ash
 content) from cohort-level feed ration composition shares and feed component nutrient
 parameters.
 }
 \details{
+This function represents the intermediate module of the Global Livestock Environmental
+Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to estimate the nutritional
+quality of the feed ration.
 This function joins \code{rations_share} with \code{feed_params} by \code{feed_id},
 uses \code{species_short} directly, and computes ration-weighted nutritional
 metrics by cohort.
@@ -148,6 +150,7 @@ result <- run_ration_quality_module(
 }
 }
 \seealso{
+\code{\link{run_gleam}},
 \code{\link{calc_feed_digestibility_fraction}},
 \code{\link{calc_ration_gross_energy}},
 \code{\link{calc_ration_nitrogen_content}},

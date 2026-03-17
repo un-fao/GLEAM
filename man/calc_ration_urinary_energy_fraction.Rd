@@ -61,4 +61,9 @@ For chickens, \code{feed_urinary_energy_chicken} defaults to 0 because urinary
 energy losses are accounted for within \code{metabolizable_energy} in poultry
 nutrition (urine and feces are excreted together), and are therefore not modeled
 as a separate fraction of gross energy.
+
+This function is part of the \code{\link[=run_ration_quality_module]{run_ration_quality_module()}}.
+}
+\seealso{
+\code{\link{run_ration_quality_module}}
 }

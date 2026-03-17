@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_nitrogen_balance_module.R
 \name{run_nitrogen_balance_module}
 \alias{run_nitrogen_balance_module}
-\title{Run Nitrogen Balance}
+\title{Run Nitrogen Balance Module Pipeline}
 \usage{
 run_nitrogen_balance_module(
   cohort_level_data,
@@ -35,16 +35,15 @@ the following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 to the same herd.}
-\item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
-internal lookup table. Supported values include:
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
 \itemize{
-\item \code{Cattle}
-\item \code{Buffalo}
-\item \code{Sheep}
-\item \code{Goats}
-\item \code{Chicken}
-\item \code{Pigs}
-\item \code{Camels}
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
 }}
 \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein / kg milk).
 Required only for species = CML, CTL, BFL, SHP, and GTS.}
@@ -82,11 +81,13 @@ tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)}
 }
 }
 \description{
-Computes cohort-level daily nitrogen intake, retention, and excretion (kg N/head/day)
+Calculates cohort-level daily nitrogen intake, retention, and excretion (kg N/head/day)
 by applying IPCC Tier 2 approach.
 }
 \details{
-This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
+This function represents the intermediate module of the Global Livestock Environmental
+Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to compute the nitrogen balance.
+The function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
 uses \code{species_short} directly for all species-specific nitrogen balance calculations,
 and computes cohort-level nitrogen balance components following the IPCC Tier 2 structure.
 
@@ -121,6 +122,7 @@ results <- run_nitrogen_balance_module(
 
 }
 \seealso{
+\code{\link{run_gleam}},
 \code{\link{calc_nitrogen_intake}},
 \code{\link{calc_nitrogen_retention}},
 \code{\link{calc_nitrogen_excretion}}

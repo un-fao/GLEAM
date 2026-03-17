@@ -1,23 +1,22 @@
-#' Run Enteric Methane (CH4) Direct Emissions Calculation
+#' Run Enteric Methane (CH4) Emissions Module Pipeline
 #'
-#' Computes daily enteric methane emissions by cohort (kg CH4/head/day) using a Tier 2
+#' Calculates daily enteric methane emissions by cohort (kg CH4/head/day) using a Tier 2
 #'  IPCC approach, by applying species-, cohort- and diet-specific methane
 #'  conversion factors (ym).
 #'
 #' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'     \item{animal}{Character. Livestock category name used to map to a species short code via an
-#'       internal lookup table. Supported values include:
-#'       \itemize{
-#'         \item \code{Cattle}
-#'         \item \code{Buffalo}
-#'         \item \code{Sheep}
-#'         \item \code{Goats}
-#'         \item \code{Chicken}
-#'         \item \code{Pigs}
-#'         \item \code{Camels}
-#'       }}
+#'     \item{species_short}{Character. Code identifying the livestock species.
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         }}
 #'     \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage
 #'       of the animals. Supported values include:
 #'       \itemize{
@@ -28,7 +27,7 @@
 #'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
 #'       }}
-#'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as
+#'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as
 #'     ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).}
 #'     \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 #'     \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
@@ -52,7 +51,9 @@
 #'   }
 #'
 #' @details
-#' This function performs the following calculation sequence:
+#' This function represents the intermediate module of the Global Livestock Environmental
+#' Assessment Model (GLEAM) computational pipeline [run_gleam()] to estimate enteric methane
+#' emissions and performs the following calculation sequence:
 #' \enumerate{
 #'   \item If \code{ch4_mitigation_factor} is not provided in the input data, it is set to \code{1} (no mitigation).
 #'   \item The methane conversion factor (ym) is computed using \code{\link{calc_conversion_factor_ym}}.
@@ -60,10 +61,11 @@
 #' }
 #'
 #' @seealso
+#' \code{\link{run_gleam}},
 #' \code{\link{calc_conversion_factor_ym}},
 #' \code{\link{calc_ch4_enteric}}
 #'
-#'
+#'@references
 #' IPCC. (2019).
 #' \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
 #' Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.

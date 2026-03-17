@@ -1,6 +1,6 @@
 #' Calculate feed digestibility fraction
 #'
-#' Computes species-specific feed digestibility fractions by feed component.
+#' Calculates species-specific feed digestibility fractions by feed component.
 #'
 #' @param feed_digestible_energy_ruminant Numeric. Digestible energy content of a
 #'   feed component for ruminants, representing the energy absorbed by the animal after
@@ -26,7 +26,7 @@
 #'       digestible energy to gross energy content (fraction).
 #'     }
 #'     \item{feed_digestibility_fraction_chicken}{
-#'       Numeric. Digestibility of a feed component for chickens, expressed as the ratio
+#'     Numeric. Digestibility of a feed component for chickens, expressed as the ratio
 #'       of metabolizable energy to gross energy content (fraction).
 #'     }
 #'   }
@@ -39,8 +39,13 @@
 #' which accounts for fecal energy losses. For chickens, \code{metabolizable_energy}
 #' (ME) is used instead of \code{digestible_energy} because urinary losses (excreted as uric acid) and fecal
 #' excretions are voided together, making fecal energy losses difficult to measure
-#' separately. \code{metabolizable_energy} therefore provides a more appropriate and
+#' separately. Therefore, \code{metabolizable_energy} provides a more appropriate and
 #' standard measure of usable dietary energy in poultry nutrition.
+#'
+#' This function is part of the [run_ration_quality_module()].
+#' 
+#' @seealso
+#' \code{\link{run_ration_quality_module}}
 #'
 #' @export
 calc_feed_digestibility_fraction <- function(
@@ -124,6 +129,12 @@ calc_feed_digestibility_fraction <- function(
 #'   \item Pigs (\code{PGS}):
 #'     \code{feed_ration_fraction * feed_digestibility_fraction_pigs}
 #' }
+#' 
+#' This function is part of the [run_ration_quality_module()].
+#' 
+#' @seealso
+#' \code{\link{run_ration_quality_module}}
+#' 
 #' @export
 calc_ration_digestibility <- function(
     species_short,
@@ -194,6 +205,11 @@ calc_ration_digestibility <- function(
 #'     \code{feed_ration_fraction * feed_metabolizable_energy_pigs}
 #' }
 #'
+#' This function is part of the [run_ration_quality_module()].
+#' 
+#' @seealso
+#' \code{\link{run_ration_quality_module}}
+#'
 #' @export
 calc_ration_metabolizable_energy <- function(
     species_short,
@@ -239,6 +255,11 @@ calc_ration_metabolizable_energy <- function(
 #' The gross energy contribution is defined as:
 #' \deqn{diet\_gross\_energy = feed\_ration\_fraction \times feed\_gross\_energy}
 #'
+#' This function is part of the [run_ration_quality_module()].
+#' 
+#' @seealso
+#' \code{\link{run_ration_quality_module}}
+#'
 #' @export
 calc_ration_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
   validate_ration_gross_energy_inputs(feed_ration_fraction, feed_gross_energy)
@@ -249,7 +270,7 @@ calc_ration_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
 
 #' Calculate diet nitrogen contribution for a ration component
 #'
-#' Computes the contribution of a single feed component to diet nitrogen content by
+#' Calculates the contribution of a single feed component to diet nitrogen content by
 #' weighting feed nitrogen content by its ration composition share.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
@@ -316,6 +337,11 @@ calc_ration_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_con
 #' nutrition (urine and feces are excreted together), and are therefore not modeled
 #' as a separate fraction of gross energy.
 #'
+#' This function is part of the [run_ration_quality_module()].
+#' 
+#' @seealso
+#' \code{\link{run_ration_quality_module}}
+#'
 #' @export
 calc_ration_urinary_energy_fraction <- function(
     species_short,
@@ -345,7 +371,7 @@ calc_ration_urinary_energy_fraction <- function(
 
 #' Calculate diet ash contribution for a ration component
 #'
-#' Computes the contribution of a single feed component to diet ash content by
+#' Calculates the contribution of a single feed component to diet ash content by
 #' weighting feed ash content by its ration composition share.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
@@ -361,6 +387,11 @@ calc_ration_urinary_energy_fraction <- function(
 #' \deqn{ration\_ash = feed\_ration\_fraction \times feed\_ash / 100}
 #'
 #' Ash content is expressed as a percentage (g/100g DM); the result is a fraction.
+#'
+#' This function is part of the [run_ration_quality_module()].
+#' 
+#' @seealso
+#' \code{\link{run_ration_quality_module}}
 #'
 #' @export
 calc_ration_ash <- function(feed_ration_fraction, feed_ash) {

@@ -25,4 +25,9 @@ weighting feed gross energy by its ration composition share.
 \details{
 The gross energy contribution is defined as:
 \deqn{diet\_gross\_energy = feed\_ration\_fraction \times feed\_gross\_energy}
+
+This function is part of the \code{\link[=run_ration_quality_module]{run_ration_quality_module()}}.
+}
+\seealso{
+\code{\link{run_ration_quality_module}}
 }
