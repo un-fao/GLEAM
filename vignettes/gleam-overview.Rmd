@@ -542,7 +542,3 @@ knitr::include_graphics("images/overview_Logo_BMLEH_EN.png")
 ```
 
 ---
-
-```{r session-info, eval = TRUE}
-sessionInfo()
-```
