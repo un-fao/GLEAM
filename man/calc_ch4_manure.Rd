@@ -92,6 +92,8 @@ The summation is taken over all manure management systems included in
 the calculation. Results are expressed at daily resolution
 (kg CH4/head/day), consistent with Equation 10.23 after
 adapting the original annual formulation to a daily basis.
+
+This function is part of the \code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}}.
 }
 \examples{
 calc_ch4_manure(
@@ -118,8 +120,6 @@ calc_ch4_manure(
     ch4_max_producing_capacity_bo = 0.13
   )
 )
-
-This function is part of the [run_emissions_manure_module()].
 
 }
 \references{

@@ -92,6 +92,8 @@ Includes direct emissions and indirect emissions from volatilisation,
 leaching, and runoff (kg N2O/head/day).
 }
 }
+
+This function is part of the \code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}}.
 }
 \description{
 Aggregates direct and indirect nitrous oxide (N2O) emissions from manure, by
@@ -139,7 +141,6 @@ calc_n2o_manure_total(
   n2o_manure_other_direct = 0.01033
 )
 
-This function is part of the [run_emissions_manure_module()].
 
 }
 \seealso{

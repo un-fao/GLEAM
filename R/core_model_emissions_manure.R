@@ -181,6 +181,12 @@ calc_volatile_solids <- function(
 #' the calculation. Results are expressed at daily resolution
 #' (kg CH4/head/day), consistent with Equation 10.23 after
 #' adapting the original annual formulation to a daily basis.
+#' 
+#' This function is part of the [run_emissions_manure_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_manure_module}},
+#'   \code{\link{calc_volatile_solids}}
 #'
 #' @examples
 #' calc_ch4_manure(
@@ -207,12 +213,6 @@ calc_volatile_solids <- function(
 #'     ch4_max_producing_capacity_bo = 0.13
 #'   )
 #' )
-#'
-#' This function is part of the [run_emissions_manure_module()].
-#' 
-#' @seealso
-#'   \code{\link{run_emissions_manure_module}},
-#'   \code{\link{calc_volatile_solids}}
 #'
 #' @references
 #' IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
@@ -1006,6 +1006,8 @@ calc_n2o_manure_leaching <- function(
 #'   }
 #' }
 #'
+#' This function is part of the [run_emissions_manure_module()].
+#' 
 #' @examples
 #' calc_n2o_manure_total(
 #'   n2o_manure_pasture_vol = 0.0129,
@@ -1019,7 +1021,6 @@ calc_n2o_manure_leaching <- function(
 #'   n2o_manure_other_direct = 0.01033
 #' )
 #'
-#' This function is part of the [run_emissions_manure_module()].
 #' 
 #' @seealso
 #'   \code{\link{run_emissions_manure_module}}
