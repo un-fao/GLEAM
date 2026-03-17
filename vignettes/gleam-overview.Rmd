@@ -44,7 +44,7 @@ with ISO 14044 and the IDF Global Carbon Footprint Standard.
 The package is part of the broader GLEAM ecosystem, which includes interactive
 web applications, dashboards, data infrastructure, and capacity-building tools.
 This vignette provides an overview of the R package specifically; a brief
-description of the wider ecosystem is given in Section 9.
+description of the wider ecosystem is given in [The GLEAM Ecosystem](#the-gleam-ecosystem).
 
 ```{r, echo=FALSE, eval = TRUE, out.width="90%", fig.cap="Species currently covered in GLEAM"}
 knitr::include_graphics("images/overview_AnimalSilhouette.png")
@@ -68,7 +68,7 @@ output datasets are `data.table` objects throughout the pipeline.
 
 # Key Concepts
 
-## Species codes
+## Species codes {#species-codes}
 
 Every function in the package identifies livestock species using standardized
 short codes that appear as `species_short` in the data:
@@ -83,7 +83,7 @@ short codes that appear as `species_short` in the data:
 | PGS  | Pigs     |
 | CHK  | Chickens |
 
-## Sex–age cohort codes
+## Sex–age cohort codes {#cohort-codes}
 
 Within each herd, animals are classified into six sex–age cohorts that define
 their production stage:
@@ -255,7 +255,7 @@ e_maint <- calc_metabolic_energy_req_maintenance(
 
 The `run_gleam()` pipeline requires several input data tables. Sample files for
 all tables are provided in `inst/extdata/run_gleam_examples/` and can be loaded
-with `data.table::fread()` as shown in the Quick Start example.
+with `data.table::fread()` as shown in the [Quick Start example](#quick-start).
 
 ## cohort_level_data
 
