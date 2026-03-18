@@ -12,7 +12,7 @@ url: https://github.com/APPLITICS/gleam
 
 navbar:
   structure:
-    left: [overview, modules, reference]
+    left: [overview, modules, reference, ecosystem, history]
     right: [github]
 
   components:
@@ -22,14 +22,24 @@ navbar:
       href: articles/gleam-overview.html
 
     modules:
-      text: "About the modules"
+      text: "About gleam Modules"
       icon: fa-diagram-project
       href: articles/gleam-modules-overview.html
-
+      
     reference:
       text: "Functions library"
       icon: fa-book-open
       href: reference/index.html
+
+    ecosystem:
+      text: "GLEAM Ecosystem"
+      icon: fa-network-wired
+      href: articles/gleam-ecosystem.html
+
+    history:
+      text: "GLEAM History"
+      icon: fa-timeline
+      href: articles/gleam-history.html
 
     github:
       icon: fab fa-github
@@ -117,7 +127,7 @@ reference:
       - calc_n2o_ration_fertilizer
       - calc_n2o_ration_manure
       - calc_n2o_ration_crop_residues
-      
+
   - title: "Production module"
     contents:
       - run_production_module
@@ -142,4 +152,3 @@ reference:
       - calc_cohort_to_herd_aggregation
       - calc_allocated_emissions
       - calc_co2eq
-      

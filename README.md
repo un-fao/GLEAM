@@ -1,6 +1,5 @@
-# GLEAM-X R Package
-
-**Official R package of FAO's Global Livestock Environmental Assessment Model (GLEAM).**
+# gleam: The GLEAM R Package
+**The official R package of the FAO's Global Livestock Environmental Assessment Model (GLEAM).**
 
 This package provides a modular implementation of GLEAM to quantify environmental impacts from livestock agrifood systems. 
 The model simulates herd dynamics and quantifies key metrics, including animal-sourced food production, energy requirements and 
@@ -55,5 +54,8 @@ This package is licensed under the AGPL-3 license which permits free use, modifi
 
 ## Acknowledgement
 
-The development of this package was supported by the German Federal Ministry of Agriculture, Food and Regional Identity.
+The development of the GLEAM ecosystem was supported by the German Federal Ministry of
+Food, Agriculture, and Regional Identity [BMELH](https://www.bmleh.de/EN/Home/home_node.html).
+
+---
 

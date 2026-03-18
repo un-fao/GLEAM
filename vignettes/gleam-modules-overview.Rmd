@@ -1,6 +1,6 @@
 ---
-title: "GLEAM R Package Modules"
-subtitle: "An overview of Modules in the Global Livestock Environmental Assessment Model (GLEAM-X)"
+title: "About gleam modules"
+# subtitle: "An overview of Modules in the R package of the Global Livestock Environmental Assessment Model (GLEAM-X)"
 # author: "Food and Agriculture Organization of the United Nations (FAO)"
 # date: "`r Sys.Date()`"
 output:
@@ -38,7 +38,7 @@ knitr::opts_chunk$set(
 
 This vignette provides a high-level overview of all GLEAM modules, the sequence
 of their functions, and their input and output datasets. An overview of the full
-pipeline is provided in the [GLEAM Overview vignette](gleam-overview.html). Full
+pipeline is provided in the [GLEAM Overview](gleam-overview.html). Full
 documentation for each module is available via the module reference pages linked
 in each section below.
 
@@ -76,15 +76,8 @@ subadult, adult).
 
 <img src="images/gleamx_package_module_herd.png"
      alt="Overview of the GLEAM demographic herd module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 </details>
 
@@ -103,15 +96,8 @@ over each cohort stage.
 
 <img src="images/gleamx_package_module_weights.png"
      alt="Overview of the GLEAM weights module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 </details>
 
@@ -140,15 +126,8 @@ nutrient parameters.
 
 <img src="images/gleamx_package_module_feedrations.png"
      alt="Overview of the GLEAM feed rations module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 </details>
 
@@ -200,15 +179,8 @@ total energy requirement by the diet energy density.
 
 <img src="images/gleamx_package_module_energyrequirements.png"
      alt="Overview of the GLEAM metabolic energy requirements module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 # Enteric Emissions Module
 </details>
@@ -227,15 +199,8 @@ conversion factors (ym).
 
 <img src="images/gleamx_package_module_enteric.png"
      alt="Overview of the GLEAM enteric emissions module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 </details>
 
@@ -261,15 +226,8 @@ Computes cohort-level daily nitrogen intake, retention, and excretion
 
 <img src="images/gleamx_package_module_nitrogen.png"
      alt="Overview of the GLEAM nitrogen balance module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 </details>
 
@@ -304,15 +262,8 @@ tables. The following calculation sequence is applied:
 
 <img src="images/gleamx_package_module_manure.png"
      alt="Overview of the GLEAM manure emissions module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 </details>
 
@@ -371,15 +322,8 @@ applies the following calculation sequence:
 
 <img src="images/gleamx_package_module_feedemissions.png"
      alt="Overview of the GLEAM feed production emissions module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 </details>
 
@@ -396,15 +340,8 @@ parameters. The module returns milk, fibre, and meat outputs for each cohort.
 
 <img src="images/gleamx_package_module_production.png"
      alt="Overview of the GLEAM production module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 </details>
 
@@ -435,15 +372,8 @@ consistent with ISO 14044:2006 (Section 4.3.4.2, Step 2).
 
 <img src="images/gleamx_package_module_allocation.png"
      alt="Overview of the GLEAM emissions allocation module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 </details>
 
@@ -479,15 +409,8 @@ Warming Potential (GWP-100) factors.
 
 <img src="images/gleamx_package_module_aggregation.png"
      alt="Overview of the GLEAM aggregation module"
-     style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:center;"
-     onclick="
-       if(this.style.transform === 'scale(3)'){
-         this.style.transform='scale(1)';
-         this.style.cursor='zoom-in';
-       } else {
-         this.style.transform='scale(3)';
-         this.style.cursor='zoom-out';
-       }">
+     class="module-figure-zoom">
+<div class="module-figure-hint"></div>
 
 </details>
 

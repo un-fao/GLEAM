@@ -1,6 +1,6 @@
 ---
-title: "GLEAM R Package Overview"
-subtitle: "Global Livestock Environmental Assessment Model (GLEAM-X)"
+title: "Overview of 'gleam' R Package"
+# subtitle: "Global Livestock Environmental Assessment Model (GLEAM-X)"
 # author: "Food and Agriculture Organization of the United Nations (FAO)"
 # date: "`r Sys.Date()`"
 output:
@@ -44,7 +44,7 @@ with ISO 14044, LEAP guidelines and the IDF Global Carbon Footprint Standard.
 The package is part of the broader GLEAM ecosystem, which includes interactive
 web applications, dashboards, data infrastructure, and capacity-building tools.
 This vignette provides an overview of the R package specifically; a brief
-description of the wider ecosystem is given in [The GLEAM Ecosystem](#the-gleam-ecosystem).
+description of the wider ecosystem is given in [The GLEAM Ecosystem](gleam-ecosystem.html).
 
 ```{r, echo=FALSE, eval = TRUE, out.width="90%", fig.cap="Species currently covered in GLEAM"}
 knitr::include_graphics("images/overview_AnimalSilhouette.png")
@@ -200,17 +200,8 @@ run_*_module()          # orchestrator: validates, calls core functions, assembl
 <div style="position:relative; overflow:visible; margin:1em 0;">
   <img src="images/gleamx_package_module_pipeline.png"
        alt="Overview of the GLEAM pipeline with the different modules"
-       style="width:70%; height:auto; cursor:zoom-in; transition:transform 0.25s ease; transform-origin:top left; position:relative; z-index:1;"
-       onclick="
-         if(this.style.transform === 'scale(3)'){
-           this.style.transform='scale(1)';
-           this.style.cursor='zoom-in';
-           this.style.zIndex='1';
-         } else {
-           this.style.transform='scale(3)';
-           this.style.cursor='zoom-out';
-           this.style.zIndex='9999';
-         }">
+       class="module-figure-zoom">
+  <div class="module-figure-hint"></div>
 </div>
 
 </details>
@@ -432,57 +423,6 @@ IPCC Assessment Report. The `global_warming_potential_set` argument accepts:
 | `"AR4"` | IPCC 4th Assessment (2007) | 25 | 298 |
 
 
-# The GLEAM Ecosystem
-
-The `gleam` R package is one component of the broader GLEAM ecosystem
-developed by FAO. The ecosystem integrates data, models, analytical tools, and
-capacity-building resources to support sustainable livestock system
-transformation.
-
-```{r, echo=FALSE, eval = TRUE, out.width="100%", fig.cap="The GLEAM model within the GLEAM ecosystem"}
-knitr::include_graphics("images/overview_GLEAM_Ecosystem.png")
-```
-
-- **GLEAM Model** (this R package): the analytical engine implementing the
-  core equations and pipeline. Enables reproducible research, batch
-  processing, and custom workflows.
-
-- **GLEAM-X Interactive Web Application**: a user-friendly interface to the R
-  package for scenario building, visualization, and results analysis.
-  Designed for policymakers, analysts, and technical users.
-
-- **GLEAM Data**: data infrastructure including GLEAM Collect (KoBoToolbox-
-  based field surveys) and the GLEAM Data Repository for livestock parameters,
-  feed resources, and emission factors.
-
-- **GLEAM Lens**: interactive dashboards for exploring GLEAM results across
-  species, production systems, and regions, including GHG emission and water
-  use dashboards.
-
-- **GLEAM Support**: training packages and e-learning courses on livestock
-  environmental impact assessment and GLEAM methodology.
-
-Further information on the GLEAM ecosystem and updates of its components can be found on the [FAO GLEAM website](https://www.fao.org/gleam/en/).
-
-# History of GLEAM
-
-GLEAM builds on nearly two decades of FAO work on assessing the environmental
-impacts of livestock systems at global scale. Key milestones include:
-
-- **2006**: Pre-GLEAM era of non-spatial global assessments.
-- **2010–2013**: Launch of GLEAM v1 with spatially explicit LCA using
-  2005 reference-year data.
-- **2017**: Release of GLEAM v2 and the GLEAM-i interactive web tool.
-- **2023**: Release of GLEAM v3 with 2015 reference-year data, based on the
-  2019 IPCC Refinement, and the GLEAM Dashboard.
-- **2024**: GLEAM-Water. The first global assessment of water use in livestock agri-food systems
-- **2024–present**: GLEAM-X initiative delivering an open-source R package and interactive web application.
-
-```{r, echo=FALSE, eval = TRUE, out.width="100%", fig.cap="The history of the GLEAM model with different versions and major releases"}
-knitr::include_graphics("images/overview_GLEAM_TimeLine.png")
-```
-
-
 # Further Resources
 
 ## Package documentation
@@ -537,7 +477,7 @@ knitr::include_graphics("images/overview_GLEAM_TimeLine.png")
 The development of the GLEAM ecosystem was supported by the German Federal Ministry of
 Food, Agriculture, and Regional Identity [BMELH](https://www.bmleh.de/EN/Home/home_node.html)
 
-```{r, echo=FALSE, eval = TRUE, out.width="30%", fig.cap=""}
+```{r, echo=FALSE, eval = TRUE, out.width="30%", fig.cap="bmleh logo"}
 knitr::include_graphics("images/overview_Logo_BMLEH_EN.png")
 ```
 
