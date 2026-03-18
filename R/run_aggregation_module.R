@@ -27,21 +27,21 @@
 #'         \item \code{MS}: sub-adult males
 #'         \item \code{MJ}: juvenile males
 #'       }}
-#'     \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
+#'     \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex-age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
 #'     \item{\strong{Feed variables}}{
-#'       \itemize{
+#'       \describe{
 #'         \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'       }
 #'     }
 #'     \item{\strong{Nitrogen balance variables}}{
-#'       \itemize{
+#'       \describe{
 #'         \item{nitrogen_intake}{Numeric. Daily nitrogen intake (kg N/head/day)}
 #'         \item{nitrogen_retention}{Numeric. Daily nitrogen retention in animal body tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day)}
 #'         \item{nitrogen_excretion}{Numeric. Daily nitrogen excretion (kg N/head/day)}
 #'       }
 #'     }
 #'     \item{\strong{Production variables}}{
-#'       \itemize{
+#'       \describe{
 #'         \item{milk_production_mass_cohort}{Numeric. Total milk production produced over the assessment period (kg/cohort/assessment period).}
 #'         \item{milk_production_protein_cohort}{Numeric. Total milk protein production produced over the assessment period (kg protein/cohort/assessment period).}
 #'         \item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment period (kg/cohort/assessment period).}
@@ -53,7 +53,7 @@
 #'       }
 #'     }
 #'     \item{\strong{Emission variables}}{
-#'       \itemize{
+#'       \describe{
 #'         \item{ch4_enteric}{Numeric. Average daily enteric methane (CH4) emissions (kg CH4/head/day).}
 #'         \item{ch4_manure_pasture}{Numeric. Methane (CH4) emissions from manure deposited on pasture (kg CH4/head/day)}
 #'         \item{ch4_manure_burned}{Numeric. Methane (CH4) emissions from manure burned for fuel (kg CH4/head/day)}
@@ -105,12 +105,12 @@
 #'   100-year Global Warming Potential (GWP-100) conversion factors used to
 #'   express CH4 and N2O emissions as CO2eq. Must be one of:
 #'   \itemize{
-#'     \item \code{"AR6"}: IPCC Sixth Assessment Report (IPCC, 2021) — CH4 = 27, N2O = 273
+#'     \item \code{"AR6"}: IPCC Sixth Assessment Report (IPCC, 2021) - CH4 = 27, N2O = 273
 #'     \item \code{"AR5_excluding_carbon_feedback"}: IPCC Fifth Assessment
-#'       Report (excluding climate–carbon feedbacks) (IPCC, 2013)  — CH4 = 28, N2O = 265
+#'       Report (excluding climate-carbon feedbacks) (IPCC, 2013) - CH4 = 28, N2O = 265
 #'     \item \code{"AR5_including_carbon_feedback"}: IPCC Fifth Assessment
-#'       Report (including climate–carbon feedbacks) (IPCC, 2013) — CH4 = 34, N2O = 298
-#'     \item \code{"AR4"}: IPCC Fourth Assessment Report (IPCC, 2007) — CH4 = 25, N2O = 298
+#'       Report (including climate-carbon feedbacks) (IPCC, 2013) - CH4 = 34, N2O = 298
+#'     \item \code{"AR4"}: IPCC Fourth Assessment Report (IPCC, 2007) - CH4 = 25, N2O = 298
 #'   }
 #'
 #' @param show_indicator Logical. Whether to display progress indicators during
@@ -142,7 +142,7 @@
 #'   \item Variables are classified into \code{"Feed"}, \code{"NitrogenBalance"}, \code{"Production"}, and \code{"Emissions"}.
 #'   \item Cohort totals are calculated using [calc_cohort_totals()]. Production variables are retained as provided, whereas emissions, 
 #'   feed, and nitrogen balance variables are scaled using cohort stock size and simulation duration.
-#'   \item Cohort totals are aggregated to herd level within each \code{herd_id × species_short × variable_type × variable_name} group.
+#'   \item Cohort totals are aggregated to herd level within each \code{herd_id x species_short x variable_type x variable_name} group.
 #'   \item Herd-level emissions are merged with commodity allocation shares from \code{allocation_herd_long}.
 #'   \item Emissions are allocated to commodities using [calc_allocated_emissions()].
 #'   \item Gas type is identified from the emission variable name as \code{"CH4"}, \code{"N2O"}, or \code{"CO2"}.
