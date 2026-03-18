@@ -1,0 +1,145 @@
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+home:
+  title: "GLEAM-X R Package"
+  description: >
+    Official R package of FAO’s Global Livestock Environmental Assessment
+    Model (GLEAM).
+
+url: https://github.com/APPLITICS/gleam
+
+navbar:
+  structure:
+    left: [overview, modules, reference]
+    right: [github]
+
+  components:
+    overview:
+      text: "Overview"
+      icon: fa-circle-info
+      href: articles/gleam-overview.html
+
+    modules:
+      text: "About the modules"
+      icon: fa-diagram-project
+      href: articles/gleam-modules-overview.html
+
+    reference:
+      text: "Functions library"
+      icon: fa-book-open
+      href: reference/index.html
+
+    github:
+      icon: fab fa-github
+      href: https://github.com/APPLITICS/gleam
+
+reference:
+  - title: "Main pipeline"
+    contents:
+      - run_gleam
+
+  - title: "Demographic herd module"
+    contents:
+      - run_demographic_herd_module
+      - calc_fecundity_rates
+      - calc_transition_probabilities
+      - calc_steady_state_structure
+      - calc_projected_population_size
+      - calc_summary_offtake
+
+  - title: "Weights module"
+    contents:
+      - run_weights_module
+      - calc_avg_weights
+      - calc_cohort_weights
+      - calc_daily_weight_gain
+
+  - title: "Ration quality module"
+    contents:
+      - run_ration_quality_module
+      - calc_feed_digestibility_fraction
+      - calc_ration_digestibility
+      - calc_ration_metabolizable_energy
+      - calc_ration_gross_energy
+      - calc_ration_nitrogen_content
+      - calc_ration_urinary_energy_fraction
+      - calc_ration_ash
+
+  - title: "Metabolic energy requirements module"
+    contents:
+      - run_metabolic_energy_req_module
+      - calc_metabolic_energy_req_maintenance
+      - calc_metabolic_energy_req_activity
+      - calc_metabolic_energy_req_growth
+      - calc_metabolic_energy_req_lactation
+      - calc_metabolic_energy_req_pregnancy
+      - calc_metabolic_energy_req_work
+      - calc_metabolic_energy_req_fibre
+      - calc_rem_maintenance
+      - calc_reg_growth
+      - calc_total_metabolic_energy_req
+      - calc_ration_intake
+
+  - title: "Nitrogen balance module"
+    contents:
+      - run_nitrogen_balance_module
+      - calc_nitrogen_intake
+      - calc_nitrogen_retention
+      - calc_nitrogen_excretion
+
+  - title: "Enteric emissions module"
+    contents:
+      - run_emissions_enteric_module
+      - calc_conversion_factor_ym
+      - calc_ch4_enteric
+
+  - title: "Manure emissions module"
+    contents:
+      - run_emissions_manure_module
+      - calc_volatile_solids
+      - calc_ch4_manure
+      - calc_n2o_manure_direct
+      - calc_n2o_manure_volatilization
+      - calc_n2o_manure_leaching
+      - calc_n2o_manure_total
+
+  - title: "Feed emissions module"
+    contents:
+      - run_emissions_ration_module
+      - calc_ch4_ration_rice
+      - calc_co2_ration_fertilizer
+      - calc_co2_ration_pesticides
+      - calc_co2_ration_crop_activities
+      - calc_co2_ration_luc_nopeat
+      - calc_co2_ration_luc_peat
+      - calc_n2o_ration_fertilizer
+      - calc_n2o_ration_manure
+      - calc_n2o_ration_crop_residues
+      
+  - title: "Production module"
+    contents:
+      - run_production_module
+      - calc_milk_production
+      - calc_meat_production
+      - calc_fibre_production
+
+  - title: "Allocation module"
+    contents:
+      - run_allocation_module
+      - calc_milk_allocation_energy
+      - calc_meat_allocation_energy
+      - calc_fibre_allocation_energy
+      - calc_work_allocation_energy
+      - calc_allocation_shares
+      - assign_allocation_shares
+
+  - title: "Aggregation module"
+    contents:
+      - run_aggregation_module
+      - calc_cohort_totals
+      - calc_cohort_to_herd_aggregation
+      - calc_allocated_emissions
+      - calc_co2eq
+      
