@@ -27,9 +27,7 @@ validate_nitrogen_retention_inputs <- function(
   validate_cohort_code(cohort_short)
 
   # Range checks: only for args used by this species/cohort
-  if (species_short == "CHK") {
-    # nothing to validate
-  } else if (species_short == "PGS") {
+  if (species_short == "PGS") {
     if (cohort_short == "FA") {
       validate_param_range(litter_size)
       validate_param_range(parturition_rate)
@@ -81,7 +79,7 @@ validate_nitrogen_excretion_inputs <- function(species_short, nitrogen_intake, n
   validate_scalar_numeric(nitrogen_retention)
 
   # Excretion = intake - retention; expect nitrogen_intake >= nitrogen_retention for valid excretion
-  if (species_short != "CHK" && nitrogen_intake < nitrogen_retention) {
+  if (nitrogen_intake < nitrogen_retention) {
     cli::cli_abort(
       "{.arg nitrogen_intake} must be greater than or equal to {.arg nitrogen_retention}."
     )

@@ -23,7 +23,7 @@ validate_cohort_weight_inputs <- function(
 
   for (arg_name in names(args)) {
     val <- args[[arg_name]]
-    if (!is.numeric(val) || length(val) != 1) {
+    if (!is.na(val) && (!is.numeric(val) || length(val) != 1)) {
       cli::cli_abort("{.arg {arg_name}} must be a single numeric (scalar). NA is allowed.")
     }
   }
@@ -53,13 +53,10 @@ validate_cohort_weight_inputs <- function(
     )
   }
 
-  # Enforce configured bounds
-  validate_param_range(live_weight_female_adult)
-  validate_param_range(live_weight_male_adult)
-  validate_param_range(live_weight_at_birth)
-  validate_param_range(live_weight_female_at_slaughter)
-  validate_param_range(live_weight_male_at_slaughter)
-  validate_param_range(live_weight_at_weaning)
+  # Enforce configured bounds for cohort-specific required params only
+  for (arg_name in required_by_cohort) {
+    validate_param_range(args[[arg_name]], arg_name)
+  }
 
   # Birth weight must be strictly below weaning weight when both are provided
   if (!is.na(live_weight_at_birth) && !is.na(live_weight_at_weaning) && live_weight_at_birth >= live_weight_at_weaning) {

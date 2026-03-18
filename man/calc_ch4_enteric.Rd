@@ -57,7 +57,7 @@ where 55.65 MJ/kg is the energy content of methane.
 \code{\link{calc_ration_gross_energy}} and \code{\link{calc_ration_intake}} -
 see also \code{\link{run_ration_quality_module}} and \code{\link{run_metabolic_energy_req_module}}.
 
-The function returns \code{0} for chickens.
+#'
 }
 \references{
 IPCC. (2019).

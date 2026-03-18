@@ -1,7 +1,7 @@
 Type: Package
 Package: gleam
 Title: Global Livestock Environmental Assessment Model (GLEAM-X)
-Version: 0.0.0.9000
+Version: 0.8.0
 Authors@R: c(
     person(given = "Ahmed",
            family = "Jou",
