@@ -730,7 +730,7 @@ run_gleam <- function(
 
   return(
     list(
-      cohort_level_results = gleam_hrd_data,
+      cohort_level_results = gleam_chrt_data,
       herd_level_results = gleam_hrd_data,
       allocation_long = allocation_results$allocation_long,
       aggregation_results = list(
