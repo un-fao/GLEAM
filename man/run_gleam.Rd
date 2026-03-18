@@ -501,29 +501,6 @@ All inputs containing \code{herd_id} must refer to the same herd set.
 Validation blocks variables that are expected to be produced internally.
 }
 \examples{
-\dontrun{
-# --- Shared data loading ---
-path_ex <- system.file("extdata/run_gleam_examples", package = "gleam")
-
-master_hrd_lvl_dt <- data.table::fread(
-  file.path(path_ex, "master_hrd_lvl_data.csv")
-)
-feed_rations_chrt_dt <- data.table::fread(
-  file.path(path_ex, "feed_rations_share_chrt.csv")
-)
-feed_params_dt <- data.table::fread(
-  file.path(path_ex, "feed_quality.csv")
-)
-feed_emissions_dt <- data.table::fread(
-  file.path(path_ex, "feed_emission_factors.csv")
-)
-mms_fraction_dt <- data.table::fread(
-  file.path(path_ex, "manure_management_system_fraction.csv")
-)
-mms_factors_dt <- data.table::fread(
-  file.path(path_ex, "manure_management_system_factors.csv")
-)
-}
 # Example 1: You do NOT have herd structure — use cohort input for herd simulation.
 # Pipeline runs herd simulation first, then the rest of the pipeline.
 \dontrun{
