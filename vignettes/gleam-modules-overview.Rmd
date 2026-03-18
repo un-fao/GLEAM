@@ -1,8 +1,8 @@
 ---
 title: "GLEAM R Package Modules"
 subtitle: "An overview of Modules in the Global Livestock Environmental Assessment Model (GLEAM-X)"
-author: "Food and Agriculture Organization of the United Nations (FAO)"
-date: "`r Sys.Date()`"
+# author: "Food and Agriculture Organization of the United Nations (FAO)"
+# date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
