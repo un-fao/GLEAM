@@ -35,14 +35,13 @@ the following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 to the same herd.}
-\item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
+\item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, PGS, CML). Used to
 internal lookup table. Supported values include:
 \itemize{
 \item \code{Cattle}
 \item \code{Buffalo}
 \item \code{Sheep}
 \item \code{Goats}
-\item \code{Chicken}
 \item \code{Pigs}
 \item \code{Camels}
 }}

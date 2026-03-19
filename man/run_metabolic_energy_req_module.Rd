@@ -40,14 +40,13 @@ run_metabolic_energy_req_module(
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, CHK, PGS, CML). Used to
+\item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, PGS, CML). Used to
 internal lookup table. Supported values include:
 \itemize{
 \item \code{Cattle}
 \item \code{Buffalo}
 \item \code{Sheep}
 \item \code{Goats}
-\item \code{Chicken}
 \item \code{Pigs}
 \item \code{Camels}
 }}
