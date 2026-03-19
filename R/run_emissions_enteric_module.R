@@ -14,7 +14,6 @@
 #'         \item \code{Buffalo}
 #'         \item \code{Sheep}
 #'         \item \code{Goats}
-#'         \item \code{Chicken}
 #'         \item \code{Pigs}
 #'         \item \code{Camels}
 #'       }}

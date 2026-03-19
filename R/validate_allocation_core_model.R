@@ -44,7 +44,7 @@ validate_allocation_milk_inputs <- function(
 #' * Weight parameters must be within reasonable biological ranges.
 #'
 #' Valid species for allocation: \code{CTL}, \code{BFL}, \code{CML}, \code{SHP},
-#' \code{GTS}, \code{PGS}, \code{CHK}. Valid cohort codes: \code{FA}, \code{MA},
+#' \code{GTS}, \code{PGS}. Valid cohort codes: \code{FA}, \code{MA},
 #' \code{FS}, \code{MS}, \code{FJ}, \code{MJ}.
 #'
 #' \code{live_weight_cohort_at_slaughter} and \code{live_weight_at_birth} are only required
@@ -56,7 +56,7 @@ validate_allocation_milk_inputs <- function(
 #' \code{\link{calc_meat_allocation_energy}}.
 #'
 #' @param species_short Character scalar. Species code
-#'   (e.g., \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}, \code{CHK}).
+#'   (e.g., \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}).
 #' @param cohort_short Character scalar. Cohort identifier
 #'   (e.g., \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS}, \code{MJ}).
 #' @param meat_production_live_weight_cohort Numeric. Total meat produced as live
@@ -110,7 +110,7 @@ validate_allocation_meat_inputs <- function(
 #' * \code{simulation_duration} must be between 0 and 3650 days.
 #'
 #' Valid species for allocation: \code{CTL}, \code{BFL}, \code{CML}, \code{SHP},
-#' \code{GTS}, \code{PGS}, \code{CHK}. Note: Only sheep (SHP), goats (GTS), and
+#' \code{GTS}, \code{PGS}. Note: Only sheep (SHP), goats (GTS), and
 #' camelids (CML) produce fibre.
 #'
 #' \code{cohort_stock_size}, \code{metabolic_energy_req_fibre_production}, and
@@ -171,7 +171,7 @@ validate_allocation_fibre_inputs <- function(
 #' * \code{simulation_duration} must be between 0 and 3650 days.
 #'
 #' Valid species for allocation: \code{CTL}, \code{BFL}, \code{CML}, \code{SHP},
-#' \code{GTS}, \code{PGS}, \code{CHK}. Note: Camelids (CML) require the
+#' \code{GTS}, \code{PGS}. Note: Camelids (CML) require the
 #' \code{ratio_me_to_ne} conversion factor; other species use direct calculation.
 #'
 #' \code{species_short}, \code{cohort_stock_size}, \code{metabolic_energy_req_work},

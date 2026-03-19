@@ -23,7 +23,6 @@ Character. Species short code. Supported values include:
 \item \code{BFL} (Buffalo)
 \item \code{SHP} (Sheep)
 \item \code{GTS} (Goats)
-\item \code{CHK} (Chicken)
 \item \code{PGS} (Pigs)
 \item \code{CML} (Camels)
 }

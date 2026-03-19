@@ -36,6 +36,7 @@ Other contributors:
   \item Zixin Wang \email{Zixin.Wang@fao.org} (Livestock data intern, FAO) [contributor]
   \item Narindra Rakotovao \email{Narindra.Rakotovao@fao.org} (Livestock policy officer, FAO) [contributor]
   \item Stewart Chikoloma \email{Stewart.Chikomola@fao.org} (Livestock data specialist, FAO) [contributor]
+  \item David OBrien \email{david@applitics.fr} (\href{https://orcid.org/0009-0007-0339-0517}{ORCID}) (https://applitics.fr) [contributor]
   \item Food and Agriculture Organization of the United Nations FAO (Original GLEAM model framework) [copyright holder]
   \item Federal Ministry of Agriculture, Food and Regional Identity of Germany BMELH (Funding support) [funder]
 }
