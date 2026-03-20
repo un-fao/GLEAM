@@ -141,13 +141,13 @@ validate_calc_n2o_manure_total <- function(
     n2o_manure_other_direct
 ) {
   # Numeric inputs
-  validate_scalar_numeric(n2o_manure_pasture_vol, "n2o_manure_pasture_vol")
-  validate_scalar_numeric(n2o_manure_pasture_leach, "n2o_manure_pasture_leach")
-  validate_scalar_numeric(n2o_manure_burned_vol, "n2o_manure_burned_vol")
-  validate_scalar_numeric(n2o_manure_burned_leach, "n2o_manure_burned_leach")
-  validate_scalar_numeric(n2o_manure_other_vol, "n2o_manure_other_vol")
-  validate_scalar_numeric(n2o_manure_other_leach, "n2o_manure_other_leach")
-  validate_scalar_numeric(n2o_manure_pasture_direct, "n2o_manure_pasture_direct")
-  validate_scalar_numeric(n2o_manure_burned_direct, "n2o_manure_burned_direct")
-  validate_scalar_numeric(n2o_manure_other_direct, "n2o_manure_other_direct")
+  validate_scalar_numeric(n2o_manure_pasture_vol)
+  validate_scalar_numeric(n2o_manure_pasture_leach)
+  validate_scalar_numeric(n2o_manure_burned_vol)
+  validate_scalar_numeric(n2o_manure_burned_leach)
+  validate_scalar_numeric(n2o_manure_other_vol)
+  validate_scalar_numeric(n2o_manure_other_leach)
+  validate_scalar_numeric(n2o_manure_pasture_direct)
+  validate_scalar_numeric(n2o_manure_burned_direct)
+  validate_scalar_numeric(n2o_manure_other_direct)
 }
