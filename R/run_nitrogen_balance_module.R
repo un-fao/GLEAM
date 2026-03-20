@@ -111,6 +111,8 @@
 #' )
 #' }
 #'
+#' @export
+#'
 #' @importFrom data.table := .I
 run_nitrogen_balance_module <- function(
     cohort_level_data,

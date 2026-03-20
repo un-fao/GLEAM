@@ -84,6 +84,8 @@
 #' )
 #' }
 #'
+#' @export
+#'
 #' @importFrom data.table :=
 run_emissions_enteric_module <- function(
     cohort_level_data,

@@ -155,6 +155,8 @@
 #' )
 #' }
 #'
+#' @export
+#'
 #' @importFrom data.table := .I
 run_metabolic_energy_req_module <- function(
     cohort_level_data,
