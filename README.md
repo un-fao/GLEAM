@@ -25,7 +25,7 @@ The **official GLEAM workflow** allows users to:
 
 ## Model Coverage
 
-The model currently considers cattle, buffalo, camels, chicken, goats, pigs, and sheep.   
+The model currently considers cattle, buffalo, camels, goats, pigs, and sheep.   
 
 ## Installation
 

@@ -28,10 +28,10 @@ validate_allocation_milk_inputs <- function(
     milk_lactose_fraction_standard
 ) {
   # Range checks via parameter_ranges
-  validate_param_range(milk_production_fpcm_cohort, "milk_production_fpcm_cohort")
-  validate_param_range(milk_protein_fraction_standard, "milk_protein_fraction_standard")
-  validate_param_range(milk_fat_fraction_standard, "milk_fat_fraction_standard")
-  validate_param_range(milk_lactose_fraction_standard, "milk_lactose_fraction_standard")
+  validate_param_range(milk_production_fpcm_cohort)
+  validate_param_range(milk_protein_fraction_standard)
+  validate_param_range(milk_fat_fraction_standard)
+  validate_param_range(milk_lactose_fraction_standard)
 }
 
 #' Validate inputs for calc_meat_allocation_energy
@@ -44,7 +44,7 @@ validate_allocation_milk_inputs <- function(
 #' * Weight parameters must be within reasonable biological ranges.
 #'
 #' Valid species for allocation: \code{CTL}, \code{BFL}, \code{CML}, \code{SHP},
-#' \code{GTS}, \code{PGS}, \code{CHK}. Valid cohort codes: \code{FA}, \code{MA},
+#' \code{GTS}, \code{PGS}. Valid cohort codes: \code{FA}, \code{MA},
 #' \code{FS}, \code{MS}, \code{FJ}, \code{MJ}.
 #'
 #' \code{live_weight_cohort_at_slaughter} and \code{live_weight_at_birth} are only required
@@ -56,7 +56,7 @@ validate_allocation_milk_inputs <- function(
 #' \code{\link{calc_meat_allocation_energy}}.
 #'
 #' @param species_short Character scalar. Species code
-#'   (e.g., \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}, \code{CHK}).
+#'   (e.g., \code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}, \code{PGS}).
 #' @param cohort_short Character scalar. Cohort identifier
 #'   (e.g., \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS}, \code{MJ}).
 #' @param meat_production_live_weight_cohort Numeric. Total meat produced as live
@@ -79,14 +79,14 @@ validate_allocation_meat_inputs <- function(
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
-  validate_scalar_numeric(meat_production_live_weight_cohort, "meat_production_live_weight_cohort")
+  validate_scalar_numeric(meat_production_live_weight_cohort)
 
-  validate_param_range(meat_production_live_weight_cohort, "meat_production_live_weight_cohort")
+  validate_param_range(meat_production_live_weight_cohort)
 
   # Slaughter and birth weight only needed for non-PGS species
   if (species_short != "PGS") {
-    validate_param_range(live_weight_cohort_at_slaughter, "live_weight_cohort_at_slaughter")
-    validate_param_range(live_weight_at_birth, "live_weight_at_birth")
+    validate_param_range(live_weight_cohort_at_slaughter)
+    validate_param_range(live_weight_at_birth)
   }
 
   # ratio_me_to_ne only needed for CML
@@ -110,7 +110,7 @@ validate_allocation_meat_inputs <- function(
 #' * \code{simulation_duration} must be between 0 and 3650 days.
 #'
 #' Valid species for allocation: \code{CTL}, \code{BFL}, \code{CML}, \code{SHP},
-#' \code{GTS}, \code{PGS}, \code{CHK}. Note: Only sheep (SHP), goats (GTS), and
+#' \code{GTS}, \code{PGS}. Note: Only sheep (SHP), goats (GTS), and
 #' camelids (CML) produce fibre.
 #'
 #' \code{cohort_stock_size}, \code{metabolic_energy_req_fibre_production}, and
@@ -147,9 +147,9 @@ validate_allocation_fibre_inputs <- function(
   # Non-fibre species: all numeric args are unused — no further validation
   if (!species_short %in% c("SHP", "GTS", "CML")) return()
 
-  validate_param_range(metabolic_energy_req_fibre_production, "metabolic_energy_req_fibre_production")
-  validate_param_range(cohort_stock_size, "cohort_stock_size")
-  validate_param_range(simulation_duration, "simulation_duration")
+  validate_param_range(metabolic_energy_req_fibre_production)
+  validate_param_range(cohort_stock_size)
+  validate_param_range(simulation_duration)
 
   # ratio_me_to_ne only needed for CML
   if (species_short == "CML") {
@@ -171,7 +171,7 @@ validate_allocation_fibre_inputs <- function(
 #' * \code{simulation_duration} must be between 0 and 3650 days.
 #'
 #' Valid species for allocation: \code{CTL}, \code{BFL}, \code{CML}, \code{SHP},
-#' \code{GTS}, \code{PGS}, \code{CHK}. Note: Camelids (CML) require the
+#' \code{GTS}, \code{PGS}. Note: Camelids (CML) require the
 #' \code{ratio_me_to_ne} conversion factor; other species use direct calculation.
 #'
 #' \code{species_short}, \code{cohort_stock_size}, \code{metabolic_energy_req_work},
@@ -202,9 +202,9 @@ validate_allocation_work_inputs <- function(
 ) {
   validate_animal_species(species_short)
 
-  validate_param_range(metabolic_energy_req_work, "metabolic_energy_req_work")
-  validate_param_range(cohort_stock_size, "cohort_stock_size")
-  validate_param_range(simulation_duration, "simulation_duration")
+  validate_param_range(metabolic_energy_req_work)
+  validate_param_range(cohort_stock_size)
+  validate_param_range(simulation_duration)
 
   # ratio_me_to_ne only needed for CML
   if (species_short == "CML") {

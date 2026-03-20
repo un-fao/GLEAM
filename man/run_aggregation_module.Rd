@@ -22,7 +22,6 @@ run_aggregation_module(
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
-\item \code{CHK}: chickens
 \item \code{PGS}: pigs
 \item \code{CML}: camels
 }}

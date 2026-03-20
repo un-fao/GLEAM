@@ -9,7 +9,7 @@ validate_cohort_weight_inputs <- function(
     live_weight_at_weaning
 ) {
   # Character inputs
-  validate_scalar_character(cohort_short, "cohort_short")
+  validate_scalar_character(cohort_short)
 
   # Numeric inputs (allow NA by default; cohort-specific checks below)
   args <- list(
@@ -77,10 +77,10 @@ validate_avg_weight_inputs <- function(
     live_weight_cohort_at_slaughter,
     offtake_rate
 ) {
-  validate_scalar_numeric(live_weight_cohort_initial, "live_weight_cohort_initial")
-  validate_scalar_numeric(live_weight_cohort_potential_final, "live_weight_cohort_potential_final")
-  validate_scalar_numeric(live_weight_cohort_at_slaughter, "live_weight_cohort_at_slaughter")
-  validate_scalar_numeric(offtake_rate, "offtake_rate")
+  validate_scalar_numeric(live_weight_cohort_initial)
+  validate_scalar_numeric(live_weight_cohort_potential_final)
+  validate_scalar_numeric(live_weight_cohort_at_slaughter)
+  validate_scalar_numeric(offtake_rate)
 
   # Enforce configured bounds
   validate_param_range(live_weight_cohort_at_slaughter)
@@ -97,9 +97,9 @@ validate_daily_gain_inputs <- function(
     live_weight_cohort_initial,
     cohort_duration_days
 ) {
-  validate_scalar_numeric(live_weight_cohort_potential_final, "live_weight_cohort_potential_final")
-  validate_scalar_numeric(live_weight_cohort_initial, "live_weight_cohort_initial")
-  validate_scalar_numeric(cohort_duration_days, "cohort_duration_days")
+  validate_scalar_numeric(live_weight_cohort_potential_final)
+  validate_scalar_numeric(live_weight_cohort_initial)
+  validate_scalar_numeric(cohort_duration_days)
 
   # Enforce configured bounds
   validate_param_range(cohort_duration_days)

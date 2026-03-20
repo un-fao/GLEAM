@@ -16,7 +16,6 @@
 #'   \item \code{BFL}: Buffalo
 #'   \item \code{SHP}: Sheep
 #'   \item \code{GTS}: Goats
-#'   \item \code{CHK}: Chicken
 #'   \item \code{PGS}: Pigs
 #'   \item \code{CML}: Camels
 #' }
@@ -441,7 +440,7 @@
 #' workflow for quantifying greenhouse gas emissions from livestock systems using
 #' a Life Cycle Assessment (LCA) approach based on the IPCC Tier 2 methodology.
 #'
-#' The pipeline covers seven species (CTL, BFL, CML, SHP, GTS, PGS, CHK).
+#' The pipeline covers seven species (CTL, BFL, CML, SHP, GTS, PGS).
 #' Within each herd, animals are organised into six sex-age cohorts (FJ, FS, FA,
 #' MJ, MS, MA). These identifiers are used consistently across all modules.
 #'
