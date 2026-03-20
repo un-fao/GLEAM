@@ -36,7 +36,7 @@ validate_run_emissions_ration_module_inputs <- function(
     "feed_id",
     "co2_feed_fertilizer",
     "co2_feed_pesticides",
-    "co2_feed_crop_operations",
+    "co2_feed_crop_activities",
     "co2_feed_luc_nopeat",
     "co2_feed_luc_peat",
     "n2o_feed_fertilizer",

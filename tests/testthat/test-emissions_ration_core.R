@@ -60,19 +60,19 @@ test_that("calc_co2_ration_crop_activities computes contribution", {
   expect_equal(calc_co2_ration_crop_activities(0.6, 10), 6)
 })
 
-test_that("calc_co2_ration_crop_activities allows NA for co2_feed_crop_operations", {
+test_that("calc_co2_ration_crop_activities allows NA for co2_feed_crop_activities", {
   value <- calc_co2_ration_crop_activities(0.6, NA_real_)
   expect_true(is.na(value))
 })
 
-test_that("calc_co2_ration_crop_activities rejects negative co2_feed_crop_operations", {
+test_that("calc_co2_ration_crop_activities rejects negative co2_feed_crop_activities", {
   expect_error(
     calc_co2_ration_crop_activities(0.6, -1),
     "must be >= 0"
   )
 })
 
-test_that("calc_co2_ration_crop_activities rejects invalid co2_feed_crop_operations type/length", {
+test_that("calc_co2_ration_crop_activities rejects invalid co2_feed_crop_activities type/length", {
   expect_error(
     calc_co2_ration_crop_activities(0.6, c(1, 2)),
     "must be a single numeric"

@@ -4,14 +4,14 @@
 \alias{calc_co2_ration_crop_activities}
 \title{Calculate a ration component's contribution to carbon dioxide (CO2) emissions from on-field agricultural activities}
 \usage{
-calc_co2_ration_crop_activities(feed_ration_fraction, co2_feed_crop_operations)
+calc_co2_ration_crop_activities(feed_ration_fraction, co2_feed_crop_activities)
 }
 \arguments{
 \item{feed_ration_fraction}{Numeric. Proportion of a specific feed component in the total
 ration, expressed as its fraction of diet dry matter intake (fraction). Within
 each herd_id and cohort, proportions should sum to 1.}
 
-\item{co2_feed_crop_operations}{Numeric. Carbon dioxide (CO2) emission factor of a
+\item{co2_feed_crop_activities}{Numeric. Carbon dioxide (CO2) emission factor of a
 feed component, representing CO2 emissions from on-field agricultural activities
 in feed production, expressed per kilogram of dry matter intake (kg CO2/kg DM).}
 }

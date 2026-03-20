@@ -203,7 +203,7 @@
 #'       (g CO2/kg DM).}
 #'     \item{co2_feed_pesticides}{Numeric. CO2 from pesticide manufacture
 #'       (g CO2/kg DM).}
-#'     \item{co2_feed_crop_operations}{Numeric. CO2 from on-field
+#'     \item{co2_feed_crop_activities}{Numeric. CO2 from on-field
 #'       agricultural activities (g CO2/kg DM).}
 #'     \item{co2_feed_luc_nopeat}{Numeric. CO2 from land-use change,
 #'       excluding peatland drainage (g CO2/kg DM).}

@@ -60,7 +60,7 @@ production, expressed per kilogram of dry matter intake (g CO2/kg DM).}
 \item{co2_feed_pesticides}{Numeric. Carbon dioxide (CO2) emission factor of a
 feed component, representing CO2 emissions from pesticide manufacture in feed
 production, expressed per kilogram of dry matter intake (g CO2/kg DM).}
-\item{co2_feed_crop_operations}{Numeric. Carbon dioxide (CO2) emission factor of a
+\item{co2_feed_crop_activities}{Numeric. Carbon dioxide (CO2) emission factor of a
 feed component, representing CO2 emissions from on-field agricultural activities in
 feed production, expressed per kilogram of dry matter intake (kg CO2/kg DM).}
 \item{co2_feed_luc_nopeat}{Numeric. Carbon dioxide (CO2) emission factor of a
