@@ -491,32 +491,6 @@
 #' \code{\link{run_allocation_module}},
 #' \code{\link{run_aggregation_module}}
 #'
-#'
-#' @examples
-#' \dontrun{
-#' # --- Shared data loading ---
-#' path_ex <- system.file("extdata/run_gleam_examples", package = "gleam")
-#'
-#' master_hrd_lvl_dt <- data.table::fread(
-#'   file.path(path_ex, "master_hrd_lvl_data.csv")
-#' )
-#' feed_rations_chrt_dt <- data.table::fread(
-#'   file.path(path_ex, "feed_rations_share_chrt.csv")
-#' )
-#' feed_params_dt <- data.table::fread(
-#'   file.path(path_ex, "feed_quality.csv")
-#' )
-#' feed_emissions_dt <- data.table::fread(
-#'   file.path(path_ex, "feed_emission_factors.csv")
-#' )
-#' mms_fraction_dt <- data.table::fread(
-#'   file.path(path_ex, "manure_management_system_fraction.csv")
-#' )
-#' mms_factors_dt <- data.table::fread(
-#'   file.path(path_ex, "manure_management_system_factors.csv")
-#' )
-#'}
-
 #' @examples
 #' # Example 1: You do NOT have herd structure — use cohort input for herd simulation.
 #' # Pipeline runs herd simulation first, then the rest of the pipeline.
@@ -755,7 +729,7 @@ run_gleam <- function(
 
   return(
     list(
-      cohort_level_results = gleam_hrd_data,
+      cohort_level_results = gleam_chrt_data,
       herd_level_results = gleam_hrd_data,
       allocation_long = allocation_results$allocation_long,
       aggregation_results = list(
