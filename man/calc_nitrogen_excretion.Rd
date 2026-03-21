@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_nitrogen_balance.R
 \name{calc_nitrogen_excretion}
 \alias{calc_nitrogen_excretion}
-\title{Compute Daily Nitrogen Excretion}
+\title{Calculate daily nitrogen excretion}
 \usage{
 calc_nitrogen_excretion(species_short, nitrogen_intake, nitrogen_retention)
 }
@@ -49,8 +49,10 @@ the IPCC Tier 2 methodology.
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National
 Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.31A.
+
+This function is part of the \code{\link[=run_nitrogen_balance_module]{run_nitrogen_balance_module()}}.
 }
 \seealso{
-\code{\link{calc_nitrogen_intake}},
+\code{\link{run_nitrogen_balance_module}},
 \code{\link{calc_nitrogen_retention}}
 }

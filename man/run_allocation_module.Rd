@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_allocation_module.R
 \name{run_allocation_module}
 \alias{run_allocation_module}
-\title{Run Allocation Shares}
+\title{Run Allocation Module Pipeline}
 \usage{
 run_allocation_module(
   cohort_level_data,
@@ -15,6 +15,16 @@ run_allocation_module(
 \item{cohort_level_data}{Cohort-level input table with the following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+}}
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals.
 Supported values include:
 \itemize{
@@ -45,15 +55,15 @@ requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 to the same herd.}
-\item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, PGS, CML). Used to
-internal lookup table. Supported values include:
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
 \itemize{
-\item \code{Cattle}
-\item \code{Buffalo}
-\item \code{Sheep}
-\item \code{Goats}
-\item \code{Pigs}
-\item \code{Camels}
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
 }}
 \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
@@ -126,7 +136,7 @@ commodity for the corresponding emission source (fraction).}
 }
 }
 \description{
-Computes biophysical allocation shares for livestock commodities by calculating
+Calculates biophysical allocation shares for livestock commodities by computing
 cohort-level energy requirements for meat, milk, fibre, work, and eggs,
 aggregating these terms to herd level, and assigning allocation shares to
 emission sources.
@@ -142,7 +152,8 @@ according to their physiological energy requirements. In accordance with
 ISO 14044:2006, known biophysical relationships may be used to assign shared
 inputs and outputs of a production system to individual products or sub-units.
 
-The pipeline consists of the following steps:
+This function represents the intermediate allocation module of the Global Livestock Environmental
+Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} and performs the following calculation sequence:
 
 \enumerate{
 \item Calculation of cohort-level energy allocation terms for meat, milk,
@@ -220,6 +231,7 @@ supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 and Performance (LEAP) Partnership. FAO, Rome, Italy.
 }
 \seealso{
+\code{\link{run_gleam}},
 \code{\link{calc_milk_production}},
 \code{\link{calc_meat_production}},
 \code{\link{run_production_module}},

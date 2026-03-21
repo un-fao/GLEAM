@@ -1,6 +1,6 @@
-#' Run weight calculations
+#' Run Weights Module Pipeline
 #'
-#' Computes cohort-level live weight metrics by combining cohort-level inputs with
+#' Calculates cohort-level live weight metrics by combining cohort-level inputs with
 #' herd-level biological parameters. The function appends cohort weights
 #' (initial, potential final, slaughter), then derives average and final live
 #' weights accounting for offtake, and finally computes average daily live weight
@@ -32,6 +32,7 @@
 #'     \item \code{live_weight_male_at_slaughter} Numeric. Slaughter weight of male sub-adult animals (kg)
 #'   }
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
+#'   Defaults to \code{TRUE}.
 #'
 #' @return A named list with two \code{data.table}s:
 #'   \describe{
@@ -50,7 +51,9 @@
 #'   }
 #'
 #' @details
-#' The calculation pipeline is composed of the following steps:
+#' This function represents the intermediate module of the Global Livestock Environmental
+#' Assessment Model (GLEAM) computational pipeline [run_gleam()] to estimate animals' live
+#' weight and is composed of the following steps:
 #'
 #' \enumerate{
 #'   \item \strong{Cohort-stage weight assignment} using \code{\link{calc_cohort_weights}}.
@@ -64,10 +67,9 @@
 #'     \code{\link{calc_daily_weight_gain}}.
 #' }
 #'
-#' All cohort-level computations are evaluated row-wise using
-#' \code{by = .I} from \pkg{data.table}.
 #'
 #' @seealso
+#' \code{\link{run_gleam}},
 #' \code{\link{calc_cohort_weights}},
 #' \code{\link{calc_avg_weights}},
 #' \code{\link{calc_daily_weight_gain}},

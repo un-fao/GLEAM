@@ -1,6 +1,6 @@
-#' Run Metabolic Energy Requirements and Dry Matter Intake Calculation
+#' Run Metabolic Energy Requirements and Dry Matter Intake Module Pipeline
 #'
-#' Computes cohort-level daily energy requirements (MJ/head/day) and feed dry matter intake (kg DM/head/day)
+#' Calculates cohort-level daily energy requirements (MJ/head/day) and ration dry matter intake (kg DM/head/day)
 #' by applying the IPCC Tier 2 energy partitioning functions.
 #'
 #' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
@@ -24,7 +24,7 @@
 #'     \item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 #'     \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 #'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
-#'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+#'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 #'     \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 #'     \item{ration_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
 #'   }
@@ -32,16 +32,16 @@
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with the following data requirement:
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'     \item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, PGS, CML). Used to
-#'     internal lookup table. Supported values include:
-#'     \itemize{
-#'     \item \code{Cattle}
-#'     \item \code{Buffalo}
-#'     \item \code{Sheep}
-#'     \item \code{Goats}
-#'     \item \code{Pigs}
-#'     \item \code{Camels}
-#'     }}
+#'     \item{species_short}{Character. Code identifying the livestock species.
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         }}
 #'     \item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
 #'     \item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 #'     \item{milk_yield_day}{Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals during the assessment period, divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for species = CML, CTL, BFL, SHP, and GTS.}
@@ -93,21 +93,13 @@
 #'
 #' Energy requirements are expressed as:
 #' \itemize{
-#'   \item \strong{Net energy} for:
-#'   \itemize{
-#'     \item \code{CTL} (cattle)
-#'     \item \code{BFL} (buffalo)
-#'     \item \code{SHP} (sheep)
-#'     \item \code{GTS} (goats)
-#'   }
-#'   \item \strong{Metabolizable energy} for:
-#'   \itemize{
-#'     \item \code{CML} (camels)
-#'     \item \code{PGS} (pigs)
-#'   }
+#'   \item \strong{Net energy} for CTL, BFL, SHP, GTS.
+#'   \item \strong{Metabolizable energy} for CML and PGS. 
 #' }
 #'
-#' The following calculation sequence is applied:
+#' This function represents the intermediate module of the Global Livestock Environmental
+#' Assessment Model (GLEAM) computational pipeline [run_gleam()] to estimate
+#' animals' metabolic energy requirements and dry matter intake and performs the following calculation sequence:
 #' \enumerate{
 #'   \item Maintenance energy is computed using \code{\link{calc_metabolic_energy_req_maintenance}}.
 #'   \item Activity energy is computed using \code{\link{calc_metabolic_energy_req_activity}}.
@@ -124,6 +116,7 @@
 #' }
 #'
 #' @seealso
+#' \code{\link{run_gleam}},
 #' \code{\link{calc_metabolic_energy_req_maintenance}},
 #' \code{\link{calc_metabolic_energy_req_activity}},
 #' \code{\link{calc_metabolic_energy_req_growth}},

@@ -21,7 +21,7 @@ carbon dioxide (CO2) emission factor from pesticide manufacture in feed producti
 (g CO2/kg DM).
 }
 \description{
-Computes the contribution of an individual feed component to carbon dioxide (CO2)
+Calculates the contribution of an individual feed component to carbon dioxide (CO2)
 emissions from pesticide manufacture in feed production,
 using feed-specific emission factors weighted by the component's share in the ration.
 }

@@ -1,6 +1,6 @@
-#' Run Nitrogen Balance
+#' Run Nitrogen Balance Module Pipeline
 #'
-#' Computes cohort-level daily nitrogen intake, retention, and excretion (kg N/head/day)
+#' Calculates cohort-level daily nitrogen intake, retention, and excretion (kg N/head/day)
 #' by applying IPCC Tier 2 approach.
 #'
 #' @param cohort_level_data data.table. Cohort-level input table with the following data requirement:
@@ -27,16 +27,16 @@
 #'   \describe{
 #'    \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 #'     to the same herd.}
-#'       \item{species_short}{Character. Species short code (e.g. CTL, BFL, SHP, GTS, PGS, CML). Used to
-#'        internal lookup table. Supported values include:
-#'        \itemize{
-#'        \item \code{Cattle}
-#'        \item \code{Buffalo}
-#'        \item \code{Sheep}
-#'        \item \code{Goats}
-#'        \item \code{Pigs}
-#'        \item \code{Camels}
-#'        }}
+#'     \item{species_short}{Character. Code identifying the livestock species.
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         }}
 #'    \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein / kg milk).
 #'    Required only for species = CML, CTL, BFL, SHP, and GTS.}
 #'     \item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during
@@ -72,7 +72,9 @@
 #'   }
 #'
 #' @details
-#' This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
+#' This function represents the intermediate module of the Global Livestock Environmental
+#' Assessment Model (GLEAM) computational pipeline [run_gleam()] to compute the nitrogen balance.
+#' The function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
 #' uses \code{species_short} directly for all species-specific nitrogen balance calculations,
 #' and computes cohort-level nitrogen balance components following the IPCC Tier 2 structure.
 #'
@@ -86,8 +88,8 @@
 #'   as intake minus retention (species-specific validation applied).
 #' }
 #'
-#'
 #' @seealso
+#' \code{\link{run_gleam}},
 #' \code{\link{calc_nitrogen_intake}},
 #' \code{\link{calc_nitrogen_retention}},
 #' \code{\link{calc_nitrogen_excretion}}

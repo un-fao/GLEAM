@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_metabolic_energy_req_growth}
 \alias{calc_metabolic_energy_req_growth}
-\title{Calculate Energy for Growth}
+\title{Calculate metabolic energy requirements for growth}
 \usage{
 calc_metabolic_energy_req_growth(
   species_short,
@@ -62,7 +62,7 @@ biological and management conditions (kg).}
 Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the energy requirement for growth by cohort (MJ/head/day), defined
+Calculates the energy requirement for growth by cohort (MJ/head/day), defined
 as the energy required for body tissue accretion, corresponding to the retained energy
 component of live weight gain.
 }
@@ -108,7 +108,7 @@ The growth energy coefficient \eqn{cgro} (MJ/kg live weight) is calculated as:
 
 Total metabolizable energy required for growth is then:
 
-\eqn{energy\_requirement\_growth = daily\_weight\_gain \times cgro}
+\eqn{metabolic\_energy\_req\_growth = daily\_weight\_gain \times cgro}
 
 where:
 \itemize{
@@ -121,6 +121,8 @@ where:
 }
 
 }
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 Al-Jassim, R. (2019). \emph{Metabolisable energy and protein requirements of the Arabian camel
@@ -147,7 +149,8 @@ IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories
 from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
 }
 \seealso{
-\code{\link{calc_cohort_weights}}
-\code{\link{calc_avg_weights}}
+\code{\link{run_metabolic_energy_req_module}},
+\code{\link{calc_cohort_weights}},
+\code{\link{calc_avg_weights}},
 \code{\link{calc_daily_weight_gain}}
 }

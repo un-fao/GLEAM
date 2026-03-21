@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_emissions_manure.R
 \name{calc_volatile_solids}
 \alias{calc_volatile_solids}
-\title{Calculate Volatile Solids for Manure Emissions}
+\title{Calculate Volatile Solids (VS)}
 \usage{
 calc_volatile_solids(
   ration_intake,
@@ -14,7 +14,7 @@ calc_volatile_solids(
 \arguments{
 \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 
-\item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 
 \item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
 
@@ -24,7 +24,7 @@ calc_volatile_solids(
 Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).
 }
 \description{
-Computes daily volatile solids (VS) excretion in manure (kg VS/head/day).
+Calculates daily volatile solids (VS) excretion in manure (kg VS/head/day).
 VS represent the organic fraction of manure dry matter,
 including both biodegradable and non-biodegradable organic material.
 VS is a key intermediate variable required for estimating methane (CH4)
@@ -68,13 +68,16 @@ default approach.
 The volatile solids excretion is then calculated as:
 
 \deqn{
-  volatile\_solids =
-  dry\_matter\_intake \times (1 - diet\_digestibility\_fraction + urinary\_energy\_fraction)
-  \times (1 - diet\_ash)
+volatile\_solids =
+dry\_matter\_intake \times
+(1 - diet\_digestibility\_fraction + urinary\_energy\_fraction) \times
+(1 - diet\_ash)
 }
 
 The resulting calculations are algebraically equivalent
 to the IPCC approach and fully consistent with Equation 10.24.
+
+This function is part of the \code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}}.
 }
 \examples{
 calc_volatile_solids <- calc_volatile_solids(
@@ -91,4 +94,7 @@ Livestock and Manure Management. Equation 10.24.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.24.
+}
+\seealso{
+\code{\link{run_emissions_manure_module}}
 }

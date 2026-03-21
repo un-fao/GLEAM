@@ -1,4 +1,4 @@
-#' Compute Methane Conversion Factor (ym)
+#' Calculate methane conversion factor (ym)
 #'
 #' Calculates the methane conversion factor (ym, % of dietary gross energy in feed converted to methane)
 #' for a given species and cohort based on diet digestibility. Implements species- and cohort-specific
@@ -26,8 +26,8 @@
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
 #'   }
-#' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of 
-#' digestible to gross energy content (fraction).
+#' @param ration_digestibility_fraction Numeric. Average digestibility of the feed ration, expressed as ratio of 
+#' digestible (or metabolizable, for poultry) to gross energy content (fraction).
 #'
 #' @return Numeric. Methane (CH4) conversion factor (ym), representing the percentage of  gross energy 
 #' of the feed ration that is converted to CH4 (percentage).
@@ -61,7 +61,10 @@
 #' ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming 
 #' negligible enteric methane production before weaning/rumen development.
 #' 
+#' This function is part of the [run_emissions_enteric_module()].
+#' 
 #' @seealso
+#'   \code{\link{run_emissions_enteric_module}},
 #'   \code{\link{calc_ration_digestibility}},
 #'   \code{\link{run_ration_quality_module}}
 #'
@@ -120,7 +123,7 @@ calc_conversion_factor_ym <- function(
 }
 
 
-#' Compute Daily Enteric Methane Emissions
+#' Calculate daily enteric methane emissions
 #'
 #' Calculates daily enteric methane emissions (kg CH4/head/day) based on gross
 #' energy intake, methane conversion factor (ym), and dry matter intake.
@@ -136,7 +139,7 @@ calc_conversion_factor_ym <- function(
 #'     \item \code{GTS}: goats
 #'   }
 #' @param ch4_conversion_factor_ym Numeric. Methane (CH4) conversion factor (ym), 
-#' representing the percentage of  gross energy of the feed ration that is converted to CH4 (percentage)
+#' representing the percentage of  gross energy of the feed ration that is converted to CH4 (percentage).
 #' @param ch4_mitigation_factor Numeric. Optional. Multiplicative mitigation factor applied to
 #'     baseline enteric methane (CH4) emissions (dimensionless). If not provided, a default
 #'     value of \code{1} (no mitigation) is used. Values lower than 1 represent proportional
@@ -157,12 +160,13 @@ calc_conversion_factor_ym <- function(
 #' where 55.65 MJ/kg is the energy content of methane.
 #' 
 #' \code{ration_gross_energy} and \code{ration_intake} can be calculated with
-#' \code{\link{calc_ration_gross_energy}} and \code{\link{calc_ration_intake}} - 
-#' see also \code{\link{run_ration_quality_module}} and \code{\link{run_metabolic_energy_req_module}}.
-#' 
+#' \code{\link{calc_ration_gross_energy}} and \code{\link{calc_ration_intake}} (
+#' see also \code{\link{run_ration_quality_module}} and \code{\link{run_metabolic_energy_req_module}}).
 #'
-#' #'
+#' This function is part of the [run_emissions_enteric_module()].
+#' 
 #' @seealso
+#'   \code{\link{run_emissions_enteric_module}},
 #'   \code{\link{calc_ration_gross_energy}},
 #'   \code{\link{calc_ration_intake}},
 #'   \code{\link{run_ration_quality_module}}
@@ -176,7 +180,6 @@ calc_conversion_factor_ym <- function(
 #' IPCC. (2006).
 #' \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}.
 #' Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
-#'
 #'
 #' @export
 calc_ch4_enteric <- function(

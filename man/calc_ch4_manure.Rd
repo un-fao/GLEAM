@@ -7,9 +7,11 @@
 calc_ch4_manure(ratio_m3CH4_to_kgCH4 = 0.67, volatile_solids, ...)
 }
 \arguments{
-\item{ratio_m3CH4_to_kgCH4}{Numeric. Conversion factor used to convert methane (CH4) from volumetric unit (m3) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m3.}
+\item{ratio_m3CH4_to_kgCH4}{Numeric. Conversion factor used to convert methane (CH4)
+from volumetric unit (m3) to a mass unit (kg). This value represents the density of methane. It defaults to 0.67 kg/m3.}
 
-\item{volatile_solids}{Numeric. Total volatile solids (VS) excreted per animal per day, representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
+\item{volatile_solids}{Numeric. Total volatile solids (VS) excreted per animal per day,
+representing the organic material in livestock manure and consisting of both biodegradable and non-biodegradable fractions (kg VS/head/day).}
 
 \item{...}{A variable number of manure management system (MMS) arguments.
 Each MMS must be provided as a named numeric vector with exactly the
@@ -18,7 +20,7 @@ following fields:
 \item{manure_management_system_fraction}{
 Numeric. Fraction of total manure excreted by animals in a given herd
 and cohort that is handled in a specific manure management system.
-Values range from 0 to 1. The sum of all fractions for each herd_id
+Values ranges from 0 to 1. The sum of all fractions for each herd_id
 must equal 1.
 }
 \item{methane_conversion_factor_mcf}{
@@ -59,7 +61,7 @@ A named list with the following elements:
 }
 }
 \description{
-Computes daily methane emissions from manure management using IPCC-based parameters and
+Calculates daily methane emissions from manure management using IPCC-based parameters and
 separates emissions from manure deposited on pasture, manure burned for fuel, and all other manure
 management systems.
 }
@@ -69,7 +71,7 @@ methane (CH4) emission factors from manure management.
 
 In the IPCC formulation, emissions are determined by combining:
 \itemize{
-\item daily volatile solids excretion (\code{volatile_solids}),
+\item daily volatile solids excretion (\code{volatile_solids}) - see \code{\link{calc_volatile_solids}},
 \item the maximum methane-producing capacity (\code{b0}),
 \item the methane conversion factor (\code{mcf}) for each manure
 management system,
@@ -90,6 +92,8 @@ The summation is taken over all manure management systems included in
 the calculation. Results are expressed at daily resolution
 (kg CH4/head/day), consistent with Equation 10.23 after
 adapting the original annual formulation to a daily basis.
+
+This function is part of the \code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}}.
 }
 \examples{
 calc_ch4_manure(
@@ -124,4 +128,11 @@ Livestock and Manure Management. Equation 10.23.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.23.
+}
+\seealso{
+\code{\link{run_emissions_manure_module}},
+\code{\link{calc_volatile_solids}}
+
+\code{\link{run_emissions_manure_module}},
+\code{\link{calc_volatile_solids}}
 }

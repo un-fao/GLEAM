@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_emissions_manure.R
 \name{calc_n2o_manure_total}
 \alias{calc_n2o_manure_total}
-\title{Calculate total N2O emissions from manure}
+\title{Calculate total Nitrous Oxide (N2O) emissions from manure}
 \usage{
 calc_n2o_manure_total(
   n2o_manure_pasture_vol,
@@ -92,6 +92,8 @@ Includes direct emissions and indirect emissions from volatilisation,
 leaching, and runoff (kg N2O/head/day).
 }
 }
+
+This function is part of the \code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}}.
 }
 \description{
 Aggregates direct and indirect nitrous oxide (N2O) emissions from manure, by
@@ -139,4 +141,7 @@ calc_n2o_manure_total(
   n2o_manure_other_direct = 0.01033
 )
 
+}
+\seealso{
+\code{\link{run_emissions_manure_module}}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_reg_growth}
 \alias{calc_reg_growth}
-\title{Calculate the Ratio of Net Energy Available for Growth in the Diet (REG – Net Energy for Growth / Digestible Energy)}
+\title{Calculate the ratio of net energy available for growth in the diet (REG – Net Energy for Growth / Digestible Energy)}
 \usage{
 calc_reg_growth(species_short, ration_digestibility_fraction = NA_real_)
 }
@@ -18,14 +18,14 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration,
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration,
 expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{
 Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).
 }
 \description{
-Computes the ratio of net energy available for growth to digestible
+Calculates the ratio of net energy available for growth to digestible
 energy consumed (fraction), which represents the efficiency with which digestible
 energy in the diet is converted into net energy retained as body tissue.
 }
@@ -38,6 +38,8 @@ net\_energy\_growth\_digestible\_energy\_ratio = 1.164 - 0.005160 \times diet\_d
 
 For Other species REG is not applicable and the function
 returns \code{NA_real_}.
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 Gibbs M.J., Johnson D.E. (1993) \emph{Livestock Emissions}.
@@ -51,6 +53,7 @@ IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories
 from Livestock and Manure Management, Equation 10.15.
 }
 \seealso{
+\code{\link{run_metabolic_energy_req_module}},
 \code{\link{calc_ration_digestibility}}
 \code{\link{calc_total_metabolic_energy_req}}
 \code{\link{calc_ration_intake}}

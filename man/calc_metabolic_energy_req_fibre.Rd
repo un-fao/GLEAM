@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_metabolic_energy_req_fibre}
 \alias{calc_metabolic_energy_req_fibre}
-\title{Calculate Energy for Fibre Production}
+\title{Calculate metabolic energy requirements for fibre production}
 \usage{
 calc_metabolic_energy_req_fibre(
   species_short,
@@ -41,7 +41,7 @@ Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 }
 \description{
-Computes the energy requirement for fibre production (MJ/head/day),
+Calculates the energy requirement for fibre production (MJ/head/day),
 defined as the additional energy required for the synthesis of animal fibre
 (e.g. wool or hair).
 }
@@ -60,7 +60,7 @@ net energy cost of \eqn{24} MJ per kilogram of fibre produced. Annual fibre
 production is converted to a daily requirement as:
 
 \deqn{
-energy\_requirement\_fibre =
+metabolic\_energy\_req\_fibre =
 \frac{24 \times fibre\_yield\_year}{365}
 }
 
@@ -81,7 +81,7 @@ For camels, fibre energy requirements are first calculated on a
 efficiency coefficient:
 
 \deqn{
-energy\_requirement\_fibre =
+metabolic\_energy\_req\_fibre =
 \frac{24}{0.43}
 \times
 \frac{fibre\_yield\_year}{365}
@@ -104,6 +104,8 @@ guidance and the synthesis by Cannas et al. (2007).
 
 \item\strong{Other species}: Fibre production energy is assumed to be zero.
 }
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 AFRC (1998) \emph{The Nutrition of Goats.}
@@ -121,4 +123,7 @@ Chapter 10: Emissions from Livestock and Manure Management, Equation 10.12.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}. Chapter 10: Emissions from
 Livestock and Manure Management, Equation 10.12.
+}
+\seealso{
+\code{\link{run_metabolic_energy_req_module}},
 }

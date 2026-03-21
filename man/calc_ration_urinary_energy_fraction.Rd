@@ -49,4 +49,9 @@ The urinary energy fraction contribution uses the animal-specific parameter:
 \item Pigs (\code{PGS}):
 \code{feed_ration_fraction * feed_urinary_energy_pigs}
 }
+
+This function is part of the \code{\link[=run_ration_quality_module]{run_ration_quality_module()}}.
+}
+\seealso{
+\code{\link{run_ration_quality_module}}
 }

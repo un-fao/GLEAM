@@ -1,11 +1,11 @@
 #' Calculate a ration component's contribution to carbon dioxide (CO2) emissions from fertilizer manufacture
 #'
-#' Computes the contribution of an individual feed component to carbon dioxide (CO2)
+#' Calculates the contribution of an individual feed component to carbon dioxide (CO2)
 #' emissions from fertilizer manufacture in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in
-#' the total ration, expressed as its fraction of diet dry matter (fraction). Within
+#' the total ration,as its fraction of diet dry matter intake (fraction). Within
 #' each herd_id and cohort, proportions should sum to 1.
 #' @param co2_feed_fertilizer Numeric. Carbon dioxide (CO2) emission factor of a
 #' feed component, representing CO2 emissions from fertilizer manufacture in feed
@@ -19,6 +19,12 @@
 #' The contribution is computed as:
 #'
 #' \deqn{diet\_co2\_feed\_fertilizer = feed\_ration\_fraction \times co2\_feed\_fertilizer}
+#' 
+#' This function is part of the [run_emissions_ration_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_ration_module}}
+#'   
 #' @export
 #'
 calc_co2_ration_fertilizer <- function(
@@ -34,7 +40,7 @@ calc_co2_ration_fertilizer <- function(
 
 #' Calculate a ration component's contribution to carbon dioxide (CO2) emissions from pesticide manufacture
 #'
-#' Computes the contribution of an individual feed component to carbon dioxide (CO2)
+#' Calculates the contribution of an individual feed component to carbon dioxide (CO2)
 #' emissions from pesticide manufacture in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
@@ -69,8 +75,8 @@ calc_co2_ration_pesticides <- function(
 
 #' Calculate a ration component's contribution to carbon dioxide (CO2) emissions from on-field agricultural activities
 #'
-#' Computes the contribution of an individual feed component to carbon dioxide (CO2)
-#' emissions from on-field agricultural activities in feed production (e.g energy use for tillage and
+#' Calculates the contribution of an individual feed component to carbon dioxide (CO2)
+#' emissions from on-field agricultural activities in feed production (e.g., energy use for tillage and
 #' machinery operations), using feed-specific emission factors weighted by
 #' the component's share in the ration.
 #'
@@ -90,6 +96,11 @@ calc_co2_ration_pesticides <- function(
 #'
 #' \deqn{diet\_co2\_feed\_crop\_operations =
 #'   feed\_ration\_fraction \times co2\_feed\_crop\_operations}
+#'   
+#' This function is part of the [run_emissions_ration_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_ration_module}}
 #'
 #' @export
 calc_co2_ration_crop_activities <- function(
@@ -106,7 +117,7 @@ calc_co2_ration_crop_activities <- function(
 
 #' Calculate a ration component's contribution to carbon dioxide (CO2) emissions from land-use change (excluding peatland drainage)
 #'
-#' Computes the contribution of an individual feed component to carbon dioxide (CO2)
+#' Calculates the contribution of an individual feed component to carbon dioxide (CO2)
 #' emissions from land-use change in feed production (excluding peatland drainage),
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
@@ -126,6 +137,11 @@ calc_co2_ration_crop_activities <- function(
 #'
 #' \deqn{diet\_co2\_feed\_luc\_nopeat = feed\_ration\_fraction \times co2\_feed\_luc\_nopeat}
 #'
+#' This function is part of the [run_emissions_ration_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_ration_module}}
+#'
 #' @export
 calc_co2_ration_luc_nopeat <- function(
     feed_ration_fraction,
@@ -141,7 +157,7 @@ calc_co2_ration_luc_nopeat <- function(
 
 #' Calculate a ration component's contribution to carbon dioxide (CO2) emissions from peatland drainage
 #'
-#' Computes the contribution of an individual feed component to carbon dioxide (CO2)
+#' Calculates the contribution of an individual feed component to carbon dioxide (CO2)
 #' emissions from peatland drainage in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
@@ -161,6 +177,11 @@ calc_co2_ration_luc_nopeat <- function(
 #'
 #' \deqn{diet\_co2\_feed\_luc\_peat = feed\_ration\_fraction \times co2\_feed\_luc\_peat}
 #'
+#' This function is part of the [run_emissions_ration_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_ration_module}}
+#'
 #' @export
 calc_co2_ration_luc_peat <- function(
     feed_ration_fraction,
@@ -176,7 +197,7 @@ calc_co2_ration_luc_peat <- function(
 
 #' Calculate a ration component's contribution to nitrous oxide (N2O) emissions from fertilizer use
 #'
-#' Computes the contribution of an individual feed component to nitrous oxide (N2O)
+#' Calculates the contribution of an individual feed component to nitrous oxide (N2O)
 #' emissions from synthetic fertilizer in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
@@ -196,6 +217,11 @@ calc_co2_ration_luc_peat <- function(
 #'
 #' \deqn{diet\_n2o\_feed\_fertilizer = feed\_ration\_fraction \times n2o\_feed\_fertilizer}
 #'
+#' This function is part of the [run_emissions_ration_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_ration_module}}
+#'
 #' @export
 calc_n2o_ration_fertilizer <- function(
     feed_ration_fraction,
@@ -211,7 +237,7 @@ calc_n2o_ration_fertilizer <- function(
 
 #' Calculate a ration component's contribution to nitrous oxide (N2O) emissions from manure application and deposition
 #'
-#' Computes the contribution of an individual feed component to nitrous oxide (N2O)
+#' Calculates the contribution of an individual feed component to nitrous oxide (N2O)
 #' emissions from manure application to or deposition on soil in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
@@ -232,6 +258,11 @@ calc_n2o_ration_fertilizer <- function(
 #' \deqn{diet\_n2o\_feed\_manure\_applied =
 #'   feed\_ration\_fraction \times n2o\_feed\_manure\_applied}
 #'
+#' This function is part of the [run_emissions_ration_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_ration_module}}
+#'
 #' @export
 calc_n2o_ration_manure <- function(
     feed_ration_fraction,
@@ -247,7 +278,7 @@ calc_n2o_ration_manure <- function(
 
 #' Calculate a ration component's contribution to nitrous oxide (N2O) emissions from crop residues decomposition
 #'
-#' Computes the contribution of an individual feed component to nitrous oxide (N2O)
+#' Calculates the contribution of an individual feed component to nitrous oxide (N2O)
 #' emissions from crop residues decomposition in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
@@ -268,6 +299,11 @@ calc_n2o_ration_manure <- function(
 #' \deqn{diet\_n2o\_feed\_crop\_residues =
 #'   feed\_ration\_fraction \times n2o\_feed\_crop\_residues}
 #'
+#' This function is part of the [run_emissions_ration_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_ration_module}}
+#'
 #' @export
 calc_n2o_ration_crop_residues <- function(
     feed_ration_fraction,
@@ -283,7 +319,7 @@ calc_n2o_ration_crop_residues <- function(
 
 #' Calculate a ration component's contribution to methane (CH4) emissions from rice cultivation
 #'
-#' Computes the contribution of an individual feed component to methane (CH4)
+#' Calculates the contribution of an individual feed component to methane (CH4)
 #' emissions from rice cultivation in feed production,
 #' using feed-specific emission factors weighted by the component's share in the ration.
 #'
@@ -301,6 +337,11 @@ calc_n2o_ration_crop_residues <- function(
 #' The contribution is computed as:
 #'
 #' \deqn{diet\_ch4\_feed\_rice = feed\_ration\_fraction \times ch4\_feed\_rice}
+#'
+#' This function is part of the [run_emissions_ration_module()].
+#' 
+#' @seealso
+#'   \code{\link{run_emissions_ration_module}}
 #'
 #' @export
 calc_ch4_ration_rice <- function(

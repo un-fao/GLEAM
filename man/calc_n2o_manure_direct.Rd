@@ -20,7 +20,7 @@ following fields:
 \item{manure_management_system_fraction}{
 Numeric. Fraction of total manure excreted by animals in a given
 herd and cohort that is handled in a specific manure management
-system. Value range from 0 to 1. The sum of all fractions for each herd_id must equal 1.
+system. Value ranges from 0 to 1. The sum of all fractions for each herd_id must equal 1.
 }
 \item{n2o_ef3}{
 Numeric. Emission factor for direct nitrous oxide (N2O)
@@ -65,7 +65,7 @@ management systems, excluding manure burned for fuel
 }
 }
 \description{
-Computes daily direct nitrous oxide (N2O) emissions from manure management
+Calculates daily direct nitrous oxide (N2O) emissions from manure management
 using IPCC-based parameters and separates emissions from manure deposited on pasture,
 manure burned for fuel, and all other manure management systems.
 }
@@ -102,12 +102,15 @@ per-head resolution using \code{nitrogen_excretion}
 Daily emissions are computed as:
 
 \deqn{
-  N2O =
-  nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times
-  \sum \left(
-    manure\_management\_system\_fraction \times n2o\_ef3
-  \right)
+\begin{aligned}
+N2O &= nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times \\
+& \sum \left(
+manure\_management\_system\_fraction \times n2o\_ef3
+\right)
+\end{aligned}
 }
+
+This function is part of the \code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}}.
 }
 \examples{
 calc_n2o_manure_direct(
@@ -138,4 +141,7 @@ Livestock and Manure Management. Equation 10.25.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.25.
+}
+\seealso{
+\code{\link{run_emissions_manure_module}}
 }

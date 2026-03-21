@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_emissions_manure_module.R
 \name{run_emissions_manure_module}
 \alias{run_emissions_manure_module}
-\title{Run Emissions From Manure Calculation}
+\title{Run Emissions from Manure Module Pipeline}
 \usage{
 run_emissions_manure_module(
   cohort_level_data,
@@ -48,7 +48,7 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 \item{manure_management_system}{Character. Name identifying the manure management system. The identifiers mms_pasture and mms_burned are reserved for manure deposited on pasture and manure burned for fuel, respectively. No specific naming convention is required for other manure management systems, which are grouped and handled as “other” systems.}
-\item{manure_management_system_fraction}{Numeric. Fraction of total manure excreted by animals in a given herd and cohort that is handled in a specific manure management system. Values range from 0 to 1. The sum of all fractions for each herd_id must equal 1.}
+\item{manure_management_system_fraction}{Numeric. Fraction of total manure excreted by animals in a given herd and cohort that is handled in a specific manure management system. Values ranges from 0 to 1. The sum of all fractions for each herd_id must equal 1.}
 }}
 
 \item{manure_management_system_factors}{data.table. Herd-level MMS factors
@@ -82,7 +82,7 @@ Tables 10A-4 to 10A-9 (IPCC, 2006).
 Numeric. Emission factor for direct nitrous oxide (N2O) emissions for
 each manure management system, representing nitrous oxide emitted per
 unit of nitrogen from nitrification and denitrification processes
-occuring during manure storage and treatment (kg N2O–N per kg N).
+occurring during manure storage and treatment (kg N2O–N per kg N).
 Default values can be selected from Table 10.21 and Table 11.1
 (for manure deposited on pasture) in IPCC Guidelines (IPCC 2006, 2019).
 }
@@ -151,16 +151,13 @@ emissions columns:
 }
 }
 \description{
-Run emissions (cohort-level) from manure management systems (MMS)
+Calculates methane (CH4) and nitrous oxide (N2O) emissions at cohort-level from manure management systems (MMS).
 }
 \details{
-This function orchestrates a cohort-level implementation of the IPCC manure
-management methodology using volatile solids (VS), manure management system
-(MMS) allocation fractions, and MMS-specific emission factors.
-Run-level validation is performed on input table structure and key consistency.
-In particular, for each \code{herd_id}, the set of MMS identifiers must be
-consistent between \code{manure_management_system_fraction} and
-\code{manure_management_system_factors}.
+This function represents the intermediate module of the Global Livestock Environmental
+Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to estimate emissions from
+manure management systems (MMS) and orchestrates a cohort-level implementation of the IPCC manure
+management methodology.
 
 The following calculation sequence is applied:
 \enumerate{
@@ -197,17 +194,8 @@ fractions and MMS-specific parameters.
 \section{Manure management system (MMS) reference}{
 
 A complete list of MMS names,
-definitions, and associated emission factors is provided in the
-following reference documents:
-
-\itemize{
-\item \href{gleam/legacy/Resources/mms_definitions.html}{MMS names and definitions}
-\item \href{gleam/legacy/Resources/mms_emission-factors.html}{MMS emission factors}
-}
-
-These documents provide guidance on IPCC MMS and the
-corresponding methane (CH4) and nitrous oxide (N2O) parameters
-(MCF, B0, EF3, EF4, EF5, fracgas, fracleach).
+definitions, and associated emission factors can be accessed in the
+\href{https://foodandagricultureorganization.shinyapps.io/GLEAM_Data_Explorer/}{GLEAM Data Explorer}.
 }
 
 \examples{
@@ -244,6 +232,7 @@ Volume 4, Chapter 10: Emissions from Livestock and Manure Management.
 Equations 10.23, 10.24, 10.25, 10.26, 10.27, 10.28, and 10.29.
 }
 \seealso{
+\code{\link{run_gleam}},
 \code{\link{calc_volatile_solids}},
 \code{\link{calc_ch4_manure}},
 \code{\link{calc_n2o_manure_direct}},

@@ -1,4 +1,4 @@
-#' Calculate cohort-level average greenhouse gas (GHG) emission factors for feed rations
+#' Run Emissions from Feed Production Module Pipeline
 #'
 #' Computes cohort-level average greenhouse gas (GHG) emission factors from feed production by
 #' weighting emission factors of individual feed components by diet composition.
@@ -9,17 +9,16 @@
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each
 #'     cohort belonging to the same herd.}
-#'     \item{species_short}{
-#'     Character. Species short code. Supported values include:
-#'     \itemize{
-#'     \item \code{CTL} (Cattle)
-#'     \item \code{BFL} (Buffalo)
-#'     \item \code{SHP} (Sheep)
-#'     \item \code{GTS} (Goats)
-#'     \item \code{PGS} (Pigs)
-#'     \item \code{CML} (Camels)
-#'     }
-#'     }
+#'     \item{species_short}{Character. Code identifying the livestock species.
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         }}
 #'     \item{cohort_short}{
 #'     Character. Sex- and age-specific cohort code describing the production stage
 #'     of the animals. Supported values include:
@@ -77,6 +76,7 @@
 #'   }
 #'
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
+#'   Defaults to \code{TRUE}.
 #'
 #' @return data.table. Cohort-level emission factors summarized by \code{herd_id},
 #'   \code{species_short}, and \code{cohort_short} with the following columns:
@@ -120,7 +120,10 @@
 #'   }
 #'
 #' @details
-#' This function joins \code{rations_share} with \code{feed_emissions} by \code{feed_id},
+#' This function represents the intermediate module of the Global Livestock Environmental
+#' Assessment Model (GLEAM) computational pipeline [run_gleam()] to estimate emissions from 
+#' feed production used in the animal's ration. 
+#' The function joins \code{rations_share} with \code{feed_emissions} by \code{feed_id},
 #' uses \code{species_short} directly, and computes ration-weighted emission
 #' factors by cohort.
 #'
@@ -163,6 +166,7 @@
 #' }
 #'
 #' @seealso
+#' \code{\link{run_gleam}},
 #' \code{\link{calc_co2_ration_fertilizer}},
 #' \code{\link{calc_co2_ration_pesticides}},
 #' \code{\link{calc_co2_ration_crop_activities}},

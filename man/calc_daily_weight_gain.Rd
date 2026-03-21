@@ -21,7 +21,7 @@ calc_daily_weight_gain(
 Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).
 }
 \description{
-Computes average daily weight gain for a given
+Calculates average daily weight gain for a given
 sex–age cohort based on the difference between potential final and initial live weights.
 }
 \details{
@@ -29,5 +29,11 @@ Daily live weight gain is calculated as the difference between the
 potential final live weight and the initial live weight, divided by the
 duration of the cohort stage:
 
-\deqn{daily\_weight\_gain = (live\_weight\_cohort\_potential\_final - live\_weight\_cohort\_initial) / cohort\_duration\_days}
+\deqn{daily\_weight\_gain = 
+(live\_weight\_cohort\_potential\_final - live\_weight\_cohort\_initial) / cohort\_duration\_days}
+
+This function is part of the \code{\link[=run_weights_module]{run_weights_module()}}.
+}
+\seealso{
+\code{\link{run_weights_module}}
 }

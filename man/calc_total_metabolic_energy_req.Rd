@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_total_metabolic_energy_req}
 \alias{calc_total_metabolic_energy_req}
-\title{Calculate Total Energy Requirement}
+\title{Calculate total metabolic energy requirements}
 \usage{
 calc_total_metabolic_energy_req(
   species_short,
@@ -61,14 +61,14 @@ Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for C
 
 \item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction)}
 
-\item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{
 Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
 For CML and PGS the function returns the summed daily metabolizable energy requirement.
 }
 \description{
-Computes the total daily energy requirement (MJ/head/day) by summing
+Calculates the total daily energy requirement (MJ/head/day) by summing
 relevant energy partitions (maintenance, activity, lactation, work, pregnancy,
 growth, fibre, egg deposition).
 }
@@ -81,76 +81,77 @@ species energy requirements are expressed as net or metabolizable energy.
 
 \itemize{
 \item \strong{Energy requirements expressed as net energy (\code{CTL}, \code{BFL}, \code{SHP}, \code{GTS})}
-
 \itemize{
 \item \strong{\code{CTL} and \code{BFL}}:
 \deqn{
-      energy\_requirement\_total =
+      metabolic\_energy\_req\_total =
       \frac{
         \left(
           \frac{
-            energy\_requirement\_maintenance +
-            energy\_requirement\_activity +
-            energy\_requirement\_lactation +
-            energy\_requirement\_work +
-            energy\_requirement\_pregnancy
+            metabolic\_energy\_req\_maintenance +
+            metabolic\_energy\_req\_activity +
+            metabolic\_energy\_req\_lactation +
+            metabolic\_energy\_req\_work +
+            metabolic\_energy\_req\_pregnancy
           }{REM}
         \right)
         +
         \left(
-          \frac{energy\_requirement\_growth}{REG}
+          \frac{metabolic\_energy\_req\_growth}{REG}
         \right)
       }{diet\_digestibility\_fraction}
     }
 \item \strong{\code{SHP} and \code{GTS}}:
 \deqn{
-      energy\_requirement\_total =
+      metabolic\_energy\_req\_total =
       \frac{
         \left(
           \frac{
-            energy\_requirement\_maintenance +
-            energy\_requirement\_activity +
-            energy\_requirement\_lactation +
-            energy\_requirement\_pregnancy
+            metabolic\_energy\_req\_maintenance +
+            metabolic\_energy\_req\_activity +
+            metabolic\_energy\_req\_lactation +
+            metabolic\_energy\_req\_pregnancy
           }{REM}
         \right)
         +
         \left(
-          \frac{energy\_requirement\_growth + 
-          energy\_requirement\_fibre
+          \frac{
+            metabolic\_energy\_req\_growth +
+            metabolic\_energy\_req\_fibre
           }{REG}
         \right)
-      }{diet\_digestibility\_fraction}
+      }{diet_digestibility_fraction}
     }
 }
 \item \strong{Energy requirements expressed as metabolizable energy (\code{CML}, \code{PGS})}
 
-For these species, the total daily requirement is computed as the \strong{direct sum}
-of relevant energy components (MJ/head/day).
-
+For these species, the total daily requirement is computed as the
+\strong{direct sum} of relevant energy components (MJ/head/day).
 \itemize{
 \item \strong{\code{CML}}:
 \deqn{
-      energy\_requirement\_total =
-      energy\_requirement\_maintenance +
-      energy\_requirement\_activity +
-      energy\_requirement\_lactation +
-      energy\_requirement\_work +
-      energy\_requirement\_fibre\_production +
-      energy\_requirement\_pregnancy +
-      energy\_requirement\_growth
+      metabolic\_energy\_req\_total =
+      metabolic\_energy\_req\_maintenance +
+      metabolic\_energy\_req\_activity +
+      metabolic\_energy\_req\_lactation +
+      metabolic\_energy\_req\_work +
+      metabolic\_energy\_req\_fibre\_production +
+      metabolic\_energy\_req\_pregnancy +
+      metabolic\_energy\_req\_growth
     }
 \item \strong{\code{PGS}}:
 \deqn{
-      energy\_requirement\_total =
-      energy\_requirement\_maintenance +
-      energy\_requirement\_activity +
-      energy\_requirement\_lactation +
-      energy\_requirement\_pregnancy +
-      energy\_requirement\_growth
+      metabolic\_energy\_req\_total =
+      metabolic\_energy\_req\_maintenance +
+      metabolic\_energy\_req\_activity +
+      metabolic\_energy\_req\_lactation +
+      metabolic\_energy\_req\_pregnancy +
+      metabolic\_energy\_req\_growth
     }
 }
 }
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 IPCC. (2019). \emph{2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories},
@@ -160,6 +161,7 @@ IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories
 from Livestock and Manure Management, Equation 10.16.
 }
 \seealso{
+\code{\link{run_metabolic_energy_req_module}},
 \code{\link{calc_metabolic_energy_req_maintenance}}
 \code{\link{calc_metabolic_energy_req_activity}}
 \code{\link{calc_metabolic_energy_req_growth}}

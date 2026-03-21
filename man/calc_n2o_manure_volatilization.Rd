@@ -24,7 +24,7 @@ following fields:
 \item{manure_management_system_fraction}{
 Numeric. Fraction of total manure excreted by animals in a given herd
 and cohort that is handled in a specific manure management system.
-Values range from 0 to 1. The sum of all fractions for each herd_id
+Values ranges from 0 to 1. The sum of all fractions for each herd_id
 must equal 1.
 }
 \item{n2o_ef4}{
@@ -81,7 +81,7 @@ burned for fuel (kg N2O/head/day).
 }
 }
 \description{
-Computes daily indirect nitrous oxide (N2O) emissions resulting from
+Calculates daily indirect nitrous oxide (N2O) emissions resulting from
 atmospheric deposition of volatilised nitrogen (NH3–N and NOx–N) from manure
 management systems and separates emissions from manure deposited on pasture, manure burned for fuel, and
 all other manure management systems.
@@ -118,14 +118,17 @@ per-head resolution using \code{nitrogen_excretion}
 (kg N/head/day):
 
 \deqn{
-  N2O =
-  nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times
-  \sum_{S} \left(
-    manure\_management\_system\_fraction \times
-    nitrogen\_fracgas \times
-    n2o\_ef4
-  \right)
+\begin{aligned}
+N_2O &= nitrogen\_excretion \times ratio\_N2ON\_to\_N2O \times \\
+& \sum_{S} \left(
+manure\_management\_system\_fraction \times
+nitrogen\_fracgas \times
+n2o\_ef4
+\right)
+\end{aligned}
 }
+
+This function is part of the \code{\link[=run_emissions_manure_module]{run_emissions_manure_module()}}.
 }
 \examples{
 calc_n2o_manure_volatilization(
@@ -160,4 +163,7 @@ Livestock and Manure Management. Equation 10.26; 10.28.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.26; 10.27.
+}
+\seealso{
+\code{\link{run_emissions_manure_module}}
 }
