@@ -87,9 +87,9 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports:
     cli (>= 3.0.0),
-    data.table
+    data.table (>= 1.14.0)
 Suggests: 
-    testthat (>= 3.2.3)
+    testthat (>= 3.2.0)
 Config/testthat/edition: 3
 Depends: 
     R (>= 4.4.0)
