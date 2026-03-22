@@ -1,0 +1,7 @@
+^gleam\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^\.github$
+^\.lintr$
+^legacy$
+^data-raw$

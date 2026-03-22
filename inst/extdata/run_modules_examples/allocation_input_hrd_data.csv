@@ -1,0 +1,13 @@
+herd_id	species_short	live_weight_at_birth	milk_protein_fraction_standard	milk_fat_fraction_standard	milk_lactose_fraction_standard	ratio_me_to_ne
+1	CTL	41	0.033	0.04	0.048	0.43
+2	CTL	14	0.033	0.04	0.048	0.43
+3	SHP	4.19	0.033	0.04	0.048	0.43
+4	SHP	5.21	0.033	0.04	0.048	0.43
+5	GTS	3.5	0.033	0.04	0.048	0.43
+6	GTS	3.3	0.033	0.04	0.048	0.43
+7	BFL	38	0.033	0.04	0.048	0.43
+8	BFL	32.6	0.033	0.04	0.048	0.43
+9	PGS	1.2	0.033	0.04	0.048	0.43
+10	PGS	1	0.033	0.04	0.048	0.43
+11	CML	28.7	0.033	0.04	0.048	0.43
+12	CML	32.7	0.033	0.04	0.048	0.43

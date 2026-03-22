@@ -1,0 +1,13 @@
+herd_id	species_short	milk_protein_fraction	milk_yield_day	fibre_yield_year	litter_size	parturition_rate	live_weight_at_weaning	live_weight_at_birth	pregnancy_duration
+1	CTL	0.031	27.9	0	1	0.8	250	41	283
+2	CTL	0	0	0	1	0.684	220	14	283
+3	SHP	0.058	0.212	1.5	1	0.93	30	4.19	152
+4	SHP	0	0	2.5	1	0.745	35	5.21	152
+5	GTS	0.034	1.34	1.8	1	0.82	15	3.5	150
+6	GTS	0	0	0.75	1.7	0.91	14	3.3	150
+7	BFL	0.0466	2.32	0	1	0.8	130	38	310
+8	BFL	0.035	5.09	0	1	0.835	110	32.6	310
+9	PGS	0	0	0	13.5	2.33	7	1.2	115
+10	PGS	0	0	0	7	1.6	6	1	115
+11	CML	0.035	4.17	1	1	0.43	120	28.7	390
+12	CML	0.035	9.72	1	1	0.83	150	32.7	390
