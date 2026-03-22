@@ -21,7 +21,7 @@ average nitrous oxide (N2O) emission factor from fertilizer use in feed
 production (g N2O/kg DM).
 }
 \description{
-Computes the contribution of an individual feed component to nitrous oxide (N2O)
+Calculates the contribution of an individual feed component to nitrous oxide (N2O)
 emissions from synthetic fertilizer in feed production,
 using feed-specific emission factors weighted by the component's share in the ration.
 }
@@ -29,4 +29,9 @@ using feed-specific emission factors weighted by the component's share in the ra
 The contribution is computed as:
 
 \deqn{diet\_n2o\_feed\_fertilizer = feed\_ration\_fraction \times n2o\_feed\_fertilizer}
+
+This function is part of the \code{\link[=run_emissions_ration_module]{run_emissions_ration_module()}}.
+}
+\seealso{
+\code{\link{run_emissions_ration_module}}
 }

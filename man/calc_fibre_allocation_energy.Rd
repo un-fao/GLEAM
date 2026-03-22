@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_allocation.R
 \name{calc_fibre_allocation_energy}
 \alias{calc_fibre_allocation_energy}
-\title{Fibre Energy Requirement for Allocation}
+\title{Calculate fibre energy requirements (for biophysical allocation)}
 \usage{
 calc_fibre_allocation_energy(
   species_short,
@@ -39,10 +39,10 @@ species_short = CML.}
 \value{
 Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).
 Non-zero values are expected only for fibre-producing species (CML, SHP, GTS) and applicable cohorts ("FA", "FS",
-"MA", "MS")
+"MA", "MS").
 }
 \description{
-Computes the energy required for fibre production over the assessment period
+Calculates the energy required for fibre production over the assessment period
 (MJ/cohort/assessment period), based on the daily energy requirement for fibre
 production, cohort size, and assessment duration.
 }
@@ -83,6 +83,8 @@ for sheep (\code{SHP}) and goats (\code{GTS}).
 where \code{metabolic_energy_req_fibre_production} can be computed using
 \code{\link{calc_metabolic_energy_req_fibre}} (see also
 \code{\link{run_metabolic_energy_req_module}}).
+
+This function is part of the \code{\link[=run_allocation_module]{run_allocation_module()}}.
 }
 \references{
 ISO. (2006). \emph{Environmental management — Life cycle assessment —
@@ -111,6 +113,7 @@ supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 and Performance (LEAP) Partnership. FAO, Rome, Italy.
 }
 \seealso{
+\code{\link{run_allocation_module}},
 \code{\link{calc_metabolic_energy_req_fibre}},
 \code{\link{run_metabolic_energy_req_module}}
 }

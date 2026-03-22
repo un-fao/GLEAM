@@ -1,6 +1,6 @@
-#' Calculate Energy for Maintenance
+#' Calculate metabolic energy requirements for maintenance
 #'
-#' Computes the energy requirement for maintenance by cohort (MJ/head/day), 
+#' Calculates the energy requirement for maintenance by cohort (MJ/head/day), 
 #' defined as the energy required to maintain basal physiological functions at equilibrium,
 #' with no net gain or loss of body energy.
 #' 
@@ -41,7 +41,7 @@
 #' @details
 #' This approach follows the IPCC Tier 2 partitioning method and applies:
 #'
-#' \eqn{energy\_requirement\_maintenance = cmain \times average\_weight^{0.75}}
+#' \eqn{metabolic\_energy\_req\_maintenance = cmain \times average\_weight^{0.75}}
 #'
 #' where \eqn{cmain} is a category-specific coefficient (MJ/day/kg\eqn{^{0.75}}) that reflects
 #' basal metabolic requirements and varies by species, physiological status, and sex.
@@ -100,7 +100,10 @@
 #'   \item All cohorts: \eqn{cmain = 0.4435}
 #' }
 #'
+#' This function is part of the [run_metabolic_energy_req_module()].
+#' 
 #' @seealso
+#' \code{\link{run_metabolic_energy_req_module}},
 #' \code{\link{calc_avg_weights}} 
 #'
 #' @references
@@ -189,9 +192,9 @@ calc_metabolic_energy_req_maintenance <- function(
   return(metabolic_energy_req_maintenance)
 }
 
-#' Calculate Energy for Activity
+#' Calculate metabolic energy requirements for activity
 #'
-#' Computes the energy requirement for activity by cohort (MJ/head/day), 
+#' Calculates the energy requirement for activity by cohort (MJ/head/day), 
 #' defined as the amount of energy needed to support animal movement and physical activity.
 #'
 #' @param species_short Character. Code identifying the livestock species.
@@ -232,11 +235,11 @@ calc_metabolic_energy_req_maintenance <- function(
 #' @details
 #' This approach follows the IPCC Tier 2 energy partitioning method and applies:
 #'
-#' \eqn{energy\_requirement\_activity = cact \times energy\_requirement\_maintenance}
+#' \eqn{metabolic\_energy\_req\_activity = cact \times metabolic\_energy\_req\_maintenance}
 #' 
 #' For \code{SHP} and \code{GTS}, activity energy is calculated as:
 #'
-#' \eqn{energy\_requirement\_activity = cact \times live\_weight\_cohort\_average}
+#' \eqn{metabolic\_energy\_req\_activity = cact \times live\_weight\_cohort\_average}
 #' 
 #' where 
 #' 
@@ -274,8 +277,11 @@ calc_metabolic_energy_req_maintenance <- function(
 #'   \item \code{all activity levels}: \eqn{cact = 0.125}
 #'   }
 #'   
+#' This function is part of the [run_metabolic_energy_req_module()].
+#' 
 #' @seealso
-#' \code{\link{calc_metabolic_energy_req_maintenance}} 
+#' \code{\link{run_metabolic_energy_req_module}},
+#' \code{\link{calc_metabolic_energy_req_maintenance}},
 #' \code{\link{calc_avg_weights}} 
 #' 
 #' @references
@@ -335,9 +341,9 @@ calc_metabolic_energy_req_activity <- function(
   return(metabolic_energy_req_activity)
 }
 
-#' Calculate Energy for Growth
+#' Calculate metabolic energy requirements for growth
 #'
-#' Computes the energy requirement for growth by cohort (MJ/head/day), defined 
+#' Calculates the energy requirement for growth by cohort (MJ/head/day), defined 
 #' as the energy required for body tissue accretion, corresponding to the retained energy 
 #' component of live weight gain. 
 #'
@@ -418,7 +424,7 @@ calc_metabolic_energy_req_activity <- function(
 #'
 #'   Total metabolizable energy required for growth is then:
 #'
-#'   \eqn{energy\_requirement\_growth = daily\_weight\_gain \times cgro}
+#'   \eqn{metabolic\_energy\_req\_growth = daily\_weight\_gain \times cgro}
 #'
 #'   where:
 #'   \itemize{
@@ -432,9 +438,12 @@ calc_metabolic_energy_req_activity <- function(
 #'   
 #'   }
 #' 
+#' This function is part of the [run_metabolic_energy_req_module()].
+#' 
 #' @seealso
-#' \code{\link{calc_cohort_weights}} 
-#' \code{\link{calc_avg_weights}} 
+#' \code{\link{run_metabolic_energy_req_module}},
+#' \code{\link{calc_cohort_weights}},
+#' \code{\link{calc_avg_weights}},
 #' \code{\link{calc_daily_weight_gain}} 
 #'
 #' @references
@@ -546,9 +555,9 @@ calc_metabolic_energy_req_growth <- function(
   return(metabolic_energy_req_growth)
 }
 
-#' Calculate Energy for Lactation
+#' Calculate metabolic energy requirements for lactation
 #'
-#' Computes the energy requirement for lactation by cohort (MJ/head/day), defined as the
+#' Calculates the energy requirement for lactation by cohort (MJ/head/day), defined as the
 #' energy needed to support milk production by lactating females. 
 #'
 #' @param species_short Character. Code identifying the livestock species.
@@ -581,7 +590,7 @@ calc_metabolic_energy_req_growth <- function(
 #' @param non_productive_duration Numeric. Period during which the animal is not performing 
 #' any productive physiological function such as pregnancy or lactation (days). Required only for PGS.
 #' @param pregnancy_duration Numeric. Duration of pregnancy period (days).
-#' @param litter_size Numeric. Average number of offspring born per parturition (# offsprings/parturition). 
+#' @param litter_size Numeric. Average number of offspring born per parturition (# offspring/parturition). 
 #' This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
 #' @param death_rate_juvenile Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).
 #' @param live_weight_at_birth Numeric. Live weight of the animal at birth (kg).
@@ -615,7 +624,7 @@ calc_metabolic_energy_req_growth <- function(
 #' In general form, lactation energy is computed as:
 #'
 #' \deqn{
-#' energy\_requirement\_lactation =
+#' metabolic\_energy\_req\_lactation =
 #' (milk\_yield \times lactating\_females\_fraction + milk\_for\_offspring)
 #' \times energy\_milk
 #' }
@@ -643,7 +652,7 @@ calc_metabolic_energy_req_growth <- function(
 #' \frac{parturition\_rate \times 5 \times (weaning\_weight - birth\_weight)}{365}
 #' }
 #'
-#' For \code{SHP} and \code{GTS}, \code{milk_for_offspring} is multiplied by
+#' For \strong{SHP} and \strong{GTS}, \code{milk_for_offspring} is multiplied by
 #' \code{litter_size} to account for multiple offspring per birth.
 #'
 #' \strong{PGS} (NRC, 1998):
@@ -653,15 +662,18 @@ calc_metabolic_energy_req_growth <- function(
 #' in lactation (\code{cadj}):
 #'
 #' \deqn{
-#' energy\_requirement\_lactation =
-#' litter\_size \times (1 - 0.5 \times death\_rate\_juvenile)
-#' \times \left(
-#' \frac{0.02059 \times (weaning\_weight - birth\_weight) \times 1000}{lactation\_duration}
+#' \begin{aligned}
+#' metabolic\_energy\_req\_lactation &=
+#' litter\_size \times (1 - 0.5 \times death\_rate\_juvenile) \times \\
+#' & \left(
+#' \frac{0.02059 \times (weaning\_weight - birth\_weight) \times 1000}
+#' {lactation\_duration}
 #' - \frac{0.3766}{0.67}
 #' \right)
 #' \times cadj
+#' \end{aligned}
 #' }
-#'
+#' 
 #' where:
 #' \itemize{
 #'   \item \eqn{0.02059} is the coefficient for lactation energy requirement
@@ -675,7 +687,12 @@ calc_metabolic_energy_req_growth <- function(
 #'   cadj = \frac{lactation\_duration}{non\_productive\_duration + pregnancy\_duration + lactation\_duration}
 #'   }
 #' }
-#'
+#' 
+#' This function is part of the [run_metabolic_energy_req_module()].
+#' 
+#' @seealso
+#' \code{\link{run_metabolic_energy_req_module}}
+#' 
 #' @references
 #' AFRC (1998) \emph{The Nutrition of Goats.}
 #' CAB International, Wallingford, UK.
@@ -809,9 +826,9 @@ calc_metabolic_energy_req_eggs <- function(
   return(NA_real_)
 }
 
-#' Calculate Energy for Work
+#' Calculate metabolic energy requirements for work
 #'
-#' Computes the energy requirement for work (MJ/head/day),  defined as the
+#' Calculates the energy requirement for work (MJ/head/day),  defined as the
 #' additional energy required to support draught power and work-related physical activity.
 #'
 #' @param species_short Character. Code identifying the livestock species.
@@ -862,12 +879,12 @@ calc_metabolic_energy_req_eggs <- function(
 #' net energy for maintenance:
 #'
 #' \eqn{
-#' energy\_requirement\_work = 0.1 \times energy\_requirement\_maintenance \times work\_hours \times draught\_fraction
+#' metabolic\_energy\_req\_work = 0.1 \times metabolic\_energy\_req\_maintenance \times work\_hours \times draught\_fraction
 #' }
 #'
 #' where:
 #' \itemize{
-#'   \item \eqn{energy\_requirement\_maintenance} is net energy required for maintenance (MJ/head/day) and can be calculated using 
+#'   \item \eqn{metabolic\_energy\_req\_maintenance} is net energy required for maintenance (MJ/head/day) and can be calculated using 
 #'   \code{\link{calc_metabolic_energy_req_maintenance}()},
 #'   \item \eqn{0.1} represents a 10% increase in maintenance energy per hour of work,
 #'   \item \eqn{work\_hours} is the mean number of hours worked per animal per day - 
@@ -881,7 +898,7 @@ calc_metabolic_energy_req_eggs <- function(
 #' energy cost per hour of work:
 #'
 #' \deqn{
-#' energy\_requirement\_work = 4 \times work\_hours \times draught\_fraction
+#' metabolic\_energy\_req\_work = 4 \times work\_hours \times draught\_fraction
 #' }
 #'
 #' where:
@@ -894,7 +911,10 @@ calc_metabolic_energy_req_eggs <- function(
 #'   \code{draught_fraction_female} (for \code{FA}) and \code{draught_fraction_male} (for \code{MA})
 #'   }
 #'
-#'@seealso
+#' This function is part of the [run_metabolic_energy_req_module()].
+#' 
+#' @seealso
+#' \code{\link{run_metabolic_energy_req_module}},
 #' \code{\link{calc_metabolic_energy_req_maintenance}} 
 #'
 #'@references
@@ -954,9 +974,9 @@ calc_metabolic_energy_req_work <- function(
   return(metabolic_energy_req_work)
 }
 
-#' Calculate Energy for Fibre Production
+#' Calculate metabolic energy requirements for fibre production
 #'
-#' Computes the energy requirement for fibre production (MJ/head/day),
+#' Calculates the energy requirement for fibre production (MJ/head/day),
 #' defined as the additional energy required for the synthesis of animal fibre
 #' (e.g. wool or hair).
 #'
@@ -1001,7 +1021,7 @@ calc_metabolic_energy_req_work <- function(
 #' production is converted to a daily requirement as:
 #'
 #' \deqn{
-#' energy\_requirement\_fibre =
+#' metabolic\_energy\_req\_fibre =
 #' \frac{24 \times fibre\_yield\_year}{365}
 #' }
 #'
@@ -1022,7 +1042,7 @@ calc_metabolic_energy_req_work <- function(
 #' efficiency coefficient:
 #'
 #' \deqn{
-#' energy\_requirement\_fibre =
+#' metabolic\_energy\_req\_fibre =
 #' \frac{24}{0.43}
 #' \times
 #' \frac{fibre\_yield\_year}{365}
@@ -1046,8 +1066,12 @@ calc_metabolic_energy_req_work <- function(
 #' \item\strong{Other species}: Fibre production energy is assumed to be zero.
 #' }
 #'
-#' @references
+#' This function is part of the [run_metabolic_energy_req_module()].
+#' 
+#' @seealso
+#' \code{\link{run_metabolic_energy_req_module}},
 #'
+#' @references
 #' AFRC (1998) \emph{The Nutrition of Goats.}
 #' CAB International, Wallingford, UK.
 #'
@@ -1093,9 +1117,9 @@ calc_metabolic_energy_req_fibre <- function(
   return(metabolic_energy_req_fibre_production)
 }
 
-#' Calculate Energy for Pregnancy
+#' Calculate metabolic energy requirements for pregnancy
 #'
-#' Computes the energy requirement for pregnancy by cohort (MJ/head/day) for pregnant
+#' Calculates the energy requirement for pregnancy by cohort (MJ/head/day) for pregnant
 #' females, defined as the additional energy needed to support gestation.
 #'
 #' @param species_short Character. Code identifying the livestock species.
@@ -1124,7 +1148,7 @@ calc_metabolic_energy_req_fibre <- function(
 #' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
 #' A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during 
 #' a year divided by the number of adult females potentially able to give birth during that year.
-#' @param litter_size Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be 
+#' @param litter_size Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be 
 #' calculated as the total number of offspring born divided by the total number of parturitions during the year.
 #' @param pregnancy_duration Numeric. Duration of pregnancy period (days).
 #' @param non_productive_duration Numeric. Period during which the animal is not performing any productive physiological 
@@ -1148,7 +1172,8 @@ calc_metabolic_energy_req_fibre <- function(
 #' \itemize{
 #'   \item For \code{FA}, requirements are scaled by the annual parturition rate
 #'     (\code{parturition_rate}) and (when applicable) by the fraction of the reproductive cycle
-#'     spent in gestation (\code{pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)}).
+#'     spent in gestation 
+#'     (\code{pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)}).
 #'   \item For \code{FS}, only a fraction of animals is assumed to reach reproductive
 #'     age within the cohort; requirements are therefore scaled by the proportion
 #'     remaining in the cohort (\eqn{1 - offtake\_rate}) and by the share of the
@@ -1157,15 +1182,15 @@ calc_metabolic_energy_req_fibre <- function(
 #'
 #' \strong{General form}
 #' \deqn{
-#' energy\_requirement\_pregnancy =
-#' energy\_requirement\_maintenance \times c_{preg} \times S
+#' metabolic\_energy\_req\_pregnancy =
+#' metabolic\_energy\_req\_maintenance \times c_{preg} \times S
 #' }
 #' 
 #' where 
 #' \itemize{
 #' \item \eqn{c_{preg}} is a species-specific pregnancy coefficient, 
 #' \item \eqn{S} is a scaling term that depends on cohort (\code{FA} vs \code{FS}).
-#' \item \eqn{energy\_requirement\_maintenance} can be calculated using \code{\link{calc_metabolic_energy_req_maintenance}()}
+#' \item \eqn{metabolic\_energy\_req\_maintenance} can be calculated using \code{\link{calc_metabolic_energy_req_maintenance}()}
 #'}
 #'
 #' \strong{Specific coefficients by species and cohort:}
@@ -1176,16 +1201,21 @@ calc_metabolic_energy_req_fibre <- function(
 #' \itemize{
 #'   \item \code{FA}:
 #'   \deqn{
-#'   energy\_requirement\_pregnancy =
-#'   0.10 \times energy\_requirement\_maintenance \times parturition\_rate \times
-#'   \frac{pregnancy\_duration}{365}
-#'   }
+#'   \begin{aligned}
+#'   metabolic\_energy\_req\_pregnancy &=
+#'   0.10 \times metabolic\_energy\_req\_maintenance \times parturition\_rate \times \\
+#'   & \frac{pregnancy\_duration}{365}
+#'   \end{aligned}
+#' }
 #'   \item \code{FS}:
 #'   \deqn{
-#'   energy\_requirement\_pregnancy =
-#'   0.10 \times energy\_requirement\_maintenance \times
-#'   \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
-#'   }
+#'   \begin{aligned}
+#'   metabolic\_energy\_req\_pregnancy &=
+#'   0.10 \times metabolic\_energy\_req\_maintenance \times \\
+#'   & \frac{pregnancy\_duration}{cohort\_duration\_days} \times
+#'   (1 - offtake\_rate)
+#'   \end{aligned}
+#' }
 #' }
 #'
 #' \item \strong{CML} (Wardeh, 2004):
@@ -1193,13 +1223,13 @@ calc_metabolic_energy_req_fibre <- function(
 #' \itemize{
 #'   \item \code{FA}:
 #'   \deqn{
-#'   energy\_requirement\_pregnancy =
-#'   0.12 \times energy\_requirement\_maintenance \times parturition\_rate
+#'   metabolic\_energy\_req\_pregnancy =
+#'   0.12 \times metabolic\_energy\_req\_maintenance \times parturition\_rate
 #'   }
 #'   \item \code{FS}:
 #'   \deqn{
-#'   energy\_requirement\_pregnancy =
-#'   0.12 \times energy\_requirement\_maintenance \times
+#'   metabolic\_energy\_req\_pregnancy =
+#'   0.12 \times metabolic\_energy\_req\_maintenance \times
 #'   \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
 #'   }
 #' }
@@ -1210,9 +1240,11 @@ calc_metabolic_energy_req_fibre <- function(
 #' \itemize{
 #'   \item \code{FA}:
 #'   \deqn{
-#'   energy\_requirement\_pregnancy =
-#'   energy\_requirement\_maintenance \times c_{preg} \times parturition\_rate \times
-#'   \frac{pregnancy\_duration}{365}
+#'   \begin{aligned}
+#'   metabolic\_energy\_req\_pregnancy &=
+#'   metabolic\_energy\_req\_maintenance \times c_{preg} \times parturition\_rate \times \\
+#'   & \frac{pregnancy\_duration}{365}
+#'   \end{aligned}
 #'   }
 #'   where \eqn{c_{preg}} is:
 #'   \deqn{
@@ -1228,32 +1260,46 @@ calc_metabolic_energy_req_fibre <- function(
 #'   A single-birth coefficient is used (\eqn{c_{preg}=0.077}) and scaled by the
 #'   proportion of reproductive individuals in the cohort:
 #'   \deqn{
-#'   energy\_requirement\_pregnancy =
-#'   0.077 \times energy\_requirement\_maintenance \times
-#'   \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
-#'   }
+#'   \begin{aligned}
+#'   metabolic\_energy\_req\_pregnancy &=
+#'   0.12 \times metabolic\_energy\_req\_maintenance \times \\
+#'   & \frac{pregnancy\_duration}{cohort\_duration\_days} \times \\
+#'   & (1 - offtake\_rate)
+#'   \end{aligned}
+#' }
 #' }
 #'
 #' \item \strong{PGS} (NRC, 1998):
 #' Pregnancy energy is expressed using a gestation coefficient \eqn{c_{gest}}
 #' (MJ/piglet), with default \eqn{c_{gest}=0.14985}.
 #' \itemize{
-#'   \item \code{FA}:
-#'   \deqn{
-#'   energy\_requirement\_pregnancy =
-#'   c_{gest} \times litter\_size \times
-#'   \frac{pregnancy\_duration}{non\_productive\_duration + pregnancy\_duration + lactation\_duration}
-#'   }
-#'   \item \code{FS}:
-#'   \deqn{
-#'   energy\_requirement\_pregnancy =
-#'   c_{gest} \times litter\_size \times
-#'   \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
-#'   }
+#' \item \code{FA}:
+#' \deqn{
+#' \begin{aligned}
+#' metabolic\_energy\_req\_pregnancy &=
+#' c_{gest} \times litter\_size \times \\
+#' & \frac{pregnancy\_duration}{
+#' non\_productive\_duration + pregnancy\_duration + lactation\_duration
+#' }
+#' \end{aligned}
+#' }
+#'
+#' \item \code{FS}:
+#' \deqn{
+#' \begin{aligned}
+#' metabolic\_energy\_req\_pregnancy &=
+#' c_{gest} \times litter\_size \times \\
+#' & \frac{pregnancy\_duration}{cohort\_duration\_days} \times \\
+#' & (1 - offtake\_rate)
+#' \end{aligned}
+#' }
 #' }
 #' }
 #' 
+#' This function is part of the [run_metabolic_energy_req_module()].
+#' 
 #' @seealso
+#' \code{\link{run_metabolic_energy_req_module}},
 #' \code{\link{calc_metabolic_energy_req_maintenance}} 
 #'
 #' @references
@@ -1352,9 +1398,9 @@ calc_metabolic_energy_req_pregnancy <- function(
   return(metabolic_energy_req_pregnancy)
 }
 
-#' Calculate Ratio of Net Energy available for Maintenance in the diet (REM - Net Energy for Maintenance / Digestible Energy)
+#' Calculate ratio of net energy available for maintenance in the diet (REM - Net Energy for Maintenance / Digestible Energy)
 #'
-#' Computes the ratio of net energy available in the diet for maintenance to digestible energy.
+#' Calculates the ratio of net energy available in the diet for maintenance to digestible energy.
 #'
 #' @param species_short Character. Code identifying the livestock species.
 #'   Supported values include:
@@ -1385,7 +1431,10 @@ calc_metabolic_energy_req_pregnancy <- function(
 #' For the Other species REM is not applicable and the function
 #' returns \code{NA_real_}.
 #'
+#' This function is part of the [run_metabolic_energy_req_module()].
+#' 
 #' @seealso
+#' \code{\link{run_metabolic_energy_req_module}},
 #' \code{\link{calc_ration_digestibility}}
 #' \code{\link{calc_total_metabolic_energy_req}}
 #' \code{\link{calc_ration_intake}}
@@ -1423,9 +1472,9 @@ calc_rem_maintenance <- function(
 }
 
 
-#' Calculate the Ratio of Net Energy Available for Growth in the Diet (REG – Net Energy for Growth / Digestible Energy)
+#' Calculate the ratio of net energy available for growth in the diet (REG – Net Energy for Growth / Digestible Energy)
 #' 
-#' Computes the ratio of net energy available for growth to digestible
+#' Calculates the ratio of net energy available for growth to digestible
 #' energy consumed (fraction), which represents the efficiency with which digestible
 #' energy in the diet is converted into net energy retained as body tissue.
 #'
@@ -1439,7 +1488,7 @@ calc_rem_maintenance <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, 
+#' @param ration_digestibility_fraction Numeric. Average digestibility of the feed ration, 
 #' expressed as ratio of digestible to gross energy content (fraction).
 #'
 #' @return Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).
@@ -1456,7 +1505,10 @@ calc_rem_maintenance <- function(
 #' returns \code{NA_real_}.
 #' 
 #'
+#' This function is part of the [run_metabolic_energy_req_module()].
+#' 
 #' @seealso
+#' \code{\link{run_metabolic_energy_req_module}},
 #' \code{\link{calc_ration_digestibility}}
 #' \code{\link{calc_total_metabolic_energy_req}}
 #' \code{\link{calc_ration_intake}}
@@ -1492,9 +1544,9 @@ calc_reg_growth <- function(
   return(net_energy_growth_digestible_energy_ratio)
 }
 
-#' Calculate Total Energy Requirement
+#' Calculate total metabolic energy requirements
 #'
-#' Computes the total daily energy requirement (MJ/head/day) by summing
+#' Calculates the total daily energy requirement (MJ/head/day) by summing
 #' relevant energy partitions (maintenance, activity, lactation, work, pregnancy,
 #' growth, fibre, egg deposition).
 #'
@@ -1528,7 +1580,7 @@ calc_reg_growth <- function(
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
 #' @param metabolic_energy_req_egg_deposition Numeric. Net energy for egg production (MJ/head/day).
 #' @param net_energy_growth_digestible_energy_ratio Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction)
-#' @param ration_digestibility_fraction Numeric. Average digestibility of the the feed ration, expressed as ratio of digestible to gross energy content (fraction).
+#' @param ration_digestibility_fraction Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #' 
 #' @return Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
 #' For CML and PGS the function returns the summed daily metabolizable energy requirement.
@@ -1542,78 +1594,80 @@ calc_reg_growth <- function(
 #' 
 #' \itemize{
 #'   \item \strong{Energy requirements expressed as net energy (\code{CTL}, \code{BFL}, \code{SHP}, \code{GTS})}
-#'
 #'   \itemize{
 #'     \item \strong{\code{CTL} and \code{BFL}}:
 #'     \deqn{
-#'       energy\_requirement\_total =
+#'       metabolic\_energy\_req\_total =
 #'       \frac{
 #'         \left(
 #'           \frac{
-#'             energy\_requirement\_maintenance +
-#'             energy\_requirement\_activity +
-#'             energy\_requirement\_lactation +
-#'             energy\_requirement\_work +
-#'             energy\_requirement\_pregnancy
+#'             metabolic\_energy\_req\_maintenance +
+#'             metabolic\_energy\_req\_activity +
+#'             metabolic\_energy\_req\_lactation +
+#'             metabolic\_energy\_req\_work +
+#'             metabolic\_energy\_req\_pregnancy
 #'           }{REM}
 #'         \right)
 #'         +
 #'         \left(
-#'           \frac{energy\_requirement\_growth}{REG}
+#'           \frac{metabolic\_energy\_req\_growth}{REG}
 #'         \right)
 #'       }{diet\_digestibility\_fraction}
 #'     }
 #'     \item \strong{\code{SHP} and \code{GTS}}:
 #'     \deqn{
-#'       energy\_requirement\_total =
+#'       metabolic\_energy\_req\_total =
 #'       \frac{
 #'         \left(
 #'           \frac{
-#'             energy\_requirement\_maintenance +
-#'             energy\_requirement\_activity +
-#'             energy\_requirement\_lactation +
-#'             energy\_requirement\_pregnancy
+#'             metabolic\_energy\_req\_maintenance +
+#'             metabolic\_energy\_req\_activity +
+#'             metabolic\_energy\_req\_lactation +
+#'             metabolic\_energy\_req\_pregnancy
 #'           }{REM}
 #'         \right)
 #'         +
 #'         \left(
-#'           \frac{energy\_requirement\_growth + 
-#'           energy\_requirement\_fibre
+#'           \frac{
+#'             metabolic\_energy\_req\_growth +
+#'             metabolic\_energy\_req\_fibre
 #'           }{REG}
 #'         \right)
-#'       }{diet\_digestibility\_fraction}
+#'       }{diet_digestibility_fraction}
 #'     }
-#' }
+#'   }
 #'   \item \strong{Energy requirements expressed as metabolizable energy (\code{CML}, \code{PGS})}
 #'
-#'   For these species, the total daily requirement is computed as the \strong{direct sum}
-#'   of relevant energy components (MJ/head/day).
-#'
+#'   For these species, the total daily requirement is computed as the
+#'   \strong{direct sum} of relevant energy components (MJ/head/day).
 #'   \itemize{
 #'     \item \strong{\code{CML}}:
 #'     \deqn{
-#'       energy\_requirement\_total =
-#'       energy\_requirement\_maintenance +
-#'       energy\_requirement\_activity +
-#'       energy\_requirement\_lactation +
-#'       energy\_requirement\_work +
-#'       energy\_requirement\_fibre\_production +
-#'       energy\_requirement\_pregnancy +
-#'       energy\_requirement\_growth
+#'       metabolic\_energy\_req\_total =
+#'       metabolic\_energy\_req\_maintenance +
+#'       metabolic\_energy\_req\_activity +
+#'       metabolic\_energy\_req\_lactation +
+#'       metabolic\_energy\_req\_work +
+#'       metabolic\_energy\_req\_fibre\_production +
+#'       metabolic\_energy\_req\_pregnancy +
+#'       metabolic\_energy\_req\_growth
 #'     }
 #'     \item \strong{\code{PGS}}:
 #'     \deqn{
-#'       energy\_requirement\_total =
-#'       energy\_requirement\_maintenance +
-#'       energy\_requirement\_activity +
-#'       energy\_requirement\_lactation +
-#'       energy\_requirement\_pregnancy +
-#'       energy\_requirement\_growth
+#'       metabolic\_energy\_req\_total =
+#'       metabolic\_energy\_req\_maintenance +
+#'       metabolic\_energy\_req\_activity +
+#'       metabolic\_energy\_req\_lactation +
+#'       metabolic\_energy\_req\_pregnancy +
+#'       metabolic\_energy\_req\_growth
 #'     }
 #'   }
-#'   }
+#' }
+#' 
+#' This function is part of the [run_metabolic_energy_req_module()].
 #' 
 #' @seealso
+#' \code{\link{run_metabolic_energy_req_module}},
 #' \code{\link{calc_metabolic_energy_req_maintenance}}
 #' \code{\link{calc_metabolic_energy_req_activity}}
 #' \code{\link{calc_metabolic_energy_req_growth}}
@@ -1692,9 +1746,9 @@ calc_total_metabolic_energy_req <- function(
   return(metabolic_energy_req_total)
 }
 
-#' Calculate Daily Dry Matter Intake
+#' Calculate daily ration intake in dry matter
 #'
-#' Computes daily feed intake as dry matter intake (DMI) per animal (kg DM/head/day) from the
+#' Calculates daily feed intake as dry matter intake (DMI) per animal (kg DM/head/day) from the
 #' animal's daily energy requirement and the diet energy density.
 #'
 #' @param species_short Character. Code identifying the livestock species.
@@ -1737,7 +1791,10 @@ calc_total_metabolic_energy_req <- function(
 #'   }
 #' }
 #'
+#' This function is part of the [run_metabolic_energy_req_module()].
+#' 
 #' @seealso
+#' \code{\link{run_metabolic_energy_req_module}},
 #' \code{\link{calc_total_metabolic_energy_req}}
 #' \code{\link{calc_ration_gross_energy}}
 #' \code{\link{calc_ration_metabolizable_energy}}

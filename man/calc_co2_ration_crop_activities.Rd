@@ -21,8 +21,8 @@ average carbon dioxide (CO2) emission factor from on-field agricultural activiti
 in feed production (g CO2/kg DM).
 }
 \description{
-Computes the contribution of an individual feed component to carbon dioxide (CO2)
-emissions from on-field agricultural activities in feed production (e.g energy use for tillage and
+Calculates the contribution of an individual feed component to carbon dioxide (CO2)
+emissions from on-field agricultural activities in feed production (e.g., energy use for tillage and
 machinery operations), using feed-specific emission factors weighted by
 the component's share in the ration.
 }
@@ -31,4 +31,9 @@ The contribution is computed as:
 
 \deqn{diet\_co2\_feed\_crop\_operations =
   feed\_ration\_fraction \times co2\_feed\_crop\_operations}
+
+This function is part of the \code{\link[=run_emissions_ration_module]{run_emissions_ration_module()}}.
+}
+\seealso{
+\code{\link{run_emissions_ration_module}}
 }

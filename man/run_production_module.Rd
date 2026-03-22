@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_production_module.R
 \name{run_production_module}
 \alias{run_production_module}
-\title{Run Production Calculation}
+\title{Run Production Module Pipeline}
 \usage{
 run_production_module(
   cohort_level_data,
@@ -37,15 +37,15 @@ aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, F
 requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{animal}{Character. Livestock category name used to map to a species short code via an
-internal lookup table. Supported values include:
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
 \itemize{
-\item \code{Cattle}
-\item \code{Buffalo}
-\item \code{Sheep}
-\item \code{Goats}
-\item \code{Pigs}
-\item \code{Camels}
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
 }}
 \item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment duration
 (kg/head/day).
@@ -104,16 +104,14 @@ over the assessment period by cohort (kg protein/cohort/assessment period).}
 }
 }
 \description{
-Computes cohort-level production outputs over the assessment period by combining
+Calculates cohort-level production outputs over the assessment period by combining
 cohort-level herd structure inputs with herd-level production parameters.
 The function returns milk, fibre, and meat outputs for each cohort.
 }
 \details{
-This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
-uses \code{species_short} directly for all species-specific production calculations,
-and computes production outputs by cohort.
-
-The following calculation sequence is applied:
+This function represents the intermediate module of the Global Livestock Environmental
+Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to estimate meat, milk and fibre
+production outputs from livestock and performs the following calculation sequence:
 \enumerate{
 \item Milk outputs are computed using \code{\link{calc_milk_production}}
 \item Fibre outputs are computed using \code{\link{calc_fibre_production}}
@@ -143,6 +141,7 @@ results <- run_production_module(
 }
 }
 \seealso{
+\code{\link{run_gleam}},
 \code{\link{calc_milk_production}},
 \code{\link{calc_fibre_production}},
 \code{\link{calc_meat_production}}

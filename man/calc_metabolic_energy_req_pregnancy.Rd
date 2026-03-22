@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_metabolic_energy_req_pregnancy}
 \alias{calc_metabolic_energy_req_pregnancy}
-\title{Calculate Energy for Pregnancy}
+\title{Calculate metabolic energy requirements for pregnancy}
 \usage{
 calc_metabolic_energy_req_pregnancy(
   species_short,
@@ -48,7 +48,7 @@ Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for C
 A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during
 a year divided by the number of adult females potentially able to give birth during that year.}
 
-\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be
+\item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be
 calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
@@ -68,7 +68,7 @@ Numeric. Energy required for pregnancy for pregnant females (MJ/head/day).
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the energy requirement for pregnancy by cohort (MJ/head/day) for pregnant
+Calculates the energy requirement for pregnancy by cohort (MJ/head/day) for pregnant
 females, defined as the additional energy needed to support gestation.
 }
 \details{
@@ -82,7 +82,8 @@ the cohort:
 \itemize{
 \item For \code{FA}, requirements are scaled by the annual parturition rate
 (\code{parturition_rate}) and (when applicable) by the fraction of the reproductive cycle
-spent in gestation (\code{pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)}).
+spent in gestation
+(\code{pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)}).
 \item For \code{FS}, only a fraction of animals is assumed to reach reproductive
 age within the cohort; requirements are therefore scaled by the proportion
 remaining in the cohort (\eqn{1 - offtake\_rate}) and by the share of the
@@ -91,15 +92,15 @@ cohort duration spent pregnant (\code{pregnancy_duration/cohort_duration_days}).
 
 \strong{General form}
 \deqn{
-energy\_requirement\_pregnancy =
-energy\_requirement\_maintenance \times c_{preg} \times S
+metabolic\_energy\_req\_pregnancy =
+metabolic\_energy\_req\_maintenance \times c_{preg} \times S
 }
 
 where
 \itemize{
 \item \eqn{c_{preg}} is a species-specific pregnancy coefficient,
 \item \eqn{S} is a scaling term that depends on cohort (\code{FA} vs \code{FS}).
-\item \eqn{energy\_requirement\_maintenance} can be calculated using \code{\link{calc_metabolic_energy_req_maintenance}()}
+\item \eqn{metabolic\_energy\_req\_maintenance} can be calculated using \code{\link{calc_metabolic_energy_req_maintenance}()}
 }
 
 \strong{Specific coefficients by species and cohort:}
@@ -110,16 +111,21 @@ Pregnancy energy is approximated as \eqn{10\%} of maintenance energy.
 \itemize{
 \item \code{FA}:
 \deqn{
-  energy\_requirement\_pregnancy =
-  0.10 \times energy\_requirement\_maintenance \times parturition\_rate \times
-  \frac{pregnancy\_duration}{365}
-  }
+  \begin{aligned}
+  metabolic\_energy\_req\_pregnancy &=
+  0.10 \times metabolic\_energy\_req\_maintenance \times parturition\_rate \times \\
+  & \frac{pregnancy\_duration}{365}
+  \end{aligned}
+}
 \item \code{FS}:
 \deqn{
-  energy\_requirement\_pregnancy =
-  0.10 \times energy\_requirement\_maintenance \times
-  \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
-  }
+  \begin{aligned}
+  metabolic\_energy\_req\_pregnancy &=
+  0.10 \times metabolic\_energy\_req\_maintenance \times \\
+  & \frac{pregnancy\_duration}{cohort\_duration\_days} \times
+  (1 - offtake\_rate)
+  \end{aligned}
+}
 }
 
 \item \strong{CML} (Wardeh, 2004):
@@ -127,13 +133,13 @@ Pregnancy energy is estimated as \eqn{12\%} of maintenance energy.
 \itemize{
 \item \code{FA}:
 \deqn{
-  energy\_requirement\_pregnancy =
-  0.12 \times energy\_requirement\_maintenance \times parturition\_rate
+  metabolic\_energy\_req\_pregnancy =
+  0.12 \times metabolic\_energy\_req\_maintenance \times parturition\_rate
   }
 \item \code{FS}:
 \deqn{
-  energy\_requirement\_pregnancy =
-  0.12 \times energy\_requirement\_maintenance \times
+  metabolic\_energy\_req\_pregnancy =
+  0.12 \times metabolic\_energy\_req\_maintenance \times
   \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
   }
 }
@@ -144,9 +150,11 @@ maintenance energy (\eqn{c_{preg}}).
 \itemize{
 \item \code{FA}:
 \deqn{
-  energy\_requirement\_pregnancy =
-  energy\_requirement\_maintenance \times c_{preg} \times parturition\_rate \times
-  \frac{pregnancy\_duration}{365}
+  \begin{aligned}
+  metabolic\_energy\_req\_pregnancy &=
+  metabolic\_energy\_req\_maintenance \times c_{preg} \times parturition\_rate \times \\
+  & \frac{pregnancy\_duration}{365}
+  \end{aligned}
   }
 where \eqn{c_{preg}} is:
 \deqn{
@@ -162,10 +170,13 @@ where \eqn{c_{preg}} is:
 A single-birth coefficient is used (\eqn{c_{preg}=0.077}) and scaled by the
 proportion of reproductive individuals in the cohort:
 \deqn{
-  energy\_requirement\_pregnancy =
-  0.077 \times energy\_requirement\_maintenance \times
-  \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
-  }
+  \begin{aligned}
+  metabolic\_energy\_req\_pregnancy &=
+  0.12 \times metabolic\_energy\_req\_maintenance \times \\
+  & \frac{pregnancy\_duration}{cohort\_duration\_days} \times \\
+  & (1 - offtake\_rate)
+  \end{aligned}
+}
 }
 
 \item \strong{PGS} (NRC, 1998):
@@ -174,18 +185,28 @@ Pregnancy energy is expressed using a gestation coefficient \eqn{c_{gest}}
 \itemize{
 \item \code{FA}:
 \deqn{
-  energy\_requirement\_pregnancy =
-  c_{gest} \times litter\_size \times
-  \frac{pregnancy\_duration}{non\_productive\_duration + pregnancy\_duration + lactation\_duration}
-  }
+\begin{aligned}
+metabolic\_energy\_req\_pregnancy &=
+c_{gest} \times litter\_size \times \\
+& \frac{pregnancy\_duration}{
+non\_productive\_duration + pregnancy\_duration + lactation\_duration
+}
+\end{aligned}
+}
+
 \item \code{FS}:
 \deqn{
-  energy\_requirement\_pregnancy =
-  c_{gest} \times litter\_size \times
-  \frac{pregnancy\_duration}{cohort\_duration\_days} \times (1 - offtake\_rate)
-  }
+\begin{aligned}
+metabolic\_energy\_req\_pregnancy &=
+c_{gest} \times litter\_size \times \\
+& \frac{pregnancy\_duration}{cohort\_duration\_days} \times \\
+& (1 - offtake\_rate)
+\end{aligned}
 }
 }
+}
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 NRC (1998). \emph{Nutrient Requirements of Swine},
@@ -202,5 +223,6 @@ Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 }
 \seealso{
+\code{\link{run_metabolic_energy_req_module}},
 \code{\link{calc_metabolic_energy_req_maintenance}}
 }

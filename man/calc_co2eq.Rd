@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_aggregation.R
 \name{calc_co2eq}
 \alias{calc_co2eq}
-\title{Convert CH4 and N2O emissions to CO2-equivalents (CO2eq) using GWP factors}
+\title{Convert methane (CH4) and nitrous oxide (N2O) emissions to CO2-equivalents (CO2eq) using Global Warming Potentials (GWP) factors}
 \usage{
 calc_co2eq(gas, value_allocated, global_warming_potential_set)
 }
@@ -31,12 +31,12 @@ Report (including climate–carbon feedbacks) (IPCC, 2013) — CH4 = 34, N2O = 2
 \value{
 List with elements:
 \describe{
-\item{value_co2eq}{Numeric vector. Emissions expressed as CO2-equivalents (kg CO2e).}
-\item{gwp}{Numeric vector. Global Warming Potential factor applied to each observation (kg CO2e/kg gas).}
+\item{value_co2eq}{Numeric vector. Emissions expressed as CO2-equivalents (kg CO2eq).}
+\item{gwp}{Numeric vector. Global Warming Potential factor applied to each observation (kg CO2eq/kg gas).}
 }
 }
 \description{
-Computes CO2-equivalent (CO2eq) emissions for CH4 and N2O based on
+Calculates CO2-equivalent (CO2eq) emissions for CH4 and N2O based on
 100-year Global Warming Potentials (GWP) reported in IPCC assessment reports.
 }
 \details{
@@ -46,6 +46,8 @@ CO2-equivalent emissions are calculated as:
 
 where \code{gwp} is the gas-specific 100-year Global Warming Potential
 factor from the selected IPCC assessment report.
+
+This function is part of the \code{\link[=run_aggregation_module]{run_aggregation_module()}}.
 }
 \references{
 IPCC (2007). Climate Change 2007: The Physical Science Basis. Contribution
@@ -59,4 +61,7 @@ Panel on Climate Change.
 IPCC (2021). Climate Change 2021: The Physical Science Basis. Contribution
 of Working Group I to the Sixth Assessment Report of the Intergovernmental
 Panel on Climate Change.
+}
+\seealso{
+\code{\link[=run_aggregation_module]{run_aggregation_module()}},
 }

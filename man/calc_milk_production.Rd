@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_production.R
 \name{calc_milk_production}
 \alias{calc_milk_production}
-\title{Compute Milk Production Outputs}
+\title{Calculate milk production}
 \usage{
 calc_milk_production(
   species_short,
@@ -87,7 +87,7 @@ period (kg/cohort/assessment period).}
 }
 }
 \description{
-Computes total milk production for the producing cohort (\code{FA}) of milk-producing species
+Calculates total milk production for the producing cohort (\code{FA}) of milk-producing species
 (\code{CML}, \code{CTL}, \code{BFL}, \code{SHP}, \code{GTS}) over the assessment period and returns
 multiple production metrics: total milk mass, milk protein, and fat-protein-corrected milk (FPCM)
 (kg/cohort/assessment period).
@@ -125,10 +125,15 @@ where milk energy content (Mcal/kg) is computed as (IDF, 2022):
 
 Non-zero milk outputs are only expected for adult female cohorts of
 milk-producing species.
+
+This function is part of the \code{\link[=run_production_module]{run_production_module()}}.
 }
 \references{
 International Dairy Federation (IDF). 2022.
 \emph{The IDF Global Carbon Footprint Standard for the Dairy Sector}.
 Bulletin of the IDF No. 520/2022. International Dairy Federation (ed.), Brussels, Belgium.
 Equation 10.
+}
+\seealso{
+\code{\link{run_production_module}}
 }

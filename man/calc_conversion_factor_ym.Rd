@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_emissions_enteric.R
 \name{calc_conversion_factor_ym}
 \alias{calc_conversion_factor_ym}
-\title{Compute Methane Conversion Factor (ym)}
+\title{Calculate methane conversion factor (ym)}
 \usage{
 calc_conversion_factor_ym(
   species_short,
@@ -33,8 +33,8 @@ production stage of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 }}
 
-\item{ration_digestibility_fraction}{Numeric. Average digestibility of the the feed ration, expressed as ratio of
-digestible to gross energy content (fraction).}
+\item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of
+digestible (or metabolizable, for poultry) to gross energy content (fraction).}
 }
 \value{
 Numeric. Methane (CH4) conversion factor (ym), representing the percentage of  gross energy
@@ -73,6 +73,8 @@ ym is assigned fixed values by cohort:
 
 ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming
 negligible enteric methane production before weaning/rumen development.
+
+This function is part of the \code{\link[=run_emissions_enteric_module]{run_emissions_enteric_module()}}.
 }
 \references{
 Opio, C., Gerber, P., Mottet, A., Falcucci, A., Tempio, G.,
@@ -94,6 +96,7 @@ IPCC. (2006).
 Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 }
 \seealso{
+\code{\link{run_emissions_enteric_module}},
 \code{\link{calc_ration_digestibility}},
 \code{\link{run_ration_quality_module}}
 }

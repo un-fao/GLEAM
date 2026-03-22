@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_demographic_herd.R
 \name{calc_steady_state_structure}
 \alias{calc_steady_state_structure}
-\title{Simulate Steady-State Population Structure}
+\title{Calculate steady-state population structure}
 \usage{
 calc_steady_state_structure(
   initial_herd_structure,
@@ -46,11 +46,16 @@ A named list with:
 \item{cohort_share}{Named numeric vector of length 6. Final steady-state share of 6 grouped sex-age cohorts  (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}, where \code{FJ = FB + FJ} and \code{MJ = MB + MJ}) (fraction). Shares should sum to 1.}
 \item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction)}
 }
+
+This function is part of the \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}.
 }
 \description{
-Simulates population dynamics over time until a steady state is reached.
+Calculates population dynamics over time until a steady state is reached.
 The steady state is defined as a constant sex–age cohort structure over time,
 with population size potentially growing or declining at a constant rate.
 Tracks sex–age cohort structure and population growth based on survival,
 offtake, and fecundity parameters.
+}
+\seealso{
+\code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}
 }

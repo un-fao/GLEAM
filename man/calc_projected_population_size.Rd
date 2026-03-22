@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_demographic_herd.R
 \name{calc_projected_population_size}
 \alias{calc_projected_population_size}
-\title{Project One Year of Steady-State Population Dynamics}
+\title{Calculate one year of steady-state population dynamics}
 \usage{
 calc_projected_population_size(
   herd_size_total,
@@ -49,9 +49,14 @@ A named list with:
 \item{cohort_offtake_heads}{Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year)
 (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 }
+
+This function is part of the \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}.
 }
 \description{
-Simulates one year of population dynamics under steady-state assumptions using demographic parameters
+Calculates one year of population dynamics under steady-state assumptions using demographic parameters
 and returns population size statistics and offtake results. The steady state is defined as a constant
 sex–age cohort structure over time, with population size potentially growing or declining at a constant rate.
+}
+\seealso{
+\code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}
 }

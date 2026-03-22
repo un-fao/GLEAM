@@ -50,4 +50,9 @@ The digestibility contribution uses the animal-specific digestibility ratio:
 \item Pigs (\code{PGS}):
 \code{feed_ration_fraction * feed_digestibility_fraction_pigs}
 }
+
+This function is part of the \code{\link[=run_ration_quality_module]{run_ration_quality_module()}}.
+}
+\seealso{
+\code{\link{run_ration_quality_module}}
 }

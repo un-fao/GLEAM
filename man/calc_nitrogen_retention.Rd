@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_nitrogen_balance.R
 \name{calc_nitrogen_retention}
 \alias{calc_nitrogen_retention}
-\title{Compute Daily Nitrogen Retention}
+\title{Calculate daily nitrogen retention}
 \usage{
 calc_nitrogen_retention(
   species_short,
@@ -146,6 +146,8 @@ over the year (365 days).
 is applied to piglets' live weight gain to correct for their higher nitrogen
 content per unit of live weight gain, following IPCC (2019).
 }
+
+This function is part of the \code{\link[=run_nitrogen_balance_module]{run_nitrogen_balance_module()}}.
 }
 \references{
 Ministry for Primary Industries (MPI). (2025).
@@ -159,4 +161,7 @@ Livestock and Manure Management. Equation 10.33A, 10.33B.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.33.
+}
+\seealso{
+\code{\link{run_nitrogen_balance_module}}
 }

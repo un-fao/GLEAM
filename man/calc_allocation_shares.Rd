@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_allocation.R
 \name{calc_allocation_shares}
 \alias{calc_allocation_shares}
-\title{Calculate Energy Allocation shares for livestock commodities}
+\title{Calculate allocation shares for livestock commodities}
 \usage{
 calc_allocation_shares(
   species_short,
@@ -53,7 +53,7 @@ A named list of numeric vectors with same length as input, containing:
 }
 }
 \description{
-Calculates biophysical allocation fractions for commodities (meat, milk, fibre, work,
+Calculates biophysical allocation shares for commodities (meat, milk, fibre, work,
 eggs) based on their total energy requirements.
 }
 \details{
@@ -61,9 +61,10 @@ These fractions represent the proportions of total environmental burdens (e.g., 
 emissions) that will be allocated to each commodity in subsequent steps of the
 assessment.
 
-The biophysical approach follows the IDF Global Carbon Footprint Standard for the
-Dairy Sector (IDF, 2022), adapted from Thoma and Nemecek (2020), and is consistent
-with FAO LEAP livestock LCA guidelines (FAO, 2016a, 2016b, 2016c). It aligns with
+This function is part of the \code{\link[=run_allocation_module]{run_allocation_module()}} of the Global Livestock Environmental Assessment Model (GLEAM),
+which incorporates a biophysical allocation approach, aligned with the IDF Global Carbon Footprint Standard for the
+Dairy Sector (IDF, 2022), and adapted from Thoma and Nemecek (2020), and is consistent
+with FAO LEAP livestock LCA guidelines (FAO, 2016a, 2016b, 2016c). This approach also aligns with
 ISO 14044:2006 (Section 4.3.4.2, Step 2) by using underlying physical (energy-based)
 relationships to assign shared inputs and outputs in multifunctional livestock
 production systems.
@@ -85,11 +86,13 @@ commodity-specific energy requirements calculated using
 \code{\link{calc_work_allocation_energy}}, and
 \code{calc_eggs_allocation_energy}.
 
-\strong{Pig systems (\code{PGS}).} For pigs, allocation is not based on energy
+\strong{Pig species (\code{PGS}):} allocation is not based on energy
 partitioning because pig production is treated as functionally single-output
 (edible meat). Consequently, 100\% of the allocation is assigned to the meat
 commodity (meat share = 1; all other commodity shares = 0), independent of the
 energy inputs.
+
+This function is part of the \code{\link[=run_allocation_module]{run_allocation_module()}}.
 }
 \references{
 ISO. (2006). \emph{Environmental management — Life cycle assessment —
@@ -118,6 +121,7 @@ supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 and Performance (LEAP) Partnership. FAO, Rome, Italy.
 }
 \seealso{
+\code{\link{run_allocation_module}},
 \code{\link{calc_meat_allocation_energy}},
 \code{\link{calc_milk_allocation_energy}},
 \code{\link{calc_fibre_allocation_energy}},

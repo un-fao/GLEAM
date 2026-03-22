@@ -2,7 +2,7 @@
 % Please edit documentation in R/core_model_metabolic_energy_req.R
 \name{calc_metabolic_energy_req_work}
 \alias{calc_metabolic_energy_req_work}
-\title{Calculate Energy for Work}
+\title{Calculate metabolic energy requirements for work}
 \usage{
 calc_metabolic_energy_req_work(
   species_short,
@@ -54,7 +54,7 @@ Numeric. Energy required for work, used to estimate the energy required for drau
 Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 }
 \description{
-Computes the energy requirement for work (MJ/head/day),  defined as the
+Calculates the energy requirement for work (MJ/head/day),  defined as the
 additional energy required to support draught power and work-related physical activity.
 }
 \details{
@@ -74,12 +74,12 @@ Draught work energy is expressed as a proportion of
 net energy for maintenance:
 
 \eqn{
-energy\_requirement\_work = 0.1 \times energy\_requirement\_maintenance \times work\_hours \times draught\_fraction
+metabolic\_energy\_req\_work = 0.1 \times metabolic\_energy\_req\_maintenance \times work\_hours \times draught\_fraction
 }
 
 where:
 \itemize{
-\item \eqn{energy\_requirement\_maintenance} is net energy required for maintenance (MJ/head/day) and can be calculated using
+\item \eqn{metabolic\_energy\_req\_maintenance} is net energy required for maintenance (MJ/head/day) and can be calculated using
 \code{\link{calc_metabolic_energy_req_maintenance}()},
 \item \eqn{0.1} represents a 10\% increase in maintenance energy per hour of work,
 \item \eqn{work\_hours} is the mean number of hours worked per animal per day -
@@ -93,7 +93,7 @@ Draught work energy is calculated using a fixed metabolizable
 energy cost per hour of work:
 
 \deqn{
-energy\_requirement\_work = 4 \times work\_hours \times draught\_fraction
+metabolic\_energy\_req\_work = 4 \times work\_hours \times draught\_fraction
 }
 
 where:
@@ -105,6 +105,8 @@ where:
 \item \eqn{draught\_fraction} is the fraction of adult animals performing draught work -
 \code{draught_fraction_female} (for \code{FA}) and \code{draught_fraction_male} (for \code{MA})
 }
+
+This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
 Bamualim A., Kartiarso (1985). \emph{Nutrition of draught animals with special reference to Indonesia}.
@@ -122,5 +124,6 @@ In: Tisserand J.-L. (ed.). Séminaire sur la digestion, la nutrition et l'alimen
 Zaragoza : CIHEAM. (1989). p. 171-179 (Options Méditerranéennes : Série A. Séminaires Méditerranéens; n. 2)
 }
 \seealso{
+\code{\link{run_metabolic_energy_req_module}},
 \code{\link{calc_metabolic_energy_req_maintenance}}
 }

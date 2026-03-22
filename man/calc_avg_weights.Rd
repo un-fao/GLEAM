@@ -28,7 +28,7 @@ A named list with:
 }
 }
 \description{
-Computes the average and final live weight for a given
+Calculates the average and final live weight for a given
 sex–age cohort based on initial weight,
 potential final weight, slaughter weight, and the offtake rate.
 }
@@ -38,9 +38,18 @@ a fraction of animals is removed (offtake) during the cohort stage, while the
 remaining animals reach the potential final live weight.
 
 The final live weight is computed as:
-\deqn{live\_weight\_cohort\_final = (1 - offtake\_rate) \times live\_weight\_cohort\_potential\_final +
-      offtake\_rate \times slaughter\_weight\_cohort}
+\deqn{
+live\_weight\_cohort_final =
+(1 - offtake\_rate) \times live\_weight\_cohort\_potential\_final +
+offtake\_rate \times live\_weight\_cohort\_at\_slaughter
+}
 
 The average live weight over the stage is approximated as:
-\deqn{live\_weight\_cohort\_average = (live\_weight\_cohort\_initial + live\_weight\_cohort\_final)/2}
+\deqn{live\_weight\_cohort\_average = 
+(live\_weight\_cohort\_initial + live\_weight\_cohort\_final)/2}
+
+This function is part of the \code{\link[=run_weights_module]{run_weights_module()}}.
+}
+\seealso{
+\code{\link{run_weights_module}}
 }

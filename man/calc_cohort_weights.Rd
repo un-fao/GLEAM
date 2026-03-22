@@ -67,18 +67,23 @@ The function attributes weights according to cohort and animal type:
 \item \strong{Subadults} (\code{"FS"}, \code{"MS"}):
 \itemize{
 \item \code{live_weight_cohort_initial = live_weight_at_weaning}
-\item \code{live_weight_cohort_potential_final} equals the adult weight for the cohort sex
+\item \code{live_weight_cohort_potential_final} = adult weight for the cohort sex
 (\code{live_weight_female_adult} for \code{"FS"}, \code{live_weight_male_adult} for \code{"MS"})
-\item \code{live_weight_cohort_at_slaughter} equals the subadult slaughter weight for the cohort sex
+\item \code{live_weight_cohort_at_slaughter} = subadult slaughter weight for the cohort sex
 (\code{live_weight_female_at_slaughter} for \code{"FS"}, \code{live_weight_male_at_slaughter} for \code{"MS"})
 }
 
 \item \strong{Adults} (\code{"FA"}, \code{"MA"}):
 \itemize{
-\item \code{live_weight_cohort_initial = live_weight_female_adult} for \code{"FA"} and
-\code{live_weight_cohort_initial = live_weight_male_adult} for \code{"MA"}
-\item \code{live_weight_cohort_potential_final} equals the adult weight for the cohort sex
-\item \code{live_weight_cohort_at_slaughter} equals the adult weight for the cohort sex
+\item \code{live_weight_cohort_initial = live_weight_female_adult} for \code{"FA"},
+and \code{live_weight_cohort_initial = live_weight_male_adult} for \code{"MA"}
+\item \code{live_weight_cohort_potential_final} = adult weight for the cohort sex
+\item \code{live_weight_cohort_at_slaughter} = adult weight for the cohort sex
 }
 }
+
+This function is part of the \code{\link[=run_weights_module]{run_weights_module()}}.
+}
+\seealso{
+\code{\link{run_weights_module}}
 }

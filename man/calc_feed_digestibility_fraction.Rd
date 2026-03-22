@@ -37,7 +37,7 @@ digestible energy to gross energy content (fraction).
 }
 }
 \description{
-Computes species-specific feed digestibility fractions by feed component.
+Calculates species-specific feed digestibility fractions by feed component.
 }
 \details{
 Digestibility is computed as the ratio of usable energy to gross energy:
@@ -45,4 +45,9 @@ Digestibility is computed as the ratio of usable energy to gross energy:
 
 For ruminants and pigs, usable energy is represented by \code{digestible_energy} (DE),
 which accounts for fecal energy losses.
+
+This function is part of the \code{\link[=run_ration_quality_module]{run_ration_quality_module()}}.
+}
+\seealso{
+\code{\link{run_ration_quality_module}}
 }

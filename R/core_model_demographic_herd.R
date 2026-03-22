@@ -1,9 +1,9 @@
-#' Compute Daily Fecundity Rates
+#' Calculate daily fecundity rates
 #'
 #' Calculates the daily number of male and female offspring produced per adult female.
 #'
 #' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.
-#' @param litter_size Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
+#' @param litter_size Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
 #' @param birth_fraction_female Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.
 #'
 #' @return A named list with two elements:
@@ -11,6 +11,12 @@
 #'   \item{fecundity_female}{Numeric. Daily number of female offspring per adult female (# offspring/day)}
 #'   \item{fecundity_male}{Numeric. Daily number of male offspring per adult female (# offspring/day)}
 #' }
+#' 
+#' This function is part of the [run_demographic_herd_module()].
+#' 
+#' @seealso
+#' [run_demographic_herd_module()] 
+#' 
 #' @examples
 #' calc_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)
 #'
@@ -34,7 +40,7 @@ calc_fecundity_rates <- function(
   )
 }
 
-#' Compute Transition Probabilities for Sex-Age Classes
+#' Calculate transition probabilities for sex-age classes
 #'
 #' Calculates hazard rates and daily transition probabilities (death, offtake, survival, and growth)
 #' across different sex-age cohorts. Converts annual inputs to daily hazards, then derives daily probabilities
@@ -57,6 +63,11 @@ calc_fecundity_rates <- function(
 #'   \item{probability_growth}{Named numeric vector of length 10. Probability of growing into the next age class for 10 cohorts (fraction)
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 #' }
+#'
+#' This function is part of the [run_demographic_herd_module()].
+#' 
+#' @seealso
+#' [run_demographic_herd_module()]
 #'
 #' @export
 calc_transition_probabilities <- function(
@@ -194,10 +205,10 @@ calc_transition_probabilities <- function(
   )
 }
 
-#' Simulate Steady-State Population Structure
+#' Calculate steady-state population structure
 #'
 #'
-#'Simulates population dynamics over time until a steady state is reached.
+#'Calculates population dynamics over time until a steady state is reached.
 #'The steady state is defined as a constant sex–age cohort structure over time,
 #'with population size potentially growing or declining at a constant rate.
 #'Tracks sex–age cohort structure and population growth based on survival,
@@ -226,6 +237,11 @@ calc_transition_probabilities <- function(
 #'   \item{cohort_share}{Named numeric vector of length 6. Final steady-state share of 6 grouped sex-age cohorts  (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}, where `FJ = FB + FJ` and `MJ = MB + MJ`) (fraction). Shares should sum to 1.}
 #'   \item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction)}
 #' }
+#'
+#' This function is part of the [run_demographic_herd_module()].
+#' 
+#' @seealso
+#' [run_demographic_herd_module()]
 #'
 #' @export
 calc_steady_state_structure <- function(
@@ -369,9 +385,9 @@ calc_steady_state_structure <- function(
   )
 }
 
-#' Project One Year of Steady-State Population Dynamics
+#' Calculate one year of steady-state population dynamics
 #'
-#' Simulates one year of population dynamics under steady-state assumptions using demographic parameters
+#' Calculates one year of population dynamics under steady-state assumptions using demographic parameters
 #' and returns population size statistics and offtake results. The steady state is defined as a constant
 #' sex–age cohort structure over time, with population size potentially growing or declining at a constant rate.
 #'
@@ -398,6 +414,11 @@ calc_steady_state_structure <- function(
 #'   \item{cohort_offtake_heads}{Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year)
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 #' }
+#'
+#' This function is part of the [run_demographic_herd_module()].
+#' 
+#' @seealso
+#' [run_demographic_herd_module()]
 #'
 #' @export
 calc_projected_population_size <- function(
@@ -542,9 +563,9 @@ calc_projected_population_size <- function(
   )
 }
 
-#' Summarise Offtake and Stock Variation for a Steady-State Year
+#' Summarise offtake and stock Variation for a steady-state year
 #'
-#' Computes annual offtake quantities and rates, as well as stock variation and their combined values
+#' Calculates annual offtake quantities and rates, as well as stock variation and their combined values
 #' across 6 sex-age classes based on steady-state population projections. The steady state is defined as a constant
 #' sex–age cohort structure over time, with population size potentially growing or declining at a constant rate.
 #'
@@ -566,6 +587,11 @@ calc_projected_population_size <- function(
 #'   \item{offtake_stock_plus_variation_rate_to_stock_start}{Numeric vector of length 6. Offtake plus stock-variation rate relative to starting population size (fraction) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
 #'   \item{offtake_stock_plus_variation_rate_to_stock_average}{Numeric vector of length 6.  Offtake plus stock-variation rate relative to average population size (fraction) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
 #' }
+#'
+#' This function is part of the [run_demographic_herd_module()].
+#' 
+#' @seealso
+#' [run_demographic_herd_module()]
 #'
 #' @export
 calc_summary_offtake <- function(

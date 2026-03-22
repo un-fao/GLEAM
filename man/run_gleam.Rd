@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_gleam.R
 \name{run_gleam}
 \alias{run_gleam}
-\title{Run Global Livestock Environmental Assessment Model (GLEAM) Pipeline}
+\title{Run the full Global Livestock Environmental Assessment Model (GLEAM) Pipeline}
 \usage{
 run_gleam(
   has_herd_structure = FALSE,
@@ -272,8 +272,8 @@ incl. climate-carbon feedbacks (2013) --- CH4 = 34, N2O = 298.
 N2O = 298.
 }}
 
-\item{show_indicator}{Logical. Display progress indicators during the
-pipeline run. Default: \code{TRUE}.}
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.
+Defaults to \code{TRUE}.}
 }
 \value{
 A named list with four elements:
@@ -355,7 +355,7 @@ Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for C
 \item{n2o_manure_all_noburn_leach}{Numeric. Indirect nitrous oxide (N2O) emissions resulting from leaching and runoff of manure nitrogen from manure management systems, excluding losses from manure burned for fuel (kg N2O/head/day).}
 \item{n2o_manure_pasture_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions from manure deposited on pasture. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
 \item{n2o_manure_burned_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions originating from manure burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
-\item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen.}
+\item{n2o_manure_other_indirect}{Numeric. Total indirect nitrous oxide (N2O) emissions originating from manure management systems, excluding manure deposited on pasture and burned for fuel. Includes emissions from atmospheric deposition of volatilised nitrogen (NH3 and NOx) and from leaching and runoff of manure nitrogen (kg N2O/head/day).}
 \item{n2o_manure_pasture_total}{Numeric. Total nitrous oxide emissions from manure deposited on pasture. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N2O/head/day).}
 \item{n2o_manure_burned_total}{Numeric. Total nitrous oxide emissions (N2O) from manure burned for fuel. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N2O/head/day).}
 \item{n2o_manure_other_total}{Numeric. Total nitrous oxide (N2O) emissions from manure management systems, excluding manure deposited on pasture and manure burned for fuel. Includes direct emissions and indirect emissions from volatilisation, leaching, and runoff (kg N2O/head/day).}
@@ -427,7 +427,7 @@ balance, all scaled to the assessment duration.}
 \description{
 Runs the full GLEAM pipeline from master herd and cohort inputs through all
 modules: herd (optional), weights, ration quality, energy requirements,
-manure emissions, feed emissions, allocation, and aggregation.
+manure emissions, enteric fermentation, nitrogren balance, feed emissions, allocation, and aggregation.
 \if{html}{\out{<br>}}
 \if{html}{\out{<br>}}
 \strong{Common identifiers}:
