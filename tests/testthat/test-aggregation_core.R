@@ -203,7 +203,8 @@ test_that("calc_co2eq returns correct value for CH4 with AR6", {
 
   expect_type(result, "list")
   expect_named(result, c("value_co2eq", "gwp"))
-  expect_equal(result$value_co2eq, 100 * 27)  # AR6: CH4 = 27
+  # AR6: CH4 = 27
+  expect_equal(result$value_co2eq, 100 * 27)
   expect_equal(result$gwp, 27)
 })
 
@@ -213,8 +214,8 @@ test_that("calc_co2eq returns correct value for N2O with AR6", {
     value_allocated = 10,  # kg N2O
     global_warming_potential_set = "AR6"
   )
-
-  expect_equal(result$value_co2eq, 10 * 273)  # AR6: N2O = 273
+  # AR6: N2O = 273
+  expect_equal(result$value_co2eq, 10 * 273)
   expect_equal(result$gwp, 273)
 })
 

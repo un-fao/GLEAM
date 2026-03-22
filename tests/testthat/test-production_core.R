@@ -241,7 +241,7 @@ test_that("calc_milk_production returns zeros for PGS", {
     milk_fat_fraction_standard = 0.04,
     milk_lactose_fraction_standard = 0.048
   )
-  
+
   expect_named(result, c(
     "milk_production_mass_cohort",
     "milk_production_protein_cohort",
@@ -332,7 +332,7 @@ test_that("calc_fibre_production returns zero for non-fibre animals", {
     simulation_duration = 365,
     cohort_stock_size = 1000
   )
-  
+
   expected <- 0
   expect_equal(result, expected)
 })
@@ -346,7 +346,7 @@ test_that("calc_fibre_production returns zero for non-fibre animals", {
     simulation_duration = 365,
     cohort_stock_size = 1000
   )
-  
+
   expected <- 0
   expect_equal(result, expected)
 })
@@ -354,11 +354,16 @@ test_that("calc_fibre_production returns zero for non-fibre animals", {
 
 test_that("calc_fibre_production handles validation errors", {
   expect_error(
-    calc_fibre_production(species_short = "SHP", cohort_short = "MA", fibre_yield_year = -0.1, simulation_duration = 365, cohort_stock_size = 100),
+    calc_fibre_production(
+      species_short = "SHP",
+      cohort_short = "MA",
+      fibre_yield_year = -0.1,
+      simulation_duration = 365,
+      cohort_stock_size = 100
+    ),
     "fibre_yield_year"
   )
 })
-
 
 # ---- test calc_meat_production ----
 test_that("calc_meat_production returns expected output structure", {
