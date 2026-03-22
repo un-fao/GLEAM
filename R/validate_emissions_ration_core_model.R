@@ -25,10 +25,10 @@ validate_co2_ration_pesticides_inputs <- function(
 #' @noRd
 validate_co2_ration_crop_activities_inputs <- function(
     feed_ration_fraction,
-    co2_feed_crop_operations
+    co2_feed_crop_activities
 ) {
   validate_param_range(feed_ration_fraction)
-  validate_scalar_numeric_or_na(co2_feed_crop_operations, min_val = 0)
+  validate_scalar_numeric_or_na(co2_feed_crop_activities, min_val = 0)
 }
 
 #' Validate inputs for calc_co2_ration_luc_nopeat

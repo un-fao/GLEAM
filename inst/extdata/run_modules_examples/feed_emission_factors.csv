@@ -1,4 +1,4 @@
-feed_name	feed_id	category	co2_feed_fertilizer	co2_feed_pesticides	co2_feed_crop_operations	n2o_feed_fertilizer	n2o_feed_manure_applied	n2o_feed_crop_residues	ch4_feed_rice	co2_feed_luc_nopeat	co2_feed_luc_peat
+feed_name	feed_id	category	co2_feed_fertilizer	co2_feed_pesticides	co2_feed_crop_activities	n2o_feed_fertilizer	n2o_feed_manure_applied	n2o_feed_crop_residues	ch4_feed_rice	co2_feed_luc_nopeat	co2_feed_luc_peat
 Fresh grass, natural pastures	F1	Grass and leaves	0	0	0	0	0.108	0	0	0	0
 Barley, straw	F10	Crop residues	0	0	0	0	0	0	0	0	0
 Beans, straw	F109	Crop residues	0	0	0	0	0	0	0	0	0

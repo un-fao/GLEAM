@@ -161,7 +161,7 @@ utils::globalVariables(c(
 # --- run_emissions_ration_module --------------------------------------------
 utils::globalVariables(c(
   "ch4_feed_rice", "ch4_ration_rice",
-  "co2_feed_crop_operations", "co2_feed_fertilizer",
+  "co2_feed_crop_activities", "co2_feed_fertilizer",
   "co2_feed_luc_nopeat", "co2_feed_luc_peat", "co2_feed_pesticides",
   "co2_ration_crop_activities", "co2_ration_fertilizer",
   "co2_ration_luc_nopeat", "co2_ration_luc_peat", "co2_ration_pesticides",
@@ -197,7 +197,8 @@ utils::globalVariables(c(
   "total_allocation_energy",
   "meat_share_allocation", "milk_share_allocation",
   "work_share_allocation", "fibre_share_allocation",
-  "work_allocation_energy",
+  "eggs_share_allocation",
+  "work_allocation_energy", "egg_allocation_energy",
   "i.species_short",
   "x.live_weight_at_birth", "x.milk_fat_fraction_standard",
   "x.milk_lactose_fraction_standard", "x.milk_protein_fraction_standard",
