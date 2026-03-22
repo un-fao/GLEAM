@@ -5,6 +5,10 @@ output:
     toc: true
     toc_depth: 3
     number_sections: true
+vignette: >
+  %\VignetteIndexEntry{The GLEAM Ecosystem}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 The `gleam` R package is one component of the broader GLEAM ecosystem

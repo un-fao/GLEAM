@@ -5,6 +5,10 @@ output:
     toc: true
     toc_depth: 3
     number_sections: true
+vignette: >
+  %\VignetteIndexEntry{The History of GLEAM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 # History of GLEAM
 
