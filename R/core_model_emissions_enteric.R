@@ -95,7 +95,7 @@ calc_conversion_factor_ym <- function(
 ) {
   validate_ym_inputs(species_short, cohort_short, ration_digestibility_fraction)
 
-  if (species_short %in% c("CTL", "BFL")) {
+  if (species_short %in% c("CTL","BFL")) {
     if (cohort_short %in% c("FJ", "MJ")) {
       ch4_conversion_factor_ym <- 0
     } else {
