@@ -1,0 +1,55 @@
+name: Bug Report
+description: Something is not working as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. A **short, reproducible** R example is the fastest way to confirm and fix the issue.
+
+  - type: input
+    id: version
+    attributes:
+      label: Package version (if known)
+      placeholder: e.g. 0.8.0
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What went wrong?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reprex
+    attributes:
+      label: Reprex (R code)
+      description: |
+        Minimal script that shows the bug. Mention which `inst/extdata/` examples you used, if any.
+      render: r
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: session
+    attributes:
+      label: Session info (optional)
+      description: Output of `sessionInfo()` if versions or OS matter.
+      render: markdown

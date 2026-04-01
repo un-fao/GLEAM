@@ -1,0 +1,57 @@
+name: Feature Enhancement Request
+description: I want to make an existing feature better
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For changes to **existing** behaviour or APIs, point to what exists today and how you want it to differ.
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: What should be improved?
+      description: Functions, modules, or docs (e.g. `run_gleam()`, a specific `run_*_module`, vignette section).
+    validations:
+      required: true
+
+  - type: textarea
+    id: improvement
+    attributes:
+      label: How should it work instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is this improvement needed?
+      description: Correctness, clarity, performance, ergonomics, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example (optional)
+      description: Before/after R snippet or scenario.
+      render: r
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: desired
+    attributes:
+      label: Desired behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_cases
+    attributes:
+      label: Real-world use cases (optional)
