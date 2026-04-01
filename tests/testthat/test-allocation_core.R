@@ -60,7 +60,6 @@ test_that("calc_meat_allocation_energy returns correct value for cattle female",
   expect_type(result, "double")
   expect_length(result, 1)
   # For CTL/FA: growth_efficiency_factor = 0.8
-  # specific_energy = (22.02 * (((500-40)/2) / (0.8*500))^0.75 * (500-40)^1.097) / 500
   expected_specific <- (22.02 * (((500 - 40) / 2) / (0.8 * 500))^0.75 * (500 - 40)^1.097) / 500
   expect_equal(result, expected_specific * 100)
 })

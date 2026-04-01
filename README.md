@@ -36,7 +36,7 @@ To install the development version of the package:
 install.packages("devtools")
 
 # Install from GitHub
-devtools::install_git("https://github.com/APPLITICS/gleam.git")
+devtools::install_git("https://github.com/un-fao/GLEAM.git")
 ```
 
 ## Help & Contact
