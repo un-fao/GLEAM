@@ -57,11 +57,8 @@ test_that("calc_ch4_enteric validates inputs and returns expected numeric", {
   )
 
   # Invalid arguments
-  # ym < 0
   expect_error(calc_ch4_enteric("CTL", -1, 1, 18, 10))
-  # ration_gross_energy < 0
   expect_error(calc_ch4_enteric("CTL", 5, 1, -1, 10))
-  # ration_intake < 0
   expect_error(calc_ch4_enteric("CTL", 5, 1, 18, -1))
 
   # Emissions must be non-negative
