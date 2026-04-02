@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        New capabilities are easier to evaluate with a **concrete goal** and, if possible, a sketch of the API or workflow you have in mind.
+        New capabilities are easier to evaluate with a **concrete goal** and, if possible, a sketch of the workflow you have in mind.
 
   - type: textarea
     id: goal

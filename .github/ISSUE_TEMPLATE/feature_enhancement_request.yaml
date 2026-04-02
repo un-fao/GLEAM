@@ -1,32 +1,33 @@
 name: Feature Enhancement Request
-description: I want to make an existing feature better
+description: I want to improve an existing feature
 labels: ["enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
-        For changes to **existing** behaviour or APIs, point to what exists today and how you want it to differ.
+        For changes to **existing** behaviour, clearly describe what exists today and how it should change.
 
   - type: textarea
     id: scope
     attributes:
-      label: What should be improved?
-      description: Functions, modules, or docs (e.g. `run_gleam()`, a specific `run_*_module`, vignette section).
+      label: What needs improvement?
+      description: What part of the package is affected? (e.g. `run_gleam()`, a `run_*_module`, documentation section)
     validations:
       required: true
 
   - type: textarea
-    id: improvement
+    id: current_vs_desired
     attributes:
-      label: How should it work instead?
+      label: What is the current behaviour, and what should it be instead?
+      description: Describe how it works today and how you want it to change
     validations:
       required: true
 
   - type: textarea
-    id: why
+    id: rationale
     attributes:
       label: Why is this improvement needed?
-      description: Correctness, clarity, performance, ergonomics, etc.
+      description: Motivation (e.g. correctness, clarity, performance, usability)
     validations:
       required: true
 
@@ -34,24 +35,11 @@ body:
     id: example
     attributes:
       label: Example (optional)
-      description: Before/after R snippet or scenario.
+      description: Before/after R snippet or concrete scenario
       render: r
-
-  - type: textarea
-    id: current
-    attributes:
-      label: Current behaviour
-    validations:
-      required: true
-
-  - type: textarea
-    id: desired
-    attributes:
-      label: Desired behaviour
-    validations:
-      required: true
 
   - type: textarea
     id: use_cases
     attributes:
       label: Real-world use cases (optional)
+      description: Where would this improvement be useful in practice?
