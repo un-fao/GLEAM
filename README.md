@@ -1,4 +1,4 @@
-# gleam: The GLEAM R Package
+# gleam: The GLEAM R Package 
 **The official R package of the FAO's Global Livestock Environmental Assessment Model (GLEAM).**
 
 This package provides a modular implementation of GLEAM to quantify environmental impacts from livestock agrifood systems. 
