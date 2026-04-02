@@ -6,7 +6,7 @@ The model simulates herd dynamics and quantifies key metrics, including animal-s
 feed intake, nitrogen balance, and greenhouse gas emissions from enteric fermentation, manure management, and upstream feed production.
 The package also allocates estimated emissions to major animal products and services. 
 
-## Purpose
+## Purpose 
 
 This package supports the sustainable transformation of livestock systems by enabling evidence-based decision-making through 
 a transparent and reproducible modeling framework.
