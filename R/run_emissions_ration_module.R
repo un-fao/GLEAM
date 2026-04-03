@@ -178,7 +178,7 @@
 #' \code{\link{calc_ch4_ration_rice}}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Load cleaned example input from the package and compute the calculation of feed emission factors
 #'
 #' # Load table with ration shares

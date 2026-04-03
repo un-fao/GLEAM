@@ -502,7 +502,7 @@ Validation blocks variables that are expected to be produced internally.
 \examples{
 # Example 1: You do NOT have herd structure — use cohort input for herd simulation.
 # Pipeline runs herd simulation first, then the rest of the pipeline.
-\dontrun{
+\donttest{
 path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 
 master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
@@ -547,7 +547,7 @@ print(results$allocation_long)
 
 # Example 2: You already HAVE herd structure — use cohort table and skip herd simulation.
 # Pipeline skips herd simulation and uses this as the starting cohort table.
-\dontrun{
+\donttest{
 path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 
 master_chrt_lvl_structure_dt <- data.table::fread(file.path(

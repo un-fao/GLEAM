@@ -70,7 +70,7 @@ emissions and performs the following calculation sequence:
 }
 }
 \examples{
-\dontrun{
+\donttest{
 # Load example input (6 herd_ids, cohort-level; only required columns)
 input_path <- system.file(
   "extdata/run_modules_examples/emissions_enteric_input_chrt_data.csv",

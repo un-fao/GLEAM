@@ -75,7 +75,7 @@
 #' Chapter 10: Emissions from Livestock and Manure Management, Equation 10.21.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Load example input (6 herd_ids, cohort-level; only required columns)
 #' input_path <- system.file(
 #'   "extdata/run_modules_examples/emissions_enteric_input_chrt_data.csv",

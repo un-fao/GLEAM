@@ -151,7 +151,7 @@
 #' \code{\link{calc_summary_offtake}}
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Load herd simulation inputs (cohort- and herd-level)
 #' herd_simulation_chrt_dt <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/herd_simulation_input_chrt_data.csv",

@@ -129,7 +129,7 @@ animals' metabolic energy requirements and dry matter intake and performs the fo
 }
 }
 \examples{
-\dontrun{
+\donttest{
 # Load metabolic energy requirements inputs (cohort and herd-level)
 metabolic_energy_req_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/metabolic_energy_req_input_chrt_data.csv",

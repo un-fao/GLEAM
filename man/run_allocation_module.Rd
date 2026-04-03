@@ -186,7 +186,7 @@ allocated to livestock commodities. These flows are assigned fully to
 \code{\link{assign_allocation_shares}}.
 }
 \examples{
-\dontrun{
+\donttest{
 # Load allocation inputs (cohort and herd-level)
 allocation_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/allocation_input_chrt_data.csv",
