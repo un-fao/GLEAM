@@ -50,4 +50,4 @@ jobs:
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
 
       - name: Lint R code
-        run: Rscript -e "lintr::lint_dir('R')"
+        run: Rscript -e "options(lintr.linter_file = '.lintr'); l <- lintr::lint_dir('R'); print(l); if (length(l)) quit(status = 1)"

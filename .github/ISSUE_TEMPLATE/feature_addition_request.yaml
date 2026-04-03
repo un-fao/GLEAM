@@ -1,0 +1,38 @@
+name: Feature Addition Request
+description: I want to add a new feature
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        New capabilities are easier to evaluate with a **concrete goal** and, if possible, a sketch of the workflow you have in mind.
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: Problem or workflow this would unlock.
+    validations:
+      required: true
+
+  - type: textarea
+    id: without
+    attributes:
+      label: What is the best you can do today without this feature?
+      description: Current workaround or limitation (even if awkward).
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to see added?
+      description: Behaviour, function names, or pipeline step—rough ideas are fine.
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_cases
+    attributes:
+      label: Real-world use cases (optional)
+      description: Where did this need show up (domain, scale, constraints)?
