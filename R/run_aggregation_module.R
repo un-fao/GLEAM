@@ -160,7 +160,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Load cohort-level aggregation input
 #' aggregation_chrt_dt <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/aggregation_input_chrt_data.csv",

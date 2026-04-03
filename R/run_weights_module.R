@@ -75,7 +75,7 @@
 #' \code{\link{calc_daily_weight_gain}},
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Load weights inputs (cohort- and herd-level)
 #' weights_chrt_dt <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/weights_input_chrt_data.csv",

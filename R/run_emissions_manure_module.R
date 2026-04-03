@@ -191,7 +191,7 @@
 #' \code{\link{calc_n2o_manure_total}}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Load emissions manure inputs (cohort-level and system lookups)
 #' emissions_manure_input_chrt_data <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/emissions_manure_input_chrt_data.csv",

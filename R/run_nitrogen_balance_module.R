@@ -95,7 +95,7 @@
 #' \code{\link{calc_nitrogen_excretion}}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Load nitrogen balance inputs (cohort and herd-level)
 #' nitrogen_balance_chrt_dt <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/nitrogen_balance_input_chrt_data.csv",

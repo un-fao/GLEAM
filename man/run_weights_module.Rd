@@ -79,7 +79,7 @@ Herd-level biological parameters are matched to each cohort row by
 }
 }
 \examples{
-\dontrun{
+\donttest{
 # Load weights inputs (cohort- and herd-level)
 weights_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/weights_input_chrt_data.csv",

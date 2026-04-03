@@ -128,7 +128,7 @@ feed components within each \code{herd_id}, \code{species_short}, and \code{coho
 }
 }
 \examples{
-\dontrun{
+\donttest{
 # Load feed rations inputs (cohort-level shares and feed parameters)
 feed_rations_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/feed_rations_share_chrt.csv",

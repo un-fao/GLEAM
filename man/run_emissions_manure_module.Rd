@@ -199,7 +199,7 @@ definitions, and associated emission factors can be accessed in the
 }
 
 \examples{
-\dontrun{
+\donttest{
 # Load emissions manure inputs (cohort-level and system lookups)
 emissions_manure_input_chrt_data <- data.table::fread(system.file(
   "extdata/run_modules_examples/emissions_manure_input_chrt_data.csv",

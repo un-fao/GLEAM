@@ -130,7 +130,7 @@
 #' \code{\link{calc_ration_intake}}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Load metabolic energy requirements inputs (cohort and herd-level)
 #' metabolic_energy_req_chrt_dt <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/metabolic_energy_req_input_chrt_data.csv",

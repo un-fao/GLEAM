@@ -166,7 +166,7 @@ feed, and nitrogen balance variables are scaled using cohort stock size and simu
 }
 }
 \examples{
-\dontrun{
+\donttest{
 # Load cohort-level aggregation input
 aggregation_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/aggregation_input_chrt_data.csv",

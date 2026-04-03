@@ -179,7 +179,7 @@ For each emission source, cohort-level dietary emission factors are computed as:
 }
 }
 \examples{
-\dontrun{
+\donttest{
 # Load cleaned example input from the package and compute the calculation of feed emission factors
 
 # Load table with ration shares
