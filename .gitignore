@@ -1,6 +1,7 @@
+.cursor/
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-gleam.Rproj
+*.Rproj
 Inputs

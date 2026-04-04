@@ -5,3 +5,8 @@
 ^\.lintr$
 ^legacy$
 ^data-raw$
+^.*\.Rproj$
+^_pkgdown\.yml$
+^cran-comments\.md$
+^pkgdown$
+^\.cursor$
