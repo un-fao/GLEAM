@@ -78,7 +78,7 @@ calc_transition_probabilities <- function(
   validate_transition_inputs(cohort_duration_days, offtake_rate, death_rate)
 
   # Define cohort names for clarity
-  six_cohort_names <- gleam_cohorts
+  six_cohort_names <- gleam_cohorts_demographic
   ten_cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
 
   # Prevent 0/0 in downstream hazard math by ensuring each cohort has at least
@@ -189,7 +189,7 @@ calc_transition_probabilities <- function(
   # Daily survival probability (prob_survival)
   probability_survival <- 1 - probability_death - probability_offtake
 
-  # Probability of growing into the next class (prob_growth)
+  # Probability of growing into the next class (probability_growth)
   probability_growth <- (probability_survival^(duration_all - 1) - probability_survival^duration_all) /
     (1 - probability_survival^duration_all)
 
@@ -207,13 +207,11 @@ calc_transition_probabilities <- function(
 
 #' Calculate steady-state population structure
 #'
-#'
 #'Calculates population dynamics over time until a steady state is reached.
 #'The steady state is defined as a constant sex–age cohort structure over time,
 #'with population size potentially growing or declining at a constant rate.
 #'Tracks sex–age cohort structure and population growth based on survival,
-#'offtake, and fecundity parameters.
-#'
+#'offtake, fecundity parameters and diversion to non-demographic blocks such as fattening operations.
 #'
 #' @param initial_herd_structure Named numeric vector of length 6. Initial number of individuals in each of the 6 sex-age classes used
 #' to bootstrap the steady-state simulation (# heads).
@@ -229,16 +227,42 @@ calc_transition_probabilities <- function(
 #' (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling).
 #' @param probability_growth Named numeric vector of length 10. Probability of growing into the next age class for 10 cohorts (fraction)
 #' (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling).
-#'
+#' @param proportion_nondemographic Named numeric vector of length 6. Fraction of animals diverted from the demographic pathway into the non-demographic pathway for 6 demographic cohorts (fraction). (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
+#' 
 #' @return A named list with:
 #' \describe{
 #'   \item{days_to_steady_state}{Numeric. Number of days required for the herd population structure to converge to a steady state, defined as the point at which successive iterations produce negligible changes in cohort proportions (days)}
 #'   \item{herd_structure}{Named numeric vector of length 8. Final steady-state share of each of 8 sex-age cohorts (\code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}) (fraction). Shares should sum to 1.}
 #'   \item{cohort_share}{Named numeric vector of length 6. Final steady-state share of 6 grouped sex-age cohorts  (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}, where `FJ = FB + FJ` and `MJ = MB + MJ`) (fraction). Shares should sum to 1.}
 #'   \item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction)}
+#'   \item{herd_size_total_demographic}{Numeric. Total number of animals remaining in the demographic component after estimated (# heads).
 #' }
 #'
 #' This function is part of the [run_demographic_herd_module()].
+#'
+#' @details
+#' Diversion into the non-demographic block is applied on cohort transitions.
+#' For each transition eligible for diversion, the model first computes the total
+#' number of animals progressing out of the current demographic cohort. It then
+#' splits that transition flow into:
+#' \itemize{
+#'   \item a retained demographic component, which continues into the next demographic cohort
+#'   \item a diverted non-demographic component, recorded separately through
+#'   \code{proportion_nondemographic}
+#' }
+#'
+#' In formula terms, if \eqn{T} is the total transition flow and \eqn{p} is the
+#' relevant entry of \code{proportion_nondemographic}, then:
+#' \deqn{
+#'   T_{non-demo} = p \times T
+#' }
+#' \deqn{
+#'   T_{demo} = (1 - p) \times T
+#' }
+#'
+#' This allows the demographic steady-state structure to remain internally
+#' consistent while tracking how many animals are redirected to the
+#' non-demographic component.
 #' 
 #' @seealso
 #' [run_demographic_herd_module()]
@@ -252,7 +276,8 @@ calc_steady_state_structure <- function(
     fecundity_male,
     probability_death,
     probability_offtake,
-    probability_growth
+    probability_growth,
+    proportion_nondemographic
 ) {
   validate_steady_state_inputs(
     initial_herd_structure,
@@ -262,7 +287,8 @@ calc_steady_state_structure <- function(
     fecundity_male,
     probability_death,
     probability_offtake,
-    probability_growth
+    probability_growth,
+    proportion_nondemographic
   )
 
   # Initialize population vectors
@@ -271,6 +297,9 @@ calc_steady_state_structure <- function(
 
   fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- numeric()
   mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- numeric()
+  
+  fem_juv_nondemo   <- fem_sub_nondemo   <- fem_adult_nondemo <- numeric()
+  mal_juv_nondemo   <- mal_sub_nondemo   <- mal_adult_nondemo <- numeric()
 
   lambda_change <- rep(1, 6)
 
@@ -337,32 +366,88 @@ calc_steady_state_structure <- function(
     mal_cull[t] <- mal_cull_fec[t] * (1 - probability_death[["MC"]] - probability_offtake[["MC"]])
 
     # Apply transition probabilities (growth to next class)
+    # FJ -> FS
     fem_juv_grow[t] <- fem_birth[t] + (1 - probability_growth[["FJ"]]) * fem_juv[t]
-    fem_sub_grow[t] <- probability_growth[["FJ"]] * fem_juv[t] + (1 - probability_growth[["FS"]]) * fem_sub[t]
-    fem_adult_grow[t] <- probability_growth[["FS"]] * fem_sub[t] + (1 - probability_growth[["FA"]]) * fem_adult[t]
-    fem_cull_grow[t] <- probability_growth[["FA"]] * fem_adult[t]
-
+    fem_juv_to_sub <- probability_growth[["FJ"]] * fem_juv[t] 
+    fem_juv_nondemo[t] <- proportion_nondemographic[["FJ"]] * fem_juv_to_sub
+    fem_juv_to_sub <- (1 - proportion_nondemographic[["FJ"]]) * fem_juv_to_sub
+    
+    #  FS stock update (inflow from FJ after diversion)
+    fem_sub_grow[t] <- fem_juv_to_sub + (1 - probability_growth[["FS"]]) * fem_sub[t]
+    
+    #  FS -> FA
+    fem_sub_to_adult <- probability_growth[["FS"]] * fem_sub[t]  # total leaving FS via growth
+    fem_sub_nondemo[t] <- proportion_nondemographic[["FS"]] * fem_sub_to_adult
+    fem_sub_to_adult <- (1 - proportion_nondemographic[["FS"]]) * fem_sub_to_adult
+    
+    #  FA stock update (inflow from FS after diversion) 
+    fem_adult_grow[t] <- fem_sub_to_adult + (1 - probability_growth[["FA"]]) * fem_adult[t]
+    
+    #  FA -> FC (cull) 
+    fem_adult_to_cull <- probability_growth[["FA"]] * fem_adult[t]  # total leaving FA via growth
+    fem_adult_nondemo[t] <- proportion_nondemographic[["FA"]] * fem_adult_to_cull
+    fem_adult_to_cull <- (1 - proportion_nondemographic[["FA"]]) * fem_adult_to_cull
+    
+    fem_cull_grow[t] <- fem_adult_to_cull
+    
+    # MJ -> MS
     mal_juv_grow[t] <- mal_birth[t] + (1 - probability_growth[["MJ"]]) * mal_juv[t]
-    mal_sub_grow[t] <- probability_growth[["MJ"]] * mal_juv[t] + (1 - probability_growth[["MS"]]) * mal_sub[t]
-    mal_adult_grow[t] <- probability_growth[["MS"]] * mal_sub[t] + (1 - probability_growth[["MA"]]) * mal_adult[t]
-    mal_cull_grow[t] <- probability_growth[["MA"]] * mal_adult[t]
+    
+    mal_juv_to_sub <- probability_growth[["MJ"]] * mal_juv[t]
+    mal_juv_nondemo[t] <- proportion_nondemographic[["MJ"]] * mal_juv_to_sub
+    mal_juv_to_sub <- (1 - proportion_nondemographic[["MJ"]]) * mal_juv_to_sub
+    
+    mal_sub_grow[t] <- mal_juv_to_sub + (1 - probability_growth[["MS"]]) * mal_sub[t]
+    
+    #  MS -> MA
+    mal_sub_to_adult <- probability_growth[["MS"]] * mal_sub[t]
+    mal_sub_nondemo[t] <- proportion_nondemographic[["MS"]] * mal_sub_to_adult
+    mal_sub_to_adult <- (1 - proportion_nondemographic[["MS"]]) * mal_sub_to_adult
+    
+    mal_adult_grow[t] <- mal_sub_to_adult + (1 - probability_growth[["MA"]]) * mal_adult[t]
+    
+    
+    # MA -> MC
+    mal_adult_to_cull <- probability_growth[["MA"]] * mal_adult[t]
+    mal_adult_nondemo[t] <- proportion_nondemographic[["MA"]] * mal_adult_to_cull
+    mal_adult_to_cull <- (1 - proportion_nondemographic[["MA"]]) * mal_adult_to_cull
+    
+    mal_cull_grow[t] <- mal_adult_to_cull
   }
 
   # Final iteration count
   days_steady <- t
-
-  # Extract population state at steady-state
+  
+    # Extract population state at steady-state
   xend <- c(
-    fem_birth_fec[days_steady], fem_juv_fec[days_steady],
-    fem_sub_fec[days_steady], fem_adult_fec[days_steady],
-    mal_birth_fec[days_steady], mal_juv_fec[days_steady],
-    mal_sub_fec[days_steady], mal_adult_fec[days_steady]
+    FB = fem_birth_fec[days_steady],
+    FJ = fem_juv_fec[days_steady],
+    FS = fem_sub_fec[days_steady],
+    FA = fem_adult_fec[days_steady],
+    MB = mal_birth_fec[days_steady],
+    MJ = mal_juv_fec[days_steady],
+    MS = mal_sub_fec[days_steady],
+    MA = mal_adult_fec[days_steady]
   )
 
   # Compute final structure (8 classes)
   structure <- xend / sum(xend)
   names(structure) <- c("FB", "FJ", "FS", "FA", "MB", "MJ", "MS", "MA")
-
+  
+  # Compute population at the end of the simulation
+  xend_grouped <- c(
+    FJ = xend["FB"] + xend["FJ"],   # females: birth + juvenile
+    FS = xend["FS"],                # female subadult
+    FA = xend["FA"],                # female adult
+    MJ = xend["MB"] + xend["MJ"],   # males: birth + juvenile
+    MS = xend["MS"],                # male subadult
+    MA = xend["MA"]                 # male adult
+  )
+  
+  names(xend_grouped) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+  
+  herd_size_total_demographic <- sum(xend_grouped, na.rm = TRUE)
+  
   # Compute condensed share (6 classes: juveniles = birth + juvenile)
   share <- c(
     structure["FB"] + structure["FJ"],
@@ -370,7 +455,7 @@ calc_steady_state_structure <- function(
     structure["MB"] + structure["MJ"],
     structure[c("MS", "MA")]
   )
-  names(share) <- gleam_cohorts
+  names(share) <- gleam_cohorts_demographic
 
   # Compute steady-state annual growth rate
   growth_rate_herd <- (fem_juv_fec[days_steady] / fem_juv_fec[days_steady - 1])^365 - 1
@@ -380,7 +465,9 @@ calc_steady_state_structure <- function(
       days_to_steady_state = days_steady,
       herd_structure = structure,
       cohort_share = share,
-      growth_rate_herd = growth_rate_herd
+      growth_rate_herd = growth_rate_herd,
+      size_unscaled = xend_grouped,
+      herd_size_total_demographic = herd_size_total_demographic
     )
   )
 }
@@ -391,7 +478,7 @@ calc_steady_state_structure <- function(
 #' and returns population size statistics and offtake results. The steady state is defined as a constant
 #' sex–age cohort structure over time, with population size potentially growing or declining at a constant rate.
 #'
-#' @param herd_size_total Numeric. Total population size at the start of the year, including all cohorts (# heads)
+#' @param herd_size_total Numeric. Total demographic population size at the start of the year, including all cohorts (# heads)
 #' @param fecundity_female Numeric. Daily number of female offspring per adult female (# offspring/day)
 #' @param fecundity_male Numeric. Daily number of male offspring per adult female (# offspring/day)
 #' @param probability_death Named numeric vector of length 10. Probability of animal dying within the model time interval for 10 cohorts (fraction)
@@ -403,7 +490,8 @@ calc_steady_state_structure <- function(
 #' @param growth_rate_herd Numeric. Annualized growth rate at which the herd reaches steady state (fraction)
 #' @param herd_structure Named numeric vector of length 8. Final steady-state share of each of 8 sex-age cohorts (\code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}) (fraction). Shares should sum to 1.
 #' @param cohort_share Named numeric vector of length 6. Final steady-state share of 6 grouped sex-age cohorts  (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}, where `FJ = FB + FJ` and `MJ = MB + MJ`) (fraction). Shares should sum to 1.
-#'
+#' @param proportion_nondemographic Named numeric vector of length 6. Fraction of animals diverted from the demographic pathway into the non-demographic pathway for 6 demographic cohorts (fraction). (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
+#' 
 #' @return A named list with:
 #' \describe{
 #'   \item{cohort_stock_start}{Numeric vector of length 6. Population size in each of the 6 sex–age cohorts at the start of the year (# heads). (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
@@ -411,11 +499,26 @@ calc_steady_state_structure <- function(
 #'   \item{cohort_stock_end_exact_simulated}{Numeric vector of length 10. Population size in each of 10 sex–age cohort at the end of the year, based on a demographic daily simulation over 365 days (# heads)
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 #'   \item{cohort_stock_average}{Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts over the year (# heads). Estimated from cohort_stock_start and cohort_stock_end_projected  (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
+#'   \item{cohort_stock_annual_nondemographic}{Numeric vector of length 6. Total number of animals entering the non-demographic component of the model over the simulated period, disaggregated by demographic sex–age cohorts (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})} (heads).
 #'   \item{cohort_offtake_heads}{Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year)
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 #' }
 #'
 #' This function is part of the [run_demographic_herd_module()].
+#'
+#' @details
+#' This projection step applies the same diversion logic used in the steady-state
+#' solver, but over the explicit one-year simulated population trajectory. For
+#' each eligible transition, the outgoing flow is partitioned into:
+#' \itemize{
+#'   \item animals that remain in the demographic pathway and enter the next demographic cohort
+#'   \item animals diverted into the non-demographic pathway and accumulated in
+#'   \code{cohort_stock_annual_nondemographic}
+#' }
+#'
+#' The non-demographic totals returned by this function therefore represent the
+#' annual entrant counts that can be passed downstream to the non-demographic herd
+#' module.
 #' 
 #' @seealso
 #' [run_demographic_herd_module()]
@@ -430,7 +533,8 @@ calc_projected_population_size <- function(
     probability_growth,
     growth_rate_herd,
     herd_structure,
-    cohort_share
+    cohort_share,
+    proportion_nondemographic
 ) {
   validate_population_size_inputs(
     herd_size_total,
@@ -441,7 +545,8 @@ calc_projected_population_size <- function(
     probability_growth,
     growth_rate_herd,
     herd_structure,
-    cohort_share
+    cohort_share,
+    proportion_nondemographic
   )
 
   # Calculate initial number of individuals in each of the 8 sex-age classes
@@ -461,6 +566,9 @@ calc_projected_population_size <- function(
 
   fem_juv_grow <- fem_sub_grow <- fem_adult_grow <- fem_cull_grow <- numeric()
   mal_juv_grow <- mal_sub_grow <- mal_adult_grow <- mal_cull_grow <- numeric()
+  
+  fem_juv_nondemo   <- fem_sub_nondemo   <- fem_adult_nondemo <- numeric()
+  mal_juv_nondemo   <- mal_sub_nondemo   <- mal_adult_nondemo <- numeric()
 
   # Simulate daily dynamics over 366 days (leap year assumption)
   for (t in seq_len(366)) {
@@ -520,15 +628,55 @@ calc_projected_population_size <- function(
       mal_cull_death[t] <- probability_offtake[["MC"]] * mal_cull_fec[t]
 
       # Transition
+      # FJ -> FS
       fem_juv_grow[t] <- fem_birth[t] + (1 - probability_growth[["FJ"]]) * fem_juv[t]
-      fem_sub_grow[t] <- probability_growth[["FJ"]] * fem_juv[t] + (1 - probability_growth[["FS"]]) * fem_sub[t]
-      fem_adult_grow[t] <- probability_growth[["FS"]] * fem_sub[t] + (1 - probability_growth[["FA"]]) * fem_adult[t]
-      fem_cull_grow[t] <- probability_growth[["FA"]] * fem_adult[t]
-
+      fem_juv_to_sub_total <- probability_growth[["FJ"]] * fem_juv[t]
+      fem_juv_nondemo[t]  <- proportion_nondemographic[["FJ"]] * fem_juv_to_sub_total
+      fem_juv_to_sub  <- (1 - proportion_nondemographic[["FJ"]]) * fem_juv_to_sub_total
+      
+      # FS stock 
+      fem_sub_grow[t] <- fem_juv_to_sub + (1 - probability_growth[["FS"]]) * fem_sub[t]
+      
+      # FS -> FA
+      fem_sub_to_adult_total <- probability_growth[["FS"]] * fem_sub[t]
+      fem_sub_nondemo[t]    <- proportion_nondemographic[["FS"]] * fem_sub_to_adult_total
+      fem_sub_to_adult  <- (1 - proportion_nondemographic[["FS"]]) * fem_sub_to_adult_total
+      
+      # FA stock 
+      fem_adult_grow[t] <- fem_sub_to_adult + (1 - probability_growth[["FA"]]) * fem_adult[t]
+      
+      # FA -> FC
+      fem_adult_to_cull_total <- probability_growth[["FA"]] * fem_adult[t]
+      fem_adult_nondemo[t] <- proportion_nondemographic[["FA"]] * fem_adult_to_cull_total
+      fem_adult_to_cull  <- (1 - proportion_nondemographic[["FA"]]) * fem_adult_to_cull_total
+      
+      fem_cull_grow[t] <- fem_adult_to_cull
+      
+      
+      # MJ -> MS
       mal_juv_grow[t] <- mal_birth[t] + (1 - probability_growth[["MJ"]]) * mal_juv[t]
-      mal_sub_grow[t] <- probability_growth[["MJ"]] * mal_juv[t] + (1 - probability_growth[["MS"]]) * mal_sub[t]
-      mal_adult_grow[t] <- probability_growth[["MS"]] * mal_sub[t] + (1 - probability_growth[["MA"]]) * mal_adult[t]
-      mal_cull_grow[t] <- probability_growth[["MA"]] * mal_adult[t]
+      mal_juv_to_sub_total <- probability_growth[["MJ"]] * mal_juv[t]
+      mal_juv_nondemo[t]  <- proportion_nondemographic[["MJ"]] * mal_juv_to_sub_total
+      mal_juv_to_sub  <- (1 - proportion_nondemographic[["MJ"]]) * mal_juv_to_sub_total
+      
+      # MS stock 
+      mal_sub_grow[t] <- mal_juv_to_sub + (1 - probability_growth[["MS"]]) * mal_sub[t]
+      
+      # MS -> MA
+      mal_sub_to_adult_total <- probability_growth[["MS"]] * mal_sub[t]
+      mal_sub_nondemo[t]    <- proportion_nondemographic[["MS"]] * mal_sub_to_adult_total
+      mal_sub_to_adult  <- (1 - proportion_nondemographic[["MS"]]) * mal_sub_to_adult_total
+      
+      # MA stock 
+      mal_adult_grow[t] <- mal_sub_to_adult + (1 - probability_growth[["MA"]]) * mal_adult[t]
+      
+      # MA -> MC
+      mal_adult_to_cull_total <- probability_growth[["MA"]] * mal_adult[t]
+      mal_adult_nondemo[t]   <- proportion_nondemographic[["MA"]] * mal_adult_to_cull_total
+      mal_adult_to_cull  <- (1 - proportion_nondemographic[["MA"]]) * mal_adult_to_cull_total
+      
+      mal_cull_grow[t] <- mal_adult_to_cull
+      
     }
   }
 
@@ -544,11 +692,21 @@ calc_projected_population_size <- function(
     mal_birth_fec[366], mal_juv_fec[366], mal_sub_fec[366], mal_adult_fec[366],
     mal_cull_fec[366]
   )
+  
+  # Extract total size_nondemo over the assessment period (1 y)
+  cohort_stock_annual_nondemographic <- c(
+    FJ = sum(fem_juv_nondemo,   na.rm = TRUE),
+    FS = sum(fem_sub_nondemo,   na.rm = TRUE),
+    FA = sum(fem_adult_nondemo, na.rm = TRUE),
+    MJ = sum(mal_juv_nondemo,   na.rm = TRUE),
+    MS = sum(mal_sub_nondemo,   na.rm = TRUE),
+    MA = sum(mal_adult_nondemo, na.rm = TRUE)
+  )
 
   names(size_end_exact) <- names(offtake) <- c(
     "FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC"
   )
-  names(size) <- names(size_end) <- names(size_avg) <- c(
+  names(size) <- names(size_end) <- names(size_avg) <- names(cohort_stock_annual_nondemographic) <- c(
     "FJ", "FS", "FA", "MJ", "MS", "MA"
   )
 
@@ -558,6 +716,7 @@ calc_projected_population_size <- function(
       cohort_stock_end_projected = size_end,
       cohort_stock_end_exact_simulated = size_end_exact,
       cohort_stock_average = size_avg,
+      cohort_stock_annual_nondemographic = cohort_stock_annual_nondemographic,
       cohort_offtake_heads = offtake
     )
   )
@@ -643,7 +802,7 @@ calc_summary_offtake <- function(
   names(stock_variation_heads) <- names(offtake_heads) <- names(offtake_heads_assessment) <-
     names(offtake_rate_to_stock_start) <- names(offtake_rate_to_stock_average) <-
     names(offtake_stock_variation_heads) <- names(offtake_stock_plus_variation_rate_to_stock_start) <-
-    names(offtake_stock_plus_variation_rate_to_stock_average) <- gleam_cohorts
+    names(offtake_stock_plus_variation_rate_to_stock_average) <- gleam_cohorts_demographic
 
   return(
     list(
