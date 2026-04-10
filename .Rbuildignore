@@ -1,4 +1,6 @@
 ^gleam\.Rproj$
+^GLEAM-fao\.Rproj$
+^\.cursor$
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^\.github$
