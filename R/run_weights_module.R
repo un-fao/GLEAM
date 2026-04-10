@@ -9,6 +9,17 @@
 #' @param cohort_level_data A \code{data.table} in long format with one row per
 #'   herd \eqn{\times} cohort. Must include:
 #'   \describe{
+#'     \item{species_short}{Character. Code identifying the livestock species.
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }}
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 #'     \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 #'       \itemize{
@@ -21,7 +32,7 @@
 #'         \item \code{FN}: non-demographic females
 #'         \item \code{MN}: non-demographic males
 #'       }}
-#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.}
 #'     \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 #'   }
 #'   Optional column:
@@ -131,7 +142,6 @@ run_weights_module <- function(
     herd_level_data,
     show_indicator = TRUE
 ) {
-
   # --- Step 1: Validate Inputs -----------------------------------------------
   validate_run_weights_module_inputs(cohort_level_data, herd_level_data)
 
@@ -157,6 +167,7 @@ run_weights_module <- function(
       "live_weight_cohort_potential_final",
       "live_weight_cohort_at_slaughter"
     ) := calc_cohort_weights(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       nondemo_productive_phase_id = nondemo_productive_phase_id,
       live_weight_female_adult = herd_level_data[.SD, on = "herd_id", x.live_weight_female_adult],

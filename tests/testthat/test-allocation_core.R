@@ -144,6 +144,34 @@ test_that("calc_meat_allocation_energy returns correct value for goats", {
   expect_equal(result, expected_specific * 15)
 })
 
+test_that("calc_meat_allocation_energy returns correct value for chickens", {
+  result <- calc_meat_allocation_energy(
+    species_short = "CHK",
+    cohort_short = "FJ",
+    meat_production_live_weight_cohort = 10,
+    live_weight_cohort_at_slaughter = 2,
+    live_weight_at_birth = 0.04
+  )
+
+  expected_specific <- (((0.0279 + 0.0202) / 2) * 1000 * (2 - 0.04)) / 2
+  expect_equal(result, expected_specific * 10)
+})
+
+test_that("calc_meat_allocation_energy uses explicit egg-producing FN flag", {
+  result <- calc_meat_allocation_energy(
+    species_short = "CHK",
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 2,
+    meat_production_live_weight_cohort = 10,
+    live_weight_cohort_at_slaughter = 2,
+    live_weight_at_birth = 0.04,
+    is_egg_producing = TRUE
+  )
+
+  expected_specific <- (((0.0279 + 0.0202) / 2) * 1000 * (2 - 0.04)) / 2
+  expect_equal(result, expected_specific * 10)
+})
+
 test_that("calc_meat_allocation_energy validates animal species", {
   expect_error(
     calc_meat_allocation_energy(
@@ -389,6 +417,128 @@ test_that("calc_work_allocation_energy validates inputs", {
   )
 })
 
+# ---- test calc_egg_allocation_energy ----
+
+test_that("calc_egg_allocation_energy returns expected value for chickens", {
+  result <- calc_egg_allocation_energy(
+    species_short = "CHK",
+    cohort_short = "FA",
+    egg_production_mass_cohort = 100,
+    is_egg_producing = TRUE
+  )
+
+  expect_equal(result, 100 * 10.04)
+  expect_equal(
+    calc_egg_allocation_energy(
+      species_short = "CHK",
+      cohort_short = "FS",
+      egg_production_mass_cohort = 100
+    ),
+    0
+  )
+})
+
+test_that("calc_egg_allocation_energy returns expected value for egg-producing chicken FN", {
+  result <- calc_egg_allocation_energy(
+    species_short = "CHK",
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 2,
+    egg_production_mass_cohort = 100,
+    is_egg_producing = TRUE
+  )
+
+  expect_equal(result, 100 * 10.04)
+})
+
+test_that("calc_egg_allocation_energy validates egg-producing flag placement", {
+  expect_error(
+    calc_egg_allocation_energy(
+      species_short = "CHK",
+      cohort_short = "FS",
+      egg_production_mass_cohort = 100,
+      is_egg_producing = TRUE
+    ),
+    "can be TRUE only for CHK cohorts.*FA.*FN"
+  )
+
+  expect_error(
+    calc_egg_allocation_energy(
+      species_short = "CHK",
+      cohort_short = "FN",
+      nondemo_productive_phase_id = 1,
+      egg_production_mass_cohort = 100,
+      is_egg_producing = TRUE
+    ),
+    "can be TRUE for.*FN.*only when.*2"
+  )
+})
+
+test_that("run_allocation_module example inputs work with explicit egg columns", {
+  cohort_path <- testthat::test_path(
+    "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_chrt_data.csv"
+  )
+  herd_path <- testthat::test_path(
+    "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_hrd_data.csv"
+  )
+
+  cohort_level_data <- data.table::fread(
+    cohort_path,
+    sep = "\t"
+  )
+  herd_level_data <- data.table::fread(
+    herd_path,
+    sep = "\t"
+  )
+
+  result <- run_allocation_module(
+    cohort_level_data = cohort_level_data,
+    herd_level_data = herd_level_data,
+    simulation_duration = 365,
+    show_indicator = FALSE
+  )
+
+  expect_true("egg_allocation_energy" %in% names(result$cohort_allocation_inputs))
+  expect_true("allocation_long" %in% names(result))
+})
+
+test_that("run_allocation_module requires explicit egg/allocation columns", {
+  cohort_path <- testthat::test_path(
+    "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_chrt_data.csv"
+  )
+  herd_path <- testthat::test_path(
+    "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_hrd_data.csv"
+  )
+
+  cohort_level_data <- data.table::fread(
+    cohort_path,
+    sep = "\t"
+  )
+  herd_level_data <- data.table::fread(
+    herd_path,
+    sep = "\t"
+  )
+
+  expect_error(
+    run_allocation_module(
+      cohort_level_data = cohort_level_data[, !"egg_production_mass_cohort"],
+      herd_level_data = herd_level_data,
+      simulation_duration = 365,
+      show_indicator = FALSE
+    ),
+    "egg_production_mass_cohort"
+  )
+
+  expect_error(
+    run_allocation_module(
+      cohort_level_data = cohort_level_data[, !"is_egg_producing"],
+      herd_level_data = herd_level_data,
+      simulation_duration = 365,
+      show_indicator = FALSE
+    ),
+    "is_egg_producing"
+  )
+})
+
 # ---- test calc_allocation_shares ----
 
 test_that("calc_allocation_shares returns meat=1 and others=0 for pigs (PGS)", {
@@ -459,4 +609,18 @@ test_that("calc_allocation_shares returns a named list with 5 elements", {
     "meat_share_allocation", "milk_share_allocation",
     "fibre_share_allocation", "work_share_allocation", "eggs_share_allocation"
   ))
+})
+
+test_that("calc_allocation_shares includes eggs for chickens", {
+  result <- calc_allocation_shares(
+    species_short = "CHK",
+    meat_allocation_energy = 20,
+    milk_allocation_energy = 0,
+    fibre_allocation_energy = 0,
+    work_allocation_energy = 0,
+    egg_allocation_energy = 80
+  )
+
+  expect_equal(result$meat_share_allocation, 0.2)
+  expect_equal(result$eggs_share_allocation, 0.8)
 })

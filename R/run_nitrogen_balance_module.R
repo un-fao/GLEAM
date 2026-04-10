@@ -21,10 +21,13 @@
 #'     \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
 #'     for non-demographic cohorts (\code{FN}, \code{MN}). When present, nitrogen
 #'     balance outputs are computed and retained separately by phase.}
+#'     \item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+#'     chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
+#'     \code{FA} or for \code{FN} in laying phase 2.}
 #'     \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'     \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 #'     \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
-#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.}
 #'   }
 #'
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with
@@ -41,6 +44,7 @@
 #'         \item \code{BFL}: buffalo
 #'         \item \code{SHP}: sheep
 #'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
 #'         }}
 #'    \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein / kg milk).
 #'    Required only for species = CML, CTL, BFL, SHP, and GTS.}
@@ -52,17 +56,13 @@
 #'     \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as
 #'     wool, cashmere, mohair (kg/head/year).
 #'     Required only for species = CML, SHP, and GTS.}
-#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition).
-#'     This value can be calculated as the total number of offspring born divided
-#'     by the total number of parturitions during the year.}
-#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per
-#'     female animal (# parturitions/adult female/year).
-#'     A herd-level reproductive performance indicator calculated as the total
-#'     number of parturitions (deliveries) occurring during
-#'     a year divided by the number of adult females potentially able to give birth during that year.}
+#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). For \code{CHK}, this can be interpreted as offspring produced per reproductive event. The alias \code{offspring_per_reproductive_event} is also accepted.}
+#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per adult female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction. The alias \code{reproductive_rate} is also accepted.}
 #'     \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
+#'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}. The alias \code{egg_weight} is also accepted and is converted internally from g/egg to kg/egg.}
+#'     \item{egg_output_human_consumption}{Numeric. Number of eggs produced for human consumption in one year by the flock (eggs/year). Used for \code{CHK}.}
 #'   }
 #'
 #' @param show_indicator Logical. Whether to display progress indicators during simulation.
@@ -132,6 +132,25 @@ run_nitrogen_balance_module <- function(
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
   herd_level_data <- data.table::as.data.table(herd_level_data)
 
+  harmonize_herd_input_aliases(herd_level_data)
+  apply_chk_cohort_duration_defaults(cohort_level_data, herd_level_data)
+  ensure_optional_columns(
+    cohort_level_data,
+    list(
+      cohort_stock_size = NA_real_,
+      nondemo_productive_phase_id = NA_real_,
+      is_egg_producing = FALSE
+    )
+  )
+  normalize_is_egg_producing(cohort_level_data)
+  ensure_optional_columns(
+    herd_level_data,
+    list(
+      egg_output_human_consumption = 0,
+      egg_average_weight = NA_real_
+    )
+  )
+
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_nitrogen_balance_module_inputs(cohort_level_data, herd_level_data)
 
@@ -159,6 +178,7 @@ run_nitrogen_balance_module <- function(
     nitrogen_retention := calc_nitrogen_retention(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
+      nondemo_productive_phase_id = nondemo_productive_phase_id,
       milk_protein_fraction = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction],
       milk_yield_day = herd_level_data[.SD, on = "herd_id", x.milk_yield_day],
       daily_weight_gain = daily_weight_gain,
@@ -168,7 +188,11 @@ run_nitrogen_balance_module <- function(
       live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning],
       live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
       pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
-      cohort_duration_days = cohort_duration_days
+      cohort_duration_days = cohort_duration_days,
+      cohort_stock_size = cohort_stock_size,
+      egg_output_human_consumption = herd_level_data[.SD, on = "herd_id", x.egg_output_human_consumption],
+      egg_average_weight = herd_level_data[.SD, on = "herd_id", x.egg_average_weight],
+      is_egg_producing = is_egg_producing
     ),
     by = .I
   ]

@@ -133,6 +133,7 @@ calc_milk_allocation_energy <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
@@ -150,6 +151,11 @@ calc_milk_allocation_energy <- function(
 #' cohort (kg/cohort/assessment period).
 #' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
 #' species_short = CML.
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase
+#'   identifier for non-demographic cohorts.
+#' @param is_egg_producing Logical. Cohort-level flag identifying egg-producing
+#'   \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
+#'   \code{FN} with \code{nondemo_productive_phase_id = 2}.
 #'
 #' @return Numeric. Energy required by a given sex–age cohort for total meat output by cohort during the assessment
 #' period,
@@ -206,6 +212,20 @@ calc_milk_allocation_energy <- function(
 #'   function and \code{0} is returned. In downstream processing,
 #'   \code{\link{calc_allocation_shares}} assigns 100% of the allocation to the
 #'   edible meat commodity for pig systems.
+#'
+#'   \item \strong{For \code{CHK}}:
+#'
+#'   Poultry meat allocation uses:
+#'
+#'   \deqn{
+#'   specific\_energy\_meat =
+#'   \frac{cgro \times 1000 \times (live\_weight\_cohort\_at\_slaughter - live\_weight\_at\_birth)}
+#'   {live\_weight\_cohort\_at\_slaughter}
+#'   }
+#'
+#'   where \eqn{cgro = (0.0279 + 0.0202) / 2 = 0.02405} MJ/g. This uses the
+#'   average of the adult and juvenile/sub-adult poultry growth coefficients and
+#'   converts from g to kg via the factor 1000 in the equation above.
 #' }
 #'
 #' This function is part of the [run_allocation_module()].
@@ -236,6 +256,9 @@ calc_milk_allocation_energy <- function(
 #' supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 #' and Performance (LEAP) Partnership. FAO, Rome, Italy.
 #'
+#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
+#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#'
 #' @seealso
 #' \code{\link{run_allocation_module}},
 #' \code{\link{calc_meat_production}},
@@ -249,14 +272,20 @@ calc_meat_allocation_energy <- function(
     meat_production_live_weight_cohort,
     live_weight_cohort_at_slaughter = NA_real_,
     live_weight_at_birth = NA_real_,
-    ratio_me_to_ne = NA_real_
+    ratio_me_to_ne = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
 ) {
   validate_allocation_meat_inputs(
     species_short, cohort_short, meat_production_live_weight_cohort,
-    live_weight_cohort_at_slaughter, live_weight_at_birth, ratio_me_to_ne
+    live_weight_cohort_at_slaughter, live_weight_at_birth, ratio_me_to_ne,
+    nondemo_productive_phase_id, is_egg_producing
   )
 
-  if (species_short %in% c("CTL", "BFL")) {
+  if (species_short == "PGS") {
+    specific_energy_meat <- 0
+
+  } else if (species_short %in% c("CTL", "BFL")) {
     # Cattle and Buffalo: use growth efficiency factor based on cohort
     growth_efficiency_factor <- if (cohort_short %in% gleam_cohorts_female) 0.8 else 1
     specific_energy_meat <- (
@@ -294,12 +323,12 @@ calc_meat_allocation_energy <- function(
       (live_weight_cohort_at_slaughter - live_weight_at_birth) *
         (a + 0.5 * b * (live_weight_at_birth + live_weight_cohort_at_slaughter))
     ) / live_weight_cohort_at_slaughter
-  } else if (species_short == "PGS") {
-    # Pigs: not calculated (returns 0)
-    return(0)
+  } else if (species_short == "CHK") {
+      cgro <- (0.0279 + 0.0202) / 2
+    specific_energy_meat <- (
+      cgro * 1000 * (live_weight_cohort_at_slaughter - live_weight_at_birth)
+    ) / live_weight_cohort_at_slaughter
   }
-
-  # Multiply specific energy by meat output to get total energy allocation
   meat_allocation_energy <- specific_energy_meat * meat_production_live_weight_cohort
 
   return(meat_allocation_energy)
@@ -557,6 +586,68 @@ calc_work_allocation_energy <- function(
   }
 
   return(work_allocation_energy)
+}
+
+#' Calculate egg energy requirements (for biophysical allocation)
+#'
+#' Calculates the energy required for egg production over the assessment period
+#' (MJ/cohort/assessment period) for chicken adult females.
+#'
+#' @param species_short Character. Code identifying the livestock species.
+#' @param cohort_short Character. Sex- and age-specific cohort code.
+#' @param egg_production_mass_cohort Numeric. Total egg mass produced over the
+#'   assessment period by cohort (kg/cohort/assessment period).
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase
+#'   identifier for non-demographic cohorts.
+#' @param is_egg_producing Logical. Cohort-level flag identifying egg-producing
+#'   \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
+#'   \code{FN} with \code{nondemo_productive_phase_id = 2}.
+#'
+#' @return Numeric. Energy required to produce all eggs during the assessment
+#'   period (MJ/cohort/assessment period).
+#'
+#' @details
+#' For chickens, egg allocation energy is computed only for cohorts flagged with
+#' \code{is_egg_producing = TRUE}. Validation restricts this flag to
+#' demographic laying hens (\code{FA}) and to non-demographic \code{FN} phase 2
+#' when intensive layers are represented in the non-demographic pathway.
+#'
+#' \deqn{
+#' egg\_allocation\_energy =
+#' egg\_production\_mass\_cohort \times 10.04
+#' }
+#'
+#' where 10.04 MJ/kg egg is the poultry egg-production coefficient adapted from
+#' Sakomura (2004) and expressed on a kilogram basis for consistency with the
+#' allocation framework.
+#'
+#' @references
+#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
+#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#'
+#' @export
+calc_egg_allocation_energy <- function(
+    species_short,
+    cohort_short,
+    egg_production_mass_cohort,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
+) {
+  validate_allocation_egg_inputs(
+    species_short = species_short,
+    cohort_short = cohort_short,
+    nondemo_productive_phase_id = nondemo_productive_phase_id,
+    egg_production_mass_cohort = egg_production_mass_cohort,
+    is_egg_producing = is_egg_producing
+  )
+
+  if (!isTRUE(is_egg_producing)) {
+    return(0)
+  }
+
+  egg_allocation_energy <- egg_production_mass_cohort * 10.04
+
+  return(egg_allocation_energy)
 }
 
 #' Aggregate cohort-level to herd-level data

@@ -26,7 +26,10 @@ validate_run_allocation_module_inputs <- function(
     "meat_production_live_weight_cohort",
     "metabolic_energy_req_fibre_production",
     "cohort_stock_size",
-    "metabolic_energy_req_work"
+    "metabolic_energy_req_work",
+    "egg_production_mass_cohort",
+    "nondemo_productive_phase_id",
+    "is_egg_producing"
   )
   required_herd_cols <- c(
     "herd_id",
