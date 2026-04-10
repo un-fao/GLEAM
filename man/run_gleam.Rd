@@ -554,7 +554,7 @@ Validation blocks variables that are expected to be produced internally.
 # Example 1: You do NOT have herd structure — use combined demographic and
 # non-demographic cohort input for herd simulation. Pipeline runs herd
 # simulation first, then the rest of the pipeline.
-\donttest{
+\dontrun{
 path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 
 master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
@@ -593,22 +593,22 @@ results <- run_gleam(
   feed_emissions = feed_emissions_dt,
   manure_management_system_fraction = manure_management_system_fraction_dt,
   manure_management_system_factors = manure_management_system_factors_dt,
-  simulation_duration = 365
+  simulation_duration = 365,
+  show_indicator = FALSE
 )
-print(results$cohort_level_results)
-print(results$allocation_long)
+names(results)
 }
 
 # Example 2: You already HAVE herd structure — use cohort table and skip herd simulation.
 # Pipeline skips herd simulation and uses this as the starting cohort table.
-\donttest{
+\dontrun{
 path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 
 master_chrt_lvl_structure_dt <- data.table::fread(file.path(
   path_run_gleam_examples, "master_chrt_lvl_structure_data.csv"
 ))
 master_hrd_lvl_dt <- data.table::fread(
-file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
+file.path(path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv")
 )
 feed_rations_chrt_dt <- data.table::fread(
 file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
@@ -631,6 +631,8 @@ manure_management_system_factors_dt <- data.table::fread(
 
 results <- run_gleam(
   has_herd_structure = TRUE,
+  run_demographic = FALSE,
+  run_nondemographic = FALSE,
   cohort_level_data = master_chrt_lvl_structure_dt,
   herd_level_data = master_hrd_lvl_dt,
   feed_rations = feed_rations_chrt_dt,
@@ -639,10 +641,10 @@ results <- run_gleam(
   manure_management_system_fraction = manure_management_system_fraction_dt,
   manure_management_system_factors = manure_management_system_factors_dt,
   simulation_duration = 365,
-  global_warming_potential_set = "AR6"
+  global_warming_potential_set = "AR6",
+  show_indicator = FALSE
 )
-print(results$cohort_level_results)
-print(results$allocation_long)
+names(results)
 }
 }
 \seealso{

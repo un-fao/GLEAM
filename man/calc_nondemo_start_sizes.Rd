@@ -13,7 +13,7 @@ calc_nondemo_start_sizes(
 \item{cohort_stock_nondemo_annual_entrants}{Numeric. Total number of animals
 entering the nondemographic production pathway over the simulated period
 for the assessed cohort block (\code{FN} or \code{MN})
-(\# heads / simulated period).}
+(heads / simulated period).}
 
 \item{total_nondemo_cycle_starts_to_distribute}{Integer. Total number of
 cycle starts within the fixed 365-day time horizon for the assessed
@@ -26,7 +26,7 @@ A named list with the following element:
 \item{cohort_stock_nondemo_start_cycle}{Numeric. Number of animals starting
 each nondemographic production cycle for the assessed cohort block
 (\code{FN} or \code{MN}), calculated by distributing total annual entrants
-over the total number of cycle starts (\# heads / cycle).}
+over the total number of cycle starts (heads / cycle).}
 }
 }
 \description{

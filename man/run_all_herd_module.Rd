@@ -222,14 +222,10 @@ structure for downstream use in \code{\link[=run_gleam]{run_gleam()}}.
 }
 \details{
 The function supports three execution modes:
-\subsection{1. Demographic only (see \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}} for additional details)}{
-}
-
-\subsection{2. Non-demographic only (see \code{\link[=run_nondemographic_herd_module]{run_nondemographic_herd_module()}} for additional details)}{
-}
-
-\subsection{3. Demographic and non-demographic together}{
-
+\enumerate{
+\item Demographic only: see \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}} for additional details.
+\item Non-demographic only: see \code{\link[=run_nondemographic_herd_module]{run_nondemographic_herd_module()}} for additional details.
+\item Demographic and non-demographic together:
 When \code{run_demographic = TRUE} and \code{run_nondemographic = TRUE}, the function:
 \enumerate{
 \item runs \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}} on the demographic subset
@@ -238,6 +234,7 @@ When \code{run_demographic = TRUE} and \code{run_nondemographic = TRUE}, the fun
 \item row-binds the two cohort-level result tables
 \item harmonizes shared output columns
 \item rescales average stock and offtake to the herd total
+}
 }
 
 When both modules are run, annual entrants into the non-demographic blocks
@@ -288,7 +285,6 @@ proportionally from the unscaled cohort stock to the scaled cohort stock
 When only one module is run, no cross-module rescaling is needed and
 \code{cohort_stock_size_unscaled} is simply renamed to \code{cohort_stock_size}.
 }
-}
 \examples{
 \dontrun{ 
 # Use case 1 - *Run the demographic only*:
@@ -313,10 +309,7 @@ out <- run_all_herd_module(
 
 
 # Access the results
-demo_cohort_results <- out$cohort_level_results
-demo_cohort_results
-demo_herd_results   <- out$herd_level_results
-demo_herd_results
+names(out)
 
 =====
 
@@ -342,7 +335,7 @@ results <- run_all_herd_module(
 
 
 # Access the results
-results$cohort_level_results
+names(results)
 =====
 
 # Use case 3 - *Run both the demographic and non-demographic*:
@@ -366,8 +359,7 @@ out <- run_all_herd_module(
 )
 
 # Access the results
-combined_cohort <- out$cohort_level_results
-combined_cohort
+names(out)
 demo_herd <- out$herd_level_results
 demo_herd
 }

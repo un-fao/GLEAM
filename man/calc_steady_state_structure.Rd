@@ -48,7 +48,8 @@ A named list with:
 \item{herd_structure}{Named numeric vector of length 8. Final steady-state share of each of 8 sex-age cohorts (\code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}) (fraction). Shares should sum to 1.}
 \item{cohort_share}{Named numeric vector of length 6. Final steady-state share of 6 grouped sex-age cohorts  (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}, where \code{FJ = FB + FJ} and \code{MJ = MB + MJ}) (fraction). Shares should sum to 1.}
 \item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction)}
-\item{herd_size_total_demographic}{Numeric. Total number of animals remaining in the demographic component after estimated (# heads).
+\item{size_unscaled}{Named numeric vector of length 6. Final steady-state population size by grouped demographic sex-age cohort before rescaling to the observed herd total (heads).}
+\item{herd_size_total_demographic}{Numeric. Total number of animals remaining in the demographic component after the steady-state simulation (heads).}
 }
 
 This function is part of the \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}.

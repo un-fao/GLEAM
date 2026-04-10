@@ -310,7 +310,7 @@ calc_nondemo_cycle_geometry <- function(
 #' @param cohort_stock_nondemo_annual_entrants Numeric. Total number of animals
 #'   entering the nondemographic production pathway over the simulated period
 #'   for the assessed cohort block (\code{FN} or \code{MN})
-#'   (\# heads / simulated period).
+#'   (heads / simulated period).
 #'
 #' @param total_nondemo_cycle_starts_to_distribute Integer. Total number of
 #'   cycle starts within the fixed 365-day time horizon for the assessed
@@ -359,7 +359,7 @@ calc_nondemo_cycle_geometry <- function(
 #'   \item{cohort_stock_nondemo_start_cycle}{Numeric. Number of animals starting
 #'   each nondemographic production cycle for the assessed cohort block
 #'   (\code{FN} or \code{MN}), calculated by distributing total annual entrants
-#'   over the total number of cycle starts (\# heads / cycle).}
+#'   over the total number of cycle starts (heads / cycle).}
 #' }
 #'
 #' @seealso
@@ -398,7 +398,7 @@ calc_nondemo_start_sizes <- function(
 #'
 #' @param cohort_stock_nondemo_start_by_phase Numeric. Number of animals
 #'   entering a nondemographic productive phase for the assessed cohort
-#'   (\code{FN} or \code{MN}) (\# heads / phase).
+#'   (\code{FN} or \code{MN}) (heads / phase).
 #'   When used for productive phase 1, this represents the number of animals starting
 #'   each nondemographic production cycle (\code{cohort_stock_nondemo_start_cycle}),
 #'   computed using \code{calc_nondemo_start_sizes()}. When used for productive phase 2,
@@ -481,8 +481,8 @@ calc_nondemo_start_sizes <- function(
 #'   the productive phase (days).}
 #'   \item{cohort_stock_nondemo}{List with:
 #'     \describe{
-#'       \item{\code{start}}{Numeric. Number of animals at the beginning of the simulated productive phase (# heads).}
-#'       \item{\code{end}}{Numeric. Number of animals remaining at the end of the simulated productive phase after applying mortality over the simulated time interval (# heads).}
+#'       \item{\code{start}}{Numeric. Number of animals at the beginning of the simulated productive phase (heads).}
+#'       \item{\code{end}}{Numeric. Number of animals remaining at the end of the simulated productive phase after applying mortality over the simulated time interval (heads).}
 #'     }}
 #' }
 #'
@@ -755,16 +755,16 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 #' \describe{
 #'   \item{offtake_heads_nondemo_phase1}{Numeric. Total number of animals
 #'   removed at the end of productive phase 1 of the nondemographic block over
-#'   the fixed 365-day horizon (\# heads).}
+#'   the fixed 365-day horizon (heads).}
 #'   \item{offtake_heads_nondemo_phase2}{Numeric. Total number of animals
 #'   removed at the end of productive phase 2 of the nondemographic block over
-#'   the fixed 365-day horizon (\# heads).}
+#'   the fixed 365-day horizon (heads).}
 #'   \item{offtake_heads_assessment_nondemo_phase1}{Numeric. Total number of
 #'   animals removed at the end of productive phase 1 of the nondemographic
-#'   block over \code{simulation_duration} (\# heads / simulated period).}
+#'   block over \code{simulation_duration} (heads / simulated period).}
 #'   \item{offtake_heads_assessment_nondemo_phase2}{Numeric. Total number of
 #'   animals removed at the end of productive phase 2 of the nondemographic
-#'   block over \code{simulation_duration} (\# heads / simulated period).}
+#'   block over \code{simulation_duration} (heads / simulated period).}
 #' }
 #'
 #' @seealso

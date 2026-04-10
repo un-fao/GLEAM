@@ -61,16 +61,16 @@ A named list with:
 \describe{
 \item{offtake_heads_nondemo_phase1}{Numeric. Total number of animals
 removed at the end of productive phase 1 of the nondemographic block over
-the fixed 365-day horizon (\# heads).}
+the fixed 365-day horizon (heads).}
 \item{offtake_heads_nondemo_phase2}{Numeric. Total number of animals
 removed at the end of productive phase 2 of the nondemographic block over
-the fixed 365-day horizon (\# heads).}
+the fixed 365-day horizon (heads).}
 \item{offtake_heads_assessment_nondemo_phase1}{Numeric. Total number of
 animals removed at the end of productive phase 1 of the nondemographic
-block over \code{simulation_duration} (\# heads / simulated period).}
+block over \code{simulation_duration} (heads / simulated period).}
 \item{offtake_heads_assessment_nondemo_phase2}{Numeric. Total number of
 animals removed at the end of productive phase 2 of the nondemographic
-block over \code{simulation_duration} (\# heads / simulated period).}
+block over \code{simulation_duration} (heads / simulated period).}
 }
 }
 \description{

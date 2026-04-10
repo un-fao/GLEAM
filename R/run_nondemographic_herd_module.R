@@ -128,7 +128,7 @@
 #' )
 #'
 #' # Access results
-#' print(results)
+#' names(results)
 #' }
 #'
 #' @export

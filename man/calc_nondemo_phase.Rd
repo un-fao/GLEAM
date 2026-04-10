@@ -14,7 +14,7 @@ calc_nondemo_phase(
 \arguments{
 \item{cohort_stock_nondemo_start_by_phase}{Numeric. Number of animals
 entering a nondemographic productive phase for the assessed cohort
-(\code{FN} or \code{MN}) (\# heads / phase).
+(\code{FN} or \code{MN}) (heads / phase).
 When used for productive phase 1, this represents the number of animals starting
 each nondemographic production cycle (\code{cohort_stock_nondemo_start_cycle}),
 computed using \code{calc_nondemo_start_sizes()}. When used for productive phase 2,
@@ -47,8 +47,8 @@ A named list with:
 the productive phase (days).}
 \item{cohort_stock_nondemo}{List with:
 \describe{
-\item{\code{start}}{Numeric. Number of animals at the beginning of the simulated productive phase (# heads).}
-\item{\code{end}}{Numeric. Number of animals remaining at the end of the simulated productive phase after applying mortality over the simulated time interval (# heads).}
+\item{\code{start}}{Numeric. Number of animals at the beginning of the simulated productive phase (heads).}
+\item{\code{end}}{Numeric. Number of animals remaining at the end of the simulated productive phase after applying mortality over the simulated time interval (heads).}
 }}
 }
 }

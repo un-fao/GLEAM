@@ -137,7 +137,7 @@ results <- run_nondemographic_herd_module(
 )
 
 # Access results
-print(results)
+names(results)
 }
 
 }

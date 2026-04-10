@@ -229,8 +229,7 @@ results <- run_demographic_herd_module(
 )
 
 # Access results
-print(results$cohort_level_results)
-print(results$herd_level_results)
+names(results)
 }
 
 }

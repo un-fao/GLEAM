@@ -146,11 +146,11 @@
 #' @details
 #' The function supports three execution modes:
 #'
-#' ## 1. Demographic only (see [run_demographic_herd_module()] for additional details)
-#' 
-#' ## 2. Non-demographic only (see [run_nondemographic_herd_module()] for additional details)
-#' 
-#' ## 3. Demographic and non-demographic together 
+#' 1. Demographic only: see [run_demographic_herd_module()] for additional details.
+#'
+#' 2. Non-demographic only: see [run_nondemographic_herd_module()] for additional details.
+#'
+#' 3. Demographic and non-demographic together:
 #' When `run_demographic = TRUE` and `run_nondemographic = TRUE`, the function:
 #' \enumerate{
 #'   \item runs [run_demographic_herd_module()] on the demographic subset
@@ -302,10 +302,7 @@
 #'
 #' 
 #' # Access the results
-#' demo_cohort_results <- out$cohort_level_results
-#' demo_cohort_results
-#' demo_herd_results   <- out$herd_level_results
-#' demo_herd_results
+#' names(out)
 #' 
 #'=====
 #'
@@ -331,7 +328,7 @@
 #' 
 #' 
 #' # Access the results
-#' results$cohort_level_results
+#' names(results)
 
 #'=====
 #'
@@ -356,8 +353,7 @@
 #' )
 #'
 #' # Access the results
-#' combined_cohort <- out$cohort_level_results
-#' combined_cohort
+#' names(out)
 #' demo_herd <- out$herd_level_results
 #' demo_herd
 #' }

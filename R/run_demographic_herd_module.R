@@ -213,8 +213,7 @@
 #' )
 #'
 #' # Access results
-#' print(results$cohort_level_results)
-#' print(results$herd_level_results)
+#' names(results)
 #' }
 #'
 #' @export
