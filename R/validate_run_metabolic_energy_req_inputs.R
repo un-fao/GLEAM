@@ -95,7 +95,10 @@ validate_run_metabolic_energy_req_module_inputs <- function(
   # --- Numeric consistency (herd-level) ----------------------------------------
   # live_weight_at_birth < live_weight_at_weaning where both present (strict)
   bad_birth_weaning <- herd_level_data[
-    !is.na(live_weight_at_birth) & !is.na(live_weight_at_weaning) & live_weight_at_birth >= live_weight_at_weaning,
+    !is.na(live_weight_at_birth) &
+      !is.na(live_weight_at_weaning) &
+      live_weight_at_birth >= live_weight_at_weaning &
+      species_short != "CHK",
     herd_id
   ]
   if (length(bad_birth_weaning) > 0) {

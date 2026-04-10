@@ -20,6 +20,9 @@
 #'     \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
 #'     for non-demographic cohorts (\code{FN}, \code{MN}). When present, energy
 #'     requirements are computed and retained separately by phase.}
+#'     \item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+#'     chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
+#'     \code{FA} or for \code{FN} in laying phase 2.}
 #'     \item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
 #'     \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 #'     \item{low_activity_fraction}{Numeric. Proportion of the assessment period during which the animal performs low-intensity movement typical of stall-feeding or near-field grazing, characterized by minimal walking distances and flat terrain  (fraction).}
@@ -28,7 +31,7 @@
 #'     \item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
 #'     \item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 #'     \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
-#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.}
 #'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 #'     \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 #'     \item{ration_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
@@ -46,20 +49,23 @@
 #'         \item \code{BFL}: buffalo
 #'         \item \code{SHP}: sheep
 #'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
 #'         }}
-#'     \item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
+#'     \item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days). The alias \code{age_at_first_offspring} is also accepted.}
 #'     \item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 #'     \item{milk_yield_day}{Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals during the assessment period, divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 #'     \item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat / kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 #'     \item{non_productive_duration}{Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days). Required only for PGS.}
 #'     \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
-#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). For \code{CHK}, this can be interpreted as offspring produced per reproductive event. The alias \code{offspring_per_reproductive_event} is also accepted.}
 #'     \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
 #'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.}
-#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance
-#'     indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction. The alias \code{reproductive_rate} is also accepted.}
+#'     \item{average_annual_temperature}{Numeric. Average annual temperature (degrees C). Used for \code{CHK}.}
+#'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}. The alias \code{egg_weight} is also accepted and is converted internally from g/egg to kg/egg.}
+#'     \item{egg_output_human_consumption}{Numeric. Number of eggs produced for human consumption in one year by the flock (eggs/year). Used for \code{CHK}.}
 #'     \item{draught_work_hours_female}{Numeric. Average daily working time per adult female (hours/head/day). Required only for species = CML, CTL, and BFL.}
 #'     \item{draught_work_hours_male}{Numeric. Average daily working time per adult male (hours/head/day). Required only for species = CML, CTL, and BFL.}
 #'     \item{draught_fraction_female}{Numeric. Fraction of adult females involved in draught work (fraction). Required only for species = CML, CTL, and BFL.}
@@ -187,9 +193,17 @@ run_metabolic_energy_req_module <- function(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       live_weight_cohort_average = live_weight_cohort_average,
+      nondemo_productive_phase_id = nondemo_productive_phase_id,
       lactating_females_fraction = herd_level_data[.SD, on = "herd_id", x.lactating_females_fraction],
       offtake_rate = offtake_rate,
-      age_first_parturition = herd_level_data[.SD, on = "herd_id", x.age_first_parturition]
+      age_first_parturition = herd_level_data[.SD, on = "herd_id", x.age_first_parturition],
+      average_annual_temperature = herd_level_data[.SD, on = "herd_id", x.average_annual_temperature],
+      lower_critical_temperature = ifelse(
+        herd_level_data[.SD, on = "herd_id", x.species_short] == "CHK",
+        18.89,
+        NA_real_
+      ),
+      is_egg_producing = is_egg_producing
     ),
     by = .I
   ]
@@ -214,13 +228,15 @@ run_metabolic_energy_req_module <- function(
     metabolic_energy_req_growth := calc_metabolic_energy_req_growth(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
+      nondemo_productive_phase_id = nondemo_productive_phase_id,
       live_weight_cohort_average = live_weight_cohort_average,
       live_weight_cohort_final = live_weight_cohort_final,
       live_weight_cohort_initial = live_weight_cohort_initial,
       live_weight_mature_stage = live_weight_mature_stage,
       daily_weight_gain = daily_weight_gain,
       offtake_rate = offtake_rate,
-      cohort_duration_days = cohort_duration_days
+      cohort_duration_days = cohort_duration_days,
+      is_egg_producing = is_egg_producing
     ),
     by = .I
   ]
@@ -272,7 +288,23 @@ run_metabolic_energy_req_module <- function(
     by = .I
   ]
 
-  # --- Step 10: Pregnancy energy (MJ/day) -------------------------------------
+  # --- Step 10: Egg deposition energy (MJ/day) -------------------------------------
+  cohort_level_data[
+    ,
+    metabolic_energy_req_egg_deposition := calc_metabolic_energy_req_eggs(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      cohort_stock_size = cohort_stock_size,
+      egg_output_human_consumption = herd_level_data[.SD, on = "herd_id", x.egg_output_human_consumption],
+      egg_average_weight = herd_level_data[.SD, on = "herd_id", x.egg_average_weight],
+      parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
+      nondemo_productive_phase_id = nondemo_productive_phase_id,
+      is_egg_producing = is_egg_producing
+    ),
+    by = .I
+  ]
+
+  # --- Step 11: Pregnancy energy (MJ/day) -------------------------------------
   cohort_level_data[
     ,
     metabolic_energy_req_pregnancy := calc_metabolic_energy_req_pregnancy(
@@ -290,7 +322,7 @@ run_metabolic_energy_req_module <- function(
     by = .I
   ]
 
-  # --- Step 10: Diet NE fractions ---------------------------------------------
+  # --- Step 12: Diet NE fractions ---------------------------------------------
   cohort_level_data[
     ,
     net_energy_maintenance_digestible_energy_ratio := calc_rem_maintenance(
@@ -309,7 +341,7 @@ run_metabolic_energy_req_module <- function(
     by = .I
   ]
 
-  # --- Step 12: Total ME requirement (MJ/day) ---------------------------------
+  # --- Step 13: Total ME requirement (MJ/day) ---------------------------------
   cohort_level_data[
     ,
     metabolic_energy_req_total := calc_total_metabolic_energy_req(
@@ -322,14 +354,14 @@ run_metabolic_energy_req_module <- function(
       net_energy_maintenance_digestible_energy_ratio = net_energy_maintenance_digestible_energy_ratio,
       metabolic_energy_req_growth = metabolic_energy_req_growth,
       metabolic_energy_req_fibre_production = metabolic_energy_req_fibre_production,
-      metabolic_energy_req_egg_deposition = 0,
+      metabolic_energy_req_egg_deposition = metabolic_energy_req_egg_deposition,
       net_energy_growth_digestible_energy_ratio = net_energy_growth_digestible_energy_ratio,
       ration_digestibility_fraction = ration_digestibility_fraction
     ),
     by = .I
   ]
 
-  # --- Step 12: Dry matter intake (kg DM/day) ---------------------------------
+  # --- Step 14: Dry matter intake (kg DM/day) ---------------------------------
   cohort_level_data[
     ,
     ration_intake := calc_ration_intake(
