@@ -1,0 +1,3 @@
+herd_id	cohort_stock_mal_annual_nondemo	cohort_stock_fem_annual_nondemo	rest_between_nondemo_cycles_duration	phase1_nondemo_fem_duration_days	phase2_nondemo_fem_duration_days	phase1_nondemo_mal_duration_days	phase2_nondemo_mal_duration_days
+1	100	100	20	30	50	30	50
+2	100	100	20	20	0	20	0
