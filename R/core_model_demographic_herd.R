@@ -367,31 +367,31 @@ calc_steady_state_structure <- function(
     mal_cull[t] <- mal_cull_fec[t] * (1 - probability_death[["MC"]] - probability_offtake[["MC"]])
 
     # Apply transition probabilities (growth to next class)
-    # FJ -> FS
+    # Female juvenile transition into the female sub-adult cohort
     fem_juv_grow[t] <- fem_birth[t] + (1 - probability_growth[["FJ"]]) * fem_juv[t]
     fem_juv_to_sub <- probability_growth[["FJ"]] * fem_juv[t] 
     fem_juv_nondemo[t] <- proportion_nondemographic[["FJ"]] * fem_juv_to_sub
     fem_juv_to_sub <- (1 - proportion_nondemographic[["FJ"]]) * fem_juv_to_sub
     
-    #  FS stock update (inflow from FJ after diversion)
+    # Update female sub-adult stock after female juvenile diversion
     fem_sub_grow[t] <- fem_juv_to_sub + (1 - probability_growth[["FS"]]) * fem_sub[t]
     
-    #  FS -> FA
+    # Female sub-adult transition into the female adult cohort
     fem_sub_to_adult <- probability_growth[["FS"]] * fem_sub[t]  # total leaving FS via growth
     fem_sub_nondemo[t] <- proportion_nondemographic[["FS"]] * fem_sub_to_adult
     fem_sub_to_adult <- (1 - proportion_nondemographic[["FS"]]) * fem_sub_to_adult
     
-    #  FA stock update (inflow from FS after diversion) 
+    # Update female adult stock after female sub-adult diversion
     fem_adult_grow[t] <- fem_sub_to_adult + (1 - probability_growth[["FA"]]) * fem_adult[t]
     
-    #  FA -> FC (cull) 
+    # Female adult transition into the female culling cohort
     fem_adult_to_cull <- probability_growth[["FA"]] * fem_adult[t]  # total leaving FA via growth
     fem_adult_nondemo[t] <- proportion_nondemographic[["FA"]] * fem_adult_to_cull
     fem_adult_to_cull <- (1 - proportion_nondemographic[["FA"]]) * fem_adult_to_cull
     
     fem_cull_grow[t] <- fem_adult_to_cull
     
-    # MJ -> MS
+    # Male juvenile transition into the male sub-adult cohort
     mal_juv_grow[t] <- mal_birth[t] + (1 - probability_growth[["MJ"]]) * mal_juv[t]
     
     mal_juv_to_sub <- probability_growth[["MJ"]] * mal_juv[t]
@@ -400,7 +400,7 @@ calc_steady_state_structure <- function(
     
     mal_sub_grow[t] <- mal_juv_to_sub + (1 - probability_growth[["MS"]]) * mal_sub[t]
     
-    #  MS -> MA
+    # Male sub-adult transition into the male adult cohort
     mal_sub_to_adult <- probability_growth[["MS"]] * mal_sub[t]
     mal_sub_nondemo[t] <- proportion_nondemographic[["MS"]] * mal_sub_to_adult
     mal_sub_to_adult <- (1 - proportion_nondemographic[["MS"]]) * mal_sub_to_adult
@@ -408,7 +408,7 @@ calc_steady_state_structure <- function(
     mal_adult_grow[t] <- mal_sub_to_adult + (1 - probability_growth[["MA"]]) * mal_adult[t]
     
     
-    # MA -> MC
+    # Male adult transition into the male culling cohort
     mal_adult_to_cull <- probability_growth[["MA"]] * mal_adult[t]
     mal_adult_nondemo[t] <- proportion_nondemographic[["MA"]] * mal_adult_to_cull
     mal_adult_to_cull <- (1 - proportion_nondemographic[["MA"]]) * mal_adult_to_cull
@@ -437,12 +437,12 @@ calc_steady_state_structure <- function(
   
   # Compute population at the end of the simulation
   xend_grouped <- c(
-    FJ = xend["FB"] + xend["FJ"],   # females: birth + juvenile
-    FS = xend["FS"],                # female subadult
-    FA = xend["FA"],                # female adult
-    MJ = xend["MB"] + xend["MJ"],   # males: birth + juvenile
-    MS = xend["MS"],                # male subadult
-    MA = xend["MA"]                 # male adult
+    FJ = xend["FB"] + xend["FJ"],   # Combined female birth and juvenile components
+    FS = xend["FS"],                # Female sub-adult component
+    FA = xend["FA"],                # Female adult component
+    MJ = xend["MB"] + xend["MJ"],   # Combined male birth and juvenile components
+    MS = xend["MS"],                # Male sub-adult component
+    MA = xend["MA"]                 # Male adult component
   )
   
   names(xend_grouped) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
@@ -629,24 +629,24 @@ calc_projected_population_size <- function(
       mal_cull_death[t] <- probability_offtake[["MC"]] * mal_cull_fec[t]
 
       # Transition
-      # FJ -> FS
+      # Female juvenile transition into the female sub-adult cohort
       fem_juv_grow[t] <- fem_birth[t] + (1 - probability_growth[["FJ"]]) * fem_juv[t]
       fem_juv_to_sub_total <- probability_growth[["FJ"]] * fem_juv[t]
       fem_juv_nondemo[t]  <- proportion_nondemographic[["FJ"]] * fem_juv_to_sub_total
       fem_juv_to_sub  <- (1 - proportion_nondemographic[["FJ"]]) * fem_juv_to_sub_total
       
-      # FS stock 
+      # Female sub-adult stock update
       fem_sub_grow[t] <- fem_juv_to_sub + (1 - probability_growth[["FS"]]) * fem_sub[t]
       
-      # FS -> FA
+      # Female sub-adult transition into the female adult cohort
       fem_sub_to_adult_total <- probability_growth[["FS"]] * fem_sub[t]
       fem_sub_nondemo[t]    <- proportion_nondemographic[["FS"]] * fem_sub_to_adult_total
       fem_sub_to_adult  <- (1 - proportion_nondemographic[["FS"]]) * fem_sub_to_adult_total
       
-      # FA stock 
+      # Female adult stock update
       fem_adult_grow[t] <- fem_sub_to_adult + (1 - probability_growth[["FA"]]) * fem_adult[t]
       
-      # FA -> FC
+      # Female adult transition into the female culling cohort
       fem_adult_to_cull_total <- probability_growth[["FA"]] * fem_adult[t]
       fem_adult_nondemo[t] <- proportion_nondemographic[["FA"]] * fem_adult_to_cull_total
       fem_adult_to_cull  <- (1 - proportion_nondemographic[["FA"]]) * fem_adult_to_cull_total
@@ -654,24 +654,24 @@ calc_projected_population_size <- function(
       fem_cull_grow[t] <- fem_adult_to_cull
       
       
-      # MJ -> MS
+      # Male juvenile transition into the male sub-adult cohort
       mal_juv_grow[t] <- mal_birth[t] + (1 - probability_growth[["MJ"]]) * mal_juv[t]
       mal_juv_to_sub_total <- probability_growth[["MJ"]] * mal_juv[t]
       mal_juv_nondemo[t]  <- proportion_nondemographic[["MJ"]] * mal_juv_to_sub_total
       mal_juv_to_sub  <- (1 - proportion_nondemographic[["MJ"]]) * mal_juv_to_sub_total
       
-      # MS stock 
+      # Male sub-adult stock update
       mal_sub_grow[t] <- mal_juv_to_sub + (1 - probability_growth[["MS"]]) * mal_sub[t]
       
-      # MS -> MA
+      # Male sub-adult transition into the male adult cohort
       mal_sub_to_adult_total <- probability_growth[["MS"]] * mal_sub[t]
       mal_sub_nondemo[t]    <- proportion_nondemographic[["MS"]] * mal_sub_to_adult_total
       mal_sub_to_adult  <- (1 - proportion_nondemographic[["MS"]]) * mal_sub_to_adult_total
       
-      # MA stock 
+      # Male adult stock update
       mal_adult_grow[t] <- mal_sub_to_adult + (1 - probability_growth[["MA"]]) * mal_adult[t]
       
-      # MA -> MC
+      # Male adult transition into the male culling cohort
       mal_adult_to_cull_total <- probability_growth[["MA"]] * mal_adult[t]
       mal_adult_nondemo[t]   <- proportion_nondemographic[["MA"]] * mal_adult_to_cull_total
       mal_adult_to_cull  <- (1 - proportion_nondemographic[["MA"]]) * mal_adult_to_cull_total

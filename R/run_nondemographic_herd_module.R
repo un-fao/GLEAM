@@ -209,7 +209,7 @@ run_nondemographic_herd_module <- function(
     for (cohort_block_selected in blocks) {
       cohort_stock_nondemo_annual_entrants <- if (cohort_block_selected == "FN") {
         entrants_row$cohort_stock_fem_annual_nondemo
-      } else { # cohort_block_selected == "MN"
+      } else { # Male non-demographic block
         entrants_row$cohort_stock_mal_annual_nondemo
       }
       
