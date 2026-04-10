@@ -102,6 +102,12 @@ validate_growth_inputs <- function(
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
+  validate_is_egg_producing_flag(
+    species_short = species_short,
+    cohort_short = cohort_short,
+    is_egg_producing = is_egg_producing,
+    nondemo_productive_phase_id = nondemo_productive_phase_id
+  )
 
   # --- Cattle and buffalo: growth only for FS, FJ, MS, MJ ---
   if (species_short %in% c("CTL", "BFL") && cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
