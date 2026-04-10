@@ -112,6 +112,22 @@ validate_positive_numeric <- function(x, arg_name = deparse(substitute(x))) {
   }
 }
 
+#' Validate non-negative numeric input
+#'
+#' Ensures that the input is a numeric scalar greater than or equal to zero.
+#'
+#' @param x The object to validate.
+#' @param arg_name String. The name of the argument to use in the error message.
+#'   Defaults to the deparsed name of `x`.
+#'
+#' @noRd
+validate_nonnegative_numeric <- function(x, arg_name = deparse(substitute(x))) {
+  validate_scalar_numeric(x, arg_name)
+  if (x < 0) {
+    cli::cli_abort("{.arg {arg_name}} must be greater than or equal to 0.")
+  }
+}
+
 #' Validate scalar numeric or NA
 #'
 #' Ensures the input is a single value that is either NA or a numeric >= min_val.
@@ -137,6 +153,45 @@ validate_scalar_numeric_or_na <- function(
       cli::cli_abort("{.arg {arg_name}} must be >= {min_val}.")
     }
   }
+}
+
+#' Validate cohort-level egg-producing flag for chickens
+#'
+#' @noRd
+validate_is_egg_producing_flag <- function(
+    species_short,
+    cohort_short,
+    is_egg_producing = FALSE,
+    nondemo_productive_phase_id = NA_real_
+) {
+  if (length(is_egg_producing) != 1L || is.na(is_egg_producing)) {
+    cli::cli_abort("{.arg is_egg_producing} must be a single non-missing logical value.")
+  }
+
+  if (!is.logical(is_egg_producing)) {
+    cli::cli_abort("{.arg is_egg_producing} must be logical (TRUE/FALSE).")
+  }
+
+  if (!isTRUE(is_egg_producing)) {
+    return(invisible(FALSE))
+  }
+
+  if (!identical(species_short, "CHK")) {
+    cli::cli_abort("{.arg is_egg_producing} can be TRUE only for {.val CHK}.")
+  }
+
+  if (!cohort_short %in% c("FA", "FN")) {
+    cli::cli_abort("{.arg is_egg_producing} can be TRUE only for CHK cohorts {.val FA} or {.val FN}.")
+  }
+
+  if (identical(cohort_short, "FN") &&
+      (is.na(nondemo_productive_phase_id) || nondemo_productive_phase_id != 2)) {
+    cli::cli_abort(
+      "{.arg is_egg_producing} can be TRUE for {.val FN} only when {.arg nondemo_productive_phase_id} is {.val 2}."
+    )
+  }
+
+  invisible(TRUE)
 }
 
 #' Validate a numeric parameter (scalar or vector) against predefined bounds

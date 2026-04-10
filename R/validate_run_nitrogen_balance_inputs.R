@@ -19,7 +19,8 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
   # Verify all module-specific columns are present
   required_cohort_cols <- c(
     "herd_id", "cohort_short",
-    "ration_intake", "ration_nitrogen", "daily_weight_gain", "cohort_duration_days"
+    "ration_intake", "ration_nitrogen", "daily_weight_gain", "cohort_duration_days",
+    "cohort_stock_size"
   )
   required_herd_cols <- c(
     "herd_id", "species_short",

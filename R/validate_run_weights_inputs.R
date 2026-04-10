@@ -91,7 +91,10 @@ validate_run_weights_module_inputs <- function(
   }
 
   violations_weaning <- herd_level_data[
-    !is.na(live_weight_at_birth) & !is.na(live_weight_at_weaning) & live_weight_at_birth >= live_weight_at_weaning,
+    !is.na(live_weight_at_birth) &
+      !is.na(live_weight_at_weaning) &
+      live_weight_at_birth >= live_weight_at_weaning &
+      (!"species_short" %in% names(herd_level_data) | species_short != "CHK"),
     herd_id
   ]
   if (length(violations_weaning) > 0) {
