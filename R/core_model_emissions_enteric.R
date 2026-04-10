@@ -6,16 +6,16 @@
 #'
 #'
 #' @param species_short Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
-#'
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
@@ -58,6 +58,8 @@
 #'       \item \code{FA} and \code{MA} cohorts: \deqn{ym = 1.01}
 #'        \item \code{FS}, \code{MS}, \code{FN}, and \code{MN} cohorts: \deqn{ym = 0.39}
 #'     }
+#'    \item \strong{For \code{CHK}}: ym is returned as 0
+#'    
 #' }
 #'
 #' ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming 
@@ -119,6 +121,8 @@ calc_conversion_factor_ym <- function(
     } else {
       ch4_conversion_factor_ym <- 1.01
     }
+  } else if (species_short == "CHK") {
+    ch4_conversion_factor_ym <- 0
   }
 
   return(ch4_conversion_factor_ym)
