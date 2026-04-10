@@ -30,6 +30,10 @@ live_weight_at_birth,0,TRUE,1000,TRUE
 live_weight_at_weaning,0,TRUE,1000,TRUE
 live_weight_female_at_slaughter,0,TRUE,Inf,TRUE
 live_weight_male_at_slaughter,0,TRUE,Inf,TRUE
+live_weight_female_nondemographic_start,0,TRUE,Inf,TRUE
+live_weight_female_nondemographic_end,0,TRUE,Inf,TRUE
+live_weight_male_nondemographic_start,0,TRUE,Inf,TRUE
+live_weight_male_nondemographic_end,0,TRUE,Inf,TRUE
 live_weight_cohort_at_slaughter,0,TRUE,Inf,TRUE
 live_weight_mature_stage,0,TRUE,Inf,TRUE
 daily_weight_gain,0,TRUE,5,TRUE
