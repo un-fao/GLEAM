@@ -1,3 +1,4 @@
-herd_id	cohort_stock_mal_annual_nondemo	cohort_stock_fem_annual_nondemo	rest_between_nondemo_cycles_duration	phase1_nondemo_fem_duration_days	phase2_nondemo_fem_duration_days	phase1_nondemo_mal_duration_days	phase2_nondemo_mal_duration_days
-1	100	100	20	30	50	30	50
-2	100	100	20	20	0	20	0
+herd_id	cohort_stock_fem_annual_nondemo	cohort_stock_mal_annual_nondemo	rest_between_nondemo_cycles_duration	phase1_nondemo_fem_duration_days	phase2_nondemo_fem_duration_days	phase1_nondemo_mal_duration_days	phase2_nondemo_mal_duration_days
+1	0	122282.545400456	20	30	50	30	50
+9	1683739.0779162	345303.817444779	20	60	90	60	90
+10	941.412282898391	34.7778051130104	20	60	90	60	90
