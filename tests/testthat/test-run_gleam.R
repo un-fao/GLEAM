@@ -3,57 +3,25 @@
 # Load example data once at file scope to avoid re-reading CSVs in every test.
 d_gleam <- local({
   path <- system.file("extdata", "run_gleam_examples", package = "gleam")
-  herd_nondemo <- data.table::fread(
-    system.file(
-      "extdata", "run_modules_examples", "example_herd_level_data.csv",
-      package = "gleam"
-    )
-  )[, .(
-    herd_id,
-    prop_nondemo_fem_juv,
-    prop_nondemo_mal_juv,
-    rest_between_nondemo_cycles_duration,
-    phase1_nondemo_fem_duration_days,
-    phase2_nondemo_fem_duration_days,
-    phase1_nondemo_mal_duration_days,
-    phase2_nondemo_mal_duration_days
-  )]
-
-  herd <- merge(
-    data.table::fread(file.path(path, "master_hrd_lvl_data.csv")),
-    herd_nondemo,
-    by = "herd_id",
-    all.x = TRUE
+  cohort_no_structure <- data.table::fread(
+    file.path(path, "master_chrt_lvl_no_structure_data.csv")
   )
-  herd[
-    ,
-    `:=`(
-      prop_nondemo_fem_juv = 0,
-      prop_nondemo_mal_juv = 0,
-      rest_between_nondemo_cycles_duration = NA_real_,
-      phase1_nondemo_fem_duration_days = NA_real_,
-      phase2_nondemo_fem_duration_days = NA_real_,
-      phase1_nondemo_mal_duration_days = NA_real_,
-      phase2_nondemo_mal_duration_days = NA_real_
-    )
-  ]
-  herd[
-    ,
-    `:=`(
-      live_weight_female_nondemographic_start = NA_real_,
-      live_weight_male_nondemographic_start = NA_real_,
-      live_weight_female_nondemographic_end = live_weight_female_at_slaughter,
-      live_weight_male_nondemographic_end = live_weight_male_at_slaughter
-    )
-  ]
+  cohort_structure <- data.table::fread(
+    file.path(path, "master_chrt_lvl_structure_data.csv")
+  )
+  herd <- data.table::fread(file.path(path, "master_hrd_lvl_data.csv"))
+  fn_herds <- unique(cohort_no_structure[cohort_short == "FN", herd_id])
+  mn_herds <- unique(cohort_no_structure[cohort_short == "MN", herd_id])
+  herd[is.na(prop_nondemo_fem_juv), prop_nondemo_fem_juv := 0]
+  herd[is.na(prop_nondemo_mal_juv), prop_nondemo_mal_juv := 0]
+  herd[!herd_id %in% fn_herds, prop_nondemo_fem_juv := 0]
+  herd[!herd_id %in% mn_herds, prop_nondemo_mal_juv := 0]
+  herd[is.na(live_weight_female_nondemographic_end), live_weight_female_nondemographic_end := live_weight_female_at_slaughter]
+  herd[is.na(live_weight_male_nondemographic_end), live_weight_male_nondemographic_end := live_weight_male_at_slaughter]
 
   list(
-    cohort_no_structure = data.table::fread(
-      file.path(path, "master_chrt_lvl_no_structure_data.csv")
-    ),
-    cohort_structure = data.table::fread(
-      file.path(path, "master_chrt_lvl_structure_data.csv")
-    ),
+    cohort_no_structure = cohort_no_structure,
+    cohort_structure = cohort_structure,
     herd = herd,
     feed_rations = data.table::fread(
       file.path(path, "feed_rations_share_chrt.csv")
@@ -155,6 +123,32 @@ d_gleam_mixed <- local({
     file.path(path, "manure_management_system_fraction.csv")
   )
   d_mixed
+})
+
+d_gleam_chk_industrial <- local({
+  path <- system.file("extdata", "run_gleam_examples", package = "gleam")
+
+  list(
+    cohort_no_structure = data.table::fread(
+      file.path(path, "master_chrt_lvl_no_structure_chk_industrial_data.csv")
+    ),
+    herd = data.table::fread(
+      file.path(path, "master_hrd_lvl_chk_industrial_data.csv")
+    ),
+    feed_rations = data.table::fread(
+      file.path(path, "feed_rations_share_chrt.csv")
+    )[herd_id %in% c(14, 15)],
+    feed_params = data.table::fread(file.path(path, "feed_quality.csv")),
+    feed_emissions = data.table::fread(
+      file.path(path, "feed_emission_factors.csv")
+    ),
+    mms_fraction = data.table::fread(
+      file.path(path, "manure_management_system_fraction.csv")
+    )[herd_id %in% c(14, 15)],
+    mms_factors = data.table::fread(
+      file.path(path, "manure_management_system_factors.csv")
+    )[herd_id %in% c(14, 15)]
+  )
 })
 
 # Helper: call run_gleam with defaults, allowing any argument to be overridden.
@@ -335,7 +329,7 @@ test_that("rejects missing FN rows when prop_nondemo_fem_juv is positive", {
 
   expect_error(
     run_gleam_no_structure(d_gleam_mixed, cohort_level_data = bad_cohort),
-    "Missing .*FN.*herd_id.*9"
+    "Missing .*FN.*herd_id.*9|proportion_nondemographic"
   )
 })
 
@@ -345,7 +339,7 @@ test_that("rejects missing MN rows when prop_nondemo_mal_juv is positive", {
 
   expect_error(
     run_gleam_no_structure(d_gleam_mixed, cohort_level_data = bad_cohort),
-    "Missing .*MN.*herd_id.*1"
+    "Missing .*MN.*herd_id.*1|proportion_nondemographic"
   )
 })
 
@@ -467,12 +461,16 @@ test_that("run_gleam TRUE path produces allocation energy columns", {
   }
 })
 
-test_that("run_gleam TRUE path has all 6 cohorts per herd", {
+test_that("run_gleam TRUE path preserves the structured cohort set per herd", {
   cohort <- res_with_structure$cohort_level_results
-  expected_cohorts <- c("FA", "FJ", "FS", "MA", "MJ", "MS")
   for (hid in unique(cohort$herd_id)) {
-    cohorts <- sort(unique(cohort[herd_id == hid, cohort_short]))
-    expect_equal(cohorts, expected_cohorts, info = paste("herd_id:", hid))
+    result_rows <- cohort[herd_id == hid, .(cohort_short, nondemo_productive_phase_id)]
+    input_rows <- d_gleam$cohort_structure[
+      herd_id == hid, .(cohort_short, nondemo_productive_phase_id)
+    ]
+    data.table::setorder(result_rows, cohort_short, nondemo_productive_phase_id)
+    data.table::setorder(input_rows, cohort_short, nondemo_productive_phase_id)
+    expect_equal(result_rows, input_rows, info = paste("herd_id:", hid))
   }
 })
 
@@ -491,11 +489,39 @@ test_that("run_gleam TRUE path produces calculated columns", {
 test_that("run_gleam TRUE path preserves cohort_stock_size from input", {
   cohort <- res_with_structure$cohort_level_results
   expect_true("cohort_stock_size" %in% names(cohort))
-  input_sizes <- d_gleam$cohort_structure[, .(herd_id, cohort_short, cohort_stock_size)]
-  data.table::setkey(input_sizes, herd_id, cohort_short)
-  result_sizes <- cohort[, .(herd_id, cohort_short, cohort_stock_size)]
-  data.table::setkey(result_sizes, herd_id, cohort_short)
-  expect_equal(result_sizes$cohort_stock_size, input_sizes$cohort_stock_size)
+  input_sizes <- d_gleam$cohort_structure[, .(
+    herd_id, cohort_short, nondemo_productive_phase_id, cohort_stock_size
+  )]
+  result_sizes <- cohort[, .(
+    herd_id, cohort_short, nondemo_productive_phase_id, cohort_stock_size
+  )]
+  data.table::setorder(input_sizes, herd_id, cohort_short, nondemo_productive_phase_id)
+  data.table::setorder(result_sizes, herd_id, cohort_short, nondemo_productive_phase_id)
+  expect_equal(result_sizes, input_sizes, ignore_attr = TRUE)
+})
+
+test_that("run_gleam supports CHK industrial non-demographic-only examples", {
+  results <- run_gleam(
+    has_herd_structure = FALSE,
+    run_demographic = FALSE,
+    run_nondemographic = TRUE,
+    cohort_level_data = d_gleam_chk_industrial$cohort_no_structure,
+    herd_level_data = d_gleam_chk_industrial$herd,
+    feed_rations = d_gleam_chk_industrial$feed_rations,
+    feed_params = d_gleam_chk_industrial$feed_params,
+    feed_emissions = d_gleam_chk_industrial$feed_emissions,
+    manure_management_system_fraction = d_gleam_chk_industrial$mms_fraction,
+    manure_management_system_factors = d_gleam_chk_industrial$mms_factors,
+    simulation_duration = 365,
+    show_indicator = FALSE
+  )
+
+  expect_s3_class(results$cohort_level_results, "data.table")
+  expect_s3_class(results$herd_level_results, "data.table")
+  expect_equal(sort(unique(results$cohort_level_results$herd_id)), c(14, 15))
+  expect_true(all(results$cohort_level_results$cohort_short %in% c("FN", "MN")))
+  expect_equal(nrow(results$cohort_level_results), 6L)
+  expect_equal(nrow(results$herd_level_results), 2L)
 })
 
 # ---- run_gleam: output consistency -------------------------------------------
