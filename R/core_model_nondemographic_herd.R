@@ -1,7 +1,8 @@
-#' Assign non-demographic phase duration to cohort
+#' Assign nondemographic phase durations to cohort rows
 #'
-#' Maps herd-level non-demographic phase-duration inputs onto the corresponding
-#' non-demographic cohort-phase rows and fills \code{cohort_duration_days}.
+#' Maps herd-level nondemographic phase-duration inputs onto the corresponding
+#' cohort-phase rows and fills \code{cohort_duration_days} for \code{FN} and
+#' \code{MN}.
 #'
 #' @param cohort_short Character. Sex- and production-stage-specific cohort code describing the animal group. Supported values include:
 #'       \itemize{
@@ -13,17 +14,24 @@
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
 #'         \item \code{FN}: non-demographic females
 #'         \item \code{MN}: non-demographic males
-#'         }}
-#' @param nondemo_productive_phase_id Numeric. Identifier of the productive phase for non-demographic cohorts FN (non-demographic females) and MN (non-demographic males). 
-#' Takes value 1 for phase 1 and optionally 2 for phase 2. For demographic cohorts FA, FJ, FS, MA, MJ, and MS, this value is NA.
+#'       }
+#' @param nondemo_productive_phase_id Numeric. Identifier of the productive
+#'   phase for nondemographic cohorts \code{FN} and \code{MN}. Takes value
+#'   \code{1} for phase 1 and optionally \code{2} for phase 2. Demographic
+#'   cohorts use \code{NA}.
 #' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days).
-#' @param phase1_nondemo_fem_duration_days Numeric. Duration of productive phase 1 for the female non-demographic cohort (FN) (days). 
-#' @param phase2_nondemo_fem_duration_days Numeric. Duration of productive phase 2 for the female non-demographic cohort (FN) (days). 
-#' @param phase1_nondemo_mal_duration_days Numeric. Duration of productive phase 1 for the male non-demographic cohort (MN) (days). 
-#' @param phase2_nondemo_mal_duration_days Numeric. Duration of productive phase 2 for the male non-demographic cohort (MN) (days). 
+#' @param phase1_nondemo_fem_duration_days Numeric. Duration of productive
+#'   phase 1 for the female nondemographic cohort (\code{FN}) (days).
+#' @param phase2_nondemo_fem_duration_days Numeric. Duration of productive
+#'   phase 2 for the female nondemographic cohort (\code{FN}) (days).
+#' @param phase1_nondemo_mal_duration_days Numeric. Duration of productive
+#'   phase 1 for the male nondemographic cohort (\code{MN}) (days).
+#' @param phase2_nondemo_mal_duration_days Numeric. Duration of productive
+#'   phase 2 for the male nondemographic cohort (\code{MN}) (days).
 #'
-#' @return Numeric. Amount of time that each animal spends in a specific cohort (days). The values are populated for
-#'   \code{FN}/\code{MN} rows from herd-level phase duration inputs.
+#' @return Numeric vector. Updated \code{cohort_duration_days}. Values for
+#'   \code{FN} and \code{MN} rows are filled from the herd-level phase-duration
+#'   inputs when present; all other rows keep their original values.
 #'   
 #' @seealso
 #' [run_nondemographic_herd_module()]
@@ -53,10 +61,10 @@ assign_nondemographic_phase_durations <- function(
   )
 }
 
-#' Calculate total non-demographic durations by herd
+#' Calculate total nondemographic durations by herd
 #'
-#' Aggregates total modeled non-demographic phase durations by herd and sex from
-#' non-demographic cohort rows.
+#' Aggregates total modeled nondemographic productive-phase durations by herd and
+#' sex from \code{FN} and \code{MN} cohort rows.
 #'
 #' @param cohort_short Character. Sex- and production-stage-specific cohort code describing the animal group. Supported values include:
 #'       \itemize{
@@ -68,13 +76,17 @@ assign_nondemographic_phase_durations <- function(
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
 #'         \item \code{FN}: non-demographic females
 #'         \item \code{MN}: non-demographic males
-#'         }}
+#'       }
 #' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days).
 #'
 #' @return A named list with elements:
 #' \describe{
-#'   \item{total_nondemo_fem_duration_days}{Numeric. Duration of the productive non-demographic phase for non-demographic females (FN) (days).}
-#'   \item{total_nondemo_mal_duration_days}{{Numeric. Duration of the productive non-demographic phase for non-demographic males (MN) (days).}
+#'   \item{total_nondemo_fem_duration_days}{Numeric. Total duration of the
+#'   productive nondemographic phases assigned to the female nondemographic
+#'   cohort block (\code{FN}) (days).}
+#'   \item{total_nondemo_mal_duration_days}{Numeric. Total duration of the
+#'   productive nondemographic phases assigned to the male nondemographic cohort
+#'   block (\code{MN}) (days).}
 #' }
 #'
 #' @seealso
@@ -99,18 +111,21 @@ calc_nondemographic_total_durations <- function(
 }
 
 
-#' Calculate non-demographic cycle geometry
+#' Calculate nondemographic cycle geometry
 #'
 #' Calculates the number of full (including productive and resting phase) 
-#' and partial non-demographic production cycles
+#' and partial nondemographic production cycles
 #' that fit within a fixed 365-day time horizon, allowing for
 #' up to two productive phases per cycle and an optional resting period between cycles.
 #'
-#' @param phase1_nondemo_duration Numeric. Duration of productive phase 1 for the assessed non-demographic cohort (days). Supported cohorts are FN and MN.
-#' @param phase2_nondemo_duration Numeric. Duration of productive phase 2 for the assessed non-demographic cohort (days). Supported cohorts are FN and MN.
-#' @param rest_between_nondemo_cycles_duration Numeric. Duration of resting/empty phase between cycles for the assessed non-demographic cohort (days).
+#' @param phase1_nondemo_duration Numeric. Duration of productive phase 1 for
+#'   the assessed nondemographic cohort (\code{FN} or \code{MN}) (days).
+#' @param phase2_nondemo_duration Numeric. Duration of productive phase 2 for
+#'   the assessed nondemographic cohort (\code{FN} or \code{MN}) (days).
+#' @param rest_between_nondemo_cycles_duration Numeric. Duration of the
+#'   resting or empty phase between nondemographic cycles (days).
 #' @details
-#' A non-demographic production cycle can contain one or two productive phases,
+#' A nondemographic production cycle can contain one or two productive phases,
 #' followed by an optional resting period before the next cycle starts. The
 #' function uses a fixed 365-day time horizon so the horizon matches the
 #' demographic herd simulation.
@@ -149,14 +164,14 @@ calc_nondemographic_total_durations <- function(
 #'
 #' First, the remaining time is used to fill phase 1:
 #' \deqn{
-#' partial\_phase1\_non\_demographic\_duration =
+#' partial\_phase1\_nondemo\_duration =
 #' \min(time\_remaining,\ phase1\_non\_demo\_duration)
 #' }
 #'
 #' The time left after phase 1 is:
 #' \deqn{
 #' time\_remaining2 =
-#' time\_remaining - partial\_phase1\_non\_demographic\_duration
+#' time\_remaining - partial\_phase1\_nondemo\_duration
 #' }
 #'
 #' If:
@@ -167,7 +182,7 @@ calc_nondemographic_total_durations <- function(
 #'
 #' then the remaining time is allocated to phase 2:
 #' \deqn{
-#' partial\_phase2\_non\_demographic\_duration =
+#' partial\_phase2\_nondemo\_duration =
 #' \min(time\_remaining2,\ phase2\_non\_demo\_duration)
 #' }
 #'
@@ -177,19 +192,34 @@ calc_nondemographic_total_durations <- function(
 #'
 #' Therefore:
 #' \deqn{
-#' total\_cycle\_starts\_to\_distribute =
+#' total\_nondemo\_cycle\_starts\_to\_distribute =
 #' number\_full\_non\_demo\_cycles +
-#' I(partial\_phase1\_non\_demographic\_duration > 0)
+#' I(partial\_phase1\_nondemo\_duration > 0)
 #' }
 #' 
 #' This function is part of the [run_nondemographic_herd_module()].
 #' 
 #' @return A named list with elements:
 #' \describe{
-#'   \item{number_full_nondemo_cycles}{Integer. Number of complete cycles fully contained within the fixed 365-day simulation window for the assessed non-demographic cohort (full cycles / simulated period). Supported cohorts are FN and MN.}
-#'   \item{partial_phase1_nondemo_duration}{Numeric. Duration of the terminal partial productive phase 1 occurring at the end of the fixed 365-day simulation window for the assessed non-demographic cohort (days). Supported cohorts are FN and MN.}
-#'   \item{partial_phase2_nondemo_duration}{Numeric. Duration of the terminal partial productive phase 2 occurring at the end of the fixed 365-day simulation window for the assessed non-demographic cohort (days). Supported cohorts are FN and MN.}
-#'   \item{total_nondemo_cycle_starts_to_distribute}{Integer. Total number of cycle starts within the fixed 365-day simulation window for the assessed non-demographic cohort (cycle starts / simulated period). Supported cohorts are FN and MN.}
+#'   \item{number_full_nondemo_cycles}{Integer. Number of complete cycles fully
+#'   contained within the fixed 365-day time horizon for the assessed
+#'   nondemographic cohort (\code{FN} or \code{MN}) (full cycles / simulated
+#'   period).}
+#'   \item{partial_phase1_nondemo_duration}{Numeric. Duration of the terminal
+#'   partial productive phase 1 occurring at the end of the fixed 365-day time
+#'   horizon for the assessed nondemographic cohort (\code{FN} or \code{MN})
+#'   (days).}
+#'   \item{partial_phase2_nondemo_duration}{Numeric. Duration of the terminal
+#'   partial productive phase 2 occurring at the end of the fixed 365-day time
+#'   horizon for the assessed nondemographic cohort (\code{FN} or \code{MN})
+#'   (days).}
+#'   \item{total_nondemo_cycle_starts_to_distribute}{Integer. Total number of
+#'   cycle starts within the fixed 365-day time horizon for the assessed
+#'   nondemographic cohort (\code{FN} or \code{MN}) (cycle starts / simulated
+#'   period).}
+#'   \item{cycle_length}{Numeric. Total duration of one full nondemographic
+#'   cycle, including productive phases and the rest period between cycles
+#'   (days).}
 #' }
 #' 
 #' @seealso
@@ -271,48 +301,52 @@ calc_nondemo_cycle_geometry <- function(
 }
 
 
-#' Calculate non-demographic entrants across production cycles
+#' Calculate nondemographic entrants across production cycles
 #'
-#' Calculates the total annual number of animals entering a non-demographic cohort
+#' Calculates the total annual number of animals entering a nondemographic cohort
 #' into the number of animals entering each production cycle, based on the number
-#' of cycles occurring within the simulated period.
+#' of cycle starts occurring within the fixed 365-day horizon.
 #'
-#' @param cohort_stock_nondemo_annual_entrants Numeric. Total number of animals entering 
-#' the non-demographic production pathway over the simulated period for the assessed non-demographic cohorts (`FN` or `MN`) 
-#' (# heads/simulated period).
+#' @param cohort_stock_nondemo_annual_entrants Numeric. Total number of animals
+#'   entering the nondemographic production pathway over the simulated period
+#'   for the assessed cohort block (\code{FN} or \code{MN})
+#'   (\# heads / simulated period).
 #'
-#' @param total_nondemo_cycle_starts_to_distribute Integer. Total number of cycle starts within the fixed 365-day time horizon for the assessed non-demographic cohort (cycle starts / simulated period). Supported cohorts are FN and MN.
+#' @param total_nondemo_cycle_starts_to_distribute Integer. Total number of
+#'   cycle starts within the fixed 365-day time horizon for the assessed
+#'   nondemographic cohort (\code{FN} or \code{MN}) (cycle starts / simulated
+#'   period).
 #'
 #' @details
-#' The annual cohort stock is evenly distributed across all defined production
+#' The annual entrant stock is evenly distributed across all defined production
 #' cycle starts. The number of animals entering each cycle is calculated as:
 #'
 #' \deqn{
-#' cohort\_stock\_start\_cycle\_non\_demographic =
-#' \frac{cohort\_stock\_non\_demo\_annual\_entrants}
+#' cohort\_stock\_nondemo\_start\_cycle =
+#' \frac{cohort\_stock\_nondemo\_annual\_entrants}
 #' {total\_non\_demo\_cycle\_starts\_to\_distribute}
 #' }
 #'
 #' where:
 #' \itemize{
-#'   \item \code{cohort\_stock\_start\_cycle\_nondemographic} is the number of animals entering each cycle
-#'   \item \code{cohort\_stock\_non\_demo\_annual\_entrants} is the total annual entrants
+#'   \item \code{cohort\_stock\_nondemo\_start\_cycle} is the number of animals entering each cycle
+#'   \item \code{cohort\_stock\_nondemo\_annual\_entrants} is the total annual entrants
 #'   \item \code{total\_non\_demo\_cycle\_starts\_to\_distribute} is the number of cycle starts
 #' }
 #'
-#' If \code{total\_cycle\_starts\_to\_distribute} is \code{NULL} or less than or equal
+#' If \code{total\_nondemo\_cycle\_starts\_to\_distribute} is \code{NULL} or less than or equal
 #' to zero, the function assumes that no cycle structure is defined. In this case,
 #' all annual entrants are assigned to a single implicit cycle:
 #'
 #' \deqn{
-#' cohort\_stock\_start\_cycle\_non\_demographic =
-#' cohort\_stock\_non\_demo\_annual\_entrants
+#' cohort\_stock\_nondemo\_start\_cycle =
+#' cohort\_stock\_nondemo\_annual\_entrants
 #' }
 #'
 #' No rounding or integer enforcement is applied:
 #'
 #' This means fractional values may occur when
-#' \code{cohort\_stock\_non\_demo\_annual\_entrants} is not perfectly divisible
+#' \code{cohort\_stock\_nondemo\_annual\_entrants} is not perfectly divisible
 #' by \code{total\_non\_demo\_cycle\_starts\_to\_distribute}. Handling of integer constraints
 #' (if required) is delegated to downstream processes.
 #'
@@ -322,8 +356,10 @@ calc_nondemo_cycle_geometry <- function(
 #'
 #' @return A named list with the following element:
 #' \describe{
-#'   \item{cohort_stock_nondemo_start_cycle}{Numeric. Number of animals starting each non-demographic production cycle for the assessed cohort (FN or MN), 
-#'   calculated by distributing the total cohort stock over the total number of cycle starts (heads / cycle).}
+#'   \item{cohort_stock_nondemo_start_cycle}{Numeric. Number of animals starting
+#'   each nondemographic production cycle for the assessed cohort block
+#'   (\code{FN} or \code{MN}), calculated by distributing total annual entrants
+#'   over the total number of cycle starts (\# heads / cycle).}
 #' }
 #'
 #' @seealso
@@ -353,30 +389,32 @@ calc_nondemo_start_sizes <- function(
   )
 }
 
-#' Calculate a non-demographic production cycle
+#' Calculate a nondemographic productive phase
 #'
-#' Simulates stock dynamics for a non-demographic productive phase within a
+#' Simulates stock dynamics for a nondemographic productive phase within a
 #' production cycle. This function is applied within
 #' \code{\link{run_nondemographic_herd_module}} to model productive phase 1 and
 #' productive phase 2 under full and terminal (partial) phase durations.
 #'
-#' @param cohort_stock_nondemo_start_by_phase Numeric. Number of animals entering a non-demographic productive phase for the assessed non-demographic cohort (FN or MN) (# heads / phase).
+#' @param cohort_stock_nondemo_start_by_phase Numeric. Number of animals
+#'   entering a nondemographic productive phase for the assessed cohort
+#'   (\code{FN} or \code{MN}) (\# heads / phase).
 #'   When used for productive phase 1, this represents the number of animals starting
-#'   each non-demographic production cycle (\code{cohort_stock_nondemo_start_cycle}),
+#'   each nondemographic production cycle (\code{cohort_stock_nondemo_start_cycle}),
 #'   computed using \code{calc_nondemo_start_sizes()}. When used for productive phase 2,
 #'   this represents the number of animals surviving productive phase 1 and entering
 #'   productive phase 2, obtained as the end stock of the productive phase 1 simulation.
 #'
-#' @param productive_phase_nondemo_duration Numeric. Duration of the productive phase within a non-demographic
-#'   production cycle for the assessed non-demographic cohort (FN or MN) (days).
+#' @param productive_phase_nondemo_duration Numeric. Duration of the productive
+#'   phase within a nondemographic production cycle for the assessed cohort
+#'   (\code{FN} or \code{MN}) (days).
 #'   When applied to productive phase 1, this parameter corresponds to
 #'   \code{phase1_nondemo_duration}. When applied to productive phase 2, it
 #'   corresponds to \code{phase2_nondemo_duration}.
 #'
-#' @param death_rate_nondemo_phase Numeric. Fraction of deaths the productive phase for the assessed non-demographic cohort (FN or MN) (fraction). 
-#' When applied to productive phase 1, this parameter corresponds to
-#'   \code{death_rate_phase1}. When applied to productive phase 2, it corresponds to
-#'   \code{death_rate_phase2}.
+#' @param death_rate_nondemo_phase Numeric. Fraction of animals dying during the
+#'   productive phase for the assessed nondemographic cohort (\code{FN} or
+#'   \code{MN}) (fraction).
 #'
 #' @param max_simulation_days_nondemo_phase Numeric. Maximum number of days to simulate for the productive phase (days).
 #'   Use the full phase duration to simulate a complete productive phase, or a shorter
@@ -389,42 +427,42 @@ calc_nondemo_start_sizes <- function(
 #' @details
 #' The function converts the phase-level mortality probability
 #' (\code{death_rate_nondemo_phase}) into an implied daily mortality probability
-#' (\code{death_rate_daily_nondemographic}) under the assumption of constant
+#' under the assumption of constant
 #' daily mortality throughout the phase. The implied daily mortality is derived
 #' so that cumulative survival over the full phase duration
 #' (\code{productive_phase_nondemo_duration}) is equal to \eqn{1 - death_rate_nondemo_phase}.
 #'
 #' Daily mortality is calculated as:
 #' \deqn{
-#' death_rate_daily_nondemographic =
+#' death\_rate\_daily\_nondemo =
 #' 1 - (1 - death_rate_nondemo_phase)^{1 / productive_phase_nondemo_duration}
 #' }
 #'
 #' and the corresponding daily survival probability is:
 #' \deqn{
-#' survival_rate_daily_nondemographic =
-#' 1 - death_rate_daily_nondemographic
+#' survival\_rate\_daily\_nondemo =
+#' 1 - death\_rate\_daily\_nondemo
 #' }
 #'
 #' The number of simulated days is limited by both the total phase duration
 #' and the maximum number of days allowed for the current simulation step:
 #' \deqn{
-#' time_simulated_nondemographic =
+#' time\_simulated\_nondemographic =
 #' \min(max_simulation_days_nondemo_phase,\ productive_phase_nondemo_duration)
 #' }
 #'
 #' End-of-phase stock is then calculated by applying constant daily survival
 #' to the starting stock over the simulated period:
 #' \deqn{
-#' stock_{end} =
-#' cohort_stock_nondemo_start_by_phase \times survival_rate_daily_nondemographic^{time_simulated_nondemographic}
+#' cohort\_stock\_nondemo_{end} =
+#' cohort\_stock\_nondemo\_start\_by\_phase \times survival\_rate\_daily\_nondemo^{time\_simulated\_nondemographic}
 #' }
 #'
 #' Equivalently:
 #' \deqn{
-#' stock_{end} =
-#' cohort_stock_nondemo_start_by_phase \times
-#' (1 - death_rate_daily_nondemographic)^{time_simulated_nondemographic}
+#' cohort\_stock\_nondemo_{end} =
+#' cohort\_stock\_nondemo\_start\_by\_phase \times
+#' (1 - death\_rate\_daily\_nondemo)^{time\_simulated\_nondemographic}
 #' }
 #'
 #' If \code{productive_phase_nondemo_duration} is \code{NULL} or less than or equal to
@@ -433,7 +471,7 @@ calc_nondemo_start_sizes <- function(
 #' starting and ending stock are returned as zero.
 #'
 #' No rounding is applied to stock values. Therefore, fractional values may
-#' occur in \code{stock$end}.
+#' occur in \code{cohort_stock_nondemo$end}.
 #'
 #' This function is part of the [run_nondemographic_herd_module()].
 #' 
@@ -492,9 +530,9 @@ calc_nondemo_phase <- function(
 
 
 
-#' Calculate average non-demographic stock over the assessment horizon
+#' Calculate average nondemographic stock over the assessment horizon
 #'
-#' Computes the average number of animals present during a given non-demographic
+#' Computes the average number of animals present during a given nondemographic
 #' productive phase over the assessment horizon (default 365 days). Animal-days are
 #' calculated for a full phase occurrence and a terminal partial phase occurrence,
 #' then aggregated across full cycle repetitions and divided by the horizon length.
@@ -511,11 +549,13 @@ calc_nondemo_phase <- function(
 #'   simulation (truncated duration occurring at the end of the simulated period).
 #'   Uses the same structure as \code{full_nondemo_phase_duration}.
 #'
-#' @param number_full_nondemo_cycles Integer. Number of complete cycles fully 
-#' contained within the fixed 365-day simulation window for the assessed non-demographic cohort (full cycles / simulated period). Supported cohorts are FN and MN.
+#' @param number_full_nondemo_cycles Integer. Number of complete cycles fully
+#'   contained within the fixed 365-day simulation window for the assessed
+#'   nondemographic cohort (\code{FN} or \code{MN}) (full cycles / simulated
+#'   period).
 #'
 #' @details
-#' The function calculates the average stock present in the non-demographic
+#' The function calculates the average stock present in the nondemographic
 #' productive phase over the full assessment horizon, expressed as heads per day.
 #' It does so by first converting stock trajectories within each simulated phase
 #' into animal-days, and then dividing total animal-days by the fixed 365-day
@@ -632,9 +672,9 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 
 
 
-#' Calculate total non-demographic offtake over the assessment horizon
+#' Calculate total nondemographic offtake over the assessment horizon
 #'
-#' Calculates total offtake (animals exiting the system) for a non-demographic cohort
+#' Calculates total offtake (animals exiting the system) for a nondemographic cohort
 #' (FN or MN) over the assessment period based on the number of
 #' complete production cycles fully contained within the simulated period. 
 #'
@@ -644,19 +684,19 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 #'
 #' @param cohort_stock_nondemo_end_phase1
 #'   Numeric. Number of animals remaining at the end of one complete
-#'   non-demographic productive phase 1 after applying phase-specific mortality
+#'   nondemographic productive phase 1 after applying phase-specific mortality
 #'   (# heads / cycle). Typically obtained as \code{cohort_stock_nondemo$end} from
 #'   \code{\link{calc_nondemo_phase}} when simulating a full phase 1.
 #'
 #' @param cohort_stock_nondemo_end_phase2
 #'   Numeric. Number of animals remaining at the end of one complete
-#'   non-demographic productive phase 2 after applying phase-specific mortality
+#'   nondemographic productive phase 2 after applying phase-specific mortality
 #'   (# heads / cycle). Typically obtained as \code{cohort_stock_nondemo$end} from
 #'   \code{\link{calc_nondemo_phase}} when simulating a full phase 2. Used only
 #'   when phase 2 exists.
 #'
 #' @param number_full_nondemo_cycles
-#'   Integer. Number of complete non-demographic production cycles fully
+#'   Integer. Number of complete nondemographic production cycles fully
 #'   contained within the simulated period (cycles / simulated period). This is
 #'   calculated by \code{\link{calc_nondemo_cycle_geometry}}.
 #'
@@ -676,13 +716,13 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 #'
 #' @param phase1_nondemo_duration
 #'   Numeric. Full duration of productive phase 1 for the assessed
-#'   non-demographic cohort block (`FN` or `MN`) (days). This duration is used
+#'   nondemographic cohort block (\code{FN} or \code{MN}) (days). This duration is used
 #'   as input to both \code{\link{calc_nondemo_cycle_geometry}} and
 #'   \code{\link{calc_nondemo_phase}}.
 #'
 #' @param phase2_nondemo_duration
 #'   Numeric. Full duration of productive phase 2 for the assessed
-#'   non-demographic cohort block (`FN` or `MN`) (days). Use `0` when no second
+#'   nondemographic cohort block (\code{FN} or \code{MN}) (days). Use \code{0} when no second
 #'   productive phase exists. This duration is used as input to both
 #'   \code{\link{calc_nondemo_cycle_geometry}} and
 #'   \code{\link{calc_nondemo_phase}}.
@@ -693,16 +733,16 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 #' Offtake is assumed to occur only at the end of the last existing productive phase in the
 #' cycle (phase 2 if present, otherwise phase 1). Terminal (partial) phases at the
 #' end of the simulated period do not contribute to offtake. The function uses
-#' a fixed 365-day simulated horizon so the non-demographic pathway stays
+#' a fixed 365-day simulated horizon so the nondemographic pathway stays
 #' aligned with the demographic herd simulation.
 #' 
 #' Let \eqn{N} be the number of complete
 #' cycles within the simulated period (\code{number_full_nondemo_cycles}). If
 #' productive phase 2 exists (\code{phase2_nondemo_duration > 0}), total offtake
 #' over the simulated period is:
-#' \deqn{offtake\_{sim} = N \times cohort\_stock\_non\_demo\_end\_phase2}
+#' \deqn{offtake\_{sim} = N \times cohort\_stock\_nondemo\_end\_phase2}
 #' Otherwise, offtake is taken from phase 1:
-#' \deqn{offtake\_{sim} = N \times cohort\_stock\_non\_demo\_end\_phase1}
+#' \deqn{offtake\_{sim} = N \times cohort\_stock\_nondemo\_end\_phase1}
 #'
 #' Offtake totals are scaled to the reporting period by converting to an average daily
 #' offtake rate over the fixed 365-day simulated horizon and multiplying by
@@ -713,10 +753,18 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 #'
 #' @return A named list with:
 #' \describe{
-#'   \item{offtake_heads_nondemo_phase1}{Numeric. Total number of animals removed at the end of productive phase 1 of the non-demographic block during the year (heads/phase/year).}
-#'   \item{offtake_heads_nondemo_phase2}{Numeric. Total number of animals removed at the end of productive phase 2 of the non-demographic block during the year (heads/phase/year).}
-#'   \item{offtake_heads_assessment_nondemo_phase1}{Numeric. Total number of animals removed at the end of productive phase 1 of the non-demographic block during the simulated period (heads/phase/simulated period).}
-#'   \item{offtake_heads_assessment_nondemo_phase2}{Numeric. Total number of animals removed at the end of productive phase 2 of the non-demographic block during the simulated period (heads/phase/simulated period).}
+#'   \item{offtake_heads_nondemo_phase1}{Numeric. Total number of animals
+#'   removed at the end of productive phase 1 of the nondemographic block over
+#'   the fixed 365-day horizon (\# heads).}
+#'   \item{offtake_heads_nondemo_phase2}{Numeric. Total number of animals
+#'   removed at the end of productive phase 2 of the nondemographic block over
+#'   the fixed 365-day horizon (\# heads).}
+#'   \item{offtake_heads_assessment_nondemo_phase1}{Numeric. Total number of
+#'   animals removed at the end of productive phase 1 of the nondemographic
+#'   block over \code{simulation_duration} (\# heads / simulated period).}
+#'   \item{offtake_heads_assessment_nondemo_phase2}{Numeric. Total number of
+#'   animals removed at the end of productive phase 2 of the nondemographic
+#'   block over \code{simulation_duration} (\# heads / simulated period).}
 #' }
 #'
 #' @seealso

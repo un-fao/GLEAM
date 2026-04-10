@@ -5,6 +5,7 @@
 \title{Calculate average and final live weights by cohort}
 \usage{
 calc_avg_weights(
+  cohort_short,
   live_weight_cohort_initial,
   live_weight_cohort_potential_final,
   live_weight_cohort_at_slaughter,
@@ -12,6 +13,10 @@ calc_avg_weights(
 )
 }
 \arguments{
+\item{cohort_short}{Character. Sex- and age-specific cohort code. Supported
+values include \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS},
+\code{MJ}, \code{FN}, and \code{MN}.}
+
 \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 
 \item{live_weight_cohort_potential_final}{Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)}
@@ -36,6 +41,9 @@ potential final weight, slaughter weight, and the offtake rate.
 The calculation of \code{live_weight_cohort_average} and \code{live_weight_cohort_final} is performed considering that
 a fraction of animals is removed (offtake) during the cohort stage, while the
 remaining animals reach the potential final live weight.
+For nondemographic cohorts (\code{FN}, \code{MN}), \code{offtake_rate} is
+not used; \code{live_weight_cohort_final} is set equal to
+\code{live_weight_cohort_potential_final}.
 
 The final live weight is computed as:
 \deqn{

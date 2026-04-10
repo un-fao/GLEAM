@@ -152,8 +152,8 @@
 #'     \item{`litter_size`}{Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 #'     \item{`birth_fraction_female`}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
 #'     \item{`herd_size_total`}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
-#'     \item{`prop_nondemographic_mal_juv`}{Numeric. Fraction of male juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
-#'     \item{`prop_nondemographic_fem_juv`}{Numeric. Fraction of female juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
+#'     \item{`prop_nondemo_mal_juv`}{Numeric. Fraction of male juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
+#'     \item{`prop_nondemo_fem_juv`}{Numeric. Fraction of female juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
 #'   }
 #' @param initial_herd_structure Named numeric vector of length 6. Initial number of individuals in each of the 6 sex-age cohorts used 
 #' to bootstrap the steady-state simulation (# heads).These values are used as starting points for the iterative simulation and 
@@ -203,12 +203,13 @@
 #'   "extdata/run_modules_examples/herd_simulation_input_hrd_data.csv",
 #'   package = "gleam"
 #' ))
-#' 
+#'
 #' # Run herd simulation
 #' results <- run_demographic_herd_module(
 #'   cohort_level_data = herd_simulation_chrt_dt,
 #'   herd_level_data = herd_simulation_hrd_dt,
-#'   simulation_duration = 200
+#'   simulation_duration = 365,
+#'   show_indicator = FALSE
 #' )
 #'
 #' # Access results

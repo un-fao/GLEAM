@@ -71,20 +71,34 @@
 #'     \item{`cohort_stock_fem_annual_nondemo`}{Numeric. Total annual entrants into the \code{FN} cohort block over the simulated period (# heads / simulated period).}
 #'     \item{`cohort_stock_mal_annual_nondemo`}{Numeric. Total annual entrants into the \code{MN} cohort block over the simulated period (# heads / simulated period).}
 #'     \item{`rest_between_nondemo_cycles_duration`}{Numeric. Duration of resting/empty phase between cycles for the assessed non-demographic cohort (days).}
+#'     \item{`phase1_nondemo_fem_duration_days`}{Numeric. Duration of productive phase 1 for the female non-demographic cohort (\code{FN}) (days).}
+#'     \item{`phase2_nondemo_fem_duration_days`}{Numeric. Duration of productive phase 2 for the female non-demographic cohort (\code{FN}) (days).}
+#'     \item{`phase1_nondemo_mal_duration_days`}{Numeric. Duration of productive phase 1 for the male non-demographic cohort (\code{MN}) (days).}
+#'     \item{`phase2_nondemo_mal_duration_days`}{Numeric. Duration of productive phase 2 for the male non-demographic cohort (\code{MN}) (days).}
 #'   }
 #' @param simulation_duration Numeric. Length of the reporting period used to scale non-demographic outputs (days).
 #'   Defaults to `365`.
 #'
-#' @return A `data.table` with one row per herd, cohort block, and phase
-#'   containing all original `cohort_level_data` columns plus the following
-#'   simulation results:
+#' @return A named list with two elements:
 #'   \describe{
-#'     \item{`cohort_stock_size_unscaled`}{Numeric. Average population size by cohort not yet scaled to the total livestock population (herd_size_total) (# heads).}
-#'     \item{`partial_nondemo_phase_duration`}{Numeric. Duration of the terminal partial productive phase occurring within the simulated horizon (days).}
-#'     \item{`offtake_heads`}{Numeric. Total number of animals leaving the cohort block over the year (# heads).}
-#'     \item{`offtake_heads_assessment`}{Numeric. Total number of animals leaving the cohort block over the simulated period (# heads / simulated period).}
-#'     \item{`number_full_nondemo_cycles`}{Integer. Number of complete cycles fully contained within the simulated_days window for the assessed non-demographic cohort (full cycles / simulated period). Supported cohorts are FN and MN.}
-#'     \item{`total_nondemo_cycle_starts_to_distribute`}{Integer. Total number of cycle starts within the simulated_days window for the assessed non-demographic cohort (cycle starts / simulated period). Supported cohorts are FN and MN.}
+#'     \item{`cohort_level_results`}{A `data.table` with one row per retained herd
+#'       \eqn{\times} non-demographic cohort block \eqn{\times} productive phase,
+#'       containing the original `cohort_level_data` columns plus:
+#'       \describe{
+#'         \item{`cohort_duration_days`}{Numeric. Productive phase duration used in the simulation (days). If not supplied in the cohort table, this is filled from herd-level phase-duration inputs.}
+#'         \item{`cohort_stock_size_unscaled`}{Numeric. Average population size by cohort block and productive phase before any later herd-level harmonization (# heads).}
+#'         \item{`partial_nondemo_phase_duration`}{Numeric. Duration of the terminal partial productive phase occurring within the fixed 365-day simulation horizon (days).}
+#'         \item{`offtake_heads`}{Numeric. Total number of animals leaving the cohort block over the fixed 365-day simulation horizon (# heads).}
+#'         \item{`offtake_heads_assessment`}{Numeric. Total number of animals leaving the cohort block over `simulation_duration` (# heads / simulated period).}
+#'         \item{`number_full_nondemo_cycles`}{Integer. Number of complete cycles fully contained within the fixed 365-day simulation horizon (full cycles / simulated period).}
+#'         \item{`total_nondemo_cycle_starts_to_distribute`}{Integer. Total number of cycle starts within the fixed 365-day simulation horizon used to distribute annual entrants (cycle starts / simulated period).}
+#'       }}
+#'     \item{`herd_level_results`}{A `data.table` with one row per `herd_id`
+#'       containing the original `herd_level_data` columns plus:
+#'       \describe{
+#'         \item{`total_nondemo_fem_duration_days`}{Numeric. Total duration of productive phases assigned to the female non-demographic cohort block (\code{FN}) (days).}
+#'         \item{`total_nondemo_mal_duration_days`}{Numeric. Total duration of productive phases assigned to the male non-demographic cohort block (\code{MN}) (days).}
+#'       }}
 #'   }
 #'
 #' @seealso

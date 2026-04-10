@@ -12,7 +12,8 @@ calc_steady_state_structure(
   fecundity_male,
   probability_death,
   probability_offtake,
-  probability_growth
+  probability_growth,
+  proportion_nondemographic
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ Must be named with: \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code
 
 \item{probability_growth}{Named numeric vector of length 10. Probability of growing into the next age class for 10 cohorts (fraction)
 (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling).}
+
+\item{proportion_nondemographic}{Named numeric vector of length 6. Fraction of animals diverted from the demographic pathway into the non-demographic pathway for 6 demographic cohorts (fraction). (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
 }
 \value{
 A named list with:
@@ -45,6 +48,7 @@ A named list with:
 \item{herd_structure}{Named numeric vector of length 8. Final steady-state share of each of 8 sex-age cohorts (\code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}) (fraction). Shares should sum to 1.}
 \item{cohort_share}{Named numeric vector of length 6. Final steady-state share of 6 grouped sex-age cohorts  (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}, where \code{FJ = FB + FJ} and \code{MJ = MB + MJ}) (fraction). Shares should sum to 1.}
 \item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction)}
+\item{herd_size_total_demographic}{Numeric. Total number of animals remaining in the demographic component after estimated (# heads).
 }
 
 This function is part of the \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}.
@@ -54,7 +58,31 @@ Calculates population dynamics over time until a steady state is reached.
 The steady state is defined as a constant sex–age cohort structure over time,
 with population size potentially growing or declining at a constant rate.
 Tracks sex–age cohort structure and population growth based on survival,
-offtake, and fecundity parameters.
+offtake, fecundity parameters and diversion to non-demographic blocks such as fattening operations.
+}
+\details{
+Diversion into the non-demographic block is applied on cohort transitions.
+For each transition eligible for diversion, the model first computes the total
+number of animals progressing out of the current demographic cohort. It then
+splits that transition flow into:
+\itemize{
+\item a retained demographic component, which continues into the next demographic cohort
+\item a diverted non-demographic component, recorded separately through
+\code{proportion_nondemographic}
+}
+
+In formula terms, if \eqn{T} is the total transition flow and \eqn{p} is the
+relevant entry of \code{proportion_nondemographic}, then:
+\deqn{
+  T_{non-demo} = p \times T
+}
+\deqn{
+  T_{demo} = (1 - p) \times T
+}
+
+This allows the demographic steady-state structure to remain internally
+consistent while tracking how many animals are redirected to the
+non-demographic component.
 }
 \seealso{
 \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}

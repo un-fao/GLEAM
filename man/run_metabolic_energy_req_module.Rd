@@ -19,10 +19,15 @@ run_metabolic_energy_req_module(
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{MN}: non-demographic males
 }}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). When present, energy
+requirements are computed and retained separately by phase.}
 \item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 \item{low_activity_fraction}{Numeric. Proportion of the assessment period during which the animal performs low-intensity movement typical of stall-feeding or near-field grazing, characterized by minimal walking distances and flat terrain  (fraction).}
@@ -74,7 +79,9 @@ indicator calculated as the total number of parturitions (deliveries) occurring 
 Defaults to \code{TRUE}.}
 }
 \value{
-A \code{data.table} with the original cohort-level input columns plus the following new variables:
+A \code{data.table} with the original cohort-level input columns plus the following
+new variables. If \code{nondemo_productive_phase_id} is present in the input,
+the returned table preserves phase-specific rows for \code{FN} and \code{MN}:
 \describe{
 \item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}

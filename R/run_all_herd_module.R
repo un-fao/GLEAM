@@ -335,7 +335,7 @@
 
 #'=====
 #'
-#' # Use case 3 - Run both the demographic and non-demographic:
+#' # Use case 3 - *Run both the demographic and non-demographic*:
 #'
 #' cohort_combined_path <- system.file(
 #'   "extdata/run_modules_examples/run_all_herd_module_input_chrt_data.csv",
@@ -354,7 +354,7 @@
 #'   run_demographic = TRUE,
 #'   run_nondemographic = TRUE
 #' )
-#' 
+#'
 #' # Access the results
 #' combined_cohort <- out$cohort_level_results
 #' combined_cohort
