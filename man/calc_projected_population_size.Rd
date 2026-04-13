@@ -13,11 +13,12 @@ calc_projected_population_size(
   probability_growth,
   growth_rate_herd,
   herd_structure,
-  cohort_share
+  cohort_share,
+  proportion_nondemographic
 )
 }
 \arguments{
-\item{herd_size_total}{Numeric. Total population size at the start of the year, including all cohorts (# heads)}
+\item{herd_size_total}{Numeric. Total demographic population size at the start of the year, including all cohorts (# heads)}
 
 \item{fecundity_female}{Numeric. Daily number of female offspring per adult female (# offspring/day)}
 
@@ -37,6 +38,8 @@ calc_projected_population_size(
 \item{herd_structure}{Named numeric vector of length 8. Final steady-state share of each of 8 sex-age cohorts (\code{FB}, \code{FJ}, \code{FS}, \code{FA}, \code{MB}, \code{MJ}, \code{MS}, \code{MA}) (fraction). Shares should sum to 1.}
 
 \item{cohort_share}{Named numeric vector of length 6. Final steady-state share of 6 grouped sex-age cohorts  (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}, where \code{FJ = FB + FJ} and \code{MJ = MB + MJ}) (fraction). Shares should sum to 1.}
+
+\item{proportion_nondemographic}{Named numeric vector of length 6. Fraction of animals diverted from the demographic pathway into the non-demographic pathway for 6 demographic cohorts (fraction). (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
 }
 \value{
 A named list with:
@@ -46,6 +49,7 @@ A named list with:
 \item{cohort_stock_end_exact_simulated}{Numeric vector of length 10. Population size in each of 10 sex–age cohort at the end of the year, based on a demographic daily simulation over 365 days (# heads)
 (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 \item{cohort_stock_average}{Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts over the year (# heads). Estimated from cohort_stock_start and cohort_stock_end_projected  (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
+\item{cohort_stock_annual_nondemographic}{Numeric vector of length 6. Total number of animals entering the non-demographic component of the model over the simulated period, disaggregated by demographic sex–age cohorts (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})} (heads).
 \item{cohort_offtake_heads}{Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year)
 (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 }
@@ -56,6 +60,20 @@ This function is part of the \code{\link[=run_demographic_herd_module]{run_demog
 Calculates one year of population dynamics under steady-state assumptions using demographic parameters
 and returns population size statistics and offtake results. The steady state is defined as a constant
 sex–age cohort structure over time, with population size potentially growing or declining at a constant rate.
+}
+\details{
+This projection step applies the same diversion logic used in the steady-state
+solver, but over the explicit one-year simulated population trajectory. For
+each eligible transition, the outgoing flow is partitioned into:
+\itemize{
+\item animals that remain in the demographic pathway and enter the next demographic cohort
+\item animals diverted into the non-demographic pathway and accumulated in
+\code{cohort_stock_annual_nondemographic}
+}
+
+The non-demographic totals returned by this function therefore represent the
+annual entrant counts that can be passed downstream to the non-demographic herd
+module.
 }
 \seealso{
 \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}

@@ -20,10 +20,15 @@ Supported values include:
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{MN}: non-demographic males
 }}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). When present, nitrogen
+balance outputs are computed and retained separately by phase.}
 \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
@@ -72,7 +77,10 @@ a year divided by the number of adult females potentially able to give birth dur
 Defaults to \code{TRUE}.}
 }
 \value{
-A \code{data.table}  with the original cohort-level input columns plus the following new variables:
+A \code{data.table} with the original cohort-level input columns plus the
+following new variables. If \code{nondemo_productive_phase_id} is present in
+the input, the returned table preserves phase-specific rows for \code{FN} and
+\code{MN}:
 \describe{
 \item{nitrogen_intake}{Numeric. Daily nitrogen intake (kg N/head/day).}
 \item{nitrogen_retention}{Numeric. Daily nitrogen retention in animal body

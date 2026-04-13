@@ -65,65 +65,52 @@ validate_run_emissions_manure_module_inputs <- function(
     data_arg = "manure_management_system_fraction"
   )
 
-  # Each herd must have all 6 cohorts in cohort_level_data (one row per herd-cohort)
-  check_cohort_completeness(cohort_level_data, "cohort_level_data")
-
-  # Fraction table: each herd must have all 6 cohorts present (may have multiple rows per
-  # cohort when multiple manure management systems exist)
-  fraction_cohort_completeness <- manure_management_system_fraction[
-    , list(
-      count = data.table::uniqueN(cohort_short),
-      has_all_cohorts = setequal(cohort_short, gleam_cohorts),
-      missing_cohorts = paste(setdiff(gleam_cohorts, cohort_short), collapse = ", ")
-    ),
-    by = herd_id
-  ]
-  fraction_missing <- fraction_cohort_completeness[has_all_cohorts == FALSE]
-  if (nrow(fraction_missing) > 0) {
-    missing_info <- fraction_missing[
-      , paste0(herd_id, " (missing: ", missing_cohorts, ")"),
-      by = herd_id
-    ]$V1
-    cli::cli_abort(
-      "Each herd_id must include all 6 cohorts in {.arg manure_management_system_fraction}.
-      Missing cohorts found for herd_ids: {.val {missing_info}}"
-    )
+  manure_group_cols <- c("herd_id", "cohort_short")
+  if ("nondemo_productive_phase_id" %in% names(cohort_level_data) &&
+      "nondemo_productive_phase_id" %in% names(manure_management_system_fraction)) {
+    manure_group_cols <- c(manure_group_cols, "nondemo_productive_phase_id")
   }
+
+  # Only cohort-code validity is enforced here; cohort coverage can vary by herd.
 
   # --- Uniqueness checks ------------------------------------------------------
   duplicate_input <- cohort_level_data[
-    , .N, by = .(herd_id, cohort_short)
+    , .N, by = manure_group_cols
   ][N > 1]
   if (nrow(duplicate_input) > 0) {
     cli::cli_abort(
-      "Duplicate herd_id + cohort combinations in {.arg cohort_level_data}: {.val {duplicate_input$herd_id}}"
+      "Duplicate herd/cohort rows in {.arg cohort_level_data} for grouping columns {.val {manure_group_cols}}."
     )
   }
 
   duplicate_fraction <- manure_management_system_fraction[
-    , .N, by = .(herd_id, cohort_short, manure_management_system)
+    , .N, by = c(manure_group_cols, "manure_management_system")
   ][N > 1]
   if (nrow(duplicate_fraction) > 0) {
     cli::cli_abort(
-      "Duplicate herd_id + cohort + manure_management_system rows in {.arg manure_management_system_fraction}."
+      "Duplicate herd/cohort/manure-management rows in {.arg manure_management_system_fraction}."
     )
   }
 
-  # --- MMS fraction sum-to-one checks (per herd_id + cohort_short) ------------
+  # --- MMS fraction sum-to-one checks (per herd/cohort[/phase]) ---------------
   fraction_sums <- manure_management_system_fraction[
     ,
     .(total_fraction = sum(manure_management_system_fraction)),
-    by = .(herd_id, cohort_short)
+    by = manure_group_cols
   ]
   invalid_sums <- fraction_sums[
     is.na(total_fraction) | abs(total_fraction - 1) > 1e-8
   ]
   if (nrow(invalid_sums) > 0) {
-    invalid_herds <- sort(unique(invalid_sums$herd_id))
+    invalid_keys <- invalid_sums[
+      ,
+      do.call(paste, c(.SD, sep = " / ")),
+      .SDcols = manure_group_cols
+    ][[1]]
     cli::cli_abort(
-      "For each herd_id and cohort, the sum of MMS fractions in
+      "For each herd/cohort group, the sum of MMS fractions in
       {.arg manure_management_system_fraction} must equal 1.
-      \nInvalid herd_ids: {.val {invalid_herds}}"
+      \nInvalid groups: {.val {invalid_keys}}"
     )
   }
 
@@ -215,18 +202,20 @@ validate_run_emissions_manure_module_inputs <- function(
 
   # Each herd_id + cohort_short in input must exist in fraction table
   input_pairs <- unique(
-    cohort_level_data[, .(herd_id, cohort_short)]
+    cohort_level_data[, ..manure_group_cols]
   )
   fraction_pairs <- unique(
-    manure_management_system_fraction[, .(herd_id, cohort_short)]
+    manure_management_system_fraction[, ..manure_group_cols]
   )
   missing_pairs <- data.table::fsetdiff(input_pairs, fraction_pairs)
   if (nrow(missing_pairs) > 0) {
     missing_info <- missing_pairs[
-      , paste0(herd_id, " / ", cohort_short)
-    ]
+      ,
+      do.call(paste, c(.SD, sep = " / ")),
+      .SDcols = manure_group_cols
+    ][[1]]
     cli::cli_abort(
-      "Missing herd_id + cohort combinations in {.arg manure_management_system_fraction}: {.val {missing_info}}"
+      "Missing herd/cohort combinations in {.arg manure_management_system_fraction}: {.val {missing_info}}"
     )
   }
 

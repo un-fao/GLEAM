@@ -15,7 +15,7 @@
 
 # --- data.table operators and shared identifiers ----------------------------
 utils::globalVariables(c(
-  ".", ":=", ".I", ".N", ".SD",
+  ".", ":=", ".BY", ".I", ".N", ".SD",
   "herd_id", "cohort_short", "species_short",
   "N", "count", "index", "n_unique", "V1"
 ))
@@ -37,6 +37,7 @@ utils::globalVariables(c(
   "offtake_rate.MA", "offtake_rate.MJ", "offtake_rate.MS",
   "parturition_rate",
   "potential_final_weight",
+  "prop_nondemo_fem_juv", "prop_nondemo_mal_juv",
   "prob_death", "prob_death.FA", "prob_death.FB", "prob_death.FC",
   "prob_death.FJ", "prob_death.FS", "prob_death.MA", "prob_death.MB",
   "prob_death.MC", "prob_death.MJ", "prob_death.MS",
@@ -48,7 +49,8 @@ utils::globalVariables(c(
   "prob_offtake.MJ", "prob_offtake.MS",
   "probability_death", "probability_growth",
   "probability_offtake", "probability_survival",
-  "cohort_stock_size", "growth_rate_herd",
+  "cohort_stock_annual_nondemographic", "cohort_stock_size", "growth_rate_herd",
+  "mort_rate", "n_phase_1", "n_phase_2",
   "offtake_heads", "offtake_heads_assessment",
   "share.FA", "share.FJ", "share.FS", "share.MA", "share.MJ", "share.MS",
   "size.FA", "size.FJ", "size.FS", "size.MA", "size.MJ", "size.MS",
@@ -66,10 +68,17 @@ utils::globalVariables(c(
   "daily_weight_gain", "offtake_rate",
   "live_weight_at_birth", "live_weight_at_weaning",
   "live_weight_female_adult", "live_weight_male_adult",
+  "live_weight_female_nondemographic_end", "live_weight_female_nondemographic_start",
   "live_weight_female_at_slaughter", "live_weight_male_at_slaughter",
+  "live_weight_male_nondemographic_end", "live_weight_male_nondemographic_start",
   "live_weight_cohort_initial", "live_weight_cohort_potential_final",
   "live_weight_cohort_at_slaughter", "live_weight_cohort_average",
   "live_weight_cohort_final", "live_weight_mature_stage",
+  "nondemo_productive_phase_id",
+  "x.live_weight_female_nondemographic_end", "x.live_weight_female_nondemographic_start",
+  "x.live_weight_male_nondemographic_end", "x.live_weight_male_nondemographic_start",
+  "x.phase1_nondemo_fem_duration_days", "x.phase1_nondemo_mal_duration_days",
+  "x.phase2_nondemo_fem_duration_days", "x.phase2_nondemo_mal_duration_days",
   # x.* join prefixes
   "x.live_weight_at_birth", "x.live_weight_at_weaning",
   "x.live_weight_female_adult", "x.live_weight_male_adult",
@@ -79,6 +88,7 @@ utils::globalVariables(c(
 # --- run_ration_quality_module ----------------------------------------------
 utils::globalVariables(c(
   "category", "feed_id", "feed_name", "feed_ration_fraction", "feed_ration_sum",
+  "..ration_unique_cols",
   "feed_ash", "feed_gross_energy",
   "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
   "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
@@ -138,8 +148,10 @@ utils::globalVariables(c(
 
 # --- run_emissions_manure_module --------------------------------------------
 utils::globalVariables(c(
+  "..manure_group_cols",
   "dmi", "ef4", "ef5",
   "manure_management_system", "mms_list", "mms_list_fraction", "mms_list_factors",
+  "nondemo_productive_phase_id",
   "unique_mms_sets", "total_fraction",
   "volatile_solids",
   "n2o_manure_burned_direct", "n2o_manure_burned_leach", "n2o_manure_burned_vol",
@@ -189,12 +201,21 @@ utils::globalVariables(c(
 # --- run_allocation_module --------------------------------------------------
 utils::globalVariables(c(
   "allocation_share", "allocation_share_other", "allocation_herd_long_all",
+  "cohort_stock_fem_annual_nondemo", "cohort_stock_mal_annual_nondemo",
   "commodity_name", "commodity_type",
+  "duration_cycle_productive_phase_nondemo",
   "fibre_allocation_energy",
+  "i.cohort_stock_fem_annual_nondemo", "i.cohort_stock_mal_annual_nondemo",
+  "i.herd_size_total", "i.rest_between_nondemo_cycles_duration",
+  "i.size_for_rescaling",
+  "i.total_nondemo_fem_duration_days", "i.total_nondemo_mal_duration_days",
   "meat_allocation_energy", "meat_production_live_weight_cohort",
   "metabolic_energy_req_fibre_production", "metabolic_energy_req_work",
   "milk_allocation_energy", "milk_production_fpcm_cohort",
+  "rest_between_nondemo_cycles_duration",
+  "size_for_rescaling",
   "total_allocation_energy",
+  "total_nondemo_fem_duration_days", "total_nondemo_mal_duration_days",
   "meat_share_allocation", "milk_share_allocation",
   "work_share_allocation", "fibre_share_allocation",
   "eggs_share_allocation",
@@ -228,4 +249,9 @@ utils::globalVariables(c(
 # --- column-selection helpers (.. prefix) -----------------------------------
 utils::globalVariables(c(
   "..cols_to_drop", "..final_cols"
+))
+
+# --- shared herd-module intermediates ---------------------------------------
+utils::globalVariables(c(
+  "cohort_stock_size_unscaled"
 ))
