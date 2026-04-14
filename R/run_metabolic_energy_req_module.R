@@ -51,20 +51,20 @@
 #'         \item \code{GTS}: goats
 #'         \item \code{CHK}: chickens
 #'         }}
-#'     \item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days). The alias \code{age_at_first_offspring} is also accepted.}
+#'     \item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
 #'     \item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 #'     \item{milk_yield_day}{Numeric.  Average milk yield per milk-producing animal during the assessment duration (kg/head/day). This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals during the assessment period, divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 #'     \item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat / kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 #'     \item{non_productive_duration}{Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days). Required only for PGS.}
 #'     \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
-#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). For \code{CHK}, this can be interpreted as offspring produced per reproductive event. The alias \code{offspring_per_reproductive_event} is also accepted.}
+#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). For \code{CHK}, this can be interpreted as offspring produced per reproductive event.}
 #'     \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
 #'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.}
-#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction. The alias \code{reproductive_rate} is also accepted.}
+#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction.}
 #'     \item{average_annual_temperature}{Numeric. Average annual temperature (degrees C). Used for \code{CHK}.}
-#'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}. The alias \code{egg_weight} is also accepted and is converted internally from g/egg to kg/egg.}
+#'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}.}
 #'     \item{egg_output_human_consumption}{Numeric. Number of eggs produced for human consumption in one year by the flock (eggs/year). Used for \code{CHK}.}
 #'     \item{draught_work_hours_female}{Numeric. Average daily working time per adult female (hours/head/day). Required only for species = CML, CTL, and BFL.}
 #'     \item{draught_work_hours_male}{Numeric. Average daily working time per adult male (hours/head/day). Required only for species = CML, CTL, and BFL.}

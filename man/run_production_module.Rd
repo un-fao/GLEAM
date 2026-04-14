@@ -31,6 +31,9 @@ Supported values include:
 \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
 for non-demographic cohorts (\code{FN}, \code{MN}). When present, production
 outputs are retained separately by phase.}
+\item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
+\code{FA} or for \code{FN} in laying phase 2.}
 \item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads).}
 \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period for the assessed cohort (# heads / assessment period).}
 \item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
@@ -49,6 +52,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 \item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment duration
 (kg/head/day).
@@ -107,12 +111,18 @@ produced over the assessment period by cohort (kg/cohort/assessment period).}
 \item{meat_production_protein_cohort}{Numeric. Total meat protein (excluding bones, organs, and other by-products
 after dressing and bone removal) produced
 over the assessment period by cohort (kg protein/cohort/assessment period).}
+\item{egg_production_number_cohort}{Numeric. Total egg output over the assessment period
+by cohort (eggs/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
+\item{egg_production_mass_cohort}{Numeric. Total egg mass output over the assessment period
+by cohort (kg/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
+\item{egg_production_protein_cohort}{Numeric. Total egg protein output over the assessment period
+by cohort (kg protein/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
 }
 }
 \description{
 Calculates cohort-level production outputs over the assessment period by combining
 cohort-level herd structure inputs with herd-level production parameters.
-The function returns milk, fibre, and meat outputs for each cohort.
+The function returns milk, fibre, meat, and egg outputs for each cohort.
 }
 \details{
 This function represents the intermediate module of the Global Livestock Environmental

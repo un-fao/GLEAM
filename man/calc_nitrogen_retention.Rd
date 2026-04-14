@@ -16,7 +16,12 @@ calc_nitrogen_retention(
   live_weight_at_weaning = NA_real_,
   live_weight_at_birth = NA_real_,
   pregnancy_duration = NA_real_,
-  cohort_duration_days = NA_real_
+  cohort_duration_days = NA_real_,
+  cohort_stock_size = NA_real_,
+  egg_output_human_consumption = NA_real_,
+  egg_average_weight = NA_real_,
+  nondemo_productive_phase_id = NA_real_,
+  is_egg_producing = FALSE
 )
 }
 \arguments{
@@ -29,6 +34,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
@@ -74,7 +80,23 @@ a year divided by the number of adult females potentially able to give birth dur
 
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 
-\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.}
+
+\item{cohort_stock_size}{Numeric. Average cohort stock size (heads). Used for
+\code{CHK} egg-producing cohorts.}
+
+\item{egg_output_human_consumption}{Numeric. Annual egg output for human
+consumption (eggs/year). Used for \code{CHK} egg-producing cohorts.}
+
+\item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for
+\code{CHK} egg-producing cohorts.}
+
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase
+identifier for non-demographic cohorts.}
+
+\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
+\code{FN} with \code{nondemo_productive_phase_id = 2}.}
 }
 \value{
 Numeric. Daily nitrogen retention in animal body tissues and products
@@ -149,6 +171,37 @@ is applied to piglets' live weight gain to correct for their higher nitrogen
 content per unit of live weight gain, following IPCC (2019).
 }
 
+\strong{For CHK}:
+
+Nitrogen retention is calculated as the sum of a growth component and, for
+cohorts flagged with \code{is_egg_producing = TRUE}, an egg-deposition
+component:
+
+\deqn{nitrogen\_retention = growth\_component + egg\_component}
+
+with:
+
+\deqn{growth\_component = daily\_weight\_gain \times 0.032}
+
+and:
+
+\deqn{
+egg\_component =
+\left(
+\frac{egg\_output\_human\_consumption}{365 \times cohort\_stock\_size} +
+\frac{parturition\_rate}{365}
+\right) \times egg\_average\_weight \times 0.02
+}
+
+The coefficient 0.032 represents nitrogen retained in live-weight gain
+(kg N/kg live weight), following Lessire (2004). The coefficient 0.02
+represents nitrogen content of egg mass (kg N/kg egg mass), based on the egg
+protein composition summarized by Caffa et al. (2025). As implemented in the
+poultry pathway, the egg component is activated by the explicit cohort-level
+\code{is_egg_producing} flag. Validation restricts this flag to demographic
+laying hens (\code{FA}) and to non-demographic \code{FN} phase 2 when
+intensive layers are modeled outside the demographic structure.
+
 This function is part of the \code{\link[=run_nitrogen_balance_module]{run_nitrogen_balance_module()}}.
 }
 \references{
@@ -163,6 +216,15 @@ Livestock and Manure Management. Equation 10.33A, 10.33B.
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 Livestock and Manure Management. Equation 10.33.
+
+Caffa, I., Proietti, E., Turrini, F., Borgarelli, C., Ferrando, M. R.,
+Formisano, E., ... & Pisciotta, L. (2025). Nutritional Aspects of Eggs for a
+Healthy and Sustainable Consumption: A Narrative Review. \emph{Food Science &
+Nutrition}, 13(9), e70285.
+
+Lessire, M. (2004). Nutritional values for poultry. In \emph{Tables of
+composition and nutritional value of feed materials} (pp. 37-42). Wageningen
+Academic.
 }
 \seealso{
 \code{\link{run_nitrogen_balance_module}}

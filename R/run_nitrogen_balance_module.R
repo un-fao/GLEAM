@@ -28,6 +28,7 @@
 #'     \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 #'     \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 #'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.}
+#'     \item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads). Required for \code{CHK} egg-producing cohorts and preserved in the returned table.}
 #'   }
 #'
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with
@@ -56,12 +57,12 @@
 #'     \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as
 #'     wool, cashmere, mohair (kg/head/year).
 #'     Required only for species = CML, SHP, and GTS.}
-#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). For \code{CHK}, this can be interpreted as offspring produced per reproductive event. The alias \code{offspring_per_reproductive_event} is also accepted.}
-#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per adult female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction. The alias \code{reproductive_rate} is also accepted.}
+#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). For \code{CHK}, this can be interpreted as offspring produced per reproductive event.}
+#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per adult female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction.}
 #'     \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
-#'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}. The alias \code{egg_weight} is also accepted and is converted internally from g/egg to kg/egg.}
+#'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}.}
 #'     \item{egg_output_human_consumption}{Numeric. Number of eggs produced for human consumption in one year by the flock (eggs/year). Used for \code{CHK}.}
 #'   }
 #'
@@ -131,26 +132,6 @@ run_nitrogen_balance_module <- function(
 ) {
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
   herd_level_data <- data.table::as.data.table(herd_level_data)
-
-  harmonize_herd_input_aliases(herd_level_data)
-  apply_chk_cohort_duration_defaults(cohort_level_data, herd_level_data)
-  ensure_optional_columns(
-    cohort_level_data,
-    list(
-      cohort_stock_size = NA_real_,
-      nondemo_productive_phase_id = NA_real_,
-      is_egg_producing = FALSE
-    )
-  )
-  normalize_is_egg_producing(cohort_level_data)
-  ensure_optional_columns(
-    herd_level_data,
-    list(
-      egg_output_human_consumption = 0,
-      egg_average_weight = NA_real_
-    )
-  )
-
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_nitrogen_balance_module_inputs(cohort_level_data, herd_level_data)
 
