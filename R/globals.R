@@ -16,7 +16,7 @@
 # --- data.table operators and shared identifiers ----------------------------
 utils::globalVariables(c(
   ".", ":=", ".BY", ".I", ".N", ".SD",
-  "herd_id", "cohort_short", "species_short",
+  "herd_id", "cohort_short", "species_short", "species_short_tmp",
   "N", "count", "index", "n_unique", "V1"
 ))
 
@@ -66,6 +66,7 @@ utils::globalVariables(c(
 utils::globalVariables(c(
   "cohort", "cohort_duration_days",
   "daily_weight_gain", "offtake_rate",
+  "species_short",
   "live_weight_at_birth", "live_weight_at_weaning",
   "live_weight_female_adult", "live_weight_male_adult",
   "live_weight_female_nondemographic_end", "live_weight_female_nondemographic_start",
@@ -104,6 +105,8 @@ utils::globalVariables(c(
 # --- run_metabolic_energy_req_module ----------------------------------------
 utils::globalVariables(c(
   "activity_sum",
+  "cohort_stock_size",
+  "metabolic_energy_req_egg_deposition",
   "high_activity_fraction", "low_activity_fraction",
   "live_weight_cohort_average",
   "metabolic_energy_req_activity", "metabolic_energy_req_fibre_production",
@@ -114,14 +117,17 @@ utils::globalVariables(c(
   "net_energy_maintenance_digestible_energy_ratio",
   # x.* join prefixes from herd_level_data
   "x.age_first_parturition",
+  "x.average_annual_temperature",
   "x.death_rate_juvenile",
   "x.draught_fraction_female", "x.draught_fraction_male",
   "x.draught_work_hours_female", "x.draught_work_hours_male",
+  "x.egg_average_weight", "x.egg_output_human_consumption",
   "x.fibre_yield_year",
   "x.lactating_females_fraction", "x.lactation_duration",
   "x.litter_size",
   "x.live_weight_at_birth", "x.live_weight_at_weaning",
   "x.milk_fat_fraction", "x.milk_yield_day",
+  "x.lower_critical_temperature",
   "x.non_productive_duration", "x.parturition_rate",
   "x.pregnancy_duration", "x.species_short"
 ))
@@ -129,11 +135,14 @@ utils::globalVariables(c(
 # --- run_nitrogen_balance_module --------------------------------------------
 utils::globalVariables(c(
   "age_first_parturition",
+  "cohort_stock_size",
+  "egg_average_weight", "egg_output_human_consumption",
   "milk_protein_fraction", "milk_yield_day",
   "fibre_yield_year",
   "nitrogen_excretion", "nitrogen_intake", "nitrogen_retention",
   # x.* join prefixes from herd_level_data
   "x.age_first_parturition",
+  "x.egg_average_weight", "x.egg_output_human_consumption",
   "x.fibre_yield_year", "x.litter_size",
   "x.live_weight_at_birth", "x.live_weight_at_weaning",
   "x.milk_protein_fraction", "x.milk_yield_day",
@@ -185,9 +194,12 @@ utils::globalVariables(c(
 
 # --- run_production_module --------------------------------------------------
 utils::globalVariables(c(
+  "egg_production_mass_cohort", "egg_production_number_cohort",
+  "egg_production_protein_cohort",
   "fibre_production_cohort",
   "milk_yield", "milk_yield_day",
   "x.bone_free_meat_fraction", "x.carcass_dressing_fraction",
+  "x.egg_average_weight", "x.egg_output_human_consumption",
   "x.fibre_yield_year",
   "x.lactating_females_fraction",
   "x.meat_protein_fraction",
@@ -204,6 +216,7 @@ utils::globalVariables(c(
   "cohort_stock_fem_annual_nondemo", "cohort_stock_mal_annual_nondemo",
   "commodity_name", "commodity_type",
   "duration_cycle_productive_phase_nondemo",
+  "egg_production_mass_cohort",
   "fibre_allocation_energy",
   "i.cohort_stock_fem_annual_nondemo", "i.cohort_stock_mal_annual_nondemo",
   "i.herd_size_total", "i.rest_between_nondemo_cycles_duration",
