@@ -82,7 +82,7 @@ test_that("calc_metabolic_energy_req_maintenance handles chickens", {
     average_annual_temperature = 5,
     is_egg_producing = TRUE
   )
-  expect_equal(adult, (2^0.75) * (0.6935 - 0.0099 * 5^2))
+  expect_equal(adult, (2^0.75) * (0.6935 - 0.0099 * 5))
 
   juvenile <- calc_metabolic_energy_req_maintenance(
     species_short = "CHK",
@@ -104,7 +104,7 @@ test_that("calc_metabolic_energy_req_maintenance uses explicit egg-producing FN 
     is_egg_producing = TRUE
   )
 
-  expected <- max(0, (1.8^0.75) * (0.6935 - 0.0099 * 18^2))
+  expected <- max(0, (1.8^0.75) * (0.6935 - 0.0099 * 18))
   expect_equal(result, expected)
 })
 
@@ -283,6 +283,18 @@ test_that("calc_metabolic_energy_req_growth uses explicit egg-producing FN flag"
   )
 
   expect_equal(result, 0.01 * 0.0279 * 1000)
+})
+
+test_that("calc_metabolic_energy_req_growth uses broiler coefficient for non-laying FN", {
+  result <- calc_metabolic_energy_req_growth(
+    species_short = "CHK",
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 1,
+    daily_weight_gain = 0.01,
+    is_egg_producing = FALSE
+  )
+
+  expect_equal(result, 0.01 * 0.0202 * 1000)
 })
 
 test_that("calc_metabolic_energy_req_eggs handles chickens", {

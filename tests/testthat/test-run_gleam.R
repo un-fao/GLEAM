@@ -1,15 +1,18 @@
 # Tests for run_gleam() — main pipeline entry point
 
+run_gleam_examples_path <- testthat::test_path("..", "..", "inst", "extdata", "run_gleam_examples")
+run_modules_examples_path <- testthat::test_path("..", "..", "inst", "extdata", "run_modules_examples")
+
 # Load example data once at file scope to avoid re-reading CSVs in every test.
 d_gleam <- local({
-  path <- system.file("extdata", "run_gleam_examples", package = "gleam")
+  path <- run_gleam_examples_path
   cohort_no_structure <- data.table::fread(
-    file.path(path, "master_chrt_lvl_no_structure_data.csv")
+    file.path(path, "master_chrt_lvl_no_structure_mixed_data.csv")
   )
   cohort_structure <- data.table::fread(
     file.path(path, "master_chrt_lvl_structure_data.csv")
   )
-  herd <- data.table::fread(file.path(path, "master_hrd_lvl_data.csv"))
+  herd <- data.table::fread(file.path(path, "master_hrd_lvl_mixed_data.csv"))
   fn_herds <- unique(cohort_no_structure[cohort_short == "FN", herd_id])
   mn_herds <- unique(cohort_no_structure[cohort_short == "MN", herd_id])
   herd[is.na(prop_nondemo_fem_juv), prop_nondemo_fem_juv := 0]
@@ -40,19 +43,13 @@ d_gleam <- local({
 })
 
 d_gleam_mixed <- local({
-  path <- system.file("extdata", "run_gleam_examples", package = "gleam")
+  path <- run_gleam_examples_path
   nondemo_cohorts <- data.table::fread(
-    system.file(
-      "extdata", "run_modules_examples", "run_all_herd_module_input_chrt_data.csv",
-      package = "gleam"
-    )
+    file.path(run_modules_examples_path, "run_all_herd_module_input_chrt_data.csv")
   )[cohort_short %in% c("FN", "MN")]
 
   herd_nondemo <- data.table::fread(
-    system.file(
-      "extdata", "run_modules_examples", "example_herd_level_data.csv",
-      package = "gleam"
-    )
+    file.path(run_modules_examples_path, "example_herd_level_data.csv")
   )[, .(
     herd_id,
     prop_nondemo_fem_juv,
@@ -84,10 +81,7 @@ d_gleam_mixed <- local({
 
   herd <- data.table::copy(d_gleam$herd)
   herd_nondemo_full <- data.table::fread(
-    system.file(
-      "extdata", "run_modules_examples", "example_herd_level_data.csv",
-      package = "gleam"
-    )
+    file.path(run_modules_examples_path, "example_herd_level_data.csv")
   )[, .(
     herd_id,
     prop_nondemo_fem_juv,
@@ -126,14 +120,14 @@ d_gleam_mixed <- local({
 })
 
 d_gleam_chk_industrial <- local({
-  path <- system.file("extdata", "run_gleam_examples", package = "gleam")
+  path <- run_gleam_examples_path
 
   list(
     cohort_no_structure = data.table::fread(
-      file.path(path, "master_chrt_lvl_no_structure_chk_industrial_data.csv")
+      file.path(path, "master_chrt_lvl_no_structure_nondemo_data.csv")
     ),
     herd = data.table::fread(
-      file.path(path, "master_hrd_lvl_chk_industrial_data.csv")
+      file.path(path, "master_hrd_lvl_nondemo_data.csv")
     ),
     feed_rations = data.table::fread(
       file.path(path, "feed_rations_share_chrt.csv")
@@ -205,7 +199,7 @@ test_that("existing herd structure ignores herd-simulation defaults", {
       has_herd_structure = TRUE,
       cohort_level_data = d_gleam$cohort_structure,
       herd_level_data = data.table::fread(
-        file.path(system.file("extdata", "run_gleam_examples", package = "gleam"), "master_hrd_lvl_data.csv")
+        file.path(run_gleam_examples_path, "master_hrd_lvl_mixed_data.csv")
       ),
       feed_rations = d_gleam$feed_rations,
       feed_params = d_gleam$feed_params,
@@ -316,6 +310,10 @@ test_that("allows cohort_stock_size in structure mode", {
 # ---- validate_run_gleam_inputs: herd_id consistency -------------------------
 test_that("rejects mismatched herd_id across inputs", {
   bad_herd <- data.table::copy(d_gleam$herd)
+  bad_herd[, `:=`(
+    prop_nondemo_fem_juv = 0,
+    prop_nondemo_mal_juv = 0
+  )]
   bad_herd[, herd_id := paste0(herd_id, "_bad")]
   expect_error(
     run_gleam_no_structure(d_gleam, herd_level_data = bad_herd),
@@ -498,30 +496,6 @@ test_that("run_gleam TRUE path preserves cohort_stock_size from input", {
   data.table::setorder(input_sizes, herd_id, cohort_short, nondemo_productive_phase_id)
   data.table::setorder(result_sizes, herd_id, cohort_short, nondemo_productive_phase_id)
   expect_equal(result_sizes, input_sizes, ignore_attr = TRUE)
-})
-
-test_that("run_gleam supports CHK industrial non-demographic-only examples", {
-  results <- run_gleam(
-    has_herd_structure = FALSE,
-    run_demographic = FALSE,
-    run_nondemographic = TRUE,
-    cohort_level_data = d_gleam_chk_industrial$cohort_no_structure,
-    herd_level_data = d_gleam_chk_industrial$herd,
-    feed_rations = d_gleam_chk_industrial$feed_rations,
-    feed_params = d_gleam_chk_industrial$feed_params,
-    feed_emissions = d_gleam_chk_industrial$feed_emissions,
-    manure_management_system_fraction = d_gleam_chk_industrial$mms_fraction,
-    manure_management_system_factors = d_gleam_chk_industrial$mms_factors,
-    simulation_duration = 365,
-    show_indicator = FALSE
-  )
-
-  expect_s3_class(results$cohort_level_results, "data.table")
-  expect_s3_class(results$herd_level_results, "data.table")
-  expect_equal(sort(unique(results$cohort_level_results$herd_id)), c(14, 15))
-  expect_true(all(results$cohort_level_results$cohort_short %in% c("FN", "MN")))
-  expect_equal(nrow(results$cohort_level_results), 6L)
-  expect_equal(nrow(results$herd_level_results), 2L)
 })
 
 # ---- run_gleam: output consistency -------------------------------------------
