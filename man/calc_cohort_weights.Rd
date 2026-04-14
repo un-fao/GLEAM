@@ -5,6 +5,7 @@
 \title{Calculate live weights by cohort and life stage}
 \usage{
 calc_cohort_weights(
+  species_short = NA_character_,
   cohort_short,
   live_weight_female_adult = NA_real_,
   live_weight_male_adult = NA_real_,
@@ -24,6 +25,18 @@ calc_cohort_weights(
 )
 }
 \arguments{
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+\item \code{CHK}: chickens
+}}
+
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
 production stage of the animals. Supported values include:
 \itemize{
@@ -133,6 +146,12 @@ end of phase 1 and the potential final weight is the end of phase 2
 phase-specific potential final weight
 }
 }
+
+For chickens, the juvenile stage is represented as a very short hatch-to-day-3
+period. Accordingly, this implementation sets \code{live_weight_at_weaning =
+live_weight_at_birth} whenever \code{species_short = "CHK"}, so that
+demographic juvenile cohorts do not introduce artificial early growth before
+the subsequent subadult phase.
 
 This function is part of the \code{\link[=run_weights_module]{run_weights_module()}}.
 }

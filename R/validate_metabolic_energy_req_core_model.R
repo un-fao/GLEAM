@@ -11,12 +11,16 @@ validate_maintenance_inputs <- function(
     live_weight_cohort_average,
     lactating_females_fraction = NA_real_,
     offtake_rate = NA_real_,
-    age_first_parturition = NA_real_
+    age_first_parturition = NA_real_,
+    average_annual_temperature = NA_real_,
+    lower_critical_temperature = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
   validate_positive_numeric(live_weight_cohort_average)
-
+ 
   if (species_short %in% c("CTL", "BFL") && cohort_short == "FA") {
     validate_param_range(lactating_females_fraction)
   }
@@ -31,6 +35,20 @@ validate_maintenance_inputs <- function(
 
   if (species_short == "SHP" && cohort_short %in% gleam_cohorts_male) {
     validate_param_range(offtake_rate)
+  }
+
+  if (species_short == "CHK") {
+    validate_scalar_numeric(average_annual_temperature)
+    if (!is.na(lower_critical_temperature)) {
+      validate_scalar_numeric(lower_critical_temperature)
+      
+      validate_is_egg_producing_flag(
+        species_short = species_short,
+        cohort_short = cohort_short,
+        is_egg_producing = is_egg_producing,
+        nondemo_productive_phase_id = nondemo_productive_phase_id
+      )
+    }
   }
 }
 
@@ -79,10 +97,18 @@ validate_growth_inputs <- function(
     live_weight_mature_stage,
     daily_weight_gain,
     offtake_rate,
-    cohort_duration_days
+    cohort_duration_days,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
+  validate_is_egg_producing_flag(
+    species_short = species_short,
+    cohort_short = cohort_short,
+    is_egg_producing = is_egg_producing,
+    nondemo_productive_phase_id = nondemo_productive_phase_id
+  )
 
   # --- Cattle and buffalo: growth only for FS, FJ, MS, MJ ---
   if (species_short %in% c("CTL", "BFL") && cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
@@ -140,6 +166,42 @@ validate_growth_inputs <- function(
     validate_param_range(daily_weight_gain)
     return()
   }
+
+  # --- Chickens: growth can apply to all demographic cohorts ---
+  if (species_short == "CHK") {
+    validate_scalar_numeric(daily_weight_gain)
+    return()
+  }
+}
+
+#' Validate inputs for calc_metabolic_energy_req_eggs
+#'
+#' @noRd
+validate_egg_inputs <- function(
+    species_short,
+    cohort_short,
+    cohort_stock_size = NA_real_,
+    egg_output_human_consumption = NA_real_,
+    egg_average_weight = NA_real_,
+    parturition_rate = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
+) {
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
+  validate_is_egg_producing_flag(
+    species_short = species_short,
+    cohort_short = cohort_short,
+    is_egg_producing = is_egg_producing,
+    nondemo_productive_phase_id = nondemo_productive_phase_id
+  )
+
+  if (!isTRUE(is_egg_producing)) return()
+
+  validate_nonnegative_numeric(cohort_stock_size)
+  validate_positive_numeric(egg_average_weight)
+  validate_nonnegative_numeric(egg_output_human_consumption)
+  validate_nonnegative_numeric(parturition_rate)
 }
 
 #' Validate inputs for calc_metabolic_energy_req_lactation
@@ -414,6 +476,7 @@ validate_total_energy_inputs <- function(
   validate_scalar_numeric(metabolic_energy_req_pregnancy)
   validate_scalar_numeric(metabolic_energy_req_growth)
   validate_scalar_numeric(metabolic_energy_req_fibre_production)
+  validate_scalar_numeric(metabolic_energy_req_egg_deposition)
   validate_param_range(ration_digestibility_fraction)
 
   if (species_short %in% gleam_species_ruminants) {

@@ -68,6 +68,43 @@ validate_fibre_output_inputs <- function(
     }
 }
 
+#' Validate inputs for calc_egg_production
+#'
+#' @noRd
+validate_egg_output_inputs <- function(
+    species_short,
+    cohort_short,
+    egg_output_human_consumption,
+    egg_average_weight,
+    simulation_duration,
+    egg_protein_fraction,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
+) {
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
+  validate_is_egg_producing_flag(
+    species_short = species_short,
+    cohort_short = cohort_short,
+    is_egg_producing = is_egg_producing,
+    nondemo_productive_phase_id = nondemo_productive_phase_id
+  )
+
+  if (!isTRUE(is_egg_producing)) return()
+
+  validate_scalar_numeric(egg_output_human_consumption)
+  validate_positive_numeric(egg_average_weight)
+  validate_scalar_numeric(simulation_duration)
+  validate_scalar_numeric(egg_protein_fraction)
+
+  if (egg_output_human_consumption < 0) {
+    cli::cli_abort("{.arg egg_output_human_consumption} must be greater than or equal to 0.")
+  }
+  if (egg_protein_fraction < 0 || egg_protein_fraction > 1) {
+    cli::cli_abort("{.arg egg_protein_fraction} must be between 0 and 1.")
+  }
+}
+
 #' Validate inputs for calc_meat_production
 #'
 #' @noRd

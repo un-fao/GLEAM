@@ -18,6 +18,7 @@
 #'   \item \code{GTS}: Goats
 #'   \item \code{PGS}: Pigs
 #'   \item \code{CML}: Camels
+#'   \item \code{CHK}: Chickens
 #' }
 #' \strong{\code{cohort_short}} --- Character. Sex- and age-specific cohort code:
 #' \itemize{
@@ -55,7 +56,8 @@
 #'     \item{species_short}{Character. Species code (see Common identifiers).}
 #'     \item{cohort_short}{Character. Cohort code (see Common identifiers).}
 #'     \item{cohort_duration_days}{Numeric. Time each animal spends in the
-#'       cohort (days).}
+#'       cohort (days). For \code{CHK}, missing values for \code{FJ} and
+#'       \code{MJ} default to 3 days.}
 #'     \item{offtake_rate}{Numeric. Annual proportion of animals removed from
 #'       the herd per cohort (fraction).}
 #'     \item{low_activity_fraction}{Numeric. Proportion of the assessment period
@@ -78,12 +80,15 @@
 #'   \describe{
 #'     \item{cohort_stock_size}{Numeric. Average population size in each cohort
 #'       (heads).}
-#'     \item{offtake_heads_assessment}{Numeric. Total animals removed via
-#'       offtake over the assessment period per cohort (heads/assessment
+#'     \item{offtake_heads_assessment}{Numeric. Total animals removed via 
+#'     offtake over the assessment period per cohort (heads/assessment
 #'       period).}
 #'   }
 #'   Optional column (both cases):
 #'   \describe{
+#'     \item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+#'       chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
+#'       \code{FA} or for \code{FN} in laying phase 2.}
 #'     \item{ch4_mitigation_factor}{Numeric. Multiplicative factor applied to
 #'       baseline enteric CH4 emissions (dimensionless). Defaults to \code{1}
 #'       (no mitigation). Values < 1 represent proportional reductions (e.g.
@@ -132,10 +137,19 @@
 #'       cohorts (FJ, MJ) (fraction).}
 #'     \item{lactation_duration}{Numeric. Lactation period length (days).
 #'       Required for PGS.}
-#'     \item{parturition_rate}{Numeric. Average annual parturitions per adult
-#'       female (parturitions/adult female/year).}
-#'     \item{litter_size}{Numeric. Average offspring born per parturition
-#'       (offspring/parturition).}
+#'     \item{parturition_rate}{Numeric. Average annual number of parturitions
+#'       per female animal (# parturitions/adult female/year). For \code{CHK},
+#'       this corresponds to eggs laid for reproduction.}
+#'     \item{litter_size}{Numeric. Average number of offspring produced per
+#'       parturition (# offspring/parturition). For \code{CHK}, this can be
+#'       interpreted as offspring produced per reproductive event.}
+#'     \item{average_annual_temperature}{Numeric. Average annual temperature
+#'       (degrees C). Used for \code{CHK}.}
+#'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for
+#'       \code{CHK}.}
+#'     \item{egg_output_human_consumption}{Numeric. Number of eggs produced for
+#'       human consumption in one year by the flock (eggs/year). Used for
+#'       \code{CHK}.}
 #'     \item{draught_work_hours_female}{Numeric. Average daily working time per
 #'       adult female (hours/head/day). Required for CTL, BFL, CML.}
 #'     \item{draught_work_hours_male}{Numeric. Average daily working time per
@@ -431,6 +445,9 @@
 #'       \item{meat_production_carcass_weight_cohort}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
 #'       \item{meat_production_bone_free_meat_cohort}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg/cohort/assessment period).}
 #'       \item{meat_production_protein_cohort}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/assessment period).}
+#'       \item{egg_production_number_cohort}{Numeric. Total egg output over the assessment period by cohort (eggs/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
+#'       \item{egg_production_mass_cohort}{Numeric. Total egg mass output over the assessment period by cohort (kg/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
+#'       \item{egg_production_protein_cohort}{Numeric. Total egg protein output over the assessment period by cohort (kg protein/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
 #'     }}
 #'     \subsection{Allocation variables}{
 #'     \describe{
@@ -438,7 +455,7 @@
 #'       \item{meat_allocation_energy}{Numeric. Energy required by a given sex-age cohort for total meat output by cohort during the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period).}
 #'       \item{fibre_allocation_energy}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).}
 #'       \item{work_allocation_energy}{Numeric. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).}
-#'       \item{egg_allocation_energy}{Numeric. Energy required for egg production over the assessment period (MJ/cohort/assessment period). Currently set to 0.}
+#'       \item{egg_allocation_energy}{Numeric. Energy required for egg production over the assessment period (MJ/cohort/assessment period). Returned as 0 for non-egg-producing cohorts and non-poultry species.}
 #'     }}
 #'   }
 #'   \item{herd_level_results}{A herd-level \code{data.table}. When
@@ -485,7 +502,7 @@
 #' workflow for quantifying greenhouse gas emissions from livestock systems using
 #' a Life Cycle Assessment (LCA) approach based on the IPCC Tier 2 methodology.
 #'
-#' The pipeline covers seven species (CTL, BFL, CML, SHP, GTS, PGS).
+#' The pipeline covers seven species (CTL, BFL, CML, SHP, GTS, PGS, CHK).
 #' Within each herd, animals are organised into the six demographic sex-age
 #' cohorts (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}),
 #' with optional non-demographic cohorts (\code{FN}, \code{MN}) when the
@@ -550,13 +567,13 @@
 #'
 #' master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
 #'   path_run_gleam_examples, "master_chrt_lvl_no_structure_mixed_data.csv"
-#' ))
+#' ))[!herd_id %in% c(14, 15)]
 #' master_hrd_lvl_dt <- data.table::fread(
 #' file.path(path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv")
-#' )
+#' )[!herd_id %in% c(14, 15)]
 #' feed_rations_chrt_dt <- data.table::fread(
 #' file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
-#' )
+#' )[!herd_id %in% c(14, 15)]
 #' feed_params_dt <- data.table::fread(system.file(
 #'   "extdata/run_gleam_examples/feed_quality.csv",
 #'   package = "gleam"
@@ -568,10 +585,10 @@
 #'
 #' manure_management_system_fraction_dt <- data.table::fread(
 #'   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
-#' )
+#' )[!herd_id %in% c(14, 15)]
 #' manure_management_system_factors_dt <- data.table::fread(
 #'   file.path(path_run_gleam_examples, "manure_management_system_factors.csv")
-#' )
+#' )[!herd_id %in% c(14, 15)]
 #'
 #' results <- run_gleam(
 #'   has_herd_structure = FALSE,
@@ -585,12 +602,60 @@
 #'   manure_management_system_fraction = manure_management_system_fraction_dt,
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365,
-#'   show_indicator = FALSE
+#'   show_indicator = TRUE
 #' )
 #' names(results)
 #' }
 #'
-#' # Example 2: You already HAVE herd structure — use cohort table and skip herd simulation.
+#' # Example 2: Industrial CHK layers and broilers as a non-demographic-only run.
+#' # Cohort input contains only FN/MN rows, so the pipeline runs the
+#' # non-demographic herd block and skips the demographic block.
+#' \dontrun{
+#' path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
+#'
+#' master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "master_chrt_lvl_no_structure_nondemo_data.csv"
+#' ))
+#' master_hrd_lvl_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "master_hrd_lvl_nondemo_data.csv"
+#' ))
+#' feed_rations_chrt_dt <- data.table::fread(
+#'   file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
+#' )[herd_id %in% c(14, 15)]
+#' feed_params_dt <- data.table::fread(system.file(
+#'   "extdata/run_gleam_examples/feed_quality.csv",
+#'   package = "gleam"
+#' ))
+#' feed_emissions_dt <- data.table::fread(system.file(
+#'   "extdata/run_gleam_examples/feed_emission_factors.csv",
+#'   package = "gleam"
+#' ))
+#'
+#' manure_management_system_fraction_dt <- data.table::fread(
+#'   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
+#' )[herd_id %in% c(14, 15)]
+#' manure_management_system_factors_dt <- data.table::fread(
+#'   file.path(path_run_gleam_examples, "manure_management_system_factors.csv")
+#' )[herd_id %in% c(14, 15)]
+#'
+#' results <- run_gleam(
+#'   has_herd_structure = FALSE,
+#'   run_demographic = FALSE,
+#'   run_nondemographic = TRUE,
+#'   cohort_level_data = master_chrt_lvl_no_structure_dt,
+#'   herd_level_data = master_hrd_lvl_dt,
+#'   feed_rations = feed_rations_chrt_dt,
+#'   feed_params = feed_params_dt,
+#'   feed_emissions = feed_emissions_dt,
+#'   manure_management_system_fraction = manure_management_system_fraction_dt,
+#'   manure_management_system_factors = manure_management_system_factors_dt,
+#'   simulation_duration = 365,
+#'   show_indicator = TRUE
+#' )
+#' names(results)
+#' }
+#'
+#' # Example 3: You already HAVE herd structure — use cohort table and skip herd simulation.
 #' # Pipeline skips herd simulation and uses this as the starting cohort table.
 #' \dontrun{
 #' path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
@@ -598,9 +663,11 @@
 #' master_chrt_lvl_structure_dt <- data.table::fread(file.path(
 #'   path_run_gleam_examples, "master_chrt_lvl_structure_data.csv"
 #' ))
+#' 
 #' master_hrd_lvl_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv")
+#' file.path(path_run_gleam_examples, "master_hrd_lvl_structure_data.csv")
 #' )
+#' 
 #' feed_rations_chrt_dt <- data.table::fread(
 #' file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
 #' )
@@ -633,7 +700,7 @@
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365,
 #'   global_warming_potential_set = "AR6",
-#'   show_indicator = FALSE
+#'   show_indicator = TRUE
 #' )
 #' names(results)
 #' }
@@ -683,6 +750,7 @@ run_gleam <- function(
       cohort_level_data = cohort_level_data,
       herd_level_data = herd_level_data,
       simulation_duration = simulation_duration,
+      show_indicator = show_indicator,
       run_demographic = run_demographic,
       run_nondemographic = run_nondemographic
     )

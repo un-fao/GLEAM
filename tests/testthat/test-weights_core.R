@@ -48,6 +48,20 @@ test_that("calc_cohort_weights handles pig juvenile with weaning weight", {
   expect_equal(result$live_weight_cohort_at_slaughter, 10)
 })
 
+test_that("calc_cohort_weights uses hatch weight as weaning weight for chickens", {
+  result <- calc_cohort_weights(
+    species_short = "CHK",
+    cohort_short = "FJ",
+    live_weight_female_adult = 2.2, live_weight_male_adult = 2.8,
+    live_weight_at_birth = 0.04, live_weight_female_at_slaughter = 1.8,
+    live_weight_male_at_slaughter = 2.1, live_weight_at_weaning = 0.2
+  )
+
+  expect_equal(result$live_weight_cohort_initial, 0.04)
+  expect_equal(result$live_weight_cohort_potential_final, 0.04)
+  expect_equal(result$live_weight_cohort_at_slaughter, 0.04)
+})
+
 test_that("calc_cohort_weights interpolates non-demo female weights across two phases", {
   phase1 <- calc_cohort_weights(
     cohort_short = "FN",

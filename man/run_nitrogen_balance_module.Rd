@@ -29,10 +29,14 @@ Supported values include:
 \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
 for non-demographic cohorts (\code{FN}, \code{MN}). When present, nitrogen
 balance outputs are computed and retained separately by phase.}
+\item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
+\code{FA} or for \code{FN} in laying phase 2.}
 \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
-\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.}
+\item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads). Required for \code{CHK} egg-producing cohorts and preserved in the returned table.}
 }}
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with
@@ -49,6 +53,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein / kg milk).
 Required only for species = CML, CTL, BFL, SHP, and GTS.}
@@ -60,17 +65,13 @@ Required only for species = CML, CTL, BFL, SHP, and GTS.}
 \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as
 wool, cashmere, mohair (kg/head/year).
 Required only for species = CML, SHP, and GTS.}
-\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition).
-This value can be calculated as the total number of offspring born divided
-by the total number of parturitions during the year.}
-\item{parturition_rate}{Numeric. Average annual number of parturitions per
-female animal (# parturitions/adult female/year).
-A herd-level reproductive performance indicator calculated as the total
-number of parturitions (deliveries) occurring during
-a year divided by the number of adult females potentially able to give birth during that year.}
+\item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). For \code{CHK}, this can be interpreted as offspring produced per reproductive event.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per adult female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction.}
 \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
+\item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}.}
+\item{egg_output_human_consumption}{Numeric. Number of eggs produced for human consumption in one year by the flock (eggs/year). Used for \code{CHK}.}
 }}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during simulation.
