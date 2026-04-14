@@ -121,7 +121,7 @@
 #'   \deqn{
 #'   metabolic\_energy\_req\_maintenance =
 #'   average\_weight^{0.75} \times
-#'   \left(0.6935 - 0.0099 \times average\_annual\_temperature^2 \right)
+#'   \left(0.6935 - 0.0099 \times average\_annual\_temperature \right)
 #'   }
 #'   \item Juvenile and subadult cohorts (\code{FJ}, \code{FS}, \code{MJ},
 #'   \code{MS}, and non-laying \code{FN} phase 1):
@@ -238,7 +238,7 @@ calc_metabolic_energy_req_maintenance <- function(
     if (cohort_short %in% c("MA", "FA") ||
         (cohort_short == "FN" && isTRUE(is_egg_producing))) {
       
-      cmain <- 0.6935 - 0.0099 * (average_annual_temperature^2)
+      cmain <- 0.6935 - 0.0099 * average_annual_temperature
       
       metabolic_energy_req_maintenance <- max(0, (live_weight_cohort_average^0.75) * cmain)
       
@@ -676,7 +676,8 @@ calc_metabolic_energy_req_growth <- function(
     if (cohort_short %in% c("MA", "FA") ||
         (cohort_short == "FN" && isTRUE(is_egg_producing))) {
       cgro <- 0.0279
-    } else if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+    } else if (cohort_short %in% c("FS", "FJ", "MS", "MJ", "MN") ||
+               (cohort_short == "FN" && !isTRUE(is_egg_producing))) {
       cgro <- 0.0202
     } else {
       cgro <- 0
@@ -1004,7 +1005,7 @@ calc_metabolic_energy_req_eggs <- function(
     egg_average_weight = NA_real_,
     parturition_rate = NA_real_,
     nondemo_productive_phase_id = NA_real_,
-    is_egg_producing = is_egg_producing
+    is_egg_producing = FALSE
 ) {
   validate_egg_inputs(
     species_short, cohort_short,
@@ -1012,18 +1013,21 @@ calc_metabolic_energy_req_eggs <- function(
     parturition_rate, nondemo_productive_phase_id,
     is_egg_producing
   )
-  
-  if (cohort_short %in% c("FA") ||
-      (cohort_short == "FN" && isTRUE(is_egg_producing))) {
+
+  if (species_short != "CHK") {
+    return(0)
+  }
+
+  if (!(cohort_short == "FA" ||
+      (cohort_short == "FN" && isTRUE(is_egg_producing)))) {
+    return(0)
+  }
+
   cegg <- 10.04
   human_consumption_eggs_head_day <- egg_output_human_consumption / 365 / cohort_stock_size
   reproductive_eggs_head_day <- parturition_rate / 365
   egg_mass_production <- (human_consumption_eggs_head_day + reproductive_eggs_head_day) * egg_average_weight
   metabolic_energy_req_egg <- egg_mass_production * cegg
-  
-  } else {
-    metabolic_energy_req_egg <- 0
-  }
 
   return(metabolic_energy_req_egg)
 }
