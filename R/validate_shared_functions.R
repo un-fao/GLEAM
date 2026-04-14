@@ -164,20 +164,28 @@ validate_is_egg_producing_flag <- function(
     is_egg_producing = FALSE,
     nondemo_productive_phase_id = NA_real_
 ) {
-  if (length(is_egg_producing) != 1L || is.na(is_egg_producing)) {
-    cli::cli_abort("{.arg is_egg_producing} must be a single non-missing logical value.")
+  if (length(is_egg_producing) != 1L) {
+    cli::cli_abort("{.arg is_egg_producing} must be a single logical value.")
   }
 
-  if (!is.logical(is_egg_producing)) {
+  if (!is.logical(is_egg_producing) && !is.na(is_egg_producing)) {
     cli::cli_abort("{.arg is_egg_producing} must be logical (TRUE/FALSE).")
+  }
+
+  if (!identical(species_short, "CHK")) {
+    if (is.na(is_egg_producing) || !isTRUE(is_egg_producing)) {
+      return(invisible(FALSE))
+    }
+
+    cli::cli_abort("{.arg is_egg_producing} can be TRUE only for {.val CHK}.")
+  }
+
+  if (is.na(is_egg_producing)) {
+    cli::cli_abort("{.arg is_egg_producing} must be a single non-missing logical value for {.val CHK}.")
   }
 
   if (!isTRUE(is_egg_producing)) {
     return(invisible(FALSE))
-  }
-
-  if (!identical(species_short, "CHK")) {
-    cli::cli_abort("{.arg is_egg_producing} can be TRUE only for {.val CHK}.")
   }
 
   if (!cohort_short %in% c("FA", "FN")) {
@@ -192,6 +200,26 @@ validate_is_egg_producing_flag <- function(
   }
 
   invisible(TRUE)
+}
+
+#' Ensure optional egg-producing flag exists only when relevant
+#'
+#' Adds \code{is_egg_producing = NA} to cohort-level data when the column is
+#' absent and no chicken rows are present in herd-level data. This keeps
+#' run-module bodies clean while preserving the rule that the flag is only
+#' required for \code{CHK}.
+#'
+#' @noRd
+normalize_optional_is_egg_producing_column <- function(
+    cohort_level_data,
+    herd_level_data
+) {
+  if (!"is_egg_producing" %in% names(cohort_level_data) &&
+      !"CHK" %in% herd_level_data$species_short) {
+    cohort_level_data[, is_egg_producing := as.logical(NA)]
+  }
+
+  invisible(NULL)
 }
 
 #' Validate a numeric parameter (scalar or vector) against predefined bounds

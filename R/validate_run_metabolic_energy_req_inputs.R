@@ -15,6 +15,7 @@ validate_run_metabolic_energy_req_module_inputs <- function(
   # Ensure inputs are data.tables with at least one row
   check_data_table(cohort_level_data, "cohort_level_data")
   check_data_table(herd_level_data, "herd_level_data")
+  normalize_optional_is_egg_producing_column(cohort_level_data, herd_level_data)
 
   # --- Required columns -------------------------------------------------------
   # Verify all module-specific columns are present
@@ -26,19 +27,43 @@ validate_run_metabolic_energy_req_module_inputs <- function(
     "daily_weight_gain", "cohort_duration_days",
     "ration_digestibility_fraction", "ration_gross_energy", "ration_metabolizable_energy"
   )
-  required_herd_cols <- c(
-    "herd_id", "species_short",
-    "age_first_parturition", "lactating_females_fraction", "milk_yield_day", "milk_fat_fraction",
-    "non_productive_duration", "pregnancy_duration", "litter_size", "death_rate_juvenile",
-    "live_weight_at_birth", "live_weight_at_weaning",
-    "lactation_duration", "parturition_rate",
-    "draught_work_hours_female", "draught_work_hours_male",
-    "draught_fraction_female", "draught_fraction_male",
-    "fibre_yield_year"
-  )
+  required_herd_cols <- c("herd_id", "species_short")
+  cohort_codes_present <- unique(cohort_level_data$cohort_short)
+
+  if (any(cohort_codes_present %in% c("FA", "MA", "FS", "MS", "FJ", "MJ"))) {
+    required_herd_cols <- c(
+      required_herd_cols,
+      "age_first_parturition", "lactating_females_fraction", "milk_yield_day", "milk_fat_fraction",
+      "non_productive_duration", "pregnancy_duration", "litter_size", "death_rate_juvenile",
+      "live_weight_at_birth", "live_weight_at_weaning",
+      "lactation_duration", "parturition_rate",
+      "draught_work_hours_female", "draught_work_hours_male",
+      "draught_fraction_female", "draught_fraction_male",
+      "fibre_yield_year"
+    )
+  }
+
+  if (any(herd_level_data$species_short == "CHK")) {
+    required_herd_cols <- c(required_herd_cols, "average_annual_temperature")
+
+    if (
+      "is_egg_producing" %in% names(cohort_level_data) &&
+      any(cohort_level_data$is_egg_producing %in% TRUE, na.rm = TRUE)
+    ) {
+      required_herd_cols <- c(
+        required_herd_cols,
+        "egg_average_weight",
+        "egg_output_human_consumption"
+      )
+    }
+  }
 
   check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
-  check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
+  check_required_columns(
+    herd_level_data,
+    unique(required_herd_cols),
+    "herd_level_data"
+  )
 
   # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------
   # Must use valid GLEAM cohort codes; each herd must have all 6 cohorts
@@ -94,17 +119,19 @@ validate_run_metabolic_energy_req_module_inputs <- function(
 
   # --- Numeric consistency (herd-level) ----------------------------------------
   # live_weight_at_birth < live_weight_at_weaning where both present (strict)
-  bad_birth_weaning <- herd_level_data[
-    !is.na(live_weight_at_birth) &
-      !is.na(live_weight_at_weaning) &
-      live_weight_at_birth >= live_weight_at_weaning &
-      species_short != "CHK",
-    herd_id
-  ]
-  if (length(bad_birth_weaning) > 0) {
-    cli::cli_abort(
-      "For each herd, {.field live_weight_at_birth} must be strictly less than {.field live_weight_at_weaning}.
-      Violation(s) for herd_id: {.val {bad_birth_weaning}}"
-    )
+  if (all(c("live_weight_at_birth", "live_weight_at_weaning") %in% names(herd_level_data))) {
+    bad_birth_weaning <- herd_level_data[
+      !is.na(live_weight_at_birth) &
+        !is.na(live_weight_at_weaning) &
+        live_weight_at_birth >= live_weight_at_weaning &
+        species_short != "CHK",
+      herd_id
+    ]
+    if (length(bad_birth_weaning) > 0) {
+      cli::cli_abort(
+        "For each herd, {.field live_weight_at_birth} must be strictly less than {.field live_weight_at_weaning}.
+        Violation(s) for herd_id: {.val {bad_birth_weaning}}"
+      )
+    }
   }
 }

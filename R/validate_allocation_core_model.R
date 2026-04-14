@@ -27,8 +27,12 @@ validate_allocation_milk_inputs <- function(
     milk_fat_fraction_standard,
     milk_lactose_fraction_standard
 ) {
-  # Range checks via parameter_ranges
   validate_param_range(milk_production_fpcm_cohort)
+
+  if (identical(milk_production_fpcm_cohort, 0)) {
+    return(invisible(NULL))
+  }
+
   validate_param_range(milk_protein_fraction_standard)
   validate_param_range(milk_fat_fraction_standard)
   validate_param_range(milk_lactose_fraction_standard)

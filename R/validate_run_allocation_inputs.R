@@ -15,6 +15,7 @@ validate_run_allocation_module_inputs <- function(
   # Ensure inputs are data.tables with at least one row
   check_data_table(cohort_level_data, "cohort_level_data")
   check_data_table(herd_level_data, "herd_level_data")
+  normalize_optional_is_egg_producing_column(cohort_level_data, herd_level_data)
 
   # --- Required columns -------------------------------------------------------
   # Verify all module-specific columns are present
@@ -28,8 +29,7 @@ validate_run_allocation_module_inputs <- function(
     "cohort_stock_size",
     "metabolic_energy_req_work",
     "egg_production_mass_cohort",
-    "nondemo_productive_phase_id",
-    "is_egg_producing"
+    "nondemo_productive_phase_id"
   )
   required_herd_cols <- c(
     "herd_id",
@@ -43,6 +43,14 @@ validate_run_allocation_module_inputs <- function(
 
   check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
   check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
+
+  if (any(herd_level_data$species_short == "CHK")) {
+    check_required_columns(
+      cohort_level_data,
+      "is_egg_producing",
+      "cohort_level_data"
+    )
+  }
 
   # --- Cross-table: same herd_id set -----------------------------------------
   # Cohort and herd tables must cover identical herd_id sets

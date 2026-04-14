@@ -14,6 +14,7 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
   # Ensure inputs are data.tables with at least one row
   check_data_table(cohort_level_data, "cohort_level_data")
   check_data_table(herd_level_data, "herd_level_data")
+  normalize_optional_is_egg_producing_column(cohort_level_data, herd_level_data)
 
   # --- Required columns -------------------------------------------------------
   # Verify all module-specific columns are present
@@ -22,14 +23,31 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
     "ration_intake", "ration_nitrogen", "daily_weight_gain", "cohort_duration_days",
     "cohort_stock_size"
   )
-  required_herd_cols <- c(
-    "herd_id", "species_short",
-    "milk_protein_fraction", "milk_yield_day", "fibre_yield_year",
-    "litter_size", "parturition_rate",
-    "live_weight_at_weaning", "live_weight_at_birth", "pregnancy_duration"
-  )
+  required_herd_cols <- c("herd_id", "species_short")
+  cohort_codes_present <- unique(cohort_level_data$cohort_short)
+
+  if (any(cohort_codes_present %in% c("FA", "MA", "FS", "MS", "FJ", "MJ"))) {
+    required_herd_cols <- c(
+      required_herd_cols,
+      "milk_protein_fraction", "milk_yield_day", "fibre_yield_year",
+      "litter_size", "parturition_rate",
+      "live_weight_at_weaning", "live_weight_at_birth", "pregnancy_duration"
+    )
+  }
+
+  if (
+    any(herd_level_data$species_short == "CHK") &&
+    "is_egg_producing" %in% names(cohort_level_data) &&
+    any(cohort_level_data$is_egg_producing %in% TRUE, na.rm = TRUE)
+  ) {
+    required_herd_cols <- c(
+      required_herd_cols,
+      "egg_output_human_consumption",
+      "egg_average_weight"
+    )
+  }
   check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
-  check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
+  check_required_columns(herd_level_data, unique(required_herd_cols), "herd_level_data")
 
   # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------
   # Must use valid GLEAM cohort codes; each herd must have all 6 cohorts

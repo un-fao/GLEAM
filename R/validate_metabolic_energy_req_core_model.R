@@ -20,13 +20,7 @@ validate_maintenance_inputs <- function(
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
   validate_positive_numeric(live_weight_cohort_average)
-  validate_is_egg_producing_flag(
-    species_short = species_short,
-    cohort_short = cohort_short,
-    is_egg_producing = is_egg_producing,
-    nondemo_productive_phase_id = nondemo_productive_phase_id
-  )
-
+ 
   if (species_short %in% c("CTL", "BFL") && cohort_short == "FA") {
     validate_param_range(lactating_females_fraction)
   }
@@ -47,6 +41,13 @@ validate_maintenance_inputs <- function(
     validate_scalar_numeric(average_annual_temperature)
     if (!is.na(lower_critical_temperature)) {
       validate_scalar_numeric(lower_critical_temperature)
+      
+      validate_is_egg_producing_flag(
+        species_short = species_short,
+        cohort_short = cohort_short,
+        is_egg_producing = is_egg_producing,
+        nondemo_productive_phase_id = nondemo_productive_phase_id
+      )
     }
   }
 }
