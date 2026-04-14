@@ -289,6 +289,8 @@ run_nondemographic_herd_module <- function(
       off <- calc_nondemo_offtake_total_horizon(
         cohort_stock_nondemo_end_phase1 = full_simulation_phase1$cohort_stock_nondemo$end,
         cohort_stock_nondemo_end_phase2 = full_simulation_phase2$cohort_stock_nondemo$end,
+        cohort_stock_nondemo_annual_entrants = cohort_stock_nondemo_annual_entrants,
+        cohort_stock_nondemo_start_cycle = start_size$cohort_stock_nondemo_start_cycle,
         number_full_nondemo_cycles = geom$number_full_nondemo_cycles,
         partial_phase1_nondemo_duration = geom$partial_phase1_nondemo_duration,
         partial_phase2_nondemo_duration = geom$partial_phase2_nondemo_duration,

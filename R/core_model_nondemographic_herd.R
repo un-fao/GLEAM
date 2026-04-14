@@ -46,7 +46,11 @@ assign_nondemographic_phase_durations <- function(
     phase1_nondemo_mal_duration_days = NA_real_,
     phase2_nondemo_mal_duration_days = NA_real_
 ) {
-  cohort_duration_days <- suppressWarnings(as.numeric(cohort_duration_days))
+  cohort_duration_days <- as.numeric(cohort_duration_days)
+  phase1_nondemo_fem_duration_days <- as.numeric(phase1_nondemo_fem_duration_days)
+  phase2_nondemo_fem_duration_days <- as.numeric(phase2_nondemo_fem_duration_days)
+  phase1_nondemo_mal_duration_days <- as.numeric(phase1_nondemo_mal_duration_days)
+  phase2_nondemo_mal_duration_days <- as.numeric(phase2_nondemo_mal_duration_days)
   
   data.table::fcase(
     cohort_short == "FN" & nondemo_productive_phase_id == 1 & !is.na(phase1_nondemo_fem_duration_days),
@@ -651,17 +655,13 @@ calc_nondemo_avg_stock_phase_horizon <- function(
     if (is.null(t) || t <= 0) return(0)
     start <- phase$cohort_stock_nondemo$start
     end   <- phase$cohort_stock_nondemo$end
-    t * (start + end) / 2 # average number of animals in the phase (start+end)/2 * number of days in that specific phase
+    t * (start + end) / 2
   }
   
   
-  #Compute animal-days for one full phase occurrence
   ad_full <- avg_stock_per_phase(full_nondemo_phase_duration)
-  
-  #Compute animal-days for one partial phase occurrence
   ad_part <- avg_stock_per_phase(partial_nondemo_phase)
   
-  # Aggregate animal-days across the entire horizon
   cohort_stock_size_unscaled <-
     (number_full_nondemo_cycles * ad_full + ad_part) / time_horizon
 
@@ -777,6 +777,8 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 calc_nondemo_offtake_total_horizon <- function(
     cohort_stock_nondemo_end_phase1,  # survivors at end of a full phase1
     cohort_stock_nondemo_end_phase2,  # survivors at end of a full phase2
+    cohort_stock_nondemo_annual_entrants,
+    cohort_stock_nondemo_start_cycle,
     number_full_nondemo_cycles,
     partial_phase1_nondemo_duration,
     partial_phase2_nondemo_duration,
@@ -804,6 +806,10 @@ calc_nondemo_offtake_total_horizon <- function(
   if (is.null(simulation_duration) || length(simulation_duration) == 0) simulation_duration <- 0
   if (is.null(cohort_stock_nondemo_end_phase1) || length(cohort_stock_nondemo_end_phase1) == 0) cohort_stock_nondemo_end_phase1 <- 0
   if (is.null(cohort_stock_nondemo_end_phase2) || length(cohort_stock_nondemo_end_phase2) == 0) cohort_stock_nondemo_end_phase2 <- 0
+  if (is.null(cohort_stock_nondemo_annual_entrants) || length(cohort_stock_nondemo_annual_entrants) == 0)
+    cohort_stock_nondemo_annual_entrants <- 0
+  if (is.null(cohort_stock_nondemo_start_cycle) || length(cohort_stock_nondemo_start_cycle) == 0)
+    cohort_stock_nondemo_start_cycle <- 0
   if (is.null(number_full_nondemo_cycles) || length(number_full_nondemo_cycles) == 0)
     number_full_nondemo_cycles <- 0
   if (is.null(phase1_nondemo_duration) || length(phase1_nondemo_duration) == 0)
@@ -811,27 +817,24 @@ calc_nondemo_offtake_total_horizon <- function(
   if (is.null(phase2_nondemo_duration) || length(phase2_nondemo_duration) == 0)
     phase2_nondemo_duration <- 0
   
-  
-  # Completed partial indicators
-  completed_partial_phase1 <- as.integer(phase1_exists && partial_phase1_nondemo_duration >= phase1_nondemo_duration)
-  completed_partial_phase2 <- as.integer(phase2_exists && partial_phase2_nondemo_duration >= phase2_nondemo_duration)
-  
-  # Completed ends within horizon / ount how many offtake events occur
-  completed_phase_ends <- max(0, number_full_nondemo_cycles)
-  
-  
-  # Offtake ONLY from the last existing phase:
-  # - if phase2 exists, take offtake from phase2 and force phase1 offtake = 0
-  # - else take offtake from phase1
+  survival_to_terminal_phase <- if (cohort_stock_nondemo_start_cycle > 0) {
+    if (phase2_exists) {
+      cohort_stock_nondemo_end_phase2 / cohort_stock_nondemo_start_cycle
+    } else {
+      cohort_stock_nondemo_end_phase1 / cohort_stock_nondemo_start_cycle
+    }
+  } else {
+    0
+  }
+
   if (phase2_exists) {
-    offtake_heads_nondemo_phase2 <- cohort_stock_nondemo_end_phase2 * completed_phase_ends
+    offtake_heads_nondemo_phase2 <- cohort_stock_nondemo_annual_entrants * survival_to_terminal_phase
     offtake_heads_nondemo_phase1 <- 0
   } else {
-    offtake_heads_nondemo_phase1 <- cohort_stock_nondemo_end_phase1 * completed_phase_ends
+    offtake_heads_nondemo_phase1 <- cohort_stock_nondemo_annual_entrants * survival_to_terminal_phase
     offtake_heads_nondemo_phase2 <- 0
   }
   
-  # Offtake numbers scaled to the simulation_duration
   offtake_heads_assessment_nondemo_phase1 <- offtake_heads_nondemo_phase1 / time_horizon * simulation_duration
   offtake_heads_assessment_nondemo_phase2 <- offtake_heads_nondemo_phase2 / time_horizon * simulation_duration
   

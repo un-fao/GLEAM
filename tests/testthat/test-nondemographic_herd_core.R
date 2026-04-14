@@ -123,6 +123,44 @@ test_that("calc_nondemo_start_sizes returns expected entrants per cycle", {
   expect_equal(res$cohort_stock_nondemo_start_cycle, 30)
 })
 
+test_that("calc_nondemo_offtake_total_horizon follows assessment-year cycle starts", {
+  res <- calc_nondemo_offtake_total_horizon(
+    cohort_stock_nondemo_end_phase1 = 90,
+    cohort_stock_nondemo_end_phase2 = 80,
+    cohort_stock_nondemo_annual_entrants = 120,
+    cohort_stock_nondemo_start_cycle = 30,
+    number_full_nondemo_cycles = 3,
+    partial_phase1_nondemo_duration = 30,
+    partial_phase2_nondemo_duration = 50,
+    phase1_nondemo_duration = 30,
+    phase2_nondemo_duration = 50,
+    simulation_duration = 365
+  )
+
+  expect_equal(res$offtake_heads_nondemo_phase1, 0)
+  expect_equal(res$offtake_heads_nondemo_phase2, 120 * (80 / 30))
+  expect_equal(res$offtake_heads_assessment_nondemo_phase2, 120 * (80 / 30))
+})
+
+test_that("calc_nondemo_offtake_total_horizon keeps annual offtake when cycle exceeds 365 days", {
+  res <- calc_nondemo_offtake_total_horizon(
+    cohort_stock_nondemo_end_phase1 = 90,
+    cohort_stock_nondemo_end_phase2 = 75,
+    cohort_stock_nondemo_annual_entrants = 120,
+    cohort_stock_nondemo_start_cycle = 120,
+    number_full_nondemo_cycles = 0,
+    partial_phase1_nondemo_duration = 200,
+    partial_phase2_nondemo_duration = 0,
+    phase1_nondemo_duration = 200,
+    phase2_nondemo_duration = 150,
+    simulation_duration = 365
+  )
+
+  expect_equal(res$offtake_heads_nondemo_phase1, 0)
+  expect_equal(res$offtake_heads_nondemo_phase2, 75)
+  expect_equal(res$offtake_heads_assessment_nondemo_phase2, 75)
+})
+
 test_that("calc_nondemo_phase returns zero stock for zero-duration phases", {
   res <- calc_nondemo_phase(
     cohort_stock_nondemo_start_by_phase = 25,
