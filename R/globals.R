@@ -17,7 +17,7 @@
 utils::globalVariables(c(
   ".", ":=", ".BY", ".I", ".N", ".SD",
   "herd_id", "cohort_short", "species_short", "species_short_tmp",
-  "N", "count", "index", "n_unique", "V1"
+  "N", "count", "index", "n_unique", "V1", "is_egg_producing"
 ))
 
 # --- run_demographic_herd_module --------------------------------------------
