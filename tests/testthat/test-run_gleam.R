@@ -1,7 +1,16 @@
 # Tests for run_gleam() — main pipeline entry point
 
-run_gleam_examples_path <- testthat::test_path("..", "..", "inst", "extdata", "run_gleam_examples")
-run_modules_examples_path <- testthat::test_path("..", "..", "inst", "extdata", "run_modules_examples")
+run_gleam_examples_path <- local({
+  p <- testthat::test_path("..", "..", "inst", "extdata", "run_gleam_examples")
+  if (dir.exists(p)) p else system.file("extdata", "run_gleam_examples", package = "gleam")
+})
+
+run_modules_examples_path <- local({
+  p <- testthat::test_path("..", "..", "inst", "extdata", "run_modules_examples")
+  if (dir.exists(p)) p else system.file("extdata", "run_modules_examples", package = "gleam")
+})
+
+demographic_cohorts <- c("FA", "FJ", "FS", "MA", "MJ", "MS")
 
 # Load example data once at file scope to avoid re-reading CSVs in every test.
 d_gleam <- local({
@@ -45,11 +54,11 @@ d_gleam <- local({
 d_gleam_mixed <- local({
   path <- run_gleam_examples_path
   nondemo_cohorts <- data.table::fread(
-    file.path(run_modules_examples_path, "run_all_herd_module_input_chrt_data.csv")
+    file.path(run_modules_examples_path, "herd_all_input_chrt_data.csv")
   )[cohort_short %in% c("FN", "MN")]
 
   herd_nondemo <- data.table::fread(
-    file.path(run_modules_examples_path, "example_herd_level_data.csv")
+    file.path(run_modules_examples_path, "herd_all_input_hrd_data.csv")
   )[, .(
     herd_id,
     prop_nondemo_fem_juv,
@@ -81,7 +90,7 @@ d_gleam_mixed <- local({
 
   herd <- data.table::copy(d_gleam$herd)
   herd_nondemo_full <- data.table::fread(
-    file.path(run_modules_examples_path, "example_herd_level_data.csv")
+    file.path(run_modules_examples_path, "herd_all_input_hrd_data.csv")
   )[, .(
     herd_id,
     prop_nondemo_fem_juv,
@@ -150,7 +159,7 @@ d_gleam_chk_industrial <- local({
 run_gleam_default <- function(data, has_herd_structure = FALSE, ...) {
   use_structure <- isTRUE(has_herd_structure)
   cohort_selected <- if (use_structure) data$cohort_structure else data$cohort_no_structure
-  run_demographic_default <- any(cohort_selected$cohort_short %in% gleam_cohorts_demographic, na.rm = TRUE)
+  run_demographic_default <- any(cohort_selected$cohort_short %in% demographic_cohorts, na.rm = TRUE)
   run_nondemographic_default <- any(cohort_selected$cohort_short %in% c("FN", "MN"), na.rm = TRUE)
   defaults <- list(
     has_herd_structure = has_herd_structure,

@@ -474,12 +474,24 @@ test_that("calc_egg_allocation_energy validates egg-producing flag placement", {
 })
 
 test_that("run_allocation_module example inputs work with explicit egg columns", {
-  cohort_path <- testthat::test_path(
-    "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_chrt_data.csv"
-  )
-  herd_path <- testthat::test_path(
-    "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_hrd_data.csv"
-  )
+  cohort_path <- local({
+    p <- testthat::test_path(
+      "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_chrt_data.csv"
+    )
+    if (file.exists(p)) p else system.file(
+      "extdata", "run_modules_examples", "allocation_input_chrt_data.csv",
+      package = "gleam"
+    )
+  })
+  herd_path <- local({
+    p <- testthat::test_path(
+      "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_hrd_data.csv"
+    )
+    if (file.exists(p)) p else system.file(
+      "extdata", "run_modules_examples", "allocation_input_hrd_data.csv",
+      package = "gleam"
+    )
+  })
 
   cohort_level_data <- data.table::fread(
     cohort_path,
@@ -502,12 +514,24 @@ test_that("run_allocation_module example inputs work with explicit egg columns",
 })
 
 test_that("run_allocation_module requires explicit egg/allocation columns", {
-  cohort_path <- testthat::test_path(
-    "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_chrt_data.csv"
-  )
-  herd_path <- testthat::test_path(
-    "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_hrd_data.csv"
-  )
+  cohort_path <- local({
+    p <- testthat::test_path(
+      "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_chrt_data.csv"
+    )
+    if (file.exists(p)) p else system.file(
+      "extdata", "run_modules_examples", "allocation_input_chrt_data.csv",
+      package = "gleam"
+    )
+  })
+  herd_path <- local({
+    p <- testthat::test_path(
+      "..", "..", "inst", "extdata", "run_modules_examples", "allocation_input_hrd_data.csv"
+    )
+    if (file.exists(p)) p else system.file(
+      "extdata", "run_modules_examples", "allocation_input_hrd_data.csv",
+      package = "gleam"
+    )
+  })
 
   cohort_level_data <- data.table::fread(
     cohort_path,
