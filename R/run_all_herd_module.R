@@ -366,6 +366,7 @@ run_all_herd_module <- function(
     cohort_level_data = NULL,
     herd_level_data = NULL,
     simulation_duration = 365,
+    show_indicator = TRUE,
     run_demographic = TRUE,
     run_nondemographic = TRUE
 ) {
@@ -405,7 +406,8 @@ run_all_herd_module <- function(
     demo_results <- run_demographic_herd_module(
       cohort_level_data = cohort_level_data_demographic,
       herd_level_data = herd_level_data,
-      simulation_duration = simulation_duration
+      simulation_duration = simulation_duration,
+      show_indicator = show_indicator
     )
     
     # ---- Derive non-demographic entrants from demographic output ----
@@ -459,7 +461,8 @@ run_all_herd_module <- function(
       nondemo_results <- run_nondemographic_herd_module(
         cohort_level_data = cohort_level_data_nondemographic,
         herd_level_data = herd_level_data_nondemo,
-        simulation_duration = simulation_duration
+        simulation_duration = simulation_duration,
+        show_indicator = show_indicator
       )
       
     }
