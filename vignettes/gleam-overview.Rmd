@@ -200,7 +200,8 @@ run_*_module()          # orchestrator: validates, calls core functions, assembl
 <div style="position:relative; overflow:visible; margin:1em 0;">
   <img src="images/gleamx_package_module_pipeline.png"
        alt="Overview of the GLEAM pipeline with the different modules"
-       class="module-figure-zoom">
+       class="module-figure-zoom"
+       style="max-width: 500px; width: 100%; height: auto;">
   <div class="module-figure-hint"></div>
 </div>
 
