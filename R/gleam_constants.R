@@ -44,7 +44,7 @@ gleam_species <- names(gleam_species_names)
 #' Maps each cohort short code to its descriptive name (sex and age class).
 #' \code{gleam_cohorts} is derived from this as the vector of codes.
 #'
-#' @format A named character vector of length 6.
+#' @format A named character vector of length 8.
 #' @keywords internal
 gleam_cohorts_names <- c(
   FJ = "Juvenile female",
@@ -52,7 +52,9 @@ gleam_cohorts_names <- c(
   FA = "Adult female",
   MJ = "Juvenile male",
   MS = "Sub-adult male",
-  MA = "Adult male"
+  MA = "Adult male",
+  FN = "Non-demographic female",
+  MN = "Non-demographic male"
 )
 
 #' Valid cohort short codes
@@ -60,9 +62,17 @@ gleam_cohorts_names <- c(
 #' All sex- and age-class cohort codes recognised by GLEAM. Derived from
 #' \code{gleam_cohorts_names}.
 #'
-#' @format A character vector of length 6.
+#' @format A character vector of length 8.
 #' @keywords internal
 gleam_cohorts <- names(gleam_cohorts_names)
+
+#' Demographic cohort short codes
+#'
+#' The 6 sex- and age-class cohort codes used by the demographic herd module.
+#'
+#' @format A character vector of length 6.
+#' @keywords internal
+gleam_cohorts_demographic <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
 # --- Species sub-groups ------------------------------------------------------
 # Derived from gleam_species

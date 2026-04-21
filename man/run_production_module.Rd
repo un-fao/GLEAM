@@ -22,14 +22,17 @@ Supported values include:
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{MN}: non-demographic males
 }}
-\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
-FS, FA, MJ, MS, MA).}
-\item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period,
-aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). When present, production
+outputs are retained separately by phase.}
+\item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads).}
+\item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period for the assessed cohort (# heads / assessment period).}
 \item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 }}
 
@@ -81,7 +84,10 @@ Required only for species = CML, SHP, and GTS.}
 Defaults to \code{TRUE}.}
 }
 \value{
-A \code{data.table} with the original cohort-level input columns plus the following new variables:
+A \code{data.table} with the original cohort-level input columns plus the
+following new variables. If \code{nondemo_productive_phase_id} is present in
+the input, the returned table preserves phase-specific rows for \code{FN} and
+\code{MN}:
 \describe{
 \item{milk_production_mass_cohort}{Numeric. Total milk production produced over the assessment period
 (kg/cohort/assessment period).}

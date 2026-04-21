@@ -27,13 +27,25 @@
 #'   \item \code{MA}: adult males (from age at first breeding)
 #'   \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'   \item \code{MJ}: juvenile males (from birth to weaning)
+#'   \item \code{FN}: non-demographic females
+#'   \item \code{MN}: non-demographic males
 #' }
 #'
 #' @param has_herd_structure Logical. If \code{TRUE}, \code{cohort_level_data}
 #'   is treated as an existing herd structure and the demographic herd
 #'   simulation step is skipped. If \code{FALSE}, herd structure is first
 #'   generated from \code{cohort_level_data} and \code{herd_level_data} using
-#'   \code{\link{run_demographic_herd_module}}.
+#'   \code{\link{run_all_herd_module}}, which can run the demographic herd
+#'   module, the non-demographic herd module, or both depending on
+#'   \code{run_demographic} and \code{run_nondemographic}.
+#'
+#' @param run_demographic Logical. If \code{TRUE} and
+#'   \code{has_herd_structure = FALSE}, include the demographic herd module in
+#'   the herd-structure generation step via \code{\link{run_all_herd_module}}.
+#'
+#' @param run_nondemographic Logical. If \code{TRUE} and
+#'   \code{has_herd_structure = FALSE}, include the non-demographic herd module
+#'   in the herd-structure generation step via \code{\link{run_all_herd_module}}.
 #'
 #' @param cohort_level_data data.table. Cohort-level master input table.
 #'   Required columns:
@@ -56,7 +68,11 @@
 #'   Additional columns when \code{has_herd_structure = FALSE}:
 #'   \describe{
 #'     \item{death_rate}{Numeric. Annual fraction of deaths per cohort
-#'       (fraction).}
+#'       (fraction). Required for the herd-simulation step.}
+#'     \item{nondemo_productive_phase_id}{Numeric. For non-demographic rows
+#'       only (`FN`, `MN`), productive phase identifier within the
+#'       non-demographic cycle. Allowed values are \code{1} and optionally
+#'       \code{2}.}
 #'   }
 #'   Additional columns when \code{has_herd_structure = TRUE}:
 #'   \describe{
@@ -145,6 +161,29 @@
 #'       female (fraction).}
 #'     \item{herd_size_total}{Numeric. Total population at start of year, all
 #'       cohorts (heads).}
+#'     \item{prop_nondemo_fem_juv}{Numeric. Fraction of female juveniles
+#'       diverted into the non-demographic stream at the moment they transition
+#'       to the next age class (fraction). Required when the demographic herd
+#'       module is run.}
+#'     \item{prop_nondemo_mal_juv}{Numeric. Fraction of male juveniles diverted
+#'       into the non-demographic stream at the moment they transition to the
+#'       next age class (fraction). Required when the demographic herd module is
+#'       run.}
+#'     \item{rest_between_nondemo_cycles_duration}{Numeric. Duration of the
+#'       resting or empty phase between non-demographic cycles (days). Required
+#'       when the non-demographic herd module is run.}
+#'     \item{phase1_nondemo_fem_duration_days}{Numeric. Duration of productive
+#'       phase 1 for the female non-demographic cohort (`FN`) (days). Required
+#'       when the non-demographic herd module is run with herd-level phase
+#'       durations.}
+#'     \item{phase2_nondemo_fem_duration_days}{Numeric. Duration of productive
+#'       phase 2 for the female non-demographic cohort (`FN`) (days).}
+#'     \item{phase1_nondemo_mal_duration_days}{Numeric. Duration of productive
+#'       phase 1 for the male non-demographic cohort (`MN`) (days). Required
+#'       when the non-demographic herd module is run with herd-level phase
+#'       durations.}
+#'     \item{phase2_nondemo_mal_duration_days}{Numeric. Duration of productive
+#'       phase 2 for the male non-demographic cohort (`MN`) (days).}
 #'   }
 #'
 #' @param feed_rations data.table. Cohort-level feed ration shares, also used by
@@ -266,8 +305,9 @@
 #'   }
 #'
 #' @param simulation_duration Numeric. Assessment period length (days). Used by
-#'   the demographic herd simulation (when \code{has_herd_structure = FALSE})
-#'   and by the production and aggregation steps. Default: \code{365}.
+#'   the herd-simulation step (when \code{has_herd_structure = FALSE}) through
+#'   \code{\link{run_all_herd_module}}, and by the production and aggregation
+#'   steps. Default: \code{365}.
 #'
 #' @param global_warming_potential_set Character. GWP-100 conversion factors for
 #'   expressing CH4 and N2O as CO2-eq. One of:
@@ -293,9 +333,9 @@
 #'     \subsection{Demographic herd simulation}{
 #'     Computed when \code{has_herd_structure = FALSE}:
 #'     \describe{
-#'       \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex-age cohorts (# heads). (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
-#'       \item{offtake_heads}{Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex-age cohorts (heads/year) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
-#'       \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex-age cohorts (heads/assessment period) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
+#'       \item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads).}
+#'       \item{offtake_heads}{Numeric. Total number of animals removed via offtake over the fixed 365-day herd-simulation horizon for the assessed cohort (# heads).}
+#'       \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period for the assessed cohort (# heads / assessment period).}
 #'     }}
 #'     \subsection{Weight variables}{
 #'     \describe{
@@ -402,10 +442,15 @@
 #'     }}
 #'   }
 #'   \item{herd_level_results}{A herd-level \code{data.table}. When
-#'     \code{has_herd_structure = FALSE}, the output from
-#'     \code{\link{run_demographic_herd_module}}, including:
+#'     \code{has_herd_structure = FALSE}, this is the output from
+#'     \code{\link{run_all_herd_module}} and may therefore contain:
 #'     \describe{
-#'       \item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction).}
+#'       \item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction). Returned when the demographic herd module is run.}
+#'       \item{cohort_stock_fem_annual_nondemo}{Numeric. Annual number of female animals entering the non-demographic pathway (`FN`) over the simulated period (# heads / simulated period).}
+#'       \item{cohort_stock_mal_annual_nondemo}{Numeric. Annual number of male animals entering the non-demographic pathway (`MN`) over the simulated period (# heads / simulated period).}
+#'       \item{rest_between_nondemo_cycles_duration}{Numeric. Duration of the resting or empty phase between non-demographic cycles (days).}
+#'       \item{total_nondemo_fem_duration_days}{Numeric. Total duration of the productive non-demographic phases assigned to the female non-demographic cohort block (`FN`) (days).}
+#'       \item{total_nondemo_mal_duration_days}{Numeric. Total duration of the productive non-demographic phases assigned to the male non-demographic cohort block (`MN`) (days).}
 #'     }
 #'     When \code{has_herd_structure = TRUE}, the supplied
 #'     \code{herd_level_data} is returned unchanged.}
@@ -441,8 +486,11 @@
 #' a Life Cycle Assessment (LCA) approach based on the IPCC Tier 2 methodology.
 #'
 #' The pipeline covers seven species (CTL, BFL, CML, SHP, GTS, PGS).
-#' Within each herd, animals are organised into six sex-age cohorts (FJ, FS, FA,
-#' MJ, MS, MA). These identifiers are used consistently across all modules.
+#' Within each herd, animals are organised into the six demographic sex-age
+#' cohorts (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}),
+#' with optional non-demographic cohorts (\code{FN}, \code{MN}) when the
+#' non-demographic herd module is used. These identifiers are
+#' used consistently across all modules.
 #'
 #' The assessment period is specified in days via \code{simulation_duration}
 #' (typically 365). Intermediate per-head-per-day variables are carried through
@@ -452,8 +500,9 @@
 #' \subsection{Pipeline sequence}{
 #' \enumerate{
 #'   \item If \code{has_herd_structure = FALSE}, generate herd structure with
-#'     \code{\link{run_demographic_herd_module}}; otherwise use supplied tables
-#'     directly.
+#'     \code{\link{run_all_herd_module}} using the selected
+#'     \code{run_demographic} and \code{run_nondemographic} switches; otherwise
+#'     use supplied tables directly.
 #'   \item Compute cohort weights (\code{\link{run_weights_module}}).
 #'   \item Summarise ration quality (\code{\link{run_ration_quality_module}})
 #'     and merge into the cohort table.
@@ -479,6 +528,7 @@
 #' Validation blocks variables that are expected to be produced internally.
 #'
 #' @seealso
+#' \code{\link{run_all_herd_module}},
 #' \code{\link{run_demographic_herd_module}},
 #' \code{\link{run_weights_module}},
 #' \code{\link{run_ration_quality_module}},
@@ -492,16 +542,17 @@
 #' \code{\link{run_aggregation_module}}
 #'
 #' @examples
-#' # Example 1: You do NOT have herd structure — use cohort input for herd simulation.
-#' # Pipeline runs herd simulation first, then the rest of the pipeline.
-#' \donttest{
+#' # Example 1: You do NOT have herd structure — use combined demographic and
+#' # non-demographic cohort input for herd simulation. Pipeline runs herd
+#' # simulation first, then the rest of the pipeline.
+#' \dontrun{
 #' path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 #'
 #' master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
-#'   path_run_gleam_examples, "master_chrt_lvl_no_structure_data.csv"
+#'   path_run_gleam_examples, "master_chrt_lvl_no_structure_mixed_data.csv"
 #' ))
 #' master_hrd_lvl_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
+#' file.path(path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv")
 #' )
 #' feed_rations_chrt_dt <- data.table::fread(
 #' file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
@@ -524,6 +575,8 @@
 #'
 #' results <- run_gleam(
 #'   has_herd_structure = FALSE,
+#'   run_demographic = TRUE,
+#'   run_nondemographic = TRUE,
 #'   cohort_level_data = master_chrt_lvl_no_structure_dt,
 #'   herd_level_data = master_hrd_lvl_dt,
 #'   feed_rations = feed_rations_chrt_dt,
@@ -531,22 +584,22 @@
 #'   feed_emissions = feed_emissions_dt,
 #'   manure_management_system_fraction = manure_management_system_fraction_dt,
 #'   manure_management_system_factors = manure_management_system_factors_dt,
-#'   simulation_duration = 365
+#'   simulation_duration = 365,
+#'   show_indicator = FALSE
 #' )
-#' print(results$cohort_level_results)
-#' print(results$allocation_long)
+#' names(results)
 #' }
 #'
 #' # Example 2: You already HAVE herd structure — use cohort table and skip herd simulation.
 #' # Pipeline skips herd simulation and uses this as the starting cohort table.
-#' \donttest{
+#' \dontrun{
 #' path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 #'
 #' master_chrt_lvl_structure_dt <- data.table::fread(file.path(
 #'   path_run_gleam_examples, "master_chrt_lvl_structure_data.csv"
 #' ))
 #' master_hrd_lvl_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
+#' file.path(path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv")
 #' )
 #' feed_rations_chrt_dt <- data.table::fread(
 #' file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
@@ -569,6 +622,8 @@
 #'
 #' results <- run_gleam(
 #'   has_herd_structure = TRUE,
+#'   run_demographic = FALSE,
+#'   run_nondemographic = FALSE,
 #'   cohort_level_data = master_chrt_lvl_structure_dt,
 #'   herd_level_data = master_hrd_lvl_dt,
 #'   feed_rations = feed_rations_chrt_dt,
@@ -577,14 +632,16 @@
 #'   manure_management_system_fraction = manure_management_system_fraction_dt,
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365,
-#'   global_warming_potential_set = "AR6"
+#'   global_warming_potential_set = "AR6",
+#'   show_indicator = FALSE
 #' )
-#' print(results$cohort_level_results)
-#' print(results$allocation_long)
+#' names(results)
 #' }
 #' @export
 run_gleam <- function(
     has_herd_structure = FALSE,
+    run_demographic = TRUE,
+    run_nondemographic = TRUE,
     cohort_level_data,
     herd_level_data,
     feed_rations,
@@ -596,6 +653,7 @@ run_gleam <- function(
     global_warming_potential_set = "AR6",
     show_indicator = TRUE
 ) {
+  nondemographic_cohorts <- setdiff(gleam_cohorts, gleam_cohorts_demographic)
 
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_gleam_inputs(
@@ -621,14 +679,55 @@ run_gleam <- function(
     gleam_chrt_data <- data.table::as.data.table(cohort_level_data)
     gleam_hrd_data <- data.table::as.data.table(herd_level_data)
   } else {
-    herd_results <- run_demographic_herd_module(
+    herd_results <- run_all_herd_module(
       cohort_level_data = cohort_level_data,
       herd_level_data = herd_level_data,
       simulation_duration = simulation_duration,
-      show_indicator = show_indicator
+      run_demographic = run_demographic,
+      run_nondemographic = run_nondemographic
     )
     gleam_chrt_data <- herd_results$cohort_level_results
     gleam_hrd_data <- herd_results$herd_level_results
+  }
+
+  # Optional nondemographic herd inputs are only needed for FN/MN cohorts, but
+  # downstream joins expect the columns to exist when present in the schema.
+  optional_nondemo_hrd_cols <- c(
+    "prop_nondemo_fem_juv",
+    "prop_nondemo_mal_juv",
+    "rest_between_nondemo_cycles_duration",
+    "phase1_nondemo_fem_duration_days",
+    "phase2_nondemo_fem_duration_days",
+    "phase1_nondemo_mal_duration_days",
+    "phase2_nondemo_mal_duration_days",
+    "live_weight_female_nondemographic_start",
+    "live_weight_male_nondemographic_start",
+    "live_weight_female_nondemographic_end",
+    "live_weight_male_nondemographic_end"
+  )
+  missing_optional_nondemo_cols <- setdiff(optional_nondemo_hrd_cols, names(gleam_hrd_data))
+  if (length(missing_optional_nondemo_cols) > 0) {
+    gleam_hrd_data[, (missing_optional_nondemo_cols) := NA_real_]
+  }
+
+  if (!has_herd_structure && isTRUE(run_demographic) && isTRUE(run_nondemographic)) {
+    gleam_hrd_data[
+      !is.na(prop_nondemo_mal_juv) & prop_nondemo_mal_juv > 0,
+      live_weight_male_nondemographic_start := live_weight_at_weaning
+    ]
+    gleam_hrd_data[
+      is.na(prop_nondemo_mal_juv) | prop_nondemo_mal_juv <= 0,
+      live_weight_male_nondemographic_start := NA_real_
+    ]
+
+    gleam_hrd_data[
+      !is.na(prop_nondemo_fem_juv) & prop_nondemo_fem_juv > 0,
+      live_weight_female_nondemographic_start := live_weight_at_weaning
+    ]
+    gleam_hrd_data[
+      is.na(prop_nondemo_fem_juv) | prop_nondemo_fem_juv <= 0,
+      live_weight_female_nondemographic_start := NA_real_
+    ]
   }
 
   # --- Step 3: Run weights at cohort level ------------------------------------
@@ -650,7 +749,7 @@ run_gleam <- function(
   gleam_chrt_data <- merge(
     gleam_chrt_data,
     feed_rations_summary,
-    by = c("herd_id", "species_short", "cohort_short")
+    by = c("herd_id", "species_short", "cohort_short", "nondemo_productive_phase_id")
   )
 
   # --- Step 5: Run energy requirements and DMI --------------------------------
@@ -691,7 +790,7 @@ run_gleam <- function(
   gleam_chrt_data <- merge(
     gleam_chrt_data,
     feed_emissions_summary,
-    by = c("herd_id", "species_short", "cohort_short")
+    by = c("herd_id", "species_short", "cohort_short", "nondemo_productive_phase_id")
   )
 
   # --- Step 10: Run production (milk, fibre, meat) at cohort level ------------

@@ -47,7 +47,8 @@ defined as the additional energy required for the synthesis of animal fibre
 }
 \details{
 This component follows the IPCC Tier 2 partitioning approach and is applied
-only to fibre-producing species and relevant cohorts, which are assumed to be \code{FA}, \code{FS}, \code{MA}, and \code{MS}.
+only to fibre-producing species and relevant cohorts, which are assumed to be
+\code{FA}, \code{FS}, \code{MA}, \code{MS}, \code{FN}, and \code{MN}.
 
 \strong{Species-specific approach:}
 

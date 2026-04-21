@@ -14,7 +14,7 @@ calc_meat_production(
 }
 \arguments{
 \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period,
-aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).}
+aggregated to 6 sex–age cohorts (heads/assessment period).}
 
 \item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 

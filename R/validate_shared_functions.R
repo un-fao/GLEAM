@@ -347,22 +347,27 @@ check_required_columns <- function(data, required_cols, arg_name) {
   }
 }
 
-#' Check cohort completeness: exactly 6 rows per herd_id, all 6 cohort codes present
+#' Check cohort completeness: require all 6 demographic cohorts per herd_id
 #'
-#' Each herd must have exactly 6 rows (one per FJ, FS, FA, MJ, MS, MA) with no
-#' duplicates or missing cohorts. Assumes validate_cohort_short_values was
-#' already called on the cohort_short column.
+#' Each herd must include the 6 demographic cohorts (FJ, FS, FA, MJ, MS, MA)
+#' with no duplicates among those cohorts. Additional cohorts such as FN and MN
+#' are allowed. Assumes validate_cohort_short_values was already called on the
+#' cohort_short column.
 #'
 #' @param cohort_level_data data.table with herd_id and cohort_short.
 #' @param data_arg String. Argument name for error messages.
 #' @noRd
 check_cohort_completeness <- function(cohort_level_data, data_arg = "cohort_level_data") {
-  # Aggregate per herd: row count and whether all 6 cohorts are present
-  cohort_completeness <- cohort_level_data[
+  demographic_rows <- cohort_level_data[
+    cohort_short %in% gleam_cohorts_demographic
+  ]
+
+  # Aggregate per herd on the demographic subset only
+  cohort_completeness <- demographic_rows[
     , list(
       count = .N,
-      has_all_cohorts = setequal(cohort_short, gleam_cohorts),
-      missing_cohorts = paste(setdiff(gleam_cohorts, cohort_short), collapse = ", ")
+      has_all_cohorts = setequal(cohort_short, gleam_cohorts_demographic),
+      missing_cohorts = paste(setdiff(gleam_cohorts_demographic, cohort_short), collapse = ", ")
     ),
     by = herd_id
   ]
@@ -382,6 +387,53 @@ check_cohort_completeness <- function(cohort_level_data, data_arg = "cohort_leve
     cli::cli_abort(
       "Each herd_id must have exactly one row for each of the 6 cohorts in {.arg {data_arg}}.
       Incomplete or duplicate cohorts found for herd_ids: {.val {missing_info}}"
+    )
+  }
+}
+
+#' Check non-demographic phase completeness by herd and cohort block
+#'
+#' Each herd_id and non-demographic cohort_short combination must contain
+#' exactly one \code{nondemo_productive_phase_id == 1} row, at most one
+#' \code{nondemo_productive_phase_id == 2} row,
+#' and no other phase identifiers.
+#'
+#' @param cohort_level_data data.table with herd_id, cohort_short and nondemo_productive_phase_id.
+#' @param data_arg String. Argument name for error messages.
+#' @noRd
+check_nondemographic_phase_completeness <- function(
+    cohort_level_data,
+    data_arg = "cohort_level_data"
+) {
+  invalid_phase_rows <- cohort_level_data[!(nondemo_productive_phase_id %in% c(1, 2))]
+  if (nrow(invalid_phase_rows) > 0) {
+    cli::cli_abort(
+      "{.arg {data_arg}} must use only {.val 1} or {.val 2} in {.var nondemo_productive_phase_id}.
+      Invalid rows found for herd/cohort combinations: {.val {paste0(invalid_phase_rows$herd_id, '/', invalid_phase_rows$cohort_short)}}"
+    )
+  }
+
+  phase_summary <- cohort_level_data[
+    ,
+    .(
+      n_phase_1 = sum(nondemo_productive_phase_id == 1),
+      n_phase_2 = sum(nondemo_productive_phase_id == 2)
+    ),
+    by = .(herd_id, cohort_short)
+  ]
+
+  invalid_structure <- phase_summary[n_phase_1 != 1 | n_phase_2 > 1]
+  if (nrow(invalid_structure) > 0) {
+    invalid_keys <- invalid_structure[
+      ,
+      paste0(
+        herd_id, "/", cohort_short,
+        " (phase1=", n_phase_1, ", phase2=", n_phase_2, ")"
+      )
+    ]
+    cli::cli_abort(
+      "Each herd/cohort block in {.arg {data_arg}} must have exactly one phase 1 row
+      and at most one phase 2 row. Invalid blocks: {.val {invalid_keys}}"
     )
   }
 }
