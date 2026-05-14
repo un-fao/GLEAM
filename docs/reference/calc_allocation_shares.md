@@ -1,0 +1,174 @@
+# Calculate allocation shares for livestock commodities
+
+Calculates biophysical allocation shares for commodities (meat, milk,
+fibre, work, eggs) based on their total energy requirements.
+
+## Usage
+
+``` r
+calc_allocation_shares(
+  species_short,
+  meat_allocation_energy,
+  milk_allocation_energy,
+  fibre_allocation_energy,
+  work_allocation_energy,
+  egg_allocation_energy
+)
+```
+
+## Arguments
+
+- species_short:
+
+  Character. Code identifying the livestock species. Supported values
+  include:
+
+  - `PGS`: pigs
+
+  - `CML`: camels
+
+  - `CTL`: cattle
+
+  - `BFL`: buffalo
+
+  - `SHP`: sheep
+
+  - `GTS`: goats
+
+- meat_allocation_energy:
+
+  Numeric. Energy required by a given sex–age cohort for total meat
+  output by cohort during the assessment period, equal to the energy
+  needed to produce all live-weight gain to reach the target slaughter
+  weight (MJ/cohort/assessment period).
+
+- milk_allocation_energy:
+
+  Numeric. Energy required to produce total milk output by cohort
+  (MJ/cohort/assessment period). Non-zero values are applicable only to
+  milk-producing species and cohorts (species=CTL, BFL, CML, SHP, GTS;
+  cohorts=FA). All other species–cohort combinations are assigned a
+  value of 0.
+
+- fibre_allocation_energy:
+
+  Numeric. Energy required to produce all fibre output by cohort
+  (MJ/cohort/assessment period).
+
+- work_allocation_energy:
+
+  Numeric vector. Energy required to provide all draught power
+  (traction/work) by cohort (MJ/cohort/assessment period).
+
+- egg_allocation_energy:
+
+  Numeric vector. Energy required to produce all eggs during the
+  assessment period (MJ/cohort/assessment period).
+
+## Value
+
+A named list of numeric vectors with same length as input, containing:
+
+- meat_share_allocation:
+
+  Numeric. Allocation share assigned to meat (fraction).
+
+- milk_share_allocation:
+
+  Numeric. Allocation share assigned to milk (fraction).
+
+- fibre_share_allocation:
+
+  Numeric. Allocation share assigned to fibre (fraction).
+
+- work_share_allocation:
+
+  Numeric. Allocation share assigned to work (fraction).
+
+- eggs_share_allocation:
+
+  Numeric. Allocation share assigned to eggs (fraction).
+
+## Details
+
+These fractions represent the proportions of total environmental burdens
+(e.g., GHG emissions) that will be allocated to each commodity in
+subsequent steps of the assessment.
+
+This function is part of the
+[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md)
+of the Global Livestock Environmental Assessment Model (GLEAM), which
+incorporates a biophysical allocation approach, aligned with the IDF
+Global Carbon Footprint Standard for the Dairy Sector (IDF, 2022), and
+adapted from Thoma and Nemecek (2020), and is consistent with FAO LEAP
+livestock LCA guidelines (FAO, 2016a, 2016b, 2016c). This approach also
+aligns with ISO 14044:2006 (Section 4.3.4.2, Step 2) by using underlying
+physical (energy-based) relationships to assign shared inputs and
+outputs in multifunctional livestock production systems.
+
+In accordance with ISO 14044:2006 (Section 4.3.4.2, Step 2), known
+processing or biophysical relationships may be used to assign shared
+inputs and outputs of a single production unit to individual products or
+sub-units. In livestock systems, this includes apportioning shared feed
+and energy use according to physiological energy requirements (e.g., net
+energy for lactation, growth..etc.). If the resulting process remains
+multifunctional, these energy terms may subsequently be used to derive
+allocation factors among co-products.
+
+This function calculates biophysical allocation fractions for
+commodities (meat, milk, fibre, work, eggs) for all species. The
+allocation is based on commodity-specific energy requirements calculated
+using
+[`calc_meat_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_meat_allocation_energy.md),
+[`calc_milk_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_milk_allocation_energy.md),
+[`calc_fibre_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_fibre_allocation_energy.md),
+[`calc_work_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_work_allocation_energy.md),
+and `calc_eggs_allocation_energy`.
+
+**Pig species (`PGS`):** allocation is not based on energy partitioning
+because pig production is treated as functionally single-output (edible
+meat). Consequently, 100% of the allocation is assigned to the meat
+commodity (meat share = 1; all other commodity shares = 0), independent
+of the energy inputs.
+
+This function is part of the
+[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md).
+
+## References
+
+ISO. (2006). *Environmental management — Life cycle assessment —
+Requirements and guidelines (ISO 14044:2006)*. International
+Organization for Standardization, Geneva.
+
+IDF. (2022). *The IDF Global Carbon Footprint Standard for the Dairy
+Sector*. Bulletin of the IDF No. 520/2022. International Dairy
+Federation, Brussels.
+
+Thoma, G., and Nemecek, T. (2020). Allocation between milk and meat in
+dairy LCA: Critical discussion of the IDF’s standard methodology. In
+*Proceedings of the 12th International Conference on Life Cycle
+Assessment of Food (LCAFood 2020)* (pp. 83–89), 13–16 October, Berlin,
+Germany.
+
+FAO. (2016a). *Environmental performance of large ruminant supply
+chains: Guidelines for assessment*. Livestock Environmental Assessment
+and Performance (LEAP) Partnership. FAO, Rome, Italy.
+
+FAO. (2016b). *Greenhouse gas emissions and fossil energy use from small
+ruminant supply chains: Guidelines for assessment*. Livestock
+Environmental Assessment and Performance (LEAP) Partnership. FAO, Rome,
+Italy.
+
+FAO. (2016c). *Greenhouse gas emissions and fossil energy use from
+poultry supply chains: Guidelines for assessment*. Livestock
+Environmental Assessment and Performance (LEAP) Partnership. FAO, Rome,
+Italy.
+
+## See also
+
+[`run_allocation_module`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md),
+[`calc_meat_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_meat_allocation_energy.md),
+[`calc_milk_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_milk_allocation_energy.md),
+[`calc_fibre_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_fibre_allocation_energy.md),
+[`calc_work_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_work_allocation_energy.md),
+`calc_eggs_allocation_energy`

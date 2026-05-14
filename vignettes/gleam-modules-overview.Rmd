@@ -76,7 +76,9 @@ subadult, adult).
 
 <img src="images/gleamx_package_module_herd.png"
      alt="Overview of the GLEAM demographic herd module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
+
 <div class="module-figure-hint"></div>
 
 </details>
@@ -96,7 +98,8 @@ over each cohort stage.
 
 <img src="images/gleamx_package_module_weights.png"
      alt="Overview of the GLEAM weights module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
 <div class="module-figure-hint"></div>
 
 </details>
@@ -126,7 +129,8 @@ nutrient parameters.
 
 <img src="images/gleamx_package_module_feedrations.png"
      alt="Overview of the GLEAM feed rations module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
 <div class="module-figure-hint"></div>
 
 </details>
@@ -179,10 +183,9 @@ total energy requirement by the diet energy density.
 
 <img src="images/gleamx_package_module_energyrequirements.png"
      alt="Overview of the GLEAM metabolic energy requirements module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
 <div class="module-figure-hint"></div>
-
-# Enteric Emissions Module
 </details>
 
 
@@ -199,7 +202,9 @@ conversion factors (ym).
 
 <img src="images/gleamx_package_module_enteric.png"
      alt="Overview of the GLEAM enteric emissions module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
+
 <div class="module-figure-hint"></div>
 
 </details>
@@ -226,7 +231,8 @@ Computes cohort-level daily nitrogen intake, retention, and excretion
 
 <img src="images/gleamx_package_module_nitrogen.png"
      alt="Overview of the GLEAM nitrogen balance module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
 <div class="module-figure-hint"></div>
 
 </details>
@@ -262,7 +268,8 @@ tables. The following calculation sequence is applied:
 
 <img src="images/gleamx_package_module_manure.png"
      alt="Overview of the GLEAM manure emissions module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
 <div class="module-figure-hint"></div>
 
 </details>
@@ -322,7 +329,8 @@ applies the following calculation sequence:
 
 <img src="images/gleamx_package_module_feedemissions.png"
      alt="Overview of the GLEAM feed production emissions module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
 <div class="module-figure-hint"></div>
 
 </details>
@@ -340,7 +348,8 @@ parameters. The module returns milk, fibre, and meat outputs for each cohort.
 
 <img src="images/gleamx_package_module_production.png"
      alt="Overview of the GLEAM production module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
 <div class="module-figure-hint"></div>
 
 </details>
@@ -372,7 +381,8 @@ consistent with ISO 14044:2006 (Section 4.3.4.2, Step 2).
 
 <img src="images/gleamx_package_module_allocation.png"
      alt="Overview of the GLEAM emissions allocation module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
 <div class="module-figure-hint"></div>
 
 </details>
@@ -409,7 +419,8 @@ Warming Potential (GWP-100) factors.
 
 <img src="images/gleamx_package_module_aggregation.png"
      alt="Overview of the GLEAM aggregation module"
-     class="module-figure-zoom">
+     class="module-figure-zoom"
+     style="max-width: 500px; width: 100%; height: auto;">
 <div class="module-figure-hint"></div>
 
 </details>

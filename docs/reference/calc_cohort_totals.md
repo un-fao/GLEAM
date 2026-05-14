@@ -1,0 +1,115 @@
+# Calculate totals by cohort
+
+Calculates the total value for each variable at the cohort level over
+the full assessment period. Values are harmonized to a common unit
+(`kg/cohort/assessment duration`) by accounting for cohort stock size
+and simulation duration.
+
+## Usage
+
+``` r
+calc_cohort_totals(
+  value,
+  cohort_stock_size,
+  ration_intake,
+  feed_emissions_list,
+  simulation_duration,
+  variable_name,
+  variable_type
+)
+```
+
+## Arguments
+
+- value:
+
+  Numeric. Variable value expressed as (unit)/head/day for
+  non-production variables and (unit)/cohort/assessment duration for
+  production variables. Production variables can be explored from the
+  list 'gleam_production_meta'.
+
+- cohort_stock_size:
+
+  Numeric. Average population size in each of the 6 sex–age cohorts (#
+  heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
+
+- ration_intake:
+
+  Numeric. Average daily dry matter intake of feed (kg DM/head/day).
+
+- feed_emissions_list:
+
+  List of emission-source definitions for feed-related emissions. Each
+  element is a list with two character fields:
+
+  emissions_source
+
+  :   List of variables = "co2_ration_fertilizer",
+      "co2_ration_pesticides", "co2_ration_crop_activities",
+      "co2_ration_luc_nopeat", "co2_ration_luc_peat",
+      "n2o_ration_fertilizer", "n2o_ration_manure_applied",
+      "n2o_ration_crop_residues", "ch4_ration_rice"
+
+  label
+
+  :   Human-readable output label.
+
+- simulation_duration:
+
+  Numeric. Length of the assessment period (days).
+
+- variable_name:
+
+  Character. Names of emission variables to which allocation should be
+  applied (e.g., "ch4_enteric", "ch4_manure_pasture",
+  "ch4_manure_burned", "ch4_manure_other", "n2o_manure_pasture_direct",
+  "n2o_manure_burned_direct", "n2o_manure_other_direct",
+  "n2o_manure_burned_indirect", "n2o_manure_pasture_indirect",
+  "n2o_manure_other_indirect", "co2_ration_fertilizer",
+  "co2_ration_pesticides", "co2_ration_crop_activities",
+  "co2_ration_luc_nopeat", "co2_ration_luc_peat",
+  "n2o_ration_fertilizer", "n2o_ration_manure_applied",
+  "n2o_ration_crop_residues", "ch4_ration_rice")
+
+- variable_type:
+
+  Character. Variable group classification. Supported values include:
+
+  - `"Production"`: variables already expressed at the cohort level for
+    the full assessment duration
+
+  - `"Emissions"`: variables expressed per head per day
+
+  - `"Feed"`: variables expressed per head per day
+
+  - `"NitrogenBalance"`: variables expressed per head per day
+
+## Value
+
+Numeric. Variable value expressed as (unit)/cohort/assessment duration
+for all variables.
+
+## Details
+
+Production variables are already expressed at the cohort level for the
+entire assessment duration and are therefore returned unchanged. All
+other variables (emissions, feed, and nitrogen balance) are expressed
+per head per day and are scaled by cohort stock size and simulation
+duration to obtain cohort-level totals.
+
+For production variables: \$\$value\\total = value\$\$
+
+For emissions (except emissions from feed), feed, and nitrogen balance
+variables: \$\$value\\total = value \times cohort\\stock\\size \times
+simulation\\duration\$\$
+
+For feed emissions variables: \$\$value\\total = value \times
+ration\\intake \times cohort\\stock\\size \times simulation\\duration /
+1000\$\$
+
+This function is part of the
+[`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md).
+
+## See also
+
+[`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md)
