@@ -4,5 +4,7 @@
 .Rhistory
 .RData
 .Ruserdata
-*.Rproj
+gleam.Rproj
+GLEAM-fao.Rproj
+.cursor/
 Inputs

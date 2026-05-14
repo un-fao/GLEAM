@@ -190,7 +190,7 @@ total energy requirement by the diet energy density.
 
 
 
-# Enteric Emissions Module
+
 
 *See [`run_emissions_enteric_module()`](../reference/run_emissions_enteric_module.html) for full documentation.*
 
