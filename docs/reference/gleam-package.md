@@ -3,7 +3,11 @@
 GLEAM-X is the official R implementation of FAO’s Global Livestock
 Environmental Assessment Model (GLEAM). The package provides a modular,
 transparent framework for simulating livestock production systems and
-quantifying their environmental impacts.
+quantifying their environmental impacts. Methodological background:
+MacLeod et al. (2017) "Invited review: A position on the Global
+Livestock Environmental Assessment Model (GLEAM)"
+[doi:10.1017/S1751731117001847](https://doi.org/10.1017/S1751731117001847)
+. Further information: <https://www.fao.org/gleam/en/>.
 
 ## See also
 

@@ -160,8 +160,6 @@ functions, input and output:**
 ![Overview of the GLEAM metabolic energy requirements
 module](images/gleamx_package_module_energyrequirements.png)
 
-## Enteric Emissions Module
-
 *See
 [`run_emissions_enteric_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_enteric_module.md)
 for full documentation.*
