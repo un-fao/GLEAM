@@ -1,0 +1,153 @@
+#' Validate inputs for calc_volatile_solids
+#'
+#' @noRd
+validate_calc_volatile_solids <- function(
+    ration_intake,
+    ration_digestibility_fraction,
+    ration_urinary_energy_fraction,
+    ration_ash
+) {
+  # Enforce configured bounds
+  validate_param_range(ration_intake)
+  validate_param_range(ration_digestibility_fraction)
+  validate_param_range(ration_urinary_energy_fraction)
+  validate_param_range(ration_ash)
+}
+
+#' Validate manure variable characteristics
+#'
+#' @noRd
+validate_mms_characteristics <- function(mms_list, required_names) {
+
+  # at least one MMS provided
+  if (length(mms_list) == 0) {
+    cli::cli_abort("At least one manure management system must be provided.")
+  }
+
+  # validate each MMS unit
+  for (mms in mms_list) {
+
+    # must be numeric
+    if (!is.numeric(mms)) {
+      cli::cli_abort("Each MMS argument must be a numeric vector.")
+    }
+
+    # must contain exactly the expected named fields
+    if (!setequal(names(mms), required_names)) {
+      cli::cli_abort(
+        c(
+          "Each MMS must contain exactly these named values:",
+          paste0("* {required_names}")
+        )
+      )
+    }
+
+    # must not contain missing values
+    if (any(is.na(mms))) {
+      cli::cli_abort("MMS values must not contain missing values.")
+    }
+
+    # Range checks via shared parameter_ranges rules
+    if ("manure_management_system_fraction" %in% names(mms)) {
+      validate_param_range(
+        mms[["manure_management_system_fraction"]],
+        "manure_management_system_fraction"
+      )
+    }
+
+    if ("nitrogen_fracgas" %in% names(mms)) {
+      validate_param_range(mms[["nitrogen_fracgas"]], "nitrogen_fracgas")
+    }
+
+    if ("nitrogen_fracleach" %in% names(mms)) {
+      validate_param_range(mms[["nitrogen_fracleach"]], "nitrogen_fracleach")
+    }
+
+    if ("methane_conversion_factor_mcf" %in% names(mms)) {
+      validate_param_range(
+        mms[["methane_conversion_factor_mcf"]],
+        "methane_conversion_factor_mcf"
+      )
+    }
+
+    if ("ch4_max_producing_capacity_bo" %in% names(mms)) {
+      validate_param_range(
+        mms[["ch4_max_producing_capacity_bo"]],
+        "ch4_max_producing_capacity_bo"
+      )
+    }
+
+    if ("n2o_ef3" %in% names(mms)) {
+      validate_param_range(mms[["n2o_ef3"]], "n2o_ef3")
+    }
+
+    if ("n2o_ef4" %in% names(mms)) {
+      validate_param_range(mms[["n2o_ef4"]], "n2o_ef4")
+    }
+
+    if ("n2o_ef5" %in% names(mms)) {
+      validate_param_range(mms[["n2o_ef5"]], "n2o_ef5")
+    }
+  }
+
+  # the sum of all MMS fractions must equal 1
+  total_fraction <- sum(
+    vapply(mms_list, function(mms) mms[["manure_management_system_fraction"]], numeric(1))
+  )
+  if (abs(total_fraction - 1) > 1e-8) {
+    cli::cli_abort(
+      "The sum of all MMS fractions must be equal to 1 (current sum: {total_fraction})."
+    )
+  }
+}
+
+#' Validate manure function calculations
+#'
+#' @noRd
+validate_mms_inputs <- function(
+    mms_list,
+    required_names,
+    ...
+) {
+  # validate the structure and content of the MMS list
+  validate_mms_characteristics(
+    mms_list,
+    required_names = required_names
+  )
+
+  scalars <- list(...)
+
+  # validate any additional scalar numeric inputs
+  for (i in seq_along(scalars)) {
+    validate_scalar_numeric(
+      scalars[[i]],
+      names(scalars)[i]
+    )
+  }
+}
+
+#' Validate inputs for calc_n2o_manure_total
+#'
+#' @noRd
+validate_calc_n2o_manure_total <- function(
+    n2o_manure_pasture_vol,
+    n2o_manure_pasture_leach,
+    n2o_manure_burned_vol,
+    n2o_manure_burned_leach,
+    n2o_manure_other_vol,
+    n2o_manure_other_leach,
+    n2o_manure_pasture_direct,
+    n2o_manure_burned_direct,
+    n2o_manure_other_direct
+) {
+  # Numeric inputs
+  validate_scalar_numeric(n2o_manure_pasture_vol)
+  validate_scalar_numeric(n2o_manure_pasture_leach)
+  validate_scalar_numeric(n2o_manure_burned_vol)
+  validate_scalar_numeric(n2o_manure_burned_leach)
+  validate_scalar_numeric(n2o_manure_other_vol)
+  validate_scalar_numeric(n2o_manure_other_leach)
+  validate_scalar_numeric(n2o_manure_pasture_direct)
+  validate_scalar_numeric(n2o_manure_burned_direct)
+  validate_scalar_numeric(n2o_manure_other_direct)
+}

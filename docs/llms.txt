@@ -1,0 +1,292 @@
+# gleam: The GLEAM R Package
+
+**The official R package of the FAO’s Global Livestock Environmental
+Assessment Model (GLEAM).**
+
+This package provides a modular implementation of GLEAM to quantify
+environmental impacts from livestock agrifood systems. The model
+simulates herd dynamics and quantifies key metrics, including
+animal-sourced food production, energy requirements and feed intake,
+nitrogen balance, and greenhouse gas emissions from enteric
+fermentation, manure management, and upstream feed production. The
+package also allocates estimated emissions to major animal products and
+services.
+
+## Purpose
+
+This package supports the sustainable transformation of livestock
+systems by enabling evidence-based decision-making through a transparent
+and reproducible modeling framework.
+
+The **official GLEAM workflow** allows users to:
+
+- Simulate steady-state herd dynamics to disaggregate animal herds into
+  age and sex-specific cohorts
+- Compute annual production of animal products and herd growth rate
+- Estimate animal energy requirements for maintenance, activity, growth,
+  lactation, pregnancy, work, eggs, and fiber production
+- Compute nutritional contributions of user-defined feed rations per
+  cohort
+- Estimate dry matter intake and nitrogen balance
+- Estimate methane (CH₄) emissions from enteric fermentation
+- Estimate CH₄ and nitrous oxide (N₂O) emissions from manure management
+- Estimate carbon dioxide (CO₂), CH₄, and N₂O emission related to the
+  production, processing and transport of feed
+- Allocate estimated emissions to major animal products and services
+
+## Model Coverage
+
+The model currently considers cattle, buffalo, camels, goats, pigs, and
+sheep.
+
+## Installation
+
+To install the development version of the package:
+
+``` r
+# If devtools is not installed
+install.packages("devtools")
+
+# Install from GitHub
+devtools::install_git("https://github.com/un-fao/GLEAM.git")
+```
+
+## Help & Contact
+
+We kindly ask users to inform us of your usage, as this helps us track
+the tool’s impact and guide future improvements. Please also get in
+touch with the GLEAM development team for documentation, internal
+guidance, or technical questions.
+
+- 📧 <Info-GLEAM@fao.org>
+- 🌐 [GLEAM Website](https://www.fao.org/gleam/en/)
+
+## License
+
+This package is licensed under the AGPL-3 license which permits free
+use, modification, and sharing of the software. Under AGPL-3.0, any
+modifications to the code must be made publicly available by creating a
+new branch on GitHub. The software cannot be relicensed under more
+restrictive terms without adhering to the AGPL-3.0 guidelines.
+Developers may anonymize or remove any sensitive or identifiable data
+(customizations) before resubmitting code.
+
+## Acknowledgement
+
+The development of the GLEAM ecosystem was supported by the German
+Federal Ministry of Food, Agriculture, and Regional Identity
+[BMELH](https://www.bmleh.de/EN/Home/home_node.html).
+
+------------------------------------------------------------------------
+
+# Package index
+
+## Main pipeline
+
+- [`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+  : Run the full Global Livestock Environmental Assessment Model (GLEAM)
+  Pipeline
+
+## Demographic herd module
+
+- [`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md)
+  : Run Demographic Herd Module Pipeline
+- [`calc_fecundity_rates()`](https://github.com/un-fao/GLEAM/reference/calc_fecundity_rates.md)
+  : Calculate daily fecundity rates
+- [`calc_transition_probabilities()`](https://github.com/un-fao/GLEAM/reference/calc_transition_probabilities.md)
+  : Calculate transition probabilities for sex-age classes
+- [`calc_steady_state_structure()`](https://github.com/un-fao/GLEAM/reference/calc_steady_state_structure.md)
+  : Calculate steady-state population structure
+- [`calc_projected_population_size()`](https://github.com/un-fao/GLEAM/reference/calc_projected_population_size.md)
+  : Calculate one year of steady-state population dynamics
+- [`calc_summary_offtake()`](https://github.com/un-fao/GLEAM/reference/calc_summary_offtake.md)
+  : Summarise offtake and stock Variation for a steady-state year
+
+## Weights module
+
+- [`run_weights_module()`](https://github.com/un-fao/GLEAM/reference/run_weights_module.md)
+  : Run Weights Module Pipeline
+- [`calc_avg_weights()`](https://github.com/un-fao/GLEAM/reference/calc_avg_weights.md)
+  : Calculate average and final live weights by cohort
+- [`calc_cohort_weights()`](https://github.com/un-fao/GLEAM/reference/calc_cohort_weights.md)
+  : Calculate live weights by cohort and life stage
+- [`calc_daily_weight_gain()`](https://github.com/un-fao/GLEAM/reference/calc_daily_weight_gain.md)
+  : Calculate daily weight gain by cohort
+
+## Ration quality module
+
+- [`run_ration_quality_module()`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md)
+  : Run Ration Quality Module Pipeline
+- [`calc_feed_digestibility_fraction()`](https://github.com/un-fao/GLEAM/reference/calc_feed_digestibility_fraction.md)
+  : Calculate feed digestibility fraction
+- [`calc_ration_digestibility()`](https://github.com/un-fao/GLEAM/reference/calc_ration_digestibility.md)
+  : Calculate diet digestibility contribution for a ration component
+- [`calc_ration_metabolizable_energy()`](https://github.com/un-fao/GLEAM/reference/calc_ration_metabolizable_energy.md)
+  : Calculate diet metabolizable energy contribution for a ration
+  component
+- [`calc_ration_gross_energy()`](https://github.com/un-fao/GLEAM/reference/calc_ration_gross_energy.md)
+  : Calculate diet gross energy contribution for a ration component
+- [`calc_ration_nitrogen_content()`](https://github.com/un-fao/GLEAM/reference/calc_ration_nitrogen_content.md)
+  : Calculate diet nitrogen contribution for a ration component
+- [`calc_ration_urinary_energy_fraction()`](https://github.com/un-fao/GLEAM/reference/calc_ration_urinary_energy_fraction.md)
+  : Calculate urinary energy fraction contribution for a ration
+  component
+- [`calc_ration_ash()`](https://github.com/un-fao/GLEAM/reference/calc_ration_ash.md)
+  : Calculate diet ash contribution for a ration component
+
+## Metabolic energy requirements module
+
+- [`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md)
+  : Run Metabolic Energy Requirements and Dry Matter Intake Module
+  Pipeline
+- [`calc_metabolic_energy_req_maintenance()`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_maintenance.md)
+  : Calculate metabolic energy requirements for maintenance
+- [`calc_metabolic_energy_req_activity()`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_activity.md)
+  : Calculate metabolic energy requirements for activity
+- [`calc_metabolic_energy_req_growth()`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_growth.md)
+  : Calculate metabolic energy requirements for growth
+- [`calc_metabolic_energy_req_lactation()`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_lactation.md)
+  : Calculate metabolic energy requirements for lactation
+- [`calc_metabolic_energy_req_pregnancy()`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_pregnancy.md)
+  : Calculate metabolic energy requirements for pregnancy
+- [`calc_metabolic_energy_req_work()`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_work.md)
+  : Calculate metabolic energy requirements for work
+- [`calc_metabolic_energy_req_fibre()`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_fibre.md)
+  : Calculate metabolic energy requirements for fibre production
+- [`calc_rem_maintenance()`](https://github.com/un-fao/GLEAM/reference/calc_rem_maintenance.md)
+  : Calculate ratio of net energy available for maintenance in the diet
+  (REM - Net Energy for Maintenance / Digestible Energy)
+- [`calc_reg_growth()`](https://github.com/un-fao/GLEAM/reference/calc_reg_growth.md)
+  : Calculate the ratio of net energy available for growth in the diet
+  (REG – Net Energy for Growth / Digestible Energy)
+- [`calc_total_metabolic_energy_req()`](https://github.com/un-fao/GLEAM/reference/calc_total_metabolic_energy_req.md)
+  : Calculate total metabolic energy requirements
+- [`calc_ration_intake()`](https://github.com/un-fao/GLEAM/reference/calc_ration_intake.md)
+  : Calculate daily ration intake in dry matter
+
+## Nitrogen balance module
+
+- [`run_nitrogen_balance_module()`](https://github.com/un-fao/GLEAM/reference/run_nitrogen_balance_module.md)
+  : Run Nitrogen Balance Module Pipeline
+- [`calc_nitrogen_intake()`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_intake.md)
+  : Calculate daily nitrogen intake
+- [`calc_nitrogen_retention()`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_retention.md)
+  : Calculate daily nitrogen retention
+- [`calc_nitrogen_excretion()`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_excretion.md)
+  : Calculate daily nitrogen excretion
+
+## Enteric emissions module
+
+- [`run_emissions_enteric_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_enteric_module.md)
+  : Run Enteric Methane (CH4) Emissions Module Pipeline
+- [`calc_conversion_factor_ym()`](https://github.com/un-fao/GLEAM/reference/calc_conversion_factor_ym.md)
+  : Calculate methane conversion factor (ym)
+- [`calc_ch4_enteric()`](https://github.com/un-fao/GLEAM/reference/calc_ch4_enteric.md)
+  : Calculate daily enteric methane emissions
+
+## Manure emissions module
+
+- [`run_emissions_manure_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md)
+  : Run Emissions from Manure Module Pipeline
+- [`calc_volatile_solids()`](https://github.com/un-fao/GLEAM/reference/calc_volatile_solids.md)
+  : Calculate Volatile Solids (VS)
+- [`calc_ch4_manure()`](https://github.com/un-fao/GLEAM/reference/calc_ch4_manure.md)
+  : Calculate methane (CH4) emissions from manure management systems
+- [`calc_n2o_manure_direct()`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_direct.md)
+  : Calculate direct Nitrous Oxide (N2O) emissions from manure
+  management systems
+- [`calc_n2o_manure_volatilization()`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_volatilization.md)
+  : Calculate indirect Nitrous Oxide (N2O) emissions from manure
+  volatilization
+- [`calc_n2o_manure_leaching()`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_leaching.md)
+  : Calculate indirect Nitrous Oxide (N2O) emissions from manure
+  leaching and runoff
+- [`calc_n2o_manure_total()`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_total.md)
+  : Calculate total Nitrous Oxide (N2O) emissions from manure
+
+## Feed emissions module
+
+- [`run_emissions_ration_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_ration_module.md)
+  : Run Emissions from Feed Production Module Pipeline
+- [`calc_ch4_ration_rice()`](https://github.com/un-fao/GLEAM/reference/calc_ch4_ration_rice.md)
+  : Calculate a ration component's contribution to methane (CH4)
+  emissions from rice cultivation
+- [`calc_co2_ration_fertilizer()`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_fertilizer.md)
+  : Calculate a ration component's contribution to carbon dioxide (CO2)
+  emissions from fertilizer manufacture
+- [`calc_co2_ration_pesticides()`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_pesticides.md)
+  : Calculate a ration component's contribution to carbon dioxide (CO2)
+  emissions from pesticide manufacture
+- [`calc_co2_ration_crop_activities()`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_crop_activities.md)
+  : Calculate a ration component's contribution to carbon dioxide (CO2)
+  emissions from on-field agricultural activities
+- [`calc_co2_ration_luc_nopeat()`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_luc_nopeat.md)
+  : Calculate a ration component's contribution to carbon dioxide (CO2)
+  emissions from land-use change (excluding peatland drainage)
+- [`calc_co2_ration_luc_peat()`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_luc_peat.md)
+  : Calculate a ration component's contribution to carbon dioxide (CO2)
+  emissions from peatland drainage
+- [`calc_n2o_ration_fertilizer()`](https://github.com/un-fao/GLEAM/reference/calc_n2o_ration_fertilizer.md)
+  : Calculate a ration component's contribution to nitrous oxide (N2O)
+  emissions from fertilizer use
+- [`calc_n2o_ration_manure()`](https://github.com/un-fao/GLEAM/reference/calc_n2o_ration_manure.md)
+  : Calculate a ration component's contribution to nitrous oxide (N2O)
+  emissions from manure application and deposition
+- [`calc_n2o_ration_crop_residues()`](https://github.com/un-fao/GLEAM/reference/calc_n2o_ration_crop_residues.md)
+  : Calculate a ration component's contribution to nitrous oxide (N2O)
+  emissions from crop residues decomposition
+
+## Production module
+
+- [`run_production_module()`](https://github.com/un-fao/GLEAM/reference/run_production_module.md)
+  : Run Production Module Pipeline
+- [`calc_milk_production()`](https://github.com/un-fao/GLEAM/reference/calc_milk_production.md)
+  : Calculate milk production
+- [`calc_meat_production()`](https://github.com/un-fao/GLEAM/reference/calc_meat_production.md)
+  : Calculate meat production
+- [`calc_fibre_production()`](https://github.com/un-fao/GLEAM/reference/calc_fibre_production.md)
+  : Calculate fibre production
+
+## Allocation module
+
+- [`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md)
+  : Run Allocation Module Pipeline
+- [`calc_milk_allocation_energy()`](https://github.com/un-fao/GLEAM/reference/calc_milk_allocation_energy.md)
+  : Calculate milk energy requirements (for biophysical allocation)
+- [`calc_meat_allocation_energy()`](https://github.com/un-fao/GLEAM/reference/calc_meat_allocation_energy.md)
+  : Calculate meat energy requirements (for biophysical allocation)
+- [`calc_fibre_allocation_energy()`](https://github.com/un-fao/GLEAM/reference/calc_fibre_allocation_energy.md)
+  : Calculate fibre energy requirements (for biophysical allocation)
+- [`calc_work_allocation_energy()`](https://github.com/un-fao/GLEAM/reference/calc_work_allocation_energy.md)
+  : Calculate work energy requirements (for biophysical allocation)
+- [`calc_allocation_shares()`](https://github.com/un-fao/GLEAM/reference/calc_allocation_shares.md)
+  : Calculate allocation shares for livestock commodities
+- [`assign_allocation_shares()`](https://github.com/un-fao/GLEAM/reference/assign_allocation_shares.md)
+  : Assign allocation shares to emission variables by commodity
+
+## Aggregation module
+
+- [`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md)
+  : Run Aggregation Module Pipeline
+- [`calc_cohort_totals()`](https://github.com/un-fao/GLEAM/reference/calc_cohort_totals.md)
+  : Calculate totals by cohort
+- [`calc_cohort_to_herd_aggregation()`](https://github.com/un-fao/GLEAM/reference/calc_cohort_to_herd_aggregation.md)
+  : Aggregate cohort-level to herd-level data
+- [`calc_allocated_emissions()`](https://github.com/un-fao/GLEAM/reference/calc_allocated_emissions.md)
+  : Calculate allocated greenhouse gas emissions (GHG)
+- [`calc_co2eq()`](https://github.com/un-fao/GLEAM/reference/calc_co2eq.md)
+  : Convert methane (CH4) and nitrous oxide (N2O) emissions to
+  CO2-equivalents (CO2eq) using Global Warming Potentials (GWP) factors
+
+# Articles
+
+### All vignettes
+
+- [The GLEAM
+  Ecosystem](https://github.com/un-fao/GLEAM/articles/gleam-ecosystem.md):
+- [The History of
+  GLEAM](https://github.com/un-fao/GLEAM/articles/gleam-history.md):
+- [About gleam
+  modules](https://github.com/un-fao/GLEAM/articles/gleam-modules-overview.md):
+- [Overview of 'gleam' R
+  Package](https://github.com/un-fao/GLEAM/articles/gleam-overview.md):
