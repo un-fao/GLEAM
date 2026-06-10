@@ -812,10 +812,6 @@ calc_nondemo_offtake_total_horizon <- function(
     phase2_nondemo_duration <- 0
   
   
-  # Completed partial indicators
-  completed_partial_phase1 <- as.integer(phase1_exists && partial_phase1_nondemo_duration >= phase1_nondemo_duration)
-  completed_partial_phase2 <- as.integer(phase2_exists && partial_phase2_nondemo_duration >= phase2_nondemo_duration)
-  
   # Completed ends within horizon / ount how many offtake events occur
   completed_phase_ends <- max(0, number_full_nondemo_cycles)
   
