@@ -88,8 +88,8 @@
 #'         \item{`cohort_duration_days`}{Numeric. Productive phase duration used in the simulation (days). If not supplied in the cohort table, this is filled from herd-level phase-duration inputs.}
 #'         \item{`cohort_stock_size_unscaled`}{Numeric. Average population size by cohort block and productive phase before any later herd-level harmonization (# heads).}
 #'         \item{`partial_nondemo_phase_duration`}{Numeric. Duration of the terminal partial productive phase occurring within the fixed 365-day simulation horizon (days).}
-#'         \item{`offtake_heads`}{Numeric. Total number of animals leaving the cohort block over the fixed 365-day simulation horizon (# heads).}
-#'         \item{`offtake_heads_assessment`}{Numeric. Total number of animals leaving the cohort block over `simulation_duration` (# heads / simulated period).}
+#'         \item{`offtake_heads_unscaled`}{Numeric. Total number of animals leaving the cohort block over the fixed 365-day simulation horizon (# heads).}
+#'         \item{`offtake_heads_assessment_unscaled`}{Numeric. Total number of animals leaving the cohort block over `simulation_duration` (# heads / simulated period).}         
 #'         \item{`number_full_nondemo_cycles`}{Integer. Number of complete cycles fully contained within the fixed 365-day simulation horizon (full cycles / simulated period).}
 #'         \item{`total_nondemo_cycle_starts_to_distribute`}{Integer. Total number of cycle starts within the fixed 365-day simulation horizon used to distribute annual entrants (cycle starts / simulated period).}
 #'       }}
@@ -304,8 +304,8 @@ run_nondemographic_herd_module <- function(
         offtake_rate = 1,
         cohort_stock_size_unscaled = cohort_stock_avg_phase1,
         partial_nondemo_phase_duration = geom$partial_phase1_nondemo_duration,
-        offtake_heads = off$offtake_heads_nondemo_phase1,
-        offtake_heads_assessment = off$offtake_heads_assessment_nondemo_phase1,
+        offtake_heads_unscaled = off$offtake_heads_nondemo_phase1,
+        offtake_heads_assessment_unscaled = off$offtake_heads_assessment_nondemo_phase1,
         number_full_nondemo_cycles = geom$number_full_nondemo_cycles,
         total_nondemo_cycle_starts_to_distribute = geom$total_nondemo_cycle_starts_to_distribute
       )]
@@ -316,8 +316,8 @@ run_nondemographic_herd_module <- function(
           offtake_rate = 1,
           cohort_stock_size_unscaled = cohort_stock_avg_phase2,
           partial_nondemo_phase_duration = geom$partial_phase2_nondemo_duration,
-          offtake_heads = off$offtake_heads_nondemo_phase2,
-          offtake_heads_assessment = off$offtake_heads_assessment_nondemo_phase2,
+          offtake_heads_unscaled = off$offtake_heads_nondemo_phase2,
+          offtake_heads_assessment_unscaled = off$offtake_heads_assessment_nondemo_phase2,
           number_full_nondemo_cycles = geom$number_full_nondemo_cycles,
           total_nondemo_cycle_starts_to_distribute = geom$total_nondemo_cycle_starts_to_distribute
         )]

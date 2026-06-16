@@ -172,10 +172,12 @@
 #'       \itemize{
 #'         \item `cohort_stock_size_unscaled` - Numeric. Average population size in each of the 6 demographic sex–age cohorts (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`), not yet scaled to the total livestock population (herd_size_total), (# heads).
 #'         This corresponds to `cohort_stock_average` returned by \code{\link{calc_projected_population_size}}.
+#'         \item `offtake_heads_unscaled` - Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`), before rescaling to the cohort population at the start of the assessment period.
+#'         \item `offtake_heads_assessment_unscaled` - Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`), before rescaling to the cohort population at the start of the assessment period.
+#'         \item `offtake_heads_scaled` - Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`), rescaled to the cohort population at the start of the assessment period.
+#'         \item `offtake_heads_assessment_scaled` - Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`), rescaled to the cohort population at the start of the assessment period.
 #'         \item `cohort_stock_annual_nondemographic` Numeric. Total number of animals entering the non-demographic component of the model over the simulated period, disaggregated by demographic sex–age cohorts (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`) (heads).
-#'         \item `offtake_heads` - Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`).
-#'         \item `offtake_heads_assessment` - Numeric vector of length 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`).
-#'       }
+#'         }
 #'     }
 #'     \item{`herd_level_results`}{A `data.table` with one row per herd containing all original
 #'       `herd_level_data` columns plus the following herd-level simulation results:
@@ -338,6 +340,8 @@ run_demographic_herd_module <- function(
       cohort_offtake_heads = popsize_result$cohort_offtake_heads,
       simulation_duration = simulation_duration
     )
+    
+    
 
     # Map simulation results back to cohort-level results
     # Assign values from named vectors to the appropriate cohort rows
@@ -346,12 +350,29 @@ run_demographic_herd_module <- function(
         herd_id == current_herd_id & cohort_short == cohort_name,
         `:=`(
           cohort_stock_size_unscaled = popsize_result$cohort_stock_average[cohort_name],
+          cohort_stock_size_scaled = popsize_result$cohort_stock_start[cohort_name],
           cohort_stock_annual_nondemographic = popsize_result$cohort_stock_annual_nondemographic[cohort_name],
-          offtake_heads = offtake_result$offtake_heads[cohort_name],
-          offtake_heads_assessment = offtake_result$offtake_heads_assessment[cohort_name]
+          offtake_heads_unscaled = offtake_result$offtake_heads[cohort_name],
+          offtake_heads_assessment_unscaled = offtake_result$offtake_heads_assessment[cohort_name]
         )
       ]
     }
+    
+    cohort_level_results[
+      ,`:=`(
+        offtake_heads_scaled = rescale_x_to_y(
+          x_scaled_variable  = offtake_heads_unscaled,
+          x_reference_from   = cohort_stock_size_unscaled,
+          y_scaling_variable = cohort_stock_size_scaled
+          ),
+        
+        offtake_heads_assessment_scaled = rescale_x_to_y(
+          x_scaled_variable  = offtake_heads_assessment_unscaled,
+          x_reference_from   = cohort_stock_size_unscaled,
+          y_scaling_variable = cohort_stock_size_scaled)
+      )
+      ]
+  
 
     # Map herd-level results
     herd_level_results[

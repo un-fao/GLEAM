@@ -585,7 +585,7 @@
 #'   manure_management_system_fraction = manure_management_system_fraction_dt,
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365,
-#'   show_indicator = FALSE
+#'   show_indicator = TRUE
 #' )
 #' names(results)
 #' }
@@ -599,7 +599,7 @@
 #'   path_run_gleam_examples, "master_chrt_lvl_structure_data.csv"
 #' ))
 #' master_hrd_lvl_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv")
+#' file.path(path_run_gleam_examples, "master_hrd_lvl_structure_data.csv")
 #' )
 #' feed_rations_chrt_dt <- data.table::fread(
 #' file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
@@ -633,7 +633,7 @@
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365,
 #'   global_warming_potential_set = "AR6",
-#'   show_indicator = FALSE
+#'   show_indicator = TRUE
 #' )
 #' names(results)
 #' }
