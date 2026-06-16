@@ -599,7 +599,7 @@
 #'   path_run_gleam_examples, "master_chrt_lvl_structure_data.csv"
 #' ))
 #' master_hrd_lvl_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv")
+#' file.path(path_run_gleam_examples, "master_hrd_lvl_structure_data.csv")
 #' )
 #' feed_rations_chrt_dt <- data.table::fread(
 #' file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
