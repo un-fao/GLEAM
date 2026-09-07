@@ -1,6 +1,7 @@
 
 cohorts <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
 share_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
+prop_nondemo_zero <- c(FJ = 0, FS = 0, FA = 0, MJ = 0, MS = 0, MA = 0)
 
 # ---- test calc_fecundity_rates ----
 test_that("calc_fecundity_rates returns expected output", {
@@ -57,10 +58,21 @@ test_that("calc_steady_state_structure converges and returns valid structure", {
     fecundity_male = fec$fecundity_male,
     probability_death = setNames(trans$probability_death, cohorts),
     probability_offtake = setNames(trans$probability_offtake, cohorts),
-    probability_growth = setNames(trans$probability_growth, cohorts)
+    probability_growth = setNames(trans$probability_growth, cohorts),
+    proportion_nondemographic = prop_nondemo_zero
   )
 
-  expect_named(result, c("days_to_steady_state", "herd_structure", "cohort_share", "growth_rate_herd"))
+  expect_named(
+    result,
+    c(
+      "days_to_steady_state",
+      "herd_structure",
+      "cohort_share",
+      "growth_rate_herd",
+      "size_unscaled",
+      "herd_size_total_demographic"
+    )
+  )
   expect_true(result$days_to_steady_state <= 5 * 365)
   expect_equal(sum(result$herd_structure), 1, tolerance = 1e-6)
 })
@@ -88,7 +100,8 @@ test_that("calc_projected_population_size runs and returns list with expected el
     fecundity_male = fec$fecundity_male,
     probability_death = setNames(trans$probability_death, cohorts),
     probability_offtake = setNames(trans$probability_offtake, cohorts),
-    probability_growth = setNames(trans$probability_growth, cohorts)
+    probability_growth = setNames(trans$probability_growth, cohorts),
+    proportion_nondemographic = prop_nondemo_zero
   )
 
   res <- calc_projected_population_size(
@@ -100,7 +113,8 @@ test_that("calc_projected_population_size runs and returns list with expected el
     probability_growth = setNames(trans$probability_growth, cohorts),
     growth_rate_herd = steady$growth_rate_herd,
     herd_structure = steady$herd_structure,
-    cohort_share = steady$cohort_share
+    cohort_share = steady$cohort_share,
+    proportion_nondemographic = prop_nondemo_zero
   )
 
   expect_named(
@@ -110,6 +124,7 @@ test_that("calc_projected_population_size runs and returns list with expected el
       "cohort_stock_end_projected",
       "cohort_stock_end_exact_simulated",
       "cohort_stock_average",
+      "cohort_stock_annual_nondemographic",
       "cohort_offtake_heads"
     )
   )

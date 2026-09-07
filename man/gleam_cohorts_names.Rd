@@ -5,7 +5,7 @@
 \alias{gleam_cohorts_names}
 \title{Cohort code -> full name mapping}
 \format{
-A named character vector of length 6.
+A named character vector of length 8.
 }
 \usage{
 gleam_cohorts_names

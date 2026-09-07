@@ -34,9 +34,26 @@ validate_run_weights_module_inputs <- function(
   check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
   check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
 
+  if (any(cohort_level_data$cohort_short %in% c("FN", "MN"))) {
+    required_nondemo_herd_cols <- c(
+      "live_weight_female_nondemographic_start",
+      "live_weight_male_nondemographic_start",
+      "live_weight_female_nondemographic_end",
+      "live_weight_male_nondemographic_end",
+      "phase1_nondemo_fem_duration_days",
+      "phase2_nondemo_fem_duration_days",
+      "phase1_nondemo_mal_duration_days",
+      "phase2_nondemo_mal_duration_days"
+    )
+    check_required_columns(
+      herd_level_data,
+      required_nondemo_herd_cols,
+      "herd_level_data"
+    )
+  }
+
   # --- Cohort: valid cohort_short, exactly 6 rows per herd_id ------------------
   validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
-  check_cohort_completeness(cohort_level_data, "cohort_level_data")
 
   # --- Herd: one row per herd_id -----------------------------------------------
   check_herd_id_unique(herd_level_data, "herd_level_data")

@@ -45,10 +45,11 @@ validate_steady_state_inputs <- function(
     fecundity_male,
     probability_death,
     probability_offtake,
-    probability_growth
+    probability_growth,
+    proportion_nondemographic
 ) {
   # Define expected names
-  six_cohort_names <- gleam_cohorts
+  six_cohort_names <- gleam_cohorts_demographic
   ten_cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
 
   # Vector inputs with required names
@@ -64,12 +65,20 @@ validate_steady_state_inputs <- function(
   validate_named_numeric_vector(
     probability_growth, 10, expected_names = ten_cohort_names
   )
+  validate_named_numeric_vector(
+    proportion_nondemographic, 6, expected_names = six_cohort_names
+  )
 
   # Scalar numeric inputs
   validate_scalar_numeric(max_simulation_years)
   validate_scalar_numeric(min_lambda_change)
   validate_scalar_numeric(fecundity_female)
   validate_scalar_numeric(fecundity_male)
+
+  validate_param_range(
+    proportion_nondemographic,
+    "proportion_nondemographic"
+  )
 }
 
 #' Validate inputs for calc_projected_population_size
@@ -84,10 +93,11 @@ validate_population_size_inputs <- function(
     probability_growth,
     growth_rate_herd,
     herd_structure,
-    cohort_share
+    cohort_share,
+    proportion_nondemographic
 ) {
   # Expected cohort names
-  six_cohort_names <- gleam_cohorts
+  six_cohort_names <- gleam_cohorts_demographic
   eight_cohort_names <- c("FB", "FJ", "FS", "FA", "MB", "MJ", "MS", "MA")
   ten_cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
 
@@ -107,6 +117,9 @@ validate_population_size_inputs <- function(
   validate_named_numeric_vector(
     cohort_share, 6, expected_names = six_cohort_names
   )
+  validate_named_numeric_vector(
+    proportion_nondemographic, 6, expected_names = six_cohort_names
+  )
 
   # Scalar numeric inputs
   validate_scalar_numeric(herd_size_total)
@@ -116,6 +129,10 @@ validate_population_size_inputs <- function(
 
   # Enforce configured bounds
   validate_param_range(herd_size_total)
+  validate_param_range(
+    proportion_nondemographic,
+    "proportion_nondemographic"
+  )
 }
 
 #' Validate inputs for calc_summary_offtake

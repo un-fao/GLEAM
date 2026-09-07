@@ -18,9 +18,15 @@
 #'         \item \code{MA}: adult males (from age at first breeding)
 #'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'         \item \code{FN}: non-demographic females
+#'         \item \code{MN}: non-demographic males
 #'       }}
 #'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 #'     \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
+#'   }
+#'   Optional column:
+#'   \describe{
+#'     \item{nondemo_productive_phase_id}{Numeric. Productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). Allowed values are \code{1} and optionally \code{2}. Demographic cohorts use \code{NA}.}
 #'   }
 #' @param herd_level_data A \code{data.table} with one row per herd. Must include:
 #'   \itemize{
@@ -30,6 +36,14 @@
 #'     \item \code{live_weight_at_weaning} Numeric. Live weight of the animal at weaning (kg)
 #'     \item \code{live_weight_female_at_slaughter} Numeric. Slaughter weight of female sub-adult animals (kg)
 #'     \item \code{live_weight_male_at_slaughter} Numeric. Slaughter weight of male sub-adult animals (kg)
+#'     \item \code{live_weight_female_nondemographic_start} Numeric. Live weight at the beginning of the female non-demographic cycle (kg), when \code{FN} is present.
+#'     \item \code{live_weight_female_nondemographic_end} Numeric. Live weight at the end of the female non-demographic cycle (kg), when \code{FN} is present.
+#'     \item \code{live_weight_male_nondemographic_start} Numeric. Live weight at the beginning of the male non-demographic cycle (kg), when \code{MN} is present.
+#'     \item \code{live_weight_male_nondemographic_end} Numeric. Live weight at the end of the male non-demographic cycle (kg), when \code{MN} is present.
+#'     \item \code{phase1_nondemo_fem_duration_days} Numeric. Productive phase 1 duration for \code{FN} (days), when \code{FN} is present.
+#'     \item \code{phase2_nondemo_fem_duration_days} Numeric. Productive phase 2 duration for \code{FN} (days), optional.
+#'     \item \code{phase1_nondemo_mal_duration_days} Numeric. Productive phase 1 duration for \code{MN} (days), when \code{MN} is present.
+#'     \item \code{phase2_nondemo_mal_duration_days} Numeric. Productive phase 2 duration for \code{MN} (days), optional.
 #'   }
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'   Defaults to \code{TRUE}.
@@ -58,10 +72,16 @@
 #' \enumerate{
 #'   \item \strong{Cohort-stage weight assignment} using \code{\link{calc_cohort_weights}}.
 #'     Herd-level biological parameters are matched to each cohort row by
-#'     \code{herd_id} via \code{data.table} joins.
+#'     \code{herd_id} via \code{data.table} joins. For non-demographic cohorts
+#'     (\code{FN}, \code{MN}), the function uses
+#'     \code{nondemo_productive_phase_id} together with herd-level start/end
+#'     live weights and phase durations to assign phase-specific initial and
+#'     final weights.
 #'
 #'   \item \strong{Calculation of average and final live weights (accounting for offtake)} using
-#'     \code{\link{calc_avg_weights}}.
+#'     \code{\link{calc_avg_weights}}. For non-demographic cohorts,
+#'     \code{offtake_rate} is ignored and the final weight equals the
+#'     phase-specific potential final weight.
 #'
 #'   \item \strong{Calculation of average daily live weight gain} using
 #'     \code{\link{calc_daily_weight_gain}}.
@@ -76,25 +96,31 @@
 #'
 #' @examples
 #' \donttest{
-#' # Load weights inputs (cohort- and herd-level)
-#' weights_chrt_dt <- data.table::fread(system.file(
-#'   "extdata/run_modules_examples/weights_input_chrt_data.csv",
-#'   package = "gleam"
+#' path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
+#'
+#' master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "master_chrt_lvl_no_structure_mixed_data.csv"
 #' ))
-#' weights_hrd_dt <- data.table::fread(system.file(
-#'   "extdata/run_modules_examples/weights_input_hrd_data.csv",
-#'   package = "gleam"
+#' master_hrd_lvl_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv"
 #' ))
 #'
-#' # Run weight calculations
-#' results <- run_weights_module(
-#'   cohort_level_data = weights_chrt_dt,
-#'   herd_level_data = weights_hrd_dt
+#' herd_results <- run_all_herd_module(
+#'   cohort_level_data = master_chrt_lvl_no_structure_dt,
+#'   herd_level_data = master_hrd_lvl_dt,
+#'   simulation_duration = 365,
+#'   run_demographic = TRUE,
+#'   run_nondemographic = TRUE
 #' )
 #'
-#' # Access results
-#' print(results$cohort_level_results)
-#' print(results$herd_level_results)
+#' results <- run_weights_module(
+#'   cohort_level_data = herd_results$cohort_level_results,
+#'   herd_level_data = herd_results$herd_level_results,
+#'   show_indicator = FALSE
+#' )
+#'
+#' head(results$cohort_level_results)
+#' head(results$herd_level_results)
 #' }
 #'
 #' @export
@@ -118,6 +144,10 @@ run_weights_module <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
+  if (!"nondemo_productive_phase_id" %in% names(cohort_level_data)) {
+    cohort_level_data[, nondemo_productive_phase_id := NA_real_]
+  }
+
   # --- Step 3: Calculate Cohort Weights --------------------------------------
   cohort_level_data[
     ,
@@ -128,12 +158,21 @@ run_weights_module <- function(
       "live_weight_cohort_at_slaughter"
     ) := calc_cohort_weights(
       cohort_short = cohort_short,
+      nondemo_productive_phase_id = nondemo_productive_phase_id,
       live_weight_female_adult = herd_level_data[.SD, on = "herd_id", x.live_weight_female_adult],
       live_weight_male_adult = herd_level_data[.SD, on = "herd_id", x.live_weight_male_adult],
       live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
       live_weight_female_at_slaughter = herd_level_data[.SD, on = "herd_id", x.live_weight_female_at_slaughter],
       live_weight_male_at_slaughter = herd_level_data[.SD, on = "herd_id", x.live_weight_male_at_slaughter],
-      live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning]
+      live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning],
+      live_weight_female_nondemographic_start = herd_level_data[.SD, on = "herd_id", x.live_weight_female_nondemographic_start],
+      live_weight_male_nondemographic_start = herd_level_data[.SD, on = "herd_id", x.live_weight_male_nondemographic_start],
+      live_weight_female_nondemographic_end = herd_level_data[.SD, on = "herd_id", x.live_weight_female_nondemographic_end],
+      live_weight_male_nondemographic_end = herd_level_data[.SD, on = "herd_id", x.live_weight_male_nondemographic_end],
+      phase1_nondemo_fem_duration_days = herd_level_data[.SD, on = "herd_id", x.phase1_nondemo_fem_duration_days],
+      phase2_nondemo_fem_duration_days = herd_level_data[.SD, on = "herd_id", x.phase2_nondemo_fem_duration_days],
+      phase1_nondemo_mal_duration_days = herd_level_data[.SD, on = "herd_id", x.phase1_nondemo_mal_duration_days],
+      phase2_nondemo_mal_duration_days = herd_level_data[.SD, on = "herd_id", x.phase2_nondemo_mal_duration_days]
     ),
     by = .I
   ]
@@ -145,6 +184,7 @@ run_weights_module <- function(
       "live_weight_cohort_average",
       "live_weight_cohort_final"
     ) := calc_avg_weights(
+      cohort_short = cohort_short,
       live_weight_cohort_initial = live_weight_cohort_initial,
       live_weight_cohort_potential_final = live_weight_cohort_potential_final,
       live_weight_cohort_at_slaughter = live_weight_cohort_at_slaughter,

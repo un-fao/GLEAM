@@ -38,9 +38,11 @@ production stage of the animals. Supported values include:
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{MN}: non-demographic males
 }}
 
 \item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction).

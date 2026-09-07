@@ -24,9 +24,11 @@
 #'         \item \code{FA}: adult females (from age at first parturition)
 #'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{FN}: non-demographic females
 #'         \item \code{MA}: adult males (from age at first breeding)
 #'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'         \item \code{MN}: non-demographic males
 #'       }}
 #'       \item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
 #'       period (kg/cohort/assessment period). Suggested standard fat, protein and lactose contents are 0.04, 0.033, and 0.048 respectively.}
@@ -36,8 +38,7 @@
 #'       \item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 #'       Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
 #'       for CML.}
-#'       \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
-#'       FS, FA, MJ, MS, MA).}
+#'       \item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads).}
 #'       \item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught
 #'       power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
 #'       SHP, GTS and as metabolizable energy for CML.}

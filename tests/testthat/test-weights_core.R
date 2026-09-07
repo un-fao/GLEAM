@@ -48,9 +48,79 @@ test_that("calc_cohort_weights handles pig juvenile with weaning weight", {
   expect_equal(result$live_weight_cohort_at_slaughter, 10)
 })
 
+test_that("calc_cohort_weights interpolates non-demo female weights across two phases", {
+  phase1 <- calc_cohort_weights(
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 1,
+    live_weight_female_nondemographic_start = 20,
+    live_weight_female_nondemographic_end = 100,
+    phase1_nondemo_fem_duration_days = 30,
+    phase2_nondemo_fem_duration_days = 50
+  )
+  phase2 <- calc_cohort_weights(
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 2,
+    live_weight_female_nondemographic_start = 20,
+    live_weight_female_nondemographic_end = 100,
+    phase1_nondemo_fem_duration_days = 30,
+    phase2_nondemo_fem_duration_days = 50
+  )
+
+  expect_equal(phase1$live_weight_cohort_initial, 20)
+  expect_equal(phase1$live_weight_cohort_potential_final, 50)
+  expect_equal(phase2$live_weight_cohort_initial, 50)
+  expect_equal(phase2$live_weight_cohort_potential_final, 100)
+})
+
+test_that("calc_cohort_weights uses full non-demo range when only phase 1 is present", {
+  phase1 <- calc_cohort_weights(
+    cohort_short = "MN",
+    nondemo_productive_phase_id = 1,
+    live_weight_male_nondemographic_start = 30,
+    live_weight_male_nondemographic_end = 90,
+    phase1_nondemo_mal_duration_days = 20,
+    phase2_nondemo_mal_duration_days = 0
+  )
+
+  expect_equal(phase1$live_weight_cohort_initial, 30)
+  expect_equal(phase1$live_weight_cohort_potential_final, 90)
+  expect_equal(phase1$live_weight_cohort_at_slaughter, 90)
+})
+
+test_that("calc_cohort_weights allows NA inputs for the unused non-demo sex", {
+  mn <- calc_cohort_weights(
+    cohort_short = "MN",
+    nondemo_productive_phase_id = 1,
+    live_weight_female_nondemographic_start = NA_real_,
+    live_weight_female_nondemographic_end = NA_real_,
+    live_weight_male_nondemographic_start = 30,
+    live_weight_male_nondemographic_end = 90,
+    phase1_nondemo_fem_duration_days = NA_real_,
+    phase2_nondemo_fem_duration_days = NA_real_,
+    phase1_nondemo_mal_duration_days = 20,
+    phase2_nondemo_mal_duration_days = 0
+  )
+  fn <- calc_cohort_weights(
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 1,
+    live_weight_female_nondemographic_start = 20,
+    live_weight_female_nondemographic_end = 100,
+    live_weight_male_nondemographic_start = NA_real_,
+    live_weight_male_nondemographic_end = NA_real_,
+    phase1_nondemo_fem_duration_days = 30,
+    phase2_nondemo_fem_duration_days = 50,
+    phase1_nondemo_mal_duration_days = NA_real_,
+    phase2_nondemo_mal_duration_days = NA_real_
+  )
+
+  expect_equal(mn$live_weight_cohort_initial, 30)
+  expect_equal(fn$live_weight_cohort_initial, 20)
+})
+
 # ---- test calc_avg_weights ----
 test_that("calc_avg_weights returns correct average and final weights", {
   result <- calc_avg_weights(
+    cohort_short = "FS",
     live_weight_cohort_initial = 100,
     live_weight_cohort_potential_final = 300,
     live_weight_cohort_at_slaughter = 200,
@@ -62,9 +132,24 @@ test_that("calc_avg_weights returns correct average and final weights", {
 })
 
 test_that("calc_avg_weights handles zero offtake", {
-  result <- calc_avg_weights(100, 300, 200, 0)
+  result <- calc_avg_weights("FS", 100, 300, 200, 0)
   expect_equal(result$live_weight_cohort_final, 300)
   expect_equal(result$live_weight_cohort_average, 200)
+})
+
+test_that("calc_avg_weights ignores offtake for FN and MN", {
+  result_fn <- calc_avg_weights("FN", 30, 80, 60, 0.9)
+  result_mn <- calc_avg_weights("MN", 35, 90, 55, 0.8)
+
+  expect_equal(result_fn$live_weight_cohort_final, 80)
+  expect_equal(result_fn$live_weight_cohort_average, 55)
+  expect_equal(result_mn$live_weight_cohort_final, 90)
+  expect_equal(result_mn$live_weight_cohort_average, 62.5)
+})
+
+test_that("calc_avg_weights allows offtake_rate equal to 1 for FN and MN", {
+  expect_no_error(calc_avg_weights("FN", 30, 80, 60, 1))
+  expect_no_error(calc_avg_weights("MN", 35, 90, 55, 1))
 })
 
 # ---- test calc_daily_weight_gain ----

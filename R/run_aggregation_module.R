@@ -22,11 +22,13 @@
 #'         \item \code{FA}: adult females
 #'         \item \code{FS}: sub-adult females
 #'         \item \code{FJ}: juvenile females
+#'         \item \code{FN}: non-demographic females
 #'         \item \code{MA}: adult males
 #'         \item \code{MS}: sub-adult males
 #'         \item \code{MJ}: juvenile males
+#'         \item \code{MN}: non-demographic males
 #'       }}
-#'     \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex-age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
+#'     \item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads).}
 #'     \item{\strong{Feed variables}}{
 #'       \describe{
 #'         \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}

@@ -36,8 +36,11 @@ of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }
 }
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). When present, feed-emission summaries are computed separately by phase.}
 \item{feed_id}{Character. Unique identifier for the feed component, used
 to join feed ration data with feed parameter tables.}
 \item{feed_name}{Character. Feed component name (optional, for readability and
@@ -87,7 +90,8 @@ Defaults to \code{TRUE}.}
 }
 \value{
 data.table. Cohort-level emission factors summarized by \code{herd_id},
-\code{species_short}, and \code{cohort_short} with the following columns:
+\code{species_short}, \code{cohort_short}, and
+\code{nondemo_productive_phase_id} when present, with the following columns:
 \describe{
 \item{co2_ration_fertilizer}{
 Numeric. Diet-level average carbon dioxide (CO2) emission factor from
@@ -163,7 +167,8 @@ Each contribution is computed using the specific helper below (called with \code
 }
 
 \item \strong{Aggregate to cohort-level diet emission factors} by summing feed-component contributions
-across all feeds within each group \code{(herd_id, species_short, cohort_short)}.
+across all feeds within each group \code{(herd_id, species_short, cohort_short)}
+and within \code{nondemo_productive_phase_id} when that column is provided.
 }
 
 For each emission source, cohort-level dietary emission factors are computed as:

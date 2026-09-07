@@ -28,9 +28,11 @@ production stage of the animals. Supported values include:
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{MN}: non-demographic males
 }}
 
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of
@@ -59,7 +61,7 @@ ym is computed using species- and cohort-specific default relationships with die
 \itemize{
 \item \code{FA} and \code{MA} cohorts:
 \deqn{ym = 9.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
-\item \code{FS} and \code{MS} cohorts:
+\item \code{FS}, \code{MS}, \code{FN}, and \code{MN} cohorts:
 \deqn{ym = 7.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
 }
 
@@ -67,7 +69,7 @@ ym is computed using species- and cohort-specific default relationships with die
 ym is assigned fixed values by cohort:
 \itemize{
 \item \code{FA} and \code{MA} cohorts: \deqn{ym = 1.01}
-\item \code{FS} and \code{MS} cohorts: \deqn{ym = 0.39}
+\item \code{FS}, \code{MS}, \code{FN}, and \code{MN} cohorts: \deqn{ym = 0.39}
 }
 }
 

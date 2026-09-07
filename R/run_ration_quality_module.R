@@ -30,8 +30,11 @@
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
 #'   }
 #'   }
+#'     \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). When present, ration summaries are computed separately by phase.}
 #'     \item{feed_id}{Character. Unique identifier for the feed component, used
 #'     to join feed ration data with feed parameter tables.}
 #'     \item{feed_name}{Character. Feed component name (optional, for readability and
@@ -78,7 +81,8 @@
 #'   Defaults to \code{TRUE}.
 #'
 #' @return data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
-#'   \code{species_short}, and \code{cohort_short} with the following columns:
+#'   \code{species_short}, \code{cohort_short}, and
+#'   \code{nondemo_productive_phase_id} when present, with the following columns:
 #'   \describe{
 #'     \item{ration_gross_energy}{Numeric. Average gross energy content of the diet
 #'     (MJ/kg DM).}
@@ -115,7 +119,8 @@
 #'     \item ash using \code{\link{calc_ration_ash}}
 #'   }
 #'   \item Cohort-level nutritional metrics are obtained for the whole feed ration by summing contributions across
-#'   feed components within each \code{herd_id}, \code{species_short}, and \code{cohort_short}.
+#'   feed components within each \code{herd_id}, \code{species_short}, and \code{cohort_short}
+#'   group, and within \code{nondemo_productive_phase_id} when that column is provided.
 #' }
 #'
 #' @seealso
@@ -164,6 +169,10 @@ run_ration_quality_module <- function(
   # --- Step 2: Create working copies -----------------------------------------
   rations_share <- data.table::copy(rations_share)
   feed_params <- data.table::copy(feed_params)
+  ration_group_cols <- c("herd_id", "species_short", "cohort_short")
+  if ("nondemo_productive_phase_id" %in% names(rations_share)) {
+    ration_group_cols <- c(ration_group_cols, "nondemo_productive_phase_id")
+  }
 
   # --- Step 3: Compute digestibility ratios ----------------------------------
   feed_params[
@@ -260,7 +269,7 @@ run_ration_quality_module <- function(
       ration_urinary_energy_fraction = sum(ration_urinary_energy_fraction),
       ration_ash = sum(ration_ash)
     ),
-    by = .(herd_id, species_short, cohort_short)
+    by = ration_group_cols
   ]
 
   # Clear progress indicator if it was shown

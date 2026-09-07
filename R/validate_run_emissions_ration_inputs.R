@@ -60,23 +60,26 @@ validate_run_emissions_ration_module_inputs <- function(
   }
 
   # --- Ration share consistency ------------------------------------------------
+  ration_scope <- c("herd_id", "species_short", "cohort_short")
+  if ("nondemo_productive_phase_id" %in% names(rations_share)) {
+    ration_scope <- c(ration_scope, "nondemo_productive_phase_id")
+  }
+
   ration_sums <- rations_share[
     ,
     .(feed_ration_sum = sum(feed_ration_fraction)),
-    by = .(herd_id, species_short, cohort_short)
+    by = ration_scope
   ]
   invalid_ration_sums <- ration_sums[abs(feed_ration_sum - 1) > 1e-6]
   if (nrow(invalid_ration_sums) > 0) {
     cli::cli_abort(
-      "Feed emissions fractions must sum to 1 within each herd_id, species_short, and cohort_short."
+      "Feed emissions fractions must sum to 1 within each herd_id, species_short, cohort_short, and nondemo_productive_phase_id when provided."
     )
   }
 
   # --- Rations_share key uniqueness -------------------------------------------
   # Prevent duplicate feed lines within a herd/cohort.
   # Expected grain: one row per feed per herd_id x species_short x cohort_short.
-  ration_scope <- c("herd_id", "species_short", "cohort_short")
-
   # 1) feed_id must be unique within herd/species/cohort
   dup_feed_id_rows <- rations_share[
     duplicated(rations_share[, c(ration_scope, "feed_id"), with = FALSE]) |

@@ -30,9 +30,11 @@ production stage of the animals. Supported values include:
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{MN}: non-demographic males
 }}
 
 \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
@@ -40,15 +42,15 @@ Required only for species = CML, SHP, and GTS.}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
 
-\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
-FS, FA, MJ, MS, MA).}
+\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads).}
 }
 \value{
 Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).
 }
 \description{
-Calculates fibre production for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
-of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}) over the assessment period
+Calculates fibre production for producing cohorts (\code{FA}, \code{FS},
+\code{MA}, \code{MS}, \code{FN}, \code{MN}) of fibre-producing species
+(\code{CML}, \code{SHP}, \code{GTS}) over the assessment period
 (kg/cohort/assessment period).
 }
 \details{
@@ -57,8 +59,9 @@ Fibre production outputs are computed as follows:
 \eqn{fibre\_production =
   \frac{fibre\_yield\_year}{365} \times simulation\_duration \times cohort\_stock\_size}
 
-Non-zero fibre outputs are only expected for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
-of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}).
+Non-zero fibre outputs are only expected for producing cohorts
+(\code{FA}, \code{FS}, \code{MA}, \code{MS}, \code{FN}, \code{MN}) of
+fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}).
 
 This function is part of the \code{\link[=run_production_module]{run_production_module()}}.
 }
