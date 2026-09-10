@@ -50,7 +50,7 @@ utils::globalVariables(c(
   "probability_death", "probability_growth",
   "probability_offtake", "probability_survival",
   "cohort_stock_annual_nondemographic", "cohort_stock_size", "growth_rate_herd",
-  "mort_rate", "n_phase_1", "n_phase_2",
+  "n_phase_1", "n_phase_2",
   "offtake_heads", "offtake_heads_assessment",
   "share.FA", "share.FJ", "share.FS", "share.MA", "share.MJ", "share.MS",
   "size.FA", "size.FJ", "size.FS", "size.MA", "size.MJ", "size.MS",

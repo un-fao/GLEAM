@@ -391,9 +391,6 @@ run_all_herd_module <- function(
     run_nondemographic = run_nondemographic
   )
   
-  cohort_level_data_demographic <- NULL
-  cohort_level_data_nondemographic <- NULL
-  
   cohort_level_data_demographic <- cohort_level_data[
     !is.na(cohort_short) & cohort_short %in% gleam_cohorts_demographic
   ]
@@ -491,23 +488,6 @@ run_all_herd_module <- function(
   }
   if (!"offtake_heads_assessment" %in% names(cohort_level_results)) {
     cohort_level_results[, offtake_heads_assessment := NA_real_]
-  }
-  
-  if ("duration_cycle_productive_phase_nondemo" %in% names(cohort_level_results)) {
-    cohort_level_results[
-      !is.na(duration_cycle_productive_phase_nondemo) &
-        (is.na(cohort_duration_days) | cohort_duration_days == ""),
-      cohort_duration_days := duration_cycle_productive_phase_nondemo
-    ]
-    cohort_level_results[, duration_cycle_productive_phase_nondemo := NULL]
-  }
-  
-  if ("mort_rate" %in% names(cohort_level_results)) {
-    cohort_level_results[
-      !is.na(mort_rate) & (is.na(death_rate) | death_rate == ""),
-      death_rate := mort_rate
-    ]
-    cohort_level_results[, mort_rate := NULL]
   }
   
   # =========================================================
