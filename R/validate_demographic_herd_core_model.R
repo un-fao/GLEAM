@@ -11,7 +11,7 @@ validate_fecundity_inputs <- function(
   validate_scalar_numeric(birth_fraction_female)
 
   # Enforce configured bounds
-  validate_param_range(parturition_rate)
+    validate_param_range(parturition_rate)
   validate_param_range(litter_size)
   validate_param_range(birth_fraction_female)
 }

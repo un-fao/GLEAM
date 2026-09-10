@@ -187,11 +187,12 @@ calc_milk_production <- function(
 #'   Supported values include:
 #'   \itemize{
 #'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
 #'   }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
@@ -255,6 +256,108 @@ calc_fibre_production <- function(
   }
   
   return(fibre_production_cohort)
+}
+
+#' Calculate egg production
+#'
+#' Calculates egg outputs for chickens over the assessment period.
+#'
+#' @param species_short Character. Code identifying the livestock species.
+#' @param cohort_short Character. Sex- and age-specific cohort code describing the production stage of the animals.
+#'     Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{FN}: non-demographic females
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'         \item \code{MN}: non-demographic males
+#'       }
+#' @param egg_output_human_consumption Numeric. Annual egg output for human consumption (eggs/year).
+#' @param egg_average_weight Numeric. Average egg weight (kg/egg).
+#' @param simulation_duration Numeric. Length of the assessment period (days).
+#' @param egg_protein_fraction Numeric. Protein content of whole egg (kg protein/kg egg).
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase
+#'   identifier for non-demographic cohorts.
+#' @param is_egg_producing Logical. Cohort-level flag identifying egg-producing
+#'   \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
+#'   \code{FN} with \code{nondemo_productive_phase_id = 2}.
+#'
+#' @return A named list with total egg number, mass, and protein over the assessment period.
+#'
+#' @details
+#' Egg production is computed only for cohorts flagged with
+#' \code{is_egg_producing = TRUE}. Validation restricts this flag to
+#' demographic laying hens (\code{FA}) and to non-demographic \code{FN} phase 2
+#' when intensive layers are represented in the non-demographic pathway.
+#'
+#' The following equations are applied:
+#'
+#' \deqn{
+#' egg\_production\_number\_cohort =
+#' \frac{egg\_output\_human\_consumption}{365} \times simulation\_duration
+#' }
+#'
+#' \deqn{
+#' egg\_production\_mass\_cohort =
+#' egg\_production\_number\_cohort \times egg\_average\_weight
+#' }
+#'
+#' \deqn{
+#' egg\_production\_protein\_cohort =
+#' egg\_production\_mass\_cohort \times egg\_protein\_fraction
+#' }
+#'
+#' where the default \code{egg_protein_fraction} is 0.125 kg protein/kg egg
+#' mass, following the poultry integration assumptions used in GLEAM-X.
+#'
+#' @references
+#' Caffa, I., Proietti, E., Turrini, F., Borgarelli, C., Ferrando, M. R.,
+#' Formisano, E., ... & Pisciotta, L. (2025). Nutritional Aspects of Eggs for a
+#' Healthy and Sustainable Consumption: A Narrative Review. \emph{Food Science &
+#' Nutrition}, 13(9), e70285.
+#'
+#' @export
+calc_egg_production <- function(
+    species_short,
+    cohort_short,
+    egg_output_human_consumption,
+    egg_average_weight,
+    simulation_duration,
+    egg_protein_fraction = 0.125,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
+) {
+  validate_egg_output_inputs(
+    species_short = species_short,
+    cohort_short = cohort_short,
+    nondemo_productive_phase_id = nondemo_productive_phase_id,
+    is_egg_producing = is_egg_producing,
+    egg_output_human_consumption = egg_output_human_consumption,
+    egg_average_weight = egg_average_weight,
+    simulation_duration = simulation_duration,
+    egg_protein_fraction = egg_protein_fraction
+  )
+
+  if (!isTRUE(is_egg_producing)) {
+    return(list(
+      egg_production_number_cohort = 0,
+      egg_production_mass_cohort = 0,
+      egg_production_protein_cohort = 0
+    ))
+  }
+
+  egg_production_number_cohort <- egg_output_human_consumption / 365 * simulation_duration
+  egg_production_mass_cohort <- egg_production_number_cohort * egg_average_weight
+  egg_production_protein_cohort <- egg_production_mass_cohort * egg_protein_fraction
+
+  return(list(
+    egg_production_number_cohort = egg_production_number_cohort,
+    egg_production_mass_cohort = egg_production_mass_cohort,
+    egg_production_protein_cohort = egg_production_protein_cohort
+  ))
 }
 
 #' Calculate meat production

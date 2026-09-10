@@ -21,10 +21,21 @@ validate_nitrogen_retention_inputs <- function(
     live_weight_at_weaning = NA_real_,
     live_weight_at_birth = NA_real_,
     pregnancy_duration = NA_real_,
-    cohort_duration_days = NA_real_
+    cohort_duration_days = NA_real_,
+    cohort_stock_size = NA_real_,
+    egg_output_human_consumption = NA_real_,
+    egg_average_weight = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
+  validate_is_egg_producing_flag(
+    species_short = species_short,
+    cohort_short = cohort_short,
+    is_egg_producing = is_egg_producing,
+    nondemo_productive_phase_id = nondemo_productive_phase_id
+  )
 
   # Range checks: only for args used by this species/cohort
   if (species_short == "PGS") {
@@ -60,10 +71,32 @@ validate_nitrogen_retention_inputs <- function(
     } else {
       if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain)
     }
+  } else if (species_short == "CHK") {
+    validate_scalar_numeric(daily_weight_gain)
+    if (isTRUE(is_egg_producing)) {
+      validate_scalar_numeric(cohort_stock_size)
+      validate_positive_numeric(egg_average_weight)
+      validate_scalar_numeric(egg_output_human_consumption)
+      validate_scalar_numeric(parturition_rate)
+      if (cohort_stock_size < 0) {
+        cli::cli_abort("{.arg cohort_stock_size} must be greater than or equal to 0.")
+      }
+      if (egg_output_human_consumption < 0) {
+        cli::cli_abort("{.arg egg_output_human_consumption} must be greater than or equal to 0.")
+      }
+      if (parturition_rate < 0) {
+        cli::cli_abort("{.arg parturition_rate} must be greater than or equal to 0.")
+      }
+    }
   }
 
   # Birth weight must be strictly below weaning weight when both are provided
-  if (!is.na(live_weight_at_birth) && !is.na(live_weight_at_weaning) && live_weight_at_birth >= live_weight_at_weaning) {
+  if (
+    species_short != "CHK" &&
+      !is.na(live_weight_at_birth) &&
+      !is.na(live_weight_at_weaning) &&
+      live_weight_at_birth >= live_weight_at_weaning
+  ) {
     cli::cli_abort(
       "{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}."
     )

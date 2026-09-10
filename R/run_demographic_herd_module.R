@@ -364,7 +364,7 @@ run_demographic_herd_module <- function(
   # Clear progress indicator if it was shown
   if (show_indicator) {
     cli::cli_status_clear()
-    cli::cli_alert_success("Herd simulation complete.")
+    cli::cli_alert_success("Demographic herd simulation complete.")
   }
 
   # Return separate result tables

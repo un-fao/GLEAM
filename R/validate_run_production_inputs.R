@@ -15,6 +15,7 @@ validate_run_production_module_inputs <- function(
   # Ensure inputs are data.tables with at least one row
   check_data_table(cohort_level_data, "cohort_level_data")
   check_data_table(herd_level_data, "herd_level_data")
+  normalize_optional_is_egg_producing_column(cohort_level_data, herd_level_data)
 
   # --- Required columns -------------------------------------------------------
   # Verify all module-specific columns are present

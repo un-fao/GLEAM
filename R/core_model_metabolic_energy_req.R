@@ -5,15 +5,16 @@
 #' with no net gain or loss of body energy.
 #' 
 #' @param species_short Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
@@ -34,6 +35,17 @@
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for
 #'  each sex-age cohort (fraction).
 #' @param age_first_parturition Numeric. Age at first parturition for female breeding animals (days)
+#' @param average_annual_temperature Numeric. Average annual ambient temperature
+#'   (degrees C). Required for \code{CHK}.
+#' @param lower_critical_temperature Numeric. Lower critical temperature
+#'   (degrees C). Used for \code{CHK} juvenile and subadult cohorts. In the
+#'   run-level pipeline this is fixed internally at
+#'   \eqn{24.54 - 5.65 = 18.89} degrees C.
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase
+#'   identifier for non-demographic cohorts.
+#' @param is_egg_producing Logical. Cohort-level flag identifying the laying
+#'   cohort for \code{CHK}. This can be \code{TRUE} only for \code{FA} and for
+#'   \code{FN} with \code{nondemo_productive_phase_id = 2}.
 #'
 #' @return Numeric. Energy required for maintenance, defined as the amount of energy needed to 
 #' keep the animal at equilibrium such that body energy is neither gained nor lost. 
@@ -102,6 +114,30 @@
 #'   \item All cohorts: \eqn{cmain = 0.4435}
 #' }
 #'
+#' \strong{CHK} (Sakomura, 2004):
+#' \itemize{
+#'   \item Adult and laying cohorts (\code{MA} plus any \code{CHK} cohort with
+#'   \code{is_egg_producing = TRUE}):
+#'   \deqn{
+#'   metabolic\_energy\_req\_maintenance =
+#'   average\_weight^{0.75} \times
+#'   \left(0.6935 - 0.0099 \times average\_annual\_temperature \right)
+#'   }
+#'   \item Juvenile and subadult cohorts (\code{FJ}, \code{FS}, \code{MJ},
+#'   \code{MS}, and non-laying \code{FN} phase 1):
+#'   \deqn{
+#'   metabolic\_energy\_req\_maintenance =
+#'   0.3866 + 0.0282 \times
+#'   (lower\_critical\_temperature - average\_annual\_temperature),
+#'   \quad average\_annual\_temperature < lower\_critical\_temperature
+#'   }
+#'   \deqn{
+#'   metabolic\_energy\_req\_maintenance =
+#'   0.3866 + 0.0037 \times
+#'   (lower\_critical\_temperature - average\_annual\_temperature),
+#'   \quad average\_annual\_temperature \ge lower\_critical\_temperature
+#'   }
+#' }
 #' This function is part of the [run_metabolic_energy_req_module()].
 #' 
 #' @seealso
@@ -129,6 +165,9 @@
 #' Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
+#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
+#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#'
 #' @export
 calc_metabolic_energy_req_maintenance <- function(
     species_short,
@@ -136,13 +175,19 @@ calc_metabolic_energy_req_maintenance <- function(
     live_weight_cohort_average,
     lactating_females_fraction = NA_real_,
     offtake_rate = NA_real_,
-    age_first_parturition = NA_real_
+    age_first_parturition = NA_real_,
+    average_annual_temperature = NA_real_,
+    lower_critical_temperature = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
 ) {
 
   # Validate inputs
   validate_maintenance_inputs(
     species_short, cohort_short, live_weight_cohort_average,
-    lactating_females_fraction, offtake_rate, age_first_parturition
+    lactating_females_fraction, offtake_rate, age_first_parturition,
+    average_annual_temperature, lower_critical_temperature, nondemo_productive_phase_id,
+    is_egg_producing
   )
 
   # Normalize offtake_rate if it's available (not NA_real_)
@@ -188,6 +233,26 @@ calc_metabolic_energy_req_maintenance <- function(
     }
   } else if (species_short == "PGS") {
     cmain <- 0.4435 # Pigs fixed coefficient
+  } else if (species_short == "CHK") {
+    
+    if (cohort_short %in% c("MA", "FA") ||
+        (cohort_short == "FN" && isTRUE(is_egg_producing))) {
+      
+      cmain <- 0.6935 - 0.0099 * average_annual_temperature
+      
+      metabolic_energy_req_maintenance <- max(0, (live_weight_cohort_average^0.75) * cmain)
+      
+    } else {
+      if (average_annual_temperature < lower_critical_temperature) {
+        metabolic_energy_req_maintenance <- 0.3866 +
+          0.0282 * (lower_critical_temperature - average_annual_temperature)
+      } else {
+        metabolic_energy_req_maintenance <- 0.3866 +
+          0.0037 * (lower_critical_temperature - average_annual_temperature)
+      }
+    }
+    
+    return(metabolic_energy_req_maintenance)
   }
   # Default: metabolic body weight scaling
   metabolic_energy_req_maintenance <- (live_weight_cohort_average^0.75) * cmain
@@ -280,6 +345,16 @@ calc_metabolic_energy_req_maintenance <- function(
 #' \itemize{
 #'   \item \code{all activity levels}: \eqn{cact = 0.125}
 #'   }
+#' \strong{CHK} (Sakomura, 2004):
+#' \itemize{
+#'   \item All cohorts:
+#'   \deqn{
+#'   metabolic\_energy\_req\_activity =
+#'   metabolic\_energy\_req\_maintenance \times
+#'   (low\_activity\_fraction + high\_activity\_fraction) \times 0.25
+#'   }
+#' }
+#'
 #'   
 #' This function is part of the [run_metabolic_energy_req_module()].
 #' 
@@ -307,6 +382,9 @@ calc_metabolic_energy_req_maintenance <- function(
 #' Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
 #' Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+#'
+#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
+#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
 #'
 #' @export
 calc_metabolic_energy_req_activity <- function(
@@ -341,6 +419,9 @@ calc_metabolic_energy_req_activity <- function(
   } else if (species_short == "PGS") {
     cact <- 0.125 * (low_activity_fraction + high_activity_fraction)
     metabolic_energy_req_activity <- cact * metabolic_energy_req_maintenance
+  } else if (species_short == "CHK") {
+    metabolic_energy_req_activity <- metabolic_energy_req_maintenance *
+      (low_activity_fraction + high_activity_fraction) * 0.25
   }
   return(metabolic_energy_req_activity)
 }
@@ -352,15 +433,16 @@ calc_metabolic_energy_req_activity <- function(
 #' component of live weight gain. 
 #'
 #' @param species_short Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
@@ -385,6 +467,11 @@ calc_metabolic_energy_req_activity <- function(
 #' @param daily_weight_gain Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
 #' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days).
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase
+#'   identifier for non-demographic cohorts.
+#' @param is_egg_producing Logical. Cohort-level flag identifying the laying
+#'   cohort for \code{CHK}. This can be \code{TRUE} only for \code{FA} and for
+#'   \code{FN} with \code{nondemo_productive_phase_id = 2}.
 #'
 #' @return Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 #'
@@ -441,7 +528,26 @@ calc_metabolic_energy_req_activity <- function(
 #'     \item \code{fat_adipose_tissue_frac = 0.90} is the fraction of fat in adipose tissue,
 #'     \item \code{meat_fat_energy = 52.3} is the ME cost of fat deposition (MJ/kg fat).
 #'   }
-#'   
+#'
+#'   \item \strong{CHK} (Sakomura, 2004)
+#'
+#'   Chicken growth energy is calculated as:
+#'
+#'   \deqn{metabolic\_energy\_req\_growth = daily\_weight\_gain \times cgro \times 1000}
+#'
+#'   where \eqn{daily\_weight\_gain} is expressed in kg/head/day and \eqn{cgro}
+#'   is expressed in MJ/g. The factor 1000 converts kilograms of live-weight gain
+#'   to grams.
+#'
+#'   The following values are used:
+#'   \itemize{
+#'     \item \code{MA} and any \code{CHK} cohort with
+#'     \code{is_egg_producing = TRUE}:
+#'     \eqn{cgro = 0.0279}
+#'     \item \code{FS}, \code{FJ}, \code{MS}, \code{MJ}:
+#'     \eqn{cgro = 0.0202}
+#'   }
+#'
 #'   }
 #' 
 #' This function is part of the [run_metabolic_energy_req_module()].
@@ -476,6 +582,9 @@ calc_metabolic_energy_req_activity <- function(
 #' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
 #'   from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
 #'
+#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
+#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#'
 #' @export
 calc_metabolic_energy_req_growth <- function(
     species_short,
@@ -486,13 +595,16 @@ calc_metabolic_energy_req_growth <- function(
     live_weight_mature_stage = NA_real_,
     daily_weight_gain = NA_real_,
     offtake_rate = NA_real_,
-    cohort_duration_days = NA_real_
+    cohort_duration_days = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
 ) {
 
   # Validate inputs
   validate_growth_inputs(
     species_short, cohort_short, live_weight_cohort_average, live_weight_cohort_final,
-    live_weight_cohort_initial, live_weight_mature_stage, daily_weight_gain, offtake_rate, cohort_duration_days
+    live_weight_cohort_initial, live_weight_mature_stage, daily_weight_gain, offtake_rate,
+    cohort_duration_days, nondemo_productive_phase_id, is_egg_producing
   )
 
   # Normalize offtake_rate if it's available (not NA_real_)
@@ -560,6 +672,18 @@ calc_metabolic_energy_req_growth <- function(
     } else {
       metabolic_energy_req_growth <- 0
     }
+  } else if (species_short == "CHK") {
+    if (cohort_short %in% c("MA", "FA") ||
+        (cohort_short == "FN" && isTRUE(is_egg_producing))) {
+      cgro <- 0.0279
+    } else if (cohort_short %in% c("FS", "FJ", "MS", "MJ", "MN") ||
+               (cohort_short == "FN" && !isTRUE(is_egg_producing))) {
+      cgro <- 0.0202
+    } else {
+      cgro <- 0
+    }
+
+    metabolic_energy_req_growth <- daily_weight_gain * cgro * 1000
   } else {
     metabolic_energy_req_growth <- 0 # Default: no growth
   }
@@ -572,15 +696,16 @@ calc_metabolic_energy_req_growth <- function(
 #' energy needed to support milk production by lactating females. 
 #'
 #' @param species_short Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
@@ -796,49 +921,115 @@ calc_metabolic_energy_req_lactation <- function(
         ((0.02059 * (live_weight_at_weaning - live_weight_at_birth) * 1000 / lactation_duration) - (0.3766 / 0.67)) *
         cadj
     }
+  } else if (species_short == "CHK") {
+    metabolic_energy_req_lactation <- 0
   }
   return(metabolic_energy_req_lactation)
 }
 
-#' Calculate Energy for Egg Production (placeholder)
+#' Calculate metabolic energy requirements for egg production
 #'
-#' Placeholder for metabolizable energy required for egg production (MJ/head/day).
-#' Not implemented yet.
+#' Calculates metabolizable energy required for egg deposition for chickens (MJ/head/day).
 #'
 #' @param species_short Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the
-#'   production stage of the animals. Supported values include:
-#'   \itemize{
-#'     \item \code{FA}: adult females (from age at first parturition)
-#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{FN}: non-demographic females
-#'     \item \code{MA}: adult males (from age at first breeding)
-#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'     \item \code{MJ}: juvenile males (from birth to weaning)
-#'     \item \code{MN}: non-demographic males
-#'   }
-#' @param egg_yield_year Numeric. Eggs produced per hen per year.
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }
+#' @param cohort_short Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{FN}: non-demographic females
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'         \item \code{MN}: non-demographic males
+#'         }
+#' @param cohort_stock_size Numeric. Average population size in each cohort
+#'       (heads).
+#' @param egg_output_human_consumption Numeric. Number of eggs produced for human 
+#' consumption in 1 year by the flock (eggs/year)
 #' @param egg_average_weight Numeric. Average egg weight (kg/egg).
+#' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
+#' For \code{CHK}, this corresponds to eggs laid for reproduction. 
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase identifier
+#'     for non-demographic cohorts (\code{FN}, \code{MN}).
+#' @param is_egg_producing Logical. Indicates whether the cohort is an egg-producing
+#'     chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
+#'     \code{FA} or for \code{FN} in laying phase 2.
 #'
-#' @return No return value; this function always errors to indicate it's a stub.
-#' @noRd
+#' @return Numeric. Metabolizable energy required for egg deposition
+#'   (MJ/head/day).
+#'
+#' @details
+#' For chickens, egg deposition energy is calculated only for cohorts flagged
+#' with \code{is_egg_producing = TRUE}. Validation restricts this flag to
+#' demographic laying hens (\code{FA}) and to non-demographic \code{FN} phase 2
+#' when intensive layers are represented in the non-demographic pathway.
+#'
+#' Daily egg mass per head is calculated as:
+#'
+#' \deqn{
+#' egg\_mass\_production =
+#' \left(
+#' \frac{egg\_output\_human\_consumption}{365 \times cohort\_stock\_size} +
+#' \frac{parturition\_rate}{365}
+#' \right) \times egg\_average\_weight
+#' }
+#'
+#' Daily egg energy is then:
+#'
+#' \deqn{metabolic\_energy\_req\_egg\_deposition = egg\_mass\_production \times 10.04}
+#'
+#' where 10.04 MJ/kg egg is the Sakomura (2004) coefficient obtained by
+#' expressing 0.01004 MJ/g egg on a kilogram basis for consistency with the
+#' other coefficients used in GLEAM-X.
+#'
+#' @references
+#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
+#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#'
 calc_metabolic_energy_req_eggs <- function(
     species_short,
     cohort_short,
-    egg_yield_year = NA_real_,
-    egg_average_weight = NA_real_
+    cohort_stock_size = NA_real_,
+    egg_output_human_consumption = NA_real_,
+    egg_average_weight = NA_real_,
+    parturition_rate = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
 ) {
-  return(NA_real_)
+  validate_egg_inputs(
+    species_short, cohort_short,
+    cohort_stock_size, egg_output_human_consumption, egg_average_weight,
+    parturition_rate, nondemo_productive_phase_id,
+    is_egg_producing
+  )
+
+  if (species_short != "CHK") {
+    return(0)
+  }
+
+  if (!(cohort_short == "FA" ||
+      (cohort_short == "FN" && isTRUE(is_egg_producing)))) {
+    return(0)
+  }
+
+  cegg <- 10.04
+  human_consumption_eggs_head_day <- egg_output_human_consumption / 365 / cohort_stock_size
+  reproductive_eggs_head_day <- parturition_rate / 365
+  egg_mass_production <- (human_consumption_eggs_head_day + reproductive_eggs_head_day) * egg_average_weight
+  metabolic_energy_req_egg <- egg_mass_production * cegg
+
+  return(metabolic_energy_req_egg)
 }
 
 #' Calculate metabolic energy requirements for work
@@ -847,27 +1038,27 @@ calc_metabolic_energy_req_eggs <- function(
 #' additional energy required to support draught power and work-related physical activity.
 #'
 #' @param species_short Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the
-#'   production stage of the animals. Supported values include:
-#'   \itemize{
-#'     \item \code{FA}: adult females (from age at first parturition)
-#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{FN}: non-demographic females
-#'     \item \code{MA}: adult males (from age at first breeding)
-#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'     \item \code{MJ}: juvenile males (from birth to weaning)
-#'     \item \code{MN}: non-demographic males
-#'   }
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }
+#' @param cohort_short Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{FN}: non-demographic females
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'         \item \code{MN}: non-demographic males
+#'         }
 #' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed 
 #' to keep the animal at equilibrium such that body energy is neither gained nor lost. 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
@@ -985,7 +1176,7 @@ calc_metabolic_energy_req_work <- function(
     } else {
       metabolic_energy_req_work <- 0
     }
-  } else if (species_short %in% c("SHP", "GTS", "PGS")) {
+  } else if (species_short %in% c("SHP", "GTS", "PGS", "CHK")) {
     metabolic_energy_req_work <- 0 # No work for these species
   }
   return(metabolic_energy_req_work)
@@ -998,25 +1189,27 @@ calc_metabolic_energy_req_work <- function(
 #' (e.g. wool or hair).
 #'
 #' @param species_short Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the
-#'   production stage of the animals. Supported values include:
-#'   \itemize{
-#'     \item \code{FA}: adult females (from age at first parturition)
-#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{MA}: adult males (from age at first breeding)
-#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'     \item \code{MJ}: juvenile males (from birth to weaning)
-#'   }
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }
+#' @param cohort_short Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{FN}: non-demographic females
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'         \item \code{MN}: non-demographic males
+#'         }
 #' @param fibre_yield_year Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
 #' Required only for species = CML, SHP, and GTS.
 #'
@@ -1129,7 +1322,7 @@ calc_metabolic_energy_req_fibre <- function(
     } else {
       metabolic_energy_req_fibre_production <- 0
     }
-  } else if (species_short %in% c("CTL", "BFL", "PGS")) {
+  } else if (species_short %in% c("CTL", "BFL", "PGS", "CHK")) {
     metabolic_energy_req_fibre_production <- 0 # Not applicable
   }
   return(metabolic_energy_req_fibre_production)
@@ -1414,6 +1607,8 @@ calc_metabolic_energy_req_pregnancy <- function(
     } else {
       metabolic_energy_req_pregnancy <- 0
     }
+  } else if (species_short == "CHK") {
+    metabolic_energy_req_pregnancy <- 0
   }
   return(metabolic_energy_req_pregnancy)
 }
@@ -1485,7 +1680,7 @@ calc_rem_maintenance <- function(
     # Polynomial fit from GLEAM
     net_energy_maintenance_digestible_energy_ratio <- 1.123 - (0.004092 * (ration_digestibility_fraction * 100)) +
       (0.00001126 * (ration_digestibility_fraction * 100)^2) - (25.4 / (ration_digestibility_fraction * 100))
-  } else if (species_short %in% c("PGS", "CML")) {
+  } else if (species_short %in% c("PGS", "CML", "CHK")) {
     net_energy_maintenance_digestible_energy_ratio <- NA_real_ # Not applicable
   }
   return(net_energy_maintenance_digestible_energy_ratio)
@@ -1558,7 +1753,7 @@ calc_reg_growth <- function(
     # Polynomial fit
     net_energy_growth_digestible_energy_ratio <- 1.164 - (0.005160 * (ration_digestibility_fraction * 100)) +
       (0.00001308 * (ration_digestibility_fraction * 100)^2) - (37.4 / (ration_digestibility_fraction * 100))
-  } else if (species_short %in% c("PGS", "CML")) {
+  } else if (species_short %in% c("PGS", "CML", "CHK")) {
     net_energy_growth_digestible_energy_ratio <- NA_real_ # Not applicable
   }
   return(net_energy_growth_digestible_energy_ratio)
@@ -1762,6 +1957,10 @@ calc_total_metabolic_energy_req <- function(
   } else if (species_short == "PGS") {
     metabolic_energy_req_total <- metabolic_energy_req_maintenance + metabolic_energy_req_activity +
       metabolic_energy_req_lactation + metabolic_energy_req_pregnancy + metabolic_energy_req_growth
+  } else if (species_short == "CHK") {
+    metabolic_energy_req_total <- metabolic_energy_req_maintenance +
+      metabolic_energy_req_activity + metabolic_energy_req_growth +
+      metabolic_energy_req_egg_deposition
   }
   return(metabolic_energy_req_total)
 }
@@ -1839,7 +2038,7 @@ calc_ration_intake <- function(
   # Ruminants: use gross energy
   if (species_short %in% gleam_species_ruminants) {
     ration_intake <- metabolic_energy_req_total / ration_gross_energy
-  } else if (species_short %in% c("PGS", "CML")) {
+  } else if (species_short %in% c("PGS", "CML", "CHK")) {
     # Monogastrics/camelids: use metabolizable energy
     ration_intake <- metabolic_energy_req_total / ration_metabolizable_energy
   }

@@ -252,6 +252,64 @@ test_that("calc_milk_production returns zeros for PGS", {
   expect_equal(result$milk_production_fpcm_cohort, 0)
 })
 
+test_that("calc_egg_production returns expected chicken outputs", {
+  result <- calc_egg_production(
+    species_short = "CHK",
+    cohort_short = "FA",
+    egg_output_human_consumption = 36500,
+    egg_average_weight = 0.06,
+    simulation_duration = 365,
+    is_egg_producing = TRUE
+  )
+
+  expect_equal(result$egg_production_number_cohort, 36500)
+  expect_equal(result$egg_production_mass_cohort, 36500 * 0.06)
+  expect_equal(result$egg_production_protein_cohort, 36500 * 0.06 * 0.125)
+})
+
+test_that("calc_egg_production returns expected outputs for egg-producing chicken FN", {
+  result <- calc_egg_production(
+    species_short = "CHK",
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 2,
+    egg_output_human_consumption = 36500,
+    egg_average_weight = 0.06,
+    simulation_duration = 365,
+    is_egg_producing = TRUE
+  )
+
+  expect_equal(result$egg_production_number_cohort, 36500)
+  expect_equal(result$egg_production_mass_cohort, 36500 * 0.06)
+  expect_equal(result$egg_production_protein_cohort, 36500 * 0.06 * 0.125)
+})
+
+test_that("calc_egg_production validates egg-producing flag placement", {
+  expect_error(
+    calc_egg_production(
+      species_short = "CHK",
+      cohort_short = "FS",
+      egg_output_human_consumption = 36500,
+      egg_average_weight = 0.06,
+      simulation_duration = 365,
+      is_egg_producing = TRUE
+    ),
+    "can be TRUE only for CHK cohorts.*FA.*FN"
+  )
+
+  expect_error(
+    calc_egg_production(
+      species_short = "CHK",
+      cohort_short = "FN",
+      nondemo_productive_phase_id = 1,
+      egg_output_human_consumption = 36500,
+      egg_average_weight = 0.06,
+      simulation_duration = 365,
+      is_egg_producing = TRUE
+    ),
+    "can be TRUE for.*FN.*only when.*2"
+  )
+})
+
 
 # ---- test calc_fibre_production ----
 test_that("calc_fibre_production returns expected value", {

@@ -8,6 +8,7 @@ run_all_herd_module(
   cohort_level_data = NULL,
   herd_level_data = NULL,
   simulation_duration = 365,
+  show_indicator = TRUE,
   run_demographic = TRUE,
   run_nondemographic = TRUE
 )
@@ -65,9 +66,11 @@ execution mode:
 \describe{
 \item{\code{herd_id}}{Character or numeric. Unique identifier for the herd.}
 \item{\code{parturition_rate}}{Numeric. Average annual number of
-parturitions per female animal (# parturitions/adult female/year).}
-\item{\code{litter_size}}{Numeric. Average number of offspring born per
-parturition (# offspring/parturition).}
+parturitions per female animal (# parturitions/adult female/year). For
+\code{CHK}, this corresponds to eggs laid for reproduction.}
+\item{\code{litter_size}}{Numeric. Average number of offspring produced per
+parturition (# offspring/parturition). For \code{CHK}, this can be
+interpreted as offspring produced per reproductive event.}
 \item{\code{birth_fraction_female}}{Numeric. Female birth fraction,
 defined as the probability that a newborn offspring is female
 (fraction).}
@@ -110,9 +113,11 @@ non-demographic entrants are derived internally from the demographic output:
 \describe{
 \item{\code{herd_id}}{Character or numeric. Unique identifier for the herd.}
 \item{\code{parturition_rate}}{Numeric. Average annual number of
-parturitions per female animal (# parturitions/adult female/year).}
-\item{\code{litter_size}}{Numeric. Average number of offspring born per
-parturition (# offspring/parturition).}
+parturitions per female animal (# parturitions/adult female/year). For
+\code{CHK}, this corresponds to eggs laid for reproduction.}
+\item{\code{litter_size}}{Numeric. Average number of offspring produced per
+parturition (# offspring/parturition). For \code{CHK}, this can be
+interpreted as offspring produced per reproductive event.}
 \item{\code{birth_fraction_female}}{Numeric. Female birth fraction,
 defined as the probability that a newborn offspring is female
 (fraction).}
@@ -142,6 +147,9 @@ herd-level inputs.
 }}
 
 \item{simulation_duration}{Numeric. Length of the reporting period (days).}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during calculations.
+Defaults to \code{TRUE}.}
 
 \item{run_demographic}{Logical. If \code{TRUE}, run
 \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}.}
@@ -300,7 +308,7 @@ herd_level_path <- system.file(
 cohort_data_demographic <- data.table::fread(cohort_path)
 herd_level_data <- data.table::fread(herd_level_path)
 
-out <- run_all_herd_module(
+results <- run_all_herd_module(
   cohort_level_data = cohort_data_demographic,
   herd_level_data = herd_level_data,
   run_demographic = TRUE,
@@ -309,7 +317,7 @@ out <- run_all_herd_module(
 
 
 # Access the results
-names(out)
+results
 
 =====
 
@@ -330,28 +338,28 @@ results <- run_all_herd_module(
   cohort_level_data = cohort_nondemo_input,
   herd_level_data = herd_level_data_nondemo,
   run_demographic = FALSE,
-  run_nondemographic = TRUE
+  run_nondemographic = TRUE,
+  show_indicator = TRUE
 )
 
 
 # Access the results
-names(results)
+results
 =====
 
 # Use case 3 - *Run both the demographic and non-demographic*:
 
-cohort_combined_path <- system.file(
-  "extdata/run_modules_examples/run_all_herd_module_input_chrt_data.csv",
-  package = "gleam"
-)
-herd_level_path <- system.file(
-  "extdata/run_modules_examples/example_herd_level_data.csv",
-  package = "gleam"
-)
-cohort_level_data <- data.table::fread(cohort_combined_path)
-herd_level_data <- data.table::fread(herd_level_path)
+path_run_gleam_examples <- system.file("extdata/run_modules_examples", package = "gleam")
 
-out <- run_all_herd_module(
+cohort_level_data <- data.table::fread(file.path(
+  path_run_gleam_examples, "herd_all_input_chrt_data.csv"
+))
+
+herd_level_data <- data.table::fread(file.path(
+  path_run_gleam_examples, "herd_all_input_hrd_data.csv"
+))
+
+results <- run_all_herd_module(
   cohort_level_data = cohort_level_data,
   herd_level_data = herd_level_data,
   run_demographic = TRUE,
@@ -359,8 +367,8 @@ out <- run_all_herd_module(
 )
 
 # Access the results
-names(out)
-demo_herd <- out$herd_level_results
+results
+demo_herd <- results$herd_level_results
 demo_herd
 }
 

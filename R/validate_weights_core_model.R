@@ -2,6 +2,7 @@
 #'
 #' @noRd
 validate_cohort_weight_inputs <- function(
+    species_short = NA_character_,
     cohort_short,
     live_weight_female_adult, live_weight_male_adult,
     live_weight_at_birth,
@@ -17,6 +18,11 @@ validate_cohort_weight_inputs <- function(
     phase1_nondemo_mal_duration_days = NA_real_,
     phase2_nondemo_mal_duration_days = NA_real_
 ) {
+  if (!is.na(species_short)) {
+    validate_scalar_character(species_short)
+    validate_animal_species(species_short)
+  }
+
   # Character inputs
   validate_scalar_character(cohort_short)
 
@@ -91,7 +97,12 @@ validate_cohort_weight_inputs <- function(
   }
 
   # Birth weight must be strictly below weaning weight when both are provided
-  if (!is.na(live_weight_at_birth) && !is.na(live_weight_at_weaning) && live_weight_at_birth >= live_weight_at_weaning) {
+  if (
+    !identical(species_short, "CHK") &&
+      !is.na(live_weight_at_birth) &&
+      !is.na(live_weight_at_weaning) &&
+      live_weight_at_birth >= live_weight_at_weaning
+  ) {
     cli::cli_abort(
       "{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}."
     )

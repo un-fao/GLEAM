@@ -103,6 +103,39 @@ test_that("retention for pigs growers matches 0.025*daily_weight_gain", {
   expect_equal(val, 0.025 * 0.8, tolerance = 1e-12)
 })
 
+test_that("retention for chickens includes growth and egg deposition", {
+  val <- calc_nitrogen_retention(
+    "CHK", "FA",
+    daily_weight_gain = 0.01,
+    parturition_rate = 120,
+    cohort_stock_size = 100,
+    egg_output_human_consumption = 36500,
+    egg_average_weight = 0.06,
+    is_egg_producing = TRUE
+  )
+
+  egg_mass <- ((36500 / 365 / 100) + (120 / 365)) * 0.06
+  expected <- 0.01 * 0.032 + egg_mass * 0.02
+  expect_equal(val, expected, tolerance = 1e-12)
+})
+
+test_that("retention for egg-producing chicken FN includes egg deposition", {
+  val <- calc_nitrogen_retention(
+    "CHK", "FN",
+    nondemo_productive_phase_id = 2,
+    daily_weight_gain = 0.01,
+    parturition_rate = 120,
+    cohort_stock_size = 100,
+    egg_output_human_consumption = 36500,
+    egg_average_weight = 0.06,
+    is_egg_producing = TRUE
+  )
+
+  egg_mass <- ((36500 / 365 / 100) + (120 / 365)) * 0.06
+  expected <- 0.01 * 0.032 + egg_mass * 0.02
+  expect_equal(val, expected, tolerance = 1e-12)
+})
+
 # ---- test calc_nitrogen_excretion ----
 test_that("excretion subtracts intake and retention", {
   expect_equal(calc_nitrogen_excretion("CTL", 0.5, 0.2), 0.3)

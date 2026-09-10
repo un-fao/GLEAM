@@ -2,7 +2,7 @@
 #'
 #' Calculates cohort-level production outputs over the assessment period by combining
 #' cohort-level herd structure inputs with herd-level production parameters.
-#' The function returns milk, fibre, and meat outputs for each cohort.
+#' The function returns milk, fibre, meat, and egg outputs for each cohort.
 #'
 #' @param cohort_level_data data.table. Cohort-level input table (one row per herd-cohort) with the
 #'   following data requirement:
@@ -23,6 +23,9 @@
 #' \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
 #' for non-demographic cohorts (\code{FN}, \code{MN}). When present, production
 #' outputs are retained separately by phase.}
+#' \item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+#' chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
+#' \code{FA} or for \code{FN} in laying phase 2.}
 #' \item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads).}
 #' \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period for the assessed cohort (# heads / assessment period).}
 #'     \item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
@@ -41,6 +44,7 @@
 #'         \item \code{BFL}: buffalo
 #'         \item \code{SHP}: sheep
 #'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
 #'         }}
 #' \item{milk_yield_day}{Numeric. Average milk yield per milk-producing animal during the assessment duration
 #' (kg/head/day).
@@ -97,6 +101,12 @@
 #' \item{meat_production_protein_cohort}{Numeric. Total meat protein (excluding bones, organs, and other by-products
 #' after dressing and bone removal) produced
 #'   over the assessment period by cohort (kg protein/cohort/assessment period).}
+#' \item{egg_production_number_cohort}{Numeric. Total egg output over the assessment period
+#' by cohort (eggs/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
+#' \item{egg_production_mass_cohort}{Numeric. Total egg mass output over the assessment period
+#' by cohort (kg/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
+#' \item{egg_production_protein_cohort}{Numeric. Total egg protein output over the assessment period
+#' by cohort (kg protein/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
 #'   }
 #'
 #' @details
@@ -185,6 +195,26 @@ run_production_module <- function(
       milk_protein_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction_standard],
       milk_fat_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction_standard],
       milk_lactose_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_lactose_fraction_standard]
+    ),
+    by = .I
+  ]
+
+  egg_output_cols <- c(
+    "egg_production_number_cohort",
+    "egg_production_mass_cohort",
+    "egg_production_protein_cohort"
+  )
+
+  cohort_level_data[
+    ,
+    (egg_output_cols) := calc_egg_production(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      cohort_short = cohort_short,
+      nondemo_productive_phase_id = nondemo_productive_phase_id,
+      is_egg_producing = is_egg_producing,
+      egg_output_human_consumption = herd_level_data[.SD, on = "herd_id", x.egg_output_human_consumption],
+      egg_average_weight = herd_level_data[.SD, on = "herd_id", x.egg_average_weight],
+      simulation_duration = simulation_duration
     ),
     by = .I
   ]
