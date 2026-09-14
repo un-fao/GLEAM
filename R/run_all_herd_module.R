@@ -597,7 +597,10 @@ run_all_herd_module <- function(
       "herd_size_total",
       "cohort_stock_size_unscaled",
       "offtake_heads_unscaled",
-      "offtake_heads_assessment_unscaled"
+      "offtake_heads_assessment_unscaled",
+      "cohort_stock_size_scaled",
+      "offtake_heads_scaled",
+      "offtake_heads_assessment_scaled"
     ),
     names(cohort_level_results)
   )
