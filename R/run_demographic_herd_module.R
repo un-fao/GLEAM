@@ -359,7 +359,7 @@ run_demographic_herd_module <- function(
     }
     
     cohort_level_results[
-      ,`:=`(
+      , `:=`(
         offtake_heads_scaled = rescale_x_to_y(
           x_scaled_variable  = offtake_heads_unscaled,
           x_reference_from   = cohort_stock_size_unscaled,

@@ -49,9 +49,11 @@ utils::globalVariables(c(
   "prob_offtake.MJ", "prob_offtake.MS",
   "probability_death", "probability_growth",
   "probability_offtake", "probability_survival",
-  "cohort_stock_annual_nondemographic", "cohort_stock_size", "growth_rate_herd",
+  "cohort_stock_annual_nondemographic", "cohort_stock_size_scaled", 
+  "cohort_stock_size_unscaled",   "growth_rate_herd",
   "n_phase_1", "n_phase_2",
-  "offtake_heads", "offtake_heads_assessment",
+  "offtake_heads_scaled", "offtake_heads_assessment_scaled",
+  "offtake_heads_unscaled", "offtake_heads_assessment_unscaled",
   "share.FA", "share.FJ", "share.FS", "share.MA", "share.MJ", "share.MS",
   "size.FA", "size.FJ", "size.FS", "size.MA", "size.MJ", "size.MS",
   "size_avg.FA", "size_avg.FJ", "size_avg.FS",
@@ -266,5 +268,6 @@ utils::globalVariables(c(
 
 # --- shared herd-module intermediates ---------------------------------------
 utils::globalVariables(c(
-  "cohort_stock_size_unscaled"
-))
+  "cohort_stock_size",
+  "offtake_heads",
+  "offtake_heads_assessment"))
