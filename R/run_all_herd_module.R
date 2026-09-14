@@ -196,10 +196,27 @@
 #'   \item `offtake_heads_assessment`
 #'   \item `cohort_duration_days`
 #'   \item `death_rate`
-#'   \item `cohort_stock_size_unscaled`
 #'   \item `cohort_stock_size`
 #' }
 #'
+#' When both modules are run, intermediate unscaled cohort stock and offtake
+#' outputs are combined and rescaled so that the summed cohort average stock
+#' matches `herd_size_total` from `herd_level_data`.
+#'
+#' The rescaling is performed in two steps:
+#' \enumerate{
+#'   \item `cohort_stock_size_unscaled` is rescaled internally to
+#'   `cohort_stock_size` within each `herd_id`
+#'   \item `offtake_heads_unscaled` and
+#'   `offtake_heads_assessment_unscaled` are rescaled proportionally to the
+#'   final `cohort_stock_size`
+#' }
+#'
+#' When only one module is run, the corresponding scaled or unscaled module
+#' outputs are renamed to the harmonized final output names.
+#' 
+#' 
+#' 
 #'
 #' The function then rescales the combined cohort 
 #' stock and offtake outputs so that the summed cohort average stock matches
@@ -221,15 +238,11 @@
 #'   \item{`cohort_level_results`}{A `data.table` with one row per retained
 #'   cohort. Depending on the selected execution mode, this table contains
 #'   demographic rows only, non-demographic rows only, or both in a harmonized
-#'   schema. It includes the original cohort-level input columns plus the
-#'   following result variables when available:
+#'   schema. Intermediate scaling variables are removed before return. It includes
+#'   the original cohort-level input columns plus the following result variables
+#'   when available:
 #'   \describe{
-#'     \item{`cohort_stock_size_unscaled`}{Numeric. Average cohort stock before
-#'     final harmonization to `herd_size_total` (# heads).}
-#'     \item{`cohort_stock_size`}{Numeric. Final average cohort stock after
-#'     harmonization of the output schema. When both modules are run together,
-#'     this is the rescaled stock size; when only one module is run, this is the
-#'     renamed value of `cohort_stock_size_unscaled` (# heads).}
+#'     \item{`cohort_stock_size`}{Numeric. Average population size for the assessed cohort (# heads).}
 #'     \item{`offtake_heads`}{Numeric. Total number of animals removed from the
 #'     cohort over the full 365-day simulation horizon (# heads).}
 #'     \item{`offtake_heads_assessment`}{Numeric. Total number of animals removed
@@ -482,13 +495,6 @@ run_all_herd_module <- function(
     use.names = TRUE,
     fill = TRUE
   )
-
-  if (!"offtake_heads" %in% names(cohort_level_results)) {
-    cohort_level_results[, offtake_heads := NA_real_]
-  }
-  if (!"offtake_heads_assessment" %in% names(cohort_level_results)) {
-    cohort_level_results[, offtake_heads_assessment := NA_real_]
-  }
   
   # =========================================================
   # 4) RESCALING (ONLY IF DEMOGRAPHIC RUN)
@@ -513,13 +519,13 @@ run_all_herd_module <- function(
     
     # ---- Rescale offtake ----
     cohort_level_results[, offtake_heads := rescale_x_to_y(
-      x_scaled_variable  = offtake_heads,
+      x_scaled_variable  = offtake_heads_unscaled,
       x_reference_from   = cohort_stock_size_unscaled,
       y_scaling_variable = cohort_stock_size
     )]
     
     cohort_level_results[, offtake_heads_assessment := rescale_x_to_y(
-      x_scaled_variable  = offtake_heads_assessment,
+      x_scaled_variable  = offtake_heads_assessment_unscaled,
       x_reference_from   = cohort_stock_size_unscaled,
       y_scaling_variable = cohort_stock_size
     )]
@@ -536,16 +542,37 @@ run_all_herd_module <- function(
       cohort_level_results[, (cols_to_drop) := NULL]
     }
     
-  } else {
-    
-    # If only one module → just rename
+  } else if (isTRUE(run_demographic) && !isTRUE(run_nondemographic)) {
     data.table::setnames(
       cohort_level_results,
-      old = "cohort_stock_size_unscaled",
-      new = "cohort_stock_size",
+      old = c(
+        "cohort_stock_size_scaled",
+        "offtake_heads_scaled",
+        "offtake_heads_assessment_scaled"
+      ),
+      new = c(
+        "cohort_stock_size",
+        "offtake_heads",
+        "offtake_heads_assessment"
+      ),
       skip_absent = TRUE
     )
     
+  } else if (!isTRUE(run_demographic) && isTRUE(run_nondemographic)) {  
+    data.table::setnames(
+      cohort_level_results,
+      old = c(
+        "cohort_stock_size_unscaled",
+        "offtake_heads_unscaled",
+        "offtake_heads_assessment_unscaled"
+      ),
+      new = c(
+        "cohort_stock_size",
+        "offtake_heads",
+        "offtake_heads_assessment"
+      ),
+      skip_absent = TRUE
+    )
   }
   
   herd_level_results <- NULL
@@ -563,12 +590,30 @@ run_all_herd_module <- function(
       ),
       on = "herd_id"
     ]
+    
+    
   } else if (!is.null(demo_results)) {
     herd_level_results <- demo_results$herd_level_results
   } else if (!is.null(nondemo_results)) {
     herd_level_results <- nondemo_results$herd_level_results
   }
-
+  
+  
+  # ---- Remove intermediate scaling columns ----
+  cols_to_drop <- intersect(
+    c(
+      "size_for_rescaling",
+      "herd_size_total",
+      "cohort_stock_size_unscaled",
+      "offtake_heads_unscaled",
+      "offtake_heads_assessment_unscaled"
+    ),
+    names(cohort_level_results)
+  )
+  if (length(cols_to_drop) > 0) {
+    cohort_level_results[, (cols_to_drop) := NULL]
+  }
+  
   # =========================================================
   # 5) RETURN
   # =========================================================
