@@ -1,9 +1,9 @@
 #' Calculate live weights by cohort and life stage
 #'
-#' Determines the initial, potential final, and slaughter live weights for a given
-#' sex–age cohort based on species‑specific biological parameters. The function
-#' assigns weights according to the animal's life stage (juvenile, subadult, adult)
-#' and the sex of the cohort.
+#' Determines the initial, potential final, and slaughter live weights for a
+#' given cohort based on species-specific biological parameters. The function
+#' handles demographic cohorts (\code{FJ}, \code{FS}, \code{FA}, \code{MJ},
+#' \code{MS}, \code{MA}) and nondemographic cohorts (\code{FN}, \code{MN}).
 #'
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
@@ -14,6 +14,8 @@
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param live_weight_female_adult Numeric. Live weight of adult females (kg)
 #' @param live_weight_male_adult Numeric. Live weight of adult males (kg)
@@ -21,6 +23,25 @@
 #' @param live_weight_female_at_slaughter Numeric. Slaughter weight of female sub-adult animals (kg).
 #' @param live_weight_male_at_slaughter Numeric. Slaughter weight of male sub-adult animals (kg).
 #' @param live_weight_at_weaning Numeric. Live weight of the animal at weaning (kg)
+#' @param live_weight_female_nondemographic_start Numeric. Live weight of
+#'   female animals at the beginning of the nondemographic cycle (kg).
+#' @param live_weight_female_nondemographic_end Numeric. Live weight of female
+#'   animals at the end of the nondemographic cycle (kg).
+#' @param live_weight_male_nondemographic_start Numeric. Live weight of male
+#'   animals at the beginning of the nondemographic cycle (kg).
+#' @param live_weight_male_nondemographic_end Numeric. Live weight of male
+#'   animals at the end of the nondemographic cycle (kg).
+#' @param nondemo_productive_phase_id Numeric. Productive phase identifier for
+#'   nondemographic cohorts. Takes value \code{1} for phase 1 and optionally
+#'   \code{2} for phase 2. Demographic cohorts use \code{NA}.
+#' @param phase1_nondemo_fem_duration_days Numeric. Duration of productive phase
+#'   1 for the female nondemographic cohort (\code{FN}) (days).
+#' @param phase2_nondemo_fem_duration_days Numeric. Duration of productive phase
+#'   2 for the female nondemographic cohort (\code{FN}) (days).
+#' @param phase1_nondemo_mal_duration_days Numeric. Duration of productive phase
+#'   1 for the male nondemographic cohort (\code{MN}) (days).
+#' @param phase2_nondemo_mal_duration_days Numeric. Duration of productive phase
+#'   2 for the male nondemographic cohort (\code{MN}) (days).
 #'
 #' @return A named list with:
 #' \describe{
@@ -57,6 +78,19 @@
 #'     \item \code{live_weight_cohort_potential_final} = adult weight for the cohort sex
 #'     \item \code{live_weight_cohort_at_slaughter} = adult weight for the cohort sex
 #'   }
+#'
+#'   \item \strong{Nondemographic cohorts} (\code{"FN"}, \code{"MN"}):
+#'   \itemize{
+#'     \item a linear live-weight gain is computed from the nondemographic start
+#'       and end weights over the total nondemographic duration
+#'     \item for \code{nondemo_productive_phase_id = 1}, the initial weight is the
+#'       nondemographic start weight and the potential final weight is the end
+#'       of phase 1
+#'     \item for \code{nondemo_productive_phase_id = 2}, the initial weight is the
+#'       end of phase 1 and the potential final weight is the end of phase 2
+#'     \item \code{live_weight_cohort_at_slaughter} is set equal to the
+#'       phase-specific potential final weight
+#'   }
 #' }
 #'
 #' This function is part of the [run_weights_module()].
@@ -69,14 +103,28 @@ calc_cohort_weights <- function(
     cohort_short,
     live_weight_female_adult = NA_real_, live_weight_male_adult = NA_real_,
     live_weight_at_birth = NA_real_, live_weight_female_at_slaughter = NA_real_,
-    live_weight_male_at_slaughter = NA_real_, live_weight_at_weaning = NA_real_
+    live_weight_male_at_slaughter = NA_real_, live_weight_at_weaning = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    live_weight_female_nondemographic_start = NA_real_, live_weight_female_nondemographic_end = NA_real_,
+    live_weight_male_nondemographic_start = NA_real_, live_weight_male_nondemographic_end = NA_real_,
+    phase1_nondemo_fem_duration_days = NA_real_,
+    phase2_nondemo_fem_duration_days = NA_real_,
+    phase1_nondemo_mal_duration_days = NA_real_,
+    phase2_nondemo_mal_duration_days = NA_real_
 ) {
   validate_cohort_weight_inputs(
     cohort_short,
     live_weight_female_adult, live_weight_male_adult,
     live_weight_at_birth,
     live_weight_female_at_slaughter, live_weight_male_at_slaughter,
-    live_weight_at_weaning
+    live_weight_at_weaning,
+    nondemo_productive_phase_id,
+    live_weight_female_nondemographic_start, live_weight_female_nondemographic_end,
+    live_weight_male_nondemographic_start, live_weight_male_nondemographic_end,
+    phase1_nondemo_fem_duration_days,
+    phase2_nondemo_fem_duration_days,
+    phase1_nondemo_mal_duration_days,
+    phase2_nondemo_mal_duration_days
   )
 
   # Juvenile cohorts
@@ -115,6 +163,52 @@ calc_cohort_weights <- function(
     live_weight_mature_stage <- live_weight_male_adult
     live_weight_cohort_potential_final <- live_weight_mature_stage
     live_weight_cohort_at_slaughter <- live_weight_mature_stage
+  
+    # Non demographic cohorts
+  } else if (cohort_short == "FN") {
+    total_nondemographic_duration_days <- phase1_nondemo_fem_duration_days +
+      phase2_nondemo_fem_duration_days
+    live_weight_gain_nondemo_fem <- (
+      live_weight_female_nondemographic_end -
+        live_weight_female_nondemographic_start
+    ) / total_nondemographic_duration_days
+
+    if (nondemo_productive_phase_id == 1) {
+      live_weight_cohort_initial <- live_weight_female_nondemographic_start
+      live_weight_mature_stage <- live_weight_female_nondemographic_end
+      live_weight_cohort_potential_final <- live_weight_female_nondemographic_start +
+        (live_weight_gain_nondemo_fem * phase1_nondemo_fem_duration_days)
+      live_weight_cohort_at_slaughter <- live_weight_cohort_potential_final
+    } else if (nondemo_productive_phase_id == 2) {
+      live_weight_cohort_initial <- live_weight_female_nondemographic_start +
+        (live_weight_gain_nondemo_fem * phase1_nondemo_fem_duration_days)
+      live_weight_mature_stage <- live_weight_female_nondemographic_end
+      live_weight_cohort_potential_final <- live_weight_cohort_initial +
+        (live_weight_gain_nondemo_fem * phase2_nondemo_fem_duration_days)
+      live_weight_cohort_at_slaughter <- live_weight_cohort_potential_final
+    }
+  } else if (cohort_short == "MN") {
+    total_nondemographic_duration_days <- phase1_nondemo_mal_duration_days +
+      phase2_nondemo_mal_duration_days
+    live_weight_gain_nondemo_mal <- (
+      live_weight_male_nondemographic_end -
+        live_weight_male_nondemographic_start
+    ) / total_nondemographic_duration_days
+
+    if (nondemo_productive_phase_id == 1) {
+      live_weight_cohort_initial <- live_weight_male_nondemographic_start
+      live_weight_mature_stage <- live_weight_male_nondemographic_end
+      live_weight_cohort_potential_final <- live_weight_male_nondemographic_start +
+        (live_weight_gain_nondemo_mal * phase1_nondemo_mal_duration_days)
+      live_weight_cohort_at_slaughter <- live_weight_cohort_potential_final
+    } else if (nondemo_productive_phase_id == 2) {
+      live_weight_cohort_initial <- live_weight_male_nondemographic_start +
+        (live_weight_gain_nondemo_mal * phase1_nondemo_mal_duration_days)
+      live_weight_mature_stage <- live_weight_male_nondemographic_end
+      live_weight_cohort_potential_final <- live_weight_cohort_initial +
+        (live_weight_gain_nondemo_mal * phase2_nondemo_mal_duration_days)
+      live_weight_cohort_at_slaughter <- live_weight_cohort_potential_final
+    }
   }
 
   return(
@@ -133,6 +227,9 @@ calc_cohort_weights <- function(
 #' sex–age cohort based on initial weight, 
 #' potential final weight, slaughter weight, and the offtake rate.
 #'
+#' @param cohort_short Character. Sex- and age-specific cohort code. Supported
+#'   values include \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS},
+#'   \code{MJ}, \code{FN}, and \code{MN}.
 #' @param live_weight_cohort_initial Numeric. Live weight at the beginning of the cohort stage (kg).
 #' @param live_weight_cohort_potential_final Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)
 #' @param live_weight_cohort_at_slaughter Numeric. Live weight at slaughter for animals removed from the cohort (kg).
@@ -148,6 +245,9 @@ calc_cohort_weights <- function(
 #' The calculation of \code{live_weight_cohort_average} and \code{live_weight_cohort_final} is performed considering that
 #' a fraction of animals is removed (offtake) during the cohort stage, while the
 #' remaining animals reach the potential final live weight.
+#' For nondemographic cohorts (\code{FN}, \code{MN}), \code{offtake_rate} is
+#' not used; \code{live_weight_cohort_final} is set equal to
+#' \code{live_weight_cohort_potential_final}.
 #'
 #' The final live weight is computed as:
 #' \deqn{
@@ -167,24 +267,30 @@ calc_cohort_weights <- function(
 #'
 #' @export
 calc_avg_weights <- function(
+    cohort_short,
     live_weight_cohort_initial,
     live_weight_cohort_potential_final,
     live_weight_cohort_at_slaughter,
     offtake_rate
 ) {
   validate_avg_weight_inputs(
+    cohort_short,
     live_weight_cohort_initial,
     live_weight_cohort_potential_final,
     live_weight_cohort_at_slaughter,
     offtake_rate
   )
 
-  # Normalize offtake_rate
-  offtake_rate <- normalize_rate(offtake_rate)
+  if (cohort_short %in% c("FN", "MN")) {
+    live_weight_cohort_final <- live_weight_cohort_potential_final
+  } else {
+    # Normalize offtake_rate
+    offtake_rate <- normalize_rate(offtake_rate)
 
-  # Weighted final weight: survivors reach potential_final_weight, offtaken animals go to slaughter
-  live_weight_cohort_final <- live_weight_cohort_potential_final * (1 - offtake_rate) +
-    live_weight_cohort_at_slaughter * offtake_rate
+    # Weighted final weight: survivors reach potential_final_weight, offtaken animals go to slaughter
+    live_weight_cohort_final <- live_weight_cohort_potential_final * (1 - offtake_rate) +
+      live_weight_cohort_at_slaughter * offtake_rate
+  }
 
   # Average weight across the stage
   live_weight_cohort_average <- (live_weight_cohort_initial + live_weight_cohort_final) / 2

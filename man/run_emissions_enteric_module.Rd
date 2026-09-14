@@ -26,10 +26,15 @@ of the animals. Supported values include:
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{MN}: non-demographic males
 }}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). When present, enteric
+methane emissions are computed and retained separately by phase.}
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as
 ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).}
 \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
@@ -46,7 +51,9 @@ additives or methane inhibitors.}
 Defaults to \code{TRUE}.}
 }
 \value{
-A \code{data.table} with the original input columns plus the following new variables:
+A \code{data.table} with the original input columns plus the following
+new variables. If \code{nondemo_productive_phase_id} is present in the input,
+the returned table preserves phase-specific rows for \code{FN} and \code{MN}:
 \describe{
 \item{ch4_mitigation_factor}{Added by the function if not provided as input.}
 \item{ch4_conversion_factor_ym}{Numeric. Methane (CH4) conversion factor (ym),

@@ -21,9 +21,11 @@
 #'         \item \code{FA}: adult females (from age at first parturition)
 #'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{FN}: non-demographic females
 #'         \item \code{MA}: adult males (from age at first breeding)
 #'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'         \item \code{MN}: non-demographic males
 #'       }
 #' @param milk_yield_day {Numeric. Average milk yield per milk-producing animal during the assessment duration
 #' (kg/head/day).
@@ -32,8 +34,7 @@
 #' divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for
 #' species = CML, CTL, BFL, SHP, and GTS.}
 #' @param simulation_duration Numeric. Length of the assessment period (days).
-#' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
-#' FS, FA, MJ, MS, MA).
+#' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads).
 #' @param lactating_females_fraction Numeric. Proportion of adult females that are lactating during the assessment
 #' period (fraction). Required only for species: CML, CTL, BFL, SHP, and GTS.
 #' @param milk_protein_fraction Numeric. Milk protein fraction (kg protein/kg milk). Required only for species = CML,
@@ -177,8 +178,9 @@ calc_milk_production <- function(
 
 #' Calculate fibre production
 #'
-#' Calculates fibre production for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
-#' of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}) over the assessment period
+#' Calculates fibre production for producing cohorts (\code{FA}, \code{FS},
+#' \code{MA}, \code{MS}, \code{FN}, \code{MN}) of fibre-producing species
+#' (\code{CML}, \code{SHP}, \code{GTS}) over the assessment period
 #' (kg/cohort/assessment period).
 #' 
 #' @param species_short Character. Code identifying the livestock species.
@@ -197,15 +199,16 @@ calc_milk_production <- function(
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param fibre_yield_year Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
 #' Required only for species = CML, SHP, and GTS.
 #' @param simulation_duration Numeric. Length of the assessment period (days).
-#' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
-#' FS, FA, MJ, MS, MA).
+#' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads). 
 #'
 #' @return Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).
 #'   
@@ -215,8 +218,9 @@ calc_milk_production <- function(
 #'   \eqn{fibre\_production =
 #'   \frac{fibre\_yield\_year}{365} \times simulation\_duration \times cohort\_stock\_size}
 #'
-#' Non-zero fibre outputs are only expected for producing cohorts (\code{FA}, \code{FS}, \code{MA}, \code{MS})
-#' of fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}).
+#' Non-zero fibre outputs are only expected for producing cohorts
+#' (\code{FA}, \code{FS}, \code{MA}, \code{MS}, \code{FN}, \code{MN}) of
+#' fibre-producing species (\code{CML}, \code{SHP}, \code{GTS}).
 #' 
 #' This function is part of the [run_production_module()].
 #' 
@@ -242,7 +246,7 @@ calc_fibre_production <- function(
   fibre_production_cohort <- 0
   
   if (species_short %in% c("GTS", "SHP", "CML")) {
-    if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
+    if (cohort_short %in% c("FA", "FS", "MA", "MS", "FN", "MN")) {
 
     fibre_production_cohort <- (
       fibre_yield_year / 365 * simulation_duration * cohort_stock_size
@@ -261,7 +265,7 @@ calc_fibre_production <- function(
 #' bone-free meat, and meat protein (kg/cohort/assessment period).
 #'
 #' @param offtake_heads_assessment Numeric. Total number of animals removed via offtake over the assessment period,
-#' aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).
+#' aggregated to 6 sex–age cohorts (heads/assessment period).
 #' @param live_weight_cohort_at_slaughter Numeric. Live weight at slaughter for animals removed from the cohort (kg).
 #' @param carcass_dressing_fraction Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
 #' (fraction).

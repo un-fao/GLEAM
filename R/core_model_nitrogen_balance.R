@@ -63,9 +63,11 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param milk_protein_fraction Numeric. Milk protein fraction (kg protein / kg milk). 
 #' Required only for species = CML, CTL, BFL, SHP, and GTS.
@@ -211,7 +213,7 @@ calc_nitrogen_retention <- function(
     }
     growth_comp <- if (!is.na(daily_weight_gain) && daily_weight_gain > 0) daily_weight_gain * tissue_n else 0
     fibre_comp <- if (!is.na(fibre_yield_year) &&
-      cohort_short %in% c("FA", "FS", "MA", "MS") &&
+      cohort_short %in% c("FA", "FS", "MA", "MS", "FN", "MN") &&
       species_short %in% c("SHP", "GTS", "CML") &&
       fibre_yield_year > 0) {
       fibre_yield_year / 365 * fibre_n

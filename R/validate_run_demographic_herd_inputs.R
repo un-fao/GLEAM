@@ -23,7 +23,8 @@ validate_run_demographic_herd_module_inputs <- function(
     "herd_id", "cohort_short", "cohort_duration_days", "offtake_rate", "death_rate"
   )
   required_herd_cols <- c(
-    "herd_id", "parturition_rate", "litter_size", "birth_fraction_female", "herd_size_total"
+    "herd_id", "parturition_rate", "litter_size", "birth_fraction_female", "herd_size_total",
+    "prop_nondemo_fem_juv", "prop_nondemo_mal_juv"
   )
   check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
   check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")

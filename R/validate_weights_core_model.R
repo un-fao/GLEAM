@@ -6,7 +6,16 @@ validate_cohort_weight_inputs <- function(
     live_weight_female_adult, live_weight_male_adult,
     live_weight_at_birth,
     live_weight_female_at_slaughter, live_weight_male_at_slaughter,
-    live_weight_at_weaning
+    live_weight_at_weaning,
+    nondemo_productive_phase_id = NA_real_,
+    live_weight_female_nondemographic_start = NA_real_,
+    live_weight_female_nondemographic_end = NA_real_,
+    live_weight_male_nondemographic_start = NA_real_,
+    live_weight_male_nondemographic_end = NA_real_,
+    phase1_nondemo_fem_duration_days = NA_real_,
+    phase2_nondemo_fem_duration_days = NA_real_,
+    phase1_nondemo_mal_duration_days = NA_real_,
+    phase2_nondemo_mal_duration_days = NA_real_
 ) {
   # Character inputs
   validate_scalar_character(cohort_short)
@@ -18,7 +27,16 @@ validate_cohort_weight_inputs <- function(
     live_weight_at_birth = live_weight_at_birth,
     live_weight_female_at_slaughter = live_weight_female_at_slaughter,
     live_weight_male_at_slaughter = live_weight_male_at_slaughter,
-    live_weight_at_weaning = live_weight_at_weaning
+    live_weight_at_weaning = live_weight_at_weaning,
+    nondemo_productive_phase_id = nondemo_productive_phase_id,
+    live_weight_female_nondemographic_start = live_weight_female_nondemographic_start,
+    live_weight_female_nondemographic_end = live_weight_female_nondemographic_end,
+    live_weight_male_nondemographic_start = live_weight_male_nondemographic_start,
+    live_weight_male_nondemographic_end = live_weight_male_nondemographic_end,
+    phase1_nondemo_fem_duration_days = phase1_nondemo_fem_duration_days,
+    phase2_nondemo_fem_duration_days = phase2_nondemo_fem_duration_days,
+    phase1_nondemo_mal_duration_days = phase1_nondemo_mal_duration_days,
+    phase2_nondemo_mal_duration_days = phase2_nondemo_mal_duration_days
   )
 
   for (arg_name in names(args)) {
@@ -38,7 +56,21 @@ validate_cohort_weight_inputs <- function(
     "FS" = c("live_weight_at_weaning", "live_weight_female_adult", "live_weight_female_at_slaughter"),
     "MS" = c("live_weight_at_weaning", "live_weight_male_adult", "live_weight_male_at_slaughter"),
     "FA" = c("live_weight_female_adult"),
-    "MA" = c("live_weight_male_adult")
+    "MA" = c("live_weight_male_adult"),
+    "FN" = c(
+      "nondemo_productive_phase_id",
+      "live_weight_female_nondemographic_start",
+      "live_weight_female_nondemographic_end",
+      "phase1_nondemo_fem_duration_days",
+      "phase2_nondemo_fem_duration_days"
+    ),
+    "MN" = c(
+      "nondemo_productive_phase_id",
+      "live_weight_male_nondemographic_start",
+      "live_weight_male_nondemographic_end",
+      "phase1_nondemo_mal_duration_days",
+      "phase2_nondemo_mal_duration_days"
+    )
   )
 
   missing_required <- required_by_cohort[vapply(
@@ -72,11 +104,14 @@ validate_cohort_weight_inputs <- function(
 #'
 #' @noRd
 validate_avg_weight_inputs <- function(
+    cohort_short,
     live_weight_cohort_initial,
     live_weight_cohort_potential_final,
     live_weight_cohort_at_slaughter,
     offtake_rate
 ) {
+  validate_scalar_character(cohort_short)
+  validate_cohort_code(cohort_short)
   validate_scalar_numeric(live_weight_cohort_initial)
   validate_scalar_numeric(live_weight_cohort_potential_final)
   validate_scalar_numeric(live_weight_cohort_at_slaughter)
@@ -84,7 +119,9 @@ validate_avg_weight_inputs <- function(
 
   # Enforce configured bounds
   validate_param_range(live_weight_cohort_at_slaughter)
-  validate_param_range(offtake_rate)
+  if (!(cohort_short %in% c("FN", "MN"))) {
+    validate_param_range(offtake_rate)
+  }
 }
 
 #' Validate inputs for calc_daily_weight_gain

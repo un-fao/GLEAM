@@ -20,9 +20,11 @@
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param live_weight_cohort_average Numeric. Average live weight over the cohort stage. Computed by accounting 
 #' for the share of offtaken animals within the cohort, using their slaughter weight, and the potential 
@@ -59,7 +61,7 @@
 #' \itemize{
 #'   \item \code{FA}:
 #'     \eqn{cmain = 0.386 \times lactating\_females\_fraction + 0.322 \times (1 - lactating\_females\_fraction)}
-#'   \item \code{FS}, \code{FJ}, \code{MJ}:
+#'   \item \code{FS}, \code{FJ}, \code{MJ}, \code{FN}, \code{MN}:
 #'     \eqn{cmain = 0.322}
 #'   \item \code{MA}, \code{MS}:
 #'     \eqn{cmain = 0.322 \times offtake\_rate + 0.370 \times (1 - offtake\_rate)}
@@ -152,7 +154,7 @@ calc_metabolic_energy_req_maintenance <- function(
     if (cohort_short == "FA") {
       # Weighted by lactating_females_fraction
       cmain <- 0.386 * lactating_females_fraction + 0.322 * (1 - lactating_females_fraction)
-    } else if (cohort_short %in% c("FS", "FJ", "MJ")) {
+    } else if (cohort_short %in% c("FS", "FJ", "MJ", "FN", "MN")) {
       cmain <- 0.322
     } else if (cohort_short %in% c("MA", "MS")) {
       # Weighted by offtake rate
@@ -170,7 +172,7 @@ calc_metabolic_energy_req_maintenance <- function(
       # Weighted by age at first calving (age_first_parturition)
       cmain <- (0.236 * (365 / age_first_parturition)) +
         (0.217 * ((age_first_parturition - 365) / age_first_parturition))
-    } else if (cohort_short == "FJ") {
+    } else if (cohort_short %in% c("FJ", "FN", "MN")) {
       cmain <- 0.236
     } else if (cohort_short == "MA") {
       # Weighted by offtake rate
@@ -213,9 +215,11 @@ calc_metabolic_energy_req_maintenance <- function(
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed to 
 #' keep the animal at equilibrium such that body energy is neither gained nor lost. 
@@ -363,9 +367,11 @@ calc_metabolic_energy_req_activity <- function(
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param live_weight_cohort_average Numeric. Average live weight over the cohort stage. Computed by accounting 
 #' for the share of offtaken animals within the cohort, using their slaughter weight, and the potential 
@@ -386,7 +392,7 @@ calc_metabolic_energy_req_activity <- function(
 #' This function follows the IPCC Tier 2 energy partitioning
 #' approach and applies species-specific equations for growth energy requirements.
 #' 
-#' In general, growth energy is computed only for growing cohorts (\code{FJ}, \code{FS}, \code{MJ}, \code{MS});
+#' In general, growth energy is computed only for growing cohorts (\code{FJ}, \code{FS}, \code{MJ}, \code{MS}, \code{FN}, \code{MN});
 #'   in this implementation, growth is set to 0 for adult cohorts (\code{FA}, \code{MA}).
 #'
 #' \strong{Species-specific approach:}
@@ -495,32 +501,37 @@ calc_metabolic_energy_req_growth <- function(
   }
 
   if (species_short %in% c("CTL", "BFL")) {
-    if (cohort_short %in% c("FS", "FJ")) {
+    if (cohort_short %in% c("FS", "FJ", "FN")) {
       cgro <- 0.8
     } else if (cohort_short %in% c("MS", "MJ")) {
       cgro <- 1.2 * (1 - offtake_rate) + 1 * offtake_rate
+    } else if (cohort_short == "MN") {
+      cgro <- 1
     }
-    if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+    if (cohort_short %in% c("FS", "FJ", "MS", "MJ", "FN", "MN")) {
       metabolic_energy_req_growth <- 22.02 *
         ((live_weight_cohort_average / (cgro * live_weight_mature_stage))^0.75) * (daily_weight_gain^1.097)
     } else {
       metabolic_energy_req_growth <- 0 # No growth for other cohorts
     }
   } else if (species_short %in% c("CML")) {
-    if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+    if (cohort_short %in% c("FS", "FJ", "MS", "MJ", "FN", "MN")) {
       metabolic_energy_req_growth <- 41.2 * daily_weight_gain
     } else {
       metabolic_energy_req_growth <- 0
     }
   } else if (species_short %in% c("SHP")) {
     # Sheep: a, b coefficients depend on cohort and offtake
-    if (cohort_short %in% c("FS", "FJ")) {
+    if (cohort_short %in% c("FS", "FJ", "FN")) {
       a <- 2.1
       b <- 0.45
     } else if (cohort_short %in% c("MS", "MJ")) {
       a <- 4.4 * offtake_rate + 2.5 * (1 - offtake_rate)
       b <- 0.32 * offtake_rate + 0.35 * (1 - offtake_rate)
-    } else if (cohort_short %in% c("FA", "MA")) {
+    } else if (cohort_short == "MN") {
+      a <- 4.4 
+      b <- 0.32
+      } else if (cohort_short %in% c("FA", "MA")) {
       a <- 0
       b <- 0
     }
@@ -530,7 +541,7 @@ calc_metabolic_energy_req_growth <- function(
         (a + 0.5 * b * (live_weight_cohort_initial + live_weight_cohort_final))
     ) / cohort_duration_days
   } else if (species_short %in% c("GTS")) {
-    if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+    if (cohort_short %in% c("FS", "FJ", "MS", "MJ", "FN", "MN")) {
       a <- 5
       b <- 0.33
     } else if (cohort_short %in% c("FA", "MA")) {
@@ -543,7 +554,7 @@ calc_metabolic_energy_req_growth <- function(
     ) / cohort_duration_days
   } else if (species_short == "PGS") {
     prot_tissue_frac <- 0.65
-    if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+    if (cohort_short %in% c("FS", "FJ", "MS", "MJ", "FN", "MN")) {
       cgro <- (prot_tissue_frac * 0.23 * 54) + ((1 - prot_tissue_frac) * 0.9 * 52.3)
       metabolic_energy_req_growth <- daily_weight_gain * cgro
     } else {
@@ -576,9 +587,11 @@ calc_metabolic_energy_req_growth <- function(
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param lactating_females_fraction Numeric. Proportion of adult females that are lactating during the assessment period (fraction). 
 #' Required only for species = CML, CTL, BFL, SHP, and GTS.
@@ -808,9 +821,11 @@ calc_metabolic_energy_req_lactation <- function(
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param egg_yield_year Numeric. Eggs produced per hen per year.
 #' @param egg_average_weight Numeric. Average egg weight (kg/egg).
@@ -847,9 +862,11 @@ calc_metabolic_energy_req_eggs <- function(
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed 
 #' to keep the animal at equilibrium such that body energy is neither gained nor lost. 
@@ -1008,7 +1025,8 @@ calc_metabolic_energy_req_work <- function(
 #' 
 #' @details
 #' This component follows the IPCC Tier 2 partitioning approach and is applied
-#' only to fibre-producing species and relevant cohorts, which are assumed to be \code{FA}, \code{FS}, \code{MA}, and \code{MS}.
+#' only to fibre-producing species and relevant cohorts, which are assumed to be
+#' \code{FA}, \code{FS}, \code{MA}, \code{MS}, \code{FN}, and \code{MN}.
 #'
 #' \strong{Species-specific approach:}
 #'
@@ -1100,13 +1118,13 @@ calc_metabolic_energy_req_fibre <- function(
   # Only sheep, goats, camelids produce fibre
 
   if (species_short %in% c("GTS", "SHP")) {
-    if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
+    if (cohort_short %in% c("FA", "FS", "MA", "MS", "FN", "MN")) {
       metabolic_energy_req_fibre_production <- 24 * fibre_yield_year / 365 # 24 MJ/kg fibre, annualized
     } else {
       metabolic_energy_req_fibre_production <- 0
     }
   } else if (species_short %in% c("CML")) {
-    if (cohort_short %in% c("FA", "FS", "MA", "MS")) {
+    if (cohort_short %in% c("FA", "FS", "MA", "MS", "FN", "MN")) {
       metabolic_energy_req_fibre_production <- (24 / 0.43) * (fibre_yield_year / 365) # 0.43: efficiency factor for camels
     } else {
       metabolic_energy_req_fibre_production <- 0
@@ -1138,9 +1156,11 @@ calc_metabolic_energy_req_fibre <- function(
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed 
 #' to keep the animal at equilibrium such that body energy is neither gained nor lost. 

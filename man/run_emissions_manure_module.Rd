@@ -25,7 +25,10 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). When present, manure-management fractions are matched separately by phase.}
 \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 \item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
@@ -46,7 +49,10 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). When present, manure-management fractions are matched separately by phase.}
 \item{manure_management_system}{Character. Name identifying the manure management system. The identifiers mms_pasture and mms_burned are reserved for manure deposited on pasture and manure burned for fuel, respectively. No specific naming convention is required for other manure management systems, which are grouped and handled as “other” systems.}
 \item{manure_management_system_fraction}{Numeric. Fraction of total manure excreted by animals in a given herd and cohort that is handled in a specific manure management system. Values ranges from 0 to 1. The sum of all fractions for each herd_id must equal 1.}
 }}
@@ -182,6 +188,12 @@ by MMS group, consistently with Equation 10.25 (IPCC, 2006, 2019) -  \code{\link
 \item Total N2O emissions are aggregated by MMS group
 (pasture, burned, other) - \code{\link{calc_n2o_manure_total}}
 }
+
+When \code{nondemo_productive_phase_id} is available in both
+\code{cohort_level_data} and \code{manure_management_system_fraction},
+manure-management fractions are matched by
+\code{herd_id + cohort_short + nondemo_productive_phase_id}; otherwise they
+are matched by \code{herd_id + cohort_short}.
 
 The approach corresponds to a Tier 2 implementation as:
 \itemize{

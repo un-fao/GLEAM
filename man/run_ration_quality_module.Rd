@@ -32,8 +32,11 @@ of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }
 }
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). When present, ration summaries are computed separately by phase.}
 \item{feed_id}{Character. Unique identifier for the feed component, used
 to join feed ration data with feed parameter tables.}
 \item{feed_name}{Character. Feed component name (optional, for readability and
@@ -81,7 +84,8 @@ Defaults to \code{TRUE}.}
 }
 \value{
 data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
-\code{species_short}, and \code{cohort_short} with the following columns:
+\code{species_short}, \code{cohort_short}, and
+\code{nondemo_productive_phase_id} when present, with the following columns:
 \describe{
 \item{ration_gross_energy}{Numeric. Average gross energy content of the diet
 (MJ/kg DM).}
@@ -124,7 +128,8 @@ and \code{feed_gross_energy} using \code{\link{calc_feed_digestibility_fraction}
 \item ash using \code{\link{calc_ration_ash}}
 }
 \item Cohort-level nutritional metrics are obtained for the whole feed ration by summing contributions across
-feed components within each \code{herd_id}, \code{species_short}, and \code{cohort_short}.
+feed components within each \code{herd_id}, \code{species_short}, and \code{cohort_short}
+group, and within \code{nondemo_productive_phase_id} when that column is provided.
 }
 }
 \examples{

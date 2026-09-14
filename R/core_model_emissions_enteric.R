@@ -22,9 +22,11 @@
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param ration_digestibility_fraction Numeric. Average digestibility of the feed ration, expressed as ratio of 
 #' digestible (or metabolizable, for poultry) to gross energy content (fraction).
@@ -46,7 +48,7 @@
 #'     \itemize{
 #'       \item \code{FA} and \code{MA} cohorts: 
 #'       \deqn{ym = 9.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
-#'       \item \code{FS} and \code{MS} cohorts: 
+#'       \item \code{FS}, \code{MS}, \code{FN}, and \code{MN} cohorts: 
 #'       \deqn{ym = 7.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
 #'     }
 #'
@@ -54,7 +56,7 @@
 #'     ym is assigned fixed values by cohort:
 #'     \itemize{
 #'       \item \code{FA} and \code{MA} cohorts: \deqn{ym = 1.01}
-#'        \item \code{FS} and \code{MS} cohorts: \deqn{ym = 0.39}
+#'        \item \code{FS}, \code{MS}, \code{FN}, and \code{MN} cohorts: \deqn{ym = 0.39}
 #'     }
 #' }
 #'
@@ -104,7 +106,7 @@ calc_conversion_factor_ym <- function(
   } else if (species_short %in% c("SHP", "GTS", "CML")) {
     if (cohort_short %in% c("FJ", "MJ")) {
       ch4_conversion_factor_ym <- 0
-    } else if (cohort_short %in% c("FS", "MS")) {
+    } else if (cohort_short %in% c("FS", "MS", "FN", "MN")) {
       ch4_conversion_factor_ym <- 7.75 - 0.05 * ration_digestibility_fraction * 100
     } else {
       ch4_conversion_factor_ym <- 9.75 - 0.05 * ration_digestibility_fraction * 100
@@ -112,7 +114,7 @@ calc_conversion_factor_ym <- function(
   } else if (species_short %in% c("PGS")) {
     if (cohort_short %in% c("FJ", "MJ")) {
       ch4_conversion_factor_ym <- 0
-    } else if (cohort_short %in% c("FS", "MS")) {
+    } else if (cohort_short %in% c("FS", "MS", "FN", "MN")) {
       ch4_conversion_factor_ym <- 0.39
     } else {
       ch4_conversion_factor_ym <- 1.01
