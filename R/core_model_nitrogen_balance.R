@@ -48,15 +48,16 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #' incorporated into animal products or body tissues.
 #'
 #' @param species_short Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
@@ -90,7 +91,18 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #' @param live_weight_at_weaning Numeric. Live weight of the animal at weaning (kg).
 #' @param live_weight_at_birth Numeric. Live weight of the animal at birth (kg).
 #' @param pregnancy_duration Numeric. Duration of pregnancy period (days).
-#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days).
+#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.
+#' @param cohort_stock_size Numeric. Average cohort stock size (heads). Used for
+#'   \code{CHK} egg-producing cohorts.
+#' @param egg_output_human_consumption Numeric. Annual egg output for human
+#'   consumption (eggs/year). Used for \code{CHK} egg-producing cohorts.
+#' @param egg_average_weight Numeric. Average egg weight (kg/egg). Used for
+#'   \code{CHK} egg-producing cohorts.
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase
+#'   identifier for non-demographic cohorts.
+#' @param is_egg_producing Logical. Cohort-level flag identifying egg-producing
+#'   \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
+#'   \code{FN} with \code{nondemo_productive_phase_id = 2}.
 #'
 #' @return Numeric. Daily nitrogen retention in animal body tissues and products
 #' (e.g., growth, pregnancy, milk...) (kg N/head/day)
@@ -159,6 +171,37 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #'     content per unit of live weight gain, following IPCC (2019).  
 #' }
 #'
+#' \strong{For CHK}:
+#'
+#' Nitrogen retention is calculated as the sum of a growth component and, for
+#' cohorts flagged with \code{is_egg_producing = TRUE}, an egg-deposition
+#' component:
+#'
+#' \deqn{nitrogen\_retention = growth\_component + egg\_component}
+#'
+#' with:
+#'
+#' \deqn{growth\_component = daily\_weight\_gain \times 0.032}
+#'
+#' and:
+#'
+#' \deqn{
+#' egg\_component =
+#' \left(
+#' \frac{egg\_output\_human\_consumption}{365 \times cohort\_stock\_size} +
+#' \frac{parturition\_rate}{365}
+#' \right) \times egg\_average\_weight \times 0.02
+#' }
+#'
+#' The coefficient 0.032 represents nitrogen retained in live-weight gain
+#' (kg N/kg live weight), following Lessire (2004). The coefficient 0.02
+#' represents nitrogen content of egg mass (kg N/kg egg mass), based on the egg
+#' protein composition summarized by Caffa et al. (2025). As implemented in the
+#' poultry pathway, the egg component is activated by the explicit cohort-level
+#' \code{is_egg_producing} flag. Validation restricts this flag to demographic
+#' laying hens (\code{FA}) and to non-demographic \code{FN} phase 2 when
+#' intensive layers are modeled outside the demographic structure.
+#'
 #' This function is part of the [run_nitrogen_balance_module()].
 #' 
 #' @seealso
@@ -177,6 +220,15 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions from
 #' Livestock and Manure Management. Equation 10.33.
 #'
+#' Caffa, I., Proietti, E., Turrini, F., Borgarelli, C., Ferrando, M. R.,
+#' Formisano, E., ... & Pisciotta, L. (2025). Nutritional Aspects of Eggs for a
+#' Healthy and Sustainable Consumption: A Narrative Review. \emph{Food Science &
+#' Nutrition}, 13(9), e70285.
+#'
+#' Lessire, M. (2004). Nutritional values for poultry. In \emph{Tables of
+#' composition and nutritional value of feed materials} (pp. 37-42). Wageningen
+#' Academic.
+#'
 #' @export
 calc_nitrogen_retention <- function(
     species_short,
@@ -190,14 +242,21 @@ calc_nitrogen_retention <- function(
     live_weight_at_weaning = NA_real_,
     live_weight_at_birth = NA_real_,
     pregnancy_duration = NA_real_,
-    cohort_duration_days = NA_real_
+    cohort_duration_days = NA_real_,
+    cohort_stock_size = NA_real_,
+    egg_output_human_consumption = NA_real_,
+    egg_average_weight = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
     
 ) {
   # Validate inputs
   validate_nitrogen_retention_inputs(
     species_short, cohort_short, milk_protein_fraction, milk_yield_day,
     daily_weight_gain, fibre_yield_year, litter_size, parturition_rate,
-    live_weight_at_weaning, live_weight_at_birth, pregnancy_duration, cohort_duration_days
+    live_weight_at_weaning, live_weight_at_birth, pregnancy_duration, cohort_duration_days,
+    cohort_stock_size, egg_output_human_consumption, egg_average_weight,
+    nondemo_productive_phase_id, is_egg_producing
   )
 
   if (species_short %in% gleam_species_milk_producers) {
@@ -235,6 +294,26 @@ calc_nitrogen_retention <- function(
     } else {
       nitrogen_retention <- 0.025 * daily_weight_gain
     }
+  } else if (species_short == "CHK") {
+    growth_n <- 0.032
+    egg_n <- 0.02
+
+    growth_comp <- if (!is.na(daily_weight_gain) && daily_weight_gain > 0) {
+      daily_weight_gain * growth_n
+    } else {
+      0
+    }
+
+    egg_comp <- if (isTRUE(is_egg_producing)) {
+      human_consumption_eggs_head_day <- egg_output_human_consumption / 365 / cohort_stock_size
+      reproductive_eggs_head_day <- parturition_rate / 365
+      egg_mass_day <- (human_consumption_eggs_head_day + reproductive_eggs_head_day) * egg_average_weight
+      egg_mass_day * egg_n
+    } else {
+      0
+    }
+
+    nitrogen_retention <- growth_comp + egg_comp
 
   }
 
@@ -247,15 +326,16 @@ calc_nitrogen_retention <- function(
 #' nitrogen intake and nitrogen retention.
 #'
 #' @param species_short Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }
 #' @param nitrogen_intake Numeric. Daily nitrogen intake (kg N/head/day).
 #' @param nitrogen_retention Numeric. Daily nitrogen retention in animal body
 #' tissues and products (e.g., growth, pregnancy, milk...) (kg N/head/day).

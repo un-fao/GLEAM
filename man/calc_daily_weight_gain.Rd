@@ -15,7 +15,7 @@ calc_daily_weight_gain(
 
 \item{live_weight_cohort_initial}{Numeric. Live weight at the beginning of the cohort stage (kg).}
 
-\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.}
 }
 \value{
 Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).

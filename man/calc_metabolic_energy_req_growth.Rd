@@ -13,7 +13,9 @@ calc_metabolic_energy_req_growth(
   live_weight_mature_stage = NA_real_,
   daily_weight_gain = NA_real_,
   offtake_rate = NA_real_,
-  cohort_duration_days = NA_real_
+  cohort_duration_days = NA_real_,
+  nondemo_productive_phase_id = NA_real_,
+  is_egg_producing = FALSE
 )
 }
 \arguments{
@@ -26,6 +28,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
@@ -59,6 +62,13 @@ biological and management conditions (kg).}
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 
 \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase
+identifier for non-demographic cohorts.}
+
+\item{is_egg_producing}{Logical. Cohort-level flag identifying the laying
+cohort for \code{CHK}. This can be \code{TRUE} only for \code{FA} and for
+\code{FN} with \code{nondemo_productive_phase_id = 2}.}
 }
 \value{
 Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
@@ -122,6 +132,25 @@ where:
 \item \code{meat_fat_energy = 52.3} is the ME cost of fat deposition (MJ/kg fat).
 }
 
+\item \strong{CHK} (Sakomura, 2004)
+
+Chicken growth energy is calculated as:
+
+\deqn{metabolic\_energy\_req\_growth = daily\_weight\_gain \times cgro \times 1000}
+
+where \eqn{daily\_weight\_gain} is expressed in kg/head/day and \eqn{cgro}
+is expressed in MJ/g. The factor 1000 converts kilograms of live-weight gain
+to grams.
+
+The following values are used:
+\itemize{
+\item \code{MA} and any \code{CHK} cohort with
+\code{is_egg_producing = TRUE}:
+\eqn{cgro = 0.0279}
+\item \code{FS}, \code{FJ}, \code{MS}, \code{MJ}:
+\eqn{cgro = 0.0202}
+}
+
 }
 
 This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
@@ -149,6 +178,9 @@ Chapter 10: Emissions from Livestock and Manure Management, Equation 10.6 and 10
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
 from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
+
+Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
+laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
 }
 \seealso{
 \code{\link{run_metabolic_energy_req_module}},

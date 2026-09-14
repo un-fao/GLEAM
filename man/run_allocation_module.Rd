@@ -24,6 +24,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals.
 Supported values include:
@@ -49,6 +50,15 @@ for CML.}
 \item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught
 power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
 SHP, GTS and as metabolizable energy for CML.}
+\item{nondemo_productive_phase_id}{Numeric. Productive phase identifier for non-demographic cohorts. Required in the
+input table and typically set to \code{NA} for demographic cohorts.}
+\item{egg_production_mass_cohort}{Numeric. Total egg mass output over the assessment
+period by cohort (kg/cohort/assessment period). Required in the input table and typically set to \code{0} for
+non-egg-producing cohorts.}
+\item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+chicken cohort. Required in the input table. Used only for \code{CHK};
+may be \code{TRUE} only for \code{FA} or for \code{FN} in laying phase 2,
+and should be \code{FALSE} otherwise.}
 }}
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data
@@ -65,6 +75,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
@@ -99,7 +110,7 @@ period).}
 \item{work_allocation_energy}{Numeric. Energy required to provide all draught power (traction/work) by cohort
 (MJ/cohort/assessment period).}
 \item{egg_allocation_energy}{Numeric. Energy required for egg production over the assessment period
-(MJ/cohort/assessment period). Currently set to 0.}
+(MJ/cohort/assessment period). Returned as 0 for non-egg-producing cohorts and non-poultry species.}
 }}
 \item{allocation_long}{A herd-level \code{data.table} in long format with one
 row per herd, commodity, and emission source combination, containing the
@@ -116,6 +127,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 \item{variable_name}{Character. Names of emission variables to which
 allocation should be applied (e.g.,"ch4_enteric", "ch4_manure_pasture",
@@ -163,7 +175,7 @@ fibre, work, and eggs using
 \code{\link{calc_milk_allocation_energy}},
 \code{\link{calc_fibre_allocation_energy}},
 \code{\link{calc_work_allocation_energy}}, and
-\code{calc_eggs_allocation_energy}.
+\code{\link{calc_egg_allocation_energy}}.
 
 \item Aggregation of cohort-level energy terms to herd level using
 \code{\link{calc_cohort_to_herd_aggregation}}.

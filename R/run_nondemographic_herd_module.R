@@ -78,6 +78,8 @@
 #'   }
 #' @param simulation_duration Numeric. Length of the reporting period used to scale non-demographic outputs (days).
 #'   Defaults to `365`.
+#' @param show_indicator Logical. Whether to display progress indicators during simulation.
+#'   Defaults to `TRUE`.
 #'
 #' @return A named list with two elements:
 #'   \describe{
@@ -124,7 +126,8 @@
 #' results <- run_nondemographic_herd_module(
 #'   cohort_level_data = nondemo_chrt_dt,
 #'   herd_level_data = nondemo_hrd_dt,
-#'   simulation_duration = 365
+#'   simulation_duration = 365,
+#'   show_indicator = TRUE
 #' )
 #'
 #' # Access results
@@ -136,12 +139,17 @@
 run_nondemographic_herd_module <- function(
     cohort_level_data,
     herd_level_data,
-    simulation_duration = 365
+    simulation_duration = 365,
+    show_indicator = TRUE
 ) {
   validate_run_nondemographic_herd_module_inputs(
     cohort_level_data,
     herd_level_data
   )
+
+  if (show_indicator) {
+    cli::cli_status("\U1F552 Simulating the non-demographic herd, please wait\U2026")
+  }
   
   cohort_level_results <- data.table::copy(cohort_level_data)
   herd_level_results <- data.table::copy(herd_level_data)
@@ -289,6 +297,8 @@ run_nondemographic_herd_module <- function(
       off <- calc_nondemo_offtake_total_horizon(
         cohort_stock_nondemo_end_phase1 = full_simulation_phase1$cohort_stock_nondemo$end,
         cohort_stock_nondemo_end_phase2 = full_simulation_phase2$cohort_stock_nondemo$end,
+        cohort_stock_nondemo_annual_entrants = cohort_stock_nondemo_annual_entrants,
+        cohort_stock_nondemo_start_cycle = start_size$cohort_stock_nondemo_start_cycle,
         number_full_nondemo_cycles = geom$number_full_nondemo_cycles,
         partial_phase1_nondemo_duration = geom$partial_phase1_nondemo_duration,
         partial_phase2_nondemo_duration = geom$partial_phase2_nondemo_duration,
@@ -329,6 +339,11 @@ run_nondemographic_herd_module <- function(
     cohort_level_results <- cohort_level_results[
       is.na(cohort_stock_size_unscaled) | cohort_stock_size_unscaled > 0
     ]
+  }
+
+  if (show_indicator) {
+    cli::cli_status_clear()
+    cli::cli_alert_success("Non-demographic herd simulation complete.")
   }
   
   list(

@@ -1,13 +1,14 @@
-herd_id	species_short	age_first_parturition	lactating_females_fraction	milk_yield_day	milk_fat_fraction	non_productive_duration	pregnancy_duration	litter_size	death_rate_juvenile	live_weight_at_birth	live_weight_at_weaning	lactation_duration	parturition_rate	draught_work_hours_female	draught_work_hours_male	draught_fraction_female	draught_fraction_male	fibre_yield_year
-1	CTL	770	0.4	27.9	0.037	NA	283	1	NA	41	250	NA	0.8	0	0	0	0	0
-2	CTL	1460	0	0	0	NA	283	1	NA	14	220	NA	0.684	0	1.1	0	0.2	0
-3	SHP	508	0.3	0.212	0.066	NA	152	1	NA	4.19	30	NA	0.93	NA	NA	NA	NA	1.5
-4	SHP	729	0	0	0	NA	152	1	NA	5.21	35	NA	0.745	NA	NA	NA	NA	2.5
-5	GTS	475	0.3	1.34	0.0589	NA	150	1	NA	3.5	15	NA	0.82	NA	NA	NA	NA	1.8
-6	GTS	624	0	0	0	NA	150	1.7	NA	3.3	14	NA	0.91	NA	NA	NA	NA	0.75
-7	BFL	1030	0.35	2.32	0.0824	NA	310	1	NA	38	130	NA	0.8	0	0	0	0	0
-8	BFL	1460	0.35	5.09	0.071	NA	310	1	NA	32.6	110	NA	0.835	0	2.2	0	0.2	0
-9	PGS	386	0	0	0	14.6	115	13.5	0.13	1.2	7	27	2.33	NA	NA	NA	NA	0
-10	PGS	430	0	0	0	23	115	7	0.22	1	6	90	1.6	NA	NA	NA	NA	0
-11	CML	2560	0.3	4.17	0.035	NA	390	1	NA	28.7	120	NA	0.43	0	2	0	0.1	1
-12	CML	1640	0.3	9.72	0.035	NA	390	1	NA	32.7	150	NA	0.83	0	2	0	0.1	1
+herd_id	species_short	age_first_parturition	lactating_females_fraction	milk_yield_day	milk_fat_fraction	non_productive_duration	pregnancy_duration	litter_size	death_rate_juvenile	live_weight_at_birth	live_weight_at_weaning	lactation_duration	parturition_rate	draught_work_hours_female	draught_work_hours_male	draught_fraction_female	draught_fraction_male	fibre_yield_year	average_annual_temperature	egg_output_human_consumption	egg_average_weight
+1	CTL	770	0.4	27.9	0.037		283	1		41	250		0.8	0	0	0	0	0			
+2	CTL	1460	0	0	0		283	1		14	220		0.684	0	1.1	0	0.2	0			
+3	SHP	508	0.3	0.212	0.066		152	1		4.19	30		0.93					1.5			
+4	SHP	729	0	0	0		152	1		5.21	35		0.745					2.5			
+5	GTS	475	0.3	1.34	0.0589		150	1		3.5	15		0.82					1.8			
+6	GTS	624	0	0	0		150	1.7		3.3	14		0.91					0.75			
+7	BFL	1030	0.35	2.32	0.0824		310	1		38	130		0.8	0	0	0	0	0			
+8	BFL	1460	0.35	5.09	0.071		310	1		32.6	110		0.835	0	2.2	0	0.2	0			
+9	PGS	386				14.6	115	13.5	0.13	1.2	7	27	2.33								
+10	PGS	430				23	115	7	0.22	1	6	90	1.6								
+11	CML	2560	0.3	4.17	0.035		390	1		28.7	120		0.43	0	2	0	0.1	1			
+12	CML	1640	0.3	9.72	0.035		390	1		32.7	150		0.83	0	2	0	0.1	1			
+13	CHK	170			0			0.75	0.12	0.04	0.04		45					0	20	180000	0.06

@@ -9,6 +9,17 @@
 #' @param cohort_level_data A \code{data.table} in long format with one row per
 #'   herd \eqn{\times} cohort. Must include:
 #'   \describe{
+#'     \item{species_short}{Character. Code identifying the livestock species.
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }}
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 #'     \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 #'       \itemize{
@@ -21,7 +32,7 @@
 #'         \item \code{FN}: non-demographic females
 #'         \item \code{MN}: non-demographic males
 #'       }}
-#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.}
 #'     \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 #'   }
 #'   Optional column:
@@ -30,12 +41,12 @@
 #'   }
 #' @param herd_level_data A \code{data.table} with one row per herd. Must include:
 #'   \itemize{
-#'     \item \code{live_weight_female_adult} Numeric. Live weight of adult females (kg)
-#'     \item \code{live_weight_male_adult} Numeric. Live weight of adult males (kg)
-#'     \item \code{live_weight_at_birth} Numeric. Live weight of the animal at birth (kg).
-#'     \item \code{live_weight_at_weaning} Numeric. Live weight of the animal at weaning (kg)
-#'     \item \code{live_weight_female_at_slaughter} Numeric. Slaughter weight of female sub-adult animals (kg)
-#'     \item \code{live_weight_male_at_slaughter} Numeric. Slaughter weight of male sub-adult animals (kg)
+#'     \item \code{live_weight_female_adult} Numeric. Live weight of adult females (kg), required when female demographic cohorts (\code{FJ}, \code{FS}, \code{FA}) are present.
+#'     \item \code{live_weight_male_adult} Numeric. Live weight of adult males (kg), required when male demographic cohorts (\code{MJ}, \code{MS}, \code{MA}) are present.
+#'     \item \code{live_weight_at_birth} Numeric. Live weight of the animal at birth (kg), required when juvenile demographic cohorts (\code{FJ}, \code{MJ}) are present.
+#'     \item \code{live_weight_at_weaning} Numeric. Live weight of the animal at weaning (kg), required when juvenile demographic cohorts (\code{FJ}, \code{MJ}) are present.
+#'     \item \code{live_weight_female_at_slaughter} Numeric. Slaughter weight of female sub-adult animals (kg), required when \code{FS} is present.
+#'     \item \code{live_weight_male_at_slaughter} Numeric. Slaughter weight of male sub-adult animals (kg), required when \code{MS} is present.
 #'     \item \code{live_weight_female_nondemographic_start} Numeric. Live weight at the beginning of the female non-demographic cycle (kg), when \code{FN} is present.
 #'     \item \code{live_weight_female_nondemographic_end} Numeric. Live weight at the end of the female non-demographic cycle (kg), when \code{FN} is present.
 #'     \item \code{live_weight_male_nondemographic_start} Numeric. Live weight at the beginning of the male non-demographic cycle (kg), when \code{MN} is present.
@@ -96,31 +107,25 @@
 #'
 #' @examples
 #' \donttest{
-#' path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
-#'
-#' master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
-#'   path_run_gleam_examples, "master_chrt_lvl_no_structure_mixed_data.csv"
+#' # Load weights inputs (cohort- and herd-level)
+#' weights_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/weights_input_chrt_data.csv",
+#'   package = "gleam"
 #' ))
-#' master_hrd_lvl_dt <- data.table::fread(file.path(
-#'   path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv"
+#' weights_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/weights_input_hrd_data.csv",
+#'   package = "gleam"
 #' ))
 #'
-#' herd_results <- run_all_herd_module(
-#'   cohort_level_data = master_chrt_lvl_no_structure_dt,
-#'   herd_level_data = master_hrd_lvl_dt,
-#'   simulation_duration = 365,
-#'   run_demographic = TRUE,
-#'   run_nondemographic = TRUE
-#' )
-#'
+#' # Run weight calculations
 #' results <- run_weights_module(
-#'   cohort_level_data = herd_results$cohort_level_results,
-#'   herd_level_data = herd_results$herd_level_results,
-#'   show_indicator = FALSE
+#'   cohort_level_data = weights_chrt_dt,
+#'   herd_level_data = weights_hrd_dt
 #' )
 #'
-#' head(results$cohort_level_results)
-#' head(results$herd_level_results)
+#' # Access results
+#' print(results$cohort_level_results)
+#' print(results$herd_level_results)
 #' }
 #'
 #' @export
@@ -131,7 +136,6 @@ run_weights_module <- function(
     herd_level_data,
     show_indicator = TRUE
 ) {
-
   # --- Step 1: Validate Inputs -----------------------------------------------
   validate_run_weights_module_inputs(cohort_level_data, herd_level_data)
 
@@ -157,6 +161,7 @@ run_weights_module <- function(
       "live_weight_cohort_potential_final",
       "live_weight_cohort_at_slaughter"
     ) := calc_cohort_weights(
+      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       nondemo_productive_phase_id = nondemo_productive_phase_id,
       live_weight_female_adult = herd_level_data[.SD, on = "herd_id", x.live_weight_female_adult],

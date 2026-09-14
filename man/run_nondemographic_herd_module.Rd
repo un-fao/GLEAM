@@ -7,7 +7,8 @@
 run_nondemographic_herd_module(
   cohort_level_data,
   herd_level_data,
-  simulation_duration = 365
+  simulation_duration = 365,
+  show_indicator = TRUE
 )
 }
 \arguments{
@@ -39,6 +40,9 @@ and productive phase, and the following mandatory columns:
 
 \item{simulation_duration}{Numeric. Length of the reporting period used to scale non-demographic outputs (days).
 Defaults to \code{365}.}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during simulation.
+Defaults to \code{TRUE}.}
 }
 \value{
 A named list with two elements:
@@ -133,7 +137,8 @@ nondemo_hrd_dt <- data.table::fread(system.file(
 results <- run_nondemographic_herd_module(
   cohort_level_data = nondemo_chrt_dt,
   herd_level_data = nondemo_hrd_dt,
-  simulation_duration = 365
+  simulation_duration = 365,
+  show_indicator = TRUE
 )
 
 # Access results

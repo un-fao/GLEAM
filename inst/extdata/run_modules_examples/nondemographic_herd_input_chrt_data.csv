@@ -1,11 +1,17 @@
-herd_id	cohort_short	nondemo_productive_phase_id	death_rate
-1	MN	1	0.1
-1	MN	2	0.1
-9	FN	1	0.1
-9	FN	2	0.1
-9	MN	1	0.1
-9	MN	2	0.1
-10	FN	1	0.1
-10	FN	2	0.1
-10	MN	1	0.1
-10	MN	2	0.1
+herd_id	species_short	cohort_short	nondemo_productive_phase_id	death_rate
+1	CTL	MN	1	0.1
+1	CTL	MN	2	0.1
+9	PGS	FN	1	0.1
+9	PGS	FN	2	0.1
+9	PGS	MN	1	0.1
+9	PGS	MN	2	0.1
+10	PGS	FN	1	0.1
+10	PGS	FN	2	0.1
+10	PGS	MN	1	0.1
+10	PGS	MN	2	0.1
+14	CHK	FN	1	0.08
+14	CHK	FN	2	0.1
+15	CHK	FN	1	0.1
+15	CHK	FN	2	0.1
+15	CHK	MN	1	0.1
+15	CHK	MN	2	0.1

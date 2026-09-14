@@ -1,13 +1,14 @@
-herd_id	live_weight_female_adult	live_weight_male_adult	live_weight_at_birth	live_weight_female_at_slaughter	live_weight_male_at_slaughter	live_weight_at_weaning	live_weight_female_nondemographic_start	live_weight_male_nondemographic_start	live_weight_female_nondemographic_end	live_weight_male_nondemographic_end	phase1_nondemo_fem_duration_days	phase2_nondemo_fem_duration_days	phase1_nondemo_mal_duration_days	phase2_nondemo_mal_duration_days
-1	680	916	41	557	605	250	250	250	557	605	30	50	30	50
-2	350	450	14	250	250	220	220	220	250	250	NA	NA	NA	NA
-3	51	59	4.19	35	35	30	30	30	35	35	NA	NA	NA	NA
-4	60.1	70.3	5.21	51.8	55.9	35	35	35	51.8	55.9	NA	NA	NA	NA
-5	70	110	3.5	25	25	15	15	15	25	25	NA	NA	NA	NA
-6	51	75.2	3.3	29	29	14	14	14	29	29	NA	NA	NA	NA
-7	600	800	38	420	420	130	130	130	420	420	NA	NA	NA	NA
-8	478	500	32.6	110	110	110	110	110	110	110	NA	NA	NA	NA
-9	225	265	1.2	122	122	7	7	7	122	122	60	90	60	90
-10	64	71	1	60	60	6	6	6	60	60	60	90	60	90
-11	352	382	28.7	352	382	120	120	120	352	382	NA	NA	NA	NA
-12	537	572	32.7	537	572	150	150	150	537	572	NA	NA	NA	NA
+herd_id	species_short	live_weight_female_adult	live_weight_male_adult	live_weight_at_birth	live_weight_female_at_slaughter	live_weight_male_at_slaughter	live_weight_at_weaning	live_weight_female_nondemographic_start	live_weight_male_nondemographic_start	live_weight_female_nondemographic_end	live_weight_male_nondemographic_end	phase1_nondemo_fem_duration_days	phase2_nondemo_fem_duration_days	phase1_nondemo_mal_duration_days	phase2_nondemo_mal_duration_days
+1	CTL	680	916	41	557	605	250		250		700			60	120
+2	CTL	350	450	14	250	250	220			250	250				
+3	SHP	51	59	4.19	35	35	30			35	35				
+4	SHP	60.1	70.3	5.21	51.8	55.9	35			51.8	55.9				
+5	GTS	70	110	3.5	25	25	15			25	25				
+6	GTS	51	75.2	3.3	29	29	14			29	29				
+7	BFL	600	800	38	420	420	130			420	420				
+8	BFL	478	500	32.6	110	110	110			110	110				
+9	PGS	225	265	1.2	122	122	7	7	7	120	120	60	110	60	100
+10	PGS	64	71	1	60	60	6	6	6	60	60	90	180	90	180
+11	CML	352	382	28.7	352	382	120			352	382				
+12	CML	537	572	32.7	537	572	150			537	572				
+13	CHK	1.8	2.4	0.04	1.6	2.1	0.04								

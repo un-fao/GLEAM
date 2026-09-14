@@ -28,6 +28,9 @@ run_metabolic_energy_req_module(
 \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
 for non-demographic cohorts (\code{FN}, \code{MN}). When present, energy
 requirements are computed and retained separately by phase.}
+\item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
+\code{FA} or for \code{FN} in laying phase 2.}
 \item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 \item{low_activity_fraction}{Numeric. Proportion of the assessment period during which the animal performs low-intensity movement typical of stall-feeding or near-field grazing, characterized by minimal walking distances and flat terrain  (fraction).}
@@ -36,7 +39,7 @@ requirements are computed and retained separately by phase.}
 \item{live_weight_cohort_final}{Numeric. Live weight at the end of the cohort stage, accounting for both surviving and offtaken animals. Computed as a weighted average of the potential final weight of surviving animals and the slaughter weight of offtaken animals, based on the offtake rate (kg).}
 \item{live_weight_mature_stage}{Numeric. Mature (adult) live weight that the animal can attain under given biological and management conditions (kg).}
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
-\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.}
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 \item{ration_metabolizable_energy}{Numeric. Average metabolizable energy content of the diet (MJ/kg DM).}
@@ -54,6 +57,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 \item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
 \item{lactating_females_fraction}{Numeric. Proportion of adult females that are lactating during the assessment period (fraction). Required only for species = CML, CTL, BFL, SHP, and GTS.}
@@ -61,13 +65,15 @@ Supported values include:
 \item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat / kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 \item{non_productive_duration}{Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days). Required only for PGS.}
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
-\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). For \code{CHK}, this can be interpreted as offspring produced per reproductive event.}
 \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
 \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.}
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance
-indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction.}
+\item{average_annual_temperature}{Numeric. Average annual temperature (degrees C). Used for \code{CHK}.}
+\item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}.}
+\item{egg_output_human_consumption}{Numeric. Number of eggs produced for human consumption in one year by the flock (eggs/year). Used for \code{CHK}.}
 \item{draught_work_hours_female}{Numeric. Average daily working time per adult female (hours/head/day). Required only for species = CML, CTL, and BFL.}
 \item{draught_work_hours_male}{Numeric. Average daily working time per adult male (hours/head/day). Required only for species = CML, CTL, and BFL.}
 \item{draught_fraction_female}{Numeric. Fraction of adult females involved in draught work (fraction). Required only for species = CML, CTL, and BFL.}

@@ -18,7 +18,7 @@ birth_fraction_female,0,TRUE,1,TRUE
 proportion_nondemographic,0,TRUE,1,TRUE
 litter_size,0.01,TRUE,25,TRUE
 litsize,0.01,TRUE,25,TRUE
-parturition_rate,0.01,TRUE,3,TRUE
+parturition_rate,0.01,TRUE,Inf,TRUE
 size_total,1,TRUE,Inf,TRUE
 herd_size_total,1,TRUE,Inf,TRUE
 live_weight_female_adult,0,TRUE,Inf,TRUE

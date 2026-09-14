@@ -5,6 +5,17 @@
 #' handles demographic cohorts (\code{FJ}, \code{FS}, \code{FA}, \code{MJ},
 #' \code{MS}, \code{MA}) and nondemographic cohorts (\code{FN}, \code{MN}).
 #'
+#' @param species_short Character. Code identifying the livestock species.
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         } 
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
@@ -93,6 +104,12 @@
 #'   }
 #' }
 #'
+#' For chickens, the juvenile stage is represented as a very short hatch-to-day-3
+#' period. Accordingly, this implementation sets \code{live_weight_at_weaning =
+#' live_weight_at_birth} whenever \code{species_short = "CHK"}, so that
+#' demographic juvenile cohorts do not introduce artificial early growth before
+#' the subsequent subadult phase.
+#'
 #' This function is part of the [run_weights_module()].
 #' 
 #' @seealso
@@ -100,6 +117,7 @@
 #'
 #' @export
 calc_cohort_weights <- function(
+    species_short = NA_character_,
     cohort_short,
     live_weight_female_adult = NA_real_, live_weight_male_adult = NA_real_,
     live_weight_at_birth = NA_real_, live_weight_female_at_slaughter = NA_real_,
@@ -113,6 +131,7 @@ calc_cohort_weights <- function(
     phase2_nondemo_mal_duration_days = NA_real_
 ) {
   validate_cohort_weight_inputs(
+    species_short,
     cohort_short,
     live_weight_female_adult, live_weight_male_adult,
     live_weight_at_birth,
@@ -126,6 +145,10 @@ calc_cohort_weights <- function(
     phase1_nondemo_mal_duration_days,
     phase2_nondemo_mal_duration_days
   )
+
+  if (identical(species_short, "CHK")) {
+    live_weight_at_weaning <- live_weight_at_birth
+  }
 
   # Juvenile cohorts
   if (cohort_short %in% c("FJ", "MJ")) {
@@ -310,7 +333,7 @@ calc_avg_weights <- function(
 #'
 #' @param live_weight_cohort_potential_final Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)
 #' @param live_weight_cohort_initial Numeric. Live weight at the beginning of the cohort stage (kg).
-#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days).
+#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.
 #'
 #' @return Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).
 #'
