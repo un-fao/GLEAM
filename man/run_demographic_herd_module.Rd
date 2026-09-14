@@ -66,9 +66,11 @@ A named list with two elements:
 \itemize{
 \item \code{cohort_stock_size_unscaled} - Numeric. Average population size in each of the 6 demographic sex–age cohorts (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}), not yet scaled to the total livestock population (herd_size_total), (# heads).
 This corresponds to \code{cohort_stock_average} returned by \code{\link{calc_projected_population_size}}.
+\item \code{offtake_heads_unscaled} - Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}), before rescaling to the cohort population at the start of the assessment period.
+\item \code{offtake_heads_assessment_unscaled} - Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}), before rescaling to the cohort population at the start of the assessment period.
+\item \code{offtake_heads_scaled} - Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}), rescaled to the cohort population at the start of the assessment period.
+\item \code{offtake_heads_assessment_scaled} - Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}), rescaled to the cohort population at the start of the assessment period.
 \item \code{cohort_stock_annual_nondemographic} Numeric. Total number of animals entering the non-demographic component of the model over the simulated period, disaggregated by demographic sex–age cohorts (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}) (heads).
-\item \code{offtake_heads} - Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
-\item \code{offtake_heads_assessment} - Numeric vector of length 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
 }
 }
 \item{\code{herd_level_results}}{A \code{data.table} with one row per herd containing all original

@@ -155,15 +155,11 @@ A named list with two elements:
 \item{\code{cohort_level_results}}{A \code{data.table} with one row per retained
 cohort. Depending on the selected execution mode, this table contains
 demographic rows only, non-demographic rows only, or both in a harmonized
-schema. It includes the original cohort-level input columns plus the
-following result variables when available:
+schema. Intermediate scaling variables are removed before return. It includes
+the original cohort-level input columns plus the following result variables
+when available:
 \describe{
-\item{\code{cohort_stock_size_unscaled}}{Numeric. Average cohort stock before
-final harmonization to \code{herd_size_total} (# heads).}
-\item{\code{cohort_stock_size}}{Numeric. Final average cohort stock after
-harmonization of the output schema. When both modules are run together,
-this is the rescaled stock size; when only one module is run, this is the
-renamed value of \code{cohort_stock_size_unscaled} (# heads).}
+\item{\code{cohort_stock_size}}{Numeric. Average population size for the assessed cohort (# heads).}
 \item{\code{offtake_heads}}{Numeric. Total number of animals removed from the
 cohort over the full 365-day simulation horizon (# heads).}
 \item{\code{offtake_heads_assessment}}{Numeric. Total number of animals removed
@@ -266,9 +262,24 @@ The combined cohort output harmonizes, when needed:
 \item \code{offtake_heads_assessment}
 \item \code{cohort_duration_days}
 \item \code{death_rate}
-\item \code{cohort_stock_size_unscaled}
 \item \code{cohort_stock_size}
 }
+
+When both modules are run, intermediate unscaled cohort stock and offtake
+outputs are combined and rescaled so that the summed cohort average stock
+matches \code{herd_size_total} from \code{herd_level_data}.
+
+The rescaling is performed in two steps:
+\enumerate{
+\item \code{cohort_stock_size_unscaled} is rescaled internally to
+\code{cohort_stock_size} within each \code{herd_id}
+\item \code{offtake_heads_unscaled} and
+\code{offtake_heads_assessment_unscaled} are rescaled proportionally to the
+final \code{cohort_stock_size}
+}
+
+When only one module is run, the corresponding scaled or unscaled module
+outputs are renamed to the harmonized final output names.
 
 The function then rescales the combined cohort
 stock and offtake outputs so that the summed cohort average stock matches
@@ -300,7 +311,7 @@ herd_level_path <- system.file(
 cohort_data_demographic <- data.table::fread(cohort_path)
 herd_level_data <- data.table::fread(herd_level_path)
 
-out <- run_all_herd_module(
+results <- run_all_herd_module(
   cohort_level_data = cohort_data_demographic,
   herd_level_data = herd_level_data,
   run_demographic = TRUE,
@@ -309,7 +320,7 @@ out <- run_all_herd_module(
 
 
 # Access the results
-names(out)
+names(results)
 
 =====
 
@@ -351,7 +362,7 @@ herd_level_path <- system.file(
 cohort_level_data <- data.table::fread(cohort_combined_path)
 herd_level_data <- data.table::fread(herd_level_path)
 
-out <- run_all_herd_module(
+results <- run_all_herd_module(
   cohort_level_data = cohort_level_data,
   herd_level_data = herd_level_data,
   run_demographic = TRUE,
@@ -359,9 +370,9 @@ out <- run_all_herd_module(
 )
 
 # Access the results
-names(out)
-demo_herd <- out$herd_level_results
-demo_herd
+names(results)
+herd_results <- results$herd_level_results
+herd_results
 }
 
 }

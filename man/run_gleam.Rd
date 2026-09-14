@@ -594,7 +594,7 @@ results <- run_gleam(
   manure_management_system_fraction = manure_management_system_fraction_dt,
   manure_management_system_factors = manure_management_system_factors_dt,
   simulation_duration = 365,
-  show_indicator = FALSE
+  show_indicator = TRUE
 )
 names(results)
 }
@@ -642,7 +642,7 @@ results <- run_gleam(
   manure_management_system_factors = manure_management_system_factors_dt,
   simulation_duration = 365,
   global_warming_potential_set = "AR6",
-  show_indicator = FALSE
+  show_indicator = TRUE
 )
 names(results)
 }

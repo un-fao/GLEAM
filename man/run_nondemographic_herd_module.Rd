@@ -50,8 +50,8 @@ containing the original \code{cohort_level_data} columns plus:
 \item{\code{cohort_duration_days}}{Numeric. Productive phase duration used in the simulation (days). If not supplied in the cohort table, this is filled from herd-level phase-duration inputs.}
 \item{\code{cohort_stock_size_unscaled}}{Numeric. Average population size by cohort block and productive phase before any later herd-level harmonization (# heads).}
 \item{\code{partial_nondemo_phase_duration}}{Numeric. Duration of the terminal partial productive phase occurring within the fixed 365-day simulation horizon (days).}
-\item{\code{offtake_heads}}{Numeric. Total number of animals leaving the cohort block over the fixed 365-day simulation horizon (# heads).}
-\item{\code{offtake_heads_assessment}}{Numeric. Total number of animals leaving the cohort block over \code{simulation_duration} (# heads / simulated period).}
+\item{\code{offtake_heads_unscaled}}{Numeric. Total number of animals leaving the cohort block over the fixed 365-day simulation horizon (# heads).}
+\item{\code{offtake_heads_assessment_unscaled}}{Numeric. Total number of animals leaving the cohort block over \code{simulation_duration} (# heads / simulated period).}
 \item{\code{number_full_nondemo_cycles}}{Integer. Number of complete cycles fully contained within the fixed 365-day simulation horizon (full cycles / simulated period).}
 \item{\code{total_nondemo_cycle_starts_to_distribute}}{Integer. Total number of cycle starts within the fixed 365-day simulation horizon used to distribute annual entrants (cycle starts / simulated period).}
 }}
