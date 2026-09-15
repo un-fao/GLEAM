@@ -6,6 +6,11 @@
   : Run the full Global Livestock Environmental Assessment Model (GLEAM)
   Pipeline
 
+## Other pipelines
+
+- [`run_emissions_direct()`](https://github.com/un-fao/GLEAM/reference/run_emissions_direct.md)
+  : Run Direct Emissions Pipeline
+
 ## Demographic herd module
 
 - [`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md)

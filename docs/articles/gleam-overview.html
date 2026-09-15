@@ -273,14 +273,78 @@ supply a cohort-level table that includes the
 <code>cohort_stock_size</code> and <code>offtake_heads_assessment</code>
 columns. The pipeline will skip the herd simulation step and proceed
 directly to the weight calculations.</p>
+<p>As an alternative to the full GLEAM pipeline, you can run only the
+direct livestock emissions pipeline using
+<code><a href="../reference/run_emissions_direct.html">run_emissions_direct()</a></code>. This function calculates CH4
+emissions from enteric fermentation and CH4 and N2O emissions from
+manure management.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="co"># Example 1: Calculate ration quality from feed composition</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/un-fao/GLEAM/">gleam</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ---- Load sample data from inst/extdata ----</span></span>
+<span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_modules_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cohort_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path</span>, <span class="st">"emissions_direct_input_chrt_structure_data.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">herd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path</span>, <span class="st">"emissions_direct_input_hrd_data.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">rations_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path</span>, <span class="st">"feed_rations_share_chrt.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path</span>, <span class="st">"feed_quality.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">mms_frac_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path</span>, <span class="st">"manure_management_system_fraction.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">mms_fact_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path</span>, <span class="st">"manure_management_system_factors.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_emissions_direct.html">run_emissions_direct</a></span><span class="op">(</span></span>
+<span>  has_herd_structure <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">cohort_dt</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">herd_dt</span>,</span>
+<span>  feed_rations <span class="op">=</span> <span class="va">rations_dt</span>,</span>
+<span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span>
+<span>  manure_management_system_fraction <span class="op">=</span> <span class="va">mms_frac_dt</span>,</span>
+<span>  manure_management_system_factors <span class="op">=</span> <span class="va">mms_fact_dt</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Example 2: Use ration quality provided directly in cohort_level_data</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/un-fao/GLEAM/">gleam</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ---- Load sample data from inst/extdata ----</span></span>
+<span><span class="va">cohort_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path</span>, <span class="st">"emissions_direct_input_chrt_structure_ration_quality_data.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_emissions_direct.html">run_emissions_direct</a></span><span class="op">(</span></span>
+<span>  has_herd_structure <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">cohort_dt</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">herd_dt</span>,</span>
+<span>  manure_management_system_fraction <span class="op">=</span> <span class="va">mms_frac_dt</span>,</span>
+<span>  manure_management_system_factors <span class="op">=</span> <span class="va">mms_fact_dt</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="pipeline-overview">Pipeline Overview<a class="anchor" aria-label="anchor" href="#pipeline-overview"></a>
 </h2>
-<p>The <code><a href="../reference/run_gleam.html">run_gleam()</a></code> function orchestrates the full modelling
-pipeline by calling individual modules in sequence. Each module can also
-be run independently for custom workflows. The pipeline consists of the
-following steps:</p>
+<p>The <a href="../reference/run_gleam.html"><code>run_gleam()</code></a> function
+orchestrates the full modelling pipeline, while <a href="../reference/run_emissions_direct.html"><code>run_emissions_direct()</code></a>
+runs the modules needed for enteric and manure emissions. Each module
+can also be run independently for custom workflows. The full pipeline
+consists of the following steps:</p>
 <table class="table">
 <colgroup>
 <col width="8%">
@@ -365,6 +429,29 @@ commodity</td>
 </tr>
 </tbody>
 </table>
+<p><code><a href="../reference/run_emissions_direct.html">run_emissions_direct()</a></code> follows the same sequence but
+skips feed production emissions (step 8). Its emissions include enteric
+CH₄ and manure CH₄ and N₂O, including indirect manure N₂O. Two options
+control which other steps run:</p>
+<ul>
+<li>
+<strong>Ration quality:</strong> provide both
+<code>feed_rations</code> and <code>feed_params</code> to run step 3, or
+omit both when <code>cohort_level_data</code> already contains the six
+ration-quality columns.</li>
+<li>
+<strong>Emission factors only:</strong> set
+<code>emission_factors_only = TRUE</code> to stop after manure emissions
+(step 7), skipping production, allocation, and aggregation. Daily
+per-head emission factors are returned in
+<code>results$cohort_level_results</code>;
+<code>results$allocation_long</code> and
+<code>results$aggregation_results</code> are <code>NULL</code>.</li>
+</ul>
+<p>By default, <code><a href="../reference/run_emissions_direct.html">run_emissions_direct()</a></code> also runs production,
+allocation, and aggregation for its direct-emission sources. Both
+pipelines require all six cohorts per herd, including when
+<code>has_herd_structure = TRUE</code> skips herd simulation.</p>
 <p>Each module validates its inputs before execution, checking for
 required columns, valid value ranges, and consistency across data
 tables. This ensures that errors are caught early and do not propagate
@@ -388,7 +475,7 @@ modules:</strong>
 <p>For custom workflows, research applications, or step-by-step
 debugging, each module can be called independently. For example, to
 compute only metabolic energy requirements:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assumes cohort_level_data and herd_level_data have been prepared with</span></span>
 <span><span class="co"># weight and ration quality variables already merged in.</span></span>
 <span><span class="va">energy_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_metabolic_energy_req_module.html">run_metabolic_energy_req_module</a></span><span class="op">(</span></span>
@@ -406,7 +493,7 @@ vignette</a>.</p>
 scientific functions. These can be called directly for research or
 testing purposes. For example, to compute maintenance energy
 requirements for a single cohort:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">e_maint</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_metabolic_energy_req_maintenance.html">calc_metabolic_energy_req_maintenance</a></span><span class="op">(</span></span>
 <span>  species_short              <span class="op">=</span> <span class="st">"CTL"</span>,</span>
 <span>  cohort_short               <span class="op">=</span> <span class="st">"FA"</span>,</span>

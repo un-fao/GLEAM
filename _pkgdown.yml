@@ -50,6 +50,10 @@ reference:
   - title: "Main pipeline"
     contents:
       - run_gleam
+      
+  - title: "Other pipelines"
+    contents:
+      - run_emissions_direct
 
   - title: "Demographic herd module"
     contents:

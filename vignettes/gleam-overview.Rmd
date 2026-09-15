@@ -162,12 +162,79 @@ includes the `cohort_stock_size` and `offtake_heads_assessment` columns. The
 pipeline will skip the herd simulation step and proceed directly to the weight
 calculations.
 
+As an alternative to the full GLEAM pipeline, you can run only the direct
+livestock emissions pipeline using `run_emissions_direct()`.
+This function calculates CH4 emissions from enteric fermentation and CH4 and N2O
+emissions from manure management.
+
+```{r direct-emissions-quick-start}
+
+
+# Example 1: Calculate ration quality from feed composition
+
+library(gleam)
+library(data.table)
+
+# ---- Load sample data from inst/extdata ----
+path <- system.file("extdata/run_modules_examples", package = "gleam")
+
+cohort_dt <- data.table::fread(file.path(
+  path, "emissions_direct_input_chrt_structure_data.csv"
+))
+herd_dt <- data.table::fread(file.path(
+  path, "emissions_direct_input_hrd_data.csv"
+))
+rations_dt <- data.table::fread(file.path(
+  path, "feed_rations_share_chrt.csv"
+))
+feed_params_dt <- data.table::fread(file.path(
+  path, "feed_quality.csv"
+))
+mms_frac_dt <- data.table::fread(file.path(
+  path, "manure_management_system_fraction.csv"
+))
+mms_fact_dt <- data.table::fread(file.path(
+  path, "manure_management_system_factors.csv"
+))
+
+results <- run_emissions_direct(
+  has_herd_structure = TRUE,
+  cohort_level_data = cohort_dt,
+  herd_level_data = herd_dt,
+  feed_rations = rations_dt,
+  feed_params = feed_params_dt,
+  manure_management_system_fraction = mms_frac_dt,
+  manure_management_system_factors = mms_fact_dt
+)
+
+
+# Example 2: Use ration quality provided directly in cohort_level_data
+
+library(gleam)
+library(data.table)
+
+# ---- Load sample data from inst/extdata ----
+cohort_dt <- data.table::fread(file.path(
+  path, "emissions_direct_input_chrt_structure_ration_quality_data.csv"
+))
+
+results <- run_emissions_direct(
+  has_herd_structure = TRUE,
+  cohort_level_data = cohort_dt,
+  herd_level_data = herd_dt,
+  manure_management_system_fraction = mms_frac_dt,
+  manure_management_system_factors = mms_fact_dt
+)
+
+```
 
 # Pipeline Overview
 
-The `run_gleam()` function orchestrates the full modelling pipeline by calling
-individual modules in sequence. Each module can also be run independently for
-custom workflows. The pipeline consists of the following steps:
+The [`run_gleam()`](../reference/run_gleam.html) function orchestrates the full
+modelling pipeline, while [`run_emissions_direct()`](../reference/run_emissions_direct.html)
+runs the modules needed for enteric and manure emissions. Each module can also
+be run independently for custom workflows. The full pipeline consists of the
+following steps:
 
 | # | Module | Function | Key outputs |
 |---|--------|----------|-------------|
@@ -182,6 +249,22 @@ custom workflows. The pipeline consists of the following steps:
 | 9 | Production outputs | [`run_production_module()`](../reference/run_production_module.html) | Production of milk, meat, and fibre |
 | 10 | Emission allocation | [`run_allocation_module()`](../reference/run_allocation_module.html) | Biophysical allocation shares and allocated emissions per commodity |
 | 11 | Aggregation and reporting | [`run_aggregation_module()`](../reference/run_aggregation_module.html) | Herd-level aggregation of emissions and conversion to CO₂eq |
+
+`run_emissions_direct()` follows the same sequence but skips feed production
+emissions (step 8). Its emissions include enteric CH₄ and manure CH₄ and N₂O,
+including indirect manure N₂O. Two options control which other steps run:
+
+- **Ration quality:** provide both `feed_rations` and `feed_params` to run step 3,
+  or omit both when `cohort_level_data` already contains the six ration-quality
+  columns.
+- **Emission factors only:** set `emission_factors_only = TRUE` to stop after
+  manure emissions (step 7), skipping production, allocation, and aggregation.
+  Daily per-head emission factors are returned in `results$cohort_level_results`;
+  `results$allocation_long` and `results$aggregation_results` are `NULL`.
+
+By default, `run_emissions_direct()` also runs production, allocation, and
+aggregation for its direct-emission sources. Both pipelines require all six
+cohorts per herd, including when `has_herd_structure = TRUE` skips herd simulation.
 
 Each module validates its inputs before execution, checking for required
 columns, valid value ranges, and consistency across data tables. This ensures
