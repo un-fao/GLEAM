@@ -8,6 +8,7 @@ validate_cohort_weight_inputs <- function(
     live_weight_female_at_slaughter, live_weight_male_at_slaughter,
     live_weight_at_weaning
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Character inputs
   validate_scalar_character(cohort_short)
 
@@ -77,6 +78,7 @@ validate_avg_weight_inputs <- function(
     live_weight_cohort_at_slaughter,
     offtake_rate
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_numeric(live_weight_cohort_initial)
   validate_scalar_numeric(live_weight_cohort_potential_final)
   validate_scalar_numeric(live_weight_cohort_at_slaughter)
@@ -97,6 +99,7 @@ validate_daily_gain_inputs <- function(
     live_weight_cohort_initial,
     cohort_duration_days
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_numeric(live_weight_cohort_potential_final)
   validate_scalar_numeric(live_weight_cohort_initial)
   validate_scalar_numeric(cohort_duration_days)

@@ -13,6 +13,7 @@ validate_run_emissions_manure_module_inputs <- function(
     manure_management_system_fraction,
     manure_management_system_factors
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # --- Basic type and structure checks ----------------------------------------
   # Ensure all inputs are data.tables with at least one row
   check_data_table(cohort_level_data, "cohort_level_data")

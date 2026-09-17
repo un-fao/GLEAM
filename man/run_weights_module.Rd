@@ -4,7 +4,12 @@
 \alias{run_weights_module}
 \title{Run Weights Module Pipeline}
 \usage{
-run_weights_module(cohort_level_data, herd_level_data, show_indicator = TRUE)
+run_weights_module(
+  cohort_level_data,
+  herd_level_data,
+  show_indicator = TRUE,
+  validate_inputs = TRUE
+)
 }
 \arguments{
 \item{cohort_level_data}{A \code{data.table} in long format with one row per
@@ -36,6 +41,12 @@ herd \eqn{\times} cohort. Must include:
 
 \item{show_indicator}{Logical. Whether to display progress indicators during calculations.
 Defaults to \code{TRUE}.}
+
+\item{validate_inputs}{Controls input validation (default \code{TRUE}).
+Set to \code{FALSE} to skip input validation. This is not recommended,
+except for large datasets or repeated runs using inputs that have already
+been validated. A warning is issued when validation is disabled. Invalid
+inputs may lead to incorrect results or calculation errors.}
 }
 \value{
 A named list with two \code{data.table}s:

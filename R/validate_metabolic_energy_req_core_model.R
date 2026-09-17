@@ -13,6 +13,7 @@ validate_maintenance_inputs <- function(
     offtake_rate = NA_real_,
     age_first_parturition = NA_real_
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
   validate_positive_numeric(live_weight_cohort_average)
@@ -48,6 +49,7 @@ validate_activity_inputs <- function(
     low_activity_fraction,
     high_activity_fraction
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
   validate_positive_numeric(metabolic_energy_req_maintenance)
@@ -81,6 +83,7 @@ validate_growth_inputs <- function(
     offtake_rate,
     cohort_duration_days
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
 
@@ -163,6 +166,7 @@ validate_lactation_inputs <- function(
     lactation_duration,
     parturition_rate
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
 
@@ -229,6 +233,7 @@ validate_work_inputs <- function(
     draught_fraction_female,
     draught_fraction_male
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
 
@@ -271,6 +276,7 @@ validate_fibre_inputs <- function(
     cohort_short,
     fibre_yield_year
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
 
@@ -302,6 +308,7 @@ validate_pregnancy_inputs <- function(
     cohort_duration_days,
     offtake_rate
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
 
@@ -369,6 +376,7 @@ validate_rem_inputs <- function(
     species_short,
     ration_digestibility_fraction
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   if (!species_short %in% gleam_species_ruminants) return()
   validate_param_range(ration_digestibility_fraction)
@@ -384,6 +392,7 @@ validate_reg_inputs <- function(
     species_short,
     ration_digestibility_fraction
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   if (!species_short %in% gleam_species_ruminants) return()
   validate_param_range(ration_digestibility_fraction)
@@ -406,6 +415,7 @@ validate_total_energy_inputs <- function(
     net_energy_growth_digestible_energy_ratio,
     ration_digestibility_fraction
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_scalar_numeric(metabolic_energy_req_maintenance)
   validate_scalar_numeric(metabolic_energy_req_activity)
@@ -435,6 +445,7 @@ validate_dmi_inputs <- function(
     ration_gross_energy,
     ration_metabolizable_energy
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_positive_numeric(metabolic_energy_req_total)
   validate_param_range(ration_gross_energy)

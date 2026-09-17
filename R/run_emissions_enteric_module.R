@@ -42,6 +42,12 @@
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'   Defaults to \code{TRUE}.
 #'
+#' @param validate_inputs Controls input validation (default \code{TRUE}).
+#'   Set to \code{FALSE} to skip input validation. This is not recommended,
+#'   except for large datasets or repeated runs using inputs that have already
+#'   been validated. A warning is issued when validation is disabled. Invalid
+#'   inputs may lead to incorrect results or calculation errors.
+#'
 #' @return A \code{data.table} with the original input columns plus the following new variables:
 #'   \describe{
 #'   \item{ch4_mitigation_factor}{Added by the function if not provided as input.}
@@ -92,8 +98,11 @@
 #' @importFrom data.table :=
 run_emissions_enteric_module <- function(
     cohort_level_data,
-    show_indicator = TRUE
+    show_indicator = TRUE,
+    validate_inputs = TRUE
 ) {
+  restore_validation <- setup_validation(validate_inputs)
+  on.exit(restore_validation(), add = TRUE)
 
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_emissions_enteric_module_inputs(cohort_level_data)

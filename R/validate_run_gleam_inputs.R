@@ -34,6 +34,7 @@ validate_run_gleam_inputs <- function(
     simulation_duration,
     global_warming_potential_set
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
 
   # --- simulation_duration: must be a single positive numeric ------------------
   if (

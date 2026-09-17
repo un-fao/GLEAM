@@ -28,6 +28,7 @@ validate_totals_by_cohort_inputs <- function(
     variable_name,
     variable_type
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
 
   # Validate numeric inputs
   if (!is.numeric(value)) {
@@ -89,6 +90,7 @@ validate_allocated_emissions_inputs <- function(
     value,
     allocation_share
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Check that inputs have the same length
   if (length(value) != length(allocation_share)) {
     cli::cli_abort(
@@ -136,6 +138,7 @@ validate_co2eq_inputs <- function(
     value_allocated,
     global_warming_potential_set
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Validate gwp is scalar character
   validate_scalar_character(global_warming_potential_set)
 

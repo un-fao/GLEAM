@@ -7,6 +7,7 @@ validate_diet_digestibility_inputs <- function(
     feed_digestibility_fraction_ruminant,
     feed_digestibility_fraction_pigs
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_character(species_short)
   validate_scalar_numeric(feed_ration_fraction)
   validate_param_range(feed_ration_fraction)
@@ -58,6 +59,7 @@ validate_ration_metabolizable_energy_inputs <- function(
     feed_metabolizable_energy_ruminant,
     feed_metabolizable_energy_pigs
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_scalar_numeric(feed_ration_fraction)
   validate_param_range(feed_ration_fraction)
@@ -105,6 +107,7 @@ validate_feed_digestibility_inputs <- function(
     feed_digestible_energy_pigs,
     feed_gross_energy
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   args <- list(
     feed_digestible_energy_ruminant = feed_digestible_energy_ruminant,
     feed_digestible_energy_pigs = feed_digestible_energy_pigs,
@@ -128,6 +131,7 @@ validate_feed_digestibility_inputs <- function(
 #'
 #' @noRd
 validate_ration_gross_energy_inputs <- function(feed_ration_fraction, feed_gross_energy) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Ration and GE must be numeric scalars
   validate_scalar_numeric(feed_ration_fraction)
   validate_scalar_numeric(feed_gross_energy)
@@ -141,6 +145,7 @@ validate_ration_gross_energy_inputs <- function(feed_ration_fraction, feed_gross
 #'
 #' @noRd
 validate_ration_nitrogen_inputs <- function(feed_ration_fraction, feed_nitrogen_content) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Ration and nitrogen content must be numeric scalars
   validate_scalar_numeric(feed_ration_fraction)
   validate_scalar_numeric(feed_nitrogen_content)
@@ -159,6 +164,7 @@ validate_urinary_energy_inputs <- function(
     feed_urinary_energy_ruminant,
     feed_urinary_energy_pigs
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_character(species_short)
   validate_scalar_numeric(feed_ration_fraction)
   validate_param_range(feed_ration_fraction)
@@ -202,6 +208,7 @@ validate_urinary_energy_inputs <- function(
 #'
 #' @noRd
 validate_ration_ash_inputs <- function(feed_ration_fraction, feed_ash) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_numeric(feed_ration_fraction)
   validate_scalar_numeric(feed_ash)
 

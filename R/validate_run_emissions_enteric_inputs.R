@@ -7,6 +7,7 @@
 #'
 #' @noRd
 validate_run_emissions_enteric_module_inputs <- function(data) {
+  if (!validation_enabled()) return(invisible(NULL))
 
   # --- Basic type and structure checks ----------------------------------------
   # Ensure input is a data.table with at least one row

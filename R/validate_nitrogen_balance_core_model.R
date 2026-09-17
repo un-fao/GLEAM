@@ -2,6 +2,7 @@
 #'
 #' @noRd
 validate_nitrogen_intake_inputs <- function(ration_intake, ration_nitrogen) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_param_range(ration_intake)
   validate_param_range(ration_nitrogen)
 }
@@ -23,6 +24,7 @@ validate_nitrogen_retention_inputs <- function(
     pregnancy_duration = NA_real_,
     cohort_duration_days = NA_real_
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
 
@@ -74,6 +76,7 @@ validate_nitrogen_retention_inputs <- function(
 #'
 #' @noRd
 validate_nitrogen_excretion_inputs <- function(species_short, nitrogen_intake, nitrogen_retention) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_scalar_numeric(nitrogen_intake)
   validate_scalar_numeric(nitrogen_retention)

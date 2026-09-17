@@ -15,6 +15,7 @@ validate_run_aggregation_module_inputs <- function(
     simulation_duration,
     global_warming_potential_set
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # --- Basic type and structure checks ----------------------------------------
   if (!data.table::is.data.table(cohort_level_data)) {
     cli::cli_abort("{.arg cohort_level_data} must be a data.table.")

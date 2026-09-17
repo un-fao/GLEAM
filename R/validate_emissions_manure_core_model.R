@@ -7,6 +7,7 @@ validate_calc_volatile_solids <- function(
     ration_urinary_energy_fraction,
     ration_ash
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Enforce configured bounds
   validate_param_range(ration_intake)
   validate_param_range(ration_digestibility_fraction)
@@ -18,6 +19,7 @@ validate_calc_volatile_solids <- function(
 #'
 #' @noRd
 validate_mms_characteristics <- function(mms_list, required_names) {
+  if (!validation_enabled()) return(invisible(NULL))
 
   # at least one MMS provided
   if (length(mms_list) == 0) {
@@ -109,6 +111,7 @@ validate_mms_inputs <- function(
     required_names,
     ...
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # validate the structure and content of the MMS list
   validate_mms_characteristics(
     mms_list,
@@ -140,6 +143,7 @@ validate_calc_n2o_manure_total <- function(
     n2o_manure_burned_direct,
     n2o_manure_other_direct
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Numeric inputs
   validate_scalar_numeric(n2o_manure_pasture_vol)
   validate_scalar_numeric(n2o_manure_pasture_leach)

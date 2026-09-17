@@ -11,7 +11,8 @@ run_demographic_herd_module(
   max_simulation_years = 100,
   min_lambda_change = 1e-09,
   show_indicator = TRUE,
-  simulation_duration = 365
+  simulation_duration = 365,
+  validate_inputs = TRUE
 )
 }
 \arguments{
@@ -55,6 +56,12 @@ Iterations of the herd simulation stop when the absolute change in lambda betwee
 Defaults to \code{TRUE}.}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
+
+\item{validate_inputs}{Controls input validation (default \code{TRUE}).
+Set to \code{FALSE} to skip input validation. This is not recommended,
+except for large datasets or repeated runs using inputs that have already
+been validated. A warning is issued when validation is disabled. Invalid
+inputs may lead to incorrect results or calculation errors.}
 }
 \value{
 A named list with two elements:

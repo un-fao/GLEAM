@@ -56,6 +56,108 @@ run_gleam_with_structure <- function(d, ...) run_gleam_default(d, has_herd_struc
 res_no_structure <- run_gleam_no_structure(d_gleam)
 res_with_structure <- run_gleam_with_structure(d_gleam)
 
+test_that("all run functions accept only TRUE or FALSE for validate_inputs", {
+  run_functions <- grep("^run_", getNamespaceExports("gleam"), value = TRUE)
+  for (function_name in run_functions) {
+    for (flag in list(NA, NULL, logical(), c(TRUE, FALSE), 0, 1, "FALSE")) {
+      expect_error(
+        do.call(getExportedValue("gleam", function_name), list(validate_inputs = flag)),
+        "validate_inputs.*must be TRUE or FALSE"
+      )
+    }
+  }
+})
+
+test_that("unchecked pipeline skips validators and preserves results in both modes", {
+  previous <- options("gleam.validate", "gleam.validation_active")
+  # A real range lookup would fail with an empty rules table.
+  testthat::local_mocked_bindings(
+    parameter_ranges = parameter_ranges[0L], .package = "gleam"
+  )
+  for (mode in c(FALSE, TRUE)) {
+    warnings <- character()
+    result <- withCallingHandlers(
+      run_gleam_default(d_gleam, has_herd_structure = mode, validate_inputs = c(enabled = FALSE)),
+      warning = function(w) {
+        warnings <<- c(warnings, conditionMessage(w))
+        invokeRestart("muffleWarning")
+      }
+    )
+    expect_length(warnings, 1L)
+    expect_match(warnings, "Input validation has been turned off")
+    expected <- if (mode) res_with_structure else res_no_structure
+    expect_equal(result, expected, ignore_attr = TRUE)
+    expect_identical(options("gleam.validate", "gleam.validation_active"), previous)
+  }
+  expect_warning(
+    expect_error(run_gleam_default(d_gleam, validate_inputs = TRUE), "expected exactly one rule"),
+    NA
+  )
+})
+
+test_that("validation is restored after nested runs and calculation errors", {
+  previous <- options("gleam.validate", "gleam.validation_active")
+  testthat::local_mocked_bindings(
+    run_weights_module = function(...) {
+      expect_false(validation_enabled())
+      expect_error(run_gleam(simulation_duration = 0), "simulation_duration.*positive")
+      expect_false(validation_enabled())
+      stop("Example calculation failure")
+    },
+    .package = "gleam"
+  )
+  expect_warning(
+    expect_error(run_gleam_with_structure(d_gleam, validate_inputs = FALSE), "Example calculation failure"),
+    "Input validation has been turned off"
+  )
+  expect_identical(options("gleam.validate", "gleam.validation_active"), previous)
+  expect_error(calc_cohort_weights("invalid"), "cohort_short")
+})
+
+test_that("standalone modules skip validation only when requested", {
+  previous <- options("gleam.validate", "gleam.validation_active")
+  expected <- run_weights_module(
+    d_gleam$cohort_structure, d_gleam$herd, show_indicator = FALSE
+  )
+  testthat::local_mocked_bindings(
+    parameter_ranges = parameter_ranges[0L], .package = "gleam"
+  )
+  expect_warning(
+    result <- run_weights_module(
+      d_gleam$cohort_structure, d_gleam$herd, show_indicator = FALSE, validate_inputs = FALSE
+    ),
+    "Input validation has been turned off"
+  )
+  expect_equal(result, expected, ignore_attr = TRUE)
+  expect_identical(options("gleam.validate", "gleam.validation_active"), previous)
+  expect_error(
+    run_weights_module(d_gleam$cohort_structure, d_gleam$herd, show_indicator = FALSE),
+    "expected exactly one rule"
+  )
+  expect_identical(options("gleam.validate", "gleam.validation_active"), previous)
+})
+
+test_that("standalone modules restore validation after calculation errors", {
+  previous <- options("gleam.validate", "gleam.validation_active")
+  testthat::local_mocked_bindings(
+    calc_cohort_weights = function(...) {
+      expect_false(validation_enabled())
+      stop("Example calculation failure")
+    },
+    .package = "gleam"
+  )
+  expect_warning(
+    expect_error(
+      run_weights_module(
+        d_gleam$cohort_structure, d_gleam$herd, show_indicator = FALSE, validate_inputs = FALSE
+      ),
+      "Example calculation failure"
+    ),
+    "Input validation has been turned off"
+  )
+  expect_identical(options("gleam.validate", "gleam.validation_active"), previous)
+})
+
 # ---- validate_run_gleam_inputs: has_herd_structure ---------------------------
 test_that("rejects non-logical has_herd_structure", {
   expect_error(

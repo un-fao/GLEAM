@@ -11,6 +11,7 @@ validate_run_emissions_ration_module_inputs <- function(
     rations_share,
     feed_emissions
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # --- Basic type and structure checks ----------------------------------------
   if (!data.table::is.data.table(rations_share)) {
     cli::cli_abort("{.arg rations_share} must be a data.table.")

@@ -18,6 +18,7 @@ validate_milk_outputs_inputs <- function(
     milk_fat_fraction_standard,
     milk_lactose_fraction_standard
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
   
@@ -53,6 +54,7 @@ validate_fibre_output_inputs <- function(
     simulation_duration,
     cohort_stock_size
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
 
   validate_cohort_code(cohort_short)
   
@@ -78,6 +80,7 @@ validate_meat_outputs_inputs <- function(
     bone_free_meat_fraction,
     meat_protein_fraction
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
 
   # Range checks via parameter_ranges
   validate_param_range(offtake_heads_assessment)

@@ -71,6 +71,12 @@
 #' @param show_indicator Logical. Whether to display progress indicators during simulation.
 #'   Defaults to `TRUE`.
 #'
+#' @param validate_inputs Controls input validation (default \code{TRUE}).
+#'   Set to \code{FALSE} to skip input validation. This is not recommended,
+#'   except for large datasets or repeated runs using inputs that have already
+#'   been validated. A warning is issued when validation is disabled. Invalid
+#'   inputs may lead to incorrect results or calculation errors.
+#'
 #' @return A `data.table` with the original cohort-level input columns plus the following new variables:
 #'  \describe{
 #' \item{milk_production_mass_cohort}{Numeric. Total milk production produced over the assessment period
@@ -137,15 +143,18 @@ run_production_module <- function(
     cohort_level_data,
     herd_level_data,
     simulation_duration = 365,
-    show_indicator = TRUE
+    show_indicator = TRUE,
+    validate_inputs = TRUE
 ) {
+  restore_validation <- setup_validation(validate_inputs)
+  on.exit(restore_validation(), add = TRUE)
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
   herd_level_data <- data.table::as.data.table(herd_level_data)
 
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_production_module_inputs(cohort_level_data, herd_level_data)
   validate_scalar_numeric(simulation_duration, "simulation_duration")
-  if (simulation_duration <= 0) {
+  if (validation_enabled() && simulation_duration <= 0) {
     cli::cli_abort("{.arg simulation_duration} must be positive.")
   }
 

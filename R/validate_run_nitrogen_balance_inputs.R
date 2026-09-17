@@ -10,6 +10,7 @@
 #'
 #' @noRd
 validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_level_data) {
+  if (!validation_enabled()) return(invisible(NULL))
   # --- Basic type and structure checks ----------------------------------------
   # Ensure inputs are data.tables with at least one row
   check_data_table(cohort_level_data, "cohort_level_data")

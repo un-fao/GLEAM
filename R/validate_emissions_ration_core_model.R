@@ -5,6 +5,7 @@ validate_co2_ration_fertilizer_inputs <- function(
     feed_ration_fraction,
     co2_feed_fertilizer
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_param_range(feed_ration_fraction)
   validate_scalar_numeric_or_na(co2_feed_fertilizer, min_val = 0)
 }
@@ -16,6 +17,7 @@ validate_co2_ration_pesticides_inputs <- function(
     feed_ration_fraction,
     co2_feed_pesticides
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_param_range(feed_ration_fraction)
   validate_scalar_numeric_or_na(co2_feed_pesticides, min_val = 0)
 }
@@ -27,6 +29,7 @@ validate_co2_ration_crop_activities_inputs <- function(
     feed_ration_fraction,
     co2_feed_crop_activities
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_param_range(feed_ration_fraction)
   validate_scalar_numeric_or_na(co2_feed_crop_activities, min_val = 0)
 }
@@ -38,6 +41,7 @@ validate_co2_ration_luc_nopeat_inputs <- function(
     feed_ration_fraction,
     co2_feed_luc_nopeat
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_param_range(feed_ration_fraction)
   validate_scalar_numeric_or_na(co2_feed_luc_nopeat, min_val = -Inf)
 }
@@ -49,6 +53,7 @@ validate_co2_ration_luc_peat_inputs <- function(
     feed_ration_fraction,
     co2_feed_luc_peat
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_param_range(feed_ration_fraction)
   validate_scalar_numeric_or_na(co2_feed_luc_peat, min_val = -Inf)
 }
@@ -60,6 +65,7 @@ validate_n2o_ration_fertilizer_inputs <- function(
     feed_ration_fraction,
     n2o_feed_fertilizer
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_param_range(feed_ration_fraction)
   validate_scalar_numeric_or_na(n2o_feed_fertilizer, min_val = 0)
 }
@@ -71,6 +77,7 @@ validate_n2o_ration_manure_applied_inputs <- function(
     feed_ration_fraction,
     n2o_feed_manure_applied
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_param_range(feed_ration_fraction)
   validate_scalar_numeric_or_na(n2o_feed_manure_applied, min_val = 0)
 }
@@ -82,6 +89,7 @@ validate_n2o_ration_crop_residues_inputs <- function(
     feed_ration_fraction,
     n2o_feed_crop_residues
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_param_range(feed_ration_fraction)
   validate_scalar_numeric_or_na(n2o_feed_crop_residues, min_val = 0)
 }
@@ -93,6 +101,7 @@ validate_ch4_ration_rice_inputs <- function(
     feed_ration_fraction,
     ch4_feed_rice
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_param_range(feed_ration_fraction)
   validate_scalar_numeric_or_na(ch4_feed_rice, min_val = 0)
 }

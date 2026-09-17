@@ -8,7 +8,8 @@ run_emissions_manure_module(
   cohort_level_data,
   manure_management_system_fraction,
   manure_management_system_factors,
-  show_indicator = TRUE
+  show_indicator = TRUE,
+  validate_inputs = TRUE
 )
 }
 \arguments{
@@ -120,6 +121,12 @@ of IPCC Guidelines (IPCC 2006, 2019).
 
 \item{show_indicator}{Logical. Whether to display progress indicators during
 the calculation. Defaults to \code{TRUE}.}
+
+\item{validate_inputs}{Controls input validation (default \code{TRUE}).
+Set to \code{FALSE} to skip input validation. This is not recommended,
+except for large datasets or repeated runs using inputs that have already
+been validated. A warning is issued when validation is disabled. Invalid
+inputs may lead to incorrect results or calculation errors.}
 }
 \value{
 cohort_level_data data.table. Input cohort table with added manure

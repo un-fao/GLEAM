@@ -7,7 +7,8 @@
 run_emissions_ration_module(
   rations_share,
   feed_emissions,
-  show_indicator = TRUE
+  show_indicator = TRUE,
+  validate_inputs = TRUE
 )
 }
 \arguments{
@@ -84,6 +85,12 @@ expressed per kg of dry matter intake (g CH4/kg DM).}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during calculations.
 Defaults to \code{TRUE}.}
+
+\item{validate_inputs}{Controls input validation (default \code{TRUE}).
+Set to \code{FALSE} to skip input validation. This is not recommended,
+except for large datasets or repeated runs using inputs that have already
+been validated. A warning is issued when validation is disabled. Invalid
+inputs may lead to incorrect results or calculation errors.}
 }
 \value{
 data.table. Cohort-level emission factors summarized by \code{herd_id},

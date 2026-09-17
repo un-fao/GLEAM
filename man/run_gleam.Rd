@@ -15,7 +15,8 @@ run_gleam(
   manure_management_system_factors,
   simulation_duration = 365,
   global_warming_potential_set = "AR6",
-  show_indicator = TRUE
+  show_indicator = TRUE,
+  validate_inputs = TRUE
 )
 }
 \arguments{
@@ -274,6 +275,12 @@ N2O = 298.
 
 \item{show_indicator}{Logical. Whether to display progress indicators during calculations.
 Defaults to \code{TRUE}.}
+
+\item{validate_inputs}{Controls input validation (default \code{TRUE}).
+Set to \code{FALSE} to skip input validation. This is not recommended,
+except for large datasets or repeated runs using inputs that have already
+been validated. A warning is issued when validation is disabled. Invalid
+inputs may lead to incorrect results or calculation errors.}
 }
 \value{
 A named list with four elements:
