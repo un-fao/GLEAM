@@ -257,7 +257,8 @@ validate_run_gleam_inputs <- function(
     check_module_input_columns(
       inputs[[table_name]], character(), table_name, "run_gleam", table_context,
       has_herd_structure_filter = has_herd_structure,
-      defaulted_parameters = "ratio_m3CH4_to_kgCH4"
+      defaulted_parameters = "ratio_m3CH4_to_kgCH4",
+      function_filter = if (table_name == "herd_level_data") "run_gleam" else NULL
     )
   }
 

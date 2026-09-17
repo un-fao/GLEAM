@@ -34,7 +34,8 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
   )
   check_module_input_columns(
     herd_level_data, required_herd_cols, "herd_level_data",
-    "nitrogen", cohort_level_data, herd_level_data
+    "nitrogen", cohort_level_data, herd_level_data,
+    function_filter = "run_nitrogen_balance_module"
   )
 
   # --- Cohort: valid, unique requested cohorts -----------------

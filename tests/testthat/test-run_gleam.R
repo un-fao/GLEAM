@@ -662,3 +662,28 @@ test_that("both pipeline modes use comparison operators from the shared matrix",
                  "live_weight_at_birth.*must be greater than.*live_weight_at_weaning")
   }
 })
+
+
+test_that("both pipeline modes enforce milk consistency and allow coherent zero milk inputs", {
+  small <- lapply(d_gleam, function(data) {
+    if ("herd_id" %in% names(data)) data[herd_id == 1L] else data.table::copy(data)
+  })
+  for (mode in c(FALSE, TRUE)) {
+    for (variable in c("milk_yield_day", "milk_fat_fraction", "milk_protein_fraction")) {
+      invalid <- data.table::copy(small$herd)
+      data.table::set(invalid, j = variable, value = 0)
+      expect_error(run_gleam_default(small, has_herd_structure = mode, herd_level_data = invalid),
+                   paste0("(?s)", variable, ".*greater than 0.*herd 1"), perl = TRUE)
+    }
+    expect_warning(
+      run_gleam_default(small, has_herd_structure = mode, herd_level_data = invalid,
+                        validate_inputs = FALSE),
+      "Input validation has been turned off"
+    )
+    zero_milk <- data.table::copy(small$herd)
+    zero_milk[, `:=`(lactating_females_fraction = 0, milk_yield_day = 0,
+                     milk_fat_fraction = 0, milk_protein_fraction = 0)]
+    result <- run_gleam_default(small, has_herd_structure = mode, herd_level_data = zero_milk)
+    expect_equal(result$cohort_level_results[cohort_short == "FA", milk_production_mass_cohort], 0)
+  }
+})

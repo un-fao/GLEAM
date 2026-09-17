@@ -166,7 +166,9 @@ validate_lactation_inputs <- function(
   # Lactation is only computed for adult females (FA)
   if (cohort_short != "FA") return()
   validate_parameter_relations(list(
-    live_weight_at_birth = live_weight_at_birth, live_weight_at_weaning = live_weight_at_weaning
+    live_weight_at_birth = live_weight_at_birth, live_weight_at_weaning = live_weight_at_weaning,
+    lactating_females_fraction = lactating_females_fraction,
+    milk_yield_day = milk_yield_day, milk_fat_fraction = milk_fat_fraction
   ), "calc_metabolic_energy_req_lactation", species_short, cohort_short)
 
   # --- Cattle, buffalo, camels: milk yield, fat, parturition, birth/weaning weights ---

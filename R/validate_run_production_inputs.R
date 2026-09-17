@@ -37,7 +37,8 @@ validate_run_production_module_inputs <- function(
   )
   check_module_input_columns(
     herd_level_data, required_herd_cols, "herd_level_data",
-    "production", cohort_level_data, herd_level_data
+    "production", cohort_level_data, herd_level_data,
+    function_filter = "run_production_module"
   )
 
   # --- Cohort: valid, unique requested cohorts -----------------

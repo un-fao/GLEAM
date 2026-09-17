@@ -339,6 +339,8 @@ validate_param_range <- function(
 #' Comparison rows specify an operator and another variable, with species,
 #' cohort and validation_function scope. Missing operands are handled by the
 #' existing required-input checks. Only complete numeric pairs are compared.
+#' The positive_if_positive operator requires the variable to be positive
+#' whenever comparison_variable is positive.
 #' @noRd
 validate_parameter_relations <- function(
     inputs, function_filter, species_filter = NULL, cohort_filter = NULL,
@@ -372,7 +374,8 @@ validate_parameter_relations <- function(
   }
   operators <- c("<" = "less than", "<=" = "less than or equal to",
                  ">" = "greater than", ">=" = "greater than or equal to",
-                 "==" = "equal to", "!=" = "different from")
+                 "==" = "equal to", "!=" = "different from",
+                 "positive_if_positive" = "positive when the reference is positive")
   if (any(!rules$comparison_operator %in% names(operators)) ||
       anyNA(rules$comparison_variable) || any(!nzchar(rules$comparison_variable))) {
     cli::cli_abort("Invalid parameter comparison rule for {.fn {function_filter}}.")
@@ -395,13 +398,20 @@ validate_parameter_relations <- function(
     valid <- switch(operator,
       "<" = left < right, "<=" = left <= right,
       ">" = left > right, ">=" = left >= right,
-      "==" = left == right, "!=" = left != right
+      "==" = left == right, "!=" = left != right,
+      "positive_if_positive" = right <= 0 | left > 0
     )
     invalid <- which(complete & !valid)
     if (length(invalid)) {
       row <- invalid[1L]
       label <- if ("herd_id" %in% names(inputs)) paste0("herd ", inputs$herd_id[row]) else paste0("position ", row)
       context <- paste(c(species_filter, cohort_filter), collapse = "/")
+      if (operator == "positive_if_positive") {
+        cli::cli_abort(
+          "{.arg {variable}} must be greater than 0 when {.arg {reference}} is greater than 0.
+          Found {left[row]} and {right[row]} at {label} {.val {context}}."
+        )
+      }
       comparison <- unname(operators[operator])
       cli::cli_abort(
         "{.arg {variable}} must be {comparison} {.arg {reference}} ({operator}).
@@ -875,7 +885,7 @@ check_module_input_columns <- function(
     data, required_cols, arg_name, module_filter, cohort_level_data,
     herd_level_data = NULL, input_table_filter = arg_name,
     has_herd_structure_filter = NULL, always_required = character(),
-    defaulted_parameters = character()
+    defaulted_parameters = character(), function_filter = NULL
 ) {
   data <- data.table::as.data.table(data)
   context <- get_parameter_context(cohort_level_data, herd_level_data)
@@ -937,7 +947,7 @@ check_module_input_columns <- function(
     range_context <- data.table::copy(context)
     range_context[, species_short := NA_character_]
   }
-  check_contextual_parameter_ranges(data, range_context)
+  check_contextual_parameter_ranges(data, range_context, function_filter)
   invisible(TRUE)
 }
 

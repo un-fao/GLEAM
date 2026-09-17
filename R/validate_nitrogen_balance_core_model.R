@@ -63,7 +63,8 @@ validate_nitrogen_retention_inputs <- function(
   }
 
   validate_parameter_relations(list(
-    live_weight_at_birth = live_weight_at_birth, live_weight_at_weaning = live_weight_at_weaning
+    live_weight_at_birth = live_weight_at_birth, live_weight_at_weaning = live_weight_at_weaning,
+    milk_yield_day = milk_yield_day, milk_protein_fraction = milk_protein_fraction
   ), "calc_nitrogen_retention", species_short, cohort_short)
 }
 

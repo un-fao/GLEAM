@@ -37,6 +37,12 @@ validate_milk_outputs_inputs <- function(
     validate_param_range(milk_protein_fraction_standard, species_filter = species_short, cohort_filter = cohort_short)
     validate_param_range(milk_fat_fraction_standard, species_filter = species_short, cohort_filter = cohort_short)
     validate_param_range(milk_lactose_fraction_standard, species_filter = species_short, cohort_filter = cohort_short)
+    validate_parameter_relations(list(
+      lactating_females_fraction = lactating_females_fraction,
+      milk_yield_day = milk_yield_day,
+      milk_fat_fraction = milk_fat_fraction,
+      milk_protein_fraction = milk_protein_fraction
+    ), "calc_milk_production", species_short, cohort_short)
     }
   }
 }
