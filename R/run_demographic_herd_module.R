@@ -124,6 +124,12 @@
 #'   Defaults to `TRUE`.
 #'@param simulation_duration Numeric. Length of the assessment period (days).
 #'
+#' @param validate_inputs Controls input validation (default \code{TRUE}).
+#'   Set to \code{FALSE} to skip input validation. This is not recommended,
+#'   except for large datasets or repeated runs using inputs that have already
+#'   been validated. A warning is issued when validation is disabled. Invalid
+#'   inputs may lead to incorrect results or calculation errors.
+#'
 #' @return A named list with two elements:
 #'   \describe{
 #'     \item{`cohort_level_results`}{A `data.table` with one row per herd and cohort containing all original
@@ -184,8 +190,11 @@ run_demographic_herd_module <- function(
     max_simulation_years = 100,
     min_lambda_change = 1e-9,
     show_indicator = TRUE,
-    simulation_duration = 365
+    simulation_duration = 365,
+    validate_inputs = TRUE
 ) {
+  restore_validation <- setup_validation(validate_inputs)
+  on.exit(restore_validation(), add = TRUE)
 
   # --- Step 1: Validate Inputs -----------------------------------------------
   validate_run_demographic_herd_module_inputs(cohort_level_data, herd_level_data)

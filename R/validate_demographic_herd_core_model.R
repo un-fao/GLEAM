@@ -6,6 +6,7 @@ validate_fecundity_inputs <- function(
     litter_size,
     birth_fraction_female
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_numeric(parturition_rate)
   validate_scalar_numeric(litter_size)
   validate_scalar_numeric(birth_fraction_female)
@@ -24,6 +25,7 @@ validate_transition_inputs <- function(
     offtake_rate,
     death_rate
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_named_numeric_vector(cohort_duration_days, 6)
   validate_named_numeric_vector(offtake_rate, 6)
   validate_named_numeric_vector(death_rate, 6)
@@ -47,6 +49,7 @@ validate_steady_state_inputs <- function(
     probability_offtake,
     probability_growth
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Define expected names
   six_cohort_names <- gleam_cohorts
   ten_cohort_names <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
@@ -86,6 +89,7 @@ validate_population_size_inputs <- function(
     herd_structure,
     cohort_share
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Expected cohort names
   six_cohort_names <- gleam_cohorts
   eight_cohort_names <- c("FB", "FJ", "FS", "FA", "MB", "MJ", "MS", "MA")
@@ -128,6 +132,7 @@ validate_offtake_summary_inputs <- function(
     cohort_offtake_heads,
     simulation_duration
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_named_numeric_vector(cohort_stock_start, 6)
   validate_named_numeric_vector(cohort_stock_end_projected, 6)
   validate_named_numeric_vector(cohort_stock_average, 6)

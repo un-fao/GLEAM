@@ -4,7 +4,11 @@
 \alias{run_emissions_enteric_module}
 \title{Run Enteric Methane (CH4) Emissions Module Pipeline}
 \usage{
-run_emissions_enteric_module(cohort_level_data, show_indicator = TRUE)
+run_emissions_enteric_module(
+  cohort_level_data,
+  show_indicator = TRUE,
+  validate_inputs = TRUE
+)
 }
 \arguments{
 \item{cohort_level_data}{data.table. Cohort-level input table with the following data requirement:
@@ -44,6 +48,12 @@ additives or methane inhibitors.}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during calculations.
 Defaults to \code{TRUE}.}
+
+\item{validate_inputs}{Controls input validation (default \code{TRUE}).
+Set to \code{FALSE} to skip input validation. This is not recommended,
+except for large datasets or repeated runs using inputs that have already
+been validated. A warning is issued when validation is disabled. Invalid
+inputs may lead to incorrect results or calculation errors.}
 }
 \value{
 A \code{data.table} with the original input columns plus the following new variables:

@@ -115,6 +115,12 @@
 #' @param show_indicator Logical. Whether to display progress indicators during
 #'   the pipeline run. Defaults to `TRUE`.
 #'
+#' @param validate_inputs Controls input validation (default \code{TRUE}).
+#'   Set to \code{FALSE} to skip input validation. This is not recommended,
+#'   except for large datasets or repeated runs using inputs that have already
+#'   been validated. A warning is issued when validation is disabled. Invalid
+#'   inputs may lead to incorrect results or calculation errors.
+#'
 #' @return A named list with the following elements:
 #' \describe{
 #'   \item{results_emissions}{A \code{data.table} containing herd-level emissions
@@ -188,8 +194,11 @@ run_aggregation_module <- function(
     allocation_herd_long,
     simulation_duration = 365,
     global_warming_potential_set = "AR6",
-    show_indicator = TRUE
+    show_indicator = TRUE,
+    validate_inputs = TRUE
 ) {
+  restore_validation <- setup_validation(validate_inputs)
+  on.exit(restore_validation(), add = TRUE)
   # --- Input validation -------------------------------------------------------
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
   validate_run_aggregation_module_inputs(
@@ -219,7 +228,7 @@ run_aggregation_module <- function(
     c(feed_vars, nitrogen_balance_vars, production_vars, emissions_vars)
   )
   available_vars <- intersect(all_vars, names(cohort_level_data))
-  if (length(available_vars) == 0) {
+  if (validation_enabled() && length(available_vars) == 0) {
     cli::cli_abort(
       "No recognized variables found in {.arg cohort_level_data}.
       Expected variables include: {.val {all_vars}}"

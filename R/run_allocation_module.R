@@ -73,6 +73,12 @@
 #' @param show_indicator Logical. Whether to display progress indicators during simulation.
 #'   Defaults to `TRUE`.
 #'
+#' @param validate_inputs Controls input validation (default \code{TRUE}).
+#'   Set to \code{FALSE} to skip input validation. This is not recommended,
+#'   except for large datasets or repeated runs using inputs that have already
+#'   been validated. A warning is issued when validation is disabled. Invalid
+#'   inputs may lead to incorrect results or calculation errors.
+#'
 #' @return A named list of two `data.table` objects:
 #'   \describe{
 #'     \item{cohort_allocation_inputs}{A `data.table` with the original
@@ -234,8 +240,11 @@ run_allocation_module <- function(
     cohort_level_data,
     herd_level_data,
     simulation_duration = 365,
-    show_indicator = TRUE
+    show_indicator = TRUE,
+    validate_inputs = TRUE
 ) {
+  restore_validation <- setup_validation(validate_inputs)
+  on.exit(restore_validation(), add = TRUE)
   # --- Step 1: Coerce and validate inputs -------------------------------------
   cohort_level_data <- data.table::as.data.table(cohort_level_data)
   herd_level_data <- data.table::as.data.table(herd_level_data)

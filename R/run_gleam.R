@@ -284,6 +284,11 @@
 #'
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'   Defaults to \code{TRUE}.
+#' @param validate_inputs Controls input validation (default \code{TRUE}).
+#'   Set to \code{FALSE} to skip input validation. This is not recommended,
+#'   except for large datasets or repeated runs using inputs that have already
+#'   been validated. A warning is issued when validation is disabled. Invalid
+#'   inputs may lead to incorrect results or calculation errors.
 #'
 #' @return A named list with four elements:
 #' \describe{
@@ -594,8 +599,11 @@ run_gleam <- function(
     manure_management_system_factors,
     simulation_duration = 365,
     global_warming_potential_set = "AR6",
-    show_indicator = TRUE
+    show_indicator = TRUE,
+    validate_inputs = TRUE
 ) {
+  restore_validation <- setup_validation(validate_inputs)
+  on.exit(restore_validation(), add = TRUE)
 
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_gleam_inputs(
@@ -625,7 +633,8 @@ run_gleam <- function(
       cohort_level_data = cohort_level_data,
       herd_level_data = herd_level_data,
       simulation_duration = simulation_duration,
-      show_indicator = show_indicator
+      show_indicator = show_indicator,
+      validate_inputs = validate_inputs
     )
     gleam_chrt_data <- herd_results$cohort_level_results
     gleam_hrd_data <- herd_results$herd_level_results
@@ -635,7 +644,8 @@ run_gleam <- function(
   weights_results <- run_weights_module(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = gleam_hrd_data,
-    show_indicator = show_indicator
+    show_indicator = show_indicator,
+    validate_inputs = validate_inputs
   )
 
   gleam_chrt_data <- weights_results$cohort_level_results
@@ -644,7 +654,8 @@ run_gleam <- function(
   feed_rations_summary <- run_ration_quality_module(
     rations_share = feed_rations,
     feed_params = feed_params,
-    show_indicator = show_indicator
+    show_indicator = show_indicator,
+    validate_inputs = validate_inputs
   )
 
   gleam_chrt_data <- merge(
@@ -657,21 +668,24 @@ run_gleam <- function(
   gleam_chrt_data <- run_metabolic_energy_req_module(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = gleam_hrd_data,
-    show_indicator = show_indicator
+    show_indicator = show_indicator,
+    validate_inputs = validate_inputs
   )
 
   # --- Step 6: Run enteric methane direct emissions ---------------------------
   # ch4_mitigation_factor is optional cohort-level input
   gleam_chrt_data <- run_emissions_enteric_module(
     cohort_level_data = gleam_chrt_data,
-    show_indicator = show_indicator
+    show_indicator = show_indicator,
+    validate_inputs = validate_inputs
   )
 
   # --- Step 7: Run nitrogen balance -------------------------------------------
   gleam_chrt_data <- run_nitrogen_balance_module(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = gleam_hrd_data,
-    show_indicator = show_indicator
+    show_indicator = show_indicator,
+    validate_inputs = validate_inputs
   )
 
   # --- Step 8: Run direct emissions from manure management systems ------------
@@ -679,14 +693,16 @@ run_gleam <- function(
     cohort_level_data = gleam_chrt_data,
     manure_management_system_fraction = manure_management_system_fraction,
     manure_management_system_factors = manure_management_system_factors,
-    show_indicator = show_indicator
+    show_indicator = show_indicator,
+    validate_inputs = validate_inputs
   )
 
   # --- Step 9: Run feed emissions (diet-level emission factors) ---------------
   feed_emissions_summary <- run_emissions_ration_module(
     rations_share = feed_rations,
     feed_emissions = feed_emissions,
-    show_indicator = show_indicator
+    show_indicator = show_indicator,
+    validate_inputs = validate_inputs
   )
   gleam_chrt_data <- merge(
     gleam_chrt_data,
@@ -699,7 +715,8 @@ run_gleam <- function(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = gleam_hrd_data,
     simulation_duration = simulation_duration,
-    show_indicator = show_indicator
+    show_indicator = show_indicator,
+    validate_inputs = validate_inputs
   )
 
   # --- Step 11: Run allocation (energy allocation terms and commodity shares) ------------
@@ -707,7 +724,8 @@ run_gleam <- function(
     cohort_level_data = gleam_chrt_data,
     herd_level_data = gleam_hrd_data,
     simulation_duration = simulation_duration,
-    show_indicator = show_indicator
+    show_indicator = show_indicator,
+    validate_inputs = validate_inputs
   )
   gleam_chrt_data <- allocation_results$cohort_allocation_inputs
 
@@ -717,7 +735,8 @@ run_gleam <- function(
     allocation_herd_long = allocation_results$allocation_long,
     simulation_duration = simulation_duration,
     global_warming_potential_set = global_warming_potential_set,
-    show_indicator = show_indicator
+    show_indicator = show_indicator,
+    validate_inputs = validate_inputs
   )
 
   # Clear progress indicator if it was shown

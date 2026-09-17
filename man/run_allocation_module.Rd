@@ -8,7 +8,8 @@ run_allocation_module(
   cohort_level_data,
   herd_level_data,
   simulation_duration = 365,
-  show_indicator = TRUE
+  show_indicator = TRUE,
+  validate_inputs = TRUE
 )
 }
 \arguments{
@@ -80,6 +81,12 @@ species_short = CML.}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during simulation.
 Defaults to \code{TRUE}.}
+
+\item{validate_inputs}{Controls input validation (default \code{TRUE}).
+Set to \code{FALSE} to skip input validation. This is not recommended,
+except for large datasets or repeated runs using inputs that have already
+been validated. A warning is issued when validation is disabled. Invalid
+inputs may lead to incorrect results or calculation errors.}
 }
 \value{
 A named list of two \code{data.table} objects:

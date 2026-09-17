@@ -14,6 +14,7 @@ validate_ym_inputs <- function(
     cohort_short,
     ration_digestibility_fraction
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_character(species_short)
   validate_scalar_character(cohort_short)
   validate_param_range(ration_digestibility_fraction)
@@ -39,6 +40,7 @@ validate_enteric_emission_inputs <- function(
     ration_gross_energy,
     ration_intake
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_character(species_short)
   validate_param_range(ch4_conversion_factor_ym)
   validate_param_range(ch4_mitigation_factor)

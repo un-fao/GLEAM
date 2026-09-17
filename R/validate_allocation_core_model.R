@@ -27,6 +27,7 @@ validate_allocation_milk_inputs <- function(
     milk_fat_fraction_standard,
     milk_lactose_fraction_standard
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Range checks via parameter_ranges
   validate_param_range(milk_production_fpcm_cohort)
   validate_param_range(milk_protein_fraction_standard)
@@ -77,6 +78,7 @@ validate_allocation_meat_inputs <- function(
     live_weight_at_birth = NA_real_,
     ratio_me_to_ne = NA_real_
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
   validate_scalar_numeric(meat_production_live_weight_cohort)
@@ -142,6 +144,7 @@ validate_allocation_fibre_inputs <- function(
     ratio_me_to_ne = NA_real_,
     simulation_duration = NA_real_
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
 
   # Non-fibre species: all numeric args are unused — no further validation
@@ -200,6 +203,7 @@ validate_allocation_work_inputs <- function(
     simulation_duration,
     ratio_me_to_ne = NA_real_
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
 
   validate_param_range(metabolic_energy_req_work)

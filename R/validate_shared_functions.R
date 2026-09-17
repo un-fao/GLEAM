@@ -1,3 +1,38 @@
+#' Configure optional validation for one pipeline or module run
+#'
+#' @param validate_inputs Controls input validation (default \code{TRUE}).
+#'   Set to \code{FALSE} to skip input validation. This is not recommended,
+#'   except for large datasets or repeated runs using inputs that have already
+#'   been validated. A warning is issued when validation is disabled. Invalid
+#'   inputs may lead to incorrect results or calculation errors.
+#' @return A function that restores the previous options, registered by the caller
+#'   with on.exit so cleanup also runs after errors and nested calls.
+#' @noRd
+setup_validation <- function(validate_inputs) {
+  if (!is.logical(validate_inputs) || length(validate_inputs) != 1L || is.na(validate_inputs)) {
+    cli::cli_abort("{.arg validate_inputs} must be TRUE or FALSE.")
+  }
+  # Warn once when entering an unchecked run, including standalone modules.
+  if (!validate_inputs && (!isTRUE(getOption("gleam.validation_active")) || validation_enabled())) {
+    cli::cli_warn(paste0(
+      "Input validation has been turned off. Potential inconsistencies or invalid ",
+      "input values will not be flagged. Use this option with caution and ensure ",
+      "that input data have been checked before running the pipeline."
+    ))
+  }
+  previous_validation <- options(
+    gleam.validate = validate_inputs,
+    gleam.validation_active = TRUE
+  )
+  function() options(previous_validation)
+}
+
+#' Check whether input validation is enabled
+#' @noRd
+validation_enabled <- function() {
+  !isFALSE(getOption("gleam.validate"))
+}
+
 #' Validate a scalar numeric input
 #'
 #' Ensures that the given argument is a single numeric value (length 1, not NA).
@@ -10,6 +45,7 @@
 #'
 #' @noRd
 validate_scalar_numeric <- function(x, arg_name = deparse(substitute(x))) {
+  if (!validation_enabled()) return(invisible(NULL))
   # Check if the input is numeric, scalar, and not missing
   if (!is.numeric(x) || length(x) != 1 || is.na(x)) {
     cli::cli_abort("{.arg {arg_name}} must be a single numeric value.")
@@ -28,6 +64,7 @@ validate_scalar_numeric <- function(x, arg_name = deparse(substitute(x))) {
 #'
 #' @noRd
 validate_scalar_character <- function(x, arg_name = deparse(substitute(x))) {
+  if (!validation_enabled()) return(invisible(NULL))
   if (!is.character(x) || length(x) != 1 || is.na(x)) {
     cli::cli_abort("{.arg {arg_name}} must be a single character value.")
   }
@@ -51,6 +88,7 @@ validate_scalar_character <- function(x, arg_name = deparse(substitute(x))) {
 validate_named_numeric_vector <- function(
     x, expected_length, expected_names = NULL, arg_name = deparse(substitute(x))
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   if (!is.numeric(x) || length(x) != expected_length || is.null(names(x))) {
     cli::cli_abort("{.arg {arg_name}} must be a numeric vector of length {expected_length} with names.")
   }
@@ -90,6 +128,7 @@ normalize_rate <- function(x, lower = 0, upper = 1) {
 #'
 #' @noRd
 validate_fraction <- function(x, arg_name = deparse(substitute(x))) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_numeric(x, arg_name)
   if (x < 0 || x > 1) {
     cli::cli_abort("{.arg {arg_name}} must be between 0 and 1.")
@@ -106,6 +145,7 @@ validate_fraction <- function(x, arg_name = deparse(substitute(x))) {
 #'
 #' @noRd
 validate_positive_numeric <- function(x, arg_name = deparse(substitute(x))) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_numeric(x, arg_name)
   if (x <= 0) {
     cli::cli_abort("{.arg {arg_name}} must be positive.")
@@ -126,6 +166,7 @@ validate_scalar_numeric_or_na <- function(
     arg_name = deparse(substitute(x)),
     min_val = 0
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   if (length(x) != 1L) {
     cli::cli_abort("{.arg {arg_name}} must be a single numeric (scalar). NA is allowed.")
   }
@@ -160,6 +201,7 @@ validate_param_range <- function(
     arg_name = deparse(substitute(x)),
     parameter_ranges_data = parameter_ranges
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
 
   # Type and missingness checks
   if (!is.numeric(x)) {
@@ -231,6 +273,7 @@ validate_param_range <- function(
 #'
 #' @noRd
 validate_animal_species <- function(species_short) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_character(species_short)
   if (!species_short %in% gleam_species) {
     cli::cli_abort(
@@ -247,6 +290,7 @@ validate_animal_species <- function(species_short) {
 #'
 #' @noRd
 validate_cohort_code <- function(cohort_short) {
+  if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_character(cohort_short)
   if (!cohort_short %in% gleam_cohorts) {
     cli::cli_abort(
@@ -273,6 +317,7 @@ validate_species_short_values <- function(
     column_name = "species_short",
     data_arg = "data"
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   invalid <- setdiff(unique(x), gleam_species)
   if (length(invalid) > 0) {
     cli::cli_abort(
@@ -300,6 +345,7 @@ validate_cohort_short_values <- function(
     column_name = "cohort_short",
     data_arg = "data"
 ) {
+  if (!validation_enabled()) return(invisible(NULL))
   invalid <- setdiff(unique(x), gleam_cohorts)
   if (length(invalid) > 0) {
     cli::cli_abort(

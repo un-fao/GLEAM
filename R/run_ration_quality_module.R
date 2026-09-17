@@ -77,6 +77,12 @@
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'   Defaults to \code{TRUE}.
 #'
+#' @param validate_inputs Controls input validation (default \code{TRUE}).
+#'   Set to \code{FALSE} to skip input validation. This is not recommended,
+#'   except for large datasets or repeated runs using inputs that have already
+#'   been validated. A warning is issued when validation is disabled. Invalid
+#'   inputs may lead to incorrect results or calculation errors.
+#'
 #' @return data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
 #'   \code{species_short}, and \code{cohort_short} with the following columns:
 #'   \describe{
@@ -151,8 +157,11 @@
 run_ration_quality_module <- function(
     rations_share,
     feed_params,
-    show_indicator = TRUE
+    show_indicator = TRUE,
+    validate_inputs = TRUE
 ) {
+  restore_validation <- setup_validation(validate_inputs)
+  on.exit(restore_validation(), add = TRUE)
   # --- Step 1: Validate inputs -----------------------------------------------
   validate_run_ration_quality_module_inputs(rations_share, feed_params)
 
