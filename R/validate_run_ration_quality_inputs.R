@@ -41,19 +41,13 @@ validate_run_ration_quality_module_inputs <- function(
     "feed_ash"
   )
 
-  missing_rations_cols <- setdiff(required_rations_cols, names(rations_share))
-  if (length(missing_rations_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg rations_share}: {.val {missing_rations_cols}}"
-    )
-  }
-
-  missing_feed_cols <- setdiff(required_feed_cols, names(feed_params))
-  if (length(missing_feed_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg feed_params}: {.val {missing_feed_cols}}"
-    )
-  }
+  check_module_input_columns(
+    rations_share, required_rations_cols, "rations_share", "ration_quality",
+    rations_share, input_table_filter = "feed_rations"
+  )
+  check_module_input_columns(
+    feed_params, required_feed_cols, "feed_params", "ration_quality", rations_share
+  )
 
   # --- Ration share consistency ------------------------------------------------
   ration_sums <- rations_share[

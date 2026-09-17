@@ -6,7 +6,7 @@
 \usage{
 calc_work_allocation_energy(
   species_short,
-  cohort_stock_size,
+  cohort_stock_size = NA_real_,
   metabolic_energy_req_work,
   simulation_duration,
   ratio_me_to_ne = NA_real_

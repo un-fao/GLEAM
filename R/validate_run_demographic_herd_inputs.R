@@ -19,15 +19,23 @@ validate_run_demographic_herd_module_inputs <- function(
   check_data_table(herd_level_data, "herd_level_data")
 
   # --- Required columns -------------------------------------------------------
-  # Verify all module-specific columns are present
+  # The connected herd simulation always needs its complete input schema.
   required_cohort_cols <- c(
     "herd_id", "cohort_short", "cohort_duration_days", "offtake_rate", "death_rate"
   )
   required_herd_cols <- c(
     "herd_id", "parturition_rate", "litter_size", "birth_fraction_female", "herd_size_total"
   )
-  check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
-  check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
+  check_module_input_columns(
+    cohort_level_data, required_cohort_cols, "cohort_level_data",
+    "demographic", cohort_level_data, herd_level_data,
+    has_herd_structure_filter = FALSE, always_required = required_cohort_cols
+  )
+  check_module_input_columns(
+    herd_level_data, required_herd_cols, "herd_level_data",
+    "demographic", cohort_level_data, herd_level_data,
+    has_herd_structure_filter = FALSE, always_required = required_herd_cols
+  )
 
   # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------
   # Must use valid GLEAM cohort codes; each herd must have all 6 cohorts

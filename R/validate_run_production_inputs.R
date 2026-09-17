@@ -31,13 +31,20 @@ validate_run_production_module_inputs <- function(
     "fibre_yield_year",
     "carcass_dressing_fraction", "bone_free_meat_fraction", "meat_protein_fraction"
   )
-  check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
-  check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
+  check_module_input_columns(
+    cohort_level_data, required_cohort_cols, "cohort_level_data",
+    "production", cohort_level_data, herd_level_data
+  )
+  check_module_input_columns(
+    herd_level_data, required_herd_cols, "herd_level_data",
+    "production", cohort_level_data, herd_level_data,
+    function_filter = "run_production_module"
+  )
 
-  # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------
-  # Must use valid GLEAM cohort codes; each herd must have all 6 cohorts
+  # --- Cohort: valid, unique requested cohorts -----------------
+  # Must use valid GLEAM cohort codes; each requested herd/cohort must be unique
   validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
-  check_cohort_completeness(cohort_level_data, "cohort_level_data")
+  check_cohort_uniqueness(cohort_level_data, "cohort_level_data")
 
   # --- Herd: one row per herd_id -----------------------------------------------
   check_herd_id_unique(herd_level_data, "herd_level_data")

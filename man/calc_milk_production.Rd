@@ -7,16 +7,16 @@
 calc_milk_production(
   species_short,
   cohort_short,
-  milk_yield_day,
+  milk_yield_day = NA_real_,
   simulation_duration,
-  cohort_stock_size,
-  lactating_females_fraction,
-  milk_protein_fraction,
-  milk_fat_fraction,
-  milk_lactose_fraction,
-  milk_protein_fraction_standard,
-  milk_fat_fraction_standard,
-  milk_lactose_fraction_standard
+  cohort_stock_size = NA_real_,
+  lactating_females_fraction = NA_real_,
+  milk_protein_fraction = NA_real_,
+  milk_fat_fraction = NA_real_,
+  milk_lactose_fraction = NA_real_,
+  milk_protein_fraction_standard = NA_real_,
+  milk_fat_fraction_standard = NA_real_,
+  milk_lactose_fraction_standard = NA_real_
 )
 }
 \arguments{
@@ -47,7 +47,8 @@ Supported values include:
 This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals
 during the assessment period,
 divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for
-species = CML, CTL, BFL, SHP, and GTS.}}
+species = CML, CTL, BFL, SHP, and GTS. For adult females, must be greater than
+zero when \code{lactating_females_fraction} is greater than zero.}}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
 
@@ -58,10 +59,12 @@ FS, FA, MJ, MS, MA).}
 period (fraction). Required only for species: CML, CTL, BFL, SHP, and GTS.}
 
 \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein/kg milk). Required only for species = CML,
-CTL, BFL, SHP, and GTS.}
+CTL, BFL, SHP, and GTS. For adult females, must be greater than zero when
+\code{milk_yield_day} is greater than zero.}
 
 \item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat/kg milk). Required only for species = CML, CTL, BFL, SHP,
-and GTS.}
+and GTS. For adult females, must be greater than zero when \code{milk_yield_day}
+is greater than zero.}
 
 \item{milk_lactose_fraction}{Numeric. Milk lactose fraction (kg lactose/kg milk). Required only for species = CML,
 CTL, BFL, SHP, and GTS.}

@@ -30,16 +30,19 @@
 #' This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals
 #' during the assessment period,
 #' divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for
-#' species = CML, CTL, BFL, SHP, and GTS.}
+#' species = CML, CTL, BFL, SHP, and GTS. For adult females, must be greater than
+#' zero when \code{lactating_females_fraction} is greater than zero.}
 #' @param simulation_duration Numeric. Length of the assessment period (days).
 #' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
 #' FS, FA, MJ, MS, MA).
 #' @param lactating_females_fraction Numeric. Proportion of adult females that are lactating during the assessment
 #' period (fraction). Required only for species: CML, CTL, BFL, SHP, and GTS.
 #' @param milk_protein_fraction Numeric. Milk protein fraction (kg protein/kg milk). Required only for species = CML,
-#' CTL, BFL, SHP, and GTS.
+#' CTL, BFL, SHP, and GTS. For adult females, must be greater than zero when
+#' \code{milk_yield_day} is greater than zero.
 #' @param milk_fat_fraction Numeric. Milk fat fraction (kg fat/kg milk). Required only for species = CML, CTL, BFL, SHP,
-#' and GTS.
+#' and GTS. For adult females, must be greater than zero when \code{milk_yield_day}
+#' is greater than zero.
 #' @param milk_lactose_fraction Numeric. Milk lactose fraction (kg lactose/kg milk). Required only for species = CML,
 #' CTL, BFL, SHP, and GTS.
 #' @param milk_protein_fraction_standard Numeric. Standard protein content of milk, used to calculate
@@ -108,16 +111,16 @@
 calc_milk_production <- function(
     species_short,  
     cohort_short,
-    milk_yield_day,
+    milk_yield_day = NA_real_,
     simulation_duration,
-    cohort_stock_size,
-    lactating_females_fraction,
-    milk_protein_fraction,
-    milk_fat_fraction,
-    milk_lactose_fraction,
-    milk_protein_fraction_standard,
-    milk_fat_fraction_standard,
-    milk_lactose_fraction_standard
+    cohort_stock_size = NA_real_,
+    lactating_females_fraction = NA_real_,
+    milk_protein_fraction = NA_real_,
+    milk_fat_fraction = NA_real_,
+    milk_lactose_fraction = NA_real_,
+    milk_protein_fraction_standard = NA_real_,
+    milk_fat_fraction_standard = NA_real_,
+    milk_lactose_fraction_standard = NA_real_
 ) {
   validate_milk_outputs_inputs(
     species_short = species_short,
@@ -133,6 +136,7 @@ calc_milk_production <- function(
     milk_fat_fraction_standard = milk_fat_fraction_standard,
     milk_lactose_fraction_standard = milk_lactose_fraction_standard
   )
+  validate_function_required_parameters("calc_milk_production", environment(), species_filter = species_short, cohort_filter = cohort_short)
   
   milk_production <- 0
   milk_protein_production <- 0
@@ -227,9 +231,9 @@ calc_milk_production <- function(
 calc_fibre_production <- function(
     species_short,
     cohort_short,
-    fibre_yield_year,
+    fibre_yield_year = NA_real_,
     simulation_duration,
-    cohort_stock_size
+    cohort_stock_size = NA_real_
 ) {
   validate_fibre_output_inputs(
     species_short = species_short,
@@ -238,6 +242,7 @@ calc_fibre_production <- function(
     simulation_duration = simulation_duration,
     cohort_stock_size = cohort_stock_size
   )
+  validate_function_required_parameters("calc_fibre_production", environment(), species_filter = species_short, cohort_filter = cohort_short)
   
   fibre_production_cohort <- 0
   
@@ -328,6 +333,7 @@ calc_meat_production <- function(
     bone_free_meat_fraction = bone_free_meat_fraction,
     meat_protein_fraction = meat_protein_fraction
   )
+  validate_function_required_parameters("calc_meat_production", environment())
 
   meat_production_live_weight_cohort <- offtake_heads_assessment * live_weight_cohort_at_slaughter
   meat_production_carcass_weight_cohort <- (

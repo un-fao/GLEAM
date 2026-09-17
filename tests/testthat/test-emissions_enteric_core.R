@@ -64,3 +64,40 @@ test_that("calc_ch4_enteric validates inputs and returns expected numeric", {
   # Emissions must be non-negative
   expect_gte(ch4, 0)
 })
+
+test_that("enteric methane uses an explicit mitigation factor", {
+  baseline <- calc_ch4_enteric("CTL", 5, 1, 18, 10)
+  expect_equal(calc_ch4_enteric("CTL", 5, 0.5, 18, 10), baseline * 0.5)
+  expect_equal(calc_ch4_enteric("CTL", 5, 0, 18, 10), 0)
+  expect_error(calc_ch4_enteric("CTL", 5, ration_gross_energy = 18, ration_intake = 10),
+               "ch4_mitigation_factor")
+  for (factor in c(NA_real_, -0.1, 1.1)) {
+    expect_error(calc_ch4_enteric("CTL", 5, factor, 18, 10), "ch4_mitigation_factor")
+  }
+})
+
+test_that("enteric module defaults missing mitigation to one and preserves supplied factors", {
+  cohorts <- data.table::data.table(
+    herd_id = 1L, species_short = "CTL", cohort_short = c("FA", "MA", "FJ"),
+    ration_digestibility_fraction = 0.6, ration_gross_energy = 18, ration_intake = 10,
+    ch4_mitigation_factor = c(1, 0.5, 0)
+  )
+  original <- data.table::copy(cohorts)
+  baseline_inputs <- data.table::copy(cohorts)
+  baseline_inputs[, ch4_mitigation_factor := 1]
+  baseline <- run_emissions_enteric_module(baseline_inputs, show_indicator = FALSE)
+  result <- run_emissions_enteric_module(cohorts, show_indicator = FALSE)
+  expect_equal(result$ch4_enteric, baseline$ch4_enteric * cohorts$ch4_mitigation_factor)
+  expect_equal(result$ch4_mitigation_factor, cohorts$ch4_mitigation_factor)
+  expect_equal(cohorts, original)
+  without_mitigation <- cohorts[, !"ch4_mitigation_factor"]
+  expect_equal(run_emissions_enteric_module(without_mitigation, FALSE), baseline)
+  expect_warning(
+    unchecked <- run_emissions_enteric_module(without_mitigation, FALSE, validate_inputs = FALSE),
+    "Input validation has been turned off"
+  )
+  expect_equal(unchecked, baseline)
+  expect_false("ch4_mitigation_factor" %in% names(without_mitigation))
+  cohorts[cohort_short == "MA", ch4_mitigation_factor := NA_real_]
+  expect_error(run_emissions_enteric_module(cohorts, FALSE), "ch4_mitigation_factor")
+})

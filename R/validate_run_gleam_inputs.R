@@ -6,7 +6,8 @@
 #' \code{manure_management_system_factors}), and ensures all inputs share the same
 #' \code{herd_id} set. Ensures input tables do not contain columns that GLEAM
 #' calculates internally (e.g. \code{cohort_stock_size}, \code{daily_weight_gain}).
-#' Schema checks for cohort/herd data are done in the respective run_* functions.
+#' Matrix requirements are checked for every input table and herd-structure mode;
+#' module-specific structural and calculated-input checks remain in run_* functions.
 #'
 #' @param has_herd_structure Logical. If TRUE, use \code{cohort_level_data} as
 #'   cohort-level input for the weights step; if FALSE, run herd simulation first.
@@ -237,4 +238,28 @@ validate_run_gleam_inputs <- function(
       )
     }
   }
+
+  inputs <- list(
+    cohort_level_data = cohort_level_data, herd_level_data = herd_level_data,
+    feed_rations = feed_rations, feed_params = feed_params,
+    feed_emissions = feed_emissions,
+    manure_management_system_fraction = manure_management_system_fraction,
+    manure_management_system_factors = manure_management_system_factors
+  )
+  context <- get_parameter_context(cohort_level_data, herd_level_data)
+  for (table_name in names(inputs)) {
+    # Feed context includes feed_id so requirements apply only to feeds used
+    # by the requested species/cohorts.
+    table_context <- if (table_name %in% c("feed_params", "feed_emissions")) {
+      merge(context, data.table::as.data.table(feed_rations),
+            by = c("herd_id", "species_short", "cohort_short"))
+    } else context
+    check_module_input_columns(
+      inputs[[table_name]], character(), table_name, "run_gleam", table_context,
+      has_herd_structure_filter = has_herd_structure,
+      defaulted_parameters = "ratio_m3CH4_to_kgCH4",
+      function_filter = if (table_name == "herd_level_data") "run_gleam" else NULL
+    )
+  }
+
 }

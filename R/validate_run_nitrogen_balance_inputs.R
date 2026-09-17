@@ -28,13 +28,20 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
     "litter_size", "parturition_rate",
     "live_weight_at_weaning", "live_weight_at_birth", "pregnancy_duration"
   )
-  check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
-  check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
+  check_module_input_columns(
+    cohort_level_data, required_cohort_cols, "cohort_level_data",
+    "nitrogen", cohort_level_data, herd_level_data
+  )
+  check_module_input_columns(
+    herd_level_data, required_herd_cols, "herd_level_data",
+    "nitrogen", cohort_level_data, herd_level_data,
+    function_filter = "run_nitrogen_balance_module"
+  )
 
-  # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------
-  # Must use valid GLEAM cohort codes; each herd must have all 6 cohorts
+  # --- Cohort: valid, unique requested cohorts -----------------
+  # Must use valid GLEAM cohort codes; each requested herd/cohort must be unique
   validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
-  check_cohort_completeness(cohort_level_data, "cohort_level_data")
+  check_cohort_uniqueness(cohort_level_data, "cohort_level_data")
 
   # --- Herd: unique herd_id, valid species_short ------------------------------
   # One row per herd; species codes must be valid GLEAM codes

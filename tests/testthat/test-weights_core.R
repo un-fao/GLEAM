@@ -126,3 +126,9 @@ test_that("calc_cohort_weights rejects missing live_weight_male_adult for MA", {
     "Missing required weight inputs"
   )
 })
+
+test_that("invalid scalar weights get validation errors", {
+  expect_error(calc_cohort_weights("FA", live_weight_female_adult = c(500, 600)), "single numeric")
+  expect_error(calc_cohort_weights("FA", live_weight_female_adult = numeric()), "single numeric")
+  expect_error(calc_cohort_weights("FA", live_weight_female_adult = "500"), "single numeric")
+})

@@ -16,6 +16,7 @@ run_weights_module(
 herd \eqn{\times} cohort. Must include:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+\item{species_short}{Character. Supported species code. Each herd must contain a single species.}
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -29,7 +30,8 @@ herd \eqn{\times} cohort. Must include:
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 }}
 
-\item{herd_level_data}{A \code{data.table} with one row per herd. Must include:
+\item{herd_level_data}{A \code{data.table} with one row per herd. Include
+\code{herd_id} and the weights required by the requested cohorts:
 \itemize{
 \item \code{live_weight_female_adult} Numeric. Live weight of adult females (kg)
 \item \code{live_weight_male_adult} Numeric. Live weight of adult males (kg)
@@ -37,7 +39,10 @@ herd \eqn{\times} cohort. Must include:
 \item \code{live_weight_at_weaning} Numeric. Live weight of the animal at weaning (kg)
 \item \code{live_weight_female_at_slaughter} Numeric. Slaughter weight of female sub-adult animals (kg)
 \item \code{live_weight_male_at_slaughter} Numeric. Slaughter weight of male sub-adult animals (kg)
-}}
+}
+Adult cohorts require the adult weight of their sex. Juveniles also require
+birth and weaning weights. Subadults also require weaning and slaughter
+weights of their sex. Unused weight columns may be omitted or contain NA.}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during calculations.
 Defaults to \code{TRUE}.}

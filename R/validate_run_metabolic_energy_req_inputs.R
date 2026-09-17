@@ -38,13 +38,20 @@ validate_run_metabolic_energy_req_module_inputs <- function(
     "fibre_yield_year"
   )
 
-  check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
-  check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
+  check_module_input_columns(
+    cohort_level_data, required_cohort_cols, "cohort_level_data",
+    "metabolic_energy", cohort_level_data, herd_level_data,
+    always_required = c("low_activity_fraction", "high_activity_fraction")
+  )
+  check_module_input_columns(
+    herd_level_data, required_herd_cols, "herd_level_data",
+    "metabolic_energy", cohort_level_data, herd_level_data
+  )
 
-  # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------
-  # Must use valid GLEAM cohort codes; each herd must have all 6 cohorts
+  # --- Cohort: valid, unique requested cohorts -----------------
+  # Must use valid GLEAM cohort codes; each requested herd/cohort must be unique
   validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
-  check_cohort_completeness(cohort_level_data, "cohort_level_data")
+  check_cohort_uniqueness(cohort_level_data, "cohort_level_data")
 
   # --- Herd: one row per herd_id, valid species_short -------------------------
   check_herd_id_unique(herd_level_data, "herd_level_data")
@@ -79,30 +86,11 @@ validate_run_metabolic_energy_req_module_inputs <- function(
     )
   }
 
-  # live_weight_cohort_initial <= live_weight_cohort_average <= live_weight_cohort_final (skip if any NA)
-  inconsistent_weights <- cohort_level_data[
-    !is.na(live_weight_cohort_initial) & !is.na(live_weight_cohort_average) & !is.na(live_weight_cohort_final) &
-      (live_weight_cohort_initial > live_weight_cohort_average | live_weight_cohort_average > live_weight_cohort_final),
-    .(herd_id, cohort_short)
+  # Preserve the existing complete-case condition for the three weight inputs.
+  context <- get_parameter_context(cohort_level_data, herd_level_data)
+  complete_weights <- cohort_level_data[
+    !is.na(live_weight_cohort_initial) & !is.na(live_weight_cohort_average) & !is.na(live_weight_cohort_final)
   ]
-  if (nrow(inconsistent_weights) > 0) {
-    bad_info <- inconsistent_weights[, paste0(herd_id, " / ", cohort_short)]
-    cli::cli_abort(
-      "For each row, {.field live_weight_cohort_initial} <= {.field live_weight_cohort_average} <= {.field live_weight_cohort_final} must hold.
-      Violation(s): {.val {bad_info}}"
-    )
-  }
-
-  # --- Numeric consistency (herd-level) ----------------------------------------
-  # live_weight_at_birth < live_weight_at_weaning where both present (strict)
-  bad_birth_weaning <- herd_level_data[
-    !is.na(live_weight_at_birth) & !is.na(live_weight_at_weaning) & live_weight_at_birth >= live_weight_at_weaning,
-    herd_id
-  ]
-  if (length(bad_birth_weaning) > 0) {
-    cli::cli_abort(
-      "For each herd, {.field live_weight_at_birth} must be strictly less than {.field live_weight_at_weaning}.
-      Violation(s) for herd_id: {.val {bad_birth_weaning}}"
-    )
-  }
+  check_contextual_parameter_ranges(complete_weights, context, "run_metabolic_energy_req_module")
+  check_contextual_parameter_ranges(herd_level_data, context, "run_metabolic_energy_req_module")
 }

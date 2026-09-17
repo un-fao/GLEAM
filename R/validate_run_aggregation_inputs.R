@@ -33,13 +33,9 @@ validate_run_aggregation_module_inputs <- function(
 
   # --- Required columns: cohort level -----------------------------------------
   required_cohort_cols <- c("herd_id", "species_short", "cohort_short", "cohort_stock_size")
-  missing_cohort_cols <- setdiff(required_cohort_cols, names(cohort_level_data))
-  if (length(missing_cohort_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg cohort_level_data}: {.val {missing_cohort_cols}}"
-    )
-  }
-
+  check_module_input_columns(
+    cohort_level_data, required_cohort_cols, "cohort_level_data", "aggregation", cohort_level_data
+  )
 
   # --- Required columns: allocation ------------------------------------------
   required_allocation_cols <- c(
@@ -125,4 +121,6 @@ validate_run_aggregation_module_inputs <- function(
       "{.var cohort_stock_size} in {.arg cohort_level_data} must be non-negative."
     )
   }
+  check_cohort_uniqueness(cohort_level_data, "cohort_level_data")
+
 }

@@ -27,6 +27,7 @@ calc_fecundity_rates <- function(
     birth_fraction_female
 ) {
   validate_fecundity_inputs(parturition_rate, litter_size, birth_fraction_female)
+  validate_function_required_parameters("calc_fecundity_rates", environment())
 
   # Calculate fecundity rates
   fecundity_female <-  litter_size * birth_fraction_female * (parturition_rate / 365)
@@ -76,6 +77,7 @@ calc_transition_probabilities <- function(
     death_rate
 ) {
   validate_transition_inputs(cohort_duration_days, offtake_rate, death_rate)
+  validate_function_required_parameters("calc_transition_probabilities", environment())
 
   # Define cohort names for clarity
   six_cohort_names <- gleam_cohorts
@@ -443,6 +445,7 @@ calc_projected_population_size <- function(
     herd_structure,
     cohort_share
   )
+  validate_function_required_parameters("calc_projected_population_size", environment())
 
   # Calculate initial number of individuals in each of the 8 sex-age classes
   xini <- herd_size_total * herd_structure

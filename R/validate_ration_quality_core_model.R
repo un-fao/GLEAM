@@ -10,7 +10,7 @@ validate_diet_digestibility_inputs <- function(
   if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_character(species_short)
   validate_scalar_numeric(feed_ration_fraction)
-  validate_param_range(feed_ration_fraction)
+  validate_param_range(feed_ration_fraction, species_filter = species_short)
 
   # Ensure all digestibility inputs are scalar numerics (NA allowed)
   args <- list(
@@ -24,7 +24,7 @@ validate_diet_digestibility_inputs <- function(
     }
     if (!is.na(val)) {
       # Enforce configured bounds
-      validate_param_range(val, arg_name)
+      validate_param_range(val, arg_name, species_filter = species_short)
     }
   }
 
@@ -62,7 +62,7 @@ validate_ration_metabolizable_energy_inputs <- function(
   if (!validation_enabled()) return(invisible(NULL))
   validate_animal_species(species_short)
   validate_scalar_numeric(feed_ration_fraction)
-  validate_param_range(feed_ration_fraction)
+  validate_param_range(feed_ration_fraction, species_filter = species_short)
   # Ensure all metabolizable energy inputs are scalar numerics (NA allowed)
   args <- list(
     feed_metabolizable_energy_ruminant = feed_metabolizable_energy_ruminant,
@@ -75,7 +75,7 @@ validate_ration_metabolizable_energy_inputs <- function(
     }
     if (!is.na(val)) {
       # Enforce configured bounds
-      validate_param_range(val, arg_name)
+      validate_param_range(val, arg_name, species_filter = species_short)
     }
   }
 
@@ -167,7 +167,7 @@ validate_urinary_energy_inputs <- function(
   if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_character(species_short)
   validate_scalar_numeric(feed_ration_fraction)
-  validate_param_range(feed_ration_fraction)
+  validate_param_range(feed_ration_fraction, species_filter = species_short)
 
   args <- list(
     feed_urinary_energy_ruminant = feed_urinary_energy_ruminant,
@@ -179,7 +179,7 @@ validate_urinary_energy_inputs <- function(
       cli::cli_abort("{.arg {arg_name}} must be a single numeric (scalar). NA is allowed.")
     }
     if (!is.na(val)) {
-      validate_param_range(val, arg_name)
+      validate_param_range(val, arg_name, species_filter = species_short)
     }
   }
 

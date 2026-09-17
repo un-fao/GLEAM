@@ -4,6 +4,8 @@
 #' (MJ/cohort/assessment period), based on total fat- and protein-corrected milk
 #' (FPCM) produced by the cohort.
 #'
+#' Standard milk composition inputs may be omitted when milk production is zero.
+#'
 #' @param milk_production_fpcm_cohort Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
 #' period (kg/cohort/assessment period).
 #' Suggested standard fat, protein and lactose contents are 0.04, 0.033, and 0.048 respectively.
@@ -92,16 +94,19 @@
 #' @export
 calc_milk_allocation_energy <- function(
     milk_production_fpcm_cohort,
-    milk_protein_fraction_standard,
-    milk_fat_fraction_standard,
-    milk_lactose_fraction_standard
+    milk_protein_fraction_standard = NA_real_,
+    milk_fat_fraction_standard = NA_real_,
+    milk_lactose_fraction_standard = NA_real_
 ) {
+  validate_scalar_numeric(milk_production_fpcm_cohort)
+  if (milk_production_fpcm_cohort == 0) return(0)
   validate_allocation_milk_inputs(
     milk_production_fpcm_cohort,
     milk_protein_fraction_standard,
     milk_fat_fraction_standard,
     milk_lactose_fraction_standard
   )
+  validate_function_required_parameters("calc_milk_allocation_energy", environment())
 
   # Calculate energy content of standard milk (MJ/kg milk)
   # Coefficients from IDF (2022): kcal per 100 g milk per 1% unit of fat/protein/lactose
@@ -255,6 +260,7 @@ calc_meat_allocation_energy <- function(
     species_short, cohort_short, meat_production_live_weight_cohort,
     live_weight_cohort_at_slaughter, live_weight_at_birth, ratio_me_to_ne
   )
+  validate_function_required_parameters("calc_meat_allocation_energy", environment(), species_filter = species_short, cohort_filter = cohort_short)
 
   if (species_short %in% c("CTL", "BFL")) {
     # Cattle and Buffalo: use growth efficiency factor based on cohort
@@ -417,6 +423,7 @@ calc_fibre_allocation_energy <- function(
     species_short, cohort_stock_size,
     metabolic_energy_req_fibre_production, ratio_me_to_ne, simulation_duration
   )
+  validate_function_required_parameters("calc_fibre_allocation_energy", environment(), species_filter = species_short)
 
   if (species_short %in% c("GTS", "SHP")) {
     # Sheep and goats: direct NE calculation
@@ -533,7 +540,7 @@ calc_fibre_allocation_energy <- function(
 #' @export
 calc_work_allocation_energy <- function(
     species_short,
-    cohort_stock_size,
+    cohort_stock_size = NA_real_,
     metabolic_energy_req_work,
     simulation_duration,
     ratio_me_to_ne = NA_real_
@@ -545,6 +552,7 @@ calc_work_allocation_energy <- function(
     simulation_duration,
     ratio_me_to_ne
   )
+  validate_function_required_parameters("calc_work_allocation_energy", environment(), species_filter = species_short)
 
   if (species_short == "CML") {
     # Camelids: convert ME to NE using ratio_me_to_ne (ME/NE)

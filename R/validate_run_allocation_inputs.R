@@ -39,8 +39,14 @@ validate_run_allocation_module_inputs <- function(
     "ratio_me_to_ne"
   )
 
-  check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
-  check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
+  check_module_input_columns(
+    cohort_level_data, required_cohort_cols, "cohort_level_data",
+    "allocation", cohort_level_data, herd_level_data
+  )
+  check_module_input_columns(
+    herd_level_data, required_herd_cols, "herd_level_data",
+    "allocation", cohort_level_data, herd_level_data
+  )
 
   # --- Cross-table: same herd_id set -----------------------------------------
   # Cohort and herd tables must cover identical herd_id sets
@@ -51,4 +57,6 @@ validate_run_allocation_module_inputs <- function(
 
   # --- Herd: one row per herd_id ----------------------------------------------
   check_herd_id_unique(herd_level_data, "herd_level_data")
+  check_cohort_uniqueness(cohort_level_data, "cohort_level_data")
+
 }

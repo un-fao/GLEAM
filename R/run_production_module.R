@@ -166,6 +166,19 @@ run_production_module <- function(
   # --- Step 2: Create working copy --------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
 
+  # Resolve herd rows and unused inputs once for all requested cohorts.
+  herd_parameters <- get_optional_parameters(
+    herd_level_data, c(
+      "species_short", "milk_yield_day",
+      "lactating_females_fraction", "milk_protein_fraction",
+      "milk_fat_fraction", "milk_lactose_fraction",
+      "milk_protein_fraction_standard", "milk_fat_fraction_standard",
+      "milk_lactose_fraction_standard", "fibre_yield_year",
+      "carcass_dressing_fraction", "bone_free_meat_fraction",
+      "meat_protein_fraction"
+    ), cohort_level_data
+  )
+
   # --- Step 3: Compute milk production outputs --------------------------------
   milk_output_cols <- c(
     "milk_production_mass_cohort",
@@ -176,18 +189,18 @@ run_production_module <- function(
   cohort_level_data[
     ,
     (milk_output_cols) := calc_milk_production(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
-      milk_yield_day = herd_level_data[.SD, on = "herd_id", x.milk_yield_day],
+      milk_yield_day = herd_parameters$milk_yield_day[.I],
       simulation_duration = simulation_duration,
       cohort_stock_size = cohort_stock_size,
-      lactating_females_fraction = herd_level_data[.SD, on = "herd_id", x.lactating_females_fraction],
-      milk_protein_fraction = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction],
-      milk_fat_fraction = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction],
-      milk_lactose_fraction = herd_level_data[.SD, on = "herd_id", x.milk_lactose_fraction],
-      milk_protein_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction_standard],
-      milk_fat_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction_standard],
-      milk_lactose_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_lactose_fraction_standard]
+      lactating_females_fraction = herd_parameters$lactating_females_fraction[.I],
+      milk_protein_fraction = herd_parameters$milk_protein_fraction[.I],
+      milk_fat_fraction = herd_parameters$milk_fat_fraction[.I],
+      milk_lactose_fraction = herd_parameters$milk_lactose_fraction[.I],
+      milk_protein_fraction_standard = herd_parameters$milk_protein_fraction_standard[.I],
+      milk_fat_fraction_standard = herd_parameters$milk_fat_fraction_standard[.I],
+      milk_lactose_fraction_standard = herd_parameters$milk_lactose_fraction_standard[.I]
     ),
     by = .I
   ]
@@ -197,9 +210,9 @@ run_production_module <- function(
   cohort_level_data[
     ,
     fibre_production_cohort := calc_fibre_production(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
-      fibre_yield_year = herd_level_data[.SD, on = "herd_id", x.fibre_yield_year],
+      fibre_yield_year = herd_parameters$fibre_yield_year[.I],
       simulation_duration = simulation_duration,
       cohort_stock_size = cohort_stock_size
     ),
@@ -219,9 +232,9 @@ run_production_module <- function(
     (meat_output_cols) := calc_meat_production(
       offtake_heads_assessment = offtake_heads_assessment,
       live_weight_cohort_at_slaughter = live_weight_cohort_at_slaughter,
-      carcass_dressing_fraction = herd_level_data[.SD, on = "herd_id", x.carcass_dressing_fraction],
-      bone_free_meat_fraction = herd_level_data[.SD, on = "herd_id", x.bone_free_meat_fraction],
-      meat_protein_fraction = herd_level_data[.SD, on = "herd_id", x.meat_protein_fraction]
+      carcass_dressing_fraction = herd_parameters$carcass_dressing_fraction[.I],
+      bone_free_meat_fraction = herd_parameters$bone_free_meat_fraction[.I],
+      meat_protein_fraction = herd_parameters$meat_protein_fraction[.I]
     ),
     by = .I
   ]

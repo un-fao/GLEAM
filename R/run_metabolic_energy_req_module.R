@@ -182,16 +182,37 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
+  # Resolve herd rows and unused inputs once for all requested cohorts.
+  herd_parameters <- get_optional_parameters(
+    herd_level_data, c(
+      "species_short", "lactating_females_fraction",
+      "age_first_parturition", "milk_yield_day",
+      "milk_fat_fraction", "non_productive_duration",
+      "pregnancy_duration", "litter_size",
+      "death_rate_juvenile", "live_weight_at_birth",
+      "live_weight_at_weaning", "lactation_duration",
+      "parturition_rate", "draught_work_hours_female",
+      "draught_work_hours_male", "draught_fraction_female",
+      "draught_fraction_male", "fibre_yield_year"
+    ), cohort_level_data
+  )
+  cohort_parameters <- get_optional_parameters(
+    cohort_level_data, c(
+      "offtake_rate", "low_activity_fraction",
+      "high_activity_fraction", "cohort_duration_days"
+    )
+  )
+
   # --- Step 3: Maintenance energy (MJ/day) ------------------------------------
   cohort_level_data[
     ,
     metabolic_energy_req_maintenance := calc_metabolic_energy_req_maintenance(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
       live_weight_cohort_average = live_weight_cohort_average,
-      lactating_females_fraction = herd_level_data[.SD, on = "herd_id", x.lactating_females_fraction],
-      offtake_rate = offtake_rate,
-      age_first_parturition = herd_level_data[.SD, on = "herd_id", x.age_first_parturition]
+      lactating_females_fraction = herd_parameters$lactating_females_fraction[.I],
+      offtake_rate = cohort_parameters$offtake_rate[.I],
+      age_first_parturition = herd_parameters$age_first_parturition[.I]
     ),
     by = .I
   ]
@@ -200,12 +221,12 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data[
     ,
     metabolic_energy_req_activity := calc_metabolic_energy_req_activity(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
       metabolic_energy_req_maintenance = metabolic_energy_req_maintenance,
       live_weight_cohort_average = live_weight_cohort_average,
-      low_activity_fraction = low_activity_fraction,
-      high_activity_fraction = high_activity_fraction
+      low_activity_fraction = cohort_parameters$low_activity_fraction[.I],
+      high_activity_fraction = cohort_parameters$high_activity_fraction[.I]
     ),
     by = .I
   ]
@@ -214,15 +235,15 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data[
     ,
     metabolic_energy_req_growth := calc_metabolic_energy_req_growth(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
       live_weight_cohort_average = live_weight_cohort_average,
       live_weight_cohort_final = live_weight_cohort_final,
       live_weight_cohort_initial = live_weight_cohort_initial,
       live_weight_mature_stage = live_weight_mature_stage,
       daily_weight_gain = daily_weight_gain,
-      offtake_rate = offtake_rate,
-      cohort_duration_days = cohort_duration_days
+      offtake_rate = cohort_parameters$offtake_rate[.I],
+      cohort_duration_days = cohort_parameters$cohort_duration_days[.I]
     ),
     by = .I
   ]
@@ -231,19 +252,19 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data[
     ,
     metabolic_energy_req_lactation := calc_metabolic_energy_req_lactation(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
-      lactating_females_fraction = herd_level_data[.SD, on = "herd_id", x.lactating_females_fraction],
-      milk_yield_day = herd_level_data[.SD, on = "herd_id", x.milk_yield_day],
-      milk_fat_fraction = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction],
-      non_productive_duration = herd_level_data[.SD, on = "herd_id", x.non_productive_duration],
-      pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
-      litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
-      death_rate_juvenile = herd_level_data[.SD, on = "herd_id", x.death_rate_juvenile],
-      live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
-      live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning],
-      lactation_duration = herd_level_data[.SD, on = "herd_id", x.lactation_duration],
-      parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate]
+      lactating_females_fraction = herd_parameters$lactating_females_fraction[.I],
+      milk_yield_day = herd_parameters$milk_yield_day[.I],
+      milk_fat_fraction = herd_parameters$milk_fat_fraction[.I],
+      non_productive_duration = herd_parameters$non_productive_duration[.I],
+      pregnancy_duration = herd_parameters$pregnancy_duration[.I],
+      litter_size = herd_parameters$litter_size[.I],
+      death_rate_juvenile = herd_parameters$death_rate_juvenile[.I],
+      live_weight_at_birth = herd_parameters$live_weight_at_birth[.I],
+      live_weight_at_weaning = herd_parameters$live_weight_at_weaning[.I],
+      lactation_duration = herd_parameters$lactation_duration[.I],
+      parturition_rate = herd_parameters$parturition_rate[.I]
     ),
     by = .I
   ]
@@ -252,13 +273,13 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data[
     ,
     metabolic_energy_req_work := calc_metabolic_energy_req_work(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
       metabolic_energy_req_maintenance = metabolic_energy_req_maintenance,
-      draught_work_hours_female = herd_level_data[.SD, on = "herd_id", x.draught_work_hours_female],
-      draught_work_hours_male = herd_level_data[.SD, on = "herd_id", x.draught_work_hours_male],
-      draught_fraction_female = herd_level_data[.SD, on = "herd_id", x.draught_fraction_female],
-      draught_fraction_male = herd_level_data[.SD, on = "herd_id", x.draught_fraction_male]
+      draught_work_hours_female = herd_parameters$draught_work_hours_female[.I],
+      draught_work_hours_male = herd_parameters$draught_work_hours_male[.I],
+      draught_fraction_female = herd_parameters$draught_fraction_female[.I],
+      draught_fraction_male = herd_parameters$draught_fraction_male[.I]
     ),
     by = .I
   ]
@@ -267,9 +288,9 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data[
     ,
     metabolic_energy_req_fibre_production := calc_metabolic_energy_req_fibre(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
-      fibre_yield_year = herd_level_data[.SD, on = "herd_id", x.fibre_yield_year]
+      fibre_yield_year = herd_parameters$fibre_yield_year[.I]
     ),
     by = .I
   ]
@@ -278,16 +299,16 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data[
     ,
     metabolic_energy_req_pregnancy := calc_metabolic_energy_req_pregnancy(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
       metabolic_energy_req_maintenance = metabolic_energy_req_maintenance,
-      parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
-      litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
-      pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
-      non_productive_duration = herd_level_data[.SD, on = "herd_id", x.non_productive_duration],
-      lactation_duration = herd_level_data[.SD, on = "herd_id", x.lactation_duration],
-      cohort_duration_days = cohort_duration_days,
-      offtake_rate = offtake_rate
+      parturition_rate = herd_parameters$parturition_rate[.I],
+      litter_size = herd_parameters$litter_size[.I],
+      pregnancy_duration = herd_parameters$pregnancy_duration[.I],
+      non_productive_duration = herd_parameters$non_productive_duration[.I],
+      lactation_duration = herd_parameters$lactation_duration[.I],
+      cohort_duration_days = cohort_parameters$cohort_duration_days[.I],
+      offtake_rate = cohort_parameters$offtake_rate[.I]
     ),
     by = .I
   ]
@@ -296,7 +317,7 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data[
     ,
     net_energy_maintenance_digestible_energy_ratio := calc_rem_maintenance(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       ration_digestibility_fraction = ration_digestibility_fraction
     ),
     by = .I
@@ -305,7 +326,7 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data[
     ,
     net_energy_growth_digestible_energy_ratio := calc_reg_growth(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       ration_digestibility_fraction = ration_digestibility_fraction
     ),
     by = .I
@@ -315,7 +336,7 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data[
     ,
     metabolic_energy_req_total := calc_total_metabolic_energy_req(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       metabolic_energy_req_maintenance = metabolic_energy_req_maintenance,
       metabolic_energy_req_activity = metabolic_energy_req_activity,
       metabolic_energy_req_lactation = metabolic_energy_req_lactation,
@@ -335,7 +356,7 @@ run_metabolic_energy_req_module <- function(
   cohort_level_data[
     ,
     ration_intake := calc_ration_intake(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       metabolic_energy_req_total = metabolic_energy_req_total,
       ration_gross_energy = ration_gross_energy,
       ration_metabolizable_energy = ration_metabolizable_energy

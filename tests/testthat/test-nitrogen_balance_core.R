@@ -38,13 +38,13 @@ test_that("retention for cattle: milk + growth add up correctly", {
 test_that("retention for goats includes fibre component", {
   base <- calc_nitrogen_retention(
     "GTS", "FA",
-    milk_protein_fraction = NA_real_, milk_yield_day = NA_real_,
+    milk_protein_fraction = 0.032, milk_yield_day = 0,
     daily_weight_gain = 0, fibre_yield_year = 0,
     litter_size = 1, parturition_rate = 1
   )
   with_fibre <- calc_nitrogen_retention(
     "GTS", "FA",
-    milk_protein_fraction = NA_real_, milk_yield_day = NA_real_,
+    milk_protein_fraction = 0.032, milk_yield_day = 0,
     daily_weight_gain = 0, fibre_yield_year = 10,
     litter_size = 1, parturition_rate = 1
   )
@@ -55,7 +55,7 @@ test_that("retention for goats includes fibre component", {
 test_that("retention for sheep with only fibre is positive", {
   val <- calc_nitrogen_retention(
     "SHP", "FA",
-    milk_protein_fraction = NA_real_, milk_yield_day = NA_real_,
+    milk_protein_fraction = 0.032, milk_yield_day = 0,
     daily_weight_gain = NA_real_, fibre_yield_year = 20,
     litter_size = 1, parturition_rate = 1
   )
