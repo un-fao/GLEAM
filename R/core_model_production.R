@@ -108,16 +108,16 @@
 calc_milk_production <- function(
     species_short,  
     cohort_short,
-    milk_yield_day,
+    milk_yield_day = NA_real_,
     simulation_duration,
-    cohort_stock_size,
-    lactating_females_fraction,
-    milk_protein_fraction,
-    milk_fat_fraction,
-    milk_lactose_fraction,
-    milk_protein_fraction_standard,
-    milk_fat_fraction_standard,
-    milk_lactose_fraction_standard
+    cohort_stock_size = NA_real_,
+    lactating_females_fraction = NA_real_,
+    milk_protein_fraction = NA_real_,
+    milk_fat_fraction = NA_real_,
+    milk_lactose_fraction = NA_real_,
+    milk_protein_fraction_standard = NA_real_,
+    milk_fat_fraction_standard = NA_real_,
+    milk_lactose_fraction_standard = NA_real_
 ) {
   validate_milk_outputs_inputs(
     species_short = species_short,
@@ -133,6 +133,7 @@ calc_milk_production <- function(
     milk_fat_fraction_standard = milk_fat_fraction_standard,
     milk_lactose_fraction_standard = milk_lactose_fraction_standard
   )
+  validate_function_required_parameters("calc_milk_production", environment(), species_filter = species_short, cohort_filter = cohort_short)
   
   milk_production <- 0
   milk_protein_production <- 0
@@ -227,9 +228,9 @@ calc_milk_production <- function(
 calc_fibre_production <- function(
     species_short,
     cohort_short,
-    fibre_yield_year,
+    fibre_yield_year = NA_real_,
     simulation_duration,
-    cohort_stock_size
+    cohort_stock_size = NA_real_
 ) {
   validate_fibre_output_inputs(
     species_short = species_short,
@@ -238,6 +239,7 @@ calc_fibre_production <- function(
     simulation_duration = simulation_duration,
     cohort_stock_size = cohort_stock_size
   )
+  validate_function_required_parameters("calc_fibre_production", environment(), species_filter = species_short, cohort_filter = cohort_short)
   
   fibre_production_cohort <- 0
   
@@ -328,6 +330,7 @@ calc_meat_production <- function(
     bone_free_meat_fraction = bone_free_meat_fraction,
     meat_protein_fraction = meat_protein_fraction
   )
+  validate_function_required_parameters("calc_meat_production", environment())
 
   meat_production_live_weight_cohort <- offtake_heads_assessment * live_weight_cohort_at_slaughter
   meat_production_carcass_weight_cohort <- (

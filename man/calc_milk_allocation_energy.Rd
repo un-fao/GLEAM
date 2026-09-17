@@ -6,9 +6,9 @@
 \usage{
 calc_milk_allocation_energy(
   milk_production_fpcm_cohort,
-  milk_protein_fraction_standard,
-  milk_fat_fraction_standard,
-  milk_lactose_fraction_standard
+  milk_protein_fraction_standard = NA_real_,
+  milk_fat_fraction_standard = NA_real_,
+  milk_lactose_fraction_standard = NA_real_
 )
 }
 \arguments{
@@ -40,6 +40,8 @@ Calculates the energy required for milk production over the assessment period
 (FPCM) produced by the cohort.
 }
 \details{
+Standard milk composition inputs may be omitted when milk production is zero.
+
 This function provides the milk-related energy term used in a biophysical
 allocation framework to apportion emissions between milk and other co-products
 in multifunctional livestock production systems.

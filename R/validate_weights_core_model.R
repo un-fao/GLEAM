@@ -6,11 +6,13 @@ validate_cohort_weight_inputs <- function(
     live_weight_female_adult, live_weight_male_adult,
     live_weight_at_birth,
     live_weight_female_at_slaughter, live_weight_male_at_slaughter,
-    live_weight_at_weaning
+    live_weight_at_weaning,
+    species_short = NULL
 ) {
   if (!validation_enabled()) return(invisible(NULL))
   # Character inputs
-  validate_scalar_character(cohort_short)
+  validate_cohort_code(cohort_short)
+
 
   # Numeric inputs (allow NA by default; cohort-specific checks below)
   args <- list(
@@ -24,47 +26,56 @@ validate_cohort_weight_inputs <- function(
 
   for (arg_name in names(args)) {
     val <- args[[arg_name]]
-    if (!is.na(val) && (!is.numeric(val) || length(val) != 1)) {
+    if (length(val) != 1L || (!is.na(val) && !is.numeric(val))) {
       cli::cli_abort("{.arg {arg_name}} must be a single numeric (scalar). NA is allowed.")
     }
   }
 
-  # Cohort-specific required inputs (non-NA)
-  validate_cohort_code(cohort_short)
-
-  required_by_cohort <- switch(
-    cohort_short,
-    "FJ" = c("live_weight_at_birth", "live_weight_at_weaning", "live_weight_female_adult"),
-    "MJ" = c("live_weight_at_birth", "live_weight_at_weaning", "live_weight_male_adult"),
-    "FS" = c("live_weight_at_weaning", "live_weight_female_adult", "live_weight_female_at_slaughter"),
-    "MS" = c("live_weight_at_weaning", "live_weight_male_adult", "live_weight_male_at_slaughter"),
-    "FA" = c("live_weight_female_adult"),
-    "MA" = c("live_weight_male_adult")
+  required_params <- get_required_function_parameters(
+    cohort_filter = cohort_short,
+    function_filter = "calc_cohort_weights",
+    species_filter = species_short,
+    input_table_filter = "herd_level_data"
   )
 
-  missing_required <- required_by_cohort[vapply(
-    required_by_cohort,
-    function(arg_name) is.na(args[[arg_name]]),
-    logical(1)
-  )]
+  # A misspelled or missing dependency must not silently skip validation.
+  unknown_params <- setdiff(required_params, names(args))
+  if (length(unknown_params) > 0L || length(required_params) == 0L) {
+    cli::cli_abort(
+      "Invalid weight parameter dependency rules for cohort {.val {cohort_short}}: expected required weight arguments, found {.val {required_params}}."
+    )
+  }
+
+  # Check required values
+  missing_required <- required_params[
+    vapply(
+      required_params,
+      function(arg_name) {
+        is.na(args[[arg_name]])
+      },
+      logical(1)
+    )
+  ]
 
   if (length(missing_required) > 0) {
     cli::cli_abort(
-      "Missing required weight inputs for cohort {.val {cohort_short}}: {.val {missing_required}}"
+      "Missing required weight inputs for cohort {.val {cohort_short}}:
+       {.val {missing_required}}"
     )
   }
 
-  # Enforce configured bounds for cohort-specific required params only
-  for (arg_name in required_by_cohort) {
-    validate_param_range(args[[arg_name]], arg_name)
-  }
-
-  # Birth weight must be strictly below weaning weight when both are provided
-  if (!is.na(live_weight_at_birth) && !is.na(live_weight_at_weaning) && live_weight_at_birth >= live_weight_at_weaning) {
-    cli::cli_abort(
-      "{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}."
+  # Validate ranges only for applicable parameters
+  for (arg_name in required_params) {
+    validate_param_range(
+      args[[arg_name]],
+      arg_name,
+      species_filter = species_short,
+      cohort_filter = cohort_short
     )
   }
+
+  validate_parameter_relations(args, "calc_cohort_weights", species_short, cohort_short)
+
 }
 
 #' Validate inputs for calc_avg_weights

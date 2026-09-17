@@ -233,12 +233,14 @@ calc_ch4_manure <- function(
 ) {
   # Enforce configured bounds
   validate_param_range(ratio_m3CH4_to_kgCH4)
+  validate_function_required_parameters("calc_ch4_manure", environment())
   validate_param_range(volatile_solids)
 
   mms_list <- list(...)
 
   validate_mms_inputs(
     mms_list,
+    function_filter = "calc_ch4_manure",
     required_names = c(
       "manure_management_system_fraction",
       "methane_conversion_factor_mcf",
@@ -440,6 +442,7 @@ calc_n2o_manure_direct <- function(
 
   validate_mms_inputs(
     mms_list,
+    function_filter = "calc_n2o_manure_direct",
     required_names = c("manure_management_system_fraction", "n2o_ef3"),
     ratio_N2ON_to_N2O = ratio_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
@@ -649,6 +652,7 @@ calc_n2o_manure_volatilization <- function(
 
   validate_mms_inputs(
     mms_list,
+    function_filter = "calc_n2o_manure_volatilization",
     required_names = c("manure_management_system_fraction", "n2o_ef4", "nitrogen_fracgas"),
     ratio_N2ON_to_N2O = ratio_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion
@@ -860,6 +864,7 @@ calc_n2o_manure_leaching <- function(
 
   validate_mms_inputs(
     mms_list,
+    function_filter = "calc_n2o_manure_leaching",
     required_names = c("manure_management_system_fraction", "n2o_ef5", "nitrogen_fracleach"),
     ratio_N2ON_to_N2O = ratio_N2ON_to_N2O,
     nitrogen_excretion = nitrogen_excretion

@@ -31,45 +31,40 @@ validate_nitrogen_retention_inputs <- function(
   # Range checks: only for args used by this species/cohort
   if (species_short == "PGS") {
     if (cohort_short == "FA") {
-      validate_param_range(litter_size)
-      validate_param_range(parturition_rate)
-      validate_param_range(live_weight_at_weaning)
-      validate_param_range(live_weight_at_birth)
+      validate_param_range(litter_size, species_filter = species_short, cohort_filter = cohort_short)
+      validate_param_range(parturition_rate, species_filter = species_short, cohort_filter = cohort_short)
+      validate_param_range(live_weight_at_weaning, species_filter = species_short, cohort_filter = cohort_short)
+      validate_param_range(live_weight_at_birth, species_filter = species_short, cohort_filter = cohort_short)
     } else if (cohort_short == "FS") {
-      validate_param_range(daily_weight_gain)
+      validate_param_range(daily_weight_gain, species_filter = species_short, cohort_filter = cohort_short)
       validate_positive_numeric(pregnancy_duration)
-      validate_param_range(cohort_duration_days)
-      validate_param_range(litter_size)
-      validate_param_range(parturition_rate)
-      validate_param_range(live_weight_at_weaning)
-      validate_param_range(live_weight_at_birth)
+      validate_param_range(cohort_duration_days, species_filter = species_short, cohort_filter = cohort_short)
+      validate_param_range(litter_size, species_filter = species_short, cohort_filter = cohort_short)
+      validate_param_range(live_weight_at_birth, species_filter = species_short, cohort_filter = cohort_short)
     } else {
-      validate_param_range(daily_weight_gain)
+      validate_param_range(daily_weight_gain, species_filter = species_short, cohort_filter = cohort_short)
     }
   } else if (species_short %in% gleam_species_milk_producers) {
     if (cohort_short == "FA") {
-      if (!is.na(milk_protein_fraction)) validate_param_range(milk_protein_fraction)
-      if (!is.na(milk_yield_day)) validate_param_range(milk_yield_day)
-      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain)
+      if (!is.na(milk_protein_fraction)) validate_param_range(milk_protein_fraction, species_filter = species_short, cohort_filter = cohort_short)
+      if (!is.na(milk_yield_day)) validate_param_range(milk_yield_day, species_filter = species_short, cohort_filter = cohort_short)
+      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain, species_filter = species_short, cohort_filter = cohort_short)
       if (species_short %in% c("SHP", "GTS", "CML") && !is.na(fibre_yield_year)) {
-        validate_param_range(fibre_yield_year)
+        validate_param_range(fibre_yield_year, species_filter = species_short, cohort_filter = cohort_short)
       }
     } else if (cohort_short %in% c("FS", "MA", "MS")) {
-      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain)
+      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain, species_filter = species_short, cohort_filter = cohort_short)
       if (species_short %in% c("SHP", "GTS", "CML") && !is.na(fibre_yield_year)) {
-        validate_param_range(fibre_yield_year)
+        validate_param_range(fibre_yield_year, species_filter = species_short, cohort_filter = cohort_short)
       }
     } else {
-      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain)
+      if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain, species_filter = species_short, cohort_filter = cohort_short)
     }
   }
 
-  # Birth weight must be strictly below weaning weight when both are provided
-  if (!is.na(live_weight_at_birth) && !is.na(live_weight_at_weaning) && live_weight_at_birth >= live_weight_at_weaning) {
-    cli::cli_abort(
-      "{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}."
-    )
-  }
+  validate_parameter_relations(list(
+    live_weight_at_birth = live_weight_at_birth, live_weight_at_weaning = live_weight_at_weaning
+  ), "calc_nitrogen_retention", species_short, cohort_short)
 }
 
 #' Validate inputs for calc_nitrogen_excretion
@@ -81,10 +76,7 @@ validate_nitrogen_excretion_inputs <- function(species_short, nitrogen_intake, n
   validate_scalar_numeric(nitrogen_intake)
   validate_scalar_numeric(nitrogen_retention)
 
-  # Excretion = intake - retention; expect nitrogen_intake >= nitrogen_retention for valid excretion
-  if (nitrogen_intake < nitrogen_retention) {
-    cli::cli_abort(
-      "{.arg nitrogen_intake} must be greater than or equal to {.arg nitrogen_retention}."
-    )
-  }
+  validate_parameter_relations(list(
+    nitrogen_intake = nitrogen_intake, nitrogen_retention = nitrogen_retention
+  ), "calc_nitrogen_excretion", species_short)
 }

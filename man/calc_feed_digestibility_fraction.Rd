@@ -5,8 +5,8 @@
 \title{Calculate feed digestibility fraction}
 \usage{
 calc_feed_digestibility_fraction(
-  feed_digestible_energy_ruminant,
-  feed_digestible_energy_pigs,
+  feed_digestible_energy_ruminant = NA_real_,
+  feed_digestible_energy_pigs = NA_real_,
   feed_gross_energy
 )
 }

@@ -28,15 +28,15 @@ validate_milk_outputs_inputs <- function(
     validate_scalar_numeric(simulation_duration)
     validate_scalar_numeric(cohort_stock_size)
 
-    # Range checks via parameter_ranges
-    validate_param_range(milk_yield_day)
-    validate_param_range(lactating_females_fraction)
-    validate_param_range(milk_protein_fraction)
-    validate_param_range(milk_fat_fraction)
-    validate_param_range(milk_lactose_fraction)
-    validate_param_range(milk_protein_fraction_standard)
-    validate_param_range(milk_fat_fraction_standard)
-    validate_param_range(milk_lactose_fraction_standard)
+    # Range checks via parameter_rules
+    validate_param_range(milk_yield_day, species_filter = species_short, cohort_filter = cohort_short)
+    validate_param_range(lactating_females_fraction, species_filter = species_short, cohort_filter = cohort_short)
+    validate_param_range(milk_protein_fraction, species_filter = species_short, cohort_filter = cohort_short)
+    validate_param_range(milk_fat_fraction, species_filter = species_short, cohort_filter = cohort_short)
+    validate_param_range(milk_lactose_fraction, species_filter = species_short, cohort_filter = cohort_short)
+    validate_param_range(milk_protein_fraction_standard, species_filter = species_short, cohort_filter = cohort_short)
+    validate_param_range(milk_fat_fraction_standard, species_filter = species_short, cohort_filter = cohort_short)
+    validate_param_range(milk_lactose_fraction_standard, species_filter = species_short, cohort_filter = cohort_short)
     }
   }
 }
@@ -64,8 +64,8 @@ validate_fibre_output_inputs <- function(
     validate_scalar_numeric(simulation_duration)
     validate_scalar_numeric(cohort_stock_size)
 
-    # Range checks via parameter_ranges
-    validate_param_range(fibre_yield_year)
+    # Range checks via parameter_rules
+    validate_param_range(fibre_yield_year, species_filter = species_short, cohort_filter = cohort_short)
     }
     }
 }
@@ -82,7 +82,7 @@ validate_meat_outputs_inputs <- function(
 ) {
   if (!validation_enabled()) return(invisible(NULL))
 
-  # Range checks via parameter_ranges
+  # Range checks via parameter_rules
   validate_param_range(offtake_heads_assessment)
   validate_param_range(live_weight_cohort_at_slaughter)
   validate_param_range(carcass_dressing_fraction)

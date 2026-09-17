@@ -142,6 +142,7 @@ calc_metabolic_energy_req_maintenance <- function(
     species_short, cohort_short, live_weight_cohort_average,
     lactating_females_fraction, offtake_rate, age_first_parturition
   )
+  validate_function_required_parameters("calc_metabolic_energy_req_maintenance", environment(), species_filter = species_short, cohort_filter = cohort_short)
 
   # Normalize offtake_rate if it's available (not NA_real_)
   if (!is.na(offtake_rate)) {
@@ -320,6 +321,7 @@ calc_metabolic_energy_req_activity <- function(
     low_activity_fraction,
     high_activity_fraction
   )
+  validate_function_required_parameters("calc_metabolic_energy_req_activity", environment(), species_filter = species_short, cohort_filter = cohort_short)
 
   if (species_short %in% c("CTL", "BFL")) {
     # Weighted by pasture management
@@ -488,6 +490,7 @@ calc_metabolic_energy_req_growth <- function(
     species_short, cohort_short, live_weight_cohort_average, live_weight_cohort_final,
     live_weight_cohort_initial, live_weight_mature_stage, daily_weight_gain, offtake_rate, cohort_duration_days
   )
+  validate_function_required_parameters("calc_metabolic_energy_req_growth", environment(), species_filter = species_short, cohort_filter = cohort_short)
 
   # Normalize offtake_rate if it's available (not NA_real_)
   if (!is.na(offtake_rate)) {
@@ -738,6 +741,7 @@ calc_metabolic_energy_req_lactation <- function(
     non_productive_duration, pregnancy_duration, litter_size, death_rate_juvenile, live_weight_at_birth,
     live_weight_at_weaning, lactation_duration, parturition_rate
   )
+  validate_function_required_parameters("calc_metabolic_energy_req_lactation", environment(), species_filter = species_short, cohort_filter = cohort_short)
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short == "FA") {
@@ -950,6 +954,7 @@ calc_metabolic_energy_req_work <- function(
     draught_fraction_female,
     draught_fraction_male
   )
+  validate_function_required_parameters("calc_metabolic_energy_req_work", environment(), species_filter = species_short, cohort_filter = cohort_short)
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short == "MA") {
@@ -1097,6 +1102,7 @@ calc_metabolic_energy_req_fibre <- function(
 ) {
   # Validate inputs
   validate_fibre_inputs(species_short, cohort_short, fibre_yield_year)
+  validate_function_required_parameters("calc_metabolic_energy_req_fibre", environment(), species_filter = species_short, cohort_filter = cohort_short)
   # Only sheep, goats, camelids produce fibre
 
   if (species_short %in% c("GTS", "SHP")) {
@@ -1342,6 +1348,7 @@ calc_metabolic_energy_req_pregnancy <- function(
     litter_size, pregnancy_duration, non_productive_duration, lactation_duration,
     cohort_duration_days, offtake_rate
   )
+  validate_function_required_parameters("calc_metabolic_energy_req_pregnancy", environment(), species_filter = species_short, cohort_filter = cohort_short)
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short == "FA") {

@@ -77,6 +77,7 @@ calc_cohort_totals <- function(
     value, cohort_stock_size, ration_intake,
     simulation_duration, variable_name, variable_type
   )
+  validate_function_required_parameters("calc_cohort_totals", environment())
 
   # Extract emission source names
   feed_emissions_sources <- sapply(feed_emissions_list, `[[`, "emissions_source")

@@ -35,9 +35,10 @@ validate_run_emissions_manure_module_inputs <- function(
     "n2o_ef3", "n2o_ef4", "n2o_ef5", "nitrogen_fracgas", "nitrogen_fracleach"
   )
 
-  check_required_columns(cohort_level_data, required_input_cols, "cohort_level_data")
-  check_required_columns(manure_management_system_fraction, required_fraction_cols, "manure_management_system_fraction")
-  check_required_columns(manure_management_system_factors, required_factors_cols, "manure_management_system_factors")
+  check_module_input_columns(cohort_level_data, required_input_cols, "cohort_level_data", "manure", cohort_level_data)
+  check_module_input_columns(manure_management_system_fraction, required_fraction_cols, "manure_management_system_fraction", "manure", cohort_level_data)
+  check_module_input_columns(manure_management_system_factors, required_factors_cols, "manure_management_system_factors", "manure", cohort_level_data,
+    defaulted_parameters = "ratio_m3CH4_to_kgCH4")
 
   # --- Missing key values -----------------------------------------------------
   if (any(is.na(cohort_level_data$herd_id)) ||
@@ -66,29 +67,13 @@ validate_run_emissions_manure_module_inputs <- function(
     data_arg = "manure_management_system_fraction"
   )
 
-  # Each herd must have all 6 cohorts in cohort_level_data (one row per herd-cohort)
-  check_cohort_completeness(cohort_level_data, "cohort_level_data")
+  # One row per requested herd/cohort
+  check_cohort_uniqueness(cohort_level_data, "cohort_level_data")
 
-  # Fraction table: each herd must have all 6 cohorts present (may have multiple rows per
-  # cohort when multiple manure management systems exist)
-  fraction_cohort_completeness <- manure_management_system_fraction[
-    , list(
-      count = data.table::uniqueN(cohort_short),
-      has_all_cohorts = setequal(cohort_short, gleam_cohorts),
-      missing_cohorts = paste(setdiff(gleam_cohorts, cohort_short), collapse = ", ")
-    ),
-    by = herd_id
-  ]
-  fraction_missing <- fraction_cohort_completeness[has_all_cohorts == FALSE]
-  if (nrow(fraction_missing) > 0) {
-    missing_info <- fraction_missing[
-      , paste0(herd_id, " (missing: ", missing_cohorts, ")"),
-      by = herd_id
-    ]$V1
-    cli::cli_abort(
-      "Each herd_id must include all 6 cohorts in {.arg manure_management_system_fraction}.
-      Missing cohorts found for herd_ids: {.val {missing_info}}"
-    )
+  requested <- unique(cohort_level_data[, .(herd_id, cohort_short)])
+  available <- unique(manure_management_system_fraction[, .(herd_id, cohort_short)])
+  if (nrow(requested[!available, on = .(herd_id, cohort_short)]) > 0L) {
+    cli::cli_abort("MMS fractions must cover every requested herd_id and cohort_short.")
   }
 
   # --- Uniqueness checks ------------------------------------------------------

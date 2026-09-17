@@ -602,7 +602,7 @@ run_gleam <- function(
     show_indicator = TRUE,
     validate_inputs = TRUE
 ) {
-  restore_validation <- setup_validation(validate_inputs)
+  restore_validation <- setup_validation(validate_inputs, new_cache = TRUE)
   on.exit(restore_validation(), add = TRUE)
 
   # --- Step 1: Validate inputs ------------------------------------------------

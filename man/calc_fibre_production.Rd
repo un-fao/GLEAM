@@ -7,9 +7,9 @@
 calc_fibre_production(
   species_short,
   cohort_short,
-  fibre_yield_year,
+  fibre_yield_year = NA_real_,
   simulation_duration,
-  cohort_stock_size
+  cohort_stock_size = NA_real_
 )
 }
 \arguments{

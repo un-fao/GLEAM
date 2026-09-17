@@ -144,6 +144,22 @@ run_nitrogen_balance_module <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
+  # Resolve herd rows and unused inputs once for all requested cohorts.
+  herd_parameters <- get_optional_parameters(
+    herd_level_data, c(
+      "species_short", "milk_protein_fraction",
+      "milk_yield_day", "fibre_yield_year",
+      "litter_size", "parturition_rate",
+      "live_weight_at_weaning", "live_weight_at_birth",
+      "pregnancy_duration"
+    ), cohort_level_data
+  )
+  cohort_parameters <- get_optional_parameters(
+    cohort_level_data, c(
+      "cohort_duration_days"
+    )
+  )
+
   # --- Step 3: Intake – N consumed per head/day -------------------------------
   cohort_level_data[
     ,
@@ -158,18 +174,18 @@ run_nitrogen_balance_module <- function(
   cohort_level_data[
     ,
     nitrogen_retention := calc_nitrogen_retention(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
-      milk_protein_fraction = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction],
-      milk_yield_day = herd_level_data[.SD, on = "herd_id", x.milk_yield_day],
+      milk_protein_fraction = herd_parameters$milk_protein_fraction[.I],
+      milk_yield_day = herd_parameters$milk_yield_day[.I],
       daily_weight_gain = daily_weight_gain,
-      fibre_yield_year = herd_level_data[.SD, on = "herd_id", x.fibre_yield_year],
-      litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
-      parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
-      live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning],
-      live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
-      pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
-      cohort_duration_days = cohort_duration_days
+      fibre_yield_year = herd_parameters$fibre_yield_year[.I],
+      litter_size = herd_parameters$litter_size[.I],
+      parturition_rate = herd_parameters$parturition_rate[.I],
+      live_weight_at_weaning = herd_parameters$live_weight_at_weaning[.I],
+      live_weight_at_birth = herd_parameters$live_weight_at_birth[.I],
+      pregnancy_duration = herd_parameters$pregnancy_duration[.I],
+      cohort_duration_days = cohort_parameters$cohort_duration_days[.I]
     ),
     by = .I
   ]
@@ -178,7 +194,7 @@ run_nitrogen_balance_module <- function(
   cohort_level_data[
     ,
     nitrogen_excretion := calc_nitrogen_excretion(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       nitrogen_intake = nitrogen_intake,
       nitrogen_retention = nitrogen_retention
     ),

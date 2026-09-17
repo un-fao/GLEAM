@@ -10,6 +10,7 @@
 #'   herd \eqn{\times} cohort. Must include:
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'     \item{species_short}{Character. Supported species code. Each herd must contain a single species.}
 #'     \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 #'       \itemize{
 #'         \item \code{FA}: adult females (from age at first parturition)
@@ -22,7 +23,8 @@
 #'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
 #'     \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 #'   }
-#' @param herd_level_data A \code{data.table} with one row per herd. Must include:
+#' @param herd_level_data A \code{data.table} with one row per herd. Include
+#'   \code{herd_id} and the weights required by the requested cohorts:
 #'   \itemize{
 #'     \item \code{live_weight_female_adult} Numeric. Live weight of adult females (kg)
 #'     \item \code{live_weight_male_adult} Numeric. Live weight of adult males (kg)
@@ -31,6 +33,9 @@
 #'     \item \code{live_weight_female_at_slaughter} Numeric. Slaughter weight of female sub-adult animals (kg)
 #'     \item \code{live_weight_male_at_slaughter} Numeric. Slaughter weight of male sub-adult animals (kg)
 #'   }
+#'   Adult cohorts require the adult weight of their sex. Juveniles also require
+#'   birth and weaning weights. Subadults also require weaning and slaughter
+#'   weights of their sex. Unused weight columns may be omitted or contain NA.
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'   Defaults to \code{TRUE}.
 #'
@@ -55,6 +60,7 @@
 #'       }}
 #'     \item{herd_level_results}{A copy of the input \code{herd_level_data}.}
 #'   }
+#'
 #'
 #' @details
 #' This function represents the intermediate module of the Global Livestock Environmental
@@ -127,6 +133,15 @@ run_weights_module <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
+  # Resolve herd rows and unused inputs once for all requested cohorts.
+  herd_parameters <- get_optional_parameters(
+    herd_level_data, c(
+      "live_weight_female_adult", "live_weight_male_adult",
+      "live_weight_at_birth", "live_weight_female_at_slaughter",
+      "live_weight_male_at_slaughter", "live_weight_at_weaning"
+    ), cohort_level_data
+  )
+
   # --- Step 3: Calculate Cohort Weights --------------------------------------
   cohort_level_data[
     ,
@@ -137,12 +152,13 @@ run_weights_module <- function(
       "live_weight_cohort_at_slaughter"
     ) := calc_cohort_weights(
       cohort_short = cohort_short,
-      live_weight_female_adult = herd_level_data[.SD, on = "herd_id", x.live_weight_female_adult],
-      live_weight_male_adult = herd_level_data[.SD, on = "herd_id", x.live_weight_male_adult],
-      live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
-      live_weight_female_at_slaughter = herd_level_data[.SD, on = "herd_id", x.live_weight_female_at_slaughter],
-      live_weight_male_at_slaughter = herd_level_data[.SD, on = "herd_id", x.live_weight_male_at_slaughter],
-      live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning]
+      species_short = species_short,
+      live_weight_female_adult = herd_parameters$live_weight_female_adult[.I],
+      live_weight_male_adult = herd_parameters$live_weight_male_adult[.I],
+      live_weight_at_birth = herd_parameters$live_weight_at_birth[.I],
+      live_weight_female_at_slaughter = herd_parameters$live_weight_female_at_slaughter[.I],
+      live_weight_male_at_slaughter = herd_parameters$live_weight_male_at_slaughter[.I],
+      live_weight_at_weaning = herd_parameters$live_weight_at_weaning[.I]
     ),
     by = .I
   ]

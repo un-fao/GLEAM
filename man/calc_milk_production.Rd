@@ -7,16 +7,16 @@
 calc_milk_production(
   species_short,
   cohort_short,
-  milk_yield_day,
+  milk_yield_day = NA_real_,
   simulation_duration,
-  cohort_stock_size,
-  lactating_females_fraction,
-  milk_protein_fraction,
-  milk_fat_fraction,
-  milk_lactose_fraction,
-  milk_protein_fraction_standard,
-  milk_fat_fraction_standard,
-  milk_lactose_fraction_standard
+  cohort_stock_size = NA_real_,
+  lactating_females_fraction = NA_real_,
+  milk_protein_fraction = NA_real_,
+  milk_fat_fraction = NA_real_,
+  milk_lactose_fraction = NA_real_,
+  milk_protein_fraction_standard = NA_real_,
+  milk_fat_fraction_standard = NA_real_,
+  milk_lactose_fraction_standard = NA_real_
 )
 }
 \arguments{

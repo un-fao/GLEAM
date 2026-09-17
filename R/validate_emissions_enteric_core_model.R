@@ -17,7 +17,7 @@ validate_ym_inputs <- function(
   if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_character(species_short)
   validate_scalar_character(cohort_short)
-  validate_param_range(ration_digestibility_fraction)
+  validate_param_range(ration_digestibility_fraction, species_filter = species_short, cohort_filter = cohort_short)
 }
 
 #' Validate inputs for calc_ch4_enteric
@@ -26,7 +26,7 @@ validate_ym_inputs <- function(
 #' are valid. Specifically:
 #' * `species_short` must be a scalar character.
 #' * Numeric parameters are validated against
-#'   \code{parameter_ranges} (ch4_conversion_factor_ym, ch4_mitigation_factor,
+#'   \code{parameter_rules} (ch4_conversion_factor_ym, ch4_mitigation_factor,
 #'   ration_gross_energy, ration_intake).
 #'
 #' This validator is designed for internal use in
@@ -42,8 +42,8 @@ validate_enteric_emission_inputs <- function(
 ) {
   if (!validation_enabled()) return(invisible(NULL))
   validate_scalar_character(species_short)
-  validate_param_range(ch4_conversion_factor_ym)
-  validate_param_range(ch4_mitigation_factor)
-  validate_param_range(ration_gross_energy)
-  validate_param_range(ration_intake)
+  validate_param_range(ch4_conversion_factor_ym, species_filter = species_short)
+  validate_param_range(ch4_mitigation_factor, species_filter = species_short)
+  validate_param_range(ration_gross_energy, species_filter = species_short)
+  validate_param_range(ration_intake, species_filter = species_short)
 }

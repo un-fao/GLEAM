@@ -3,9 +3,8 @@ test_that("calc_co2_ration_fertilizer computes contribution", {
   expect_equal(calc_co2_ration_fertilizer(0.6, 10), 6)
 })
 
-test_that("calc_co2_ration_fertilizer allows NA for co2_feed_fertilizer", {
-  value <- calc_co2_ration_fertilizer(0.6, NA_real_)
-  expect_true(is.na(value))
+test_that("calc_co2_ration_fertilizer requires the matrix emission factor", {
+  expect_error(calc_co2_ration_fertilizer(0.6, NA_real_), "Missing required input.*co2_feed_fertilizer")
 })
 
 test_that("calc_co2_ration_fertilizer rejects negative co2_feed_fertilizer", {
@@ -35,9 +34,8 @@ test_that("calc_co2_ration_pesticides computes contribution", {
   expect_equal(calc_co2_ration_pesticides(0.6, 10), 6)
 })
 
-test_that("calc_co2_ration_pesticides allows NA for co2_feed_pesticides", {
-  value <- calc_co2_ration_pesticides(0.6, NA_real_)
-  expect_true(is.na(value))
+test_that("calc_co2_ration_pesticides requires the matrix emission factor", {
+  expect_error(calc_co2_ration_pesticides(0.6, NA_real_), "Missing required input.*co2_feed_pesticides")
 })
 
 test_that("calc_co2_ration_pesticides rejects negative co2_feed_pesticides", {
@@ -60,9 +58,8 @@ test_that("calc_co2_ration_crop_activities computes contribution", {
   expect_equal(calc_co2_ration_crop_activities(0.6, 10), 6)
 })
 
-test_that("calc_co2_ration_crop_activities allows NA for co2_feed_crop_activities", {
-  value <- calc_co2_ration_crop_activities(0.6, NA_real_)
-  expect_true(is.na(value))
+test_that("calc_co2_ration_crop_activities requires the matrix emission factor", {
+  expect_error(calc_co2_ration_crop_activities(0.6, NA_real_), "Missing required input.*co2_feed_crop_activities")
 })
 
 test_that("calc_co2_ration_crop_activities rejects negative co2_feed_crop_activities", {
@@ -85,9 +82,8 @@ test_that("calc_co2_ration_luc_nopeat computes contribution", {
   expect_equal(calc_co2_ration_luc_nopeat(0.6, 10), 6)
 })
 
-test_that("calc_co2_ration_luc_nopeat allows NA for co2_feed_luc_nopeat", {
-  value <- calc_co2_ration_luc_nopeat(0.6, NA_real_)
-  expect_true(is.na(value))
+test_that("calc_co2_ration_luc_nopeat requires the matrix emission factor", {
+  expect_error(calc_co2_ration_luc_nopeat(0.6, NA_real_), "Missing required input.*co2_feed_luc_nopeat")
 })
 
 test_that("calc_co2_ration_luc_nopeat rejects invalid co2_feed_luc_nopeat type/length", {
@@ -103,9 +99,8 @@ test_that("calc_co2_ration_luc_peat computes contribution", {
   expect_equal(calc_co2_ration_luc_peat(0.6, 10), 6)
 })
 
-test_that("calc_co2_ration_luc_peat allows NA for co2_feed_luc_peat", {
-  value <- calc_co2_ration_luc_peat(0.6, NA_real_)
-  expect_true(is.na(value))
+test_that("calc_co2_ration_luc_peat requires the matrix emission factor", {
+  expect_error(calc_co2_ration_luc_peat(0.6, NA_real_), "Missing required input.*co2_feed_luc_peat")
 })
 
 test_that("calc_co2_ration_luc_peat rejects invalid co2_feed_luc_peat type/length", {
@@ -121,9 +116,8 @@ test_that("calc_n2o_ration_fertilizer computes contribution", {
   expect_equal(calc_n2o_ration_fertilizer(0.6, 10), 6)
 })
 
-test_that("calc_n2o_ration_fertilizer allows NA for n2o_feed_fertilizer", {
-  value <- calc_n2o_ration_fertilizer(0.6, NA_real_)
-  expect_true(is.na(value))
+test_that("calc_n2o_ration_fertilizer requires the matrix emission factor", {
+  expect_error(calc_n2o_ration_fertilizer(0.6, NA_real_), "Missing required input.*n2o_feed_fertilizer")
 })
 
 test_that("calc_n2o_ration_fertilizer rejects negative n2o_feed_fertilizer", {
@@ -146,9 +140,8 @@ test_that("calc_n2o_ration_manure computes contribution", {
   expect_equal(calc_n2o_ration_manure(0.6, 10), 6)
 })
 
-test_that("calc_n2o_ration_manure allows NA for n2o_feed_manure_applied", {
-  value <- calc_n2o_ration_manure(0.6, NA_real_)
-  expect_true(is.na(value))
+test_that("calc_n2o_ration_manure requires the matrix emission factor", {
+  expect_error(calc_n2o_ration_manure(0.6, NA_real_), "Missing required input.*n2o_feed_manure_applied")
 })
 
 test_that("calc_n2o_ration_manure rejects negative n2o_feed_manure_applied", {
@@ -171,9 +164,8 @@ test_that("calc_n2o_ration_crop_residues computes contribution", {
   expect_equal(calc_n2o_ration_crop_residues(0.6, 10), 6)
 })
 
-test_that("calc_n2o_ration_crop_residues allows NA for n2o_feed_crop_residues", {
-  value <- calc_n2o_ration_crop_residues(0.6, NA_real_)
-  expect_true(is.na(value))
+test_that("calc_n2o_ration_crop_residues requires the matrix emission factor", {
+  expect_error(calc_n2o_ration_crop_residues(0.6, NA_real_), "Missing required input.*n2o_feed_crop_residues")
 })
 
 test_that("calc_n2o_ration_crop_residues rejects negative n2o_feed_crop_residues", {
@@ -196,9 +188,8 @@ test_that("calc_ch4_ration_rice computes contribution", {
   expect_equal(calc_ch4_ration_rice(0.6, 10), 6)
 })
 
-test_that("calc_ch4_ration_rice allows NA for ch4_feed_rice", {
-  value <- calc_ch4_ration_rice(0.6, NA_real_)
-  expect_true(is.na(value))
+test_that("calc_ch4_ration_rice requires the matrix emission factor", {
+  expect_error(calc_ch4_ration_rice(0.6, NA_real_), "Missing required input.*ch4_feed_rice")
 })
 
 test_that("calc_ch4_ration_rice rejects negative ch4_feed_rice", {

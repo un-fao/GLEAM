@@ -46,19 +46,13 @@ validate_run_emissions_ration_module_inputs <- function(
     "ch4_feed_rice"
   )
 
-  missing_rations_cols <- setdiff(required_rations_cols, names(rations_share))
-  if (length(missing_rations_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg rations_share}: {.val {missing_rations_cols}}"
-    )
-  }
-
-  missing_emissions_cols <- setdiff(required_emissions_cols, names(feed_emissions))
-  if (length(missing_emissions_cols) > 0) {
-    cli::cli_abort(
-      "Missing required columns in {.arg feed_emissions}: {.val {missing_emissions_cols}}"
-    )
-  }
+  check_module_input_columns(
+    rations_share, required_rations_cols, "rations_share", "feed_emissions",
+    rations_share, input_table_filter = "feed_rations"
+  )
+  check_module_input_columns(
+    feed_emissions, required_emissions_cols, "feed_emissions", "feed_emissions", rations_share
+  )
 
   # --- Ration share consistency ------------------------------------------------
   ration_sums <- rations_share[

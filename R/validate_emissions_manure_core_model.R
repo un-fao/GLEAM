@@ -49,7 +49,7 @@ validate_mms_characteristics <- function(mms_list, required_names) {
       cli::cli_abort("MMS values must not contain missing values.")
     }
 
-    # Range checks via shared parameter_ranges rules
+    # Range checks via shared parameter_rules rules
     if ("manure_management_system_fraction" %in% names(mms)) {
       validate_param_range(
         mms[["manure_management_system_fraction"]],
@@ -109,6 +109,7 @@ validate_mms_characteristics <- function(mms_list, required_names) {
 validate_mms_inputs <- function(
     mms_list,
     required_names,
+    function_filter = NULL,
     ...
 ) {
   if (!validation_enabled()) return(invisible(NULL))
@@ -117,6 +118,9 @@ validate_mms_inputs <- function(
     mms_list,
     required_names = required_names
   )
+  if (!is.null(function_filter)) {
+    for (mms in mms_list) validate_function_required_parameters(function_filter, mms)
+  }
 
   scalars <- list(...)
 

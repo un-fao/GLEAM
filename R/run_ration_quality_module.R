@@ -99,6 +99,7 @@
 #'     of the dry matter intake (kg ash/kg DM).}
 #'   }
 #'
+#'
 #' @details
 #' This function represents the intermediate module of the Global Livestock Environmental
 #' Assessment Model (GLEAM) computational pipeline [run_gleam()] to estimate the nutritional
@@ -174,6 +175,13 @@ run_ration_quality_module <- function(
   rations_share <- data.table::copy(rations_share)
   feed_params <- data.table::copy(feed_params)
 
+  feed_parameters <- get_optional_parameters(
+    feed_params, c(
+      "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
+      "feed_gross_energy"
+    )
+  )
+
   # --- Step 3: Compute digestibility ratios ----------------------------------
   feed_params[
     ,
@@ -181,9 +189,9 @@ run_ration_quality_module <- function(
       "feed_digestibility_fraction_ruminant",
       "feed_digestibility_fraction_pigs"
     ) := calc_feed_digestibility_fraction(
-      feed_digestible_energy_ruminant = feed_digestible_energy_ruminant,
-      feed_digestible_energy_pigs = feed_digestible_energy_pigs,
-      feed_gross_energy = feed_gross_energy
+      feed_digestible_energy_ruminant = feed_parameters$feed_digestible_energy_ruminant[.I],
+      feed_digestible_energy_pigs = feed_parameters$feed_digestible_energy_pigs[.I],
+      feed_gross_energy = feed_parameters$feed_gross_energy[.I]
     ),
     by = .I
   ]
@@ -193,12 +201,21 @@ run_ration_quality_module <- function(
     feed_params,
     by = "feed_id",
   )
+  ration_parameters <- get_optional_parameters(
+    rations_detailed, c(
+      "feed_ration_fraction", "feed_gross_energy",
+      "feed_nitrogen_content", "feed_metabolizable_energy_ruminant",
+      "feed_metabolizable_energy_pigs", "feed_urinary_energy_ruminant",
+      "feed_urinary_energy_pigs", "feed_ash"
+    )
+  )
+
   # --- Step 5: Calculate cohort feed contributions ---------------------------
   rations_detailed[
     ,
     ration_gross_energy := calc_ration_gross_energy(
-      feed_ration_fraction = feed_ration_fraction,
-      feed_gross_energy = feed_gross_energy
+      feed_ration_fraction = ration_parameters$feed_ration_fraction[.I],
+      feed_gross_energy = ration_parameters$feed_gross_energy[.I]
     ),
     by = .I
   ]
@@ -207,8 +224,8 @@ run_ration_quality_module <- function(
   rations_detailed[
     ,
     ration_nitrogen := calc_ration_nitrogen_content(
-      feed_ration_fraction = feed_ration_fraction,
-      feed_nitrogen_content = feed_nitrogen_content
+      feed_ration_fraction = ration_parameters$feed_ration_fraction[.I],
+      feed_nitrogen_content = ration_parameters$feed_nitrogen_content[.I]
     ),
     by = .I
   ]
@@ -218,7 +235,7 @@ run_ration_quality_module <- function(
     ,
     ration_digestibility_fraction := calc_ration_digestibility(
       species_short = species_short,
-      feed_ration_fraction = feed_ration_fraction,
+      feed_ration_fraction = ration_parameters$feed_ration_fraction[.I],
       feed_digestibility_fraction_ruminant = feed_digestibility_fraction_ruminant,
       feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs
     ),
@@ -230,9 +247,9 @@ run_ration_quality_module <- function(
     ,
     ration_metabolizable_energy := calc_ration_metabolizable_energy(
       species_short = species_short,
-      feed_ration_fraction = feed_ration_fraction,
-      feed_metabolizable_energy_ruminant = feed_metabolizable_energy_ruminant,
-      feed_metabolizable_energy_pigs = feed_metabolizable_energy_pigs
+      feed_ration_fraction = ration_parameters$feed_ration_fraction[.I],
+      feed_metabolizable_energy_ruminant = ration_parameters$feed_metabolizable_energy_ruminant[.I],
+      feed_metabolizable_energy_pigs = ration_parameters$feed_metabolizable_energy_pigs[.I]
     ),
     by = .I
   ]
@@ -242,9 +259,9 @@ run_ration_quality_module <- function(
     ,
     ration_urinary_energy_fraction := calc_ration_urinary_energy_fraction(
       species_short = species_short,
-      feed_ration_fraction = feed_ration_fraction,
-      feed_urinary_energy_ruminant = feed_urinary_energy_ruminant,
-      feed_urinary_energy_pigs = feed_urinary_energy_pigs
+      feed_ration_fraction = ration_parameters$feed_ration_fraction[.I],
+      feed_urinary_energy_ruminant = ration_parameters$feed_urinary_energy_ruminant[.I],
+      feed_urinary_energy_pigs = ration_parameters$feed_urinary_energy_pigs[.I]
     ),
     by = .I
   ]
@@ -252,8 +269,8 @@ run_ration_quality_module <- function(
   rations_detailed[
     ,
     ration_ash := calc_ration_ash(
-      feed_ration_fraction = feed_ration_fraction,
-      feed_ash = feed_ash
+      feed_ration_fraction = ration_parameters$feed_ration_fraction[.I],
+      feed_ash = ration_parameters$feed_ash[.I]
     ),
     by = .I
   ]

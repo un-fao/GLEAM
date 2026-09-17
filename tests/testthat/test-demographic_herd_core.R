@@ -2,6 +2,27 @@
 cohorts <- c("FB", "FJ", "FS", "FA", "FC", "MB", "MJ", "MS", "MA", "MC")
 share_cohorts <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
+test_that("herd simulation requires its complete inputs and all six cohorts", {
+  cohort <- data.table::data.table(
+    herd_id = 1, cohort_short = gleam_cohorts,
+    cohort_duration_days = 365, offtake_rate = 0.1, death_rate = 0.05
+  )
+  herd <- data.table::data.table(
+    herd_id = 1, parturition_rate = 0.8, litter_size = 1,
+    birth_fraction_female = 0.5, herd_size_total = 1000
+  )
+  expect_no_error(validate_run_demographic_herd_module_inputs(cohort, herd))
+  for (parameter in c("cohort_duration_days", "offtake_rate", "death_rate")) {
+    missing <- cohort[, setdiff(names(cohort), parameter), with = FALSE]
+    expect_error(validate_run_demographic_herd_module_inputs(missing, herd), parameter)
+  }
+  for (parameter in setdiff(names(herd), "herd_id")) {
+    missing <- herd[, setdiff(names(herd), parameter), with = FALSE]
+    expect_error(validate_run_demographic_herd_module_inputs(cohort, missing), parameter)
+  }
+  expect_error(run_demographic_herd_module(cohort[cohort_short == "FA"], herd, show_indicator = FALSE), "exactly 6 rows")
+})
+
 # ---- test calc_fecundity_rates ----
 test_that("calc_fecundity_rates returns expected output", {
   res <- calc_fecundity_rates(

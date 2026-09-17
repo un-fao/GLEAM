@@ -11,7 +11,8 @@ calc_cohort_weights(
   live_weight_at_birth = NA_real_,
   live_weight_female_at_slaughter = NA_real_,
   live_weight_male_at_slaughter = NA_real_,
-  live_weight_at_weaning = NA_real_
+  live_weight_at_weaning = NA_real_,
+  species_short = NULL
 )
 }
 \arguments{
@@ -37,6 +38,9 @@ production stage of the animals. Supported values include:
 \item{live_weight_male_at_slaughter}{Numeric. Slaughter weight of male sub-adult animals (kg).}
 
 \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg)}
+
+\item{species_short}{Optional species code used to select validation rules.
+May be omitted when requirements agree across all supported species.}
 }
 \value{
 A named list with:

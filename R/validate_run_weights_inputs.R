@@ -18,26 +18,53 @@ validate_run_weights_module_inputs <- function(
   check_data_table(herd_level_data, "herd_level_data")
 
   # --- Required columns -------------------------------------------------------
-  # Verify all module-specific columns are present
-  required_cohort_cols <- c(
-    "herd_id", "cohort_short", "cohort_duration_days", "offtake_rate"
-  )
-  required_herd_cols <- c(
+  # Structural columns
+  structural_cohort_cols <- c(
     "herd_id",
-    "live_weight_female_adult",
-    "live_weight_male_adult",
-    "live_weight_at_birth",
-    "live_weight_female_at_slaughter",
-    "live_weight_male_at_slaughter",
-    "live_weight_at_weaning"
+    "species_short",
+    "cohort_short"
+  )
+  check_required_columns(cohort_level_data, structural_cohort_cols, "cohort_level_data")
+  check_required_columns(herd_level_data, "herd_id", "herd_level_data")
+
+
+  # --- Supported species and cohorts ----------------------------------------
+  validate_species_short_values(
+    cohort_level_data$species_short,
+    data_arg = "cohort_level_data"
   )
 
-  check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
-  check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
+  validate_cohort_short_values(
+    cohort_level_data$cohort_short,
+    data_arg = "cohort_level_data"
+  )
 
-  # --- Cohort: valid cohort_short, exactly 6 rows per herd_id ------------------
-  validate_cohort_short_values(cohort_level_data$cohort_short, data_arg = "cohort_level_data")
-  check_cohort_completeness(cohort_level_data, "cohort_level_data")
+  # Module-specific columns
+  rules <- get_required_parameter_rules(cohort_level_data, module_filter = "weights")
+  required_cohort_cols <- rules[input_table == "cohort_level_data", unique(variable)]
+  required_herd_cols <- rules[input_table == "herd_level_data", unique(variable)]
+
+  check_required_columns(cohort_level_data, unique(c(structural_cohort_cols, required_cohort_cols)), "cohort_level_data")
+  check_required_columns(herd_level_data, unique(c("herd_id", required_herd_cols)), "herd_level_data")
+
+  check_contextual_parameter_ranges(cohort_level_data, cohort_level_data)
+
+  # Weights are joined by herd_id, so each herd must describe one species.
+  herd_species <- unique(cohort_level_data[, .(herd_id, species_short)])
+  mixed_species_herds <- herd_species[, .N, by = herd_id][N > 1L, herd_id]
+  if (length(mixed_species_herds) > 0L) {
+    cli::cli_abort("Each herd_id must have a single species_short. Violation(s) for herd_id: {.val {mixed_species_herds}}")
+  }
+  if ("species_short" %in% names(herd_level_data)) {
+    validate_species_short_values(herd_level_data$species_short, data_arg = "herd_level_data")
+    mismatched <- herd_species[!herd_level_data, on = .(herd_id, species_short), herd_id]
+    if (length(mismatched) > 0L) {
+      cli::cli_abort("species_short must agree between cohort_level_data and herd_level_data for herd_id: {.val {mismatched}}")
+    }
+  }
+
+  # --- Check for duplicated cohorts ------------------------------------------
+  check_cohort_uniqueness(cohort_level_data)
 
   # --- Herd: one row per herd_id -----------------------------------------------
   check_herd_id_unique(herd_level_data, "herd_level_data")
@@ -48,40 +75,7 @@ validate_run_weights_module_inputs <- function(
     "cohort_level_data", "herd_level_data"
   )
 
-  # --- Module-specific: weight ordering (per herd_id) -------------------------
-  # For each herd: live_weight_at_birth must be less than live_weight_female_at_slaughter,
-  # live_weight_male_at_slaughter, and live_weight_at_weaning (cohort slaughter weights are
-  # derived from these, so this ensures live_weight_at_birth < live_weight_cohort_at_slaughter).
-  violations_female <- herd_level_data[
-    !is.na(live_weight_at_birth) & !is.na(live_weight_female_at_slaughter) & live_weight_at_birth >= live_weight_female_at_slaughter,
-    herd_id
-  ]
-  if (length(violations_female) > 0) {
-    cli::cli_abort(
-      "For each herd_id, {.var live_weight_at_birth} must be less than {.var live_weight_female_at_slaughter}.
-      Violation(s) for herd_id: {.val {violations_female}}"
-    )
-  }
+  check_contextual_parameter_ranges(herd_level_data, cohort_level_data, "run_weights_module")
 
-  violations_male <- herd_level_data[
-    !is.na(live_weight_at_birth) & !is.na(live_weight_male_at_slaughter) & live_weight_at_birth >= live_weight_male_at_slaughter,
-    herd_id
-  ]
-  if (length(violations_male) > 0) {
-    cli::cli_abort(
-      "For each herd_id, {.var live_weight_at_birth} must be less than {.var live_weight_male_at_slaughter}.
-      Violation(s) for herd_id: {.val {violations_male}}"
-    )
-  }
-
-  violations_weaning <- herd_level_data[
-    !is.na(live_weight_at_birth) & !is.na(live_weight_at_weaning) & live_weight_at_birth >= live_weight_at_weaning,
-    herd_id
-  ]
-  if (length(violations_weaning) > 0) {
-    cli::cli_abort(
-      "For each herd_id, {.var live_weight_at_birth} must be less than {.var live_weight_at_weaning}.
-      Violation(s) for herd_id: {.val {violations_weaning}}"
-    )
-  }
+  invisible(TRUE)
 }

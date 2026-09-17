@@ -194,6 +194,8 @@ calc_ch4_enteric <- function(
     ration_gross_energy, ration_intake
   )
 
+  validate_function_required_parameters("calc_ch4_enteric", environment(), species_filter = species_short)
+
   ch4_enteric <- ration_gross_energy * ration_intake *
     (ch4_conversion_factor_ym / 100) * ch4_mitigation_factor / 55.65
 

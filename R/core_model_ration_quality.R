@@ -38,8 +38,8 @@
 #'
 #' @export
 calc_feed_digestibility_fraction <- function(
-    feed_digestible_energy_ruminant,
-    feed_digestible_energy_pigs,
+    feed_digestible_energy_ruminant = NA_real_,
+    feed_digestible_energy_pigs = NA_real_,
     feed_gross_energy
 ) {
   validate_feed_digestibility_inputs(
@@ -47,6 +47,7 @@ calc_feed_digestibility_fraction <- function(
     feed_digestible_energy_pigs,
     feed_gross_energy
   )
+  validate_function_required_parameters("calc_feed_digestibility_fraction", environment())
 
   # Ratios are unitless and vectorized by default
   # Treat missing numerator inputs as zero before division.
@@ -123,6 +124,7 @@ calc_ration_digestibility <- function(
     feed_digestibility_fraction_ruminant,
     feed_digestibility_fraction_pigs
   )
+  validate_function_required_parameters("calc_ration_digestibility", environment(), species_filter = species_short)
 
   # Apply the species-specific digestibility coefficient
   if (species_short %in% gleam_species_milk_producers) {
@@ -188,6 +190,7 @@ calc_ration_metabolizable_energy <- function(
     feed_metabolizable_energy_ruminant,
     feed_metabolizable_energy_pigs
   )
+  validate_function_required_parameters("calc_ration_metabolizable_energy", environment(), species_filter = species_short)
 
   # Apply the species-specific metabolizable energy parameter
   if (species_short %in% gleam_species_milk_producers) {
@@ -224,6 +227,7 @@ calc_ration_metabolizable_energy <- function(
 #' @export
 calc_ration_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
   validate_ration_gross_energy_inputs(feed_ration_fraction, feed_gross_energy)
+  validate_function_required_parameters("calc_ration_gross_energy", environment())
   # Contribution is ration composition share multiplied by gross energy content
   ration_gross_energy <- feed_ration_fraction * feed_gross_energy
   return(ration_gross_energy)
@@ -248,6 +252,7 @@ calc_ration_gross_energy <- function(feed_ration_fraction, feed_gross_energy) {
 #' @export
 calc_ration_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_content) {
   validate_ration_nitrogen_inputs(feed_ration_fraction, feed_nitrogen_content)
+  validate_function_required_parameters("calc_ration_nitrogen_content", environment())
   # Contribution is ration composition share multiplied by nitrogen content
   ration_nitrogen <- feed_ration_fraction * feed_nitrogen_content
   return(ration_nitrogen)
@@ -306,6 +311,7 @@ calc_ration_urinary_energy_fraction <- function(
     feed_urinary_energy_ruminant,
     feed_urinary_energy_pigs
   )
+  validate_function_required_parameters("calc_ration_urinary_energy_fraction", environment(), species_filter = species_short)
 
   # Apply the species-specific diet_urinary_energy
   if (species_short %in% gleam_species_milk_producers) {
@@ -343,6 +349,7 @@ calc_ration_urinary_energy_fraction <- function(
 #' @export
 calc_ration_ash <- function(feed_ration_fraction, feed_ash) {
   validate_ration_ash_inputs(feed_ration_fraction, feed_ash)
+  validate_function_required_parameters("calc_ration_ash", environment())
 
   # Contribution is ration composition share multiplied by feed_ash
   ration_ash <- feed_ration_fraction * feed_ash / 100

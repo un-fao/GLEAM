@@ -197,6 +197,7 @@ calc_nitrogen_retention <- function(
     daily_weight_gain, fibre_yield_year, litter_size, parturition_rate,
     live_weight_at_weaning, live_weight_at_birth, pregnancy_duration, cohort_duration_days
   )
+  validate_function_required_parameters("calc_nitrogen_retention", environment(), species_filter = species_short, cohort_filter = cohort_short)
 
   if (species_short %in% gleam_species_milk_producers) {
     tissue_n <- ifelse(species_short %in% c("CTL", "BFL"), 0.0326, 0.026)

@@ -259,15 +259,24 @@ run_allocation_module <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
+  # Resolve herd rows and unused inputs once for all requested cohorts.
+  herd_parameters <- get_optional_parameters(
+    herd_level_data, c(
+      "species_short", "milk_protein_fraction_standard",
+      "milk_fat_fraction_standard", "milk_lactose_fraction_standard",
+      "live_weight_at_birth", "ratio_me_to_ne"
+    ), cohort_level_data
+  )
+
   # --- Step 3: Calculate cohort-level energy allocations ----------------------
   # Milk energy allocation: based on FPCM (fat- and protein-corrected milk) output
   cohort_level_data[
     ,
     milk_allocation_energy := calc_milk_allocation_energy(
       milk_production_fpcm_cohort = milk_production_fpcm_cohort,
-      milk_protein_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction_standard],
-      milk_fat_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction_standard],
-      milk_lactose_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_lactose_fraction_standard]
+      milk_protein_fraction_standard = herd_parameters$milk_protein_fraction_standard[.I],
+      milk_fat_fraction_standard = herd_parameters$milk_fat_fraction_standard[.I],
+      milk_lactose_fraction_standard = herd_parameters$milk_lactose_fraction_standard[.I]
     ),
     by = .I
   ]
@@ -276,12 +285,12 @@ run_allocation_module <- function(
   cohort_level_data[
     ,
     meat_allocation_energy := calc_meat_allocation_energy(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_short = cohort_short,
       live_weight_cohort_at_slaughter = live_weight_cohort_at_slaughter,
-      live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
+      live_weight_at_birth = herd_parameters$live_weight_at_birth[.I],
       meat_production_live_weight_cohort = meat_production_live_weight_cohort,
-      ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne]
+      ratio_me_to_ne = herd_parameters$ratio_me_to_ne[.I]
     ),
     by = .I
   ]
@@ -290,10 +299,10 @@ run_allocation_module <- function(
   cohort_level_data[
     ,
     fibre_allocation_energy := calc_fibre_allocation_energy(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_stock_size = cohort_stock_size,
       metabolic_energy_req_fibre_production = metabolic_energy_req_fibre_production,
-      ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne],
+      ratio_me_to_ne = herd_parameters$ratio_me_to_ne[.I],
       simulation_duration = simulation_duration
     ),
     by = .I
@@ -303,10 +312,10 @@ run_allocation_module <- function(
   cohort_level_data[
     ,
     work_allocation_energy := calc_work_allocation_energy(
-      species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
+      species_short = herd_parameters$species_short[.I],
       cohort_stock_size = cohort_stock_size,
       metabolic_energy_req_work = metabolic_energy_req_work,
-      ratio_me_to_ne = herd_level_data[.SD, on = "herd_id", x.ratio_me_to_ne],
+      ratio_me_to_ne = herd_parameters$ratio_me_to_ne[.I],
       simulation_duration = simulation_duration
     ),
     by = .I

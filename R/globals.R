@@ -20,6 +20,10 @@ utils::globalVariables(c(
   "N", "count", "index", "n_unique", "V1"
 ))
 
+# --- parameter dependency matrix ------------------------------------------
+utils::globalVariables(c("input_table", "requirement", "variable", "function", "has_herd_structure",
+                         "comparison_operator", "comparison_variable", "validation_function"))
+
 # --- run_demographic_herd_module --------------------------------------------
 utils::globalVariables(c(
   "birth_fraction_female", "cohort_duration_days", "death_rate",

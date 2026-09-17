@@ -21,6 +21,8 @@
 #' @param live_weight_female_at_slaughter Numeric. Slaughter weight of female sub-adult animals (kg).
 #' @param live_weight_male_at_slaughter Numeric. Slaughter weight of male sub-adult animals (kg).
 #' @param live_weight_at_weaning Numeric. Live weight of the animal at weaning (kg)
+#' @param species_short Optional species code used to select validation rules.
+#'   May be omitted when requirements agree across all supported species.
 #'
 #' @return A named list with:
 #' \describe{
@@ -69,14 +71,16 @@ calc_cohort_weights <- function(
     cohort_short,
     live_weight_female_adult = NA_real_, live_weight_male_adult = NA_real_,
     live_weight_at_birth = NA_real_, live_weight_female_at_slaughter = NA_real_,
-    live_weight_male_at_slaughter = NA_real_, live_weight_at_weaning = NA_real_
+    live_weight_male_at_slaughter = NA_real_, live_weight_at_weaning = NA_real_,
+    species_short = NULL
 ) {
   validate_cohort_weight_inputs(
     cohort_short,
     live_weight_female_adult, live_weight_male_adult,
     live_weight_at_birth,
     live_weight_female_at_slaughter, live_weight_male_at_slaughter,
-    live_weight_at_weaning
+    live_weight_at_weaning,
+    species_short = species_short
   )
 
   # Juvenile cohorts
@@ -178,6 +182,7 @@ calc_avg_weights <- function(
     live_weight_cohort_at_slaughter,
     offtake_rate
   )
+  validate_function_required_parameters("calc_avg_weights", environment())
 
   # Normalize offtake_rate
   offtake_rate <- normalize_rate(offtake_rate)
@@ -232,6 +237,7 @@ calc_daily_weight_gain <- function(
     live_weight_cohort_initial,
     cohort_duration_days
   )
+  validate_function_required_parameters("calc_daily_weight_gain", environment())
 
   # Average daily gain over the period
   return(
