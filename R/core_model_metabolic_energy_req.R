@@ -114,7 +114,7 @@
 #'   \item All cohorts: \eqn{cmain = 0.4435}
 #' }
 #'
-#' \strong{CHK} (Sakomura, 2004):
+#' \strong{CHK} (Sakomura, 2004; Neme et al. 2005):
 #' \itemize{
 #'   \item Adult and laying cohorts (\code{MA} plus any \code{CHK} cohort with
 #'   \code{is_egg_producing = TRUE}):
@@ -127,14 +127,16 @@
 #'   \code{MS}, and non-laying \code{FN} phase 1):
 #'   \deqn{
 #'   metabolic\_energy\_req\_maintenance =
-#'   0.3866 + 0.0282 \times
-#'   (lower\_critical\_temperature - average\_annual\_temperature),
+#'   average\_weight^{0.75} \times
+#'   \left(0.3866 + 0.0282 \times
+#'   (lower\_critical\_temperature - average\_annual\_temperature) \right),
 #'   \quad average\_annual\_temperature < lower\_critical\_temperature
 #'   }
 #'   \deqn{
 #'   metabolic\_energy\_req\_maintenance =
-#'   0.3866 + 0.0037 \times
-#'   (lower\_critical\_temperature - average\_annual\_temperature),
+#'   average\_weight^{0.75} \times
+#'   \left(0.3866 + 0.0037 \times
+#'   (average\_annual\_temperature - lower\_critical\_temperature) \right),
 #'   \quad average\_annual\_temperature \ge lower\_critical\_temperature
 #'   }
 #' }
@@ -165,8 +167,11 @@
 #' Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
-#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#' Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+#' laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
+#' 
+#' Neme, R., Sakomura, N.K., Fialho, F.B., Freitas, E.R. & Fukayama, E.H. (2005). 
+#' \emph{Modelling Energy Utilization for Laying Type Pullets}. Brazilian Journal of Poultry Science, 7(1), 39–46.
 #'
 #' @export
 calc_metabolic_energy_req_maintenance <- function(
@@ -240,19 +245,15 @@ calc_metabolic_energy_req_maintenance <- function(
       
       cmain <- 0.6935 - 0.0099 * average_annual_temperature
       
-      metabolic_energy_req_maintenance <- max(0, (live_weight_cohort_average^0.75) * cmain)
-      
     } else {
       if (average_annual_temperature < lower_critical_temperature) {
-        metabolic_energy_req_maintenance <- 0.3866 +
+        cmain <- 0.3866 +
           0.0282 * (lower_critical_temperature - average_annual_temperature)
       } else {
-        metabolic_energy_req_maintenance <- 0.3866 +
-          0.0037 * (lower_critical_temperature - average_annual_temperature)
+        cmain <- 0.3866 +
+          0.0037 * (average_annual_temperature - lower_critical_temperature)
       }
     }
-    
-    return(metabolic_energy_req_maintenance)
   }
   # Default: metabolic body weight scaling
   metabolic_energy_req_maintenance <- (live_weight_cohort_average^0.75) * cmain

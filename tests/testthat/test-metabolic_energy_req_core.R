@@ -91,7 +91,7 @@ test_that("calc_metabolic_energy_req_maintenance handles chickens", {
     average_annual_temperature = 15,
     lower_critical_temperature = 18
   )
-  expect_equal(juvenile, 0.3866 + 0.0282 * (18 - 15))
+  expect_equal(juvenile, (0.04^0.75)*(0.3866 + 0.0282 * (18 - 15)))
 })
 
 test_that("calc_metabolic_energy_req_maintenance uses explicit egg-producing FN flag", {
