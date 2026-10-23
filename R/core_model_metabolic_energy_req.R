@@ -274,6 +274,7 @@ calc_metabolic_energy_req_maintenance <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
@@ -313,7 +314,7 @@ calc_metabolic_energy_req_maintenance <- function(
 #' 
 #' where 
 #' 
-#' \eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS};
+#' \eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS}, \code{CHK};
 #' MJ/day/kg for \code{SHP},  \code{GTS}) that reflects the animal’s feeding and management conditions.
 #' \code{metabolic_energy_req_maintenance} can be calculated using
 #' \code{\link{calc_metabolic_energy_req_maintenance}()}.
@@ -348,12 +349,7 @@ calc_metabolic_energy_req_maintenance <- function(
 #'   }
 #' \strong{CHK} (Sakomura, 2004):
 #' \itemize{
-#'   \item All cohorts:
-#'   \deqn{
-#'   metabolic\_energy\_req\_activity =
-#'   metabolic\_energy\_req\_maintenance \times
-#'   (low\_activity\_fraction + high\_activity\_fraction) \times 0.25
-#'   }
+#'   \item \code{all activity levels}: \eqn{cact = 0.25}
 #' }
 #'
 #'   
@@ -384,8 +380,8 @@ calc_metabolic_energy_req_maintenance <- function(
 #' Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
-#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#' Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+#' laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
 #'
 #' @export
 calc_metabolic_energy_req_activity <- function(
@@ -421,8 +417,8 @@ calc_metabolic_energy_req_activity <- function(
     cact <- 0.125 * (low_activity_fraction + high_activity_fraction)
     metabolic_energy_req_activity <- cact * metabolic_energy_req_maintenance
   } else if (species_short == "CHK") {
-    metabolic_energy_req_activity <- metabolic_energy_req_maintenance *
-      (low_activity_fraction + high_activity_fraction) * 0.25
+    cact <- 0.25 * (low_activity_fraction + high_activity_fraction)
+    metabolic_energy_req_activity <- cact * metabolic_energy_req_maintenance
   }
   return(metabolic_energy_req_activity)
 }
