@@ -263,17 +263,17 @@ test_that("calc_metabolic_energy_req_growth handles chickens", {
     species_short = "CHK", cohort_short = "FJ",
     daily_weight_gain = 0.02
   )
-  expect_equal(juvenile, 0.02 * 0.0202 * 1000)
+  expect_equal(juvenile, 0.02 * 0.0191 * 1000)
 
   adult <- calc_metabolic_energy_req_growth(
     species_short = "CHK", cohort_short = "FA",
     daily_weight_gain = 0.01,
     is_egg_producing = TRUE
   )
-  expect_equal(adult, 0.01 * 0.0279 * 1000)
+  expect_equal(adult, 0.01 * 0.0299 * 1000)
 })
 
-test_that("calc_metabolic_energy_req_growth uses explicit egg-producing FN flag", {
+test_that("calc_metabolic_energy_req_growth handles egg-producing FN", {
   result <- calc_metabolic_energy_req_growth(
     species_short = "CHK",
     cohort_short = "FN",
@@ -285,7 +285,7 @@ test_that("calc_metabolic_energy_req_growth uses explicit egg-producing FN flag"
   expect_equal(result, 0.01 * 0.0279 * 1000)
 })
 
-test_that("calc_metabolic_energy_req_growth uses broiler coefficient for non-laying FN", {
+test_that("calc_metabolic_energy_req_growth handles non-laying FN", {
   result <- calc_metabolic_energy_req_growth(
     species_short = "CHK",
     cohort_short = "FN",
@@ -294,7 +294,17 @@ test_that("calc_metabolic_energy_req_growth uses broiler coefficient for non-lay
     is_egg_producing = FALSE
   )
 
-  expect_equal(result, 0.01 * 0.0202 * 1000)
+  expect_equal(result, 0.01 * 0.0221 * 1000)
+})
+
+test_that("calc_metabolic_energy_req_growth handles MN chickens", {
+  result <- calc_metabolic_energy_req_growth(
+    species_short = "CHK",
+    cohort_short = "MN",
+    daily_weight_gain = 0.01
+  )
+  
+  expect_equal(result, 0.01 * 0.0173 * 1000)
 })
 
 test_that("calc_metabolic_energy_req_eggs handles chickens", {

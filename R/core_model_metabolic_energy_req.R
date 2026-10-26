@@ -536,13 +536,20 @@ calc_metabolic_energy_req_activity <- function(
 #'   is expressed in MJ/g. The factor 1000 converts kilograms of live-weight gain
 #'   to grams.
 #'
-#'   The following values are used:
+#'   The following values are used, based on Table 3 from Sakomura (2004):
 #'   \itemize{
-#'     \item \code{MA} and any \code{CHK} cohort with
-#'     \code{is_egg_producing = TRUE}:
-#'     \eqn{cgro = 0.0279}
+#'     \item \code{FA} and \code{MA}:
+#'     \eqn{cgro = 0.0299} (average of values for "Laying hen" and "Broiler breeder hen")
+#'     \item \code{FN} and \code{is_egg_producing = TRUE}:
+#'     \eqn{cgro = 0.0279} (value for "Laying hen")
+#'     \item \code{FN} and \code{is_egg_producing = FALSE}:
+#'     \eqn{cgro = 0.0221} (average of all values, excluding "Male broiler", "Laying hen",
+#'     and "Broiler breeder hen")
+#'     \item \code{MN}:
+#'     \eqn{cgro = 0.0173} (average of values for "Male broiler")
 #'     \item \code{FS}, \code{FJ}, \code{MS}, \code{MJ}:
-#'     \eqn{cgro = 0.0202}
+#'     \eqn{cgro = 0.0191} (average of all values, excluding "Laying hen" 
+#'     and "Broiler breeder hen")
 #'   }
 #'
 #'   }
@@ -579,8 +586,8 @@ calc_metabolic_energy_req_activity <- function(
 #' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
 #'   from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
 #'
-#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#' Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+#' laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
 #'
 #' @export
 calc_metabolic_energy_req_growth <- function(
@@ -670,12 +677,16 @@ calc_metabolic_energy_req_growth <- function(
       metabolic_energy_req_growth <- 0
     }
   } else if (species_short == "CHK") {
-    if (cohort_short %in% c("MA", "FA") ||
-        (cohort_short == "FN" && isTRUE(is_egg_producing))) {
+    if (cohort_short %in% c("MA", "FA")) {
+      cgro <- 0.0299
+    } else if (cohort_short == "FN" && isTRUE(is_egg_producing)) {
       cgro <- 0.0279
-    } else if (cohort_short %in% c("FS", "FJ", "MS", "MJ", "MN") ||
-               (cohort_short == "FN" && !isTRUE(is_egg_producing))) {
-      cgro <- 0.0202
+    } else if (cohort_short == "FN" && !isTRUE(is_egg_producing)) {
+      cgro <- 0.0221
+    } else if (cohort_short == "MN") {
+      cgro <- 0.0173
+    } else if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+      cgro <- 0.0191
     } else {
       cgro <- 0
     }
@@ -991,8 +1002,8 @@ calc_metabolic_energy_req_lactation <- function(
 #' other coefficients used in GLEAM-X.
 #'
 #' @references
-#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#' Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+#' laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
 #'
 calc_metabolic_energy_req_eggs <- function(
     species_short,
