@@ -124,7 +124,7 @@
 #'   \left(0.6935 - 0.0099 \times average\_annual\_temperature \right)
 #'   }
 #'   \item Juvenile and subadult cohorts (\code{FJ}, \code{FS}, \code{MJ},
-#'   \code{MS}, and non-laying \code{FN} phase 1):
+#'   \code{MS}, \code{MN}, and non-laying \code{FN} phase 1):
 #'   \deqn{
 #'   metabolic\_energy\_req\_maintenance =
 #'   average\_weight^{0.75} \times
@@ -1350,6 +1350,7 @@ calc_metabolic_energy_req_fibre <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
@@ -1387,7 +1388,7 @@ calc_metabolic_energy_req_fibre <- function(
 #' only to \strong{female cohorts} (\code{FA} and \code{FS}).
 #'
 #' Pregnancy energy (\code{metabolic_energy_req_pregnancy}) represents the additional
-#' energy required to support gestation. Requirements are computed as a fraction
+#' energy required to support gestation in mammals. Requirements are computed as a fraction
 #' of maintenance energy and are adjusted to reflect reproductive activity within
 #' the cohort:
 #' \itemize{
@@ -1634,6 +1635,7 @@ calc_metabolic_energy_req_pregnancy <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param ration_digestibility_fraction Numeric. Average digestibility of 
 #' the feed ration, expressed as ratio of digestible to gross energy content (fraction).
@@ -1710,6 +1712,7 @@ calc_rem_maintenance <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param ration_digestibility_fraction Numeric. Average digestibility of the feed ration, 
 #' expressed as ratio of digestible to gross energy content (fraction).
@@ -1782,31 +1785,32 @@ calc_reg_growth <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of 
 #' energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost (MJ/head/day). 
-#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 #' @param metabolic_energy_req_activity Numeric. Energy required for activity, defined as the amount of energy 
 #' needed to support animal movement and physical activity (MJ/head/day). Expressed as net energy for 
-#' CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+#' CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 #' @param metabolic_energy_req_lactation Numeric. Energy required for lactation (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 #' @param metabolic_energy_req_work Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
-#'  Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+#'  Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, and as metabolizable energy for CML.
 #' @param metabolic_energy_req_pregnancy Numeric. Energy required for pregnancy for pregnant females (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 #' @param net_energy_maintenance_digestible_energy_ratio Ratio of net energy available for maintenance in
 #'   the diet to digestible energy consumed (fraction).
 #' @param metabolic_energy_req_growth Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). 
-#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 #' @param metabolic_energy_req_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species (MJ/head/day).
-#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' Expressed as net energy for SHP, GTS and as metabolizable energy for CML (MJ/head/day).
 #' @param metabolic_energy_req_egg_deposition Numeric. Net energy for egg production (MJ/head/day).
 #' @param net_energy_growth_digestible_energy_ratio Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction)
 #' @param ration_digestibility_fraction Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #' 
 #' @return Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
-#' For CML and PGS the function returns the summed daily metabolizable energy requirement.
+#' For CML, PGS, and CHK the function returns the summed daily metabolizable energy requirement.
 #'
 #' @details
 #' This component follows the IPCC Tier 2 partitioning approach and the calculation
@@ -1835,7 +1839,7 @@ calc_reg_growth <- function(
 #'         \left(
 #'           \frac{metabolic\_energy\_req\_growth}{REG}
 #'         \right)
-#'       }{diet\_digestibility\_fraction}
+#'       }{ration\_digestibility\_fraction}
 #'     }
 #'     \item \strong{\code{SHP} and \code{GTS}}:
 #'     \deqn{
@@ -1856,10 +1860,10 @@ calc_reg_growth <- function(
 #'             metabolic\_energy\_req\_fibre
 #'           }{REG}
 #'         \right)
-#'       }{diet_digestibility_fraction}
+#'       }{ration\_digestibility\_fraction}
 #'     }
 #'   }
-#'   \item \strong{Energy requirements expressed as metabolizable energy (\code{CML}, \code{PGS})}
+#'   \item \strong{Energy requirements expressed as metabolizable energy (\code{CML}, \code{PGS}, \code{CHK})}
 #'
 #'   For these species, the total daily requirement is computed as the
 #'   \strong{direct sum} of relevant energy components (MJ/head/day).
@@ -1884,6 +1888,14 @@ calc_reg_growth <- function(
 #'       metabolic\_energy\_req\_pregnancy +
 #'       metabolic\_energy\_req\_growth
 #'     }
+#'     \item \strong{\code{CHK}}:
+#'     \deqn{
+#'       metabolic\_energy\_req\_total =
+#'       metabolic\_energy\_req\_maintenance +
+#'       metabolic\_energy\_req\_activity +
+#'       metabolic\_energy\_req\_growth +
+#'       metabolic\_energy\_req\_egg\_deposition
+#'     }
 #'   }
 #' }
 #' 
@@ -1898,6 +1910,7 @@ calc_reg_growth <- function(
 #' \code{\link{calc_metabolic_energy_req_work}}
 #' \code{\link{calc_metabolic_energy_req_fibre}}
 #' \code{\link{calc_metabolic_energy_req_pregnancy}}
+#' \code{\link{calc_metabolic_energy_req_eggs}}
 #' \code{\link{calc_rem_maintenance}}
 #' \code{\link{calc_reg_growth}}
 #' \code{\link{calc_ration_intake}}
@@ -1987,10 +2000,11 @@ calc_total_metabolic_energy_req <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param metabolic_energy_req_total Numeric. Total daily energy requirement (MJ/head/day). 
 #' For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
-#' For CML and PGS the function returns the summed daily metabolizable energy requirement.
+#' For CML, PGS and CHK the function returns the summed daily metabolizable energy requirement.
 #' @param ration_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
 #' @param ration_metabolizable_energy Numeric. Average metabolizable energy content of the diet (MJ/kg DM).
 #'
@@ -2011,7 +2025,7 @@ calc_total_metabolic_energy_req <- function(
 #'   }
 #'
 #'   \item \strong{Energy expressed as metabolizable energy requirement - 
-#'   \code{CML}, \code{PGS}}:
+#'   \code{CML}, \code{PGS}, \code{CHK}}:
 #'
 #'   \deqn{
 #'     ration\_intake = \frac{metabolic\_energy\_req\_total}{ration\_metabolizable\_energy}
