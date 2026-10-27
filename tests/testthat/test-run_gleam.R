@@ -561,3 +561,81 @@ test_that("aggregation results_nitrogen is non-empty data.table", {
   expect_s3_class(nitrogen, "data.table")
   expect_true(nrow(nitrogen) > 0)
 })
+
+# Simulated-herd pipeline integration tests
+
+d_gleam_diversion <- lapply(d_gleam, function(data) {
+  if ("herd_id" %in% names(data)) data[data$herd_id == 9] else data.table::copy(data)
+})
+d_gleam_diversion$cohort_no_structure <- data.table::fread(system.file(
+  "extdata/run_gleam_examples/master_chrt_lvl_no_structure_mixed_data.csv", package = "gleam"
+))[herd_id == 9]
+d_gleam_diversion$herd <- data.table::fread(system.file(
+  "extdata/run_gleam_examples/master_hrd_lvl_mixed_data.csv", package = "gleam"
+))[herd_id == 9]
+
+test_that("the full pipeline simulates a demographic herd without supplied population sizes", {
+  data <- data.table::copy(d_gleam_diversion)
+  data$cohort_no_structure <- data$cohort_no_structure[!cohort_short %in% c("FN", "MN")]
+  data$herd[, `:=`(prop_nondemo_fem_juv = 0, prop_nondemo_mal_juv = 0)]
+  expect_false("cohort_stock_size" %in% names(data$cohort_no_structure))
+
+  result <- suppressMessages(run_gleam_no_structure(data,
+    run_demographic = TRUE,
+    run_nondemographic = FALSE, show_indicator = FALSE
+  ))
+
+  expect_equal(nrow(result$cohort_level_results), 6L)
+  expect_equal(sum(result$cohort_level_results$cohort_stock_size), data$herd$herd_size_total)
+  expect_true(all(result$cohort_level_results$ration_intake > 0))
+  expect_true(all(vapply(result$aggregation_results, nrow, integer(1)) > 0L))
+})
+
+test_that("the full pipeline simulates diversion and retains both non-demographic phases downstream", {
+  data <- data.table::copy(d_gleam_diversion)
+  expect_false("cohort_stock_size" %in% names(data$cohort_no_structure))
+  expect_gt(data$herd$prop_nondemo_fem_juv, 0)
+  expect_gt(data$herd$prop_nondemo_mal_juv, 0)
+
+  result <- suppressMessages(run_gleam_no_structure(data,
+    run_demographic = TRUE,
+    run_nondemographic = TRUE, show_indicator = FALSE
+  ))
+  output <- result$cohort_level_results
+  nondemo <- output[cohort_short %in% c("FN", "MN")]
+  key_cols <- c("herd_id", "cohort_short", "nondemo_productive_phase_id")
+
+  actual_keys <- output[, ..key_cols]
+  expected_keys <- data$cohort_no_structure[, ..key_cols]
+  data.table::setorderv(actual_keys, key_cols)
+  data.table::setorderv(expected_keys, key_cols)
+  expect_equal(as.data.frame(actual_keys), as.data.frame(expected_keys))
+  expect_equal(nrow(nondemo), 4L)
+  expect_true(all(nondemo$cohort_stock_size > 0))
+  expect_equal(sum(output$cohort_stock_size), data$herd$herd_size_total)
+  expect_equal(
+    result$herd_level_results$cohort_stock_fem_annual_nondemo,
+    output[cohort_short == "FJ", cohort_stock_annual_nondemographic]
+  )
+  expect_equal(
+    result$herd_level_results$cohort_stock_mal_annual_nondemo,
+    output[cohort_short == "MJ", cohort_stock_annual_nondemographic]
+  )
+
+  downstream <- c(
+    "live_weight_cohort_average", "ration_gross_energy", "ration_intake",
+    "metabolic_energy_req_total", "ch4_enteric", "nitrogen_excretion",
+    "volatile_solids", "ch4_manure_other", "n2o_manure_other_total",
+    "co2_ration_fertilizer", "meat_production_live_weight_cohort", "meat_allocation_energy"
+  )
+  expect_true(all(downstream %in% names(nondemo)))
+  expect_true(all(is.finite(as.matrix(nondemo[, ..downstream]))))
+  expect_true(all(nondemo$ration_intake > 0))
+  expect_true(all(nondemo$nitrogen_excretion > 0))
+  expect_gt(sum(nondemo$meat_production_live_weight_cohort), 0)
+  expect_equal(
+    result$aggregation_results$results_feed[variable_name == "ration_intake", value_total],
+    sum(output$ration_intake * output$cohort_stock_size) * 365
+  )
+  expect_true(all(vapply(result$aggregation_results, nrow, integer(1)) > 0L))
+})
