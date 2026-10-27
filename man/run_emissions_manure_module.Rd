@@ -28,7 +28,7 @@ production stage of the animals. Supported values include:
 \item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
-\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). When present, manure-management fractions are matched separately by phase.}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). Preserved in the output and used for matching when the manure fractions specify phases.}
 \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 \item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
@@ -52,9 +52,9 @@ production stage of the animals. Supported values include:
 \item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
-\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). When present, manure-management fractions are matched separately by phase.}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). Omit this column or leave it entirely missing to use the same manure-management fractions for each phase of a cohort.}
 \item{manure_management_system}{Character. Name identifying the manure management system. The identifiers mms_pasture and mms_burned are reserved for manure deposited on pasture and manure burned for fuel, respectively. No specific naming convention is required for other manure management systems, which are grouped and handled as “other” systems.}
-\item{manure_management_system_fraction}{Numeric. Fraction of total manure excreted by animals in a given herd and cohort that is handled in a specific manure management system. Values ranges from 0 to 1. The sum of all fractions for each herd_id must equal 1.}
+\item{manure_management_system_fraction}{Numeric. Fraction of total manure excreted by animals in a given herd and cohort that is handled in a specific manure management system. Values range from 0 to 1. Fractions must sum to 1 within each herd and cohort, and within each productive phase when phases are specified.}
 }}
 
 \item{manure_management_system_factors}{data.table. Herd-level MMS factors
@@ -189,11 +189,13 @@ by MMS group, consistently with Equation 10.25 (IPCC, 2006, 2019) -  \code{\link
 (pasture, burned, other) - \code{\link{calc_n2o_manure_total}}
 }
 
-When \code{nondemo_productive_phase_id} is available in both
-\code{cohort_level_data} and \code{manure_management_system_fraction},
-manure-management fractions are matched by
-\code{herd_id + cohort_short + nondemo_productive_phase_id}; otherwise they
-are matched by \code{herd_id + cohort_short}.
+When \code{manure_management_system_fraction} omits
+\code{nondemo_productive_phase_id}, or the column contains only missing values,
+fractions are matched by \code{herd_id + cohort_short} and reused for each
+input phase. If the fractions specify phase identifiers,
+\code{cohort_level_data} must also contain the phase column, and matching uses
+\code{herd_id + cohort_short + nondemo_productive_phase_id}.
+Input rows and any supplied phase identifiers are preserved in the output.
 
 The approach corresponds to a Tier 2 implementation as:
 \itemize{
