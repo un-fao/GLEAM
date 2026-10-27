@@ -114,7 +114,7 @@
 #'   \item All cohorts: \eqn{cmain = 0.4435}
 #' }
 #'
-#' \strong{CHK} (Sakomura, 2004):
+#' \strong{CHK} (Sakomura, 2004; Neme et al. 2005):
 #' \itemize{
 #'   \item Adult and laying cohorts (\code{MA} plus any \code{CHK} cohort with
 #'   \code{is_egg_producing = TRUE}):
@@ -124,17 +124,19 @@
 #'   \left(0.6935 - 0.0099 \times average\_annual\_temperature \right)
 #'   }
 #'   \item Juvenile and subadult cohorts (\code{FJ}, \code{FS}, \code{MJ},
-#'   \code{MS}, and non-laying \code{FN} phase 1):
+#'   \code{MS}, \code{MN}, and non-laying \code{FN} phase 1):
 #'   \deqn{
 #'   metabolic\_energy\_req\_maintenance =
-#'   0.3866 + 0.0282 \times
-#'   (lower\_critical\_temperature - average\_annual\_temperature),
+#'   average\_weight^{0.75} \times
+#'   \left(0.3866 + 0.0282 \times
+#'   (lower\_critical\_temperature - average\_annual\_temperature) \right),
 #'   \quad average\_annual\_temperature < lower\_critical\_temperature
 #'   }
 #'   \deqn{
 #'   metabolic\_energy\_req\_maintenance =
-#'   0.3866 + 0.0037 \times
-#'   (lower\_critical\_temperature - average\_annual\_temperature),
+#'   average\_weight^{0.75} \times
+#'   \left(0.3866 + 0.0037 \times
+#'   (average\_annual\_temperature - lower\_critical\_temperature) \right),
 #'   \quad average\_annual\_temperature \ge lower\_critical\_temperature
 #'   }
 #' }
@@ -165,8 +167,11 @@
 #' Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
-#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#' Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+#' laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
+#' 
+#' Neme, R., Sakomura, N.K., Fialho, F.B., Freitas, E.R. & Fukayama, E.H. (2005). 
+#' \emph{Modelling Energy Utilization for Laying Type Pullets}. Brazilian Journal of Poultry Science, 7(1), 39–46.
 #'
 #' @export
 calc_metabolic_energy_req_maintenance <- function(
@@ -240,19 +245,15 @@ calc_metabolic_energy_req_maintenance <- function(
       
       cmain <- 0.6935 - 0.0099 * average_annual_temperature
       
-      metabolic_energy_req_maintenance <- max(0, (live_weight_cohort_average^0.75) * cmain)
-      
     } else {
       if (average_annual_temperature < lower_critical_temperature) {
-        metabolic_energy_req_maintenance <- 0.3866 +
+        cmain <- 0.3866 +
           0.0282 * (lower_critical_temperature - average_annual_temperature)
       } else {
-        metabolic_energy_req_maintenance <- 0.3866 +
-          0.0037 * (lower_critical_temperature - average_annual_temperature)
+        cmain <- 0.3866 +
+          0.0037 * (average_annual_temperature - lower_critical_temperature)
       }
     }
-    
-    return(metabolic_energy_req_maintenance)
   }
   # Default: metabolic body weight scaling
   metabolic_energy_req_maintenance <- (live_weight_cohort_average^0.75) * cmain
@@ -273,6 +274,7 @@ calc_metabolic_energy_req_maintenance <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
@@ -312,7 +314,7 @@ calc_metabolic_energy_req_maintenance <- function(
 #' 
 #' where 
 #' 
-#' \eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS};
+#' \eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS}, \code{CHK};
 #' MJ/day/kg for \code{SHP},  \code{GTS}) that reflects the animal’s feeding and management conditions.
 #' \code{metabolic_energy_req_maintenance} can be calculated using
 #' \code{\link{calc_metabolic_energy_req_maintenance}()}.
@@ -347,12 +349,7 @@ calc_metabolic_energy_req_maintenance <- function(
 #'   }
 #' \strong{CHK} (Sakomura, 2004):
 #' \itemize{
-#'   \item All cohorts:
-#'   \deqn{
-#'   metabolic\_energy\_req\_activity =
-#'   metabolic\_energy\_req\_maintenance \times
-#'   (low\_activity\_fraction + high\_activity\_fraction) \times 0.25
-#'   }
+#'   \item \code{all activity levels}: \eqn{cact = 0.25}
 #' }
 #'
 #'   
@@ -383,8 +380,8 @@ calc_metabolic_energy_req_maintenance <- function(
 #' Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 #' Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 #'
-#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#' Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+#' laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
 #'
 #' @export
 calc_metabolic_energy_req_activity <- function(
@@ -420,8 +417,8 @@ calc_metabolic_energy_req_activity <- function(
     cact <- 0.125 * (low_activity_fraction + high_activity_fraction)
     metabolic_energy_req_activity <- cact * metabolic_energy_req_maintenance
   } else if (species_short == "CHK") {
-    metabolic_energy_req_activity <- metabolic_energy_req_maintenance *
-      (low_activity_fraction + high_activity_fraction) * 0.25
+    cact <- 0.25 * (low_activity_fraction + high_activity_fraction)
+    metabolic_energy_req_activity <- cact * metabolic_energy_req_maintenance
   }
   return(metabolic_energy_req_activity)
 }
@@ -539,13 +536,20 @@ calc_metabolic_energy_req_activity <- function(
 #'   is expressed in MJ/g. The factor 1000 converts kilograms of live-weight gain
 #'   to grams.
 #'
-#'   The following values are used:
+#'   The following values are used, based on Table 3 from Sakomura (2004):
 #'   \itemize{
-#'     \item \code{MA} and any \code{CHK} cohort with
-#'     \code{is_egg_producing = TRUE}:
-#'     \eqn{cgro = 0.0279}
+#'     \item \code{FA} and \code{MA}:
+#'     \eqn{cgro = 0.0299} (average of values for "Laying hen" and "Broiler breeder hen")
+#'     \item \code{FN} and \code{is_egg_producing = TRUE}:
+#'     \eqn{cgro = 0.0279} (value for "Laying hen")
+#'     \item \code{FN} and \code{is_egg_producing = FALSE}:
+#'     \eqn{cgro = 0.0221} (average of all values, excluding "Male broiler", "Laying hen",
+#'     and "Broiler breeder hen")
+#'     \item \code{MN}:
+#'     \eqn{cgro = 0.0173} (average of values for "Male broiler")
 #'     \item \code{FS}, \code{FJ}, \code{MS}, \code{MJ}:
-#'     \eqn{cgro = 0.0202}
+#'     \eqn{cgro = 0.0191} (average of all values, excluding "Laying hen" 
+#'     and "Broiler breeder hen")
 #'   }
 #'
 #'   }
@@ -582,8 +586,8 @@ calc_metabolic_energy_req_activity <- function(
 #' IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
 #'   from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
 #'
-#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#' Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+#' laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
 #'
 #' @export
 calc_metabolic_energy_req_growth <- function(
@@ -673,12 +677,16 @@ calc_metabolic_energy_req_growth <- function(
       metabolic_energy_req_growth <- 0
     }
   } else if (species_short == "CHK") {
-    if (cohort_short %in% c("MA", "FA") ||
-        (cohort_short == "FN" && isTRUE(is_egg_producing))) {
+    if (cohort_short %in% c("MA", "FA")) {
+      cgro <- 0.0299
+    } else if (cohort_short == "FN" && isTRUE(is_egg_producing)) {
       cgro <- 0.0279
-    } else if (cohort_short %in% c("FS", "FJ", "MS", "MJ", "MN") ||
-               (cohort_short == "FN" && !isTRUE(is_egg_producing))) {
-      cgro <- 0.0202
+    } else if (cohort_short == "FN" && !isTRUE(is_egg_producing)) {
+      cgro <- 0.0221
+    } else if (cohort_short == "MN") {
+      cgro <- 0.0173
+    } else if (cohort_short %in% c("FS", "FJ", "MS", "MJ")) {
+      cgro <- 0.0191
     } else {
       cgro <- 0
     }
@@ -994,8 +1002,8 @@ calc_metabolic_energy_req_lactation <- function(
 #' other coefficients used in GLEAM-X.
 #'
 #' @references
-#' Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-#' laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+#' Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+#' laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
 #'
 calc_metabolic_energy_req_eggs <- function(
     species_short,
@@ -1342,6 +1350,7 @@ calc_metabolic_energy_req_fibre <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the
 #'   production stage of the animals. Supported values include:
@@ -1379,7 +1388,7 @@ calc_metabolic_energy_req_fibre <- function(
 #' only to \strong{female cohorts} (\code{FA} and \code{FS}).
 #'
 #' Pregnancy energy (\code{metabolic_energy_req_pregnancy}) represents the additional
-#' energy required to support gestation. Requirements are computed as a fraction
+#' energy required to support gestation in mammals. Requirements are computed as a fraction
 #' of maintenance energy and are adjusted to reflect reproductive activity within
 #' the cohort:
 #' \itemize{
@@ -1626,6 +1635,7 @@ calc_metabolic_energy_req_pregnancy <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param ration_digestibility_fraction Numeric. Average digestibility of 
 #' the feed ration, expressed as ratio of digestible to gross energy content (fraction).
@@ -1702,6 +1712,7 @@ calc_rem_maintenance <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param ration_digestibility_fraction Numeric. Average digestibility of the feed ration, 
 #' expressed as ratio of digestible to gross energy content (fraction).
@@ -1774,31 +1785,32 @@ calc_reg_growth <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of 
 #' energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost (MJ/head/day). 
-#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 #' @param metabolic_energy_req_activity Numeric. Energy required for activity, defined as the amount of energy 
 #' needed to support animal movement and physical activity (MJ/head/day). Expressed as net energy for 
-#' CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+#' CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 #' @param metabolic_energy_req_lactation Numeric. Energy required for lactation (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 #' @param metabolic_energy_req_work Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day).
-#'  Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+#'  Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, and as metabolizable energy for CML.
 #' @param metabolic_energy_req_pregnancy Numeric. Energy required for pregnancy for pregnant females (MJ/head/day). 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 #' @param net_energy_maintenance_digestible_energy_ratio Ratio of net energy available for maintenance in
 #'   the diet to digestible energy consumed (fraction).
 #' @param metabolic_energy_req_growth Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). 
-#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 #' @param metabolic_energy_req_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species (MJ/head/day).
-#' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+#' Expressed as net energy for SHP, GTS and as metabolizable energy for CML (MJ/head/day).
 #' @param metabolic_energy_req_egg_deposition Numeric. Net energy for egg production (MJ/head/day).
 #' @param net_energy_growth_digestible_energy_ratio Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction)
 #' @param ration_digestibility_fraction Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).
 #' 
 #' @return Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
-#' For CML and PGS the function returns the summed daily metabolizable energy requirement.
+#' For CML, PGS, and CHK the function returns the summed daily metabolizable energy requirement.
 #'
 #' @details
 #' This component follows the IPCC Tier 2 partitioning approach and the calculation
@@ -1827,7 +1839,7 @@ calc_reg_growth <- function(
 #'         \left(
 #'           \frac{metabolic\_energy\_req\_growth}{REG}
 #'         \right)
-#'       }{diet\_digestibility\_fraction}
+#'       }{ration\_digestibility\_fraction}
 #'     }
 #'     \item \strong{\code{SHP} and \code{GTS}}:
 #'     \deqn{
@@ -1848,10 +1860,10 @@ calc_reg_growth <- function(
 #'             metabolic\_energy\_req\_fibre
 #'           }{REG}
 #'         \right)
-#'       }{diet_digestibility_fraction}
+#'       }{ration\_digestibility\_fraction}
 #'     }
 #'   }
-#'   \item \strong{Energy requirements expressed as metabolizable energy (\code{CML}, \code{PGS})}
+#'   \item \strong{Energy requirements expressed as metabolizable energy (\code{CML}, \code{PGS}, \code{CHK})}
 #'
 #'   For these species, the total daily requirement is computed as the
 #'   \strong{direct sum} of relevant energy components (MJ/head/day).
@@ -1876,6 +1888,14 @@ calc_reg_growth <- function(
 #'       metabolic\_energy\_req\_pregnancy +
 #'       metabolic\_energy\_req\_growth
 #'     }
+#'     \item \strong{\code{CHK}}:
+#'     \deqn{
+#'       metabolic\_energy\_req\_total =
+#'       metabolic\_energy\_req\_maintenance +
+#'       metabolic\_energy\_req\_activity +
+#'       metabolic\_energy\_req\_growth +
+#'       metabolic\_energy\_req\_egg\_deposition
+#'     }
 #'   }
 #' }
 #' 
@@ -1890,6 +1910,7 @@ calc_reg_growth <- function(
 #' \code{\link{calc_metabolic_energy_req_work}}
 #' \code{\link{calc_metabolic_energy_req_fibre}}
 #' \code{\link{calc_metabolic_energy_req_pregnancy}}
+#' \code{\link{calc_metabolic_energy_req_eggs}}
 #' \code{\link{calc_rem_maintenance}}
 #' \code{\link{calc_reg_growth}}
 #' \code{\link{calc_ration_intake}}
@@ -1979,10 +2000,11 @@ calc_total_metabolic_energy_req <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param metabolic_energy_req_total Numeric. Total daily energy requirement (MJ/head/day). 
 #' For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). 
-#' For CML and PGS the function returns the summed daily metabolizable energy requirement.
+#' For CML, PGS and CHK the function returns the summed daily metabolizable energy requirement.
 #' @param ration_gross_energy Numeric. Average gross energy content of the diet (MJ/kg DM).
 #' @param ration_metabolizable_energy Numeric. Average metabolizable energy content of the diet (MJ/kg DM).
 #'
@@ -2003,7 +2025,7 @@ calc_total_metabolic_energy_req <- function(
 #'   }
 #'
 #'   \item \strong{Energy expressed as metabolizable energy requirement - 
-#'   \code{CML}, \code{PGS}}:
+#'   \code{CML}, \code{PGS}, \code{CHK}}:
 #'
 #'   \deqn{
 #'     ration\_intake = \frac{metabolic\_energy\_req\_total}{ration\_metabolizable\_energy}

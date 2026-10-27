@@ -262,7 +262,11 @@ calc_fibre_production <- function(
 #'
 #' Calculates egg outputs for chickens over the assessment period.
 #'
-#' @param species_short Character. Code identifying the livestock species.
+#' @param species_short Character. Code identifying the livestock species. 
+#' Supported values include:
+#'   \itemize{
+#'     \item \code{CHK}: chickens
+#'   }
 #' @param cohort_short Character. Sex- and age-specific cohort code describing the production stage of the animals.
 #'     Supported values include:
 #'       \itemize{
