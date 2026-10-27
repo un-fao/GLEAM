@@ -69,8 +69,7 @@ test_that("calc_steady_state_structure converges and returns valid structure", {
       "herd_structure",
       "cohort_share",
       "growth_rate_herd",
-      "size_unscaled",
-      "herd_size_total_demographic"
+      "size_unscaled"
     )
   )
   expect_true(result$days_to_steady_state <= 5 * 365)

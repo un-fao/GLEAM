@@ -236,7 +236,6 @@ calc_transition_probabilities <- function(
 #'   \item{cohort_share}{Named numeric vector of length 6. Final steady-state share of 6 grouped sex-age cohorts  (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}, where `FJ = FB + FJ` and `MJ = MB + MJ`) (fraction). Shares should sum to 1.}
 #'   \item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction)}
 #'   \item{size_unscaled}{Named numeric vector of length 6. Final steady-state population size by grouped demographic sex-age cohort before rescaling to the observed herd total (heads).}
-#'   \item{herd_size_total_demographic}{Numeric. Total number of animals remaining in the demographic component after the steady-state simulation (heads).}
 #' }
 #'
 #' This function is part of the [run_demographic_herd_module()].
@@ -447,8 +446,6 @@ calc_steady_state_structure <- function(
   
   names(xend_grouped) <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
   
-  herd_size_total_demographic <- sum(xend_grouped, na.rm = TRUE)
-  
   # Compute condensed share (6 classes: juveniles = birth + juvenile)
   share <- c(
     structure["FB"] + structure["FJ"],
@@ -467,8 +464,7 @@ calc_steady_state_structure <- function(
       herd_structure = structure,
       cohort_share = share,
       growth_rate_herd = growth_rate_herd,
-      size_unscaled = xend_grouped,
-      herd_size_total_demographic = herd_size_total_demographic
+      size_unscaled = xend_grouped
     )
   )
 }
