@@ -252,7 +252,7 @@ test_that("run_nondemographic_herd_module works without cohort_duration_days col
   )
 })
 
-test_that("run_nondemographic_herd_module drops zero-stock non-demo rows", {
+test_that("run_nondemographic_herd_module drops zero-stock rows without phase 2 or rest", {
   cohort_level_data <- data.table::data.table(
     herd_id = c(1L, 1L),
     cohort_short = c("FN", "MN"),
@@ -264,7 +264,7 @@ test_that("run_nondemographic_herd_module drops zero-stock non-demo rows", {
     herd_id = 1L,
     cohort_stock_fem_annual_nondemo = 0,
     cohort_stock_mal_annual_nondemo = 100,
-    rest_between_nondemo_cycles_duration = 20,
+    rest_between_nondemo_cycles_duration = 0,
     phase1_nondemo_fem_duration_days = 20,
     phase2_nondemo_fem_duration_days = 0,
     phase1_nondemo_mal_duration_days = 20,

@@ -1,7 +1,8 @@
 #' Validate inputs for run_nondemographic_herd_module
 #'
 #' Validates that cohort_level_data and herd_level_data have the correct structure,
-#' required columns, and proper relationships between them.
+#' required columns, and proper relationships between them. Checks effective
+#' phase 1 durations against their configured range before simulation starts.
 #'
 #' @param cohort_level_data data.table. Non-demographic cohort-level data.
 #' @param herd_level_data data.table. Herd-level data with one row per herd.
@@ -102,4 +103,31 @@ validate_run_nondemographic_herd_module_inputs <- function(
     "cohort_level_data",
     "herd_level_data"
   )
+
+  # Resolve phase 1 durations with the same overrides used by the module.
+  phase1_rows <- cohort_level_data[nondemo_productive_phase_id == 1]
+  phase1_herd_rows <- herd_level_data[phase1_rows, on = "herd_id"]
+  phase1_nondemo_duration <- assign_nondemographic_phase_durations(
+    cohort_short = phase1_rows$cohort_short,
+    nondemo_productive_phase_id = phase1_rows$nondemo_productive_phase_id,
+    cohort_duration_days = if ("cohort_duration_days" %in% names(phase1_rows)) {
+      phase1_rows$cohort_duration_days
+    } else {
+      NA_real_
+    },
+    phase1_nondemo_fem_duration_days = if (has_all_herd_phase_durations) {
+      as.numeric(phase1_herd_rows$phase1_nondemo_fem_duration_days)
+    } else {
+      NA_real_
+    },
+    phase1_nondemo_mal_duration_days = if (has_all_herd_phase_durations) {
+      as.numeric(phase1_herd_rows$phase1_nondemo_mal_duration_days)
+    } else {
+      NA_real_
+    }
+  )
+  names(phase1_nondemo_duration) <- paste(
+    phase1_rows$herd_id, phase1_rows$cohort_short, sep = "/"
+  )
+  validate_param_range(phase1_nondemo_duration)
 }
