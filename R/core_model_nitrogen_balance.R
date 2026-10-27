@@ -94,8 +94,8 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.
 #' @param cohort_stock_size Numeric. Average cohort stock size (heads). Used for
 #'   \code{CHK} egg-producing cohorts.
-#' @param egg_output_human_consumption Numeric. Annual egg output for human
-#'   consumption (eggs/year). Used for \code{CHK} egg-producing cohorts.
+#' @param egg_output_human_consumption Numeric. Annual human-consumption eggs
+#'   allocated to this cohort (eggs/year). Used for \code{CHK} food-egg-producing cohorts.
 #' @param egg_average_weight Numeric. Average egg weight (kg/egg). Used for
 #'   \code{CHK} egg-producing cohorts.
 #' @param nondemo_productive_phase_id Numeric. Optional productive phase
@@ -173,9 +173,9 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #'
 #' \strong{For CHK}:
 #'
-#' Nitrogen retention is calculated as the sum of a growth component and, for
-#' cohorts flagged with \code{is_egg_producing = TRUE}, an egg-deposition
-#' component:
+#' Nitrogen retention is calculated as the sum of growth and egg deposition.
+#' Food eggs are included for cohorts flagged with \code{is_egg_producing = TRUE}.
+#' Reproductive eggs are included for \code{FA} regardless of that flag:
 #'
 #' \deqn{nitrogen\_retention = growth\_component + egg\_component}
 #'
@@ -187,17 +187,20 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #'
 #' \deqn{
 #' egg\_component =
-#' \left(
-#' \frac{egg\_output\_human\_consumption}{365 \times cohort\_stock\_size} +
-#' \frac{parturition\_rate}{365}
-#' \right) \times egg\_average\_weight \times 0.02
+#' (food\_eggs\_head\_day + reproductive\_eggs\_head\_day)
+#' \times egg\_average\_weight \times 0.02
 #' }
+#' The run-level module allocates herd food eggs among flagged \code{FA} and
+#' \code{FN} phase 2 cohorts by average stock. Food eggs per head per day are
+#' allocated annual food eggs divided by \code{365 * cohort_stock_size}.
+#' Reproductive eggs per head per day are \code{parturition_rate / 365} for
+#' \code{FA}, and zero for \code{FN} and other cohorts.
 #'
 #' The coefficient 0.032 represents nitrogen retained in live-weight gain
 #' (kg N/kg live weight), following Lessire (2004). The coefficient 0.02
 #' represents nitrogen content of egg mass (kg N/kg egg mass), based on the egg
 #' protein composition summarized by Caffa et al. (2025). As implemented in the
-#' poultry pathway, the egg component is activated by the explicit cohort-level
+#' poultry pathway, the food-egg component is activated by the cohort-level
 #' \code{is_egg_producing} flag. Validation restricts this flag to demographic
 #' laying hens (\code{FA}) and to non-demographic \code{FN} phase 2 when
 #' intensive layers are modeled outside the demographic structure.
@@ -304,14 +307,10 @@ calc_nitrogen_retention <- function(
       0
     }
 
-    egg_comp <- if (isTRUE(is_egg_producing)) {
-      human_consumption_eggs_head_day <- egg_output_human_consumption / 365 / cohort_stock_size
-      reproductive_eggs_head_day <- parturition_rate / 365
-      egg_mass_day <- (human_consumption_eggs_head_day + reproductive_eggs_head_day) * egg_average_weight
-      egg_mass_day * egg_n
-    } else {
-      0
-    }
+    egg_comp <- calc_chicken_egg_mass_head_day(
+      cohort_short, cohort_stock_size, egg_output_human_consumption,
+      egg_average_weight, parturition_rate, is_egg_producing
+    ) * egg_n
 
     nitrogen_retention <- growth_comp + egg_comp
 

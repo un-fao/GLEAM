@@ -94,6 +94,10 @@ Calculates cohort-level daily nitrogen intake, retention, and excretion (kg N/he
 by applying IPCC Tier 2 approach.
 }
 \details{
+Food eggs are allocated among flagged \code{FA} and \code{FN} phase 2
+cohorts by average stock. Reproductive eggs use \code{parturition_rate}
+for \code{FA} only, including when its food-egg flag is false.
+
 This function represents the intermediate module of the Global Livestock Environmental
 Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to compute the nitrogen balance.
 The function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},

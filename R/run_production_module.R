@@ -120,6 +120,9 @@
 #' }
 #'
 #' For species/cohorts where milk or fibre production is not applicable, outputs are returned as zero.
+#' Food eggs are split among flagged \code{FA} and \code{FN} phase 2 cohorts
+#' in proportion to \code{cohort_stock_size}. The herd food-egg total is counted
+#' once. Reproductive eggs from \code{FA} are excluded from food production.
 #'
 #' @seealso
 #' \code{\link{run_gleam}},
@@ -172,6 +175,7 @@ run_production_module <- function(
 
   # --- Step 2: Create working copy --------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
+  food_eggs_by_cohort <- allocate_egg_output_human_consumption(cohort_level_data, herd_level_data)
 
   # --- Step 3: Compute milk production outputs --------------------------------
   milk_output_cols <- c(
@@ -212,7 +216,7 @@ run_production_module <- function(
       cohort_short = cohort_short,
       nondemo_productive_phase_id = nondemo_productive_phase_id,
       is_egg_producing = is_egg_producing,
-      egg_output_human_consumption = herd_level_data[.SD, on = "herd_id", x.egg_output_human_consumption],
+      egg_output_human_consumption = food_eggs_by_cohort[.I],
       egg_average_weight = herd_level_data[.SD, on = "herd_id", x.egg_average_weight],
       simulation_duration = simulation_duration
     ),

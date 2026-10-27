@@ -73,21 +73,11 @@ validate_nitrogen_retention_inputs <- function(
     }
   } else if (species_short == "CHK") {
     validate_scalar_numeric(daily_weight_gain)
-    if (isTRUE(is_egg_producing)) {
-      validate_scalar_numeric(cohort_stock_size)
-      validate_positive_numeric(egg_average_weight)
-      validate_scalar_numeric(egg_output_human_consumption)
-      validate_scalar_numeric(parturition_rate)
-      if (cohort_stock_size < 0) {
-        cli::cli_abort("{.arg cohort_stock_size} must be greater than or equal to 0.")
-      }
-      if (egg_output_human_consumption < 0) {
-        cli::cli_abort("{.arg egg_output_human_consumption} must be greater than or equal to 0.")
-      }
-      if (parturition_rate < 0) {
-        cli::cli_abort("{.arg parturition_rate} must be greater than or equal to 0.")
-      }
-    }
+    validate_egg_inputs(
+      species_short, cohort_short, cohort_stock_size,
+      egg_output_human_consumption, egg_average_weight, parturition_rate,
+      nondemo_productive_phase_id, is_egg_producing
+    )
   }
 
   # Birth weight must be strictly below weaning weight when both are provided

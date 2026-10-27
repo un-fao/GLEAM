@@ -47,6 +47,10 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
     )
   }
   check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
+  if (any(cohort_level_data$cohort_short == "FA" &
+          cohort_level_data$herd_id %in% herd_level_data$herd_id[herd_level_data$species_short == "CHK"])) {
+    required_herd_cols <- c(required_herd_cols, "egg_average_weight")
+  }
   check_required_columns(herd_level_data, unique(required_herd_cols), "herd_level_data")
 
   # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------

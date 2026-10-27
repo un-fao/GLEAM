@@ -31,7 +31,8 @@ Supported values include:
 \item \code{MN}: non-demographic males
 }}
 
-\item{egg_output_human_consumption}{Numeric. Annual egg output for human consumption (eggs/year).}
+\item{egg_output_human_consumption}{Numeric. Annual human-consumption eggs
+allocated to this cohort (eggs/year).}
 
 \item{egg_average_weight}{Numeric. Average egg weight (kg/egg).}
 
@@ -57,6 +58,9 @@ Egg production is computed only for cohorts flagged with
 \code{is_egg_producing = TRUE}. Validation restricts this flag to
 demographic laying hens (\code{FA}) and to non-demographic \code{FN} phase 2
 when intensive layers are represented in the non-demographic pathway.
+The run-level module splits the herd food-egg total among flagged \code{FA}
+and \code{FN} phase 2 cohorts in proportion to their average stock.
+Reproductive eggs from \code{FA} are excluded from these food outputs.
 
 The following equations are applied:
 

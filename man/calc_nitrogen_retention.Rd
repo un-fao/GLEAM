@@ -85,8 +85,8 @@ a year divided by the number of adult females potentially able to give birth dur
 \item{cohort_stock_size}{Numeric. Average cohort stock size (heads). Used for
 \code{CHK} egg-producing cohorts.}
 
-\item{egg_output_human_consumption}{Numeric. Annual egg output for human
-consumption (eggs/year). Used for \code{CHK} egg-producing cohorts.}
+\item{egg_output_human_consumption}{Numeric. Annual human-consumption eggs
+allocated to this cohort (eggs/year). Used for \code{CHK} food-egg-producing cohorts.}
 
 \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for
 \code{CHK} egg-producing cohorts.}
@@ -173,9 +173,9 @@ content per unit of live weight gain, following IPCC (2019).
 
 \strong{For CHK}:
 
-Nitrogen retention is calculated as the sum of a growth component and, for
-cohorts flagged with \code{is_egg_producing = TRUE}, an egg-deposition
-component:
+Nitrogen retention is calculated as the sum of growth and egg deposition.
+Food eggs are included for cohorts flagged with \code{is_egg_producing = TRUE}.
+Reproductive eggs are included for \code{FA} regardless of that flag:
 
 \deqn{nitrogen\_retention = growth\_component + egg\_component}
 
@@ -187,17 +187,20 @@ and:
 
 \deqn{
 egg\_component =
-\left(
-\frac{egg\_output\_human\_consumption}{365 \times cohort\_stock\_size} +
-\frac{parturition\_rate}{365}
-\right) \times egg\_average\_weight \times 0.02
+(food\_eggs\_head\_day + reproductive\_eggs\_head\_day)
+\times egg\_average\_weight \times 0.02
 }
+The run-level module allocates herd food eggs among flagged \code{FA} and
+\code{FN} phase 2 cohorts by average stock. Food eggs per head per day are
+allocated annual food eggs divided by \code{365 * cohort_stock_size}.
+Reproductive eggs per head per day are \code{parturition_rate / 365} for
+\code{FA}, and zero for \code{FN} and other cohorts.
 
 The coefficient 0.032 represents nitrogen retained in live-weight gain
 (kg N/kg live weight), following Lessire (2004). The coefficient 0.02
 represents nitrogen content of egg mass (kg N/kg egg mass), based on the egg
 protein composition summarized by Caffa et al. (2025). As implemented in the
-poultry pathway, the egg component is activated by the explicit cohort-level
+poultry pathway, the food-egg component is activated by the cohort-level
 \code{is_egg_producing} flag. Validation restricts this flag to demographic
 laying hens (\code{FA}) and to non-demographic \code{FN} phase 2 when
 intensive layers are modeled outside the demographic structure.

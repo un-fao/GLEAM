@@ -345,7 +345,7 @@ test_that("calc_metabolic_energy_req_eggs uses explicit egg-producing FN flag", 
     is_egg_producing = TRUE
   )
 
-  egg_mass <- ((36500 / 365 / 100) + (120 / 365)) * 0.06
+  egg_mass <- (36500 / 365 / 100) * 0.06
   expect_equal(result, egg_mass * 10.04)
   expect_equal(
     calc_metabolic_energy_req_eggs(
@@ -359,6 +359,27 @@ test_that("calc_metabolic_energy_req_eggs uses explicit egg-producing FN flag", 
     ),
     0
   )
+})
+
+test_that("FA breeding eggs do not depend on the food flag and zero food stock stays finite", {
+  reproduction <- calc_metabolic_energy_req_eggs(
+    "CHK", "FA", egg_average_weight = 0.06, parturition_rate = 20,
+    is_egg_producing = FALSE
+  )
+  expect_equal(reproduction, 20 / 365 * 0.06 * 10.04)
+  expect_equal(calc_metabolic_energy_req_eggs(
+    "CHK", "FA", parturition_rate = 0, is_egg_producing = FALSE
+  ), 0)
+  expect_equal(calc_metabolic_energy_req_eggs(
+    "CHK", "FN", cohort_stock_size = 0, egg_output_human_consumption = 0,
+    egg_average_weight = 0.06, nondemo_productive_phase_id = 2,
+    is_egg_producing = TRUE
+  ), 0)
+  expect_error(calc_metabolic_energy_req_eggs(
+    "CHK", "FN", cohort_stock_size = 0, egg_output_human_consumption = 10,
+    egg_average_weight = 0.06, nondemo_productive_phase_id = 2,
+    is_egg_producing = TRUE
+  ), "cohort_stock_size")
 })
 
 test_that("calc_metabolic_energy_req_eggs validates egg-producing flag placement", {

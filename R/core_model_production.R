@@ -258,6 +258,60 @@ calc_fibre_production <- function(
   return(fibre_production_cohort)
 }
 
+#' Allocate annual flock food eggs by laying population
+#' @noRd
+allocate_egg_output_human_consumption <- function(cohort_level_data, herd_level_data) {
+  eggs <- numeric(nrow(cohort_level_data))
+  phase <- cohort_level_data$nondemo_productive_phase_id
+  if (is.null(phase)) phase <- rep(NA_real_, nrow(cohort_level_data))
+
+  for (herd_row in which(herd_level_data$species_short == "CHK")) {
+    rows <- which(
+      cohort_level_data$herd_id == herd_level_data$herd_id[herd_row] &
+        cohort_level_data$is_egg_producing %in% TRUE
+    )
+    if (length(rows) == 0L) next
+    for (row in rows) {
+      validate_is_egg_producing_flag(
+        "CHK", cohort_level_data$cohort_short[row], TRUE, phase[row]
+      )
+    }
+    stock <- cohort_level_data$cohort_stock_size[rows]
+    validate_param_range(stock, "cohort_stock_size")
+    flock_eggs <- herd_level_data$egg_output_human_consumption[herd_row]
+    validate_scalar_numeric(flock_eggs, "egg_output_human_consumption")
+    if (flock_eggs < 0) {
+      cli::cli_abort("{.arg egg_output_human_consumption} must be greater than or equal to 0.")
+    }
+    total_stock <- sum(stock)
+    if (total_stock == 0 && flock_eggs > 0) {
+      cli::cli_abort(
+        "Positive {.arg egg_output_human_consumption} requires positive
+        {.arg cohort_stock_size} in food-egg-producing cohorts for herd
+        {.val {herd_level_data$herd_id[herd_row]}}."
+      )
+    }
+    if (total_stock > 0) eggs[rows] <- flock_eggs * stock / total_stock
+  }
+  eggs
+}
+
+#' Calculate daily egg mass per chicken, separating food and reproduction
+#' @noRd
+calc_chicken_egg_mass_head_day <- function(
+    cohort_short, cohort_stock_size, egg_output_human_consumption,
+    egg_average_weight, parturition_rate, is_egg_producing
+) {
+  food_eggs <- if (isTRUE(is_egg_producing) && cohort_stock_size > 0) {
+    egg_output_human_consumption / 365 / cohort_stock_size
+  } else {
+    0
+  }
+  reproductive_eggs <- if (cohort_short == "FA") parturition_rate / 365 else 0
+  if (food_eggs + reproductive_eggs == 0) return(0)
+  (food_eggs + reproductive_eggs) * egg_average_weight
+}
+
 #' Calculate egg production
 #'
 #' Calculates egg outputs for chickens over the assessment period.
@@ -279,7 +333,8 @@ calc_fibre_production <- function(
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
 #'         \item \code{MN}: non-demographic males
 #'       }
-#' @param egg_output_human_consumption Numeric. Annual egg output for human consumption (eggs/year).
+#' @param egg_output_human_consumption Numeric. Annual human-consumption eggs
+#'   allocated to this cohort (eggs/year).
 #' @param egg_average_weight Numeric. Average egg weight (kg/egg).
 #' @param simulation_duration Numeric. Length of the assessment period (days).
 #' @param egg_protein_fraction Numeric. Protein content of whole egg (kg protein/kg egg).
@@ -296,6 +351,9 @@ calc_fibre_production <- function(
 #' \code{is_egg_producing = TRUE}. Validation restricts this flag to
 #' demographic laying hens (\code{FA}) and to non-demographic \code{FN} phase 2
 #' when intensive layers are represented in the non-demographic pathway.
+#' The run-level module splits the herd food-egg total among flagged \code{FA}
+#' and \code{FN} phase 2 cohorts in proportion to their average stock.
+#' Reproductive eggs from \code{FA} are excluded from these food outputs.
 #'
 #' The following equations are applied:
 #'

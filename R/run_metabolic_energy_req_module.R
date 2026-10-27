@@ -100,6 +100,10 @@
 #'   }
 #'
 #' @details
+#' Food eggs are allocated among flagged \code{FA} and \code{FN} phase 2
+#' cohorts by average stock. Reproductive eggs use \code{parturition_rate}
+#' for \code{FA} only, including when its food-egg flag is false.
+#'
 #' This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
 #' uses \code{species_short} directly for all species-specific energy calculations,
 #' and computes IPCC Tier 2 energy partition components and derived feed intake metrics by cohort.
@@ -185,6 +189,7 @@ run_metabolic_energy_req_module <- function(
   # --- Step 2: Create working copies ------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
+  food_eggs_by_cohort <- allocate_egg_output_human_consumption(cohort_level_data, herd_level_data)
 
   # --- Step 3: Maintenance energy (MJ/day) ------------------------------------
   cohort_level_data[
@@ -295,7 +300,7 @@ run_metabolic_energy_req_module <- function(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       cohort_stock_size = cohort_stock_size,
-      egg_output_human_consumption = herd_level_data[.SD, on = "herd_id", x.egg_output_human_consumption],
+      egg_output_human_consumption = food_eggs_by_cohort[.I],
       egg_average_weight = herd_level_data[.SD, on = "herd_id", x.egg_average_weight],
       parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
       nondemo_productive_phase_id = nondemo_productive_phase_id,

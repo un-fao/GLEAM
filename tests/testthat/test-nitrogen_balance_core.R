@@ -131,9 +131,17 @@ test_that("retention for egg-producing chicken FN includes egg deposition", {
     is_egg_producing = TRUE
   )
 
-  egg_mass <- ((36500 / 365 / 100) + (120 / 365)) * 0.06
+  egg_mass <- (36500 / 365 / 100) * 0.06
   expected <- 0.01 * 0.032 + egg_mass * 0.02
   expect_equal(val, expected, tolerance = 1e-12)
+})
+
+test_that("FA retains nitrogen for reproductive eggs without producing food eggs", {
+  result <- calc_nitrogen_retention(
+    "CHK", "FA", daily_weight_gain = 0, parturition_rate = 20,
+    egg_average_weight = 0.06, is_egg_producing = FALSE
+  )
+  expect_equal(result, 20 / 365 * 0.06 * 0.02)
 })
 
 # ---- test calc_nitrogen_excretion ----

@@ -81,6 +81,10 @@
 #'   }
 #'
 #' @details
+#' Food eggs are allocated among flagged \code{FA} and \code{FN} phase 2
+#' cohorts by average stock. Reproductive eggs use \code{parturition_rate}
+#' for \code{FA} only, including when its food-egg flag is false.
+#'
 #' This function represents the intermediate module of the Global Livestock Environmental
 #' Assessment Model (GLEAM) computational pipeline [run_gleam()] to compute the nitrogen balance.
 #' The function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
@@ -142,6 +146,7 @@ run_nitrogen_balance_module <- function(
   # --- Step 2: Create working copies ------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
+  food_eggs_by_cohort <- allocate_egg_output_human_consumption(cohort_level_data, herd_level_data)
 
   # --- Step 3: Intake – N consumed per head/day -------------------------------
   cohort_level_data[
@@ -171,7 +176,7 @@ run_nitrogen_balance_module <- function(
       pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
       cohort_duration_days = cohort_duration_days,
       cohort_stock_size = cohort_stock_size,
-      egg_output_human_consumption = herd_level_data[.SD, on = "herd_id", x.egg_output_human_consumption],
+      egg_output_human_consumption = food_eggs_by_cohort[.I],
       egg_average_weight = herd_level_data[.SD, on = "herd_id", x.egg_average_weight],
       is_egg_producing = is_egg_producing
     ),

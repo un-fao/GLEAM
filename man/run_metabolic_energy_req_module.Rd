@@ -113,6 +113,10 @@ Calculates cohort-level daily energy requirements (MJ/head/day) and ration dry m
 by applying the IPCC Tier 2 energy partitioning functions.
 }
 \details{
+Food eggs are allocated among flagged \code{FA} and \code{FN} phase 2
+cohorts by average stock. Reproductive eggs use \code{parturition_rate}
+for \code{FA} only, including when its food-egg flag is false.
+
 This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
 uses \code{species_short} directly for all species-specific energy calculations,
 and computes IPCC Tier 2 energy partition components and derived feed intake metrics by cohort.

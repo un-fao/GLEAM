@@ -135,6 +135,9 @@ production outputs from livestock and performs the following calculation sequenc
 }
 
 For species/cohorts where milk or fibre production is not applicable, outputs are returned as zero.
+Food eggs are split among flagged \code{FA} and \code{FN} phase 2 cohorts
+in proportion to \code{cohort_stock_size}. The herd food-egg total is counted
+once. Reproductive eggs from \code{FA} are excluded from food production.
 }
 \examples{
 \donttest{

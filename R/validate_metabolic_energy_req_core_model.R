@@ -196,12 +196,21 @@ validate_egg_inputs <- function(
     nondemo_productive_phase_id = nondemo_productive_phase_id
   )
 
-  if (!isTRUE(is_egg_producing)) return()
-
-  validate_nonnegative_numeric(cohort_stock_size)
-  validate_positive_numeric(egg_average_weight)
-  validate_nonnegative_numeric(egg_output_human_consumption)
-  validate_nonnegative_numeric(parturition_rate)
+  if (species_short != "CHK") return()
+  if (cohort_short == "FA") {
+    validate_nonnegative_numeric(parturition_rate)
+    if (parturition_rate > 0) validate_positive_numeric(egg_average_weight)
+  }
+  if (isTRUE(is_egg_producing)) {
+    validate_nonnegative_numeric(cohort_stock_size)
+    validate_positive_numeric(egg_average_weight)
+    validate_nonnegative_numeric(egg_output_human_consumption)
+    if (cohort_stock_size == 0 && egg_output_human_consumption > 0) {
+      cli::cli_abort(
+        "Positive {.arg egg_output_human_consumption} requires positive {.arg cohort_stock_size}."
+      )
+    }
+  }
 }
 
 #' Validate inputs for calc_metabolic_energy_req_lactation
