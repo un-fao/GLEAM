@@ -514,6 +514,9 @@
 #' the cohort workflow and scaled to cohort and herd totals in the final
 #' aggregation step.
 #'
+#' Every cohort and productive phase must have a matching feed ration. The
+#' pipeline stops and lists any missing combinations before merging rations.
+#'
 #' \subsection{Pipeline sequence}{
 #' \enumerate{
 #'   \item If \code{has_herd_structure = FALSE}, generate herd structure with
@@ -814,10 +817,24 @@ run_gleam <- function(
     show_indicator = show_indicator
   )
 
+  ration_join_cols <- c("herd_id", "species_short", "cohort_short", "nondemo_productive_phase_id")
+  missing_rations <- gleam_chrt_data[
+    !feed_rations_summary, on = ration_join_cols, ration_join_cols, with = FALSE
+  ]
+  if (nrow(missing_rations) > 0L) {
+    missing_keys <- do.call(paste, c(missing_rations, sep = " / "))
+    cli::cli_abort(
+      "Missing feed rations for cohort rows
+      (herd_id / species_short / cohort_short / nondemo_productive_phase_id):
+      {.val {missing_keys}}. Supply rations for every cohort before running GLEAM."
+    )
+  }
+
   gleam_chrt_data <- merge(
     gleam_chrt_data,
     feed_rations_summary,
-    by = c("herd_id", "species_short", "cohort_short", "nondemo_productive_phase_id")
+    by = ration_join_cols,
+    all.x = TRUE
   )
 
   # --- Step 5: Run energy requirements and DMI --------------------------------

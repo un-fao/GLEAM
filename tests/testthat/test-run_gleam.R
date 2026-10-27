@@ -572,6 +572,66 @@ test_that("aggregation results_nitrogen is non-empty data.table", {
 })
 
 
+d_gleam_mixed_chickens <- lapply(d_gleam, function(data) {
+  if ("herd_id" %in% names(data)) data[herd_id %in% c(14, 15)] else data.table::copy(data)
+})
+d_gleam_mixed_chickens$herd <- data.table::fread(file.path(
+  run_gleam_examples_path, "master_hrd_lvl_mixed_data.csv"
+))[herd_id %in% c(14, 15)]
+
+test_that("run_gleam rejects missing demographic rations instead of dropping cohorts", {
+  missing_demographic <- d_gleam_mixed_chickens$feed_rations[
+    !cohort_short %in% demographic_cohorts
+  ]
+  error <- expect_error(
+    suppressMessages(run_gleam_no_structure(d_gleam_mixed_chickens,
+      feed_rations = missing_demographic
+    )),
+    "Missing feed rations"
+  )
+  expect_match(conditionMessage(error), "14 / CHK / FA / NA", fixed = TRUE)
+  expect_match(conditionMessage(error), "15 / CHK / MS / NA", fixed = TRUE)
+})
+
+test_that("run_gleam requires ration coverage for each non-demographic phase", {
+  missing_phase <- d_gleam_mixed_chickens$feed_rations[
+    !(herd_id == 14 & cohort_short == "FN" & nondemo_productive_phase_id == 2)
+  ]
+  for (has_structure in c(FALSE, TRUE)) {
+    error <- expect_error(
+      suppressMessages(run_gleam_default(d_gleam_mixed_chickens,
+        has_herd_structure = has_structure, feed_rations = missing_phase
+      )),
+      "Missing feed rations"
+    )
+    expect_match(conditionMessage(error), "14 / CHK / FN / 2", fixed = TRUE)
+  }
+})
+
+test_that("shipped mixed chicken examples retain every cohort and total herd stock", {
+  result <- suppressMessages(run_gleam_no_structure(d_gleam_mixed_chickens))
+  output <- result$cohort_level_results
+  key_cols <- c("herd_id", "species_short", "cohort_short", "nondemo_productive_phase_id")
+  actual_keys <- output[, ..key_cols]
+  expected_keys <- d_gleam_mixed_chickens$cohort_no_structure[, ..key_cols]
+  data.table::setorderv(actual_keys, key_cols)
+  data.table::setorderv(expected_keys, key_cols)
+  expect_equal(as.data.frame(actual_keys), as.data.frame(expected_keys))
+
+  for (id in c(14, 15)) {
+    expect_equal(
+      sum(output[herd_id == id, cohort_stock_size]),
+      d_gleam_mixed_chickens$herd[herd_id == id, herd_size_total]
+    )
+  }
+  expect_true(all(output$ration_intake > 0))
+  expect_true(all(output$ch4_manure_other > 0))
+  expect_equal(
+    sum(result$aggregation_results$results_feed[variable_name == "ration_intake", value_total]),
+    sum(output$ration_intake * output$cohort_stock_size) * 365
+  )
+})
+
 test_that("industrial chickens complete the non-demographic-only pipeline", {
   result <- suppressMessages(run_gleam_no_structure(d_gleam_chk_industrial))
   output <- result$cohort_level_results

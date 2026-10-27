@@ -547,6 +547,48 @@ herd_id	species_short	cohort_short	nondemo_productive_phase_id	feed_id	feed_name
 13	CHK	MS		F3	Wheat	0.3
 13	CHK	MS		F308	Bran of Wheat	0.08
 13	CHK	MS		F5	Maize (corn)	0.15
+14	CHK	FA		F11	Barley	0.14
+14	CHK	FA		F118	Peas, dry	0.03
+14	CHK	FA		F210	Cake of Soya beans	0.15
+14	CHK	FA		F214	Cake of Sunflower seed	0.15
+14	CHK	FA		F3	Wheat	0.3
+14	CHK	FA		F308	Bran of Wheat	0.08
+14	CHK	FA		F5	Maize (corn)	0.15
+14	CHK	FJ		F11	Barley	0.14
+14	CHK	FJ		F118	Peas, dry	0.03
+14	CHK	FJ		F210	Cake of Soya beans	0.15
+14	CHK	FJ		F214	Cake of Sunflower seed	0.15
+14	CHK	FJ		F3	Wheat	0.3
+14	CHK	FJ		F308	Bran of Wheat	0.08
+14	CHK	FJ		F5	Maize (corn)	0.15
+14	CHK	FS		F11	Barley	0.14
+14	CHK	FS		F118	Peas, dry	0.03
+14	CHK	FS		F210	Cake of Soya beans	0.15
+14	CHK	FS		F214	Cake of Sunflower seed	0.15
+14	CHK	FS		F3	Wheat	0.3
+14	CHK	FS		F308	Bran of Wheat	0.08
+14	CHK	FS		F5	Maize (corn)	0.15
+14	CHK	MA		F11	Barley	0.14
+14	CHK	MA		F118	Peas, dry	0.03
+14	CHK	MA		F210	Cake of Soya beans	0.15
+14	CHK	MA		F214	Cake of Sunflower seed	0.15
+14	CHK	MA		F3	Wheat	0.3
+14	CHK	MA		F308	Bran of Wheat	0.08
+14	CHK	MA		F5	Maize (corn)	0.15
+14	CHK	MJ		F11	Barley	0.14
+14	CHK	MJ		F118	Peas, dry	0.03
+14	CHK	MJ		F210	Cake of Soya beans	0.15
+14	CHK	MJ		F214	Cake of Sunflower seed	0.15
+14	CHK	MJ		F3	Wheat	0.3
+14	CHK	MJ		F308	Bran of Wheat	0.08
+14	CHK	MJ		F5	Maize (corn)	0.15
+14	CHK	MS		F11	Barley	0.14
+14	CHK	MS		F118	Peas, dry	0.03
+14	CHK	MS		F210	Cake of Soya beans	0.15
+14	CHK	MS		F214	Cake of Sunflower seed	0.15
+14	CHK	MS		F3	Wheat	0.3
+14	CHK	MS		F308	Bran of Wheat	0.08
+14	CHK	MS		F5	Maize (corn)	0.15
 14	CHK	FN	1	F5	Maize (corn)	0.45
 14	CHK	FN	1	F210	Cake of Soya beans	0.2
 14	CHK	FN	1	F214	Cake of Sunflower seed	0.1
@@ -560,6 +602,48 @@ herd_id	species_short	cohort_short	nondemo_productive_phase_id	feed_id	feed_name
 14	CHK	FN	2	F3	Wheat	0.19
 14	CHK	FN	2	F308	Bran of Wheat	0.06
 14	CHK	FN	2	F5	Maize (corn)	0.45
+15	CHK	FA		F11	Barley	0.14
+15	CHK	FA		F118	Peas, dry	0.03
+15	CHK	FA		F210	Cake of Soya beans	0.15
+15	CHK	FA		F214	Cake of Sunflower seed	0.15
+15	CHK	FA		F3	Wheat	0.3
+15	CHK	FA		F308	Bran of Wheat	0.08
+15	CHK	FA		F5	Maize (corn)	0.15
+15	CHK	FJ		F11	Barley	0.14
+15	CHK	FJ		F118	Peas, dry	0.03
+15	CHK	FJ		F210	Cake of Soya beans	0.15
+15	CHK	FJ		F214	Cake of Sunflower seed	0.15
+15	CHK	FJ		F3	Wheat	0.3
+15	CHK	FJ		F308	Bran of Wheat	0.08
+15	CHK	FJ		F5	Maize (corn)	0.15
+15	CHK	FS		F11	Barley	0.14
+15	CHK	FS		F118	Peas, dry	0.03
+15	CHK	FS		F210	Cake of Soya beans	0.15
+15	CHK	FS		F214	Cake of Sunflower seed	0.15
+15	CHK	FS		F3	Wheat	0.3
+15	CHK	FS		F308	Bran of Wheat	0.08
+15	CHK	FS		F5	Maize (corn)	0.15
+15	CHK	MA		F11	Barley	0.14
+15	CHK	MA		F118	Peas, dry	0.03
+15	CHK	MA		F210	Cake of Soya beans	0.15
+15	CHK	MA		F214	Cake of Sunflower seed	0.15
+15	CHK	MA		F3	Wheat	0.3
+15	CHK	MA		F308	Bran of Wheat	0.08
+15	CHK	MA		F5	Maize (corn)	0.15
+15	CHK	MJ		F11	Barley	0.14
+15	CHK	MJ		F118	Peas, dry	0.03
+15	CHK	MJ		F210	Cake of Soya beans	0.15
+15	CHK	MJ		F214	Cake of Sunflower seed	0.15
+15	CHK	MJ		F3	Wheat	0.3
+15	CHK	MJ		F308	Bran of Wheat	0.08
+15	CHK	MJ		F5	Maize (corn)	0.15
+15	CHK	MS		F11	Barley	0.14
+15	CHK	MS		F118	Peas, dry	0.03
+15	CHK	MS		F210	Cake of Soya beans	0.15
+15	CHK	MS		F214	Cake of Sunflower seed	0.15
+15	CHK	MS		F3	Wheat	0.3
+15	CHK	MS		F308	Bran of Wheat	0.08
+15	CHK	MS		F5	Maize (corn)	0.15
 15	CHK	FN	1	F5	Maize (corn)	0.34
 15	CHK	FN	1	F210	Cake of Soya beans	0.24
 15	CHK	FN	1	F7	Rice	0.1

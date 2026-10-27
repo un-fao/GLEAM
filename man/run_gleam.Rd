@@ -537,6 +537,9 @@ The assessment period is specified in days via \code{simulation_duration}
 the cohort workflow and scaled to cohort and herd totals in the final
 aggregation step.
 
+Every cohort and productive phase must have a matching feed ration. The
+pipeline stops and lists any missing combinations before merging rations.
+
 \subsection{Pipeline sequence}{
 \enumerate{
 \item If \code{has_herd_structure = FALSE}, generate herd structure with
