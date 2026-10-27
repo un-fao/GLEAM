@@ -49,6 +49,13 @@ validate_run_all_herd_module_inputs <- function(
     )
   }
 
+  if (!isTRUE(run_nondemographic) && nrow(cohort_level_data_nondemographic) > 0L) {
+    cli::cli_warn(
+      "Non-demographic rows ({.val FN}/{.val MN}) in {.arg cohort_level_data}
+      are ignored because {.arg run_nondemographic = FALSE}."
+    )
+  }
+
   if (isTRUE(run_nondemographic) && nrow(cohort_level_data_nondemographic) == 0L) {
     cli::cli_warn(
       "run_nondemographic=TRUE but no non-demographic rows were found in cohort_level_data."
