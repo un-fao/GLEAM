@@ -65,6 +65,8 @@
 #'     \item{`nondemo_productive_phase_id`}{Numeric. Productive phase identifier within a cycle. \code{1} is required and \code{2} is optional.}
 #'     \item{`death_rate`}{Numeric. Fraction of deaths occurring during the productive phase (fraction).}
 #'   }
+#'   \code{cohort_duration_days} is not required for \code{FN} and \code{MN}
+#'   when phase durations are supplied in the herd table.
 #' @param herd_level_data A `data.table` with one row per herd, and the following mandatory columns:
 #'   \describe{
 #'     \item{`herd_id`}{Character. Unique identifier for the herd.}
@@ -87,7 +89,12 @@
 #'       \eqn{\times} non-demographic cohort block \eqn{\times} productive phase,
 #'       containing the original `cohort_level_data` columns plus:
 #'       \describe{
-#'         \item{`cohort_duration_days`}{Numeric. Productive phase duration used in the simulation (days). If not supplied in the cohort table, this is filled from herd-level phase-duration inputs.}
+#'         \item{`cohort_duration_days`}{Numeric. Productive phase duration used
+#'           in the simulation (days). For non-demographic cohorts (\code{FN}
+#'           and \code{MN}), \code{cohort_duration_days} is not required when
+#'           phase durations are supplied in the herd table. The code fills it
+#'           from the herd values, which override any cohort values. If a herd
+#'           value is missing, the cohort value is used instead.}
 #'         \item{`cohort_stock_size_unscaled`}{Numeric. Average population size by cohort block and productive phase before any later herd-level harmonization (# heads).}
 #'         \item{`partial_nondemo_phase_duration`}{Numeric. Duration of the terminal partial productive phase occurring within the fixed 365-day simulation horizon (days).}
 #'         \item{`offtake_heads_unscaled`}{Numeric. Total number of animals leaving the cohort block over the fixed 365-day simulation horizon (# heads).}
