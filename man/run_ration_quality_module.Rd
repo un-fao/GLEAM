@@ -21,6 +21,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 \item{cohort_short}{
 Character. Sex- and age-specific cohort code describing the production stage
@@ -65,6 +66,8 @@ energy losses in urine and gaseous products of digestion (MJ/kg DM).}
 \item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy content
 of a feed component for pigs, representing digestible energy minus energy losses
 in urine and gaseous products of digestion (MJ/kg DM).}
+\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy
+content of a feed component for chickens (MJ/kg DM).}
 \item{feed_nitrogen_content}{Numeric. Nitrogen content of a feed component
 (kg N/kg DM).}
 \item{feed_urinary_energy_ruminant}{Numeric. Fraction of feed's gross energy
@@ -93,7 +96,8 @@ data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
 content of the diet (MJ/kg DM).}
 \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed
-ration, expressed as ratio of digestible to gross energy content (fraction).}
+ration, expressed as ratio of digestible (or metabolizable, for chickens) to
+gross energy content (fraction).}
 \item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that
 is excreted in urine (fraction).}
 \item{ration_ash}{Numeric. Average ash content of feed, calculated as a fraction
@@ -113,6 +117,9 @@ quality of the feed ration.
 This function joins \code{rations_share} with \code{feed_params} by \code{feed_id},
 uses \code{species_short} directly, and computes ration-weighted nutritional
 metrics by cohort.
+For chickens, digestibility is calculated using chicken metabolizable energy
+divided by gross energy. Urinary energy is set to zero because these losses are
+already included in metabolizable energy.
 
 The following calculation sequence is applied:
 \enumerate{

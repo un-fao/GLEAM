@@ -512,7 +512,13 @@ herd_id	species_short	feed_name	feed_id	cohort_short	feed_ration_fraction	nondem
 13	CHK	Wheat	F3	FA	0.3	
 13	CHK	Bran of Wheat	F308	FA	0.08	
 13	CHK	Maize (corn)	F5	FA	0.15	
-13	CHK	Raw milk of pig	F345	FJ	1	
+13	CHK	Barley	F11	FJ	0.14	NA
+13	CHK	Peas, dry	F118	FJ	0.03	NA
+13	CHK	Cake of Soya beans	F210	FJ	0.15	NA
+13	CHK	Cake of Sunflower seed	F214	FJ	0.15	NA
+13	CHK	Wheat	F3	FJ	0.3	NA
+13	CHK	Bran of Wheat	F308	FJ	0.08	NA
+13	CHK	Maize (corn)	F5	FJ	0.15	NA
 13	CHK	Barley	F11	FS	0.14	
 13	CHK	Peas, dry	F118	FS	0.03	
 13	CHK	Cake of Soya beans	F210	FS	0.15	
@@ -527,7 +533,13 @@ herd_id	species_short	feed_name	feed_id	cohort_short	feed_ration_fraction	nondem
 13	CHK	Wheat	F3	MA	0.3	
 13	CHK	Bran of Wheat	F308	MA	0.08	
 13	CHK	Maize (corn)	F5	MA	0.15	
-13	CHK	Raw milk of pig	F345	MJ	1	
+13	CHK	Barley	F11	MJ	0.14	NA
+13	CHK	Peas, dry	F118	MJ	0.03	NA
+13	CHK	Cake of Soya beans	F210	MJ	0.15	NA
+13	CHK	Cake of Sunflower seed	F214	MJ	0.15	NA
+13	CHK	Wheat	F3	MJ	0.3	NA
+13	CHK	Bran of Wheat	F308	MJ	0.08	NA
+13	CHK	Maize (corn)	F5	MJ	0.15	NA
 13	CHK	Barley	F11	MS	0.14	
 13	CHK	Peas, dry	F118	MS	0.03	
 13	CHK	Cake of Soya beans	F210	MS	0.15	

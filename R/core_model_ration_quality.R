@@ -11,6 +11,9 @@
 #' @param feed_gross_energy Numeric. Gross energy content of a feed component,
 #'   representing the total chemical energy released upon complete combustion of
 #'   the feed (MJ/kg DM).
+#' @param feed_metabolizable_energy_chicken Numeric. Metabolizable energy content
+#'   of a feed component for chickens (MJ/kg DM). Defaults to \code{NA_real_};
+#'   missing values produce a zero chicken digestibility fraction.
 #'
 #' @return List with elements:
 #'   \describe{
@@ -22,6 +25,10 @@
 #'       Numeric. Digestibility of a feed component for pigs, expressed as the ratio of
 #'       digestible energy to gross energy content (fraction).
 #'     }
+#'     \item{feed_digestibility_fraction_chicken}{
+#'       Numeric. Digestibility of a feed component for chickens, expressed as the ratio
+#'       of metabolizable energy to gross energy content (fraction).
+#'     }
 #'   }
 #'   
 #' @details
@@ -29,7 +36,8 @@
 #' \deqn{feed\_digestibility\_fraction = usable\_energy / feed\_gross\_energy}
 #'
 #' For ruminants and pigs, usable energy is represented by \code{digestible_energy} (DE),
-#' which accounts for fecal energy losses.
+#' which accounts for fecal energy losses. For chickens, \code{metabolizable_energy}
+#' (ME) is used because urinary and fecal losses are excreted together.
 #'
 #' This function is part of the [run_ration_quality_module()].
 #' 
@@ -40,12 +48,14 @@
 calc_feed_digestibility_fraction <- function(
     feed_digestible_energy_ruminant,
     feed_digestible_energy_pigs,
-    feed_gross_energy
+    feed_gross_energy,
+    feed_metabolizable_energy_chicken = NA_real_
 ) {
   validate_feed_digestibility_inputs(
     feed_digestible_energy_ruminant,
     feed_digestible_energy_pigs,
-    feed_gross_energy
+    feed_gross_energy,
+    feed_metabolizable_energy_chicken
   )
 
   # Ratios are unitless and vectorized by default
@@ -60,11 +70,17 @@ calc_feed_digestibility_fraction <- function(
     0,
     feed_digestible_energy_pigs / feed_gross_energy
   )
+  feed_digestibility_fraction_chicken <- ifelse(
+    is.na(feed_metabolizable_energy_chicken),
+    0,
+    feed_metabolizable_energy_chicken / feed_gross_energy
+  )
 
   return(
     list(
       feed_digestibility_fraction_ruminant = feed_digestibility_fraction_ruminant,
-      feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs
+      feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs,
+      feed_digestibility_fraction_chicken = feed_digestibility_fraction_chicken
     )
   )
 }
@@ -83,6 +99,7 @@ calc_feed_digestibility_fraction <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
 #'   total ration, expressed as its fraction of diet dry matter intake (fraction). Within
@@ -93,6 +110,9 @@ calc_feed_digestibility_fraction <- function(
 #' @param feed_digestibility_fraction_pigs Numeric. Digestibility of a feed component
 #'   for pigs, expressed as the ratio of digestible energy to gross energy content
 #'   (fraction).
+#' @param feed_digestibility_fraction_chicken Numeric. Digestibility of a feed
+#'   component for chickens, expressed as the ratio of metabolizable energy to gross
+#'   energy content (fraction).
 #'
 #' @return Numeric. Contribution of the feed component to total diet digestibility (fraction).
 #'
@@ -101,6 +121,8 @@ calc_feed_digestibility_fraction <- function(
 #' \itemize{
 #'   \item Ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}):
 #'     \code{feed_ration_fraction * feed_digestibility_fraction_ruminant}
+#'   \item Chickens (\code{CHK}):
+#'     \code{feed_ration_fraction * feed_digestibility_fraction_chicken}
 #'   \item Pigs (\code{PGS}):
 #'     \code{feed_ration_fraction * feed_digestibility_fraction_pigs}
 #' }
@@ -115,18 +137,22 @@ calc_ration_digestibility <- function(
     species_short,
     feed_ration_fraction,
     feed_digestibility_fraction_ruminant = NA_real_,
-    feed_digestibility_fraction_pigs = NA_real_
+    feed_digestibility_fraction_pigs = NA_real_,
+    feed_digestibility_fraction_chicken = NA_real_
 ) {
   validate_diet_digestibility_inputs(
     species_short,
     feed_ration_fraction,
     feed_digestibility_fraction_ruminant,
-    feed_digestibility_fraction_pigs
+    feed_digestibility_fraction_pigs,
+    feed_digestibility_fraction_chicken
   )
 
   # Apply the species-specific digestibility coefficient
   if (species_short %in% gleam_species_milk_producers) {
     ration_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_ruminant
+  } else if (species_short == "CHK") {
+    ration_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_chicken
   } else {
     ration_digestibility_fraction <- feed_ration_fraction * feed_digestibility_fraction_pigs
   }
@@ -148,6 +174,7 @@ calc_ration_digestibility <- function(
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
 #'   total ration, expressed as its fraction of diet dry matter intake (fraction). Within
@@ -158,6 +185,8 @@ calc_ration_digestibility <- function(
 #' @param feed_metabolizable_energy_pigs Numeric. Metabolizable energy content of a
 #'   feed component for pigs, representing digestible energy minus energy losses in
 #'   urine and gaseous products of digestion (MJ/kg DM).
+#' @param feed_metabolizable_energy_chicken Numeric. Metabolizable energy content
+#'   of a feed component for chickens (MJ/kg DM).
 #'
 #' @return Numeric. Contribution of the feed component to total diet metabolizable energy content (MJ/kg DM).
 #'
@@ -166,6 +195,8 @@ calc_ration_digestibility <- function(
 #' \itemize{
 #'   \item Ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}):
 #'     \code{feed_ration_fraction * feed_metabolizable_energy_ruminant}
+#'   \item Chickens (\code{CHK}):
+#'     \code{feed_ration_fraction * feed_metabolizable_energy_chicken}
 #'   \item Pigs (\code{PGS}):
 #'     \code{feed_ration_fraction * feed_metabolizable_energy_pigs}
 #' }
@@ -180,18 +211,22 @@ calc_ration_metabolizable_energy <- function(
     species_short,
     feed_ration_fraction,
     feed_metabolizable_energy_ruminant = NA_real_,
-    feed_metabolizable_energy_pigs = NA_real_
+    feed_metabolizable_energy_pigs = NA_real_,
+    feed_metabolizable_energy_chicken = NA_real_
 ) {
   validate_ration_metabolizable_energy_inputs(
     species_short,
     feed_ration_fraction,
     feed_metabolizable_energy_ruminant,
-    feed_metabolizable_energy_pigs
+    feed_metabolizable_energy_pigs,
+    feed_metabolizable_energy_chicken
   )
 
   # Apply the species-specific metabolizable energy parameter
   if (species_short %in% gleam_species_milk_producers) {
     ration_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_ruminant
+  } else if (species_short == "CHK") {
+    ration_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_chicken
   } else {
     ration_metabolizable_energy <- feed_ration_fraction * feed_metabolizable_energy_pigs
   }
@@ -267,6 +302,7 @@ calc_ration_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_con
 #'     \item \code{BFL}: buffalo
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
+#'     \item \code{CHK}: chickens
 #'   }
 #' @param feed_ration_fraction Numeric. Proportion of a specific feed component in the
 #'   total ration, expressed as its fraction of diet dry matter intake (fraction). Within
@@ -275,6 +311,8 @@ calc_ration_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_con
 #'   is excreted in urine for ruminants (fraction).
 #' @param feed_urinary_energy_pigs Numeric. Fraction of feed's gross energy that
 #'   is excreted in urine for pigs (fraction).
+#' @param feed_urinary_energy_chicken Numeric. Fraction of feed's gross energy that
+#'   is excreted in uric acid for chickens (fraction). Defaults to 0.
 #'
 #' @return Numeric. Contribution of the feed component to the fraction of total diet
 #'  gross energy that is excreted in urine (fraction).
@@ -284,9 +322,14 @@ calc_ration_nitrogen_content <- function(feed_ration_fraction, feed_nitrogen_con
 #' \itemize{
 #'   \item Ruminants (\code{CTL}, \code{BFL}, \code{CML}, \code{SHP}, \code{GTS}):
 #'     \code{feed_ration_fraction * feed_urinary_energy_ruminant}
+#'   \item Chickens (\code{CHK}):
+#'     \code{feed_ration_fraction * feed_urinary_energy_chicken}
 #'   \item Pigs (\code{PGS}):
 #'     \code{feed_ration_fraction * feed_urinary_energy_pigs}
 #' }
+#'
+#' For chickens, urinary energy defaults to 0 because urinary losses are already
+#' included in metabolizable energy and are not modeled separately.
 #'
 #' This function is part of the [run_ration_quality_module()].
 #' 
@@ -298,18 +341,22 @@ calc_ration_urinary_energy_fraction <- function(
     species_short,
     feed_ration_fraction,
     feed_urinary_energy_ruminant = NA_real_,
-    feed_urinary_energy_pigs = NA_real_
+    feed_urinary_energy_pigs = NA_real_,
+    feed_urinary_energy_chicken = 0
 ) {
   validate_urinary_energy_inputs(
     species_short,
     feed_ration_fraction,
     feed_urinary_energy_ruminant,
-    feed_urinary_energy_pigs
+    feed_urinary_energy_pigs,
+    feed_urinary_energy_chicken
   )
 
   # Apply the species-specific diet_urinary_energy
   if (species_short %in% gleam_species_milk_producers) {
     ration_urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_ruminant
+  } else if (species_short == "CHK") {
+    ration_urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_chicken
   } else {
     ration_urinary_energy_fraction <- feed_ration_fraction * feed_urinary_energy_pigs
   }
