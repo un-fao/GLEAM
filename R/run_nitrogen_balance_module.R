@@ -27,7 +27,7 @@
 #'     \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'     \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 #'     \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
-#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.}
+#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ} cohorts: 3 days.}
 #'     \item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads). Required for \code{CHK} egg-producing cohorts and preserved in the returned table.}
 #'   }
 #'

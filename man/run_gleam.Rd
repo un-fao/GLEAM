@@ -45,8 +45,8 @@ cohort within the same herd.}
 \item{species_short}{Character. Species code (see Common identifiers).}
 \item{cohort_short}{Character. Cohort code (see Common identifiers).}
 \item{cohort_duration_days}{Numeric. Time each animal spends in the
-cohort (days). For \code{CHK}, missing values for \code{FJ} and
-\code{MJ} default to 3 days.}
+cohort (days). For \code{CHK}, suggested value for \code{FJ} and
+\code{MJ} cohorts: 3 days.}
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from
 the herd per cohort (fraction).}
 \item{low_activity_fraction}{Numeric. Proportion of the assessment period

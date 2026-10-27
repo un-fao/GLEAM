@@ -333,7 +333,7 @@ calc_avg_weights <- function(
 #'
 #' @param live_weight_cohort_potential_final Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)
 #' @param live_weight_cohort_initial Numeric. Live weight at the beginning of the cohort stage (kg).
-#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.
+#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ} cohorts: 3 days.
 #'
 #' @return Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).
 #'

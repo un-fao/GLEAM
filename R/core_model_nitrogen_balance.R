@@ -91,7 +91,7 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #' @param live_weight_at_weaning Numeric. Live weight of the animal at weaning (kg).
 #' @param live_weight_at_birth Numeric. Live weight of the animal at birth (kg).
 #' @param pregnancy_duration Numeric. Duration of pregnancy period (days).
-#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, \code{FJ} and \code{MJ} cohorts can default to 3 days.
+#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ} cohorts: 3 days.
 #' @param cohort_stock_size Numeric. Average cohort stock size (heads). Used for
 #'   \code{CHK} egg-producing cohorts.
 #' @param egg_output_human_consumption Numeric. Annual human-consumption eggs
