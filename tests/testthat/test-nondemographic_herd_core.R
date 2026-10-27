@@ -49,6 +49,44 @@ test_that("validate_run_nondemographic_herd_module_inputs accepts herd-level pha
   )
 })
 
+test_that("the initial validator checks the effective phase 1 duration", {
+  cohort <- data.table::data.table(
+    herd_id = 1L,
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 1,
+    cohort_duration_days = 0,
+    death_rate = 0.1
+  )
+  herd <- data.table::data.table(
+    herd_id = 1L,
+    cohort_stock_fem_annual_nondemo = 100,
+    cohort_stock_mal_annual_nondemo = 0,
+    rest_between_nondemo_cycles_duration = 0
+  )
+  expect_error(
+    validate_run_nondemographic_herd_module_inputs(cohort, herd),
+    "phase1_nondemo_duration"
+  )
+
+  herd[, `:=`(
+    phase1_nondemo_fem_duration_days = 30,
+    phase2_nondemo_fem_duration_days = 0,
+    phase1_nondemo_mal_duration_days = 30,
+    phase2_nondemo_mal_duration_days = 0
+  )]
+  expect_warning(
+    validate_run_nondemographic_herd_module_inputs(cohort, herd),
+    "will be overwritten"
+  )
+
+  cohort[, cohort_duration_days := NA_real_]
+  herd[, phase1_nondemo_fem_duration_days := 0]
+  expect_error(
+    validate_run_nondemographic_herd_module_inputs(cohort, herd),
+    "phase1_nondemo_duration"
+  )
+})
+
 test_that("non-demographic duration warnings match the herd, cohort and phase", {
   cohort <- data.table::data.table(
     herd_id = rep(c(2L, 1L), each = 4),

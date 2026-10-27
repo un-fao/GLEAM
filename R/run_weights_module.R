@@ -148,6 +148,22 @@ run_weights_module <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
+  # Validation requires these columns for FN/MN; demographic-only inputs may omit them.
+  optional_nondemo_herd_cols <- c(
+    "live_weight_female_nondemographic_start",
+    "live_weight_male_nondemographic_start",
+    "live_weight_female_nondemographic_end",
+    "live_weight_male_nondemographic_end",
+    "phase1_nondemo_fem_duration_days",
+    "phase2_nondemo_fem_duration_days",
+    "phase1_nondemo_mal_duration_days",
+    "phase2_nondemo_mal_duration_days"
+  )
+  missing_nondemo_herd_cols <- setdiff(optional_nondemo_herd_cols, names(herd_level_data))
+  if (length(missing_nondemo_herd_cols) > 0) {
+    herd_level_data[, (missing_nondemo_herd_cols) := NA_real_]
+  }
+
   if (!"nondemo_productive_phase_id" %in% names(cohort_level_data)) {
     cohort_level_data[, nondemo_productive_phase_id := NA_real_]
   }

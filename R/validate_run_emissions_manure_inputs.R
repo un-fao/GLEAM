@@ -65,9 +65,24 @@ validate_run_emissions_manure_module_inputs <- function(
     data_arg = "manure_management_system_fraction"
   )
 
+  input_group_cols <- c("herd_id", "cohort_short")
+  if ("nondemo_productive_phase_id" %in% names(cohort_level_data)) {
+    input_group_cols <- c(input_group_cols, "nondemo_productive_phase_id")
+  }
+
+  has_fraction_phases <- "nondemo_productive_phase_id" %in%
+    names(manure_management_system_fraction) &&
+    any(!is.na(manure_management_system_fraction$nondemo_productive_phase_id))
+  if (has_fraction_phases &&
+      !"nondemo_productive_phase_id" %in% names(cohort_level_data)) {
+    cli::cli_abort(
+      "{.arg cohort_level_data} must contain {.field nondemo_productive_phase_id}
+      when {.arg manure_management_system_fraction} supplies phase-specific fractions."
+    )
+  }
+
   manure_group_cols <- c("herd_id", "cohort_short")
-  if ("nondemo_productive_phase_id" %in% names(cohort_level_data) &&
-      "nondemo_productive_phase_id" %in% names(manure_management_system_fraction)) {
+  if (has_fraction_phases) {
     manure_group_cols <- c(manure_group_cols, "nondemo_productive_phase_id")
   }
 
@@ -75,11 +90,11 @@ validate_run_emissions_manure_module_inputs <- function(
 
   # --- Uniqueness checks ------------------------------------------------------
   duplicate_input <- cohort_level_data[
-    , .N, by = manure_group_cols
+    , .N, by = input_group_cols
   ][N > 1]
   if (nrow(duplicate_input) > 0) {
     cli::cli_abort(
-      "Duplicate herd/cohort rows in {.arg cohort_level_data} for grouping columns {.val {manure_group_cols}}."
+      "Duplicate herd/cohort rows in {.arg cohort_level_data} for grouping columns {.val {input_group_cols}}."
     )
   }
 
@@ -207,6 +222,12 @@ validate_run_emissions_manure_module_inputs <- function(
   fraction_pairs <- unique(
     manure_management_system_fraction[, ..manure_group_cols]
   )
+  for (pairs in list(input_pairs, fraction_pairs)) {
+    phase <- pairs[["nondemo_productive_phase_id"]]
+    if (is.logical(phase) && all(is.na(phase))) {
+      pairs[, nondemo_productive_phase_id := as.numeric(phase)]
+    }
+  }
   missing_pairs <- data.table::fsetdiff(input_pairs, fraction_pairs)
   if (nrow(missing_pairs) > 0) {
     missing_info <- missing_pairs[
