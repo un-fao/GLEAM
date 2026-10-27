@@ -307,9 +307,9 @@ calc_nondemo_cycle_geometry <- function(
 
 #' Calculate nondemographic entrants across production cycles
 #'
-#' Calculates the total annual number of animals entering a nondemographic cohort
-#' into the number of animals entering each production cycle, based on the number
-#' of cycle starts occurring within the fixed 365-day horizon.
+#' Distributes the total number of animals entering a nondemographic cohort
+#' over the production cycles occurring within the simulated period, 
+#' based on the number of cycle starts occurring within the fixed 365-day horizon.
 #'
 #' @param cohort_stock_nondemo_annual_entrants Numeric. Total number of animals
 #'   entering the nondemographic production pathway over the simulated period
@@ -333,25 +333,16 @@ calc_nondemo_cycle_geometry <- function(
 #'
 #' where:
 #' \itemize{
-#'   \item \code{cohort\_stock\_nondemo\_start\_cycle} is the number of animals entering each cycle
-#'   \item \code{cohort\_stock\_nondemo\_annual\_entrants} is the total annual entrants
-#'   \item \code{total\_non\_demo\_cycle\_starts\_to\_distribute} is the number of cycle starts
-#' }
-#'
-#' If \code{total\_nondemo\_cycle\_starts\_to\_distribute} is \code{NULL} or less than or equal
-#' to zero, the function assumes that no cycle structure is defined. In this case,
-#' all annual entrants are assigned to a single implicit cycle:
-#'
-#' \deqn{
-#' cohort\_stock\_nondemo\_start\_cycle =
-#' cohort\_stock\_nondemo\_annual\_entrants
+#'   \item \code{cohort_stock_nondemo_start_cycle} is the number of animals entering each cycle
+#'   \item \code{cohort_stock_nondemo_annual_entrants} is the total annual entrants
+#'   \item \code{total_non_demo_cycle_starts_to_distribute} is the number of cycle starts
 #' }
 #'
 #' No rounding or integer enforcement is applied:
 #'
 #' This means fractional values may occur when
-#' \code{cohort\_stock\_nondemo\_annual\_entrants} is not perfectly divisible
-#' by \code{total\_non\_demo\_cycle\_starts\_to\_distribute}. Handling of integer constraints
+#' \code{cohort_stock_nondemo_annual_entrants} is not perfectly divisible
+#' by \code{total_non_demo_cycle_starts_to_distribute}. Handling of integer constraints
 #' (if required) is delegated to downstream processes.
 #'
 #'
@@ -379,11 +370,6 @@ calc_nondemo_start_sizes <- function(
     cohort_stock_nondemo_annual_entrants,
     total_nondemo_cycle_starts_to_distribute
   )
-  
-  if (is.null(total_nondemo_cycle_starts_to_distribute) ||
-      total_nondemo_cycle_starts_to_distribute <= 0) {
-    return(0)
-  }
   
   cohort_stock_nondemo_start_cycle <-
     cohort_stock_nondemo_annual_entrants / total_nondemo_cycle_starts_to_distribute
