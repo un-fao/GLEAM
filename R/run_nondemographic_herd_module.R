@@ -281,13 +281,13 @@ run_nondemographic_herd_module <- function(
       
       # ---- Step 7: average stock ----
       cohort_stock_avg_phase1 <- calc_nondemo_avg_stock_phase_horizon(
-        full_nondemo_phase_duration = full_simulation_phase1,
+        full_nondemo_phase = full_simulation_phase1,
         partial_nondemo_phase = partial_simulation_phase1,
         number_full_nondemo_cycles = geom$number_full_nondemo_cycles
       )$cohort_stock_size_unscaled
       
       cohort_stock_avg_phase2 <- calc_nondemo_avg_stock_phase_horizon(
-        full_nondemo_phase_duration = full_simulation_phase2,
+        full_nondemo_phase = full_simulation_phase2,
         partial_nondemo_phase = partial_simulation_phase2,
         number_full_nondemo_cycles = geom$number_full_nondemo_cycles
       )$cohort_stock_size_unscaled
