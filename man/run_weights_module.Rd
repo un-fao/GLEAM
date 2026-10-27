@@ -10,17 +10,6 @@ run_weights_module(cohort_level_data, herd_level_data, show_indicator = TRUE)
 \item{cohort_level_data}{A \code{data.table} in long format with one row per
 herd \eqn{\times} cohort. Must include:
 \describe{
-\item{species_short}{Character. Code identifying the livestock species.
-Supported values include:
-\itemize{
-\item \code{PGS}: pigs
-\item \code{CML}: camels
-\item \code{CTL}: cattle
-\item \code{BFL}: buffalo
-\item \code{SHP}: sheep
-\item \code{GTS}: goats
-\item \code{CHK}: chickens
-}}
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
 \itemize{
@@ -43,6 +32,18 @@ Optional column:
 
 \item{herd_level_data}{A \code{data.table} with one row per herd. Must include:
 \itemize{
+\item \code{herd_id} Character. Unique identifier for the herd.
+\item \code{species_short} Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+\item \code{CHK}: chickens
+}
 \item \code{live_weight_female_adult} Numeric. Live weight of adult females (kg), required when female demographic cohorts (\code{FJ}, \code{FS}, \code{FA}) are present.
 \item \code{live_weight_male_adult} Numeric. Live weight of adult males (kg), required when male demographic cohorts (\code{MJ}, \code{MS}, \code{MA}) are present.
 \item \code{live_weight_at_birth} Numeric. Live weight of the animal at birth (kg), required when juvenile demographic cohorts (\code{FJ}, \code{MJ}) are present.
@@ -87,6 +88,9 @@ weights accounting for offtake, and finally computes average daily live weight
 gain over each cohort stage.
 }
 \details{
+Species is read from \code{herd_level_data$species_short}, matched to cohort
+rows by \code{herd_id}.
+
 This function represents the intermediate module of the Global Livestock Environmental
 Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to estimate animals' live
 weight and is composed of the following steps:

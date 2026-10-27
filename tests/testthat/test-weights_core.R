@@ -162,6 +162,31 @@ test_that("demographic weights allow missing non-demographic herd columns, inclu
   expect_false("nondemo_productive_phase_id" %in% names(cohort))
 })
 
+test_that("weights require species_short in the herd table and allow its absence in cohorts", {
+  example_path <- system.file("extdata/run_modules_examples", package = "gleam")
+  cohort <- data.table::fread(file.path(example_path, "weights_input_chrt_data.csv"))[
+    herd_id %in% c(2L, 13L)
+  ]
+  herd <- data.table::fread(file.path(example_path, "weights_input_hrd_data.csv"))[
+    herd_id %in% cohort$herd_id
+  ]
+  expected <- run_weights_module(cohort, herd, show_indicator = FALSE)
+
+  missing_species <- data.table::copy(herd)
+  missing_species[, species_short := NULL]
+  error <- expect_error(
+    run_weights_module(cohort, missing_species, show_indicator = FALSE),
+    "Missing required columns"
+  )
+  expect_match(conditionMessage(error), "herd_level_data", fixed = TRUE)
+  expect_match(conditionMessage(error), "species_short", fixed = TRUE)
+
+  cohort[, species_short := NULL]
+  actual <- run_weights_module(cohort, herd, show_indicator = FALSE)
+  expected$cohort_level_results[, species_short := NULL]
+  expect_equal(actual, expected)
+})
+
 # ---- test calc_avg_weights ----
 test_that("calc_avg_weights returns correct average and final weights", {
   result <- calc_avg_weights(

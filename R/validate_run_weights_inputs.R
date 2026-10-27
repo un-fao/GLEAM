@@ -31,7 +31,7 @@ validate_run_weights_module_inputs <- function(
   )
   
   cohort_codes_present <- unique(cohort_level_data$cohort_short)
-  required_herd_cols <- "herd_id"
+  required_herd_cols <- c("herd_id", "species_short")
 
   if (any(cohort_codes_present %in% c("FA", "MA", "FS", "MS", "FJ", "MJ"))) {
     required_herd_cols <- c(
