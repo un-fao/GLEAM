@@ -124,10 +124,13 @@ calc_nondemographic_total_durations <- function(
 #'
 #' @param phase1_nondemo_duration Numeric. Duration of productive phase 1 for
 #'   the assessed nondemographic cohort (\code{FN} or \code{MN}) (days).
+#'   Must be at least \code{1} day.
 #' @param phase2_nondemo_duration Numeric. Duration of productive phase 2 for
 #'   the assessed nondemographic cohort (\code{FN} or \code{MN}) (days).
+#'   Use \code{0} when phase 2 is absent.
 #' @param rest_between_nondemo_cycles_duration Numeric. Duration of the
 #'   resting or empty phase between nondemographic cycles (days).
+#'   Use \code{0} when there is no rest between cycles.
 #' @details
 #' A nondemographic production cycle can contain one or two productive phases,
 #' followed by an optional resting period before the next cycle starts. The

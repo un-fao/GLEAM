@@ -12,13 +12,16 @@ calc_nondemo_cycle_geometry(
 }
 \arguments{
 \item{phase1_nondemo_duration}{Numeric. Duration of productive phase 1 for
-the assessed nondemographic cohort (\code{FN} or \code{MN}) (days).}
+the assessed nondemographic cohort (\code{FN} or \code{MN}) (days).
+Must be at least \code{1} day.}
 
 \item{phase2_nondemo_duration}{Numeric. Duration of productive phase 2 for
-the assessed nondemographic cohort (\code{FN} or \code{MN}) (days).}
+the assessed nondemographic cohort (\code{FN} or \code{MN}) (days).
+Use \code{0} when phase 2 is absent.}
 
 \item{rest_between_nondemo_cycles_duration}{Numeric. Duration of the
-resting or empty phase between nondemographic cycles (days).}
+resting or empty phase between nondemographic cycles (days).
+Use \code{0} when there is no rest between cycles.}
 }
 \value{
 A named list with elements:

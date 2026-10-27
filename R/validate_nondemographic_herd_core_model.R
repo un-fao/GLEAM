@@ -10,23 +10,9 @@ validate_nondemo_cycle_geometry_inputs <- function(
   validate_scalar_numeric(phase2_nondemo_duration)
   validate_scalar_numeric(rest_between_nondemo_cycles_duration)
 
-  if (phase1_nondemo_duration < 0) {
-    cli::cli_abort(
-      "{.arg phase1_nondemo_duration} must be greater than or equal to 0."
-    )
-  }
-  if (phase2_nondemo_duration < 0) {
-    cli::cli_abort(
-      "{.arg phase2_nondemo_duration} must be greater than or equal to 0."
-    )
-  }
-  if (phase1_nondemo_duration > 0) {
-    validate_param_range(phase1_nondemo_duration, "cohort_duration_days")
-  }
-  if (phase2_nondemo_duration > 0) {
-    validate_param_range(phase2_nondemo_duration, "cohort_duration_days")
-  }
-  validate_param_range(rest_between_nondemo_cycles_duration, "duration")
+  validate_param_range(phase1_nondemo_duration)
+  validate_param_range(phase2_nondemo_duration)
+  validate_param_range(rest_between_nondemo_cycles_duration)
 }
 
 #' Validate inputs for calc_nondemo_start_sizes
@@ -68,24 +54,10 @@ validate_nondemo_phase_inputs <- function(
   if (cohort_stock_nondemo_start_by_phase < 0) {
     cli::cli_abort("{.arg cohort_stock_nondemo_start_by_phase} must be greater than or equal to 0.")
   }
-  if (productive_phase_nondemo_duration < 0) {
-    cli::cli_abort(
-      "{.arg productive_phase_nondemo_duration} must be greater than or equal to 0."
-    )
-  }
-  if (max_simulation_days_nondemo_phase < 0) {
-    cli::cli_abort(
-      "{.arg max_simulation_days_nondemo_phase} must be greater than or equal to 0."
-    )
-  }
 
-  if (productive_phase_nondemo_duration > 0) {
-    validate_param_range(productive_phase_nondemo_duration, "cohort_duration_days")
-  }
-  validate_param_range(death_rate_nondemo_phase, "death_rate")
-  if (max_simulation_days_nondemo_phase > 0) {
-    validate_param_range(max_simulation_days_nondemo_phase, "simulation_duration")
-  }
+  validate_param_range(productive_phase_nondemo_duration)
+  validate_param_range(death_rate_nondemo_phase)
+  validate_param_range(max_simulation_days_nondemo_phase)
 }
 
 #' Validate inputs for calc_nondemo_avg_stock_phase_horizon
@@ -149,16 +121,10 @@ validate_nondemo_offtake_inputs <- function(
     }
   }
 
-  validate_param_range(phase1_nondemo_duration, "cohort_duration_days")
-  if (phase2_nondemo_duration > 0) {
-    validate_param_range(phase2_nondemo_duration, "cohort_duration_days")
-  }
-  if (partial_phase1_nondemo_duration > 0) {
-    validate_param_range(partial_phase1_nondemo_duration, "cohort_duration_days")
-  }
-  if (partial_phase2_nondemo_duration > 0) {
-    validate_param_range(partial_phase2_nondemo_duration, "cohort_duration_days")
-  }
+  validate_param_range(phase1_nondemo_duration)
+  validate_param_range(phase2_nondemo_duration)
+  validate_param_range(partial_phase1_nondemo_duration)
+  validate_param_range(partial_phase2_nondemo_duration)
   if (simulation_duration > 0) {
     validate_param_range(simulation_duration, "simulation_duration")
   }
