@@ -14,7 +14,7 @@ test_that("validate_run_nondemographic_herd_module_inputs accepts valid example 
     rest_between_nondemo_cycles_duration = 20
   )
 
-  expect_no_error(
+  expect_no_warning(
     validate_run_nondemographic_herd_module_inputs(
       cohort_level_data,
       herd_level_data
@@ -41,12 +41,52 @@ test_that("validate_run_nondemographic_herd_module_inputs accepts herd-level pha
     phase2_nondemo_mal_duration_days = 50
   )
 
-  expect_no_error(
+  expect_no_warning(
     validate_run_nondemographic_herd_module_inputs(
       cohort_level_data,
       herd_level_data
     )
   )
+})
+
+test_that("non-demographic duration warnings match the herd, cohort and phase", {
+  cohort <- data.table::data.table(
+    herd_id = rep(c(2L, 1L), each = 4),
+    cohort_short = rep(c("FN", "FN", "MN", "MN"), 2),
+    nondemo_productive_phase_id = rep(c(1, 2, 1, 2), 2),
+    cohort_duration_days = NA_real_,
+    death_rate = 0.1
+  )
+  herd <- data.table::data.table(
+    herd_id = c(1L, 2L),
+    cohort_stock_fem_annual_nondemo = 100,
+    cohort_stock_mal_annual_nondemo = 120,
+    rest_between_nondemo_cycles_duration = 20,
+    phase1_nondemo_fem_duration_days = c(30, 60),
+    phase2_nondemo_fem_duration_days = c(50, 90),
+    phase1_nondemo_mal_duration_days = c(40, 70),
+    phase2_nondemo_mal_duration_days = c(55, 95)
+  )
+  expect_no_warning(validate_run_nondemographic_herd_module_inputs(cohort, herd))
+
+  phase_columns <- c(
+    "phase1_nondemo_fem_duration_days", "phase2_nondemo_fem_duration_days",
+    "phase1_nondemo_mal_duration_days", "phase2_nondemo_mal_duration_days"
+  )
+  for (phase_row in seq_along(phase_columns)) {
+    supplied <- data.table::copy(cohort)
+    supplied[phase_row, cohort_duration_days := herd[[phase_columns[phase_row]]][2]]
+    expect_warning(
+      validate_run_nondemographic_herd_module_inputs(supplied, herd),
+      "cohort_duration_days.*will be overwritten"
+    )
+
+    fallback <- data.table::copy(herd)
+    data.table::set(fallback, 2L, phase_columns[phase_row], NA_real_)
+    expect_no_warning(
+      validate_run_nondemographic_herd_module_inputs(supplied, fallback)
+    )
+  }
 })
 
 test_that("validate_run_nondemographic_herd_module_inputs rejects invalid non-demo cohorts", {
@@ -218,6 +258,16 @@ test_that("run_nondemographic_herd_module assigns cohort durations from herd-lev
   )
   expect_equal(res$herd_level_results$total_nondemo_fem_duration_days, 80)
   expect_equal(res$herd_level_results$total_nondemo_mal_duration_days, 80)
+
+  cohort_level_data[, cohort_duration_days := c(10, 15, 20, 25)]
+  expect_warning(
+    overridden <- run_nondemographic_herd_module(
+      cohort_level_data, herd_level_data, simulation_duration = 365
+    ),
+    "cohort_duration_days.*will be overwritten"
+  )
+  expect_equal(overridden, res)
+  expect_equal(cohort_level_data$cohort_duration_days, c(10, 15, 20, 25))
 })
 
 test_that("run_nondemographic_herd_module works without cohort_duration_days column", {

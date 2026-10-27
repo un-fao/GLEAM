@@ -104,6 +104,35 @@ validate_run_nondemographic_herd_module_inputs <- function(
     "herd_level_data"
   )
 
+  if (has_all_herd_phase_durations &&
+      "cohort_duration_days" %in% names(cohort_level_data)) {
+    herd_rows <- herd_level_data[cohort_level_data, on = "herd_id"]
+    herd_phase_durations <- assign_nondemographic_phase_durations(
+      cohort_short = cohort_level_data$cohort_short,
+      nondemo_productive_phase_id = cohort_level_data$nondemo_productive_phase_id,
+      phase1_nondemo_fem_duration_days = as.numeric(
+        herd_rows$phase1_nondemo_fem_duration_days
+      ),
+      phase2_nondemo_fem_duration_days = as.numeric(
+        herd_rows$phase2_nondemo_fem_duration_days
+      ),
+      phase1_nondemo_mal_duration_days = as.numeric(
+        herd_rows$phase1_nondemo_mal_duration_days
+      ),
+      phase2_nondemo_mal_duration_days = as.numeric(
+        herd_rows$phase2_nondemo_mal_duration_days
+      )
+    )
+    if (any(!is.na(cohort_level_data$cohort_duration_days) &
+            !is.na(herd_phase_durations))) {
+      cli::cli_warn(
+        "{.arg cohort_duration_days} was provided for non-demographic cohorts
+        ({.val FN}/{.val MN}). These values will be overwritten by the
+        non-demographic herd module using the herd-level phase durations."
+      )
+    }
+  }
+
   # Resolve phase 1 durations with the same overrides used by the module.
   phase1_rows <- cohort_level_data[nondemo_productive_phase_id == 1]
   phase1_herd_rows <- herd_level_data[phase1_rows, on = "herd_id"]
