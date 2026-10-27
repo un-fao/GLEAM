@@ -310,11 +310,11 @@
 #'   package = "gleam"
 #' )
 #' cohort_data_demographic <- data.table::fread(cohort_path)
-#' herd_level_data <- data.table::fread(herd_level_path)
+#' herd_data_demographic <- data.table::fread(herd_level_path)
 #'
 #' results <- run_all_herd_module(
 #'   cohort_level_data = cohort_data_demographic,
-#'   herd_level_data = herd_level_data,
+#'   herd_level_data = herd_data_demographic,
 #'   run_demographic = TRUE,
 #'   run_nondemographic = FALSE
 #' )
@@ -335,12 +335,12 @@
 #'   "extdata/run_modules_examples/nondemographic_herd_input_hrd_data.csv",
 #'   package = "gleam"
 #' )
-#' cohort_nondemo_input <- data.table::fread(cohort_nondemo_path)
-#' herd_level_data_nondemo <- data.table::fread(herd_nondemo_path)
+#' cohort_data_nondemo <- data.table::fread(cohort_nondemo_path)
+#' herd_data_nondemo <- data.table::fread(herd_nondemo_path)
 #'
 #' results <- run_all_herd_module(
-#'   cohort_level_data = cohort_nondemo_input,
-#'   herd_level_data = herd_level_data_nondemo,
+#'   cohort_level_data = cohort_data_nondemo,
+#'   herd_level_data = herd_data_nondemo,
 #'   run_demographic = FALSE,
 #'   run_nondemographic = TRUE,
 #'   show_indicator = TRUE
