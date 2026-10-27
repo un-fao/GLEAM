@@ -32,7 +32,9 @@ phase for nondemographic cohorts \code{FN} and \code{MN}. Takes value
 \code{1} for phase 1 and optionally \code{2} for phase 2. Demographic
 cohorts use \code{NA}.}
 
-\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends
+in a specific cohort (days). Not required for \code{FN} and \code{MN}
+when phase durations are supplied in the herd table.}
 
 \item{phase1_nondemo_fem_duration_days}{Numeric. Duration of productive
 phase 1 for the female nondemographic cohort (\code{FN}) (days).}
@@ -47,9 +49,12 @@ phase 1 for the male nondemographic cohort (\code{MN}) (days).}
 phase 2 for the male nondemographic cohort (\code{MN}) (days).}
 }
 \value{
-Numeric vector. Updated \code{cohort_duration_days}. Values for
-\code{FN} and \code{MN} rows are filled from the herd-level phase-duration
-inputs when present; all other rows keep their original values.
+Numeric vector. Updated \code{cohort_duration_days}. For
+non-demographic cohorts (\code{FN} and \code{MN}),
+\code{cohort_duration_days} is not required when phase durations are supplied
+in the herd table. The code fills it from the herd values, which override
+any cohort values. If a herd value is missing, the cohort value is used
+instead. All other cohorts keep their original values.
 }
 \description{
 Maps herd-level nondemographic phase-duration inputs onto the corresponding
