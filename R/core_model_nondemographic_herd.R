@@ -544,14 +544,14 @@ calc_nondemo_phase <- function(
 #' This function is applied within \code{\link{run_nondemographic_herd_module}} to
 #' compute phase-specific average stock for productive phase 1 and productive phase 2.
 #'
-#' @param full_nondemo_phase_duration List. Output of \code{calc_nondemo_phase()} for a full productive phase simulation.
+#' @param full_nondemo_phase List. Output of \code{calc_nondemo_phase()} for a full productive phase simulation.
 #'   Must contain \code{time_simulated_nondemographic} (days) and
 #'   \code{cohort_stock_nondemo$start}, \code{cohort_stock_nondemo$end}
 #'   (heads).
 #'
 #' @param partial_nondemo_phase List. Output of \code{calc_nondemo_phase()} for a terminal partial productive phase
 #'   simulation (truncated duration occurring at the end of the simulated period).
-#'   Uses the same structure as \code{full_nondemo_phase_duration}.
+#'   Uses the same structure as \code{full_nondemo_phase}.
 #'
 #' @param number_full_nondemo_cycles Integer. Number of complete cycles fully
 #'   contained within the fixed 365-day simulation window for the assessed
@@ -578,7 +578,7 @@ calc_nondemo_phase <- function(
 #'
 #' This approximation is applied separately to:
 #' \itemize{
-#'   \item \code{full_nondemo_phase_duration}, representing one full occurrence of
+#'   \item \code{full_nondemo_phase}, representing one full occurrence of
 #'   the productive phase, and
 #'   \item \code{partial_nondemo_phase}, representing the final partial
 #'   occurrence of the productive phase within the assessment horizon.
@@ -587,10 +587,10 @@ calc_nondemo_phase <- function(
 #' Animal-days for one full productive phase are computed as:
 #' \deqn{
 #' ad_full =
-#' full_nondemo_phase_duration$time_simulated_nondemographic \times
+#' full_nondemo_phase$time_simulated_nondemographic \times
 #' \frac{
-#' full_nondemo_phase_duration$cohort_stock_nondemo$start +
-#' full_nondemo_phase_duration$cohort_stock_nondemo$end
+#' full_nondemo_phase$cohort_stock_nondemo$start +
+#' full_nondemo_phase$cohort_stock_nondemo$end
 #' }{2}
 #' }
 #'
@@ -638,13 +638,13 @@ calc_nondemo_phase <- function(
 #' @export
 
 calc_nondemo_avg_stock_phase_horizon <- function(
-    full_nondemo_phase_duration,
+    full_nondemo_phase,
     partial_nondemo_phase,
     number_full_nondemo_cycles
 ) {
   time_horizon <- 365
   validate_nondemo_avg_stock_inputs(
-    full_nondemo_phase_duration,
+    full_nondemo_phase,
     partial_nondemo_phase,
     number_full_nondemo_cycles
   )
@@ -659,7 +659,7 @@ calc_nondemo_avg_stock_phase_horizon <- function(
   }
   
   
-  ad_full <- avg_stock_per_phase(full_nondemo_phase_duration)
+  ad_full <- avg_stock_per_phase(full_nondemo_phase)
   ad_part <- avg_stock_per_phase(partial_nondemo_phase)
   
   cohort_stock_size_unscaled <-

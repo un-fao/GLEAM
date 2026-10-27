@@ -5,20 +5,20 @@
 \title{Calculate average nondemographic stock over the assessment horizon}
 \usage{
 calc_nondemo_avg_stock_phase_horizon(
-  full_nondemo_phase_duration,
+  full_nondemo_phase,
   partial_nondemo_phase,
   number_full_nondemo_cycles
 )
 }
 \arguments{
-\item{full_nondemo_phase_duration}{List. Output of \code{calc_nondemo_phase()} for a full productive phase simulation.
+\item{full_nondemo_phase}{List. Output of \code{calc_nondemo_phase()} for a full productive phase simulation.
 Must contain \code{time_simulated_nondemographic} (days) and
 \code{cohort_stock_nondemo$start}, \code{cohort_stock_nondemo$end}
 (heads).}
 
 \item{partial_nondemo_phase}{List. Output of \code{calc_nondemo_phase()} for a terminal partial productive phase
 simulation (truncated duration occurring at the end of the simulated period).
-Uses the same structure as \code{full_nondemo_phase_duration}.}
+Uses the same structure as \code{full_nondemo_phase}.}
 
 \item{number_full_nondemo_cycles}{Integer. Number of complete cycles fully
 contained within the fixed 365-day simulation window for the assessed
@@ -60,7 +60,7 @@ time_simulated_nondemographic \times
 
 This approximation is applied separately to:
 \itemize{
-\item \code{full_nondemo_phase_duration}, representing one full occurrence of
+\item \code{full_nondemo_phase}, representing one full occurrence of
 the productive phase, and
 \item \code{partial_nondemo_phase}, representing the final partial
 occurrence of the productive phase within the assessment horizon.
@@ -69,10 +69,10 @@ occurrence of the productive phase within the assessment horizon.
 Animal-days for one full productive phase are computed as:
 \deqn{
 ad_full =
-full_nondemo_phase_duration$time_simulated_nondemographic \times
+full_nondemo_phase$time_simulated_nondemographic \times
 \frac{
-full_nondemo_phase_duration$cohort_stock_nondemo$start +
-full_nondemo_phase_duration$cohort_stock_nondemo$end
+full_nondemo_phase$cohort_stock_nondemo$start +
+full_nondemo_phase$cohort_stock_nondemo$end
 }{2}
 }
 

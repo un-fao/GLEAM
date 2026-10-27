@@ -92,11 +92,11 @@ validate_nondemo_phase_inputs <- function(
 #'
 #' @noRd
 validate_nondemo_avg_stock_inputs <- function(
-    full_nondemo_phase_duration,
+    full_nondemo_phase,
     partial_nondemo_phase,
     number_full_nondemo_cycles
 ) {
-  for (arg_name in c("full_nondemo_phase_duration", "partial_nondemo_phase")) {
+  for (arg_name in c("full_nondemo_phase", "partial_nondemo_phase")) {
     phase <- get(arg_name)
     if (!is.list(phase) ||
         is.null(phase$time_simulated_nondemographic) ||
