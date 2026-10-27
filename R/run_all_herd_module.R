@@ -467,12 +467,12 @@ run_all_herd_module <- function(
   if (isTRUE(run_nondemographic)) {
     if (nrow(cohort_level_data_nondemographic) > 0) {
       
-      # If demographic not run → expect full herd_level_data provided externally
-          if (!exists("herd_level_data_nondemo")) {
-                herd_level_data_nondemo <- herd_level_data[
-                  herd_id %in% unique(cohort_level_data_nondemographic$herd_id)
-                ]
-            }
+      # Without demographic simulation, use the herd table supplied by the caller.
+      if (!isTRUE(run_demographic)) {
+        herd_level_data_nondemo <- herd_level_data[
+          herd_id %in% unique(cohort_level_data_nondemographic$herd_id)
+        ]
+      }
       
       nondemo_results <- run_nondemographic_herd_module(
         cohort_level_data = cohort_level_data_nondemographic,
