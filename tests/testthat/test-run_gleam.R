@@ -728,3 +728,26 @@ test_that("the full pipeline simulates diversion and retains both non-demographi
   )
   expect_true(all(vapply(result$aggregation_results, nrow, integer(1)) > 0L))
 })
+
+test_that("long non-demographic phases retain stock, offtake and downstream production", {
+  data <- data.table::copy(d_gleam_diversion)
+  data$herd[, `:=`(
+    phase1_nondemo_fem_duration_days = 400,
+    phase2_nondemo_fem_duration_days = 50,
+    phase1_nondemo_mal_duration_days = 400,
+    phase2_nondemo_mal_duration_days = 50
+  )]
+  result <- suppressMessages(run_gleam_no_structure(data,
+    run_demographic = TRUE, run_nondemographic = TRUE, show_indicator = FALSE
+  ))
+  output <- result$cohort_level_results
+  phase2 <- output[cohort_short %in% c("FN", "MN") & nondemo_productive_phase_id == 2]
+  expect_equal(nrow(phase2), 2L)
+  expect_equal(sum(output$cohort_stock_size), data$herd$herd_size_total)
+  expect_true(all(phase2$cohort_stock_size > 0))
+  expect_true(all(phase2$offtake_heads_assessment > 0))
+  expect_true(all(phase2$meat_production_live_weight_cohort > 0))
+  fields <- c("ration_intake", "nitrogen_excretion", "ch4_manure_other")
+  expect_true(all(is.finite(as.matrix(phase2[, ..fields]))))
+  expect_true(all(phase2$ration_intake > 0))
+})

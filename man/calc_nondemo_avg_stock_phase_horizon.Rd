@@ -6,69 +6,37 @@
 \usage{
 calc_nondemo_avg_stock_phase_horizon(
   full_nondemo_phase,
-  partial_nondemo_phase,
-  number_full_nondemo_cycles
+  total_nondemo_cycle_starts_to_distribute
 )
 }
 \arguments{
-\item{full_nondemo_phase}{List. Output of \code{calc_nondemo_phase()} for a full productive phase simulation.
-Must contain \code{time_simulated_nondemographic} (days) and
-\code{cohort_stock_nondemo$start}, \code{cohort_stock_nondemo$end}
-(heads).}
+\item{full_nondemo_phase}{List. Output of \code{calc_nondemo_phase()} for a
+full productive phase. Must contain \code{time_simulated_nondemographic}
+(days) and \code{cohort_stock_nondemo$start} and
+\code{cohort_stock_nondemo$end} (heads).}
 
-\item{partial_nondemo_phase}{List. Output of \code{calc_nondemo_phase()} for a terminal partial productive phase
-simulation (truncated duration occurring at the end of the simulated period).
-Uses the same structure as \code{full_nondemo_phase}.}
-
-\item{number_full_nondemo_cycles}{Integer. Number of complete cycles fully
-contained within the fixed 365-day simulation window for the assessed
-nondemographic cohort (\code{FN} or \code{MN}) (full cycles / simulated
-period).}
+\item{total_nondemo_cycle_starts_to_distribute}{Numeric. Annual cycle starts,
+calculated by \code{calc_nondemo_cycle_geometry()} and passed internally
+by \code{run_nondemographic_herd_module()}.}
 }
 \value{
 A named list with:
 \describe{
-\item{cohort_stock_size_unscaled}{Numeric. Average population size by cohort not yet scaled to the total livestock population (herd_size_total) (# heads).}
+\item{cohort_stock_size_unscaled}{Numeric. Annual average population in the
+phase (heads), before rescaling to \code{herd_size_total}.}
 }
 }
 \description{
-Computes the average number of animals present during a given nondemographic
-productive phase over the assessment horizon (default 365 days). Animal-days are
-calculated for a full phase occurrence and a terminal partial phase occurrence,
-then aggregated across full cycle repetitions and divided by the horizon length.
+Computes annual average stock for a full productive phase, including animals
+that entered before the assessment year.
 }
 \details{
-This function is applied within \code{\link{run_nondemographic_herd_module}} to
-compute phase-specific average stock for productive phase 1 and productive phase 2.
+The model calculates cycle starts from the phase and rest durations.
+No additional input-table field is required for this value.
 
-The function calculates the average stock present in the nondemographic
-productive phase over the full assessment horizon, expressed as heads per day.
-It does so by first converting stock trajectories within each simulated phase
-into animal-days, and then dividing total animal-days by the fixed 365-day
-simulation horizon.
-
-For each phase occurrence, animal-days are approximated using the trapezoidal
-rule, assuming that stock changes linearly from
-\code{cohort_stock_nondemo$start} to \code{cohort_stock_nondemo$end} over
-\code{time_simulated_nondemographic} days. For a given
-phase:
+For one full phase, animal-days are approximated using the trapezoidal rule:
 \deqn{
-animal_days_phase =
-time_simulated_nondemographic \times
-\frac{cohort_stock_nondemo$start + cohort_stock_nondemo$end}{2}
-}
-
-This approximation is applied separately to:
-\itemize{
-\item \code{full_nondemo_phase}, representing one full occurrence of
-the productive phase, and
-\item \code{partial_nondemo_phase}, representing the final partial
-occurrence of the productive phase within the assessment horizon.
-}
-
-Animal-days for one full productive phase are computed as:
-\deqn{
-ad_full =
+full\_phase\_days =
 full_nondemo_phase$time_simulated_nondemographic \times
 \frac{
 full_nondemo_phase$cohort_stock_nondemo$start +
@@ -76,38 +44,20 @@ full_nondemo_phase$cohort_stock_nondemo$end
 }{2}
 }
 
-Animal-days for one partial productive phase are computed as:
+Annual average stock is then:
 \deqn{
-ad_part =
-partial_nondemo_phase$time_simulated_nondemographic \times
-\frac{
-partial_nondemo_phase$cohort_stock_nondemo$start +
-partial_nondemo_phase$cohort_stock_nondemo$end
-}{2}
+average\_stock\_phase\_horizon =
+\frac{total\_nondemo\_cycle\_starts\_to\_distribute \times full\_phase\_days}{365}
 }
 
-Total animal-days over the assessment horizon are then:
-\deqn{
-total_animal_days =
-number_full_nondemo_cycles \times ad_full + ad_part
-}
+Full-phase stock is used even when no complete cycle fits within 365 days.
+This represents an established herd with animals from previous arrival years.
+A zero-duration phase contributes zero stock.
 
-Finally, the average stock over the horizon is calculated as:
-\deqn{
-average_stock_phase_horizon =
-\frac{
-number_full_nondemo_cycles \times ad_full + ad_part
-}{365}
-}
+The calculation assumes linear stock change within each phase and applies
+no rounding. Fractional average stock values may occur.
 
-If a phase has \code{time_simulated_nondemographic} equal to \code{NULL} or
-less than or equal to zero, its animal-days contribution is treated as zero.
-
-The function assumes linear stock change within each phase and does not apply
-any rounding. Therefore, fractional animal-days and fractional average stock
-values may occur.
-
-This function is part of the \code{\link[=run_nondemographic_herd_module]{run_nondemographic_herd_module()}}.
+This function is part of \code{\link[=run_nondemographic_herd_module]{run_nondemographic_herd_module()}}.
 }
 \seealso{
 \code{\link[=run_nondemographic_herd_module]{run_nondemographic_herd_module()}}

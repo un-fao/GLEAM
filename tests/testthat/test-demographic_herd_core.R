@@ -169,6 +169,40 @@ herd_module_test_inputs <- function(herd_ids = 9L) {
   )
 }
 
+test_that("non-demographic-only long cycles rescale stock and offtake per supplied herd", {
+  cohort <- data.table::data.table(
+    herd_id = rep(c(1L, 2L), each = 2), cohort_short = "FN",
+    nondemo_productive_phase_id = rep(c(1, 2), 2), death_rate = 0
+  )
+  herd <- data.table::data.table(
+    herd_id = c(1L, 2L), herd_size_total = c(100, 50),
+    cohort_stock_fem_annual_nondemo = c(100, 200),
+    cohort_stock_mal_annual_nondemo = 0, rest_between_nondemo_cycles_duration = 0,
+    phase1_nondemo_fem_duration_days = c(400, 365),
+    phase2_nondemo_fem_duration_days = 50,
+    phase1_nondemo_mal_duration_days = 30, phase2_nondemo_mal_duration_days = 0
+  )
+  result <- suppressMessages(run_all_herd_module(
+    cohort, herd, run_demographic = FALSE, run_nondemographic = TRUE,
+    simulation_duration = 182.5
+  ))$cohort_level_results
+  expect_equal(nrow(result), 4L)
+  expect_equal(result[herd_id == 1, cohort_stock_size], 100 * c(400, 50) / 450)
+  expect_equal(result[herd_id == 2, cohort_stock_size], 50 * c(365, 50) / 415)
+  expect_equal(result[, sum(cohort_stock_size), by = herd_id]$V1, c(100, 50))
+  expect_equal(result[herd_id == 1, offtake_heads], c(0, 100 * 365 / 450))
+  expect_equal(result[herd_id == 2, offtake_heads], c(0, 50 * 365 / 415))
+  expect_equal(result$offtake_heads_assessment, result$offtake_heads / 2)
+  expect_true(all(is.finite(result$cohort_stock_size)))
+
+  herd[, herd_size_total := NULL]
+  unscaled <- suppressMessages(run_all_herd_module(
+    cohort, herd, run_demographic = FALSE, run_nondemographic = TRUE
+  ))$cohort_level_results
+  expect_equal(unscaled[herd_id == 1, cohort_stock_size], 100 * c(400, 50) / 365)
+  expect_equal(unscaled[herd_id == 1, offtake_heads], c(0, 100))
+})
+
 test_that("rescale_x_to_y preserves proportions and reaches the target total", {
   result <- rescale_x_to_y(c(20, 30, 50), 100, 250)
 

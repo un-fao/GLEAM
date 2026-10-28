@@ -201,7 +201,8 @@
 #'
 #' When both modules are run, intermediate unscaled cohort stock and offtake
 #' outputs are combined and rescaled so that the summed cohort average stock
-#' matches `herd_size_total` from `herd_level_data`.
+#' matches `herd_size_total` from `herd_level_data`. The same rescaling applies
+#' to non-demographic-only runs when `herd_size_total` is supplied.
 #'
 #' The rescaling is performed in two steps:
 #' \enumerate{
@@ -212,8 +213,9 @@
 #'   final `cohort_stock_size`
 #' }
 #'
-#' When only one module is run, the corresponding scaled or unscaled module
-#' outputs are renamed to the harmonized final output names.
+#' When only the demographic module is run, its scaled outputs are renamed to
+#' the harmonized final output names. Non-demographic-only runs without
+#' `herd_size_total` return unscaled stock and offtake under those names.
 #' 
 #' 
 #' 
@@ -230,7 +232,7 @@
 #'   proportionally from the unscaled cohort stock to the scaled cohort stock
 #' }
 #'
-#' When only one module is run, no cross-module rescaling is needed and
+#' Without a herd-size target in non-demographic-only mode,
 #' `cohort_stock_size_unscaled` is simply renamed to `cohort_stock_size`.
 #'  
 #' @return A named list with two elements:
@@ -497,9 +499,10 @@ run_all_herd_module <- function(
   )
   
   # =========================================================
-  # 4) RESCALING (ONLY IF DEMOGRAPHIC RUN)
+  # 4) RESCALING TO THE SUPPLIED HERD SIZE
   # =========================================================
-  if (isTRUE(run_demographic) && isTRUE(run_nondemographic)) {
+  if (isTRUE(run_nondemographic) &&
+      (isTRUE(run_demographic) || "herd_size_total" %in% names(herd_level_data))) {
     
     # total unscaled size per herd
     tmp <- cohort_level_results[

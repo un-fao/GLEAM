@@ -26,6 +26,10 @@ validate_run_all_herd_module_inputs <- function(
   }
 
   check_data_table(herd_level_data, "herd_level_data")
+  if (!isTRUE(run_demographic) && isTRUE(run_nondemographic) &&
+      "herd_size_total" %in% names(herd_level_data)) {
+    validate_param_range(herd_level_data$herd_size_total, "herd_size_total")
+  }
 
   if (is.null(cohort_level_data)) {
     cli::cli_abort("{.arg cohort_level_data} must be provided.")

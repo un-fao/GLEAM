@@ -80,6 +80,9 @@ production-cycle dynamics for the non-demographic cohorts used in the Global
 Livestock Environmental Assessment Model (GLEAM) computational pipeline
 \code{\link[=run_gleam]{run_gleam()}}. It computes phase-specific average stock sizes and offtake
 numbers.
+Annual average stock and offtake include animals that entered before the
+assessment year, so productive phases can span year boundaries. Stock is
+returned unscaled; \code{\link[=run_all_herd_module]{run_all_herd_module()}} applies any supplied herd-size target.
 }
 \details{
 The function operates over a \strong{365-day simulation horizon} to maintain

@@ -275,7 +275,8 @@ The combined cohort output harmonizes, when needed:
 
 When both modules are run, intermediate unscaled cohort stock and offtake
 outputs are combined and rescaled so that the summed cohort average stock
-matches \code{herd_size_total} from \code{herd_level_data}.
+matches \code{herd_size_total} from \code{herd_level_data}. The same rescaling applies
+to non-demographic-only runs when \code{herd_size_total} is supplied.
 
 The rescaling is performed in two steps:
 \enumerate{
@@ -286,8 +287,9 @@ The rescaling is performed in two steps:
 final \code{cohort_stock_size}
 }
 
-When only one module is run, the corresponding scaled or unscaled module
-outputs are renamed to the harmonized final output names.
+When only the demographic module is run, its scaled outputs are renamed to
+the harmonized final output names. Non-demographic-only runs without
+\code{herd_size_total} return unscaled stock and offtake under those names.
 
 The function then rescales the combined cohort
 stock and offtake outputs so that the summed cohort average stock matches
@@ -301,7 +303,7 @@ within each \code{herd_id}
 proportionally from the unscaled cohort stock to the scaled cohort stock
 }
 
-When only one module is run, no cross-module rescaling is needed and
+Without a herd-size target in non-demographic-only mode,
 \code{cohort_stock_size_unscaled} is simply renamed to \code{cohort_stock_size}.
 }
 \examples{

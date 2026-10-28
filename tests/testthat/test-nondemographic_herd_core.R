@@ -1,3 +1,47 @@
+test_that("annual stock uses cycle starts calculated by the model", {
+  geometry <- calc_nondemo_cycle_geometry(400, 50, 0)
+  full <- calc_nondemo_phase(100, 400, 0, 400)
+  annual <- calc_nondemo_avg_stock_phase_horizon(
+    full, geometry$total_nondemo_cycle_starts_to_distribute
+  )
+  expect_equal(annual$cohort_stock_size_unscaled, 100 * 400 / 365)
+  expect_equal(
+    calc_nondemo_avg_stock_phase_horizon(full, 0)$cohort_stock_size_unscaled,
+    0
+  )
+  expect_error(calc_nondemo_avg_stock_phase_horizon(
+    full, total_nondemo_cycle_starts_to_distribute = -1
+  ), "total_nondemo_cycle_starts_to_distribute")
+})
+
+test_that("annual non-demographic stock and offtake retain phases across year boundaries", {
+  cohort <- data.table::data.table(
+    herd_id = 1L, cohort_short = "FN", nondemo_productive_phase_id = c(1, 2),
+    death_rate = 0
+  )
+  herd <- data.table::data.table(
+    herd_id = 1L, cohort_stock_fem_annual_nondemo = 100,
+    cohort_stock_mal_annual_nondemo = 0, rest_between_nondemo_cycles_duration = 0,
+    phase1_nondemo_fem_duration_days = 400, phase2_nondemo_fem_duration_days = 50,
+    phase1_nondemo_mal_duration_days = 30, phase2_nondemo_mal_duration_days = 0
+  )
+  for (duration in c(30, 364, 365, 400)) {
+    herd[, phase1_nondemo_fem_duration_days := duration]
+    result <- suppressMessages(run_nondemographic_herd_module(
+      cohort, herd, simulation_duration = 182.5
+    ))$cohort_level_results
+    expect_equal(result$nondemo_productive_phase_id, c(1, 2))
+    expect_equal(result$cohort_stock_size_unscaled, 100 * c(duration, 50) / 365)
+    expect_equal(result$offtake_heads_unscaled, c(0, 100))
+    expect_equal(result$offtake_heads_assessment_unscaled, c(0, 50))
+  }
+
+  cohort[, death_rate := c(0.2, 0.25)]
+  result <- suppressMessages(run_nondemographic_herd_module(cohort, herd))$cohort_level_results
+  expect_equal(result$cohort_stock_size_unscaled, c(90 * 400, 70 * 50) / 365)
+  expect_equal(result$offtake_heads_unscaled, c(0, 60))
+})
+
 test_that("validate_run_nondemographic_herd_module_inputs accepts valid example data", {
   cohort_level_data <- data.table::data.table(
     herd_id = c(1L, 1L, 1L, 1L),

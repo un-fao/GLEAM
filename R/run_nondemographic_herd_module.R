@@ -5,6 +5,9 @@
 #' Livestock Environmental Assessment Model (GLEAM) computational pipeline
 #' [run_gleam()]. It computes phase-specific average stock sizes and offtake
 #' numbers.
+#' Annual average stock and offtake include animals that entered before the
+#' assessment year, so productive phases can span year boundaries. Stock is
+#' returned unscaled; [run_all_herd_module()] applies any supplied herd-size target.
 #'
 #' @details
 #' The function operates over a \strong{365-day simulation horizon} to maintain
@@ -256,18 +259,12 @@ run_nondemographic_herd_module <- function(
       
       
       
-      # ---- Step 5: simulate phase 1 (full + partial) ----
+      # ---- Step 5: simulate full phase 1 ----
       full_simulation_phase1 <- calc_nondemo_phase(cohort_stock_nondemo_start_by_phase = start_size$cohort_stock_nondemo_start_cycle, 
                                                    productive_phase_nondemo_duration = phase1_nondemo_duration, 
                                                    death_rate_nondemo_phase = death_rate_phase1, 
                                                    max_simulation_days_nondemo_phase = phase1_nondemo_duration)
-      
-      
-      partial_simulation_phase1 <- calc_nondemo_phase(
-        cohort_stock_nondemo_start_by_phase = start_size$cohort_stock_nondemo_start_cycle,
-        productive_phase_nondemo_duration = phase1_nondemo_duration,
-        death_rate_nondemo_phase = death_rate_phase1,
-        max_simulation_days_nondemo_phase = geom$partial_phase1_nondemo_duration)
+
       
       
       # ---- Step 6: simulate phase 2 (linked start = end of phase 1) ----
@@ -277,29 +274,20 @@ run_nondemographic_herd_module <- function(
                                                    productive_phase_nondemo_duration = phase2_nondemo_duration, 
                                                    death_rate_nondemo_phase = death_rate_phase2, 
                                                    max_simulation_days_nondemo_phase = phase2_nondemo_duration)
-      
-      
-      partial_simulation_phase2 <- calc_nondemo_phase(
-        cohort_stock_nondemo_start_by_phase = cohort_stock_start_phase2,
-        productive_phase_nondemo_duration = phase2_nondemo_duration,
-        death_rate_nondemo_phase = death_rate_phase2,
-        max_simulation_days_nondemo_phase = geom$partial_phase2_nondemo_duration)
+
       
       
       # ---- Step 7: average stock ----
       cohort_stock_avg_phase1 <- calc_nondemo_avg_stock_phase_horizon(
         full_nondemo_phase = full_simulation_phase1,
-        partial_nondemo_phase = partial_simulation_phase1,
-        number_full_nondemo_cycles = geom$number_full_nondemo_cycles
+        total_nondemo_cycle_starts_to_distribute = geom$total_nondemo_cycle_starts_to_distribute
       )$cohort_stock_size_unscaled
       
       cohort_stock_avg_phase2 <- calc_nondemo_avg_stock_phase_horizon(
         full_nondemo_phase = full_simulation_phase2,
-        partial_nondemo_phase = partial_simulation_phase2,
-        number_full_nondemo_cycles = geom$number_full_nondemo_cycles
+        total_nondemo_cycle_starts_to_distribute = geom$total_nondemo_cycle_starts_to_distribute
       )$cohort_stock_size_unscaled
-      
-      
+
       # ---- Step 8: offtake (only last existing phase) ----
       off <- calc_nondemo_offtake_total_horizon(
         cohort_stock_nondemo_end_phase1 = full_simulation_phase1$cohort_stock_nondemo$end,
