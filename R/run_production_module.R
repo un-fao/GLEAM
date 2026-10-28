@@ -111,15 +111,16 @@
 #'
 #' @details
 #' This function represents the intermediate module of the Global Livestock Environmental
-#' Assessment Model (GLEAM) computational pipeline [run_gleam()] to estimate meat, milk and fibre 
+#' Assessment Model (GLEAM) computational pipeline [run_gleam()] to estimate meat, milk, fibre, and eggs
 #' production outputs from livestock and performs the following calculation sequence:
 #' \enumerate{
 #'   \item Milk outputs are computed using \code{\link{calc_milk_production}}
 #'   \item Fibre outputs are computed using \code{\link{calc_fibre_production}}
 #'   \item Meat outputs are computed using \code{\link{calc_meat_production}}
+#'   \item Eggs outputs are computed using \code{\link{calc_egg_production}}
 #' }
 #'
-#' For species/cohorts where milk or fibre production is not applicable, outputs are returned as zero.
+#' For species/cohorts where milk, fibre or egg production is not applicable, outputs are returned as zero.
 #' Food eggs are split among flagged \code{FA} and \code{FN} phase 2 cohorts
 #' in proportion to \code{cohort_stock_size}. The herd food-egg total is counted
 #' once. Reproductive eggs from \code{FA} are excluded from food production.
@@ -128,7 +129,8 @@
 #' \code{\link{run_gleam}},
 #' \code{\link{calc_milk_production}},
 #' \code{\link{calc_fibre_production}},
-#' \code{\link{calc_meat_production}}
+#' \code{\link{calc_meat_production}},
+#' \code{\link{calc_egg_production}}
 #'
 #' @examples
 #' \donttest{
