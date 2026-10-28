@@ -45,19 +45,19 @@ validate_run_metabolic_energy_req_module_inputs <- function(
 
   if (any(herd_level_data$species_short == "CHK")) {
     required_herd_cols <- c(required_herd_cols, "average_annual_temperature")
-    if (any(cohort_level_data$cohort_short == "FA" &
-            cohort_level_data$herd_id %in% herd_level_data$herd_id[herd_level_data$species_short == "CHK"])) {
-      required_herd_cols <- c(required_herd_cols, "egg_average_weight")
+    chicken_rows <- cohort_level_data$herd_id %in%
+      herd_level_data$herd_id[herd_level_data$species_short == "CHK"]
+    if (any(chicken_rows & cohort_level_data$cohort_short == "FA")) {
+      required_herd_cols <- c(
+        required_herd_cols, "egg_average_weight", "parturition_rate"
+      )
     }
 
-    if (
-      "is_egg_producing" %in% names(cohort_level_data) &&
-      any(cohort_level_data$is_egg_producing %in% TRUE, na.rm = TRUE)
-    ) {
+    if (any(chicken_rows & cohort_level_data$is_egg_producing %in% TRUE)) {
       required_herd_cols <- c(
         required_herd_cols,
         "egg_average_weight",
-        "egg_output_human_consumption"
+        "egg_human_consumption_yield"
       )
     }
   }

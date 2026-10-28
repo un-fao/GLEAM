@@ -311,21 +311,19 @@ test_that("calc_metabolic_energy_req_eggs handles chickens", {
   result <- calc_metabolic_energy_req_eggs(
     species_short = "CHK",
     cohort_short = "FA",
-    cohort_stock_size = 100,
-    egg_output_human_consumption = 36500,
+    egg_human_consumption_yield = 365,
     egg_average_weight = 0.06,
     parturition_rate = 120,
     is_egg_producing = TRUE
   )
 
-  egg_mass <- ((36500 / 365 / 100) + (120 / 365)) * 0.06
+  egg_mass <- ((365 / 365) + (120 / 365)) * 0.06
   expect_equal(result, egg_mass * 10.04)
   expect_equal(
     calc_metabolic_energy_req_eggs(
       species_short = "CHK",
       cohort_short = "FS",
-      cohort_stock_size = 100,
-      egg_output_human_consumption = 36500,
+      egg_human_consumption_yield = 365,
       egg_average_weight = 0.06,
       parturition_rate = 120
     ),
@@ -333,27 +331,25 @@ test_that("calc_metabolic_energy_req_eggs handles chickens", {
   )
 })
 
-test_that("calc_metabolic_energy_req_eggs uses explicit egg-producing FN flag", {
+test_that("FN egg energy includes food eggs only", {
   result <- calc_metabolic_energy_req_eggs(
     species_short = "CHK",
     cohort_short = "FN",
     nondemo_productive_phase_id = 2,
-    cohort_stock_size = 100,
-    egg_output_human_consumption = 36500,
+    egg_human_consumption_yield = 365,
     egg_average_weight = 0.06,
     parturition_rate = 120,
     is_egg_producing = TRUE
   )
 
-  egg_mass <- (36500 / 365 / 100) * 0.06
+  egg_mass <- (365 / 365) * 0.06
   expect_equal(result, egg_mass * 10.04)
   expect_equal(
     calc_metabolic_energy_req_eggs(
       species_short = "CHK",
       cohort_short = "FN",
       nondemo_productive_phase_id = 1,
-      cohort_stock_size = 100,
-      egg_output_human_consumption = 36500,
+      egg_human_consumption_yield = 365,
       egg_average_weight = 0.06,
       parturition_rate = 120
     ),
@@ -361,25 +357,86 @@ test_that("calc_metabolic_energy_req_eggs uses explicit egg-producing FN flag", 
   )
 })
 
-test_that("FA breeding eggs do not depend on the food flag and zero food stock stays finite", {
-  reproduction <- calc_metabolic_energy_req_eggs(
-    "CHK", "FA", egg_average_weight = 0.06, parturition_rate = 20,
+test_that("FA egg energy includes reproduction when the food-egg flag is false", {
+  args <- list(
+    species_short = "CHK", cohort_short = "FA",
+    egg_average_weight = 0.06, parturition_rate = 365,
     is_egg_producing = FALSE
   )
-  expect_equal(reproduction, 20 / 365 * 0.06 * 10.04)
-  expect_equal(calc_metabolic_energy_req_eggs(
-    "CHK", "FA", parturition_rate = 0, is_egg_producing = FALSE
-  ), 0)
-  expect_equal(calc_metabolic_energy_req_eggs(
-    "CHK", "FN", cohort_stock_size = 0, egg_output_human_consumption = 0,
-    egg_average_weight = 0.06, nondemo_productive_phase_id = 2,
+  expect_equal(do.call(calc_metabolic_energy_req_eggs, args), 0.6024)
+  expect_equal(do.call(calc_metabolic_energy_req_eggs,
+    c(args, list(egg_human_consumption_yield = 365))
+  ), 0.6024)
+  expect_error(do.call(calc_metabolic_energy_req_eggs,
+    modifyList(args, list(parturition_rate = NA_real_))
+  ), "parturition_rate")
+  expect_error(do.call(calc_metabolic_energy_req_eggs,
+    modifyList(args, list(parturition_rate = -1))
+  ), "parturition_rate")
+  expect_error(do.call(calc_metabolic_energy_req_eggs,
+    modifyList(args, list(egg_average_weight = NA_real_))
+  ), "egg_average_weight")
+  expect_error(do.call(calc_metabolic_energy_req_eggs,
+    modifyList(args, list(is_egg_producing = TRUE))
+  ), "egg_human_consumption_yield")
+})
+
+test_that("FN food-egg energy does not require reproductive inputs", {
+  args <- list(
+    species_short = "CHK", cohort_short = "FN",
+    nondemo_productive_phase_id = 2,
+    egg_human_consumption_yield = 365, egg_average_weight = 0.06,
     is_egg_producing = TRUE
+  )
+  expect_equal(do.call(calc_metabolic_energy_req_eggs, args), 0.6024)
+  expect_error(do.call(calc_metabolic_energy_req_eggs,
+    modifyList(args, list(egg_human_consumption_yield = NA_real_))
+  ), "egg_human_consumption_yield")
+  expect_error(do.call(calc_metabolic_energy_req_eggs,
+    modifyList(args, list(egg_average_weight = 0))
+  ), "egg_average_weight")
+  expect_equal(calc_metabolic_energy_req_eggs(
+    species_short = "CHK", cohort_short = "FN",
+    nondemo_productive_phase_id = 2, is_egg_producing = FALSE
   ), 0)
-  expect_error(calc_metabolic_energy_req_eggs(
-    "CHK", "FN", cohort_stock_size = 0, egg_output_human_consumption = 10,
-    egg_average_weight = 0.06, nondemo_productive_phase_id = 2,
-    is_egg_producing = TRUE
-  ), "cohort_stock_size")
+})
+
+test_that("energy and nitrogen modules require only the egg inputs they use", {
+  path <- system.file("extdata/run_modules_examples", package = "gleam")
+  for (module in c("metabolic_energy_req", "nitrogen_balance")) {
+    cohort <- data.table::fread(file.path(
+      path, paste0(module, "_input_chrt_data.csv")
+    ))[herd_id == 13]
+    herd <- data.table::fread(file.path(
+      path, paste0(module, "_input_hrd_data.csv")
+    ))[herd_id == 13]
+    cohort[, is_egg_producing := FALSE]
+    cohort[cohort_short == "FA", daily_weight_gain := 0]
+    herd[, `:=`(parturition_rate = 120, egg_average_weight = 0.06)]
+    herd[, egg_human_consumption_yield := NULL]
+    run_module <- get(paste0("run_", module, "_module"))
+    value_col <- if (module == "metabolic_energy_req") {
+      "metabolic_energy_req_egg_deposition"
+    } else {
+      "nitrogen_retention"
+    }
+    coefficient <- if (module == "metabolic_energy_req") 10.04 else 0.02
+
+    output <- suppressMessages(run_module(cohort, herd, show_indicator = FALSE))
+    expect_equal(output[cohort_short == "FA"][[value_col]],
+      120 / 365 * 0.06 * coefficient)
+    without_weight <- data.table::copy(herd)[, egg_average_weight := NULL]
+    expect_error(run_module(cohort, without_weight, show_indicator = FALSE),
+      "egg_average_weight")
+
+    fn <- data.table::copy(cohort[cohort_short == "FA"])
+    fn[, `:=`(cohort_short = "FN", nondemo_productive_phase_id = 2,
+      is_egg_producing = TRUE)]
+    food_herd <- data.table::copy(herd)[, parturition_rate := NULL]
+    food_herd[, egg_human_consumption_yield := 200]
+    food_output <- suppressMessages(run_module(fn, food_herd, show_indicator = FALSE))
+    expect_equal(food_output[[value_col]], 200 / 365 * 0.06 * coefficient)
+  }
 })
 
 test_that("calc_metabolic_energy_req_eggs validates egg-producing flag placement", {
@@ -387,8 +444,7 @@ test_that("calc_metabolic_energy_req_eggs validates egg-producing flag placement
     calc_metabolic_energy_req_eggs(
       species_short = "CHK",
       cohort_short = "FS",
-      cohort_stock_size = 100,
-      egg_output_human_consumption = 36500,
+      egg_human_consumption_yield = 365,
       egg_average_weight = 0.06,
       parturition_rate = 120,
       is_egg_producing = TRUE
@@ -401,8 +457,7 @@ test_that("calc_metabolic_energy_req_eggs validates egg-producing flag placement
       species_short = "CHK",
       cohort_short = "FN",
       nondemo_productive_phase_id = 1,
-      cohort_stock_size = 100,
-      egg_output_human_consumption = 36500,
+      egg_human_consumption_yield = 365,
       egg_average_weight = 0.06,
       parturition_rate = 120,
       is_egg_producing = TRUE

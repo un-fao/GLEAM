@@ -75,7 +75,7 @@ period).}
 }
 Optional column (both cases):
 \describe{
-\item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+\item{is_egg_producing}{Logical. Indicates whether the cohort is a food-egg-producing
 chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
 \code{FA} or for \code{FN} in laying phase 2.}
 \item{ch4_mitigation_factor}{Numeric. Multiplicative factor applied to
@@ -128,7 +128,8 @@ cohorts (FJ, MJ) (fraction).}
 Required for PGS.}
 \item{parturition_rate}{Numeric. Average annual number of parturitions
 per female animal (# parturitions/adult female/year). For \code{CHK},
-this corresponds to eggs laid for reproduction.}
+this corresponds to eggs laid for reproduction by \code{FA} only,
+regardless of its food-egg flag.}
 \item{litter_size}{Numeric. Average number of offspring produced per
 parturition (# offspring/parturition). For \code{CHK}, this can be
 interpreted as offspring produced per reproductive event.}
@@ -136,8 +137,8 @@ interpreted as offspring produced per reproductive event.}
 (degrees C). Used for \code{CHK}.}
 \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for
 \code{CHK}.}
-\item{egg_output_human_consumption}{Numeric. Number of eggs produced for
-human consumption in one year by the flock (eggs/year). Used for
+\item{egg_human_consumption_yield}{Numeric. Number of eggs produced for
+human consumption in one year by hen (eggs/year/animal). Used for
 \code{CHK}.}
 \item{draught_work_hours_female}{Numeric. Average daily working time per
 adult female (hours/head/day). Required for CTL, BFL, CML.}

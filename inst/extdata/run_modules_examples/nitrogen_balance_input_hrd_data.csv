@@ -1,4 +1,4 @@
-herd_id	species_short	milk_protein_fraction	milk_yield_day	fibre_yield_year	litter_size	parturition_rate	live_weight_at_weaning	live_weight_at_birth	pregnancy_duration	egg_output_human_consumption	egg_average_weight
+herd_id	species_short	milk_protein_fraction	milk_yield_day	fibre_yield_year	litter_size	parturition_rate	live_weight_at_weaning	live_weight_at_birth	pregnancy_duration	egg_human_consumption_yield	egg_average_weight
 1	CTL	0.031	27.9	0	1	0.8	250	41	283		
 2	CTL	0	0	0	1	0.684	220	14	283		
 3	SHP	0.058	0.212	1.5	1	0.93	30	4.19	152		
@@ -11,4 +11,4 @@ herd_id	species_short	milk_protein_fraction	milk_yield_day	fibre_yield_year	litt
 10	PGS				7	1.6	6	1	115		
 11	CML	0.035	4.17	1	1	0.43	120	28.7	390		
 12	CML	0.035	9.72	1	1	0.83	150	32.7	390		
-13	CHK	0		0	0.75	45	0.04	0.04		180000	0.06
+13	CHK	0		0	0.75	45	0.04	0.04		200	0.06

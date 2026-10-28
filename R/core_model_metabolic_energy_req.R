@@ -961,40 +961,38 @@ calc_metabolic_energy_req_lactation <- function(
 #'         \item \code{MJ}: juvenile males (from birth to weaning)
 #'         \item \code{MN}: non-demographic males
 #'         }
-#' @param cohort_stock_size Numeric. Average population size in each cohort
-#'       (heads).
-#' @param egg_output_human_consumption Numeric. Annual human-consumption eggs
-#'   allocated to this cohort (eggs/year).
+#' @param egg_human_consumption_yield Numeric. Number of eggs produced for human
+#'   consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.
 #' @param egg_average_weight Numeric. Average egg weight (kg/egg).
 #' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
 #' For \code{CHK}, this corresponds to eggs laid for reproduction by \code{FA} only.
 #' @param nondemo_productive_phase_id Numeric. Optional productive phase identifier
 #'     for non-demographic cohorts (\code{FN}, \code{MN}).
-#' @param is_egg_producing Logical. Indicates whether the cohort is an egg-producing
-#'     chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
+#' @param is_egg_producing Logical. Indicates whether the cohort produces eggs
+#'     for human consumption. Used only for \code{CHK}; may be \code{TRUE} only for
 #'     \code{FA} or for \code{FN} in laying phase 2.
 #'
 #' @return Numeric. Metabolizable energy required for egg deposition
 #'   (MJ/head/day).
 #'
 #' @details
-#' The flag \code{is_egg_producing} controls food eggs for \code{FA} and
-#' \code{FN} phase 2. The run-level module divides the herd food-egg total
-#' between flagged cohorts in proportion to their average stock.
-#' Reproductive eggs are calculated from \code{parturition_rate} for \code{FA}
-#' regardless of the flag. \code{FN} never receives reproductive eggs.
+#' For chickens, energy required to produce reproductive eggs is included
+#' for the \code{FA} cohort. Energy required to produce eggs for human
+#' consumption is included only when \code{is_egg_producing = TRUE}.
+#' This flag is allowed only for \code{FA} and for non-demographic \code{FN}
+#' cohorts in productive phase 2.
 #'
 #' Daily egg mass per head is calculated as:
 #'
 #' \deqn{
 #' egg\_mass\_production =
-#' (food\_eggs\_head\_day + reproductive\_eggs\_head\_day)
+#' (human\_consumption\_eggs\_head\_day + reproductive\_eggs\_head\_day)
 #' \times egg\_average\_weight
 #' }
-#' Food eggs per head per day are the allocated annual food eggs divided by
-#' \code{365 * cohort_stock_size}, or zero when the food flag is false.
-#' Reproductive eggs per head per day are \code{parturition_rate / 365} for
-#' \code{FA}, and zero for other cohorts.
+#' Human-consumption eggs per head per day equal
+#' \code{egg_human_consumption_yield / 365} when the food-egg flag is true,
+#' and zero otherwise. Reproductive eggs per head per day equal
+#' \code{parturition_rate / 365} for \code{FA}, and zero for other cohorts.
 #'
 #' Daily egg energy is then:
 #'
@@ -1011,8 +1009,7 @@ calc_metabolic_energy_req_lactation <- function(
 calc_metabolic_energy_req_eggs <- function(
     species_short,
     cohort_short,
-    cohort_stock_size = NA_real_,
-    egg_output_human_consumption = NA_real_,
+    egg_human_consumption_yield = NA_real_,
     egg_average_weight = NA_real_,
     parturition_rate = NA_real_,
     nondemo_productive_phase_id = NA_real_,
@@ -1020,7 +1017,7 @@ calc_metabolic_energy_req_eggs <- function(
 ) {
   validate_egg_inputs(
     species_short, cohort_short,
-    cohort_stock_size, egg_output_human_consumption, egg_average_weight,
+    egg_human_consumption_yield, egg_average_weight,
     parturition_rate, nondemo_productive_phase_id,
     is_egg_producing
   )
@@ -1030,15 +1027,28 @@ calc_metabolic_energy_req_eggs <- function(
   }
 
   if (!(cohort_short == "FA" ||
-      (cohort_short == "FN" && isTRUE(is_egg_producing)))) {
+        (cohort_short == "FN" && isTRUE(is_egg_producing)))) {
     return(0)
   }
 
   cegg <- 10.04
-  egg_mass_production <- calc_chicken_egg_mass_head_day(
-    cohort_short, cohort_stock_size, egg_output_human_consumption,
-    egg_average_weight, parturition_rate, is_egg_producing
-  )
+
+  human_consumption_eggs_head_day <- if (isTRUE(is_egg_producing)) {
+    egg_human_consumption_yield / 365
+  } else {
+    0
+  }
+
+  reproductive_eggs_head_day <- if (cohort_short == "FA") {
+    parturition_rate / 365
+  } else {
+    0
+  }
+
+  egg_mass_production <- (
+    human_consumption_eggs_head_day + reproductive_eggs_head_day
+  ) * egg_average_weight
+
   metabolic_energy_req_egg <- egg_mass_production * cegg
 
   return(metabolic_energy_req_egg)

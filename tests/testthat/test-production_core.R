@@ -1,68 +1,3 @@
-test_that("food eggs are allocated per herd using only flagged laying populations", {
-  cohort <- data.table::data.table(
-    herd_id = rep(c(1L, 2L), each = 3),
-    cohort_short = rep(c("FA", "FN", "FN"), 2),
-    nondemo_productive_phase_id = rep(c(NA_real_, 1, 2), 2),
-    is_egg_producing = rep(c(TRUE, FALSE, TRUE), 2),
-    cohort_stock_size = c(60, 400, 40, 0, 400, 100)
-  )
-  herd <- data.table::data.table(
-    herd_id = c(2L, 1L), species_short = "CHK",
-    egg_output_human_consumption = c(73000, 36500)
-  )
-  original <- data.table::copy(cohort)
-  expect_equal(allocate_egg_output_human_consumption(cohort, herd),
-    c(21900, 0, 14600, 0, 0, 73000))
-  expect_equal(cohort, original)
-
-  cohort[herd_id == 1, cohort_stock_size := 0]
-  expect_error(allocate_egg_output_human_consumption(cohort, herd), "positive.*cohort_stock_size")
-  herd[herd_id == 1, egg_output_human_consumption := 0]
-  expect_equal(allocate_egg_output_human_consumption(cohort, herd), c(0, 0, 0, 0, 0, 73000))
-})
-
-test_that("production, energy and nitrogen use the same food-egg population shares", {
-  herd <- data.table::fread(system.file(
-    "extdata/run_gleam_examples/master_hrd_lvl_structure_data.csv", package = "gleam"
-  ))[herd_id == 13]
-  herd[, `:=`(egg_output_human_consumption = 36500, egg_average_weight = 0.06, parturition_rate = 20)]
-  cohort <- data.table::data.table(
-    herd_id = 13L, cohort_short = c("FA", "FJ", "FS", "MA", "MJ", "MS", "FN", "FN"),
-    nondemo_productive_phase_id = c(rep(NA_real_, 6), 1, 2),
-    is_egg_producing = FALSE, cohort_stock_size = c(60, rep(1, 5), 400, 40),
-    offtake_heads_assessment = 0, live_weight_cohort_at_slaughter = 1.8,
-    live_weight_cohort_average = 1.8, live_weight_cohort_initial = 1.8,
-    live_weight_cohort_final = 1.8, live_weight_mature_stage = 1.8,
-    daily_weight_gain = 0, cohort_duration_days = 365, offtake_rate = 0,
-    low_activity_fraction = 1, high_activity_fraction = 0,
-    ration_digestibility_fraction = 0.7, ration_gross_energy = 18,
-    ration_metabolizable_energy = 12, ration_nitrogen = 0.03
-  )
-  cases <- list(
-    list(flags = c(TRUE, TRUE), eggs = c(21900, 14600)),
-    list(flags = c(TRUE, FALSE), eggs = c(36500, 0)),
-    list(flags = c(FALSE, TRUE), eggs = c(0, 36500)),
-    list(flags = c(FALSE, FALSE), eggs = c(0, 0))
-  )
-  for (case in cases) {
-    input <- data.table::copy(cohort)
-    input[c(1L, 8L), is_egg_producing := case$flags]
-    energy <- run_metabolic_energy_req_module(input, herd, show_indicator = FALSE)
-    nitrogen <- run_nitrogen_balance_module(energy, herd, show_indicator = FALSE)
-    production <- run_production_module(nitrogen, herd, simulation_duration = 182.5, show_indicator = FALSE)
-
-    food_eggs <- numeric(8)
-    food_eggs[c(1L, 8L)] <- case$eggs
-    egg_mass_head_day <- food_eggs / 365 / input$cohort_stock_size * 0.06
-    egg_mass_head_day[1] <- egg_mass_head_day[1] + 20 / 365 * 0.06
-    expect_equal(production$egg_production_number_cohort, food_eggs / 2)
-    expect_equal(sum(production$egg_production_number_cohort), sum(case$eggs) / 2)
-    expect_equal(energy$metabolic_energy_req_egg_deposition, egg_mass_head_day * 10.04)
-    expect_equal(nitrogen$nitrogen_retention, egg_mass_head_day * 0.02)
-    expect_equal(production$egg_production_mass_cohort, food_eggs / 2 * 0.06)
-  }
-})
-
 # ---- test calc_milk_production ----
 test_that("calc_milk_production returns expected output structure", {
   result <- calc_milk_production(
@@ -321,7 +256,8 @@ test_that("calc_egg_production returns expected chicken outputs", {
   result <- calc_egg_production(
     species_short = "CHK",
     cohort_short = "FA",
-    egg_output_human_consumption = 36500,
+    egg_human_consumption_yield = 365,
+    cohort_stock_size = 100,
     egg_average_weight = 0.06,
     simulation_duration = 365,
     is_egg_producing = TRUE
@@ -337,7 +273,8 @@ test_that("calc_egg_production returns expected outputs for egg-producing chicke
     species_short = "CHK",
     cohort_short = "FN",
     nondemo_productive_phase_id = 2,
-    egg_output_human_consumption = 36500,
+    egg_human_consumption_yield = 365,
+    cohort_stock_size = 100,
     egg_average_weight = 0.06,
     simulation_duration = 365,
     is_egg_producing = TRUE
@@ -353,7 +290,8 @@ test_that("calc_egg_production validates egg-producing flag placement", {
     calc_egg_production(
       species_short = "CHK",
       cohort_short = "FS",
-      egg_output_human_consumption = 36500,
+      egg_human_consumption_yield = 365,
+      cohort_stock_size = 100,
       egg_average_weight = 0.06,
       simulation_duration = 365,
       is_egg_producing = TRUE
@@ -366,13 +304,62 @@ test_that("calc_egg_production validates egg-producing flag placement", {
       species_short = "CHK",
       cohort_short = "FN",
       nondemo_productive_phase_id = 1,
-      egg_output_human_consumption = 36500,
+      egg_human_consumption_yield = 365,
+      cohort_stock_size = 100,
       egg_average_weight = 0.06,
       simulation_duration = 365,
       is_egg_producing = TRUE
     ),
     "can be TRUE for.*FN.*only when.*2"
   )
+})
+
+test_that("per-hen egg yield gives consistent energy, nitrogen and population totals", {
+  # One food egg per hen per day, with no reproductive eggs or live-weight gain.
+  cohort <- c("FA", "FN")
+  phase <- c(NA_real_, 2)
+  stock <- c(40, 60)
+  eggs <- numeric(2)
+  for (i in seq_along(cohort)) {
+    expect_equal(calc_metabolic_energy_req_eggs(
+      species_short = "CHK", cohort_short = cohort[i],
+      egg_human_consumption_yield = 365, egg_average_weight = 0.06,
+      parturition_rate = 0, nondemo_productive_phase_id = phase[i],
+      is_egg_producing = TRUE
+    ), 0.6024)
+    expect_equal(calc_nitrogen_retention(
+      species_short = "CHK", cohort_short = cohort[i], daily_weight_gain = 0,
+      egg_human_consumption_yield = 365, egg_average_weight = 0.06,
+      parturition_rate = 0, nondemo_productive_phase_id = phase[i],
+      is_egg_producing = TRUE
+    ), 0.0012)
+    eggs[i] <- calc_egg_production(
+      species_short = "CHK", cohort_short = cohort[i],
+      egg_human_consumption_yield = 365, cohort_stock_size = stock[i],
+      egg_average_weight = 0.06, simulation_duration = 365,
+      nondemo_productive_phase_id = phase[i], is_egg_producing = TRUE
+    )$egg_production_number_cohort
+  }
+  expect_equal(eggs, c(14600, 21900))
+  expect_equal(sum(eggs), 36500)
+  expect_equal(calc_egg_production(
+    species_short = "CHK", cohort_short = "FA",
+    egg_human_consumption_yield = 365, cohort_stock_size = 100,
+    egg_average_weight = 0.06, simulation_duration = 365,
+    is_egg_producing = FALSE
+  )$egg_production_number_cohort, 0)
+  expect_equal(calc_egg_production(
+    species_short = "CHK", cohort_short = "FA",
+    egg_human_consumption_yield = 365, cohort_stock_size = 100,
+    egg_average_weight = 0.06, simulation_duration = 182.5,
+    is_egg_producing = TRUE
+  )$egg_production_number_cohort, 18250)
+  expect_error(calc_egg_production(
+    species_short = "CHK", cohort_short = "FA",
+    egg_human_consumption_yield = -1, cohort_stock_size = 100,
+    egg_average_weight = 0.06, simulation_duration = 365,
+    is_egg_producing = TRUE
+  ), "egg_human_consumption_yield")
 })
 
 

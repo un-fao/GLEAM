@@ -174,14 +174,13 @@ validate_growth_inputs <- function(
   }
 }
 
-#' Validate inputs for calc_metabolic_energy_req_eggs
+#' Validate egg-deposition inputs for energy and nitrogen calculations
 #'
 #' @noRd
 validate_egg_inputs <- function(
     species_short,
     cohort_short,
-    cohort_stock_size = NA_real_,
-    egg_output_human_consumption = NA_real_,
+    egg_human_consumption_yield = NA_real_,
     egg_average_weight = NA_real_,
     parturition_rate = NA_real_,
     nondemo_productive_phase_id = NA_real_,
@@ -197,19 +196,17 @@ validate_egg_inputs <- function(
   )
 
   if (species_short != "CHK") return()
-  if (cohort_short == "FA") {
-    validate_nonnegative_numeric(parturition_rate)
-    if (parturition_rate > 0) validate_positive_numeric(egg_average_weight)
+
+  has_reproductive_eggs <- cohort_short == "FA"
+  has_food_eggs <- isTRUE(is_egg_producing)
+  if (!has_reproductive_eggs && !has_food_eggs) return()
+
+  validate_positive_numeric(egg_average_weight)
+  if (has_food_eggs) {
+    validate_nonnegative_numeric(egg_human_consumption_yield)
   }
-  if (isTRUE(is_egg_producing)) {
-    validate_nonnegative_numeric(cohort_stock_size)
-    validate_positive_numeric(egg_average_weight)
-    validate_nonnegative_numeric(egg_output_human_consumption)
-    if (cohort_stock_size == 0 && egg_output_human_consumption > 0) {
-      cli::cli_abort(
-        "Positive {.arg egg_output_human_consumption} requires positive {.arg cohort_stock_size}."
-      )
-    }
+  if (has_reproductive_eggs) {
+    validate_nonnegative_numeric(parturition_rate)
   }
 }
 

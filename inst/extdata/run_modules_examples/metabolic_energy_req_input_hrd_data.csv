@@ -1,4 +1,4 @@
-herd_id	species_short	age_first_parturition	lactating_females_fraction	milk_yield_day	milk_fat_fraction	non_productive_duration	pregnancy_duration	litter_size	death_rate_juvenile	live_weight_at_birth	live_weight_at_weaning	lactation_duration	parturition_rate	draught_work_hours_female	draught_work_hours_male	draught_fraction_female	draught_fraction_male	fibre_yield_year	average_annual_temperature	egg_output_human_consumption	egg_average_weight
+herd_id	species_short	age_first_parturition	lactating_females_fraction	milk_yield_day	milk_fat_fraction	non_productive_duration	pregnancy_duration	litter_size	death_rate_juvenile	live_weight_at_birth	live_weight_at_weaning	lactation_duration	parturition_rate	draught_work_hours_female	draught_work_hours_male	draught_fraction_female	draught_fraction_male	fibre_yield_year	average_annual_temperature	egg_human_consumption_yield	egg_average_weight
 1	CTL	770	0.4	27.9	0.037		283	1		41	250		0.8	0	0	0	0	0			
 2	CTL	1460	0	0	0		283	1		14	220		0.684	0	1.1	0	0.2	0			
 3	SHP	508	0.3	0.212	0.066		152	1		4.19	30		0.93					1.5			
@@ -11,4 +11,4 @@ herd_id	species_short	age_first_parturition	lactating_females_fraction	milk_yiel
 10	PGS	430				23	115	7	0.22	1	6	90	1.6								
 11	CML	2560	0.3	4.17	0.035		390	1		28.7	120		0.43	0	2	0	0.1	1			
 12	CML	1640	0.3	9.72	0.035		390	1		32.7	150		0.83	0	2	0	0.1	1			
-13	CHK	170			0			0.75	0.12	0.04	0.04		45					0	20	180000	0.06
+13	CHK	170			0			0.75	0.12	0.04	0.04		45					0	20	200	0.06

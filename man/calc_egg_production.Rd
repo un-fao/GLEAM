@@ -7,16 +7,21 @@
 calc_egg_production(
   species_short,
   cohort_short,
-  egg_output_human_consumption,
+  egg_human_consumption_yield,
   egg_average_weight,
   simulation_duration,
+  cohort_stock_size,
   egg_protein_fraction = 0.125,
   nondemo_productive_phase_id = NA_real_,
   is_egg_producing = FALSE
 )
 }
 \arguments{
-\item{species_short}{Character. Code identifying the livestock species.}
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{CHK}: chickens
+}}
 
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals.
 Supported values include:
@@ -31,19 +36,21 @@ Supported values include:
 \item \code{MN}: non-demographic males
 }}
 
-\item{egg_output_human_consumption}{Numeric. Annual human-consumption eggs
-allocated to this cohort (eggs/year).}
+\item{egg_human_consumption_yield}{Numeric. Number of eggs produced for human
+consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.}
 
 \item{egg_average_weight}{Numeric. Average egg weight (kg/egg).}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
+
+\item{cohort_stock_size}{Numeric. Average population size of the assessed cohort (heads).}
 
 \item{egg_protein_fraction}{Numeric. Protein content of whole egg (kg protein/kg egg).}
 
 \item{nondemo_productive_phase_id}{Numeric. Optional productive phase
 identifier for non-demographic cohorts.}
 
-\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\item{is_egg_producing}{Logical. Cohort-level flag identifying food-egg-producing
 \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
 \code{FN} with \code{nondemo_productive_phase_id = 2}.}
 }
@@ -51,22 +58,20 @@ identifier for non-demographic cohorts.}
 A named list with total egg number, mass, and protein over the assessment period.
 }
 \description{
-Calculates egg outputs for chickens over the assessment period.
+Calculates food-egg outputs for chickens over the assessment period.
 }
 \details{
-Egg production is computed only for cohorts flagged with
+Food-egg production is computed only for cohorts flagged with
 \code{is_egg_producing = TRUE}. Validation restricts this flag to
 demographic laying hens (\code{FA}) and to non-demographic \code{FN} phase 2
 when intensive layers are represented in the non-demographic pathway.
-The run-level module splits the herd food-egg total among flagged \code{FA}
-and \code{FN} phase 2 cohorts in proportion to their average stock.
 Reproductive eggs from \code{FA} are excluded from these food outputs.
 
 The following equations are applied:
 
 \deqn{
 egg\_production\_number\_cohort =
-\frac{egg\_output\_human\_consumption}{365} \times simulation\_duration
+\frac{egg\_human\_consumption\_yield}{365} \times cohort\_stock\_size \times simulation\_duration
 }
 
 \deqn{

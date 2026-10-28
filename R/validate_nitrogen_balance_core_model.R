@@ -22,8 +22,7 @@ validate_nitrogen_retention_inputs <- function(
     live_weight_at_birth = NA_real_,
     pregnancy_duration = NA_real_,
     cohort_duration_days = NA_real_,
-    cohort_stock_size = NA_real_,
-    egg_output_human_consumption = NA_real_,
+    egg_human_consumption_yield = NA_real_,
     egg_average_weight = NA_real_,
     nondemo_productive_phase_id = NA_real_,
     is_egg_producing = FALSE
@@ -74,9 +73,13 @@ validate_nitrogen_retention_inputs <- function(
   } else if (species_short == "CHK") {
     validate_scalar_numeric(daily_weight_gain)
     validate_egg_inputs(
-      species_short, cohort_short, cohort_stock_size,
-      egg_output_human_consumption, egg_average_weight, parturition_rate,
-      nondemo_productive_phase_id, is_egg_producing
+      species_short = species_short,
+      cohort_short = cohort_short,
+      egg_human_consumption_yield = egg_human_consumption_yield,
+      egg_average_weight = egg_average_weight,
+      parturition_rate = parturition_rate,
+      nondemo_productive_phase_id = nondemo_productive_phase_id,
+      is_egg_producing = is_egg_producing
     )
   }
 

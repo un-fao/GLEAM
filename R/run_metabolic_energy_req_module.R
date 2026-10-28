@@ -20,7 +20,7 @@
 #'     \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
 #'     for non-demographic cohorts (\code{FN}, \code{MN}). When present, energy
 #'     requirements are computed and retained separately by phase.}
-#'     \item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+#'     \item{is_egg_producing}{Logical. Indicates whether the cohort is a food-egg-producing
 #'     chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
 #'     \code{FA} or for \code{FN} in laying phase 2.}
 #'     \item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).}
@@ -62,10 +62,10 @@
 #'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.}
-#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction.}
+#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction by \code{FA} only, regardless of its food-egg flag.}
 #'     \item{average_annual_temperature}{Numeric. Average annual temperature (degrees C). Used for \code{CHK}.}
 #'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}.}
-#'     \item{egg_output_human_consumption}{Numeric. Number of eggs produced for human consumption in one year by the flock (eggs/year). Used for \code{CHK}.}
+#'     \item{egg_human_consumption_yield}{Numeric. Number of eggs produced for human consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.}
 #'     \item{draught_work_hours_female}{Numeric. Average daily working time per adult female (hours/head/day). Required only for species = CML, CTL, and BFL.}
 #'     \item{draught_work_hours_male}{Numeric. Average daily working time per adult male (hours/head/day). Required only for species = CML, CTL, and BFL.}
 #'     \item{draught_fraction_female}{Numeric. Fraction of adult females involved in draught work (fraction). Required only for species = CML, CTL, and BFL.}
@@ -100,10 +100,6 @@
 #'   }
 #'
 #' @details
-#' Food eggs are allocated among flagged \code{FA} and \code{FN} phase 2
-#' cohorts by average stock. Reproductive eggs use \code{parturition_rate}
-#' for \code{FA} only, including when its food-egg flag is false.
-#'
 #' This function joins \code{cohort_level_data} with \code{herd_level_data} by \code{herd_id},
 #' uses \code{species_short} directly for all species-specific energy calculations,
 #' and computes IPCC Tier 2 energy partition components and derived feed intake metrics by cohort.
@@ -189,7 +185,6 @@ run_metabolic_energy_req_module <- function(
   # --- Step 2: Create working copies ------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
-  food_eggs_by_cohort <- allocate_egg_output_human_consumption(cohort_level_data, herd_level_data)
 
   # --- Step 3: Maintenance energy (MJ/day) ------------------------------------
   cohort_level_data[
@@ -299,8 +294,7 @@ run_metabolic_energy_req_module <- function(
     metabolic_energy_req_egg_deposition := calc_metabolic_energy_req_eggs(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
-      cohort_stock_size = cohort_stock_size,
-      egg_output_human_consumption = food_eggs_by_cohort[.I],
+      egg_human_consumption_yield = herd_level_data[.SD, on = "herd_id", x.egg_human_consumption_yield],
       egg_average_weight = herd_level_data[.SD, on = "herd_id", x.egg_average_weight],
       parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
       nondemo_productive_phase_id = nondemo_productive_phase_id,

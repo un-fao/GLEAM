@@ -31,6 +31,12 @@ validate_run_production_module_inputs <- function(
     "fibre_yield_year",
     "carcass_dressing_fraction", "bone_free_meat_fraction", "meat_protein_fraction"
   )
+  if (any(herd_level_data$species_short == "CHK") &&
+      any(cohort_level_data$is_egg_producing %in% TRUE, na.rm = TRUE)) {
+    required_herd_cols <- c(
+      required_herd_cols, "egg_human_consumption_yield", "egg_average_weight"
+    )
+  }
   check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
   check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
 

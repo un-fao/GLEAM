@@ -74,7 +74,8 @@ validate_fibre_output_inputs <- function(
 validate_egg_output_inputs <- function(
     species_short,
     cohort_short,
-    egg_output_human_consumption,
+    egg_human_consumption_yield,
+    cohort_stock_size,
     egg_average_weight,
     simulation_duration,
     egg_protein_fraction,
@@ -92,13 +93,14 @@ validate_egg_output_inputs <- function(
 
   if (!isTRUE(is_egg_producing)) return()
 
-  validate_scalar_numeric(egg_output_human_consumption)
+  validate_scalar_numeric(egg_human_consumption_yield)
+  validate_param_range(cohort_stock_size)
   validate_positive_numeric(egg_average_weight)
   validate_scalar_numeric(simulation_duration)
   validate_scalar_numeric(egg_protein_fraction)
 
-  if (egg_output_human_consumption < 0) {
-    cli::cli_abort("{.arg egg_output_human_consumption} must be greater than or equal to 0.")
+  if (egg_human_consumption_yield < 0) {
+    cli::cli_abort("{.arg egg_human_consumption_yield} must be greater than or equal to 0.")
   }
   if (egg_protein_fraction < 0 || egg_protein_fraction > 1) {
     cli::cli_abort("{.arg egg_protein_fraction} must be between 0 and 1.")

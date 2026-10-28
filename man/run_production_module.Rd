@@ -31,7 +31,7 @@ Supported values include:
 \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
 for non-demographic cohorts (\code{FN}, \code{MN}). When present, production
 outputs are retained separately by phase.}
-\item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+\item{is_egg_producing}{Logical. Indicates whether the cohort is a food-egg-producing
 chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
 \code{FA} or for \code{FN} in laying phase 2.}
 \item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads).}
@@ -74,6 +74,8 @@ Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033
 (FPCM), (kg fat/kg milk). Suggested value = 0.04.}
 \item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate
 Fat-protein-corrected milk (FPCM), (kg lactose/kg milk). Suggested value = 0.048.}
+\item{egg_human_consumption_yield}{Numeric. Number of eggs produced for human consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.}
+\item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}.}
 \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
 Required only for species = CML, SHP, and GTS.}
 \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
@@ -126,18 +128,20 @@ The function returns milk, fibre, meat, and egg outputs for each cohort.
 }
 \details{
 This function represents the intermediate module of the Global Livestock Environmental
-Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to estimate meat, milk and fibre
+Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to estimate meat, milk, fibre, and eggs
 production outputs from livestock and performs the following calculation sequence:
 \enumerate{
 \item Milk outputs are computed using \code{\link{calc_milk_production}}
 \item Fibre outputs are computed using \code{\link{calc_fibre_production}}
 \item Meat outputs are computed using \code{\link{calc_meat_production}}
+\item Eggs outputs are computed using \code{\link{calc_egg_production}}
 }
 
-For species/cohorts where milk or fibre production is not applicable, outputs are returned as zero.
-Food eggs are split among flagged \code{FA} and \code{FN} phase 2 cohorts
-in proportion to \code{cohort_stock_size}. The herd food-egg total is counted
-once. Reproductive eggs from \code{FA} are excluded from food production.
+For species/cohorts where milk, fibre or egg production is not applicable, outputs are returned as zero.
+Food-egg output is calculated from \code{egg_human_consumption_yield}
+(eggs/year/animal), multiplied by the stock of each flagged cohort and
+scaled to the assessment period.
+Reproductive eggs from \code{FA} are excluded from food-egg production.
 }
 \examples{
 \donttest{
@@ -163,5 +167,6 @@ results <- run_production_module(
 \code{\link{run_gleam}},
 \code{\link{calc_milk_production}},
 \code{\link{calc_fibre_production}},
-\code{\link{calc_meat_production}}
+\code{\link{calc_meat_production}},
+\code{\link{calc_egg_production}}
 }

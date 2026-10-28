@@ -20,8 +20,7 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
   # Verify all module-specific columns are present
   required_cohort_cols <- c(
     "herd_id", "cohort_short",
-    "ration_intake", "ration_nitrogen", "daily_weight_gain", "cohort_duration_days",
-    "cohort_stock_size"
+    "ration_intake", "ration_nitrogen", "daily_weight_gain", "cohort_duration_days"
   )
   required_herd_cols <- c("herd_id", "species_short")
   cohort_codes_present <- unique(cohort_level_data$cohort_short)
@@ -35,22 +34,19 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
     )
   }
 
-  if (
-    any(herd_level_data$species_short == "CHK") &&
-    "is_egg_producing" %in% names(cohort_level_data) &&
-    any(cohort_level_data$is_egg_producing %in% TRUE, na.rm = TRUE)
-  ) {
+  chicken_rows <- cohort_level_data$herd_id %in%
+    herd_level_data$herd_id[herd_level_data$species_short == "CHK"]
+  if (any(chicken_rows & cohort_level_data$cohort_short == "FA")) {
     required_herd_cols <- c(
-      required_herd_cols,
-      "egg_output_human_consumption",
-      "egg_average_weight"
+      required_herd_cols, "egg_average_weight", "parturition_rate"
+    )
+  }
+  if (any(chicken_rows & cohort_level_data$is_egg_producing %in% TRUE)) {
+    required_herd_cols <- c(
+      required_herd_cols, "egg_human_consumption_yield", "egg_average_weight"
     )
   }
   check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
-  if (any(cohort_level_data$cohort_short == "FA" &
-          cohort_level_data$herd_id %in% herd_level_data$herd_id[herd_level_data$species_short == "CHK"])) {
-    required_herd_cols <- c(required_herd_cols, "egg_average_weight")
-  }
   check_required_columns(herd_level_data, unique(required_herd_cols), "herd_level_data")
 
   # --- Cohort: valid cohort_short, exactly 6 rows per herd_id -----------------

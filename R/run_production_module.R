@@ -23,7 +23,7 @@
 #' \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
 #' for non-demographic cohorts (\code{FN}, \code{MN}). When present, production
 #' outputs are retained separately by phase.}
-#' \item{is_egg_producing}{Logical. Indicates whether the cohort is an egg-producing
+#' \item{is_egg_producing}{Logical. Indicates whether the cohort is a food-egg-producing
 #' chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
 #' \code{FA} or for \code{FN} in laying phase 2.}
 #' \item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads).}
@@ -66,6 +66,8 @@
 #' (FPCM), (kg fat/kg milk). Suggested value = 0.04.}
 #' \item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate
 #' Fat-protein-corrected milk (FPCM), (kg lactose/kg milk). Suggested value = 0.048.}
+#' \item{egg_human_consumption_yield}{Numeric. Number of eggs produced for human consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.}
+#' \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}.}
 #' \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
 #' Required only for species = CML, SHP, and GTS.}
 #' \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
@@ -121,9 +123,10 @@
 #' }
 #'
 #' For species/cohorts where milk, fibre or egg production is not applicable, outputs are returned as zero.
-#' Food eggs are split among flagged \code{FA} and \code{FN} phase 2 cohorts
-#' in proportion to \code{cohort_stock_size}. The herd food-egg total is counted
-#' once. Reproductive eggs from \code{FA} are excluded from food production.
+#' Food-egg output is calculated from \code{egg_human_consumption_yield}
+#' (eggs/year/animal), multiplied by the stock of each flagged cohort and
+#' scaled to the assessment period.
+#' Reproductive eggs from \code{FA} are excluded from food-egg production.
 #'
 #' @seealso
 #' \code{\link{run_gleam}},
@@ -177,7 +180,6 @@ run_production_module <- function(
 
   # --- Step 2: Create working copy --------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
-  food_eggs_by_cohort <- allocate_egg_output_human_consumption(cohort_level_data, herd_level_data)
 
   # --- Step 3: Compute milk production outputs --------------------------------
   milk_output_cols <- c(
@@ -218,7 +220,8 @@ run_production_module <- function(
       cohort_short = cohort_short,
       nondemo_productive_phase_id = nondemo_productive_phase_id,
       is_egg_producing = is_egg_producing,
-      egg_output_human_consumption = food_eggs_by_cohort[.I],
+      egg_human_consumption_yield = herd_level_data[.SD, on = "herd_id", x.egg_human_consumption_yield],
+      cohort_stock_size = cohort_stock_size,
       egg_average_weight = herd_level_data[.SD, on = "herd_id", x.egg_average_weight],
       simulation_duration = simulation_duration
     ),

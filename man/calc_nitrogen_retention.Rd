@@ -17,8 +17,7 @@ calc_nitrogen_retention(
   live_weight_at_birth = NA_real_,
   pregnancy_duration = NA_real_,
   cohort_duration_days = NA_real_,
-  cohort_stock_size = NA_real_,
-  egg_output_human_consumption = NA_real_,
+  egg_human_consumption_yield = NA_real_,
   egg_average_weight = NA_real_,
   nondemo_productive_phase_id = NA_real_,
   is_egg_producing = FALSE
@@ -72,7 +71,9 @@ by the total number of parturitions during the year.}
 female animal (# parturitions/adult female/year).
 A herd-level reproductive performance indicator calculated as the total
 number of parturitions (deliveries) occurring during
-a year divided by the number of adult females potentially able to give birth during that year.}
+a year divided by the number of adult females potentially able to give birth during that year.
+For \code{CHK}, this represents reproductive eggs from \code{FA} only,
+regardless of its food-egg flag.}
 
 \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 
@@ -82,11 +83,8 @@ a year divided by the number of adult females potentially able to give birth dur
 
 \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ} cohorts: 3 days.}
 
-\item{cohort_stock_size}{Numeric. Average cohort stock size (heads). Used for
-\code{CHK} egg-producing cohorts.}
-
-\item{egg_output_human_consumption}{Numeric. Annual human-consumption eggs
-allocated to this cohort (eggs/year). Used for \code{CHK} food-egg-producing cohorts.}
+\item{egg_human_consumption_yield}{Numeric. Number of eggs produced for human
+consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.}
 
 \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for
 \code{CHK} egg-producing cohorts.}
@@ -94,7 +92,7 @@ allocated to this cohort (eggs/year). Used for \code{CHK} food-egg-producing coh
 \item{nondemo_productive_phase_id}{Numeric. Optional productive phase
 identifier for non-demographic cohorts.}
 
-\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\item{is_egg_producing}{Logical. Cohort-level flag identifying food-egg-producing
 \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
 \code{FN} with \code{nondemo_productive_phase_id = 2}.}
 }
@@ -173,9 +171,9 @@ content per unit of live weight gain, following IPCC (2019).
 
 \strong{For CHK}:
 
-Nitrogen retention is calculated as the sum of growth and egg deposition.
-Food eggs are included for cohorts flagged with \code{is_egg_producing = TRUE}.
-Reproductive eggs are included for \code{FA} regardless of that flag:
+Nitrogen retention includes growth and egg deposition. Reproductive eggs
+are included for \code{FA} regardless of the food-egg flag. Eggs for human
+consumption are included only when \code{is_egg_producing = TRUE}:
 
 \deqn{nitrogen\_retention = growth\_component + egg\_component}
 
@@ -187,14 +185,13 @@ and:
 
 \deqn{
 egg\_component =
-(food\_eggs\_head\_day + reproductive\_eggs\_head\_day)
+(human\_consumption\_eggs\_head\_day + reproductive\_eggs\_head\_day)
 \times egg\_average\_weight \times 0.02
 }
-The run-level module allocates herd food eggs among flagged \code{FA} and
-\code{FN} phase 2 cohorts by average stock. Food eggs per head per day are
-allocated annual food eggs divided by \code{365 * cohort_stock_size}.
-Reproductive eggs per head per day are \code{parturition_rate / 365} for
-\code{FA}, and zero for \code{FN} and other cohorts.
+Human-consumption eggs per head per day equal
+\code{egg_human_consumption_yield / 365} when the food-egg flag is true,
+and zero otherwise. Reproductive eggs per head per day equal
+\code{parturition_rate / 365} for \code{FA}, and zero for other cohorts.
 
 The coefficient 0.032 represents nitrogen retained in live-weight gain
 (kg N/kg live weight), following Lessire (2004). The coefficient 0.02
