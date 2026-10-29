@@ -152,18 +152,23 @@ run_nondemographic_herd_module <- function(
     simulation_duration = 365,
     show_indicator = TRUE
 ) {
+  # --- Step 1: Validate Inputs -----------------------------------------------
   validate_run_nondemographic_herd_module_inputs(
     cohort_level_data,
     herd_level_data
   )
 
+  # Show progress indicator if requested
   if (show_indicator) {
     cli::cli_status("\U1F552 Simulating the non-demographic herd, please wait\U2026")
   }
   
+  # --- Step 2: Prepare Data for Processing -----------------------------------
+  # Create working copies
   cohort_level_results <- data.table::copy(cohort_level_data)
   herd_level_results <- data.table::copy(herd_level_data)
 
+  # Ensure optional herd-level phase-duration columns exist
   for (nm in c(
     "phase1_nondemo_fem_duration_days",
     "phase2_nondemo_fem_duration_days",
@@ -175,12 +180,13 @@ run_nondemographic_herd_module <- function(
     }
   }
 
+  # Ensure the cohort-level duration column exists
   if (!"cohort_duration_days" %in% names(cohort_level_results)) {
     cohort_level_results[, cohort_duration_days := NA_real_]
   }
 
-  
-  # pre-assign non-demographic duration phases to cohort_duration
+  # Assign productive-phase durations to non-demographic cohort rows
+  # Herd-level duration inputs override cohort-level values when available
   cohort_level_results[
     ,
     cohort_duration_days := assign_nondemographic_phase_durations(
@@ -203,7 +209,7 @@ run_nondemographic_herd_module <- function(
     by = .I
   ]
 
-  # Calculated total duration of the full productive non-demographic cycle
+  # Calculate total productive-phase duration for each non-demographic block
   herd_level_results[
     ,
     c(
@@ -216,21 +222,24 @@ run_nondemographic_herd_module <- function(
     by = herd_id
   ]
 
-  # Looping the calculations of the non-demographic herd model on herd-id and cohort
+  # --- Step 3: Process Each Herd and Cohort Block ----------------------------
   for (herd_id_selected in unique(cohort_level_results$herd_id)) {
     
+    # Lookup cohort- and herd-level inputs for this herd
     herd_rows <- cohort_level_results[herd_id == herd_id_selected]
-    blocks <- unique(substr(herd_rows$cohort_short, 1, 2))  # e.g. FN, MN
+    blocks <- unique(substr(herd_rows$cohort_short, 1, 2))  # FN and/or MN
     entrants_row <- herd_level_data[herd_id == herd_id_selected]
     
     
     for (cohort_block_selected in blocks) {
+      # Select annual entrants for the current non-demographic block
       cohort_stock_nondemo_annual_entrants <- if (cohort_block_selected == "FN") {
         entrants_row$cohort_stock_fem_annual_nondemo
       } else { # Male non-demographic block
         entrants_row$cohort_stock_mal_annual_nondemo
       }
       
+      # Identify and order productive phases for the current cohort block
       rows <- herd_rows[substr(cohort_short, 1, 2) == cohort_block_selected]
       data.table::setorder(rows, nondemo_productive_phase_id)
       
@@ -238,7 +247,7 @@ run_nondemographic_herd_module <- function(
       r2 <- rows[nondemo_productive_phase_id == 2][1L, ]
       has2 <- rows[nondemo_productive_phase_id == 2, .N] > 0
       
-      # ---- Step 2: read parameters ---
+      # Extract phase-specific durations and mortality rates
       phase1_nondemo_duration <- r1$cohort_duration_days
       death_rate_phase1 <- r1$death_rate
       
@@ -247,27 +256,24 @@ run_nondemographic_herd_module <- function(
       
       rest_between_nondemo_cycles_duration <- entrants_row$rest_between_nondemo_cycles_duration
       
-      # ---- Step 3: geometry ----
+      # Calculate cycle geometry over the fixed simulation horizon
       geom <- calc_nondemo_cycle_geometry(phase1_nondemo_duration = phase1_nondemo_duration, 
                                           phase2_nondemo_duration = phase2_nondemo_duration,
                                           rest_between_nondemo_cycles_duration = rest_between_nondemo_cycles_duration)
       
-      
-      # ---- Step 4: calculate entrants to phase 1  ----
+      # Distribute entrants across cycle starts
       start_size <- calc_nondemo_start_sizes(cohort_stock_nondemo_annual_entrants = cohort_stock_nondemo_annual_entrants,
                                              total_nondemo_cycle_starts_to_distribute = geom$total_nondemo_cycle_starts_to_distribute)
       
       
-      
-      # ---- Step 5: simulate full phase 1 ----
+      # Simulate stock dynamics through productive phase 1
       full_simulation_phase1 <- calc_nondemo_phase(cohort_stock_nondemo_start_by_phase = start_size$cohort_stock_nondemo_start_cycle, 
                                                    productive_phase_nondemo_duration = phase1_nondemo_duration, 
                                                    death_rate_nondemo_phase = death_rate_phase1, 
                                                    max_simulation_days_nondemo_phase = phase1_nondemo_duration)
 
       
-      
-      # ---- Step 6: simulate phase 2 (linked start = end of phase 1) ----
+      # Simulate productive phase 2 using the end stock of phase 1
       cohort_stock_start_phase2 <- full_simulation_phase1$cohort_stock_nondemo$end
       
       full_simulation_phase2 <- calc_nondemo_phase(cohort_stock_nondemo_start_by_phase = cohort_stock_start_phase2, 
@@ -276,8 +282,7 @@ run_nondemographic_herd_module <- function(
                                                    max_simulation_days_nondemo_phase = phase2_nondemo_duration)
 
       
-      
-      # ---- Step 7: average stock ----
+      # Calculate average stock over the simulation horizon
       cohort_stock_avg_phase1 <- calc_nondemo_avg_stock_phase_horizon(
         full_nondemo_phase = full_simulation_phase1,
         total_nondemo_cycle_starts_to_distribute = geom$total_nondemo_cycle_starts_to_distribute
@@ -288,7 +293,8 @@ run_nondemographic_herd_module <- function(
         total_nondemo_cycle_starts_to_distribute = geom$total_nondemo_cycle_starts_to_distribute
       )$cohort_stock_size_unscaled
 
-      # ---- Step 8: offtake (only last existing phase) ----
+      # Calculate offtake from the last existing productive phase
+      # (phase 2 when present; otherwise phase 1)
       off <- calc_nondemo_offtake_total_horizon(
         cohort_stock_nondemo_end_phase1 = full_simulation_phase1$cohort_stock_nondemo$end,
         cohort_stock_nondemo_end_phase2 = full_simulation_phase2$cohort_stock_nondemo$end,
@@ -303,8 +309,7 @@ run_nondemographic_herd_module <- function(
         
       )
       
-      # ---- Step 9: write back FN1/MN1 ----
-      # phase 1 row
+      # Map phase 1 results back to the cohort-level table
       cohort_level_results[herd_id == herd_id_selected & cohort_short == r1$cohort_short & nondemo_productive_phase_id == 1, `:=`(
         offtake_rate = 1,
         cohort_stock_size_unscaled = cohort_stock_avg_phase1,
@@ -315,7 +320,7 @@ run_nondemographic_herd_module <- function(
         total_nondemo_cycle_starts_to_distribute = geom$total_nondemo_cycle_starts_to_distribute
       )]
       
-      # phase 2 row
+      # Map phase 2 results when the optional second phase is present
       if (has2) {
         cohort_level_results[herd_id == herd_id_selected & cohort_short == r2$cohort_short & nondemo_productive_phase_id == 2, `:=`(
           offtake_rate = 1,
@@ -327,20 +332,23 @@ run_nondemographic_herd_module <- function(
           total_nondemo_cycle_starts_to_distribute = geom$total_nondemo_cycle_starts_to_distribute
         )]
       }
-    }
-  }
+    } # End of loop over non-demographic cohort blocks
+  } # End of loop over herds
 
+  # Remove cohort-phase rows with non-positive simulated stock
   if ("cohort_stock_size_unscaled" %in% names(cohort_level_results)) {
     cohort_level_results <- cohort_level_results[
       is.na(cohort_stock_size_unscaled) | cohort_stock_size_unscaled > 0
     ]
   }
 
+  # Clear progress indicator if it was shown
   if (show_indicator) {
     cli::cli_status_clear()
     cli::cli_alert_success("Non-demographic herd simulation complete.")
   }
   
+  # Return separate result tables
   list(
     cohort_level_results = cohort_level_results[],
     herd_level_results = herd_level_results[]

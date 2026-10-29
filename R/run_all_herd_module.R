@@ -392,6 +392,8 @@ run_all_herd_module <- function(
     run_nondemographic = TRUE
 ) {
   
+  # --- Step 1: Standardize Input Tables ---------------------------------------
+  # Convert supplied inputs to data.table objects
   if (!is.null(cohort_level_data) && !data.table::is.data.table(cohort_level_data)) {
     cohort_level_data <- data.table::as.data.table(cohort_level_data)
   }
@@ -399,6 +401,7 @@ run_all_herd_module <- function(
     herd_level_data <- data.table::as.data.table(herd_level_data)
   }
 
+  # --- Step 2: Validate Inputs ------------------------------------------------
   validate_run_all_herd_module_inputs(
     cohort_level_data = cohort_level_data,
     herd_level_data = herd_level_data,
@@ -406,20 +409,23 @@ run_all_herd_module <- function(
     run_nondemographic = run_nondemographic
   )
   
+  # --- Step 3: Split Cohort-Level Inputs by Module ----------------------------
+  # Select demographic cohort rows
   cohort_level_data_demographic <- cohort_level_data[
     !is.na(cohort_short) & cohort_short %in% gleam_cohorts_demographic
   ]
   
+  # Select non-demographic cohort rows
   cohort_level_data_nondemographic <- cohort_level_data[
     !is.na(cohort_short) & cohort_short %in% c("FN", "MN")
   ]
   
+  # Initialize optional module results
   demo_results <- NULL
   nondemo_results <- NULL
   
-  # =========================================================
-  # 1) Run DEMOGRAPHIC MODULE
-  # =========================================================
+  # --- Step 4: Run the Demographic Module ------------------------------------
+  # Run the demographic simulation when requested
   if (isTRUE(run_demographic)) {
     demo_results <- run_demographic_herd_module(
       cohort_level_data = cohort_level_data_demographic,
@@ -428,7 +434,7 @@ run_all_herd_module <- function(
       show_indicator = show_indicator
     )
     
-    # ---- Derive non-demographic entrants from demographic output ----
+    # Extract available non-demographic cycle-duration inputs
     herd_duration_cols <- intersect(
       c(
         "rest_between_nondemo_cycles_duration",
@@ -441,6 +447,7 @@ run_all_herd_module <- function(
     )
     herd_duration_rest <- herd_level_data[, c("herd_id", herd_duration_cols), with = FALSE]
     
+    # Derive female and male non-demographic entrants from juvenile transitions
     fem_entrants <- demo_results$cohort_level_results[
       cohort_short == "FJ",
       .(herd_id,
@@ -453,8 +460,11 @@ run_all_herd_module <- function(
         cohort_stock_mal_annual_nondemo = cohort_stock_annual_nondemographic)
     ]
     
+    # Assemble herd-level inputs for the non-demographic module
     herd_level_data_nondemo <- merge(fem_entrants, mal_entrants, by = "herd_id", all = TRUE)
     herd_level_data_nondemo <- merge(herd_level_data_nondemo, herd_duration_rest, by = "herd_id", all = TRUE)
+    
+    # Retain only herds represented in the non-demographic cohort input
     if (!is.null(cohort_level_data_nondemographic) && nrow(cohort_level_data_nondemographic) > 0) {
       herd_level_data_nondemo <- herd_level_data_nondemo[
         herd_id %in% unique(cohort_level_data_nondemographic$herd_id)
@@ -463,19 +473,19 @@ run_all_herd_module <- function(
     
   }
   
-  # =========================================================
-  # 2) Run NON-DEMOGRAPHIC MODULE
-  # =========================================================
+  # --- Step 5: Run the Non-Demographic Module --------------------------------
+  # Run the non-demographic simulation when requested and input rows are available
   if (isTRUE(run_nondemographic)) {
     if (nrow(cohort_level_data_nondemographic) > 0) {
       
-      # Without demographic simulation, use the herd table supplied by the caller.
+      # Use caller-supplied entrant and timing inputs in non-demographic-only mode
       if (!isTRUE(run_demographic)) {
         herd_level_data_nondemo <- herd_level_data[
           herd_id %in% unique(cohort_level_data_nondemographic$herd_id)
         ]
       }
       
+      # Run the non-demographic simulation
       nondemo_results <- run_nondemographic_herd_module(
         cohort_level_data = cohort_level_data_nondemographic,
         herd_level_data = herd_level_data_nondemo,
@@ -486,9 +496,8 @@ run_all_herd_module <- function(
     }
   }
   
-  # =========================================================
-  # 3) COMBINE RESULTS
-  # =========================================================
+  # --- Step 6: Combine Cohort-Level Results ----------------------------------
+  # Row-bind available module outputs into a common cohort-level schema
   cohort_level_results <- data.table::rbindlist(
     list(
       if (!is.null(demo_results)) demo_results$cohort_level_results,
@@ -498,29 +507,30 @@ run_all_herd_module <- function(
     fill = TRUE
   )
   
-  # =========================================================
-  # 4) RESCALING TO THE SUPPLIED HERD SIZE
-  # =========================================================
+  # --- Step 7: Harmonize and Rescale Cohort-Level Results --------------------
+  # Rescale combined or non-demographic-only outputs when a herd-size target is 
+  # available
   if (isTRUE(run_nondemographic) &&
       (isTRUE(run_demographic) || "herd_size_total" %in% names(herd_level_data))) {
     
-    # total unscaled size per herd
+    # Calculate total unscaled average stock by herd
     tmp <- cohort_level_results[
       , .(size_for_rescaling = sum(cohort_stock_size_unscaled, na.rm = TRUE)),
       by = herd_id
     ]
     
+    # Attach the unscaled herd total and target herd size to each cohort row
     cohort_level_results[tmp, size_for_rescaling := i.size_for_rescaling, on = "herd_id"]
     cohort_level_results[herd_level_data, herd_size_total := i.herd_size_total, on = "herd_id"]
     
-    # ---- Rescale sizes ----
+    # Rescale cohort average stock to the target herd size
     cohort_level_results[, cohort_stock_size := rescale_x_to_y(
       x_scaled_variable  = cohort_stock_size_unscaled,
       x_reference_from   = size_for_rescaling,
       y_scaling_variable = herd_size_total
     )]
     
-    # ---- Rescale offtake ----
+    # Rescale full-horizon and assessment-period offtake proportionally
     cohort_level_results[, offtake_heads := rescale_x_to_y(
       x_scaled_variable  = offtake_heads_unscaled,
       x_reference_from   = cohort_stock_size_unscaled,
@@ -533,7 +543,7 @@ run_all_herd_module <- function(
       y_scaling_variable = cohort_stock_size
     )]
     
-    # ---- Clean temporary columns ----
+    # Remove temporary herd-level scaling references
     cols_to_drop <- intersect(
       c(
         "size_for_rescaling",
@@ -545,6 +555,8 @@ run_all_herd_module <- function(
       cohort_level_results[, (cols_to_drop) := NULL]
     }
     
+  # In demographic-only mode, use the demographic module's scaled outputs
+  # as the final harmonized results
   } else if (isTRUE(run_demographic) && !isTRUE(run_nondemographic)) {
     data.table::setnames(
       cohort_level_results,
@@ -561,6 +573,8 @@ run_all_herd_module <- function(
       skip_absent = TRUE
     )
     
+  # In non-demographic-only mode without a herd-size target, use the
+  # unscaled non-demographic outputs as the final harmonized results
   } else if (!isTRUE(run_demographic) && isTRUE(run_nondemographic)) {  
     data.table::setnames(
       cohort_level_results,
@@ -578,8 +592,11 @@ run_all_herd_module <- function(
     )
   }
   
+  # --- Step 8: Assemble Herd-Level Results -----------------------------------
+  # Initialize the harmonized herd-level output
   herd_level_results <- NULL
 
+  # Merge non-demographic results into the demographic herd-level output
   if (!is.null(demo_results) && !is.null(nondemo_results)) {
     herd_level_results <- data.table::copy(demo_results$herd_level_results)
     herd_level_results[
@@ -594,15 +611,16 @@ run_all_herd_module <- function(
       on = "herd_id"
     ]
     
-    
+  # Use the demographic herd-level output when only that module returned results
   } else if (!is.null(demo_results)) {
     herd_level_results <- demo_results$herd_level_results
+  # Use the non-demographic herd-level output when only that module returned results
   } else if (!is.null(nondemo_results)) {
     herd_level_results <- nondemo_results$herd_level_results
   }
   
   
-  # ---- Remove intermediate scaling columns ----
+  # --- Step 9: Remove Intermediate Cohort-Level Columns ----------------------
   cols_to_drop <- intersect(
     c(
       "size_for_rescaling",
@@ -620,9 +638,7 @@ run_all_herd_module <- function(
     cohort_level_results[, (cols_to_drop) := NULL]
   }
   
-  # =========================================================
-  # 5) RETURN
-  # =========================================================
+  # --- Step 10: Return Results ------------------------------------------------
   return(list(
     cohort_level_results = cohort_level_results,
     herd_level_results   = herd_level_results
