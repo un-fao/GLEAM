@@ -292,7 +292,7 @@ calc_nondemo_cycle_geometry <- function(
     # Remaining time after partial phase 1 is allocated
     time_remaining2 <- time_remaining - partial_phase1_nondemo_duration
     
-    # Only attempt a partial phase 2 if: phase 2 exists, and phase 1 was fully completed (otherwise you cannot reach phase 2), and then account for rest1 before starting phase 2.
+    # Only attempt a partial phase 2 if: phase 2 exists, and phase 1 was fully completed (otherwise you cannot reach phase 2).
     if (phase2_exists && partial_phase1_nondemo_duration >= phase1_nondemo_duration) {
       
       # Allocate whatever remains to phase 2, capped at the full phase 2 duration
@@ -743,8 +743,7 @@ calc_nondemo_offtake_total_horizon <- function(
     simulation_duration
   )
   
-  # Decide which phases "exist"
-  phase1_exists <- phase1_nondemo_duration > 0
+  # Determine whether productive phase 2 exists
   phase2_exists <- phase2_nondemo_duration > 0
   
   # normalize inputs
