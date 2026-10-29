@@ -20,6 +20,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
@@ -71,6 +72,8 @@ ym is assigned fixed values by cohort:
 \item \code{FA} and \code{MA} cohorts: \deqn{ym = 1.01}
 \item \code{FS}, \code{MS}, \code{FN}, and \code{MN} cohorts: \deqn{ym = 0.39}
 }
+\item \strong{For \code{CHK}}: ym is returned as 0
+
 }
 
 ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming

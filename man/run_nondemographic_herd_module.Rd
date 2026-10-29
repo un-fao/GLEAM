@@ -7,7 +7,8 @@
 run_nondemographic_herd_module(
   cohort_level_data,
   herd_level_data,
-  simulation_duration = 365
+  simulation_duration = 365,
+  show_indicator = TRUE
 )
 }
 \arguments{
@@ -41,6 +42,9 @@ when phase durations are supplied in the herd table.}
 
 \item{simulation_duration}{Numeric. Length of the reporting period used to scale non-demographic outputs (days).
 Defaults to \code{365}.}
+
+\item{show_indicator}{Logical. Whether to display progress indicators during simulation.
+Defaults to \code{TRUE}.}
 }
 \value{
 A named list with two elements:
@@ -76,6 +80,9 @@ production-cycle dynamics for the non-demographic cohorts used in the Global
 Livestock Environmental Assessment Model (GLEAM) computational pipeline
 \code{\link[=run_gleam]{run_gleam()}}. It computes phase-specific average stock sizes and offtake
 numbers.
+Annual average stock and offtake include animals that entered before the
+assessment year, so productive phases can span year boundaries. Stock is
+returned unscaled; \code{\link[=run_all_herd_module]{run_all_herd_module()}} applies any supplied herd-size target.
 }
 \details{
 The function operates over a \strong{365-day simulation horizon} to maintain
@@ -140,7 +147,8 @@ nondemo_hrd_dt <- data.table::fread(system.file(
 results <- run_nondemographic_herd_module(
   cohort_level_data = nondemo_chrt_dt,
   herd_level_data = nondemo_hrd_dt,
-  simulation_duration = 365
+  simulation_duration = 365,
+  show_indicator = TRUE
 )
 
 # Access results

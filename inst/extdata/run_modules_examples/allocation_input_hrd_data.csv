@@ -11,3 +11,4 @@ herd_id	species_short	live_weight_at_birth	milk_protein_fraction_standard	milk_f
 10	PGS	1	0.033	0.04	0.048	0.43
 11	CML	28.7	0.033	0.04	0.048	0.43
 12	CML	32.7	0.033	0.04	0.048	0.43
+13	CHK	0.04	0.033	0.04	0.048	0.43

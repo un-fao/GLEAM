@@ -3,6 +3,9 @@
 \name{gleam_production_meta}
 \alias{gleam_production_meta}
 \title{Production variable metadata}
+\format{
+An object of class \code{list} of length 11.
+}
 \usage{
 gleam_production_meta
 }

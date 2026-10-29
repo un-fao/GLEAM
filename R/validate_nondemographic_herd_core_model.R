@@ -64,28 +64,24 @@ validate_nondemo_phase_inputs <- function(
 #'
 #' @noRd
 validate_nondemo_avg_stock_inputs <- function(
-    full_nondemo_phase_duration,
-    partial_nondemo_phase,
-    number_full_nondemo_cycles
+    full_nondemo_phase,
+    total_nondemo_cycle_starts_to_distribute
 ) {
-  for (arg_name in c("full_nondemo_phase_duration", "partial_nondemo_phase")) {
-    phase <- get(arg_name)
-    if (!is.list(phase) ||
-        is.null(phase$time_simulated_nondemographic) ||
-        is.null(phase$cohort_stock_nondemo) ||
-        is.null(phase$cohort_stock_nondemo$start) ||
-        is.null(phase$cohort_stock_nondemo$end)) {
-      cli::cli_abort(
-        "{.arg {arg_name}} must be a list produced by {.fn calc_nondemo_phase}."
-      )
-    }
+  phase <- full_nondemo_phase
+  if (!is.list(phase) ||
+      is.null(phase$time_simulated_nondemographic) ||
+      is.null(phase$cohort_stock_nondemo) ||
+      is.null(phase$cohort_stock_nondemo$start) ||
+      is.null(phase$cohort_stock_nondemo$end)) {
+    cli::cli_abort(
+      "{.arg full_nondemo_phase} must be a list produced by {.fn calc_nondemo_phase}."
+    )
   }
 
-  validate_scalar_numeric(number_full_nondemo_cycles)
-
-  if (number_full_nondemo_cycles < 0) {
+  validate_scalar_numeric(total_nondemo_cycle_starts_to_distribute)
+  if (total_nondemo_cycle_starts_to_distribute < 0) {
     cli::cli_abort(
-      "{.arg number_full_nondemo_cycles} must be greater than or equal to 0."
+      "{.arg total_nondemo_cycle_starts_to_distribute} must be greater than or equal to 0."
     )
   }
 }

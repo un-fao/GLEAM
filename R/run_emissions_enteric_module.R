@@ -16,6 +16,7 @@
 #'         \item \code{BFL}: buffalo
 #'         \item \code{SHP}: sheep
 #'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
 #'         }}
 #'     \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage
 #'       of the animals. Supported values include:
@@ -83,14 +84,14 @@
 #'
 #' @examples
 #' \donttest{
-#' # Load example input (6 herd_ids, cohort-level; only required columns)
+#' # Load example input (13 herds, including non-demographic phases 1 and 2)
 #' input_path <- system.file(
 #'   "extdata/run_modules_examples/emissions_enteric_input_chrt_data.csv",
 #'   package = "gleam"
 #' )
 #' emissions_enteric_input_chrt_data <- data.table::fread(input_path)
 #' results <- run_emissions_enteric_module(
-#' cohort_level_data = emissions_enteric_input_chrt_data
+#'   cohort_level_data = emissions_enteric_input_chrt_data
 #' )
 #' }
 #'

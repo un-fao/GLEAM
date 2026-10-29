@@ -103,6 +103,67 @@ test_that("retention for pigs growers matches 0.025*daily_weight_gain", {
   expect_equal(val, 0.025 * 0.8, tolerance = 1e-12)
 })
 
+test_that("retention for chickens includes growth and egg deposition", {
+  val <- calc_nitrogen_retention(
+    "CHK", "FA",
+    daily_weight_gain = 0.01,
+    parturition_rate = 120,
+    egg_human_consumption_yield = 365,
+    egg_average_weight = 0.06,
+    is_egg_producing = TRUE
+  )
+
+  egg_mass <- ((365 / 365) + (120 / 365)) * 0.06
+  expected <- 0.01 * 0.032 + egg_mass * 0.02
+  expect_equal(val, expected, tolerance = 1e-12)
+})
+
+test_that("retention for egg-producing chicken FN includes food eggs only", {
+  val <- calc_nitrogen_retention(
+    "CHK", "FN",
+    nondemo_productive_phase_id = 2,
+    daily_weight_gain = 0.01,
+    parturition_rate = 120,
+    egg_human_consumption_yield = 365,
+    egg_average_weight = 0.06,
+    is_egg_producing = TRUE
+  )
+
+  egg_mass <- (365 / 365) * 0.06
+  expected <- 0.01 * 0.032 + egg_mass * 0.02
+  expect_equal(val, expected, tolerance = 1e-12)
+})
+
+test_that("chicken FA retains nitrogen in reproductive eggs without food eggs", {
+  args <- list(
+    species_short = "CHK", cohort_short = "FA", daily_weight_gain = 0,
+    egg_average_weight = 0.06, parturition_rate = 365,
+    is_egg_producing = FALSE
+  )
+  expect_equal(do.call(calc_nitrogen_retention, args), 0.0012)
+  expect_equal(do.call(calc_nitrogen_retention,
+    c(args, list(egg_human_consumption_yield = 365))
+  ), 0.0012)
+  expect_error(do.call(calc_nitrogen_retention,
+    modifyList(args, list(parturition_rate = NA_real_))
+  ), "parturition_rate")
+  expect_error(do.call(calc_nitrogen_retention,
+    modifyList(args, list(egg_average_weight = 0))
+  ), "egg_average_weight")
+})
+
+test_that("chicken FN nitrogen retention does not need reproductive egg inputs", {
+  expect_equal(calc_nitrogen_retention(
+    species_short = "CHK", cohort_short = "FN", daily_weight_gain = 0,
+    nondemo_productive_phase_id = 2, is_egg_producing = TRUE,
+    egg_human_consumption_yield = 365, egg_average_weight = 0.06
+  ), 0.0012)
+  expect_equal(calc_nitrogen_retention(
+    species_short = "CHK", cohort_short = "FN", daily_weight_gain = 0.01,
+    nondemo_productive_phase_id = 1, is_egg_producing = FALSE
+  ), 0.00032)
+})
+
 # ---- test calc_nitrogen_excretion ----
 test_that("excretion subtracts intake and retention", {
   expect_equal(calc_nitrogen_excretion("CTL", 0.5, 0.2), 0.3)

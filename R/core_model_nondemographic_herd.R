@@ -51,7 +51,11 @@ assign_nondemographic_phase_durations <- function(
     phase1_nondemo_mal_duration_days = NA_real_,
     phase2_nondemo_mal_duration_days = NA_real_
 ) {
-  cohort_duration_days <- suppressWarnings(as.numeric(cohort_duration_days))
+  cohort_duration_days <- as.numeric(cohort_duration_days)
+  phase1_nondemo_fem_duration_days <- as.numeric(phase1_nondemo_fem_duration_days)
+  phase2_nondemo_fem_duration_days <- as.numeric(phase2_nondemo_fem_duration_days)
+  phase1_nondemo_mal_duration_days <- as.numeric(phase1_nondemo_mal_duration_days)
+  phase2_nondemo_mal_duration_days <- as.numeric(phase2_nondemo_mal_duration_days)
   
   data.table::fcase(
     cohort_short == "FN" & nondemo_productive_phase_id == 1 & !is.na(phase1_nondemo_fem_duration_days),
@@ -311,9 +315,9 @@ calc_nondemo_cycle_geometry <- function(
 
 #' Calculate nondemographic entrants across production cycles
 #'
-#' Calculates the total annual number of animals entering a nondemographic cohort
-#' into the number of animals entering each production cycle, based on the number
-#' of cycle starts occurring within the fixed 365-day horizon.
+#' Distributes the total number of animals entering a nondemographic cohort
+#' over the production cycles occurring within the simulated period, 
+#' based on the number of cycle starts occurring within the fixed 365-day horizon.
 #'
 #' @param cohort_stock_nondemo_annual_entrants Numeric. Total number of animals
 #'   entering the nondemographic production pathway over the simulated period
@@ -337,25 +341,16 @@ calc_nondemo_cycle_geometry <- function(
 #'
 #' where:
 #' \itemize{
-#'   \item \code{cohort\_stock\_nondemo\_start\_cycle} is the number of animals entering each cycle
-#'   \item \code{cohort\_stock\_nondemo\_annual\_entrants} is the total annual entrants
-#'   \item \code{total\_non\_demo\_cycle\_starts\_to\_distribute} is the number of cycle starts
-#' }
-#'
-#' If \code{total\_nondemo\_cycle\_starts\_to\_distribute} is \code{NULL} or less than or equal
-#' to zero, the function assumes that no cycle structure is defined. In this case,
-#' all annual entrants are assigned to a single implicit cycle:
-#'
-#' \deqn{
-#' cohort\_stock\_nondemo\_start\_cycle =
-#' cohort\_stock\_nondemo\_annual\_entrants
+#'   \item \code{cohort_stock_nondemo_start_cycle} is the number of animals entering each cycle
+#'   \item \code{cohort_stock_nondemo_annual_entrants} is the total annual entrants
+#'   \item \code{total_non_demo_cycle_starts_to_distribute} is the number of cycle starts
 #' }
 #'
 #' No rounding or integer enforcement is applied:
 #'
 #' This means fractional values may occur when
-#' \code{cohort\_stock\_nondemo\_annual\_entrants} is not perfectly divisible
-#' by \code{total\_non\_demo\_cycle\_starts\_to\_distribute}. Handling of integer constraints
+#' \code{cohort_stock_nondemo_annual_entrants} is not perfectly divisible
+#' by \code{total_non_demo_cycle_starts_to_distribute}. Handling of integer constraints
 #' (if required) is delegated to downstream processes.
 #'
 #'
@@ -383,11 +378,6 @@ calc_nondemo_start_sizes <- function(
     cohort_stock_nondemo_annual_entrants,
     total_nondemo_cycle_starts_to_distribute
   )
-  
-  if (is.null(total_nondemo_cycle_starts_to_distribute) ||
-      total_nondemo_cycle_starts_to_distribute <= 0) {
-    return(0)
-  }
   
   cohort_stock_nondemo_start_cycle <-
     cohort_stock_nondemo_annual_entrants / total_nondemo_cycle_starts_to_distribute
@@ -540,138 +530,77 @@ calc_nondemo_phase <- function(
 
 #' Calculate average nondemographic stock over the assessment horizon
 #'
-#' Computes the average number of animals present during a given nondemographic
-#' productive phase over the assessment horizon (default 365 days). Animal-days are
-#' calculated for a full phase occurrence and a terminal partial phase occurrence,
-#' then aggregated across full cycle repetitions and divided by the horizon length.
+#' Computes annual average stock for a full productive phase, including animals
+#' that entered before the assessment year.
 #'
-#' This function is applied within \code{\link{run_nondemographic_herd_module}} to
-#' compute phase-specific average stock for productive phase 1 and productive phase 2.
-#'
-#' @param full_nondemo_phase_duration List. Output of \code{calc_nondemo_phase()} for a full productive phase simulation.
-#'   Must contain \code{time_simulated_nondemographic} (days) and
-#'   \code{cohort_stock_nondemo$start}, \code{cohort_stock_nondemo$end}
-#'   (heads).
-#'
-#' @param partial_nondemo_phase List. Output of \code{calc_nondemo_phase()} for a terminal partial productive phase
-#'   simulation (truncated duration occurring at the end of the simulated period).
-#'   Uses the same structure as \code{full_nondemo_phase_duration}.
-#'
-#' @param number_full_nondemo_cycles Integer. Number of complete cycles fully
-#'   contained within the fixed 365-day simulation window for the assessed
-#'   nondemographic cohort (\code{FN} or \code{MN}) (full cycles / simulated
-#'   period).
+#' @param full_nondemo_phase List. Output of \code{calc_nondemo_phase()} for a
+#'   full productive phase. Must contain \code{time_simulated_nondemographic}
+#'   (days) and \code{cohort_stock_nondemo$start} and
+#'   \code{cohort_stock_nondemo$end} (heads).
+#' @param total_nondemo_cycle_starts_to_distribute Numeric. Annual cycle starts,
+#'   calculated by \code{calc_nondemo_cycle_geometry()} and passed internally
+#'   by \code{run_nondemographic_herd_module()}.
 #'
 #' @details
-#' The function calculates the average stock present in the nondemographic
-#' productive phase over the full assessment horizon, expressed as heads per day.
-#' It does so by first converting stock trajectories within each simulated phase
-#' into animal-days, and then dividing total animal-days by the fixed 365-day
-#' simulation horizon.
+#' The model calculates cycle starts from the phase and rest durations.
+#' No additional input-table field is required for this value.
 #'
-#' For each phase occurrence, animal-days are approximated using the trapezoidal
-#' rule, assuming that stock changes linearly from
-#' \code{cohort_stock_nondemo$start} to \code{cohort_stock_nondemo$end} over
-#' \code{time_simulated_nondemographic} days. For a given
-#' phase:
+#' For one full phase, animal-days are approximated using the trapezoidal rule:
 #' \deqn{
-#' animal_days_phase =
-#' time_simulated_nondemographic \times
-#' \frac{cohort_stock_nondemo$start + cohort_stock_nondemo$end}{2}
-#' }
-#'
-#' This approximation is applied separately to:
-#' \itemize{
-#'   \item \code{full_nondemo_phase_duration}, representing one full occurrence of
-#'   the productive phase, and
-#'   \item \code{partial_nondemo_phase}, representing the final partial
-#'   occurrence of the productive phase within the assessment horizon.
-#' }
-#'
-#' Animal-days for one full productive phase are computed as:
-#' \deqn{
-#' ad_full =
-#' full_nondemo_phase_duration$time_simulated_nondemographic \times
+#' full\_phase\_days =
+#' full_nondemo_phase$time_simulated_nondemographic \times
 #' \frac{
-#' full_nondemo_phase_duration$cohort_stock_nondemo$start +
-#' full_nondemo_phase_duration$cohort_stock_nondemo$end
+#' full_nondemo_phase$cohort_stock_nondemo$start +
+#' full_nondemo_phase$cohort_stock_nondemo$end
 #' }{2}
 #' }
 #'
-#' Animal-days for one partial productive phase are computed as:
+#' Annual average stock is then:
 #' \deqn{
-#' ad_part =
-#' partial_nondemo_phase$time_simulated_nondemographic \times
-#' \frac{
-#' partial_nondemo_phase$cohort_stock_nondemo$start +
-#' partial_nondemo_phase$cohort_stock_nondemo$end
-#' }{2}
+#' average\_stock\_phase\_horizon =
+#' \frac{total\_nondemo\_cycle\_starts\_to\_distribute \times full\_phase\_days}{365}
 #' }
 #'
-#' Total animal-days over the assessment horizon are then:
-#' \deqn{
-#' total_animal_days =
-#' number_full_nondemo_cycles \times ad_full + ad_part
-#' }
+#' Full-phase stock is used even when no complete cycle fits within 365 days.
+#' This represents an established herd with animals from previous arrival years.
+#' A zero-duration phase contributes zero stock.
 #'
-#' Finally, the average stock over the horizon is calculated as:
-#' \deqn{
-#' average_stock_phase_horizon =
-#' \frac{
-#' number_full_nondemo_cycles \times ad_full + ad_part
-#' }{365}
-#' }
+#' The calculation assumes linear stock change within each phase and applies
+#' no rounding. Fractional average stock values may occur.
 #'
-#' If a phase has \code{time_simulated_nondemographic} equal to \code{NULL} or
-#' less than or equal to zero, its animal-days contribution is treated as zero.
-#'
-#' The function assumes linear stock change within each phase and does not apply
-#' any rounding. Therefore, fractional animal-days and fractional average stock
-#' values may occur.
-#'
-#' This function is part of the [run_nondemographic_herd_module()].
+#' This function is part of [run_nondemographic_herd_module()].
 #'
 #' @return A named list with:
 #' \describe{
-#'   \item{cohort_stock_size_unscaled}{Numeric. Average population size by cohort not yet scaled to the total livestock population (herd_size_total) (# heads).}
+#'   \item{cohort_stock_size_unscaled}{Numeric. Annual average population in the
+#'   phase (heads), before rescaling to \code{herd_size_total}.}
 #' }
 #'
-#' @seealso
-#' [run_nondemographic_herd_module()]
+#' @seealso [run_nondemographic_herd_module()]
 #'
 #' @export
-
 calc_nondemo_avg_stock_phase_horizon <- function(
-    full_nondemo_phase_duration,
-    partial_nondemo_phase,
-    number_full_nondemo_cycles
+    full_nondemo_phase,
+    total_nondemo_cycle_starts_to_distribute
 ) {
   time_horizon <- 365
   validate_nondemo_avg_stock_inputs(
-    full_nondemo_phase_duration,
-    partial_nondemo_phase,
-    number_full_nondemo_cycles
+    full_nondemo_phase,
+    total_nondemo_cycle_starts_to_distribute
   )
-  
-  # Helper to compute animal-days for a specific phase. 
+
+  # Helper to compute animal-days for a specific phase.
   avg_stock_per_phase <- function(phase) {
     t <- phase$time_simulated_nondemographic
     if (is.null(t) || t <= 0) return(0)
     start <- phase$cohort_stock_nondemo$start
-    end   <- phase$cohort_stock_nondemo$end
-    t * (start + end) / 2 # average number of animals in the phase (start+end)/2 * number of days in that specific phase
+    end <- phase$cohort_stock_nondemo$end
+    t * (start + end) / 2
   }
-  
-  
-  #Compute animal-days for one full phase occurrence
-  ad_full <- avg_stock_per_phase(full_nondemo_phase_duration)
-  
-  #Compute animal-days for one partial phase occurrence
-  ad_part <- avg_stock_per_phase(partial_nondemo_phase)
-  
-  # Aggregate animal-days across the entire horizon
+
+  full_phase_days <- avg_stock_per_phase(full_nondemo_phase)
   cohort_stock_size_unscaled <-
-    (number_full_nondemo_cycles * ad_full + ad_part) / time_horizon
+    total_nondemo_cycle_starts_to_distribute * full_phase_days / time_horizon
 
   list(
     cohort_stock_size_unscaled = cohort_stock_size_unscaled
@@ -679,12 +608,11 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 }
 
 
-
 #' Calculate total nondemographic offtake over the assessment horizon
 #'
-#' Calculates total offtake (animals exiting the system) for a nondemographic cohort
-#' (FN or MN) over the assessment period based on the number of
-#' complete production cycles fully contained within the simulated period. 
+#' Calculates total offtake (animals exiting the system) for a nondemographic
+#' cohort (FN or MN) over the assessment period using a steady-state throughput
+#' formulation.
 #'
 #' This function is applied within \code{\link{run_nondemographic_herd_module}} after
 #' productive phases have been simulated with \code{calc_nondemo_phase()} and end-of-
@@ -702,6 +630,14 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 #'   (# heads / cycle). Typically obtained as \code{cohort_stock_nondemo$end} from
 #'   \code{\link{calc_nondemo_phase}} when simulating a full phase 2. Used only
 #'   when phase 2 exists.
+#'
+#' @param cohort_stock_nondemo_annual_entrants
+#'   Numeric. Total annual number of animals entering the nondemographic block
+#'   over the fixed 365-day horizon (# heads / simulated period).
+#'
+#' @param cohort_stock_nondemo_start_cycle
+#'   Numeric. Number of animals starting one nondemographic production cycle
+#'   (# heads / cycle).
 #'
 #' @param number_full_nondemo_cycles
 #'   Integer. Number of complete nondemographic production cycles fully
@@ -738,22 +674,23 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 #' @param simulation_duration Numeric. Length of the assessment period (days).
 #'
 #' @details
-#' Offtake is assumed to occur only at the end of the last existing productive phase in the
-#' cycle (phase 2 if present, otherwise phase 1). Terminal (partial) phases at the
-#' end of the simulated period do not contribute to offtake. The function uses
-#' a fixed 365-day simulated horizon so the nondemographic pathway stays
+#' Offtake is assumed to occur only at the end of the last existing productive
+#' phase in the cycle (phase 2 if present, otherwise phase 1). The function
+#' uses a fixed 365-day simulated horizon so the nondemographic pathway stays
 #' aligned with the demographic herd simulation.
-#' 
-#' Let \eqn{N} be the number of complete
-#' cycles within the simulated period (\code{number_full_nondemo_cycles}). If
-#' productive phase 2 exists (\code{phase2_nondemo_duration > 0}), total offtake
-#' over the simulated period is:
-#' \deqn{offtake\_{sim} = N \times cohort\_stock\_nondemo\_end\_phase2}
-#' Otherwise, offtake is taken from phase 1:
-#' \deqn{offtake\_{sim} = N \times cohort\_stock\_nondemo\_end\_phase1}
 #'
-#' Offtake totals are scaled to the reporting period by converting to an average daily
-#' offtake rate over the fixed 365-day simulated horizon and multiplying by
+#' Annual offtake is estimated as annual entrants into the nondemographic block
+#' multiplied by survival to the terminal productive phase. If productive
+#' phase 2 exists (\code{phase2_nondemo_duration > 0}), terminal survival is:
+#' \deqn{survival\_{terminal} = \frac{cohort\_stock\_nondemo\_end\_phase2}{cohort\_stock\_nondemo\_start\_cycle}}
+#' Otherwise, terminal survival is taken from phase 1:
+#' \deqn{survival\_{terminal} = \frac{cohort\_stock\_nondemo\_end\_phase1}{cohort\_stock\_nondemo\_start\_cycle}}
+#'
+#' Simulated annual offtake is then:
+#' \deqn{offtake\_{sim} = cohort\_stock\_nondemo\_annual\_entrants \times survival\_{terminal}}
+#'
+#' Offtake totals are scaled to the reporting period by converting to an average
+#' daily offtake rate over the fixed 365-day simulated horizon and multiplying by
 #' \code{simulation_duration}:
 #' \deqn{offtake\_{assessment} = offtake\_{sim} \times \frac{simulation\_duration}{365}}
 #'
@@ -785,6 +722,8 @@ calc_nondemo_avg_stock_phase_horizon <- function(
 calc_nondemo_offtake_total_horizon <- function(
     cohort_stock_nondemo_end_phase1,  # survivors at end of a full phase1
     cohort_stock_nondemo_end_phase2,  # survivors at end of a full phase2
+    cohort_stock_nondemo_annual_entrants,
+    cohort_stock_nondemo_start_cycle,
     number_full_nondemo_cycles,
     partial_phase1_nondemo_duration,
     partial_phase2_nondemo_duration,
@@ -812,6 +751,10 @@ calc_nondemo_offtake_total_horizon <- function(
   if (is.null(simulation_duration) || length(simulation_duration) == 0) simulation_duration <- 0
   if (is.null(cohort_stock_nondemo_end_phase1) || length(cohort_stock_nondemo_end_phase1) == 0) cohort_stock_nondemo_end_phase1 <- 0
   if (is.null(cohort_stock_nondemo_end_phase2) || length(cohort_stock_nondemo_end_phase2) == 0) cohort_stock_nondemo_end_phase2 <- 0
+  if (is.null(cohort_stock_nondemo_annual_entrants) || length(cohort_stock_nondemo_annual_entrants) == 0)
+    cohort_stock_nondemo_annual_entrants <- 0
+  if (is.null(cohort_stock_nondemo_start_cycle) || length(cohort_stock_nondemo_start_cycle) == 0)
+    cohort_stock_nondemo_start_cycle <- 0
   if (is.null(number_full_nondemo_cycles) || length(number_full_nondemo_cycles) == 0)
     number_full_nondemo_cycles <- 0
   if (is.null(phase1_nondemo_duration) || length(phase1_nondemo_duration) == 0)
@@ -819,23 +762,24 @@ calc_nondemo_offtake_total_horizon <- function(
   if (is.null(phase2_nondemo_duration) || length(phase2_nondemo_duration) == 0)
     phase2_nondemo_duration <- 0
   
-  
-  # Completed ends within horizon / ount how many offtake events occur
-  completed_phase_ends <- max(0, number_full_nondemo_cycles)
-  
-  
-  # Offtake ONLY from the last existing phase:
-  # - if phase2 exists, take offtake from phase2 and force phase1 offtake = 0
-  # - else take offtake from phase1
+  survival_to_terminal_phase <- if (cohort_stock_nondemo_start_cycle > 0) {
+    if (phase2_exists) {
+      cohort_stock_nondemo_end_phase2 / cohort_stock_nondemo_start_cycle
+    } else {
+      cohort_stock_nondemo_end_phase1 / cohort_stock_nondemo_start_cycle
+    }
+  } else {
+    0
+  }
+
   if (phase2_exists) {
-    offtake_heads_nondemo_phase2 <- cohort_stock_nondemo_end_phase2 * completed_phase_ends
+    offtake_heads_nondemo_phase2 <- cohort_stock_nondemo_annual_entrants * survival_to_terminal_phase
     offtake_heads_nondemo_phase1 <- 0
   } else {
-    offtake_heads_nondemo_phase1 <- cohort_stock_nondemo_end_phase1 * completed_phase_ends
+    offtake_heads_nondemo_phase1 <- cohort_stock_nondemo_annual_entrants * survival_to_terminal_phase
     offtake_heads_nondemo_phase2 <- 0
   }
   
-  # Offtake numbers scaled to the simulation_duration
   offtake_heads_assessment_nondemo_phase1 <- offtake_heads_nondemo_phase1 / time_horizon * simulation_duration
   offtake_heads_assessment_nondemo_phase2 <- offtake_heads_nondemo_phase2 / time_horizon * simulation_duration
   

@@ -1,13 +1,14 @@
-herd_id	parturition_rate	litter_size	birth_fraction_female	herd_size_total	prop_nondemo_fem_juv	prop_nondemo_mal_juv
-1	0.8	1	0.5	20300000	0	0.85
-2	0.684	1	0.5	10000	0	0
-3	0.93	1	0.5	5560000	0	0
-4	0.745	1	0.5	7980000	0	0
-5	0.82	1	0.5	1340000	0	0
-6	0.91	1.7	0.5	2e+05	0	0
-7	0.8	1	0.5	334000	0	0
-8	0.835	1	0.5	92800000	0	0
-9	2.33	13.5	0.5	26100000	0.7	0.85
-10	1.6	7	0.5	2250000	0.05	0.1
-11	0.43	1	0.5	7210000	0	0
-12	0.83	1	0.5	430000	0	0
+herd_id	species_short	parturition_rate	litter_size	birth_fraction_female	herd_size_total	prop_nondemo_fem_juv	prop_nondemo_mal_juv
+1	CTL	0.8	1	0.5	20300000	0	0.95
+2	CTL	0.684	1	0.5	10000	0	0
+3	SHP	0.93	1	0.5	5560000	0	0
+4	SHP	0.745	1	0.5	7980000	0	0
+5	GTS	0.82	1	0.5	1340000	0	0
+6	GTS	0.91	1.7	0.5	2e+05	0	0
+7	BFL	0.8	1	0.5	334000	0	0
+8	BFL	0.835	1	0.5	92800000	0	0
+9	PGS	2.33	13.5	0.5	26100000	0.9	1
+10	PGS	1.6	7	0.5	2250000	0.5	0.5
+11	CML	0.43	1	0.5	7210000	0	0
+12	CML	0.83	1	0.5	430000	0	0
+13	CHK	45	0.75	0.5	5000	0	0

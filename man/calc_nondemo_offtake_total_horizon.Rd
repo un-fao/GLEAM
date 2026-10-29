@@ -7,6 +7,8 @@
 calc_nondemo_offtake_total_horizon(
   cohort_stock_nondemo_end_phase1,
   cohort_stock_nondemo_end_phase2,
+  cohort_stock_nondemo_annual_entrants,
+  cohort_stock_nondemo_start_cycle,
   number_full_nondemo_cycles,
   partial_phase1_nondemo_duration,
   partial_phase2_nondemo_duration,
@@ -26,6 +28,12 @@ nondemographic productive phase 2 after applying phase-specific mortality
 (# heads / cycle). Typically obtained as \code{cohort_stock_nondemo$end} from
 \code{\link{calc_nondemo_phase}} when simulating a full phase 2. Used only
 when phase 2 exists.}
+
+\item{cohort_stock_nondemo_annual_entrants}{Numeric. Total annual number of animals entering the nondemographic block
+over the fixed 365-day horizon (# heads / simulated period).}
+
+\item{cohort_stock_nondemo_start_cycle}{Numeric. Number of animals starting one nondemographic production cycle
+(# heads / cycle).}
 
 \item{number_full_nondemo_cycles}{Integer. Number of complete nondemographic production cycles fully
 contained within the simulated period (cycles / simulated period). This is
@@ -74,31 +82,32 @@ block over \code{simulation_duration} (heads / simulated period).}
 }
 }
 \description{
-Calculates total offtake (animals exiting the system) for a nondemographic cohort
-(FN or MN) over the assessment period based on the number of
-complete production cycles fully contained within the simulated period.
+Calculates total offtake (animals exiting the system) for a nondemographic
+cohort (FN or MN) over the assessment period using a steady-state throughput
+formulation.
 }
 \details{
 This function is applied within \code{\link{run_nondemographic_herd_module}} after
 productive phases have been simulated with \code{calc_nondemo_phase()} and end-of-
 phase stock sizes have been obtained.
 
-Offtake is assumed to occur only at the end of the last existing productive phase in the
-cycle (phase 2 if present, otherwise phase 1). Terminal (partial) phases at the
-end of the simulated period do not contribute to offtake. The function uses
-a fixed 365-day simulated horizon so the nondemographic pathway stays
+Offtake is assumed to occur only at the end of the last existing productive
+phase in the cycle (phase 2 if present, otherwise phase 1). The function
+uses a fixed 365-day simulated horizon so the nondemographic pathway stays
 aligned with the demographic herd simulation.
 
-Let \eqn{N} be the number of complete
-cycles within the simulated period (\code{number_full_nondemo_cycles}). If
-productive phase 2 exists (\code{phase2_nondemo_duration > 0}), total offtake
-over the simulated period is:
-\deqn{offtake\_{sim} = N \times cohort\_stock\_nondemo\_end\_phase2}
-Otherwise, offtake is taken from phase 1:
-\deqn{offtake\_{sim} = N \times cohort\_stock\_nondemo\_end\_phase1}
+Annual offtake is estimated as annual entrants into the nondemographic block
+multiplied by survival to the terminal productive phase. If productive
+phase 2 exists (\code{phase2_nondemo_duration > 0}), terminal survival is:
+\deqn{survival\_{terminal} = \frac{cohort\_stock\_nondemo\_end\_phase2}{cohort\_stock\_nondemo\_start\_cycle}}
+Otherwise, terminal survival is taken from phase 1:
+\deqn{survival\_{terminal} = \frac{cohort\_stock\_nondemo\_end\_phase1}{cohort\_stock\_nondemo\_start\_cycle}}
 
-Offtake totals are scaled to the reporting period by converting to an average daily
-offtake rate over the fixed 365-day simulated horizon and multiplying by
+Simulated annual offtake is then:
+\deqn{offtake\_{sim} = cohort\_stock\_nondemo\_annual\_entrants \times survival\_{terminal}}
+
+Offtake totals are scaled to the reporting period by converting to an average
+daily offtake rate over the fixed 365-day simulated horizon and multiplying by
 \code{simulation_duration}:
 \deqn{offtake\_{assessment} = offtake\_{sim} \times \frac{simulation\_duration}{365}}
 

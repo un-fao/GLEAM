@@ -16,6 +16,7 @@
 #'         \item \code{GTS}: goats
 #'         \item \code{PGS}: pigs
 #'         \item \code{CML}: camels
+#'         \item \code{CHK}: chickens
 #'       }}
 #'     \item{cohort_short}{Character. Sex- and age-specific cohort code. Supported values include:
 #'       \itemize{

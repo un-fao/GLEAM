@@ -18,6 +18,7 @@
 #'         \item \code{BFL}: buffalo
 #'         \item \code{SHP}: sheep
 #'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
 #'         }}
 #'     \item{cohort_short}{
 #'     Character. Sex- and age-specific cohort code describing the production stage
