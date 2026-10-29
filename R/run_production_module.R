@@ -32,7 +32,8 @@
 #'   }
 #'
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with the following data
-#' requirement:
+#' requirement. Milk-related columns and \code{fibre_yield_year} may be omitted
+#' when the cohort table contains only \code{FN} and \code{MN}:
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 #'     \item{species_short}{Character. Code identifying the livestock species.
@@ -180,6 +181,18 @@ run_production_module <- function(
 
   # --- Step 2: Create working copy --------------------------------------------
   cohort_level_data <- data.table::copy(cohort_level_data)
+  herd_level_data <- data.table::copy(herd_level_data)
+
+  optional_herd_cols <- c(
+    "milk_yield_day", "lactating_females_fraction",
+    "milk_protein_fraction", "milk_fat_fraction", "milk_lactose_fraction",
+    "milk_protein_fraction_standard", "milk_fat_fraction_standard", "milk_lactose_fraction_standard",
+    "fibre_yield_year"
+  )
+  missing_herd_cols <- setdiff(optional_herd_cols, names(herd_level_data))
+  if (length(missing_herd_cols) > 0) {
+    herd_level_data[, (missing_herd_cols) := NA_real_]
+  }
 
   # --- Step 3: Compute milk production outputs --------------------------------
   milk_output_cols <- c(

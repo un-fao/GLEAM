@@ -1,3 +1,30 @@
+test_that("non-demographic production allows missing milk and fibre columns", {
+  path <- system.file("extdata/run_modules_examples", package = "gleam")
+  all_cohorts <- data.table::fread(file.path(path, "production_input_chrt_data.csv"))
+  cohort <- all_cohorts[cohort_short %in% c("FN", "MN")]
+  herd <- data.table::fread(file.path(path, "production_input_hrd_data.csv"))[
+    herd_id %in% cohort$herd_id
+  ]
+  expected <- run_production_module(cohort, herd, show_indicator = FALSE)
+  optional_cols <- c(
+    "milk_yield_day", "lactating_females_fraction",
+    "milk_protein_fraction", "milk_fat_fraction", "milk_lactose_fraction",
+    "milk_protein_fraction_standard", "milk_fat_fraction_standard", "milk_lactose_fraction_standard",
+    "fibre_yield_year"
+  )
+  herd[, (optional_cols) := NULL]
+
+  expect_no_warning(actual <- run_production_module(cohort, herd, show_indicator = FALSE))
+  expect_equal(actual, expected)
+  expect_true(all(actual$milk_production_fpcm_cohort == 0))
+  expect_true(all(actual$fibre_production_cohort == 0))
+  expect_false(any(optional_cols %in% names(herd)))
+  expect_error(
+    run_production_module(all_cohorts[herd_id %in% herd$herd_id], herd, show_indicator = FALSE),
+    "milk_yield_day"
+  )
+})
+
 # ---- test calc_milk_production ----
 test_that("calc_milk_production returns expected output structure", {
   result <- calc_milk_production(

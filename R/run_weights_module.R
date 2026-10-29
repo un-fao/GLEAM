@@ -79,6 +79,9 @@
 #' @details
 #' Species is read from \code{herd_level_data$species_short}, matched to cohort
 #' rows by \code{herd_id}.
+#' Demographic weight columns may be omitted when the cohort table contains
+#' only \code{FN} and \code{MN}; their weights come from the non-demographic
+#' start/end weights and phase durations.
 #'
 #' This function represents the intermediate module of the Global Livestock Environmental
 #' Assessment Model (GLEAM) computational pipeline [run_gleam()] to estimate animals' live
@@ -152,8 +155,15 @@ run_weights_module <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   herd_level_data <- data.table::copy(herd_level_data)
 
-  # Validation requires these columns for FN/MN; demographic-only inputs may omit them.
-  optional_nondemo_herd_cols <- c(
+  # Validation requires the columns used by the cohorts present. Fill unused
+  # weight columns so the shared scalar calculation can receive numeric NA.
+  optional_herd_cols <- c(
+    "live_weight_female_adult",
+    "live_weight_male_adult",
+    "live_weight_at_birth",
+    "live_weight_at_weaning",
+    "live_weight_female_at_slaughter",
+    "live_weight_male_at_slaughter",
     "live_weight_female_nondemographic_start",
     "live_weight_male_nondemographic_start",
     "live_weight_female_nondemographic_end",
@@ -163,9 +173,9 @@ run_weights_module <- function(
     "phase1_nondemo_mal_duration_days",
     "phase2_nondemo_mal_duration_days"
   )
-  missing_nondemo_herd_cols <- setdiff(optional_nondemo_herd_cols, names(herd_level_data))
-  if (length(missing_nondemo_herd_cols) > 0) {
-    herd_level_data[, (missing_nondemo_herd_cols) := NA_real_]
+  missing_herd_cols <- setdiff(optional_herd_cols, names(herd_level_data))
+  if (length(missing_herd_cols) > 0) {
+    herd_level_data[, (missing_herd_cols) := NA_real_]
   }
 
   if (!"nondemo_productive_phase_id" %in% names(cohort_level_data)) {

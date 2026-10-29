@@ -55,7 +55,8 @@
 #'   }
 #'
 #' @param herd_level_data data.table. Herd-level input table (one row per \code{herd_id}) with the following data
-#' requirement:
+#' requirement. Standard milk-composition columns may be omitted when all
+#' \code{milk_production_fpcm_cohort} values are zero:
 #'   \describe{
 #'    \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 #'     to the same herd.}
@@ -267,12 +268,17 @@ run_allocation_module <- function(
   # Milk energy allocation: based on FPCM (fat- and protein-corrected milk) output
   cohort_level_data[
     ,
-    milk_allocation_energy := calc_milk_allocation_energy(
-      milk_production_fpcm_cohort = milk_production_fpcm_cohort,
-      milk_protein_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction_standard],
-      milk_fat_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction_standard],
-      milk_lactose_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_lactose_fraction_standard]
-    ),
+    milk_allocation_energy := if (is.numeric(milk_production_fpcm_cohort) &&
+                                  isTRUE(milk_production_fpcm_cohort == 0)) {
+      0
+    } else {
+      calc_milk_allocation_energy(
+        milk_production_fpcm_cohort = milk_production_fpcm_cohort,
+        milk_protein_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_protein_fraction_standard],
+        milk_fat_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction_standard],
+        milk_lactose_fraction_standard = herd_level_data[.SD, on = "herd_id", x.milk_lactose_fraction_standard]
+      )
+    },
     by = .I
   ]
 

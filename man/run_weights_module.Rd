@@ -90,6 +90,9 @@ gain over each cohort stage.
 \details{
 Species is read from \code{herd_level_data$species_short}, matched to cohort
 rows by \code{herd_id}.
+Demographic weight columns may be omitted when the cohort table contains
+only \code{FN} and \code{MN}; their weights come from the non-demographic
+start/end weights and phase durations.
 
 This function represents the intermediate module of the Global Livestock Environmental
 Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to estimate animals' live

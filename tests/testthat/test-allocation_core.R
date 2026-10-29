@@ -473,6 +473,32 @@ test_that("calc_egg_allocation_energy validates egg-producing flag placement", {
   )
 })
 
+test_that("zero-milk allocation allows missing standard milk composition", {
+  path <- system.file("extdata/run_modules_examples", package = "gleam")
+  cohort <- data.table::fread(file.path(path, "allocation_input_chrt_data.csv"))[
+    cohort_short %in% c("FN", "MN")
+  ]
+  herd <- data.table::fread(file.path(path, "allocation_input_hrd_data.csv"))[
+    herd_id %in% cohort$herd_id
+  ]
+  expected <- run_allocation_module(cohort, herd, show_indicator = FALSE)
+  optional_cols <- c(
+    "milk_protein_fraction_standard", "milk_fat_fraction_standard", "milk_lactose_fraction_standard"
+  )
+  herd[, (optional_cols) := NULL]
+
+  expect_no_warning(actual <- run_allocation_module(cohort, herd, show_indicator = FALSE))
+  expect_equal(actual, expected)
+  expect_true(all(actual$cohort_allocation_inputs$milk_allocation_energy == 0))
+  expect_false(any(optional_cols %in% names(herd)))
+
+  cohort[1L, milk_production_fpcm_cohort := 1]
+  expect_error(
+    run_allocation_module(cohort, herd, show_indicator = FALSE),
+    "milk_protein_fraction_standard"
+  )
+})
+
 test_that("run_allocation_module example inputs work with explicit egg columns", {
   cohort_path <- local({
     p <- testthat::test_path(

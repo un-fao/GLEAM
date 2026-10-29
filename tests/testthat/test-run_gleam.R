@@ -651,6 +651,35 @@ test_that("industrial chickens complete the non-demographic-only pipeline", {
   expect_true(all(vapply(result$aggregation_results, nrow, integer(1)) > 0L))
 })
 
+test_that("the non-demographic pipeline allows omitted demographic production inputs", {
+  optional_cols <- c(
+    "live_weight_female_adult", "live_weight_male_adult", "live_weight_at_weaning",
+    "live_weight_female_at_slaughter", "live_weight_male_at_slaughter",
+    "milk_yield_day", "lactating_females_fraction",
+    "milk_protein_fraction", "milk_fat_fraction", "milk_lactose_fraction",
+    "milk_protein_fraction_standard", "milk_fat_fraction_standard", "milk_lactose_fraction_standard",
+    "fibre_yield_year"
+  )
+  legacy_herd <- data.table::copy(d_gleam_chk_industrial$herd)
+  missing_cols <- setdiff(optional_cols, names(legacy_herd))
+  if (length(missing_cols) > 0L) {
+    legacy_herd[, (missing_cols) := NA_real_]
+  }
+  legacy <- suppressMessages(run_gleam_no_structure(
+    d_gleam_chk_industrial, herd_level_data = legacy_herd
+  ))
+
+  reduced_herd <- data.table::copy(legacy_herd)
+  reduced_herd[, (optional_cols) := NULL]
+  expect_no_warning(result <- suppressMessages(run_gleam_no_structure(
+    d_gleam_chk_industrial, herd_level_data = reduced_herd
+  )))
+  expect_false(any(optional_cols %in% names(reduced_herd)))
+  expect_equal(result$cohort_level_results, legacy$cohort_level_results)
+  expect_equal(result$allocation_long, legacy$allocation_long)
+  expect_equal(result$aggregation_results, legacy$aggregation_results)
+})
+
 # Simulated-herd pipeline integration tests
 
 d_gleam_diversion <- lapply(d_gleam, function(data) {

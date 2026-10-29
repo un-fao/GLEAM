@@ -131,6 +131,32 @@ test_that("calc_cohort_weights allows NA inputs for the unused non-demo sex", {
   expect_equal(fn$live_weight_cohort_initial, 20)
 })
 
+test_that("non-demographic weights allow missing demographic weight columns", {
+  path <- system.file("extdata/run_modules_examples", package = "gleam")
+  all_cohorts <- data.table::fread(file.path(path, "weights_input_chrt_data.csv"))
+  cohort <- all_cohorts[cohort_short %in% c("FN", "MN")]
+  herd <- data.table::fread(file.path(path, "weights_input_hrd_data.csv"))[
+    herd_id %in% cohort$herd_id
+  ]
+  weight_cols <- grep("^live_weight_.*_nondemographic_", names(herd), value = TRUE)
+  herd[, (weight_cols) := lapply(.SD, as.numeric), .SDcols = weight_cols]
+  expected <- run_weights_module(cohort, herd, show_indicator = FALSE)
+  demographic_cols <- c(
+    "live_weight_female_adult", "live_weight_male_adult",
+    "live_weight_at_birth", "live_weight_at_weaning",
+    "live_weight_female_at_slaughter", "live_weight_male_at_slaughter"
+  )
+  herd[, (demographic_cols) := NULL]
+
+  expect_no_warning(actual <- run_weights_module(cohort, herd, show_indicator = FALSE))
+  expect_equal(actual$cohort_level_results, expected$cohort_level_results)
+  expect_false(any(demographic_cols %in% names(herd)))
+  expect_error(
+    run_weights_module(all_cohorts[herd_id %in% herd$herd_id], herd, show_indicator = FALSE),
+    "live_weight_female_adult"
+  )
+})
+
 test_that("demographic weights allow missing non-demographic herd columns, including CHK", {
   example_path <- system.file("extdata/run_modules_examples", package = "gleam")
   cohort <- data.table::fread(file.path(example_path, "weights_input_chrt_data.csv"))[

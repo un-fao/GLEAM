@@ -35,11 +35,16 @@ validate_run_allocation_module_inputs <- function(
     "herd_id",
     "species_short",
     "live_weight_at_birth",
-    "milk_protein_fraction_standard",
-    "milk_fat_fraction_standard",
-    "milk_lactose_fraction_standard",
     "ratio_me_to_ne"
   )
+  if (any(cohort_level_data$milk_production_fpcm_cohort > 0, na.rm = TRUE)) {
+    required_herd_cols <- c(
+      required_herd_cols,
+      "milk_protein_fraction_standard",
+      "milk_fat_fraction_standard",
+      "milk_lactose_fraction_standard"
+    )
+  }
 
   check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
   check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")

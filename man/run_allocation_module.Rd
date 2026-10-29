@@ -62,7 +62,8 @@ and should be \code{FALSE} otherwise.}
 }}
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data
-requirement:
+requirement. Standard milk-composition columns may be omitted when all
+\code{milk_production_fpcm_cohort} values are zero:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 to the same herd.}
