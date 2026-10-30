@@ -51,6 +51,11 @@ reference:
     contents:
       - run_gleam
 
+  - title: "Combined herd module"
+    contents:
+      - run_all_herd_module
+      - rescale_x_to_y
+
   - title: "Demographic herd module"
     contents:
       - run_demographic_herd_module
@@ -59,6 +64,17 @@ reference:
       - calc_steady_state_structure
       - calc_projected_population_size
       - calc_summary_offtake
+
+  - title: "Non-demographic herd module"
+    contents:
+      - run_nondemographic_herd_module
+      - assign_nondemographic_phase_durations
+      - calc_nondemographic_total_durations
+      - calc_nondemo_cycle_geometry
+      - calc_nondemo_start_sizes
+      - calc_nondemo_phase
+      - calc_nondemo_avg_stock_phase_horizon
+      - calc_nondemo_offtake_total_horizon
 
   - title: "Weights module"
     contents:
@@ -88,6 +104,7 @@ reference:
       - calc_metabolic_energy_req_pregnancy
       - calc_metabolic_energy_req_work
       - calc_metabolic_energy_req_fibre
+      - calc_metabolic_energy_req_eggs
       - calc_rem_maintenance
       - calc_reg_growth
       - calc_total_metabolic_energy_req
@@ -135,6 +152,7 @@ reference:
       - calc_milk_production
       - calc_meat_production
       - calc_fibre_production
+      - calc_egg_production
 
   - title: "Allocation module"
     contents:
@@ -143,6 +161,7 @@ reference:
       - calc_meat_allocation_energy
       - calc_fibre_allocation_energy
       - calc_work_allocation_energy
+      - calc_egg_allocation_energy
       - calc_allocation_shares
       - assign_allocation_shares
 
