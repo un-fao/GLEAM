@@ -147,7 +147,7 @@
 #'   }
 #' @param herd_level_data A `data.table` with one row per herd, and the following mandatory columns:
 #'   \describe{
-#'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
+#'     \item{`herd_id`}{Character. Unique identifier for the herd.}
 #'     \item{`parturition_rate`}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
 #'     \item{`litter_size`}{Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
 #'     \item{`birth_fraction_female`}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
@@ -163,26 +163,26 @@
 #' Iterations of the herd simulation stop when the absolute change in lambda between successive iterations falls below this threshold. Defaults to `1e-9`.
 #' @param show_indicator Logical. Whether to display progress indicators during simulation.
 #'   Defaults to `TRUE`.
-#'@param simulation_duration Numeric. Length of the assessment period (days).
+#' @param simulation_duration Numeric. Length of the assessment period (days).
 #'
 #' @return A named list with two elements:
 #'   \describe{
 #'     \item{`cohort_level_results`}{A `data.table` with one row per herd and cohort containing all original
 #'       `cohort_level_data` columns plus the following simulation results:
-#'       \itemize{
-#'         \item `cohort_stock_size_unscaled` - Numeric. Average population size in each of the 6 demographic sex–age cohorts (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`), not yet scaled to the total livestock population (herd_size_total), (# heads).
-#'         This corresponds to `cohort_stock_average` returned by \code{\link{calc_projected_population_size}}.
-#'         \item `offtake_heads_unscaled` - Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`), before rescaling to the cohort population at the start of the assessment period.
-#'         \item `offtake_heads_assessment_unscaled` - Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`), before rescaling to the cohort population at the start of the assessment period.
-#'         \item `offtake_heads_scaled` - Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`), rescaled to the cohort population at the start of the assessment period.
-#'         \item `offtake_heads_assessment_scaled` - Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`), rescaled to the cohort population at the start of the assessment period.
-#'         \item `cohort_stock_annual_nondemographic` Numeric. Total number of animals entering the non-demographic component of the model over the simulated period, disaggregated by demographic sex–age cohorts (cohorts = `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`) (heads).
+#'       \describe{
+#'         \item{`cohort_stock_size_unscaled`}{Numeric. Average population size for the assessed cohort, not scaled to the total livestock population (herd_size_total), (# heads). This corresponds to `cohort_stock_average` returned by \code{\link{calc_projected_population_size}}}
+#'         \item{`cohort_stock_size_scaled`}{Numeric. Average population size for the assessed cohort, scaled to the total livestock population (herd_size_total), (# heads). This corresponds to `cohort_stock_start` returned by \code{\link{calc_projected_population_size}}}
+#'         \item{`offtake_heads_unscaled`}{Numeric. Total number of animals removed from the cohort over the full 365-day simulation horizon, not scaled to the cohort population at the start of the assessment period  (# heads).}
+#'         \item{`offtake_heads_assessment_unscaled`}{Numeric. Total number of animals removed from the cohort over 'simulation_duration', not scaled to the cohort population at the start of the assessment period (# heads/assessment period).}
+#'         \item{`offtake_heads_scaled`}{Numeric. Total number of animals removed from the cohort over the full 365-day simulation horizon, scaled to the cohort population at the start of the assessment period (# heads).}
+#'         \item{`offtake_heads_assessment_scaled`}{Numeric. Total number of animals removed from the cohort over 'simulation_duration', scaled to the cohort population at the start of the assessment period (# heads/assessment period).}
+#'         \item{`cohort_stock_annual_nondemographic`}{Numeric. Annual number of animals diverted from the demographic pathway into the non-demographic pathway (# heads).}
 #'         }
 #'     }
 #'     \item{`herd_level_results`}{A `data.table` with one row per herd containing all original
 #'       `herd_level_data` columns plus the following herd-level simulation results:
-#'       \itemize{
-#'         \item `growth_rate_herd` - Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).
+#'       \describe{
+#'         \item{`growth_rate_herd`}{Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).}
 #'       }
 #'     }
 #'   }
@@ -211,7 +211,7 @@
 #'   cohort_level_data = herd_simulation_chrt_dt,
 #'   herd_level_data = herd_simulation_hrd_dt,
 #'   simulation_duration = 365,
-#'   show_indicator = FALSE
+#'   show_indicator = TRUE
 #' )
 #'
 #' # Access results

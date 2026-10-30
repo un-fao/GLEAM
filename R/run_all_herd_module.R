@@ -15,7 +15,7 @@
 #'     (`FA`, `FJ`, `FS`, `MA`, `MJ`, `MS`). In this case the table must contain
 #'     the columns required by [run_demographic_herd_module()]:
 #'     \describe{
-#'       \item{`herd_id`}{Character or numeric. Unique identifier for the herd,
+#'       \item{`herd_id`}{Character. Unique identifier for the herd,
 #'       repeated for each cohort belonging to the same herd.}
 #'       \item{`cohort_short`}{Character. Demographic cohort code. Supported
 #'       values are `FJ`, `FS`, `FA`, `MJ`, `MS`, and `MA`.}
@@ -31,7 +31,7 @@
 #'     only (`FN`, `MN`). In this case the table must contain the columns
 #'     required by [run_nondemographic_herd_module()]:
 #'     \describe{
-#'       \item{`herd_id`}{Character or numeric. Unique identifier for the herd,
+#'       \item{`herd_id`}{Character. Unique identifier for the herd,
 #'       repeated for each non-demographic cohort phase belonging to the same herd.}
 #'       \item{`cohort_short`}{Character. Non-demographic cohort code.
 #'       Supported values are `FN` for non-demographic female animals and `MN`
@@ -57,7 +57,7 @@
 #'     `herd_level_data` must contain the herd-level inputs required by
 #'     [run_demographic_herd_module()]:
 #'     \describe{
-#'       \item{`herd_id`}{Character or numeric. Unique identifier for the herd.}
+#'       \item{`herd_id`}{Character. Unique identifier for the herd.}
 #'       \item{`parturition_rate`}{Numeric. Average annual number of
 #'       parturitions per female animal (# parturitions/adult female/year). For
 #'       \code{CHK}, this corresponds to eggs laid for reproduction.}
@@ -80,7 +80,7 @@
 #'     `herd_level_data` must contain the herd-level inputs required by
 #'     [run_nondemographic_herd_module()]:
 #'     \describe{
-#'       \item{`herd_id`}{Character or numeric. Unique identifier for the herd.}
+#'       \item{`herd_id`}{Character. Unique identifier for the herd.}
 #'       \item{`cohort_stock_fem_annual_nondemo`}{Numeric. Total annual entrants
 #'       into the `FN` cohort block over the simulated period (# heads /
 #'       simulated period).}
@@ -104,7 +104,7 @@
 #'     inputs required to run [run_nondemographic_herd_module()] after annual
 #'     non-demographic entrants are derived internally from the demographic output:
 #'     \describe{
-#'       \item{`herd_id`}{Character or numeric. Unique identifier for the herd.}
+#'       \item{`herd_id`}{Character. Unique identifier for the herd.}
 #'       \item{`parturition_rate`}{Numeric. Average annual number of
 #'       parturitions per female animal (# parturitions/adult female/year). For
 #'       \code{CHK}, this corresponds to eggs laid for reproduction.}
@@ -251,7 +251,7 @@
 #'     from the cohort over `simulation_duration` (# heads / simulated period).}
 #'     \item{`cohort_stock_annual_nondemographic`}{Numeric. For demographic
 #'     rows only, annual number of animals diverted from the demographic pathway
-#'     into the non-demographic pathway (# heads / simulated period).}
+#'     into the non-demographic pathway (# heads).}
 #'     \item{`nondemo_productive_phase_id`}{Numeric. For non-demographic rows
 #'     only, productive phase identifier within the non-demographic cycle.
 #'     Allowed values are `1` and optionally `2`.}
@@ -260,11 +260,11 @@
 #'     fixed 365-day non-demographic simulation horizon (days).}
 #'     \item{`number_full_nondemo_cycles`}{Integer. For non-demographic rows
 #'     only, number of complete non-demographic cycles fully contained within the
-#'     fixed 365-day simulation horizon (cycles / simulated period).}
+#'     fixed 365-day simulation horizon (# cycles).}
 #'     \item{`total_nondemo_cycle_starts_to_distribute`}{Integer. For
 #'     non-demographic rows only, total number of cycle starts within the fixed
-#'     365-day simulation horizon used to distribute annual entrants (cycle
-#'     starts / simulated period).}
+#'     365-day simulation horizon used to distribute annual entrants (# cycle
+#'     starts).}
 #'   }}
 #'   \item{`herd_level_results`}{A `data.table` with one row per `herd_id`.
 #'   Depending on the selected execution mode, this is the herd-level output of
@@ -272,15 +272,15 @@
 #'   output of both modules. It includes the original herd-level input columns
 #'   plus the following result variables when available:
 #'   \describe{
-#'     \item{`growth_rate_herd`}{Numeric. Annualized herd growth rate estimated
-#'     by the demographic herd module (fraction).}
+#'     \item{`growth_rate_herd`}{Numeric. Annualized growth rate at which the 
+#'     herd reaches steady state (fraction).}
 #'     \item{`cohort_stock_fem_annual_nondemo`}{Numeric. Annual number of female
 #'     animals entering the non-demographic pathway (`FN`) over the simulated
-#'     period (# heads / simulated period). When both modules are run, this is
+#'     period (# heads). When both modules are run, this is
 #'     derived internally from the demographic output.}
 #'     \item{`cohort_stock_mal_annual_nondemo`}{Numeric. Annual number of male
 #'     animals entering the non-demographic pathway (`MN`) over the simulated
-#'     period (# heads / simulated period). When both modules are run, this is
+#'     period (# heads). When both modules are run, this is
 #'     derived internally from the demographic output.}
 #'     \item{`rest_between_nondemo_cycles_duration`}{Numeric. Duration of the
 #'     resting or empty phase between non-demographic cycles (days).}

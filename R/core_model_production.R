@@ -149,19 +149,19 @@ calc_milk_production <- function(
       0.0395 * milk_lactose_fraction_standard
     )
 
-    # Energy content of actual milk
+    # Energy content of actual milk (Mcal/kg)
     energy_milk <- (
       0.0929 * milk_fat_fraction +
       0.0547 * milk_protein_fraction +
       0.0395 * milk_lactose_fraction
     )
 
-    # Milk production (kg/head/year)
+    # Total milk production (kg/cohort/assessment period)
     milk_production <- (
       milk_yield_day * simulation_duration * cohort_stock_size * lactating_females_fraction
     )
 
-    # Milk protein production (kg protein/year)
+    # Milk protein production (kg protein/cohort/assessment period)
     milk_protein_production <- milk_production * milk_protein_fraction
 
     # FPCM production using energy ratio

@@ -55,10 +55,10 @@
 #'   \item computes total and assessment-window offtake using \code{\link{calc_nondemo_offtake_total_horizon}}
 #' }
 #'
-#' @param cohort_level_data A `data.table` with one row per herd, cohort block,
+#' @param cohort_level_data A `data.table` with one row per herd, cohort,
 #' and productive phase, and the following mandatory columns:
 #'   \describe{
-#'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort block belonging to the same herd.}
+#'     \item{`herd_id`}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
 #'     \item{`cohort_short`}{Character. Non-demographic cohort code describing the production block of the animals. Supported values include:
 #'       \itemize{
 #'         \item \code{FN}: non-demographic female animals
@@ -66,16 +66,16 @@
 #'       }
 #'     }
 #'     \item{`nondemo_productive_phase_id`}{Numeric. Productive phase identifier within a cycle. \code{1} is required and \code{2} is optional.}
-#'     \item{`death_rate`}{Numeric. Fraction of deaths occurring during the productive phase (fraction).}
+#'     \item{`death_rate`}{Numeric. Fraction of deaths occurring during the non-demographic productive phase (fraction).}
 #'   }
 #'   \code{cohort_duration_days} is not required for \code{FN} and \code{MN}
 #'   when phase durations are supplied in the herd table.
 #' @param herd_level_data A `data.table` with one row per herd, and the following mandatory columns:
 #'   \describe{
 #'     \item{`herd_id`}{Character. Unique identifier for the herd.}
-#'     \item{`cohort_stock_fem_annual_nondemo`}{Numeric. Total annual entrants into the \code{FN} cohort block over the simulated period (# heads / simulated period).}
-#'     \item{`cohort_stock_mal_annual_nondemo`}{Numeric. Total annual entrants into the \code{MN} cohort block over the simulated period (# heads / simulated period).}
-#'     \item{`rest_between_nondemo_cycles_duration`}{Numeric. Duration of resting/empty phase between cycles for the assessed non-demographic cohort (days).}
+#'     \item{`cohort_stock_fem_annual_nondemo`}{Numeric. Total annual entrants into the \code{FN} cohort block over the simulated period (# heads).}
+#'     \item{`cohort_stock_mal_annual_nondemo`}{Numeric. Total annual entrants into the \code{MN} cohort block over the simulated period (# heads).}
+#'     \item{`rest_between_nondemo_cycles_duration`}{Numeric. Duration of the resting or empty phase between non-demographic cycles (days).}
 #'     \item{`phase1_nondemo_fem_duration_days`}{Numeric. Duration of productive phase 1 for the female non-demographic cohort (\code{FN}) (days).}
 #'     \item{`phase2_nondemo_fem_duration_days`}{Numeric. Duration of productive phase 2 for the female non-demographic cohort (\code{FN}) (days).}
 #'     \item{`phase1_nondemo_mal_duration_days`}{Numeric. Duration of productive phase 1 for the male non-demographic cohort (\code{MN}) (days).}
@@ -88,22 +88,22 @@
 #'
 #' @return A named list with two elements:
 #'   \describe{
-#'     \item{`cohort_level_results`}{A `data.table` with one row per retained herd
-#'       \eqn{\times} non-demographic cohort block \eqn{\times} productive phase,
+#'     \item{`cohort_level_results`}{A `data.table` with one row per retained herd,
+#'       non-demographic cohort block, and productive phase,
 #'       containing the original `cohort_level_data` columns plus:
 #'       \describe{
-#'         \item{`cohort_duration_days`}{Numeric. Productive phase duration used
-#'           in the simulation (days). For non-demographic cohorts (\code{FN}
-#'           and \code{MN}), \code{cohort_duration_days} is not required when
-#'           phase durations are supplied in the herd table. The code fills it
-#'           from the herd values, which override any cohort values. If a herd
-#'           value is missing, the cohort value is used instead.}
-#'         \item{`cohort_stock_size_unscaled`}{Numeric. Average population size by cohort block and productive phase before any later herd-level harmonization (# heads).}
+#'         \item{`cohort_duration_days`}{Numeric. Amount of time that each animal 
+#'         spends in a specific cohort and production phase (days). For non-demographic 
+#'         cohorts (\code{FN}and \code{MN}), \code{cohort_duration_days} is not required when 
+#'         phase durations are supplied in the herd table. The code fills it
+#'         from the herd values, which override any cohort values. If a herd 
+#'         value is missing, the cohort value is used instead.}
+#'         \item{`cohort_stock_size_unscaled`}{Numeric. Average population size for the assessed cohort, not scaled to the total livestock population (herd_size_total), (# heads).}
 #'         \item{`partial_nondemo_phase_duration`}{Numeric. Duration of the terminal partial productive phase occurring within the fixed 365-day simulation horizon (days).}
-#'         \item{`offtake_heads_unscaled`}{Numeric. Total number of animals leaving the cohort block over the fixed 365-day simulation horizon (# heads).}
-#'         \item{`offtake_heads_assessment_unscaled`}{Numeric. Total number of animals leaving the cohort block over `simulation_duration` (# heads / simulated period).}         
-#'         \item{`number_full_nondemo_cycles`}{Integer. Number of complete cycles fully contained within the fixed 365-day simulation horizon (full cycles / simulated period).}
-#'         \item{`total_nondemo_cycle_starts_to_distribute`}{Integer. Total number of cycle starts within the fixed 365-day simulation horizon used to distribute annual entrants (cycle starts / simulated period).}
+#'         \item{`offtake_heads_unscaled`}{Numeric. Total number of animals removed from the cohort over the full 365-day simulation horizon (# heads), not scaled to the cohort population at the start of the assessment period.}
+#'         \item{`offtake_heads_assessment_unscaled`}{Numeric. Total number of animals removed from the cohort over 'simulation_duration' (# heads/assessment period), not scaled to the cohort population at the start of the assessment period.}         
+#'         \item{`number_full_nondemo_cycles`}{Integer. Number of complete cycles fully contained within the fixed 365-day simulation horizon (# cycles).}
+#'         \item{`total_nondemo_cycle_starts_to_distribute`}{Integer. Total number of cycle starts within the fixed 365-day simulation horizon used to distribute annual entrants (# cycle starts).}
 #'       }}
 #'     \item{`herd_level_results`}{A `data.table` with one row per `herd_id`
 #'       containing the original `herd_level_data` columns plus:
