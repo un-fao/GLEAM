@@ -381,7 +381,5 @@ results <- run_demographic_herd_module(
   simulation_duration = 365,
   show_indicator = TRUE
 )
-#> 🕒 Simulating the herd structure, please wait…
-#> ✔ Demographic herd simulation complete.
 # }
 ```

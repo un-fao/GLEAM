@@ -1,0 +1,44 @@
+feed_name	feed_id	category	co2_feed_fertilizer	co2_feed_pesticides	co2_feed_crop_activities	n2o_feed_fertilizer	n2o_feed_manure_applied	n2o_feed_crop_residues	ch4_feed_rice	co2_feed_luc_nopeat	co2_feed_luc_peat
+Fresh grass, natural pastures	F1	Grass and leaves	0	0	0	0	0.108	0	0	0	0
+Barley, straw	F10	Crop residues	0	0	0	0	0	0	0	0	0
+Beans, straw	F109	Crop residues	0	0	0	0	0	0	0	0	0
+Barley	F11	Cereals	57.3	14.2	114	0.454	0.575	0.264	0	9.98	0.246
+Beans, dry	F110	Pulses	82.4	25.5	209	0.221	0.377	0.321	0	78.9	36.3
+Peas, dry	F118	Pulses	125	20.5	106	0.636	0.698	0.318	0	38.5	1.33
+Sugar cane, tops	F132	Crop residues	0	0	0	0	0	0	0	0	0
+Forage and silage, maize	F136	Fodder crop	36.3	15.8	136	0.32	0.396	0.195	0	113	1.49
+Hay, from natural grasses	F147.1	Grass and leaves	0	0	167	0	0.108	0	0	0	0
+Hay, from cultivated grasses	F148	Grass and leaves	21.2	13	94.2	0.0761	0.0443	0	0	0	0
+Hay for forage, from legumes, cultivated	F149.2	Grass and leaves	27.9	19.2	146	0.0453	0.0655	0	0	0	0
+Other grasses, for forage	F151	Grass and leaves	21.2	13	94.2	0.0761	0.0444	0	0	0	0
+Mixed grass and legumes, for forage, cultivated	F153.2	Grass and leaves	36	19.3	145	0.129	0.0655	0	0	0	0
+Millet, stover	F16	Crop residues	0	0	0	0	0	0	0	0	0
+Raw milk of cattle	F160	Animal products	0	0	0	0	0	0	0	0	0
+Raw milk of buffalo	F161	Animal products	0	0	0	0	0	0	0	0	0
+Raw milk of sheep	F162	Animal products	0	0	0	0	0	0	0	0	0
+Raw milk of goats	F163	Animal products	0	0	0	0	0	0	0	0	0
+Raw milk of camel	F164	Animal products	0	0	0	0	0	0	0	0	0
+Millet	F17	Cereals	12.6	3.74	7.76	0.0629	0	0.0406	0	0	0
+Wheat, straw	F2	Crop residues	0	0	0	0	0	0	0	0	0
+Cake of Soya beans	F210	Oil crop cakes	18.1	5.5	29.5	0.0764	0.139	0.12	0	104	0.716
+Cake of Sunflower seed	F214	Oil crop cakes	50.2	12.5	79.3	0.224	0.345	0.231	0	194	0.577
+Cake of Rapeseed	F215	Oil crop cakes	68.7	10.2	54.6	0.544	0.218	0.234	0	-23.8	0.044
+Cake of Cottonseed	F221	Oil crop cakes	344	17.6	90.3	2.09	0.324	0.657	0	117	15.6
+Mixed grain	F27	Cereals	37.7	18.8	88.9	0.333	0.501	0.131	0	23.1	0.479
+Wheat	F3	Cereals	32.5	8.53	48.3	0.298	0.113	0.148	0	3.83	0.122
+Bran of Wheat	F308	By-products	27.2	4.61	31.1	0.143	0.162	0.0601	0	1.31	0.0509
+Bran of Rice	F309	By-products	65.6	12.4	94.6	0.259	0.31	0.233	120	0.485	0.443
+Bran of Maize	F311	By-products	12.1	1.88	13	0.0709	0.0577	0.0325	0	37.8	0.126
+Bran of Millet	F314	By-products	16.8	9.62	235	0.1	0.19	0.234	0	174	3.36
+Maize Gluten meal	F329	By-products	6.33	0.78	2.6	0.0319	0.0256	0.0208	0	5.59	0.14
+Beet pulp	F332	By-products	0	0	0	0	0	0	0	0	0
+Brewing or distilling dregs and waste	F335	By-products	0	0	0	0	0	0	0	0	0
+Raw milk of pig	F345	Animal products	0	0	0	0	0	0	0	0	0
+Maize (corn), stover	F4	Crop residues	0	0	0	0	0	0	0	0	0
+Maize (corn)	F5	Cereals	29.2	6.27	22.8	0.202	0.128	0.0895	0	33.3	0.181
+Banana stems	F53	Crop residues	0	0	0	0	0	0	0	0	0
+Banana fruit	F54	Fruits and vegetables	46.6	13.9	63.5	0.278	0.111	0.731	0	667	-291
+Rice, straw	F6	Crop residues	0	0	0	0	0	0	0	0	0
+Rice	F7	Cereals	87.4	7.91	90.5	0.247	0.0855	0.178	36.8	49.4	2
+Sorghum	F9	Cereals	63.8	10.4	73.2	0.389	0.276	0.172	0	34.6	0.272
+Cassava, fresh	F96	Roots and tubers	27.9	20.1	32.7	0.0582	0.0644	0.147	0	354	50.3

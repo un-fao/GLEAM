@@ -1,0 +1,116 @@
+Type: Package
+Package: gleam
+Title: Global Livestock Environmental Assessment Model (GLEAM-X)
+Version: 0.8.0
+Authors@R: c(
+    person(given = "Ahmed",
+           family = "Jou",
+           email = "ahmed@applitics.fr",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0002-2309-4583", 
+                       "https://applitics.fr")),
+    person(given = "Yassine",
+           family = "Elaouni",
+           email = "yassine@applitics.fr",
+           role = c("aut"),
+           comment = "https://applitics.fr"),
+    person(given = "Dominik",
+           family = "Wisser",
+           email = "dominik.wisser@fao.org",
+           role = c("aut"),
+           comment = c(ORCID = "0000-0001-8368-3801",
+                       "GLEAM team lead, FAO")),
+    person(given = "Lydia",
+           family = "Lanzoni",
+           email = "lydia.lanzoni@fao.org",
+           role = c("aut"),
+           comment = c(ORCID = "0000-0002-4488-4368",
+           "Livestock and climate change specialist, FAO")),
+    person(given = "Giuseppe",
+           family = "Tempio",
+           email = "giuseppe.tempio@fao.org",
+           role = c("aut"),
+           comment = c(ORCID = "0009-0004-2272-0794",
+                        "Livestock environmental impact analyst, FAO")),
+    person(given = "Phyllis",
+           family = "Ndungu'",
+           email = "Phyllis.Ndungu@fao.org",
+           role = c("ctb"),
+           comment = "Livestock and climate change specialist, FAO"),
+    person(given = "Yushan",
+           family = "Li",
+           email = "Yushan.Li@fao.org",
+           role = c("ctb"),
+           comment = "Livestock and sustainability specialist, FAO"),
+    person(given = "Manling",
+           family = "Xu",
+           email = "Manling.Xu@fao.org",
+           role = c("ctb"),
+           comment = "Livestock data intern, FAO"),
+    person(given = "Zixin",
+           family = "Wang",
+           email = "Zixin.Wang@fao.org",
+           role = c("ctb"),
+           comment = "Livestock data intern, FAO"),
+    person(given = "Narindra",
+           family = "Rakotovao",
+           email = "Narindra.Rakotovao@fao.org",
+           role = c("ctb"),
+           comment = "Livestock policy officer, FAO"),
+    person(given = "Stewart",
+           family = "Chikoloma",
+           email = "Stewart.Chikomola@fao.org",
+           role = c("ctb"),
+           comment= "Livestock data specialist, FAO"),
+    person(given = "David",
+           family = "OBrien",
+           email = "david@applitics.fr",
+           role = c("ctb"),
+           comment = c(ORCID = "0009-0007-0339-0517", 
+                       "https://applitics.fr")),
+    person(given = "Food and Agriculture Organization of the United Nations",
+           family = "FAO",
+           role = c("cph"),
+           comment = "Original GLEAM model framework"),
+    person(given = "Federal Ministry of Agriculture, Food and Regional Identity of Germany",
+           family = "BMELH",
+           role = c( "fnd"),
+           comment = "Funding support"))
+Description: GLEAM-X is the official R implementation of FAO’s Global Livestock Environmental
+  Assessment Model (GLEAM). The package provides a modular, transparent framework for
+  simulating livestock production systems and quantifying their environmental impacts.
+License: AGPL-3
+URL: https://github.com/un-fao/GLEAM/, https://www.fao.org/gleam/en/
+BugReports: https://github.com/un-fao/GLEAM/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports: cli (>= 3.0.0), data.table (>= 1.16.0)
+Suggests: knitr, rmarkdown, testthat (>= 3.2.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Depends: R (>= 4.4.0)
+NeedsCompilation: no
+Packaged: 2026-04-10 10:20:07 UTC; lydia
+Author: Ahmed Jou [aut, cre] (ORCID: <https://orcid.org/0009-0002-2309-4583>,
+    https://applitics.fr),
+  Yassine Elaouni [aut] (https://applitics.fr),
+  Dominik Wisser [aut] (ORCID: <https://orcid.org/0000-0001-8368-3801>,
+    GLEAM team lead, FAO),
+  Lydia Lanzoni [aut] (ORCID: <https://orcid.org/0000-0002-4488-4368>,
+    Livestock and climate change specialist, FAO),
+  Giuseppe Tempio [aut] (ORCID: <https://orcid.org/0009-0004-2272-0794>,
+    Livestock environmental impact analyst, FAO),
+  Phyllis Ndungu' [ctb] (Livestock and climate change specialist, FAO),
+  Yushan Li [ctb] (Livestock and sustainability specialist, FAO),
+  Manling Xu [ctb] (Livestock data intern, FAO),
+  Zixin Wang [ctb] (Livestock data intern, FAO),
+  Narindra Rakotovao [ctb] (Livestock policy officer, FAO),
+  Stewart Chikoloma [ctb] (Livestock data specialist, FAO),
+  David OBrien [ctb] (ORCID: <https://orcid.org/0009-0007-0339-0517>,
+    https://applitics.fr),
+  Food and Agriculture Organization of the United Nations FAO [cph]
+    (Original GLEAM model framework),
+  Federal Ministry of Agriculture, Food and Regional Identity of Germany
+    BMELH [fnd] (Funding support)
+Maintainer: Ahmed Jou <ahmed@applitics.fr>

@@ -397,7 +397,5 @@ results <- run_allocation_module(
   cohort_level_data = allocation_chrt_dt,
   herd_level_data = allocation_hrd_dt
 )
-#> 🕒 Computing allocation shares, please wait…
-#> ✔ Allocation calculation complete.
 # }
 ```

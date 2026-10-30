@@ -429,7 +429,5 @@ results <- run_metabolic_energy_req_module(
   cohort_level_data = metabolic_energy_req_chrt_dt,
   herd_level_data = metabolic_energy_req_hrd_dt
 )
-#> 🕒 Calculating metabolic energy requirements and ration, please wait…
-#> ✔ Metabolic energy requirements calculation complete.
 # }
 ```

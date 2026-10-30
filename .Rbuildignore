@@ -1,7 +1,15 @@
 ^gleam\.Rproj$
+^GLEAM-fao\.Rproj$
+^\.cursor$
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^\.github$
 ^\.lintr$
 ^legacy$
 ^data-raw$
+^.*\.Rproj$
+^_pkgdown\.yml$
+^cran-comments\.md$
+^pkgdown$
+^\.cursor$
+^\.claude$

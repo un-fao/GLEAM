@@ -1,6 +1,10 @@
+.cursor/
+.claude/
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 gleam.Rproj
+GLEAM-fao.Rproj
+.cursor/
 Inputs

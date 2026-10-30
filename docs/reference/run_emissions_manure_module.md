@@ -481,7 +481,5 @@ results <- run_emissions_manure_module(
   manure_management_system_fraction = manure_management_system_fraction,
   manure_management_system_factors = manure_management_system_factors
 )
-#> 🕒 Calculating emissions from manure management systems…
-#> ✔ Emissions from manure management calculation complete.
 # }
 ```

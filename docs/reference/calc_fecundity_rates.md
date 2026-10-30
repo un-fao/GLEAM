@@ -58,10 +58,4 @@ This function is part of the
 
 ``` r
 calc_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)
-#> $fecundity_female
-#> [1] 0.002191781
-#> 
-#> $fecundity_male
-#> [1] 0.002191781
-#> 
 ```

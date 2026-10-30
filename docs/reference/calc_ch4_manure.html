@@ -158,44 +158,31 @@ Livestock and Manure Management. Equation 10.23.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">calc_ch4_manure</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  ratio_m3CH4_to_kgCH4 <span class="op">=</span> <span class="fl">0.67</span>,</span></span>
-<span class="r-in"><span>  volatile_solids   <span class="op">=</span> <span class="fl">2.024</span>,</span></span>
-<span class="r-in"><span>  mms_burned <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    manure_management_system_fraction <span class="op">=</span> <span class="fl">0.020</span>,</span></span>
-<span class="r-in"><span>    methane_conversion_factor_mcf <span class="op">=</span> <span class="fl">10</span>,</span></span>
-<span class="r-in"><span>    ch4_max_producing_capacity_bo <span class="op">=</span> <span class="fl">0.13</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  mms_drylot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    manure_management_system_fraction <span class="op">=</span> <span class="fl">0.264</span>,</span></span>
-<span class="r-in"><span>    methane_conversion_factor_mcf <span class="op">=</span> <span class="fl">2</span>,</span></span>
-<span class="r-in"><span>    ch4_max_producing_capacity_bo <span class="op">=</span> <span class="fl">0.13</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  mms_pasture <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    manure_management_system_fraction <span class="op">=</span> <span class="fl">0.310</span>,</span></span>
-<span class="r-in"><span>    methane_conversion_factor_mcf <span class="op">=</span> <span class="fl">0.47</span>,</span></span>
-<span class="r-in"><span>    ch4_max_producing_capacity_bo <span class="op">=</span> <span class="fl">0.19</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  mms_solid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    manure_management_system_fraction <span class="op">=</span> <span class="fl">0.406</span>,</span></span>
-<span class="r-in"><span>    methane_conversion_factor_mcf <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>    ch4_max_producing_capacity_bo <span class="op">=</span> <span class="fl">0.13</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ch4_manure_pasture</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0003754036</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ch4_manure_burned</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0003525808</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ch4_manure_other</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.004509508</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ch4_manure_all_noburn</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.004884912</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_ch4_manure</span><span class="op">(</span></span>
+<span>  ratio_m3CH4_to_kgCH4 <span class="op">=</span> <span class="fl">0.67</span>,</span>
+<span>  volatile_solids   <span class="op">=</span> <span class="fl">2.024</span>,</span>
+<span>  mms_burned <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    manure_management_system_fraction <span class="op">=</span> <span class="fl">0.020</span>,</span>
+<span>    methane_conversion_factor_mcf <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>    ch4_max_producing_capacity_bo <span class="op">=</span> <span class="fl">0.13</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  mms_drylot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    manure_management_system_fraction <span class="op">=</span> <span class="fl">0.264</span>,</span>
+<span>    methane_conversion_factor_mcf <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    ch4_max_producing_capacity_bo <span class="op">=</span> <span class="fl">0.13</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  mms_pasture <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    manure_management_system_fraction <span class="op">=</span> <span class="fl">0.310</span>,</span>
+<span>    methane_conversion_factor_mcf <span class="op">=</span> <span class="fl">0.47</span>,</span>
+<span>    ch4_max_producing_capacity_bo <span class="op">=</span> <span class="fl">0.19</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  mms_solid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    manure_management_system_fraction <span class="op">=</span> <span class="fl">0.406</span>,</span>
+<span>    methane_conversion_factor_mcf <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>    ch4_max_producing_capacity_bo <span class="op">=</span> <span class="fl">0.13</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

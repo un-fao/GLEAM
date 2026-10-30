@@ -166,7 +166,5 @@ emissions_enteric_input_chrt_data <- data.table::fread(system.file(
 results <- run_emissions_enteric_module(
   cohort_level_data = emissions_enteric_input_chrt_data
 )
-#> 🕒 Calculating enteric methane emissions, please wait…
-#> ✔ Enteric methane emissions calculation complete.
 # }
 ```

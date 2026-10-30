@@ -277,7 +277,5 @@ results <- run_ration_quality_module(
   rations_share = feed_rations_chrt_dt,
   feed_params = feed_params_dt
 )
-#> 🕒 Aggregating ration quality, please wait…
-#> ✔ Ration quality aggregation complete.
 # }
 ```

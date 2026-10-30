@@ -1084,142 +1084,141 @@ Validation blocks variables that are expected to be produced internally.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1: You do NOT have herd structure — use combined demographic and</span></span></span>
-<span class="r-in"><span><span class="co"># non-demographic cohort input for herd simulation. Pipeline runs herd</span></span></span>
-<span class="r-in"><span><span class="co"># simulation first, then the rest of the pipeline.</span></span></span>
-<span class="r-in"><span><span class="co"># The demographic module estimates diverted FN/MN to the non-demographic block.</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">master_chrt_lvl_no_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_no_structure_mixed_data.csv"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_mixed_data.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"extdata/run_gleam_examples/feed_quality.csv"</span>,</span></span>
-<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"extdata/run_gleam_examples/feed_emission_factors.csv"</span>,</span></span>
-<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  has_herd_structure <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  run_demographic <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_no_structure_dt</span>,</span></span>
-<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span></span>
-<span class="r-in"><span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span></span>
-<span class="r-in"><span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span></span>
-<span class="r-in"><span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span></span>
-<span class="r-in"><span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span></span>
-<span class="r-in"><span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span></span>
-<span class="r-in"><span>  simulation_duration <span class="op">=</span> <span class="fl">365</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example 2: Non-demographic-only simulation of CHK layers and broilers.</span></span></span>
-<span class="r-in"><span><span class="co"># The cohort file contains only FN/MN cohorts.</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">master_chrt_lvl_no_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_no_structure_nondemo_data.csv"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_nondemo_data.csv"</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt_nondemo.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_quality.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_emission_factors.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction_nondemo.csv"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors_nondemo.csv"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  has_herd_structure <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  run_demographic <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_no_structure_dt</span>,</span></span>
-<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span></span>
-<span class="r-in"><span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span></span>
-<span class="r-in"><span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span></span>
-<span class="r-in"><span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span></span>
-<span class="r-in"><span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span></span>
-<span class="r-in"><span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span></span>
-<span class="r-in"><span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span></span>
-<span class="r-in"><span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example 3: You already HAVE herd structure — use cohort table and skip herd simulation.</span></span></span>
-<span class="r-in"><span><span class="co"># Pipeline skips herd simulation and uses this as the starting cohort table.</span></span></span>
-<span class="r-in"><span><span class="co"># The cohort file already supplies cohort_stock_size and offtake_heads_assessment.</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">master_chrt_lvl_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_structure_data.csv"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_structure_data.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt.csv"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_quality.csv"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_emission_factors.csv"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  has_herd_structure <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>  run_demographic <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  run_nondemographic <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_structure_dt</span>,</span></span>
-<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span></span>
-<span class="r-in"><span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span></span>
-<span class="r-in"><span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span></span>
-<span class="r-in"><span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span></span>
-<span class="r-in"><span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span></span>
-<span class="r-in"><span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span></span>
-<span class="r-in"><span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span></span>
-<span class="r-in"><span>  show_indicator <span class="op">=</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># Example 1: You do NOT have herd structure — use combined demographic and</span></span>
+<span><span class="co"># non-demographic cohort input for herd simulation. Pipeline runs herd</span></span>
+<span><span class="co"># simulation first, then the rest of the pipeline.</span></span>
+<span><span class="co"># The demographic module estimates diverted FN/MN to the non-demographic block.</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span>
+<span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">master_chrt_lvl_no_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_no_structure_mixed_data.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_mixed_data.csv"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt.csv"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_gleam_examples/feed_quality.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_gleam_examples/feed_emission_factors.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction.csv"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors.csv"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span>
+<span>  has_herd_structure <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  run_demographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_no_structure_dt</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span>
+<span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span>
+<span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span>
+<span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span>
+<span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span>
+<span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span>
+<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="co"># }</span></span>
+<span></span>
+<span><span class="co"># Example 2: Non-demographic-only simulation of CHK layers and broilers.</span></span>
+<span><span class="co"># The cohort file contains only FN/MN cohorts.</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span>
+<span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">master_chrt_lvl_no_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_no_structure_nondemo_data.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_nondemo_data.csv"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt_nondemo.csv"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_quality.csv"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_emission_factors.csv"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction_nondemo.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors_nondemo.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span>
+<span>  has_herd_structure <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  run_demographic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_no_structure_dt</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span>
+<span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span>
+<span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span>
+<span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span>
+<span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span>
+<span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span>
+<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
+<span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="co"># }</span></span>
+<span></span>
+<span><span class="co"># Example 3: You already HAVE herd structure — use cohort table and skip herd simulation.</span></span>
+<span><span class="co"># Pipeline skips herd simulation and uses this as the starting cohort table.</span></span>
+<span><span class="co"># The cohort file already supplies cohort_stock_size and offtake_heads_assessment.</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span>
+<span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">master_chrt_lvl_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_structure_data.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_structure_data.csv"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_quality.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_emission_factors.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction.csv"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors.csv"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span>
+<span>  has_herd_structure <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  run_demographic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  run_nondemographic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_structure_dt</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span>
+<span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span>
+<span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span>
+<span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span>
+<span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span>
+<span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span>
+<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
+<span>  show_indicator <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="co"># }</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

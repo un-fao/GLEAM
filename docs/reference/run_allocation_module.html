@@ -332,27 +332,24 @@ and Performance (LEAP) Partnership. FAO, Rome, Italy.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="co"># Load allocation inputs (cohort and herd-level)</span></span></span>
-<span class="r-in"><span><span class="va">allocation_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/allocation_input_chrt_data.csv"</span>,</span></span>
-<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">allocation_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/allocation_input_hrd_data.csv"</span>,</span></span>
-<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Run allocation calculations</span></span></span>
-<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_allocation_module</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">allocation_chrt_dt</span>,</span></span>
-<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">allocation_hrd_dt</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 🕒 Computing allocation shares, please wait…</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Allocation calculation complete.</span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># \donttest{</span></span>
+<span><span class="co"># Load allocation inputs (cohort and herd-level)</span></span>
+<span><span class="va">allocation_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_modules_examples/allocation_input_chrt_data.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">allocation_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_modules_examples/allocation_input_hrd_data.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run allocation calculations</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_allocation_module</span><span class="op">(</span></span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">allocation_chrt_dt</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">allocation_hrd_dt</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># }</span></span>
+<span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

@@ -320,7 +320,5 @@ results <- run_emissions_ration_module(
   rations_share = rations_share,
   feed_emissions = feed_emissions
 )
-#> 🕒 Aggregating feed emissions, please wait…
-#> ✔ Feed emissions aggregation complete.
 # }
 ```

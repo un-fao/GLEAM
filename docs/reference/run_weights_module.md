@@ -249,7 +249,5 @@ results <- run_weights_module(
   cohort_level_data = weights_chrt_dt,
   herd_level_data = weights_hrd_dt
 )
-#> 🕒 Calculating cohort weights, please wait…
-#> ✔ Cohort weights calculation complete.
 # }
 ```

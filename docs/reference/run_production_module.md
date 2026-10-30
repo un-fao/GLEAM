@@ -318,7 +318,5 @@ results <- run_production_module(
   herd_level_data = production_hrd_dt,
   simulation_duration = 365
 )
-#> 🕒 Calculating production (milk, fibre, meat), please wait…
-#> ✔ Production cohort calculations completed.
 # }
 ```

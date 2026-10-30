@@ -269,7 +269,5 @@ results <- run_nondemographic_herd_module(
   simulation_duration = 365,
   show_indicator = TRUE
 )
-#> 🕒 Simulating the non-demographic herd, please wait…
-#> ✔ Non-demographic herd simulation complete.
 # }
 ```

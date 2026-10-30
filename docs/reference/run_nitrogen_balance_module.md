@@ -243,7 +243,5 @@ results <- run_nitrogen_balance_module(
   cohort_level_data = nitrogen_balance_chrt_dt,
   herd_level_data = nitrogen_balance_hrd_dt
 )
-#> 🕒 Calculating nitrogen balance, please wait…
-#> ✔ Nitrogen balance calculation complete.
 # }
 ```

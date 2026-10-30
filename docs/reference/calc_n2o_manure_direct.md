@@ -168,16 +168,4 @@ calc_n2o_manure_direct(
     n2o_ef3  = 0.005
   )
 )
-#> $n2o_manure_pasture_direct
-#> [1] 0.008768571
-#> 
-#> $n2o_manure_burned_direct
-#> [1] 0
-#> 
-#> $n2o_manure_other_direct
-#> [1] 0.01033843
-#> 
-#> $n2o_manure_all_noburn_direct
-#> [1] 0.019107
-#> 
 ```
