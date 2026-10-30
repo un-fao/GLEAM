@@ -27,6 +27,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
@@ -78,7 +79,7 @@ This component follows the IPCC Tier 2 partitioning framework and is applied
 only to \strong{female cohorts} (\code{FA} and \code{FS}).
 
 Pregnancy energy (\code{metabolic_energy_req_pregnancy}) represents the additional
-energy required to support gestation. Requirements are computed as a fraction
+energy required to support gestation in mammals. Requirements are computed as a fraction
 of maintenance energy and are adjusted to reflect reproductive activity within
 the cohort:
 \itemize{

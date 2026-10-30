@@ -9,7 +9,7 @@ home:
     Official R package of FAO’s Global Livestock Environmental Assessment
     Model (GLEAM).
 
-url: https://github.com/un-fao/GLEAM
+url: https://un-fao.github.io/GLEAM/
 
 navbar:
   structure:
@@ -44,6 +44,7 @@ navbar:
 
     github:
       icon: fab fa-github
+      aria-label: GitHub repository
       href: https://github.com/un-fao/GLEAM
 
 reference:

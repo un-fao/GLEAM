@@ -143,7 +143,7 @@ For selected cohorts, \eqn{cmain} is computed as a weighted average to account f
 \item All cohorts: \eqn{cmain = 0.4435}
 }
 
-\strong{CHK} (Sakomura, 2004):
+\strong{CHK} (Sakomura, 2004; Neme et al. 2005):
 \itemize{
 \item Adult and laying cohorts (\code{MA} plus any \code{CHK} cohort with
 \code{is_egg_producing = TRUE}):
@@ -153,17 +153,19 @@ For selected cohorts, \eqn{cmain} is computed as a weighted average to account f
   \left(0.6935 - 0.0099 \times average\_annual\_temperature \right)
   }
 \item Juvenile and subadult cohorts (\code{FJ}, \code{FS}, \code{MJ},
-\code{MS}, and non-laying \code{FN} phase 1):
+\code{MS}, \code{MN}, and non-laying \code{FN} phase 1):
 \deqn{
   metabolic\_energy\_req\_maintenance =
-  0.3866 + 0.0282 \times
-  (lower\_critical\_temperature - average\_annual\_temperature),
+  average\_weight^{0.75} \times
+  \left(0.3866 + 0.0282 \times
+  (lower\_critical\_temperature - average\_annual\_temperature) \right),
   \quad average\_annual\_temperature < lower\_critical\_temperature
   }
 \deqn{
   metabolic\_energy\_req\_maintenance =
-  0.3866 + 0.0037 \times
-  (lower\_critical\_temperature - average\_annual\_temperature),
+  average\_weight^{0.75} \times
+  \left(0.3866 + 0.0037 \times
+  (average\_annual\_temperature - lower\_critical\_temperature) \right),
   \quad average\_annual\_temperature \ge lower\_critical\_temperature
   }
 }
@@ -190,8 +192,11 @@ Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
 Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 
-Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
+
+Neme, R., Sakomura, N.K., Fialho, F.B., Freitas, E.R. & Fukayama, E.H. (2005).
+\emph{Modelling Energy Utilization for Laying Type Pullets}. Brazilian Journal of Poultry Science, 7(1), 39–46.
 }
 \seealso{
 \code{\link{run_metabolic_energy_req_module}},

@@ -23,6 +23,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
 \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
@@ -72,7 +73,7 @@ For \code{SHP} and \code{GTS}, activity energy is calculated as:
 
 where
 
-\eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS};
+\eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS}, \code{CHK};
 MJ/day/kg for \code{SHP},  \code{GTS}) that reflects the animal’s feeding and management conditions.
 \code{metabolic_energy_req_maintenance} can be calculated using
 \code{\link{calc_metabolic_energy_req_maintenance}()}.
@@ -107,12 +108,7 @@ over the assessment period to account for variation in management and grazing in
 }
 \strong{CHK} (Sakomura, 2004):
 \itemize{
-\item All cohorts:
-\deqn{
-  metabolic\_energy\_req\_activity =
-  metabolic\_energy\_req\_maintenance \times
-  (low\_activity\_fraction + high\_activity\_fraction) \times 0.25
-  }
+\item \code{all activity levels}: \eqn{cact = 0.25}
 }
 
 This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
@@ -137,8 +133,8 @@ Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
 Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
 
-Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
 }
 \seealso{
 \code{\link{run_metabolic_energy_req_module}},

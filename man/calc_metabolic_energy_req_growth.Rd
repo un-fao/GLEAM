@@ -142,13 +142,20 @@ where \eqn{daily\_weight\_gain} is expressed in kg/head/day and \eqn{cgro}
 is expressed in MJ/g. The factor 1000 converts kilograms of live-weight gain
 to grams.
 
-The following values are used:
+The following values are used, based on Table 3 from Sakomura (2004):
 \itemize{
-\item \code{MA} and any \code{CHK} cohort with
-\code{is_egg_producing = TRUE}:
-\eqn{cgro = 0.0279}
+\item \code{FA} and \code{MA}:
+\eqn{cgro = 0.0299} (average of values for "Laying hen" and "Broiler breeder hen")
+\item \code{FN} and \code{is_egg_producing = TRUE}:
+\eqn{cgro = 0.0279} (value for "Laying hen")
+\item \code{FN} and \code{is_egg_producing = FALSE}:
+\eqn{cgro = 0.0221} (average of all values, excluding "Male broiler", "Laying hen",
+and "Broiler breeder hen")
+\item \code{MN}:
+\eqn{cgro = 0.0173} (average of values for "Male broiler")
 \item \code{FS}, \code{FJ}, \code{MS}, \code{MJ}:
-\eqn{cgro = 0.0202}
+\eqn{cgro = 0.0191} (average of all values, excluding "Laying hen"
+and "Broiler breeder hen")
 }
 
 }
@@ -179,8 +186,8 @@ Chapter 10: Emissions from Livestock and Manure Management, Equation 10.6 and 10
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
 from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
 
-Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
-laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
+Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
 }
 \seealso{
 \code{\link{run_metabolic_energy_req_module}},

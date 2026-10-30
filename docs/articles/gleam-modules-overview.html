@@ -38,7 +38,7 @@
 <li class="nav-item"><a class="nav-link" href="../articles/gleam-history.html"><span class="fa fa-timeline"></span> GLEAM History</a></li>
       </ul>
 <ul class="navbar-nav">
-<li class="nav-item"><a class="nav-link" href="https://github.com/un-fao/GLEAM"><span class="fa fab fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/un-fao/GLEAM" aria-label="GitHub repository"><span class="fa fab fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -55,7 +55,7 @@
       <h1>About gleam modules</h1>
 
 
-      <small class="dont-index">Source: <a href="https://github.com/un-fao/GLEAM/blob/HEAD/vignettes/gleam-modules-overview.Rmd"><code>vignettes/gleam-modules-overview.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/un-fao/GLEAM/blob/HEAD/vignettes/gleam-modules-overview.Rmd" class="external-link"><code>vignettes/gleam-modules-overview.Rmd</code></a></small>
       <div class="d-none name"><code>gleam-modules-overview.Rmd</code></div>
     </div>
 
@@ -565,7 +565,7 @@ available data.</em></p>
 for each execution mode. Load <code>gleam</code> before running them; no
 filtering or column selection is needed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/un-fao/GLEAM/">gleam</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://un-fao.github.io/GLEAM/">gleam</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="use-case-1-run-both-demographic-and-non-demographic-modules">Use case 1: Run both demographic and non-demographic modules<a class="anchor" aria-label="anchor" href="#use-case-1-run-both-demographic-and-non-demographic-modules"></a>
 </h4>
@@ -822,6 +822,22 @@ energy partitions:</p>
 <li>Egg deposition (CHK only) — <a href="../reference/calc_metabolic_energy_req_eggs.html"><code>calc_metabolic_energy_req_eggs()</code></a>
 </li>
 </ul>
+<p>For chickens (<code>CHK</code>), the model distinguishes between
+<strong>reproductive eggs</strong> (used for breeding) and <strong>food
+eggs</strong> (produced for human consumption).</p>
+<ul>
+<li>
+<strong>Reproductive eggs:</strong> Egg production energy
+requirements are always calculated for adult females (<code>FA</code>),
+based on <code>reproductive_rate</code>.</li>
+<li>
+<strong>Food eggs:</strong> Energy requirements for food-egg
+production are calculated only when
+<code>is_egg_producing = TRUE</code>. This option is available for adult
+females (<code>FA</code>) and non-demographic females (<code>FN</code>)
+in productive phase 2. Annual food-egg production per hen is specified
+by <code>egg_human_consumption_yield</code> (eggs/hen/year).</li>
+</ul>
 <p>Total energy requirements are then aggregated using <a href="../reference/calc_total_metabolic_energy_req.html"><code>calc_total_metabolic_energy_req()</code></a>,
 and dry matter intake is derived using <a href="../reference/calc_ration_intake.html"><code>calc_ration_intake()</code></a>
 by dividing the total energy requirement by the diet energy density.</p>
@@ -1016,9 +1032,13 @@ protein) are computed from <code>offtake_heads_assessment</code> and
 slaughter weight using <a href="../reference/calc_meat_production.html"><code>calc_meat_production()</code></a>.</li>
 <li>Food-egg outputs (number, mass, and protein) are computed using <a href="../reference/calc_egg_production.html"><code>calc_egg_production()</code></a>.</li>
 </ol>
-<p>For <code>CHK</code>, food eggs are calculated only for
-<code>FA</code> or <code>FN</code> phase 2 cohorts with
-<code>is_egg_producing = TRUE</code>.</p>
+<p>For chickens (<code>CHK</code>), the model distinguishes between
+<strong>food eggs</strong> (produced for human consumption) and
+<strong>reproductive eggs</strong> (used for breeding).</p>
+<p>Food-egg production is calculated only when
+<code>is_egg_producing = TRUE</code>, which is supported for adult
+females (<code>FA</code>) and non-demographic females (<code>FN</code>)
+in productive phase 2.</p>
 </div>
 <div class="section level2">
 <h2 id="emission-allocation-module">Emission Allocation Module<a class="anchor" aria-label="anchor" href="#emission-allocation-module"></a>

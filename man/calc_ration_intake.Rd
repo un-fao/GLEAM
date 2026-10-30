@@ -21,11 +21,12 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
 \item{metabolic_energy_req_total}{Numeric. Total daily energy requirement (MJ/head/day).
 For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
-For CML and PGS the function returns the summed daily metabolizable energy requirement.}
+For CML, PGS and CHK the function returns the summed daily metabolizable energy requirement.}
 
 \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
 
@@ -53,7 +54,7 @@ diet energy content (MJ/kg DM).
   }
 
 \item \strong{Energy expressed as metabolizable energy requirement -
-\code{CML}, \code{PGS}}:
+\code{CML}, \code{PGS}, \code{CHK}}:
 
 \deqn{
     ration\_intake = \frac{metabolic\_energy\_req\_total}{ration\_metabolizable\_energy}

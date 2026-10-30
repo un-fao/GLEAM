@@ -11,6 +11,7 @@ GLEAM-X is the official R implementation of FAO’s Global Livestock Environment
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://un-fao.github.io/GLEAM/}
   \item \url{https://github.com/un-fao/GLEAM/}
   \item \url{https://www.fao.org/gleam/en/}
   \item Report bugs at \url{https://github.com/un-fao/GLEAM/issues}
@@ -22,7 +23,6 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Ahmed Jou \email{ahmed@applitics.fr} (\href{https://orcid.org/0009-0002-2309-4583}{ORCID}) (https://applitics.fr)
   \item Yassine Elaouni \email{yassine@applitics.fr} (https://applitics.fr)
   \item Dominik Wisser \email{dominik.wisser@fao.org} (\href{https://orcid.org/0000-0001-8368-3801}{ORCID}) (GLEAM team lead, FAO)
   \item Lydia Lanzoni \email{lydia.lanzoni@fao.org} (\href{https://orcid.org/0000-0002-4488-4368}{ORCID}) (Livestock and climate change specialist, FAO)
