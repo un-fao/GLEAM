@@ -123,10 +123,10 @@ A named list with:
 
 - cohort_stock_annual_nondemographic:
 
-  Numeric vector of length 6. Total number of animals entering the
-  non-demographic component of the model over the simulated period,
+  Numeric vector of length 6. Annual number of animals diverted from the
+  demographic pathway into the non-demographic pathway (# heads),
   disaggregated by demographic sex–age cohorts (cohorts= `FJ`, `FS`,
-  `FA`, `MJ`, `MS`, `MA`)
+  `FA`, `MJ`, `MS`, `MA`).
 
 - cohort_offtake_heads:
 

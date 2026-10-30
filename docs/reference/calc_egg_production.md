@@ -29,8 +29,8 @@ calc_egg_production(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -38,13 +38,13 @@ calc_egg_production(
 
   - `FJ`: juvenile females (from birth to weaning)
 
-  - `FN`: non-demographic females
-
   - `MA`: adult males (from age at first breeding)
 
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
 
   - `MN`: non-demographic males
 
@@ -63,7 +63,7 @@ calc_egg_production(
 
 - cohort_stock_size:
 
-  Numeric. Average population size of the assessed cohort (heads).
+  Numeric. Average population size of the assessed cohort (# heads).
 
 - egg_protein_fraction:
 
@@ -72,12 +72,13 @@ calc_egg_production(
 - nondemo_productive_phase_id:
 
   Numeric. Optional productive phase identifier for non-demographic
-  cohorts.
+  cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2`
+  for phase 2.
 
 - is_egg_producing:
 
-  Logical. Cohort-level flag identifying food-egg-producing `CHK`
-  cohorts. This can be `TRUE` only for `FA` and for `FN` with
+  Logical. Cohort-level flag identifying egg-producing `CHK` cohorts.
+  This can be `TRUE` only for `FA` and for `FN` with
   `nondemo_productive_phase_id = 2`.
 
 ## Value

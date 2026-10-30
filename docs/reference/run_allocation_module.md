@@ -48,7 +48,7 @@ run_allocation_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -58,13 +58,13 @@ run_allocation_module(
 
       - `FJ`: juvenile females (from birth to weaning)
 
-      - `FN`: non-demographic females
-
       - `MA`: adult males (from age at first breeding)
 
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
+
+      - `FN`: non-demographic females
 
       - `MN`: non-demographic males
 
@@ -94,8 +94,7 @@ run_allocation_module(
 
   cohort_stock_size
 
-  :   Numeric. Average population size for the assessed cohort (#
-      heads).
+  :   Numeric. Average population size of the assessed cohort (# heads).
 
   metabolic_energy_req_work
 
@@ -106,22 +105,20 @@ run_allocation_module(
 
   nondemo_productive_phase_id
 
-  :   Numeric. Productive phase identifier for non-demographic cohorts.
-      Required in the input table and typically set to `NA` for
-      demographic cohorts.
+  :   Numeric. Productive phase identifier for non-demographic cohorts
+      (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2` for
+      phase 2. Demographic cohorts use `NA`.
 
   egg_production_mass_cohort
 
-  :   Numeric. Total egg mass output over the assessment period by
-      cohort (kg/cohort/assessment period). Required in the input table
-      and typically set to `0` for non-egg-producing cohorts.
+  :   Numeric. Total egg mass produced over the assessment period by
+      cohort (kg/cohort/assessment period).
 
   is_egg_producing
 
-  :   Logical. Indicates whether the cohort is an egg-producing chicken
-      cohort. Required in the input table. Used only for `CHK`; may be
-      `TRUE` only for `FA` or for `FN` in laying phase 2, and should be
-      `FALSE` otherwise.
+  :   Logical. Cohort-level flag identifying egg-producing `CHK`
+      cohorts. This can be `TRUE` only for `FA` and for `FN` with
+      `nondemo_productive_phase_id = 2`.
 
 - herd_level_data:
 
@@ -222,9 +219,8 @@ A named list of two `data.table` objects:
 
   egg_allocation_energy
 
-  :   Numeric. Energy required for egg production over the assessment
-      period (MJ/cohort/assessment period). Returned as 0 for
-      non-egg-producing cohorts and non-poultry species.
+  :   Numeric. Energy required to produce all eggs during the assessment
+      period by cohort (MJ/cohort/assessment period).
 
 - allocation_long:
 
@@ -273,7 +269,8 @@ A named list of two `data.table` objects:
   commodity_name
 
   :   Character. List of commodity categories to which emissions may be
-      allocated. List=c("None","Milk","Meat","Fibre","Work","Eggs")
+      allocated. List = c("Other", "Milk", "Meat", "Fibre", "Work",
+      "Eggs")
 
   commodity_type
 
@@ -397,5 +394,7 @@ results <- run_allocation_module(
   cohort_level_data = allocation_chrt_dt,
   herd_level_data = allocation_hrd_dt
 )
+#> 🕒 Computing allocation shares, please wait…
+#> ✔ Allocation calculation complete.
 # }
 ```

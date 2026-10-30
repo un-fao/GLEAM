@@ -20,8 +20,24 @@ calc_avg_weights(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code. Supported values include
-  `FA`, `FS`, `FJ`, `MA`, `MS`, `MJ`, `FN`, and `MN`.
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
+
+  - `FA`: adult females (from age at first parturition)
+
+  - `FS`: sub-adult females (from weaning to age at first parturition)
+
+  - `FJ`: juvenile females (from birth to weaning)
+
+  - `MA`: adult males (from age at first breeding)
+
+  - `MS`: sub-adult males (from weaning to age at first breeding)
+
+  - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
 
 - live_weight_cohort_initial:
 

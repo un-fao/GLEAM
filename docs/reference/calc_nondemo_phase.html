@@ -126,7 +126,7 @@ so that cumulative survival over the full phase duration
 <p>Daily mortality is calculated as:
 $$
 death\_rate\_daily\_nondemo =
-1 - (1 - death_rate_nondemo_phase)^{1 / productive_phase_nondemo_duration}
+1 - (1 - death\_rate\_nondemo\_phase)^{1 / productive\_phase\_nondemo\_duration}
 $$</p>
 <p>and the corresponding daily survival probability is:
 $$
@@ -137,7 +137,7 @@ $$</p>
 and the maximum number of days allowed for the current simulation step:
 $$
 time\_simulated\_nondemographic =
-\min(max_simulation_days_nondemo_phase,\ productive_phase_nondemo_duration)
+\min(max\_simulation\_days\_nondemo\_phase,\ productive\_phase\_nondemo\_duration)
 $$</p>
 <p>End-of-phase stock is then calculated by applying constant daily survival
 to the starting stock over the simulated period:
@@ -156,7 +156,7 @@ zero, the function assumes that no productive phase is simulated. In this
 case, mortality is set to zero, simulated time is set to zero, and both
 starting and ending stock are returned as zero.</p>
 <p>No rounding is applied to stock values. Therefore, fractional values may
-occur in <code>cohort_stock_nondemo$end</code>.</p>
+occur in <code>cohort_stock_nondemo_{end}</code>.</p>
 <p>This function is part of the <code><a href="run_nondemographic_herd_module.html">run_nondemographic_herd_module()</a></code>.</p>
     </div>
     <div class="section level2">
@@ -183,3 +183,4 @@ occur in <code>cohort_stock_nondemo$end</code>.</p>
 
 
   </body></html>
+

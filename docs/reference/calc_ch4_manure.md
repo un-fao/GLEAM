@@ -176,4 +176,16 @@ calc_ch4_manure(
     ch4_max_producing_capacity_bo = 0.13
   )
 )
+#> $ch4_manure_pasture
+#> [1] 0.0003754036
+#> 
+#> $ch4_manure_burned
+#> [1] 0.0003525808
+#> 
+#> $ch4_manure_other
+#> [1] 0.004509508
+#> 
+#> $ch4_manure_all_noburn
+#> [1] 0.004884912
+#> 
 ```

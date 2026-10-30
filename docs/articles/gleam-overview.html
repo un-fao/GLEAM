@@ -53,14 +53,14 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Overview of 'gleam' R Package</h1>
-
-
+            
+      
       <small class="dont-index">Source: <a href="https://github.com/un-fao/GLEAM/blob/HEAD/vignettes/gleam-overview.Rmd" class="external-link"><code>vignettes/gleam-overview.Rmd</code></a></small>
       <div class="d-none name"><code>gleam-overview.Rmd</code></div>
     </div>
 
-
-
+    
+    
 <style>
 img.module-figure-zoom {
   display: block;
@@ -479,7 +479,7 @@ alongside a demographic component. The non-demographic-only example
 below represents these same herd IDs as separate production operations
 without a breeding population.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/un-fao/GLEAM/" class="external-link">gleam</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://un-fao.github.io/GLEAM/">gleam</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ---- Load sample data from inst/extdata ----</span></span>
@@ -805,8 +805,12 @@ codes</a>)</td>
 <tr class="even">
 <td><code>cohort_duration_days</code></td>
 <td>Numeric</td>
-<td>Time each animal spends in the cohort (days). For FN/MN, filled from
-herd-level phase durations when supplied</td>
+<td>Amount of time that each animal spends in a specific cohort and
+production phase (days). For <code>CHK</code>, suggested value for
+<code>FJ</code> and <code>MJ</code> cohorts: 3 days. Not required for
+<code>FN</code> and <code>MN</code> when phase durations are supplied in
+the herd table; the code fills it from the herd values, which override
+any cohort values.</td>
 </tr>
 <tr class="odd">
 <td><code>offtake_rate</code></td>

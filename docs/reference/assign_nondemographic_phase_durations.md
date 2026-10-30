@@ -22,20 +22,8 @@ assign_nondemographic_phase_durations(
 
 - cohort_short:
 
-  Character. Sex- and production-stage-specific cohort code describing
-  the animal group. Supported values include:
-
-  - `FA`: adult females (from age at first parturition)
-
-  - `FS`: sub-adult females (from weaning to age at first parturition)
-
-  - `FJ`: juvenile females (from birth to weaning)
-
-  - `MA`: adult males (from age at first breeding)
-
-  - `MS`: sub-adult males (from weaning to age at first breeding)
-
-  - `MJ`: juvenile males (from birth to weaning)
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FN`: non-demographic females
 
@@ -43,24 +31,26 @@ assign_nondemographic_phase_durations(
 
 - nondemo_productive_phase_id:
 
-  Numeric. Identifier of the productive phase for nondemographic cohorts
-  `FN` and `MN`. Takes value `1` for phase 1 and optionally `2` for
-  phase 2. Demographic cohorts use `NA`.
+  Numeric. Identifier of the productive phase for non-demographic
+  cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2`
+  for phase 2.
 
 - cohort_duration_days:
 
   Numeric. Amount of time that each animal spends in a specific cohort
-  (days). Not required for `FN` and `MN` when phase durations are
-  supplied in the herd table.
+  and production phase (days). For `CHK`, suggested value for `FJ` and
+  `MJ` cohorts: 3 days. Not required for `FN` and `MN` when phase
+  durations are supplied in the herd table; the code fills it from the
+  herd values, which override any cohort values.
 
 - phase1_nondemo_fem_duration_days:
 
-  Numeric. Duration of productive phase 1 for the female nondemographic
+  Numeric. Duration of productive phase 1 for the female non-demographic
   cohort (`FN`) (days).
 
 - phase2_nondemo_fem_duration_days:
 
-  Numeric. Duration of productive phase 2 for the female nondemographic
+  Numeric. Duration of productive phase 2 for the female non-demographic
   cohort (`FN`) (days).
 
 - phase1_nondemo_mal_duration_days:
@@ -70,7 +60,7 @@ assign_nondemographic_phase_durations(
 
 - phase2_nondemo_mal_duration_days:
 
-  Numeric. Duration of productive phase 2 for the male nondemographic
+  Numeric. Duration of productive phase 2 for the male non-demographic
   cohort (`MN`) (days).
 
 ## Value

@@ -42,8 +42,8 @@ calc_meat_allocation_energy(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -56,6 +56,10 @@ calc_meat_allocation_energy(
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
 
 - meat_production_live_weight_cohort:
 
@@ -79,7 +83,8 @@ calc_meat_allocation_energy(
 - nondemo_productive_phase_id:
 
   Numeric. Optional productive phase identifier for non-demographic
-  cohorts.
+  cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2`
+  for phase 2.
 
 - is_egg_producing:
 

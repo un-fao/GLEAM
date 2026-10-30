@@ -27,7 +27,7 @@ run_nitrogen_balance_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -37,27 +37,27 @@ run_nitrogen_balance_module(
 
       - `FJ`: juvenile females (from birth to weaning)
 
-      - `FN`: non-demographic females
-
       - `MA`: adult males (from age at first breeding)
 
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
 
+      - `FN`: non-demographic females
+
       - `MN`: non-demographic males
 
   nondemo_productive_phase_id
 
   :   Numeric. Optional productive phase identifier for non-demographic
-      cohorts (`FN`, `MN`). When present, nitrogen balance outputs are
-      computed and retained separately by phase.
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   is_egg_producing
 
-  :   Logical. Indicates whether the cohort is a food-egg-producing
-      chicken cohort. Used only for `CHK`; may be `TRUE` only for `FA`
-      or for `FN` in laying phase 2.
+  :   Logical. Cohort-level flag identifying egg-producing `CHK`
+      cohorts. This can be `TRUE` only for `FA` and for `FN` with
+      `nondemo_productive_phase_id = 2`.
 
   ration_intake
 
@@ -77,11 +77,6 @@ run_nitrogen_balance_module(
   :   Numeric. Amount of time that each animal spends in a specific
       cohort (days). For `CHK`, suggested value for `FJ` and `MJ`
       cohorts: 3 days.
-
-  cohort_stock_size
-
-  :   Numeric. Optional average population size for the assessed cohort
-      (# heads), preserved in the returned table when supplied.
 
 - herd_level_data:
 
@@ -133,18 +128,19 @@ run_nitrogen_balance_module(
       mohair (kg/head/year). Required only for species = CML, SHP, and
       GTS.
 
-  litter_size
+  offspring_per_reproductive_event
 
   :   Numeric. Average number of offspring born per parturition (#
-      offspring/parturition). For `CHK`, this can be interpreted as
-      offspring produced per reproductive event.
+      offspring/parturition). For chickens, hatchability of eggs laid
+      for reproduction, calculated as the number of chicks hatched
+      divided by the number of eggs laid for reproduction (fraction).
 
-  parturition_rate
+  reproductive_rate
 
-  :   Numeric. Average annual number of parturitions per adult female
-      animal (# parturitions/adult female/year). For `CHK`, this
-      corresponds to eggs laid for reproduction by `FA` only, regardless
-      of its food-egg flag.
+  :   Numeric. Average annual number of parturitions per reproductive
+      female (# parturitions/reproductive female/year). For chickens,
+      annual number of eggs laid for reproduction per breeding hen (#
+      eggs/hen/year).
 
   live_weight_at_weaning
 
@@ -160,7 +156,7 @@ run_nitrogen_balance_module(
 
   egg_average_weight
 
-  :   Numeric. Average egg weight (kg/egg). Used for `CHK`.
+  :   Numeric. Average egg weight (kg/egg).
 
   egg_human_consumption_yield
 
@@ -243,5 +239,7 @@ results <- run_nitrogen_balance_module(
   cohort_level_data = nitrogen_balance_chrt_dt,
   herd_level_data = nitrogen_balance_hrd_dt
 )
+#> 🕒 Calculating nitrogen balance, please wait…
+#> ✔ Nitrogen balance calculation complete.
 # }
 ```

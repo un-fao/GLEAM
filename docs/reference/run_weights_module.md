@@ -26,7 +26,7 @@ run_weights_module(cohort_level_data, herd_level_data, show_indicator = TRUE)
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -62,8 +62,8 @@ run_weights_module(cohort_level_data, herd_level_data, show_indicator = TRUE)
   nondemo_productive_phase_id
 
   :   Numeric. Productive phase identifier for non-demographic cohorts
-      (`FN`, `MN`). Allowed values are `1` and optionally `2`.
-      Demographic cohorts use `NA`.
+      (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2` for
+      phase 2. Demographic cohorts use `NA`.
 
 - herd_level_data:
 
@@ -249,5 +249,7 @@ results <- run_weights_module(
   cohort_level_data = weights_chrt_dt,
   herd_level_data = weights_hrd_dt
 )
+#> 🕒 Calculating cohort weights, please wait…
+#> ✔ Cohort weights calculation complete.
 # }
 ```

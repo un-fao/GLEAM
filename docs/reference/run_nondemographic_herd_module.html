@@ -79,15 +79,19 @@ and productive phase, and the following mandatory columns:</p><dl><dt><code>herd
 <dd><p>Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.</p></dd>
 
 <dt><code>cohort_short</code></dt>
-<dd><p>Character. Non-demographic cohort code describing the production block of the animals. Supported values include:</p><ul><li><p><code>FN</code>: non-demographic female animals</p></li>
-<li><p><code>MN</code>: non-demographic male animals</p></li>
+<dd><p>Character. Sex-specific cohort code describing the age
+and/or the production stage of the animals. Supported values include:</p><ul><li><p><code>FN</code>: non-demographic females</p></li>
+<li><p><code>MN</code>: non-demographic males</p></li>
 </ul></dd>
 
 <dt><code>nondemo_productive_phase_id</code></dt>
-<dd><p>Numeric. Productive phase identifier within a cycle. <code>1</code> is required and <code>2</code> is optional.</p></dd>
+<dd><p>Numeric. Identifier of the productive phase
+for non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for
+phase 1 and optionally <code>2</code> for phase 2.</p></dd>
 
 <dt><code>death_rate</code></dt>
-<dd><p>Numeric. Fraction of deaths occurring during the non-demographic productive phase (fraction).</p></dd>
+<dd><p>Numeric. Fraction of animals dying in the assessed cohort
+over the productive phase for non-demographic cohorts (fraction).</p></dd>
 
 
 </dl><p><code>cohort_duration_days</code> is not required for <code>FN</code> and <code>MN</code>
@@ -99,13 +103,15 @@ when phase durations are supplied in the herd table.</p></dd>
 <dd><p>Character. Unique identifier for the herd.</p></dd>
 
 <dt><code>cohort_stock_fem_annual_nondemo</code></dt>
-<dd><p>Numeric. Total annual entrants into the <code>FN</code> cohort block over the simulated period (# heads).</p></dd>
+<dd><p>Numeric. Annual number of female animals entering the non-demographic pathway (<code>FN</code>) over the 365-time horizon (# heads).</p></dd>
 
 <dt><code>cohort_stock_mal_annual_nondemo</code></dt>
-<dd><p>Numeric. Total annual entrants into the <code>MN</code> cohort block over the simulated period (# heads).</p></dd>
+<dd><p>Numeric. Annual number of male animals entering the non-demographic pathway (<code>MN</code>) over the 365-time horizon (# heads).</p></dd>
 
 <dt><code>rest_between_nondemo_cycles_duration</code></dt>
-<dd><p>Numeric. Duration of the resting or empty phase between non-demographic cycles (days).</p></dd>
+<dd><p>Numeric. Duration of the resting or
+empty phase between non-demographic cycles (days). Use <code>0</code> when there is no
+rest between cycles.</p></dd>
 
 <dt><code>phase1_nondemo_fem_duration_days</code></dt>
 <dd><p>Numeric. Duration of productive phase 1 for the female non-demographic cohort (<code>FN</code>) (days).</p></dd>
@@ -114,7 +120,8 @@ when phase durations are supplied in the herd table.</p></dd>
 <dd><p>Numeric. Duration of productive phase 2 for the female non-demographic cohort (<code>FN</code>) (days).</p></dd>
 
 <dt><code>phase1_nondemo_mal_duration_days</code></dt>
-<dd><p>Numeric. Duration of productive phase 1 for the male non-demographic cohort (<code>MN</code>) (days).</p></dd>
+<dd><p>Numeric. Duration of productive phase 1
+for the male nondemographic cohort (<code>MN</code>) (days).</p></dd>
 
 <dt><code>phase2_nondemo_mal_duration_days</code></dt>
 <dd><p>Numeric. Duration of productive phase 2 for the male non-demographic cohort (<code>MN</code>) (days).</p></dd>
@@ -124,8 +131,7 @@ when phase durations are supplied in the herd table.</p></dd>
 
 
 <dt id="arg-simulation-duration">simulation_duration<a class="anchor" aria-label="anchor" href="#arg-simulation-duration"></a></dt>
-<dd><p>Numeric. Length of the reporting period used to scale non-demographic outputs (days).
-Defaults to <code>365</code>.</p></dd>
+<dd><p>Numeric. Length of the assessment period (days).</p></dd>
 
 
 <dt id="arg-show-indicator">show_indicator<a class="anchor" aria-label="anchor" href="#arg-show-indicator"></a></dt>
@@ -139,30 +145,40 @@ Defaults to <code>TRUE</code>.</p></dd>
 <dd><p>A <code>data.table</code> with one row per retained herd,
 non-demographic cohort block, and productive phase,
 containing the original <code>cohort_level_data</code> columns plus:</p><dl><dt><code>cohort_duration_days</code></dt>
-<dd><p>Numeric. Amount of time that each animal
-spends in a specific cohort and production phase (days). For non-demographic
-cohorts (<code>FN</code>and <code>MN</code>), <code>cohort_duration_days</code> is not required when
-phase durations are supplied in the herd table. The code fills it
-from the herd values, which override any cohort values. If a herd
-value is missing, the cohort value is used instead.</p></dd>
+<dd><p>Numeric. Amount of time that each animal spends
+in a specific cohort and production phase (days). For <code>CHK</code>, suggested
+value for <code>FJ</code> and <code>MJ</code> cohorts: 3 days. Not required for
+<code>FN</code> and <code>MN</code> when phase durations are supplied in the herd
+table; the code fills it from the herd values, which override any cohort
+values.</p></dd>
 
 <dt><code>cohort_stock_size_unscaled</code></dt>
-<dd><p>Numeric. Average population size for the assessed cohort, not scaled to the total livestock population (herd_size_total), (# heads).</p></dd>
+<dd><p>Numeric. Average population size of the assessed cohort, not scaled to the total livestock population (herd_size_total) (# heads).</p></dd>
 
 <dt><code>partial_nondemo_phase_duration</code></dt>
-<dd><p>Numeric. Duration of the terminal partial productive phase occurring within the fixed 365-day simulation horizon (days).</p></dd>
+<dd><p>Numeric. Duration of the terminal
+partial productive phase falling within the fixed 365-day non-demographic
+simulation horizon (days).</p></dd>
 
 <dt><code>offtake_heads_unscaled</code></dt>
-<dd><p>Numeric. Total number of animals removed from the cohort over the full 365-day simulation horizon (# heads), not scaled to the cohort population at the start of the assessment period.</p></dd>
+<dd><p>Numeric. Total number of animals removed from
+each cohort over the full 365-day simulation horizon, not scaled to the
+cohort population at the start of the assessment (# heads).</p></dd>
 
 <dt><code>offtake_heads_assessment_unscaled</code></dt>
-<dd><p>Numeric. Total number of animals removed from the cohort over 'simulation_duration' (# heads/assessment period), not scaled to the cohort population at the start of the assessment period.</p></dd>
+<dd><p>Numeric. Total number of animals
+removed from each cohort over the assessment period, not scaled to the cohort
+population at the start of the assessment (# heads/assessment period).</p></dd>
 
 <dt><code>number_full_nondemo_cycles</code></dt>
-<dd><p>Integer. Number of complete cycles fully contained within the fixed 365-day simulation horizon (# cycles).</p></dd>
+<dd><p>Integer. Number of complete cycles fully
+contained within the fixed 365-day time horizon for the assessed
+non-demographic cohort (<code>FN</code> or <code>MN</code>) (# cycles).</p></dd>
 
 <dt><code>total_nondemo_cycle_starts_to_distribute</code></dt>
-<dd><p>Integer. Total number of cycle starts within the fixed 365-day simulation horizon used to distribute annual entrants (# cycle starts).</p></dd>
+<dd><p>Integer. Total number of
+cycle starts within the fixed 365-day time horizon for the assessed
+non-demographic cohort (<code>FN</code> or <code>MN</code>) (# cycle starts).</p></dd>
 
 
 </dl></dd>
@@ -170,10 +186,14 @@ value is missing, the cohort value is used instead.</p></dd>
 <dt><code>herd_level_results</code></dt>
 <dd><p>A <code>data.table</code> with one row per <code>herd_id</code>
 containing the original <code>herd_level_data</code> columns plus:</p><dl><dt><code>total_nondemo_fem_duration_days</code></dt>
-<dd><p>Numeric. Total duration of productive phases assigned to the female non-demographic cohort block (<code>FN</code>) (days).</p></dd>
+<dd><p>Numeric. Total duration of the
+productive non-demographic phases assigned to the female non-demographic
+cohort block (<code>FN</code>) (days).</p></dd>
 
 <dt><code>total_nondemo_mal_duration_days</code></dt>
-<dd><p>Numeric. Total duration of productive phases assigned to the male non-demographic cohort block (<code>MN</code>) (days).</p></dd>
+<dd><p>Numeric. Total duration of the
+productive non-demographic phases assigned to the male non-demographic cohort
+block (<code>MN</code>) (days).</p></dd>
 
 
 </dl></dd>
@@ -231,26 +251,29 @@ resting period between cycles is supplied at herd level through
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># \donttest{</span></span>
-<span><span class="co"># Load non-demographic herd simulation inputs (FN/MN cohorts and annual entrants)</span></span>
-<span><span class="va">nondemo_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/nondemographic_herd_input_chrt_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">nondemo_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/nondemographic_herd_input_hrd_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run non-demographic herd simulation</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_nondemographic_herd_module</span><span class="op">(</span></span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">nondemo_chrt_dt</span>,</span>
-<span>  herd_level_data <span class="op">=</span> <span class="va">nondemo_hrd_dt</span>,</span>
-<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
-<span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co"># }</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Load non-demographic herd simulation inputs (FN/MN cohorts and annual entrants)</span></span></span>
+<span class="r-in"><span><span class="va">nondemo_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/nondemographic_herd_input_chrt_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nondemo_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/nondemographic_herd_input_hrd_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run non-demographic herd simulation</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_nondemographic_herd_module</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">nondemo_chrt_dt</span>,</span></span>
+<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">nondemo_hrd_dt</span>,</span></span>
+<span class="r-in"><span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span></span>
+<span class="r-in"><span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 🕒 Simulating the non-demographic herd, please wait…</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Non-demographic herd simulation complete.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -271,3 +294,4 @@ resting period between cycles is supplied at herd level through
 
 
   </body></html>
+

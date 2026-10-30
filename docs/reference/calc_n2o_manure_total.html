@@ -195,18 +195,37 @@ $$</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_n2o_manure_total</span><span class="op">(</span></span>
-<span>  n2o_manure_pasture_vol <span class="op">=</span> <span class="fl">0.0129</span>,</span>
-<span>  n2o_manure_pasture_leach <span class="op">=</span> <span class="fl">0.0012</span>,</span>
-<span>  n2o_manure_burned_vol <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  n2o_manure_burned_leach <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  n2o_manure_other_vol <span class="op">=</span> <span class="fl">0.052</span>,</span>
-<span>  n2o_manure_other_leach <span class="op">=</span> <span class="fl">0.00027</span>,</span>
-<span>  n2o_manure_pasture_direct <span class="op">=</span> <span class="fl">0.009</span>,</span>
-<span>  n2o_manure_burned_direct <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  n2o_manure_other_direct <span class="op">=</span> <span class="fl">0.01033</span></span>
-<span><span class="op">)</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">calc_n2o_manure_total</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n2o_manure_pasture_vol <span class="op">=</span> <span class="fl">0.0129</span>,</span></span>
+<span class="r-in"><span>  n2o_manure_pasture_leach <span class="op">=</span> <span class="fl">0.0012</span>,</span></span>
+<span class="r-in"><span>  n2o_manure_burned_vol <span class="op">=</span> <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>  n2o_manure_burned_leach <span class="op">=</span> <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>  n2o_manure_other_vol <span class="op">=</span> <span class="fl">0.052</span>,</span></span>
+<span class="r-in"><span>  n2o_manure_other_leach <span class="op">=</span> <span class="fl">0.00027</span>,</span></span>
+<span class="r-in"><span>  n2o_manure_pasture_direct <span class="op">=</span> <span class="fl">0.009</span>,</span></span>
+<span class="r-in"><span>  n2o_manure_burned_direct <span class="op">=</span> <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>  n2o_manure_other_direct <span class="op">=</span> <span class="fl">0.01033</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n2o_manure_pasture_indirect</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0141</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n2o_manure_burned_indirect</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n2o_manure_other_indirect</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05227</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n2o_manure_pasture_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0231</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n2o_manure_burned_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n2o_manure_other_total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0626</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -227,3 +246,4 @@ $$</p>
 
 
   </body></html>
+

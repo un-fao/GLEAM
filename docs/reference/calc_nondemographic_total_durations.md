@@ -13,20 +13,8 @@ calc_nondemographic_total_durations(cohort_short, cohort_duration_days)
 
 - cohort_short:
 
-  Character. Sex- and production-stage-specific cohort code describing
-  the animal group. Supported values include:
-
-  - `FA`: adult females (from age at first parturition)
-
-  - `FS`: sub-adult females (from weaning to age at first parturition)
-
-  - `FJ`: juvenile females (from birth to weaning)
-
-  - `MA`: adult males (from age at first breeding)
-
-  - `MS`: sub-adult males (from weaning to age at first breeding)
-
-  - `MJ`: juvenile males (from birth to weaning)
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FN`: non-demographic females
 
@@ -35,7 +23,7 @@ calc_nondemographic_total_durations(cohort_short, cohort_duration_days)
 - cohort_duration_days:
 
   Numeric. Amount of time that each animal spends in a specific cohort
-  (days).
+  (days). For `CHK`, suggested value for `FJ` and `MJ` cohorts: 3 days.
 
 ## Value
 
@@ -43,13 +31,13 @@ A named list with elements:
 
 - total_nondemo_fem_duration_days:
 
-  Numeric. Total duration of the productive nondemographic phases
-  assigned to the female nondemographic cohort block (`FN`) (days).
+  Numeric. Total duration of the productive non-demographic phases
+  assigned to the female non-demographic cohort block (`FN`) (days).
 
 - total_nondemo_mal_duration_days:
 
-  Numeric. Total duration of the productive nondemographic phases
-  assigned to the male nondemographic cohort block (`MN`) (days).
+  Numeric. Total duration of the productive non-demographic phases
+  assigned to the male non-demographic cohort block (`MN`) (days).
 
 ## See also
 

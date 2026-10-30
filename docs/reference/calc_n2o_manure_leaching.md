@@ -189,4 +189,16 @@ calc_n2o_manure_leaching(
     nitrogen_fracleach = 0.02
   )
 )
+#> $n2o_manure_pasture_leach
+#> [1] 0.001157451
+#> 
+#> $n2o_manure_burned_leach
+#> [1] 0
+#> 
+#> $n2o_manure_other_leach
+#> [1] 0.000270072
+#> 
+#> $n2o_manure_all_noburn_leach
+#> [1] 0.001427523
+#> 
 ```

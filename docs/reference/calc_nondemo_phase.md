@@ -89,8 +89,8 @@ the full phase duration (`productive_phase_nondemo_duration`) is equal
 to \\1 - death_rate_nondemo_phase\\.
 
 Daily mortality is calculated as: \$\$ death\\rate\\daily\\nondemo = 1 -
-(1 - death_rate_nondemo_phase)^{1 / productive_phase_nondemo_duration}
-\$\$
+(1 - death\\rate\\nondemo\\phase)^{1 /
+productive\\phase\\nondemo\\duration} \$\$
 
 and the corresponding daily survival probability is: \$\$
 survival\\rate\\daily\\nondemo = 1 - death\\rate\\daily\\nondemo \$\$
@@ -98,8 +98,8 @@ survival\\rate\\daily\\nondemo = 1 - death\\rate\\daily\\nondemo \$\$
 The number of simulated days is limited by both the total phase duration
 and the maximum number of days allowed for the current simulation step:
 \$\$ time\\simulated\\nondemographic =
-\min(max_simulation_days_nondemo_phase,\\
-productive_phase_nondemo_duration) \$\$
+\min(max\\simulation\\days\\nondemo\\phase,\\
+productive\\phase\\nondemo\\duration) \$\$
 
 End-of-phase stock is then calculated by applying constant daily
 survival to the starting stock over the simulated period: \$\$
@@ -117,7 +117,7 @@ this case, mortality is set to zero, simulated time is set to zero, and
 both starting and ending stock are returned as zero.
 
 No rounding is applied to stock values. Therefore, fractional values may
-occur in `cohort_stock_nondemo$end`.
+occur in `cohort_stock_nondemo_{end}`.
 
 This function is part of the
 [`run_nondemographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_nondemographic_herd_module.md).

@@ -23,7 +23,24 @@ calc_egg_allocation_energy(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code.
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
+
+  - `FA`: adult females (from age at first parturition)
+
+  - `FS`: sub-adult females (from weaning to age at first parturition)
+
+  - `FJ`: juvenile females (from birth to weaning)
+
+  - `MA`: adult males (from age at first breeding)
+
+  - `MS`: sub-adult males (from weaning to age at first breeding)
+
+  - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
 
 - egg_production_mass_cohort:
 
@@ -33,7 +50,8 @@ calc_egg_allocation_energy(
 - nondemo_productive_phase_id:
 
   Numeric. Optional productive phase identifier for non-demographic
-  cohorts.
+  cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2`
+  for phase 2.
 
 - is_egg_producing:
 

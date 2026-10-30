@@ -37,8 +37,7 @@ calc_work_allocation_energy(
 
 - cohort_stock_size:
 
-  Numeric. Population size in the cohort at the start of the assessment
-  period (heads).
+  Numeric. Average population size of the assessed cohort (# heads).
 
 - metabolic_energy_req_work:
 

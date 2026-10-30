@@ -11,7 +11,7 @@ calc_metabolic_energy_req_eggs(
   cohort_short,
   egg_human_consumption_yield = NA_real_,
   egg_average_weight = NA_real_,
-  parturition_rate = NA_real_,
+  reproductive_rate = NA_real_,
   nondemo_productive_phase_id = NA_real_,
   is_egg_producing = FALSE
 )
@@ -40,8 +40,8 @@ calc_metabolic_energy_req_eggs(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -49,13 +49,13 @@ calc_metabolic_energy_req_eggs(
 
   - `FJ`: juvenile females (from birth to weaning)
 
-  - `FN`: non-demographic females
-
   - `MA`: adult males (from age at first breeding)
 
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
 
   - `MN`: non-demographic males
 
@@ -68,22 +68,23 @@ calc_metabolic_energy_req_eggs(
 
   Numeric. Average egg weight (kg/egg).
 
-- parturition_rate:
+- reproductive_rate:
 
-  Numeric. Average annual number of parturitions per female animal (#
-  parturitions/adult female/year). For `CHK`, this corresponds to eggs
-  laid for reproduction by `FA` only.
+  Numeric. Average annual number of parturitions per reproductive female
+  (# parturitions/reproductive female/year). For chickens, annual number
+  of eggs laid for reproduction per breeding hen (# eggs/hen/year).
 
 - nondemo_productive_phase_id:
 
   Numeric. Optional productive phase identifier for non-demographic
-  cohorts (`FN`, `MN`).
+  cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2`
+  for phase 2.
 
 - is_egg_producing:
 
-  Logical. Indicates whether the cohort produces eggs for human
-  consumption. Used only for `CHK`; may be `TRUE` only for `FA` or for
-  `FN` in laying phase 2.
+  Logical. Cohort-level flag identifying egg-producing `CHK` cohorts.
+  This can be `TRUE` only for `FA` and for `FN` with
+  `nondemo_productive_phase_id = 2`.
 
 ## Value
 
@@ -104,7 +105,7 @@ reproductive\\eggs\\head\\day) \times egg\\average\\weight \$\$
 Human-consumption eggs per head per day equal
 `egg_human_consumption_yield / 365` when the food-egg flag is true, and
 zero otherwise. Reproductive eggs per head per day equal
-`parturition_rate / 365` for `FA`, and zero for other cohorts.
+`reproductive_rate / 365` for `FA`, and zero for other cohorts.
 
 Daily egg energy is then:
 

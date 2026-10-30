@@ -51,32 +51,29 @@ sex from <code>FN</code> and <code>MN</code> cohort rows.</p>
 
 
 <dl><dt id="arg-cohort-short">cohort_short<a class="anchor" aria-label="anchor" href="#arg-cohort-short"></a></dt>
-<dd><p>Character. Sex- and production-stage-specific cohort code describing the animal group. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
-<li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
-<li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
-<li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
-<li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
-<li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
-<li><p><code>FN</code>: non-demographic females</p></li>
+<dd><p>Character. Sex-specific cohort code describing the age and/or the
+production stage of the animals. Supported values include:</p><ul><li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MN</code>: non-demographic males</p></li>
 </ul></dd>
 
 
 <dt id="arg-cohort-duration-days">cohort_duration_days<a class="anchor" aria-label="anchor" href="#arg-cohort-duration-days"></a></dt>
-<dd><p>Numeric. Amount of time that each animal spends in a specific cohort (days).</p></dd>
+<dd><p>Numeric. Amount of time that each animal spends in a
+specific cohort (days). For <code>CHK</code>, suggested value for <code>FJ</code> and <code>MJ</code>
+cohorts: 3 days.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list with elements:</p><dl><dt>total_nondemo_fem_duration_days</dt>
-<dd><p>Numeric. Total duration of the
-productive nondemographic phases assigned to the female nondemographic
-cohort block (<code>FN</code>) (days).</p></dd>
+<dd><p>Numeric. Total duration of the productive
+non-demographic phases assigned to the female non-demographic cohort block
+(<code>FN</code>) (days).</p></dd>
 
 <dt>total_nondemo_mal_duration_days</dt>
-<dd><p>Numeric. Total duration of the
-productive nondemographic phases assigned to the male nondemographic cohort
-block (<code>MN</code>) (days).</p></dd>
+<dd><p>Numeric. Total duration of the productive
+non-demographic phases assigned to the male non-demographic cohort block
+(<code>MN</code>) (days).</p></dd>
 
 
 </dl></div>
@@ -104,3 +101,4 @@ block (<code>MN</code>) (days).</p></dd>
 
 
   </body></html>
+

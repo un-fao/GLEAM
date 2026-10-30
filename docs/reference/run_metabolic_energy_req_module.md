@@ -28,7 +28,7 @@ run_metabolic_energy_req_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -38,27 +38,27 @@ run_metabolic_energy_req_module(
 
       - `FJ`: juvenile females (from birth to weaning)
 
-      - `FN`: non-demographic females
-
       - `MA`: adult males (from age at first breeding)
 
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
 
+      - `FN`: non-demographic females
+
       - `MN`: non-demographic males
 
   nondemo_productive_phase_id
 
   :   Numeric. Optional productive phase identifier for non-demographic
-      cohorts (`FN`, `MN`). When present, energy requirements are
-      computed and retained separately by phase.
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   is_egg_producing
 
-  :   Logical. Indicates whether the cohort is a food-egg-producing
-      chicken cohort. Used only for `CHK`; may be `TRUE` only for `FA`
-      or for `FN` in laying phase 2.
+  :   Logical. Cohort-level flag identifying egg-producing `CHK`
+      cohorts. This can be `TRUE` only for `FA` and for `FN` with
+      `nondemo_productive_phase_id = 2`.
 
   live_weight_cohort_average
 
@@ -193,11 +193,12 @@ run_metabolic_energy_req_module(
 
   :   Numeric. Duration of pregnancy period (days).
 
-  litter_size
+  offspring_per_reproductive_event
 
   :   Numeric. Average number of offspring born per parturition (#
-      offspring/parturition). For `CHK`, this can be interpreted as
-      offspring produced per reproductive event.
+      offspring/parturition). For chickens, hatchability of eggs laid
+      for reproduction, calculated as the number of chicks hatched
+      divided by the number of eggs laid for reproduction (fraction).
 
   death_rate_juvenile
 
@@ -218,20 +219,21 @@ run_metabolic_energy_req_module(
       of days during which the animal is lactating (days). Required only
       for PGS.
 
-  parturition_rate
+  reproductive_rate
 
-  :   Numeric. Average annual number of parturitions per female animal
-      (# parturitions/adult female/year). For `CHK`, this corresponds to
-      eggs laid for reproduction by `FA` only, regardless of its
-      food-egg flag.
+  :   Numeric. Average annual number of parturitions per reproductive
+      female (# parturitions/reproductive female/year). For chickens,
+      annual number of eggs laid for reproduction per breeding hen (#
+      eggs/hen/year).
 
   average_annual_temperature
 
-  :   Numeric. Average annual temperature (degrees C). Used for `CHK`.
+  :   Numeric. Average annual ambient temperature (degrees C). Used for
+      `CHK`.
 
   egg_average_weight
 
-  :   Numeric. Average egg weight (kg/egg). Used for `CHK`.
+  :   Numeric. Average egg weight (kg/egg).
 
   egg_human_consumption_yield
 
@@ -280,21 +282,21 @@ the input, the returned table preserves phase-specific rows for `FN` and
 
   Numeric. Energy required for maintenance, defined as the amount of
   energy needed to keep the animal at equilibrium such that body energy
-  is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP,
-  GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+  is neither gained nor lost (MJ/head/day). Expressed as net energy for
+  CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 
 - metabolic_energy_req_activity:
 
   Numeric. Energy required for activity, defined as the amount of energy
   needed to support animal movement and physical activity (MJ/head/day).
   Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable
-  energy for CML and PGS.
+  energy for CML, PGS, and CHK.
 
 - metabolic_energy_req_growth:
 
   Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day).
   Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable
-  energy for CML and PGS.
+  energy for CML, PGS, and CHK.
 
 - metabolic_energy_req_lactation:
 
@@ -313,8 +315,7 @@ the input, the returned table preserves phase-specific rows for `FN` and
 
   Numeric. Energy required for the synthesis of fibre for SHP, GTS
   and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed
-  as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
-  CML and PGS (MJ/head/day).
+  as net energy for SHP and GTS and as metabolizable energy for CML.
 
 - metabolic_energy_req_pregnancy:
 
@@ -336,8 +337,8 @@ the input, the returned table preserves phase-specific rows for `FN` and
 
   Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL,
   SHP and GTS this is expressed as gross energy intake requirement (GE).
-  For CML and PGS the function returns the summed daily metabolizable
-  energy requirement.
+  For CML, PGS and CHK the function returns the summed daily
+  metabolizable energy requirement.
 
 - ration_intake:
 
@@ -429,5 +430,7 @@ results <- run_metabolic_energy_req_module(
   cohort_level_data = metabolic_energy_req_chrt_dt,
   herd_level_data = metabolic_energy_req_hrd_dt
 )
+#> 🕒 Calculating metabolic energy requirements and ration, please wait…
+#> ✔ Metabolic energy requirements calculation complete.
 # }
 ```

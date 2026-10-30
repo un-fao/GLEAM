@@ -28,7 +28,7 @@ run_emissions_manure_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -51,8 +51,8 @@ run_emissions_manure_module(
   nondemo_productive_phase_id
 
   :   Numeric. Optional productive phase identifier for non-demographic
-      cohorts (`FN`, `MN`). Preserved in the output and used for
-      matching when the manure fractions specify phases.
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   ration_intake
 
@@ -88,7 +88,7 @@ run_emissions_manure_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -111,9 +111,10 @@ run_emissions_manure_module(
   nondemo_productive_phase_id
 
   :   Numeric. Optional productive phase identifier for non-demographic
-      cohorts (`FN`, `MN`). Omit this column or leave it entirely
-      missing to use the same manure-management fractions for each phase
-      of a cohort.
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2. Omit this column or leave it entirely missing to
+      use the same manure-management fractions for each phase of a
+      cohort.
 
   manure_management_system
 
@@ -481,5 +482,7 @@ results <- run_emissions_manure_module(
   manure_management_system_fraction = manure_management_system_fraction,
   manure_management_system_factors = manure_management_system_factors
 )
+#> 🕒 Calculating emissions from manure management systems…
+#> ✔ Emissions from manure management calculation complete.
 # }
 ```

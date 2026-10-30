@@ -124,7 +124,8 @@ Federal Ministry of Food, Agriculture, and Regional Identity
 - [`calc_nondemo_phase()`](https://un-fao.github.io/GLEAM/reference/calc_nondemo_phase.md)
   : Calculate a nondemographic productive phase
 - [`calc_nondemo_avg_stock_phase_horizon()`](https://un-fao.github.io/GLEAM/reference/calc_nondemo_avg_stock_phase_horizon.md)
-  : Calculate average nondemographic stock over the assessment horizon
+  : Calculate average nondemographic stock over the fixed simulation
+  horizon
 - [`calc_nondemo_offtake_total_horizon()`](https://un-fao.github.io/GLEAM/reference/calc_nondemo_offtake_total_horizon.md)
   : Calculate total nondemographic offtake over the assessment horizon
 

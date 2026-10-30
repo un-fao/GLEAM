@@ -58,8 +58,8 @@ input table with the following minimum data requirement:</p><dl><dt>herd_id</dt>
 <dd><p>Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.</p></dd>
 
 <dt>cohort_short</dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the
-production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<dd><p>Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
@@ -70,7 +70,9 @@ production stage of the animals. Supported values include:</p><ul><li><p><code>F
 </ul></dd>
 
 <dt>nondemo_productive_phase_id</dt>
-<dd><p>Numeric. Optional productive phase identifier for non-demographic cohorts (<code>FN</code>, <code>MN</code>). Preserved in the output and used for matching when the manure fractions specify phases.</p></dd>
+<dd><p>Numeric. Optional productive phase identifier
+for non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for
+phase 1 and optionally <code>2</code> for phase 2.</p></dd>
 
 <dt>ration_intake</dt>
 <dd><p>Numeric. Average daily dry matter intake of feed (kg DM/head/day).</p></dd>
@@ -97,8 +99,8 @@ with:</p><dl><dt>herd_id</dt>
 <dd><p>Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.</p></dd>
 
 <dt>cohort_short</dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the
-production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<dd><p>Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
@@ -109,7 +111,11 @@ production stage of the animals. Supported values include:</p><ul><li><p><code>F
 </ul></dd>
 
 <dt>nondemo_productive_phase_id</dt>
-<dd><p>Numeric. Optional productive phase identifier for non-demographic cohorts (<code>FN</code>, <code>MN</code>). Omit this column or leave it entirely missing to use the same manure-management fractions for each phase of a cohort.</p></dd>
+<dd><p>Numeric. Optional productive phase identifier
+for non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for
+phase 1 and optionally <code>2</code> for phase 2. Omit this column or leave it
+entirely missing to use the same manure-management fractions for each phase of a
+cohort.</p></dd>
 
 <dt>manure_management_system</dt>
 <dd><p>Character. Name identifying the manure management system. The identifiers mms_pasture and mms_burned are reserved for manure deposited on pasture and manure burned for fuel, respectively. No specific naming convention is required for other manure management systems, which are grouped and handled as “other” systems.</p></dd>
@@ -336,29 +342,32 @@ Equations 10.23, 10.24, 10.25, 10.26, 10.27, 10.28, and 10.29.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># \donttest{</span></span>
-<span><span class="co"># Load manure emissions inputs (cohort-level, system fractions and factors)</span></span>
-<span><span class="va">emissions_manure_input_chrt_data</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/emissions_manure_input_chrt_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">manure_management_system_fraction</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/manure_management_system_fraction.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">manure_management_system_factors</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/manure_management_system_factors.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run manure emissions calculations</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_emissions_manure_module</span><span class="op">(</span></span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">emissions_manure_input_chrt_data</span>,</span>
-<span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction</span>,</span>
-<span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co"># }</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Load manure emissions inputs (cohort-level, system fractions and factors)</span></span></span>
+<span class="r-in"><span><span class="va">emissions_manure_input_chrt_data</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/emissions_manure_input_chrt_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">manure_management_system_fraction</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/manure_management_system_fraction.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">manure_management_system_factors</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/manure_management_system_factors.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run manure emissions calculations</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_emissions_manure_module</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">emissions_manure_input_chrt_data</span>,</span></span>
+<span class="r-in"><span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction</span>,</span></span>
+<span class="r-in"><span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 🕒 Calculating emissions from manure management systems…</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Emissions from manure management calculation complete.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -379,3 +388,4 @@ Equations 10.23, 10.24, 10.25, 10.26, 10.27, 10.28, and 10.29.</p>
 
 
   </body></html>
+

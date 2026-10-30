@@ -64,32 +64,33 @@ following data requirement:</p><dl><dt>herd_id</dt>
 <dd><p>Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.</p></dd>
 
 <dt>cohort_short</dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the production stage of the animals.
-Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<dd><p>Character. Sex-specific cohort code describing the age and/or the
+production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
-<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
 <li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
 <li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MN</code>: non-demographic males</p></li>
 </ul></dd>
 
 <dt>nondemo_productive_phase_id</dt>
-<dd><p>Numeric. Optional productive phase identifier
-for non-demographic cohorts (<code>FN</code>, <code>MN</code>). When present, production
-outputs are retained separately by phase.</p></dd>
+<dd><p>Numeric. Optional productive phase identifier for
+non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for phase 1 and
+optionally <code>2</code> for phase 2.</p></dd>
 
 <dt>is_egg_producing</dt>
-<dd><p>Logical. Indicates whether the cohort is a food-egg-producing
-chicken cohort. Used only for <code>CHK</code>; may be <code>TRUE</code> only for
-<code>FA</code> or for <code>FN</code> in laying phase 2.</p></dd>
+<dd><p>Logical. Cohort-level flag identifying egg-producing
+<code>CHK</code> cohorts. This can be <code>TRUE</code> only for <code>FA</code> and for <code>FN</code> with
+<code>nondemo_productive_phase_id = 2</code>.</p></dd>
 
 <dt>cohort_stock_size</dt>
-<dd><p>Numeric. Average population size for the assessed cohort (# heads).</p></dd>
+<dd><p>Numeric. Average population size of the assessed cohort (# heads).</p></dd>
 
 <dt>offtake_heads_assessment</dt>
-<dd><p>Numeric. Total number of animals removed via offtake over the assessment period for the assessed cohort (# heads / assessment period).</p></dd>
+<dd><p>Numeric. Total number of animals removed from each
+cohort over the assessment period (# heads/assessment period).</p></dd>
 
 <dt>live_weight_cohort_at_slaughter</dt>
 <dd><p>Numeric. Live weight at slaughter for animals removed from the cohort (kg).</p></dd>
@@ -155,7 +156,7 @@ Fat-protein-corrected milk (FPCM), (kg lactose/kg milk). Suggested value = 0.048
 <dd><p>Numeric. Number of eggs produced for human consumption in one year by hen (eggs/year/animal). Used for <code>CHK</code>.</p></dd>
 
 <dt>egg_average_weight</dt>
-<dd><p>Numeric. Average egg weight (kg/egg). Used for <code>CHK</code>.</p></dd>
+<dd><p>Numeric. Average egg weight (kg/egg).</p></dd>
 
 <dt>fibre_yield_year</dt>
 <dd><p>Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
@@ -225,15 +226,15 @@ over the assessment period by cohort (kg protein/cohort/assessment period).</p><
 
 <dt>egg_production_number_cohort</dt>
 <dd><p>Numeric. Total egg output over the assessment period
-by cohort (eggs/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.</p></dd>
+by cohort (eggs/cohort/assessment period).</p></dd>
 
 <dt>egg_production_mass_cohort</dt>
-<dd><p>Numeric. Total egg mass output over the assessment period
-by cohort (kg/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.</p></dd>
+<dd><p>Numeric. Total egg mass produced over the assessment period
+by cohort (kg/cohort/assessment period).</p></dd>
 
 <dt>egg_production_protein_cohort</dt>
 <dd><p>Numeric. Total egg protein output over the assessment period
-by cohort (kg protein/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.</p></dd>
+by cohort (kg protein/cohort/assessment period).</p></dd>
 
 
 </dl></div>
@@ -262,25 +263,28 @@ Reproductive eggs from <code>FA</code> are excluded from food-egg production.</p
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># \donttest{</span></span>
-<span><span class="co"># Load production inputs (cohort and herd-level)</span></span>
-<span><span class="va">production_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/production_input_chrt_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">production_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/production_input_hrd_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run production calculations</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_production_module</span><span class="op">(</span></span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">production_chrt_dt</span>,</span>
-<span>  herd_level_data <span class="op">=</span> <span class="va">production_hrd_dt</span>,</span>
-<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co"># }</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Load production inputs (cohort and herd-level)</span></span></span>
+<span class="r-in"><span><span class="va">production_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/production_input_chrt_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">production_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/production_input_hrd_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run production calculations</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_production_module</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">production_chrt_dt</span>,</span></span>
+<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">production_hrd_dt</span>,</span></span>
+<span class="r-in"><span>  simulation_duration <span class="op">=</span> <span class="fl">365</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 🕒 Calculating production (milk, fibre, meat), please wait…</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Production cohort calculations completed.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -301,3 +305,4 @@ Reproductive eggs from <code>FA</code> are excluded from food-egg production.</p
 
 
   </body></html>
+

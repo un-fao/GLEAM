@@ -87,7 +87,7 @@ Supported values include:</p><ul><li><p><code>PGS</code>: pigs</p></li>
 
 
 <dt id="arg-cohort-short">cohort_short<a class="anchor" aria-label="anchor" href="#arg-cohort-short"></a></dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the
+<dd><p>Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
@@ -125,8 +125,8 @@ production stage of the animals. Supported values include:</p><ul><li><p><code>F
 
 <dt id="arg-nondemo-productive-phase-id">nondemo_productive_phase_id<a class="anchor" aria-label="anchor" href="#arg-nondemo-productive-phase-id"></a></dt>
 <dd><p>Numeric. Productive phase identifier for
-nondemographic cohorts. Takes value <code>1</code> for phase 1 and optionally
-<code>2</code> for phase 2. Demographic cohorts use <code>NA</code>.</p></dd>
+non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for phase 1
+and optionally <code>2</code> for phase 2. Demographic cohorts use <code>NA</code>.</p></dd>
 
 
 <dt id="arg-live-weight-female-nondemographic-start">live_weight_female_nondemographic_start<a class="anchor" aria-label="anchor" href="#arg-live-weight-female-nondemographic-start"></a></dt>
@@ -150,13 +150,13 @@ animals at the end of the nondemographic cycle (kg).</p></dd>
 
 
 <dt id="arg-phase-nondemo-fem-duration-days">phase1_nondemo_fem_duration_days<a class="anchor" aria-label="anchor" href="#arg-phase-nondemo-fem-duration-days"></a></dt>
-<dd><p>Numeric. Duration of productive phase
-1 for the female nondemographic cohort (<code>FN</code>) (days).</p></dd>
+<dd><p>Numeric. Duration of productive phase 1 for
+the female non-demographic cohort (<code>FN</code>) (days).</p></dd>
 
 
 <dt id="arg-phase-nondemo-fem-duration-days">phase2_nondemo_fem_duration_days<a class="anchor" aria-label="anchor" href="#arg-phase-nondemo-fem-duration-days"></a></dt>
 <dd><p>Numeric. Duration of productive phase
-2 for the female nondemographic cohort (<code>FN</code>) (days).</p></dd>
+2 for the female non-demographic cohort (<code>FN</code>) (days).</p></dd>
 
 
 <dt id="arg-phase-nondemo-mal-duration-days">phase1_nondemo_mal_duration_days<a class="anchor" aria-label="anchor" href="#arg-phase-nondemo-mal-duration-days"></a></dt>
@@ -166,7 +166,7 @@ animals at the end of the nondemographic cycle (kg).</p></dd>
 
 <dt id="arg-phase-nondemo-mal-duration-days">phase2_nondemo_mal_duration_days<a class="anchor" aria-label="anchor" href="#arg-phase-nondemo-mal-duration-days"></a></dt>
 <dd><p>Numeric. Duration of productive phase
-2 for the male nondemographic cohort (<code>MN</code>) (days).</p></dd>
+2 for the male non-demographic cohort (<code>MN</code>) (days).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -244,3 +244,4 @@ the subsequent subadult phase.</p>
 
 
   </body></html>
+

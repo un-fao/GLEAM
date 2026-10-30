@@ -78,7 +78,8 @@ with population size potentially growing or declining at a constant rate.</p>
 <dd><p>Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.</p></dd>
 
 <dt><code>cohort_short</code></dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<dd><p>Character. Sex-specific cohort code describing the age
+and/or the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
@@ -87,13 +88,16 @@ with population size potentially growing or declining at a constant rate.</p>
 </ul></dd>
 
 <dt><code>cohort_duration_days</code></dt>
-<dd><p>Numeric vector of length 6. Amount of time that each animal spends in a specific cohort (days).</p></dd>
+<dd><p>Numeric vector of length 6. Amount of time that
+each animal spends in a specific cohort (days). For <code>CHK</code>, suggested value
+for <code>FJ</code> and <code>MJ</code> cohorts: 3 days.</p></dd>
 
 <dt><code>offtake_rate</code></dt>
 <dd><p>Numeric vector of length 6. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).</p></dd>
 
 <dt><code>death_rate</code></dt>
-<dd><p>Numeric vector of length 6. Fraction of deaths in a herd over a year for each sex-age cohort (fraction).</p></dd>
+<dd><p>Numeric vector of length 6. Fraction of animals dying in
+the assessed cohort over one year for demographic cohorts (fraction).</p></dd>
 
 
 </dl></dd>
@@ -103,17 +107,23 @@ with population size potentially growing or declining at a constant rate.</p>
 <dd><p>A <code>data.table</code> with one row per herd, and the following mandatory columns:</p><dl><dt><code>herd_id</code></dt>
 <dd><p>Character. Unique identifier for the herd.</p></dd>
 
-<dt><code>parturition_rate</code></dt>
-<dd><p>Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.</p></dd>
+<dt><code>reproductive_rate</code></dt>
+<dd><p>Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens,
+annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).</p></dd>
 
-<dt><code>litter_size</code></dt>
-<dd><p>Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.</p></dd>
+<dt><code>offspring_per_reproductive_event</code></dt>
+<dd><p>Numeric. Average number of offspring
+born per parturition (# offspring/parturition). For chickens, hatchability of
+eggs laid for reproduction, calculated as the number of chicks hatched divided by
+the number of eggs laid for reproduction (fraction).</p></dd>
 
 <dt><code>birth_fraction_female</code></dt>
 <dd><p>Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.</p></dd>
 
 <dt><code>herd_size_total</code></dt>
-<dd><p>Numeric. Total population size at the start of the year, including all cohorts (# heads).</p></dd>
+<dd><p>Numeric. Total demographic population size at the start
+of the year, including all cohorts (# heads)</p></dd>
 
 <dt><code>prop_nondemo_mal_juv</code></dt>
 <dd><p>Numeric. Fraction of male juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).</p></dd>
@@ -154,22 +164,30 @@ Defaults to <code>TRUE</code>.</p></dd>
     <p>A named list with two elements:</p><dl><dt><code>cohort_level_results</code></dt>
 <dd><p>A <code>data.table</code> with one row per herd and cohort containing all original
 <code>cohort_level_data</code> columns plus the following simulation results:</p><dl><dt><code>cohort_stock_size_unscaled</code></dt>
-<dd><p>Numeric. Average population size for the assessed cohort, not scaled to the total livestock population (herd_size_total), (# heads). This corresponds to <code>cohort_stock_average</code> returned by <code><a href="calc_projected_population_size.html">calc_projected_population_size</a></code></p></dd>
+<dd><p>Numeric. Average population size of the assessed cohort, not scaled to the total livestock population (herd_size_total) (# heads).</p></dd>
 
 <dt><code>cohort_stock_size_scaled</code></dt>
-<dd><p>Numeric. Average population size for the assessed cohort, scaled to the total livestock population (herd_size_total), (# heads). This corresponds to <code>cohort_stock_start</code> returned by <code><a href="calc_projected_population_size.html">calc_projected_population_size</a></code></p></dd>
+<dd><p>Numeric. Average population size of the assessed cohort, scaled to the total livestock population (herd_size_total) (# heads).</p></dd>
 
 <dt><code>offtake_heads_unscaled</code></dt>
-<dd><p>Numeric. Total number of animals removed from the cohort over the full 365-day simulation horizon, not scaled to the cohort population at the start of the assessment period  (# heads).</p></dd>
+<dd><p>Numeric. Total number of animals removed from
+each cohort over the full 365-day simulation horizon, not scaled to the
+cohort population at the start of the assessment (# heads).</p></dd>
 
 <dt><code>offtake_heads_assessment_unscaled</code></dt>
-<dd><p>Numeric. Total number of animals removed from the cohort over 'simulation_duration', not scaled to the cohort population at the start of the assessment period (# heads/assessment period).</p></dd>
+<dd><p>Numeric. Total number of animals
+removed from each cohort over the assessment period, not scaled to the cohort
+population at the start of the assessment (# heads/assessment period).</p></dd>
 
 <dt><code>offtake_heads_scaled</code></dt>
-<dd><p>Numeric. Total number of animals removed from the cohort over the full 365-day simulation horizon, scaled to the cohort population at the start of the assessment period (# heads).</p></dd>
+<dd><p>Numeric. Total number of animals removed from
+each cohort over the full 365-day simulation horizon, scaled to the cohort
+population at the start of the assessment (# heads).</p></dd>
 
 <dt><code>offtake_heads_assessment_scaled</code></dt>
-<dd><p>Numeric. Total number of animals removed from the cohort over 'simulation_duration', scaled to the cohort population at the start of the assessment period (# heads/assessment period).</p></dd>
+<dd><p>Numeric. Total number of animals
+removed from each cohort over the assessment period, scaled to the cohort
+population at the start of the assessment (# heads/assessment period).</p></dd>
 
 <dt><code>cohort_stock_annual_nondemographic</code></dt>
 <dd><p>Numeric. Annual number of animals diverted from the demographic pathway into the non-demographic pathway (# heads).</p></dd>
@@ -215,7 +233,7 @@ distributed over time (no birth pulse). Daily fecundity rates are computed in
 <h3 id="dynamics-and-parameters">Dynamics and parameters<a class="anchor" aria-label="anchor" href="#dynamics-and-parameters"></a></h3>
 
 
-<p>Herd dynamics result from:</p><ul><li><p>births (driven by <code>parturition_rate</code> and <code>litter_size</code>)</p></li>
+<p>Herd dynamics result from:</p><ul><li><p>births (driven by <code>reproductive_rate</code> and <code>offspring_per_reproductive_event</code>)</p></li>
 <li><p>natural deaths (driven by <code>death_rate</code>)</p></li>
 <li><p>removals by offtake (driven by <code>offtake_rate</code>)</p></li>
 <li><p>cohort aging / growth transitions (driven by <code>cohort_duration_days</code>)</p></li>
@@ -309,26 +327,29 @@ livestock populations, User's manual</em>. CIRAD, Montpellier, France.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># \donttest{</span></span>
-<span><span class="co"># Load demographic herd simulation inputs (cohort and herd-level)</span></span>
-<span><span class="va">herd_simulation_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/herd_simulation_input_chrt_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">herd_simulation_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/herd_simulation_input_hrd_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run demographic herd simulation</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_demographic_herd_module</span><span class="op">(</span></span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">herd_simulation_chrt_dt</span>,</span>
-<span>  herd_level_data <span class="op">=</span> <span class="va">herd_simulation_hrd_dt</span>,</span>
-<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
-<span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co"># }</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Load demographic herd simulation inputs (cohort and herd-level)</span></span></span>
+<span class="r-in"><span><span class="va">herd_simulation_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/herd_simulation_input_chrt_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">herd_simulation_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/herd_simulation_input_hrd_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run demographic herd simulation</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_demographic_herd_module</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">herd_simulation_chrt_dt</span>,</span></span>
+<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">herd_simulation_hrd_dt</span>,</span></span>
+<span class="r-in"><span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span></span>
+<span class="r-in"><span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 🕒 Simulating the herd structure, please wait…</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Demographic herd simulation complete.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -349,3 +370,4 @@ livestock populations, User's manual</em>. CIRAD, Montpellier, France.</p>
 
 
   </body></html>
+

@@ -30,7 +30,7 @@ run_production_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -40,38 +40,36 @@ run_production_module(
 
       - `FJ`: juvenile females (from birth to weaning)
 
-      - `FN`: non-demographic females
-
       - `MA`: adult males (from age at first breeding)
 
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
 
+      - `FN`: non-demographic females
+
       - `MN`: non-demographic males
 
   nondemo_productive_phase_id
 
   :   Numeric. Optional productive phase identifier for non-demographic
-      cohorts (`FN`, `MN`). When present, production outputs are
-      retained separately by phase.
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   is_egg_producing
 
-  :   Logical. Indicates whether the cohort is a food-egg-producing
-      chicken cohort. Used only for `CHK`; may be `TRUE` only for `FA`
-      or for `FN` in laying phase 2.
+  :   Logical. Cohort-level flag identifying egg-producing `CHK`
+      cohorts. This can be `TRUE` only for `FA` and for `FN` with
+      `nondemo_productive_phase_id = 2`.
 
   cohort_stock_size
 
-  :   Numeric. Average population size for the assessed cohort (#
-      heads).
+  :   Numeric. Average population size of the assessed cohort (# heads).
 
   offtake_heads_assessment
 
-  :   Numeric. Total number of animals removed via offtake over the
-      assessment period for the assessed cohort (# heads / assessment
-      period).
+  :   Numeric. Total number of animals removed from each cohort over the
+      assessment period (# heads/assessment period).
 
   live_weight_cohort_at_slaughter
 
@@ -165,7 +163,7 @@ run_production_module(
 
   egg_average_weight
 
-  :   Numeric. Average egg weight (kg/egg). Used for `CHK`.
+  :   Numeric. Average egg weight (kg/egg).
 
   fibre_yield_year
 
@@ -249,20 +247,17 @@ the input, the returned table preserves phase-specific rows for `FN` and
 - egg_production_number_cohort:
 
   Numeric. Total egg output over the assessment period by cohort
-  (eggs/cohort/assessment period). Returned as 0 for non-egg-producing
-  cohorts.
+  (eggs/cohort/assessment period).
 
 - egg_production_mass_cohort:
 
-  Numeric. Total egg mass output over the assessment period by cohort
-  (kg/cohort/assessment period). Returned as 0 for non-egg-producing
-  cohorts.
+  Numeric. Total egg mass produced over the assessment period by cohort
+  (kg/cohort/assessment period).
 
 - egg_production_protein_cohort:
 
   Numeric. Total egg protein output over the assessment period by cohort
-  (kg protein/cohort/assessment period). Returned as 0 for
-  non-egg-producing cohorts.
+  (kg protein/cohort/assessment period).
 
 ## Details
 
@@ -318,5 +313,7 @@ results <- run_production_module(
   herd_level_data = production_hrd_dt,
   simulation_duration = 365
 )
+#> 🕒 Calculating production (milk, fibre, meat), please wait…
+#> ✔ Production cohort calculations completed.
 # }
 ```

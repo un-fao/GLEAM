@@ -1,7 +1,8 @@
-# Calculate average nondemographic stock over the assessment horizon
+# Calculate average nondemographic stock over the fixed simulation horizon
 
-Computes annual average stock for a full productive phase, including
-animals that entered before the assessment year.
+Computes average stock for a nondemographic productive phase over the
+fixed 365-day simulation horizon, including animals that may have
+entered the phase before the beginning of the horizon.
 
 ## Usage
 
@@ -16,18 +17,28 @@ calc_nondemo_avg_stock_phase_horizon(
 
 - full_nondemo_phase:
 
-  List. Output of
+  List. Simulated stock dynamics for one complete nondemographic
+  productive phase. The list must contain:
+
+  - `time_simulated_nondemographic`: Number of days simulated for the
+    productive phase (days).
+
+  - `cohort_stock_nondemo$start`: Number of animals at the beginning of
+    the simulated productive phase (heads)..
+
+  - `cohort_stock_nondemo$end`: Number of animals remaining at the end
+    of the simulated productive phase after applying mortality over the
+    simulated time interval (heads).
+
+  This object cab be obtained by running
   [`calc_nondemo_phase()`](https://un-fao.github.io/GLEAM/reference/calc_nondemo_phase.md)
-  for a full productive phase. Must contain
-  `time_simulated_nondemographic` (days) and
-  `cohort_stock_nondemo$start` and `cohort_stock_nondemo$end` (heads).
+  for the complete duration of the productive phase.
 
 - total_nondemo_cycle_starts_to_distribute:
 
-  Numeric. Annual cycle starts, calculated by
-  [`calc_nondemo_cycle_geometry()`](https://un-fao.github.io/GLEAM/reference/calc_nondemo_cycle_geometry.md)
-  and passed internally by
-  [`run_nondemographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_nondemographic_herd_module.md).
+  Integer. Total number of cycle starts within the fixed 365-day time
+  horizon for the assessed non-demographic cohort (`FN` or `MN`) (#
+  cycle starts).
 
 ## Value
 
@@ -35,27 +46,42 @@ A named list with:
 
 - cohort_stock_size_unscaled:
 
-  Numeric. Annual average population in the phase (heads), before
-  rescaling to `herd_size_total`.
+  Numeric. Average population size of the assessed cohort, not scaled to
+  the total livestock population (herd_size_total) (# heads).
 
 ## Details
 
-The model calculates cycle starts from the phase and rest durations. No
-additional input-table field is required for this value.
+The number of cycle starts is calculated upstream by
+[`calc_nondemo_cycle_geometry()`](https://un-fao.github.io/GLEAM/reference/calc_nondemo_cycle_geometry.md)
+from the productive-phase and between-cycle rest durations and is
+supplied to this function through
+`total_nondemo_cycle_starts_to_distribute`.
 
-For one full phase, animal-days are approximated using the trapezoidal
-rule: \$\$ full\\phase\\days =
-full_nondemo_phase\$time_simulated_nondemographic \times \frac{
-full_nondemo_phase\$cohort_stock_nondemo\$start +
-full_nondemo_phase\$cohort_stock_nondemo\$end }{2} \$\$
+For one complete productive phase, animal-days are approximated using
+the trapezoidal rule: \$\$ AD\_{phase} = T\_{phase} \times
+\frac{N\_{start} + N\_{end}}{2} \$\$
 
-Annual average stock is then: \$\$ average\\stock\\phase\\horizon =
-\frac{total\\nondemo\\cycle\\starts\\to\\distribute \times
-full\\phase\\days}{365} \$\$
+where \\T\_{phase}\\ is the duration of the productive phase (days), and
+\\N\_{start}\\ and \\N\_{end}\\ are the numbers of animals at the start
+and end of the phase, respectively.
 
-Full-phase stock is used even when no complete cycle fits within 365
-days. This represents an established herd with animals from previous
-arrival years. A zero-duration phase contributes zero stock.
+Average stock over the fixed 365-day simulation horizon is then
+calculated as: \$\$ N\_{avg} = \frac{N\_{starts} \times
+AD\_{phase}}{365} \$\$
+
+where \\N\_{starts}\\ is the total number of production-cycle starts
+within the fixed 365-day simulation horizon.
+
+Each cycle start is assigned the animal-days of one complete productive
+phase. The calculation therefore represents steady-state phase occupancy
+rather than truncating the contribution of a cycle that starts near the
+end of the 365-day horizon. Contributions extending beyond the end of
+the horizon are balanced conceptually by contributions from cycles that
+began before the horizon.
+
+A complete phase is used even when no complete production cycle fits
+within the 365-day horizon. A zero-duration phase contributes zero
+stock.
 
 The calculation assumes linear stock change within each phase and
 applies no rounding. Fractional average stock values may occur.
@@ -65,4 +91,6 @@ This function is part of
 
 ## See also
 
+[`calc_nondemo_phase()`](https://un-fao.github.io/GLEAM/reference/calc_nondemo_phase.md),
+[`calc_nondemo_cycle_geometry()`](https://un-fao.github.io/GLEAM/reference/calc_nondemo_cycle_geometry.md),
 [`run_nondemographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_nondemographic_herd_module.md)

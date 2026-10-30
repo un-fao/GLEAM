@@ -77,14 +77,14 @@ Supported values include:</p><ul><li><p><code>PGS</code>: pigs</p></li>
 
 
 <dt id="arg-cohort-short">cohort_short<a class="anchor" aria-label="anchor" href="#arg-cohort-short"></a></dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the
+<dd><p>Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
-<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
 <li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
 <li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MN</code>: non-demographic males</p></li>
 </ul></dd>
 
@@ -106,7 +106,7 @@ each sex-age cohort (fraction).</p></dd>
 
 
 <dt id="arg-age-first-parturition">age_first_parturition<a class="anchor" aria-label="anchor" href="#arg-age-first-parturition"></a></dt>
-<dd><p>Numeric. Age at first parturition for female breeding animals (days)</p></dd>
+<dd><p>Numeric. Age at first parturition for female breeding animals (days).</p></dd>
 
 
 <dt id="arg-average-annual-temperature">average_annual_temperature<a class="anchor" aria-label="anchor" href="#arg-average-annual-temperature"></a></dt>
@@ -122,22 +122,23 @@ run-level pipeline this is fixed internally at
 
 
 <dt id="arg-nondemo-productive-phase-id">nondemo_productive_phase_id<a class="anchor" aria-label="anchor" href="#arg-nondemo-productive-phase-id"></a></dt>
-<dd><p>Numeric. Optional productive phase
-identifier for non-demographic cohorts.</p></dd>
+<dd><p>Numeric. Optional productive phase identifier for
+non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for phase 1
+and optionally <code>2</code> for phase 2.</p></dd>
 
 
 <dt id="arg-is-egg-producing">is_egg_producing<a class="anchor" aria-label="anchor" href="#arg-is-egg-producing"></a></dt>
-<dd><p>Logical. Cohort-level flag identifying the laying
-cohort for <code>CHK</code>. This can be <code>TRUE</code> only for <code>FA</code> and for
-<code>FN</code> with <code>nondemo_productive_phase_id = 2</code>.</p></dd>
+<dd><p>Logical. Cohort-level flag identifying egg-producing
+<code>CHK</code> cohorts. This can be <code>TRUE</code> only for <code>FA</code> and for <code>FN</code>
+with <code>nondemo_productive_phase_id = 2</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Numeric. Energy required for maintenance, defined as the amount of energy needed to
-keep the animal at equilibrium such that body energy is neither gained nor lost.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
-CML and PGS (MJ/head/day).</p>
+    <p>Numeric. Energy required for maintenance, defined as the amount of energy
+needed to keep the animal at equilibrium such that body energy is neither gained nor
+lost (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as
+metabolizable energy for CML, PGS, and CHK.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -246,3 +247,4 @@ laying hens and broilers</em>. Brazilian Journal of Poultry Science, 6, 1-11.</p
 
 
   </body></html>
+

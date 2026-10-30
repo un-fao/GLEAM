@@ -30,8 +30,9 @@ calc_nondemo_cycle_geometry(
 
 - rest_between_nondemo_cycles_duration:
 
-  Numeric. Duration of the resting or empty phase between nondemographic
-  cycles (days). Use `0` when there is no rest between cycles.
+  Numeric. Duration of the resting or empty phase between
+  non-demographic cycles (days). Use `0` when there is no rest between
+  cycles.
 
 ## Value
 
@@ -40,26 +41,26 @@ A named list with elements:
 - number_full_nondemo_cycles:
 
   Integer. Number of complete cycles fully contained within the fixed
-  365-day time horizon for the assessed nondemographic cohort (`FN` or
-  `MN`) (full cycles / simulated period).
+  365-day time horizon for the assessed non-demographic cohort (`FN` or
+  `MN`) (# cycles).
 
 - partial_phase1_nondemo_duration:
 
   Numeric. Duration of the terminal partial productive phase 1 occurring
-  at the end of the fixed 365-day time horizon for the assessed
+  at the end of the fixed 365-day simulation horizon for the assessed
   nondemographic cohort (`FN` or `MN`) (days).
 
 - partial_phase2_nondemo_duration:
 
   Numeric. Duration of the terminal partial productive phase 2 occurring
-  at the end of the fixed 365-day time horizon for the assessed
+  at the end of the fixed 365-day simulation horizon for the assessed
   nondemographic cohort (`FN` or `MN`) (days).
 
 - total_nondemo_cycle_starts_to_distribute:
 
   Integer. Total number of cycle starts within the fixed 365-day time
-  horizon for the assessed nondemographic cohort (`FN` or `MN`) (cycle
-  starts / simulated period).
+  horizon for the assessed non-demographic cohort (`FN` or `MN`) (#
+  cycle starts).
 
 - cycle_length:
 

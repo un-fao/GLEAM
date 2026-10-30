@@ -43,7 +43,7 @@ run_emissions_enteric_module(cohort_level_data, show_indicator = TRUE)
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -53,21 +53,21 @@ run_emissions_enteric_module(cohort_level_data, show_indicator = TRUE)
 
       - `FJ`: juvenile females (from birth to weaning)
 
-      - `FN`: non-demographic females
-
       - `MA`: adult males (from age at first breeding)
 
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
 
+      - `FN`: non-demographic females
+
       - `MN`: non-demographic males
 
   nondemo_productive_phase_id
 
   :   Numeric. Optional productive phase identifier for non-demographic
-      cohorts (`FN`, `MN`). When present, enteric methane emissions are
-      computed and retained separately by phase.
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   ration_digestibility_fraction
 
@@ -166,5 +166,7 @@ emissions_enteric_input_chrt_data <- data.table::fread(system.file(
 results <- run_emissions_enteric_module(
   cohort_level_data = emissions_enteric_input_chrt_data
 )
+#> 🕒 Calculating enteric methane emissions, please wait…
+#> ✔ Enteric methane emissions calculation complete.
 # }
 ```

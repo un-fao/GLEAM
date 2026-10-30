@@ -51,12 +51,12 @@ energy needed to support milk production by lactating females.</p>
 <span>  milk_fat_fraction <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>  non_productive_duration <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>  pregnancy_duration <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
-<span>  litter_size <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>  offspring_per_reproductive_event <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>  death_rate_juvenile <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>  live_weight_at_birth <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>  live_weight_at_weaning <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>  lactation_duration <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
-<span>  parturition_rate <span class="op">=</span> <span class="cn">NA_real_</span></span>
+<span>  reproductive_rate <span class="op">=</span> <span class="cn">NA_real_</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -77,14 +77,14 @@ Supported values include:</p><ul><li><p><code>PGS</code>: pigs</p></li>
 
 
 <dt id="arg-cohort-short">cohort_short<a class="anchor" aria-label="anchor" href="#arg-cohort-short"></a></dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the
+<dd><p>Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
-<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
 <li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
 <li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MN</code>: non-demographic males</p></li>
 </ul></dd>
 
@@ -114,9 +114,11 @@ any productive physiological function such as pregnancy or lactation (days). Req
 <dd><p>Numeric. Duration of pregnancy period (days).</p></dd>
 
 
-<dt id="arg-litter-size">litter_size<a class="anchor" aria-label="anchor" href="#arg-litter-size"></a></dt>
-<dd><p>Numeric. Average number of offspring born per parturition (# offspring/parturition).
-This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.</p></dd>
+<dt id="arg-offspring-per-reproductive-event">offspring_per_reproductive_event<a class="anchor" aria-label="anchor" href="#arg-offspring-per-reproductive-event"></a></dt>
+<dd><p>Numeric. Average number of offspring born per
+parturition (# offspring/parturition). For chickens, hatchability of eggs laid for
+reproduction, calculated as the number of chicks hatched divided by the number of
+eggs laid for reproduction (fraction).</p></dd>
 
 
 <dt id="arg-death-rate-juvenile">death_rate_juvenile<a class="anchor" aria-label="anchor" href="#arg-death-rate-juvenile"></a></dt>
@@ -136,9 +138,10 @@ This value can be calculated as the total number of offspring born divided by th
 Required only for PGS.</p></dd>
 
 
-<dt id="arg-parturition-rate">parturition_rate<a class="anchor" aria-label="anchor" href="#arg-parturition-rate"></a></dt>
-<dd><p>Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year).
-A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.</p></dd>
+<dt id="arg-reproductive-rate">reproductive_rate<a class="anchor" aria-label="anchor" href="#arg-reproductive-rate"></a></dt>
+<dd><p>Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens, annual
+number of eggs laid for reproduction per breeding hen (# eggs/hen/year).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -152,7 +155,7 @@ species-specific equations for lactation energy requirements as a function of th
 quantity of milk produced and a species-specific energy cost per unit of milk.</p>
 <p>Requirements are calculated only for cohort = <code>FA</code> (adult females) and are scaled
 by the proportion of lactating animals (<code>lactating_females_fraction</code>) or reproducing
-females (<code>parturition_rate</code>) within the cohort.</p>
+females (<code>reproductive_rate</code>) within the cohort.</p>
 <p><strong>Species-specific approach:</strong></p>
 <p><strong>CTL, BFL, CML, SHP and GTS</strong>:</p>
 <p>Total milk production includes:</p><ul><li><p>milk extracted for human consumption (<code>milk_yield</code>)</p></li>
@@ -179,7 +182,7 @@ milk\_for\_offspring =
 \frac{parturition\_rate \times 5 \times (weaning\_weight - birth\_weight)}{365}
 $$</p>
 <p>For <strong>SHP</strong> and <strong>GTS</strong>, <code>milk_for_offspring</code> is multiplied by
-<code>litter_size</code> to account for multiple offspring per birth.</p>
+<code>offspring_per_reproductive_event</code> to account for multiple offspring per birth.</p>
 <p><strong>PGS</strong> (NRC, 1998):</p>
 <p>Lactation energy accounts only for the milk consumed directly by offspring
 (<code>milk_for_offspring</code>), adjusted by the fraction of the reproductive cycle spent
@@ -249,3 +252,4 @@ Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).</p>
 
 
   </body></html>
+

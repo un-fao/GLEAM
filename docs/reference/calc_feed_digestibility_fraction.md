@@ -37,8 +37,7 @@ calc_feed_digestibility_fraction(
 - feed_metabolizable_energy_chicken:
 
   Numeric. Metabolizable energy content of a feed component for chickens
-  (MJ/kg DM). Defaults to `NA_real_`; missing values produce a zero
-  chicken digestibility fraction.
+  (MJ/kg DM).
 
 ## Value
 

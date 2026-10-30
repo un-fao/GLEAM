@@ -42,13 +42,34 @@ run_all_herd_module(
 
     `cohort_short`
 
-    :   Character. Demographic cohort code. Supported values are `FJ`,
-        `FS`, `FA`, `MJ`, `MS`, and `MA`.
+    :   Character. Sex-specific cohort code describing the age and/or
+        the production stage of the animals. Supported values include:
+
+        - `FA`: adult females (from age at first parturition)
+
+        - `FS`: sub-adult females (from weaning to age at first
+          parturition)
+
+        - `FJ`: juvenile females (from birth to weaning)
+
+        - `MA`: adult males (from age at first breeding)
+
+        - `MS`: sub-adult males (from weaning to age at first breeding)
+
+        - `MJ`: juvenile males (from birth to weaning)
+
+        - `FN`: non-demographic females
+
+        - `MN`: non-demographic males
 
     `cohort_duration_days`
 
-    :   Numeric. Amount of time that each animal spends in the
-        demographic cohort (days).
+    :   Numeric. Amount of time that each animal spends in a specific
+        cohort and production phase (days). For `CHK`, suggested value
+        for `FJ` and `MJ` cohorts: 3 days. Not required for `FN` and
+        `MN` when phase durations are supplied in the herd table; the
+        code fills it from the herd values, which override any cohort
+        values.
 
     `offtake_rate`
 
@@ -57,8 +78,8 @@ run_all_herd_module(
 
     `death_rate`
 
-    :   Numeric. Fraction of deaths in a herd over a year for each
-        demographic cohort (fraction).
+    :   Numeric. Fraction of animals dying in the assessed cohort over
+        one year for demographic cohorts (fraction).
 
   - **Case 2 - when `run_demographic = FALSE` and
     `run_nondemographic = TRUE`:** `cohort_level_data` must contain rows
@@ -69,23 +90,40 @@ run_all_herd_module(
     `herd_id`
 
     :   Character. Unique identifier for the herd, repeated for each
-        non-demographic cohort phase belonging to the same herd.
+        cohort belonging to the same herd.
 
     `cohort_short`
 
-    :   Character. Non-demographic cohort code. Supported values are
-        `FN` for non-demographic female animals and `MN` for
-        non-demographic male animals.
+    :   Character. Sex-specific cohort code describing the age and/or
+        the production stage of the animals. Supported values include:
+
+        - `FA`: adult females (from age at first parturition)
+
+        - `FS`: sub-adult females (from weaning to age at first
+          parturition)
+
+        - `FJ`: juvenile females (from birth to weaning)
+
+        - `MA`: adult males (from age at first breeding)
+
+        - `MS`: sub-adult males (from weaning to age at first breeding)
+
+        - `MJ`: juvenile males (from birth to weaning)
+
+        - `FN`: non-demographic females
+
+        - `MN`: non-demographic males
 
     `nondemo_productive_phase_id`
 
-    :   Numeric. Productive phase identifier within a non-demographic
-        cycle. `1` is required and `2` is optional.
+    :   Numeric. Productive phase identifier for non-demographic cohorts
+        (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2` for
+        phase 2. Demographic cohorts use `NA`.
 
     `death_rate`
 
-    :   Numeric. Fraction of deaths occurring during the non-demographic
-        productive phase (fraction).
+    :   Numeric. Fraction of animals dying in the assessed cohort over
+        the productive phase for non-demographic cohorts (fraction).
 
   - **Case 3 - when `run_demographic = TRUE` and
     `run_nondemographic = TRUE`:** `cohort_level_data` must contain both
@@ -109,17 +147,19 @@ run_all_herd_module(
 
     :   Character. Unique identifier for the herd.
 
-    `parturition_rate`
+    `reproductive_rate`
 
-    :   Numeric. Average annual number of parturitions per female animal
-        (# parturitions/adult female/year). For `CHK`, this corresponds
-        to eggs laid for reproduction.
+    :   Numeric. Average annual number of parturitions per reproductive
+        female (# parturitions/reproductive female/year). For chickens,
+        annual number of eggs laid for reproduction per breeding hen (#
+        eggs/hen/year).
 
-    `litter_size`
+    `offspring_per_reproductive_event`
 
-    :   Numeric. Average number of offspring produced per parturition (#
-        offspring/parturition). For `CHK`, this can be interpreted as
-        offspring produced per reproductive event.
+    :   Numeric. Average number of offspring born per parturition (#
+        offspring/parturition). For chickens, hatchability of eggs laid
+        for reproduction, calculated as the number of chicks hatched
+        divided by the number of eggs laid for reproduction (fraction).
 
     `birth_fraction_female`
 
@@ -128,8 +168,8 @@ run_all_herd_module(
 
     `herd_size_total`
 
-    :   Numeric. Total population size at the start of the year,
-        including all cohorts (# heads).
+    :   Numeric. Total demographic population size at the start of the
+        year, including all cohorts (# heads)
 
     `prop_nondemo_mal_juv`
 
@@ -154,18 +194,25 @@ run_all_herd_module(
 
     `cohort_stock_fem_annual_nondemo`
 
-    :   Numeric. Total annual entrants into the `FN` cohort block over
-        the simulated period (# heads / simulated period).
+    :   Numeric. Annual number of female animals entering the
+        non-demographic pathway (`FN`) over the 365-time horizon (#
+        heads). When both demographic and non-demographic modules are
+        run, this is derived internally from the demographic
+        calculations.
 
     `cohort_stock_mal_annual_nondemo`
 
-    :   Numeric. Total annual entrants into the `MN` cohort block over
-        the simulated period (# heads / simulated period).
+    :   Numeric. Annual number of male animals entering the
+        non-demographic pathway (`MN`) over the 365-time horizon (#
+        heads). When both demographic and non-demographic modules are
+        run, this is derived internally from the demographic
+        calculations.
 
     `rest_between_nondemo_cycles_duration`
 
     :   Numeric. Duration of the resting or empty phase between
-        non-demographic cycles (days).
+        non-demographic cycles (days). Use `0` when there is no rest
+        between cycles.
 
     `phase1_nondemo_fem_duration_days`
 
@@ -180,7 +227,7 @@ run_all_herd_module(
     `phase1_nondemo_mal_duration_days`
 
     :   Numeric. Duration of productive phase 1 for the male
-        non-demographic cohort (`MN`) (days).
+        nondemographic cohort (`MN`) (days).
 
     `phase2_nondemo_mal_duration_days`
 
@@ -200,17 +247,19 @@ run_all_herd_module(
 
     :   Character. Unique identifier for the herd.
 
-    `parturition_rate`
+    `reproductive_rate`
 
-    :   Numeric. Average annual number of parturitions per female animal
-        (# parturitions/adult female/year). For `CHK`, this corresponds
-        to eggs laid for reproduction.
+    :   Numeric. Average annual number of parturitions per reproductive
+        female (# parturitions/reproductive female/year). For chickens,
+        annual number of eggs laid for reproduction per breeding hen (#
+        eggs/hen/year).
 
-    `litter_size`
+    `offspring_per_reproductive_event`
 
-    :   Numeric. Average number of offspring produced per parturition (#
-        offspring/parturition). For `CHK`, this can be interpreted as
-        offspring produced per reproductive event.
+    :   Numeric. Average number of offspring born per parturition (#
+        offspring/parturition). For chickens, hatchability of eggs laid
+        for reproduction, calculated as the number of chicks hatched
+        divided by the number of eggs laid for reproduction (fraction).
 
     `birth_fraction_female`
 
@@ -219,8 +268,8 @@ run_all_herd_module(
 
     `herd_size_total`
 
-    :   Numeric. Total population size at the start of the year,
-        including all cohorts (# heads).
+    :   Numeric. Total demographic population size at the start of the
+        year, including all cohorts (# heads)
 
     `prop_nondemo_mal_juv`
 
@@ -237,7 +286,8 @@ run_all_herd_module(
     `rest_between_nondemo_cycles_duration`
 
     :   Numeric. Duration of the resting or empty phase between
-        non-demographic cycles (days).
+        non-demographic cycles (days). Use `0` when there is no rest
+        between cycles.
 
     `phase1_nondemo_fem_duration_days`
 
@@ -252,7 +302,7 @@ run_all_herd_module(
     `phase1_nondemo_mal_duration_days`
 
     :   Numeric. Duration of productive phase 1 for the male
-        non-demographic cohort (`MN`) (days).
+        nondemographic cohort (`MN`) (days).
 
     `phase2_nondemo_mal_duration_days`
 
@@ -266,7 +316,7 @@ run_all_herd_module(
 
 - simulation_duration:
 
-  Numeric. Length of the reporting period (days).
+  Numeric. Length of the assessment period (days).
 
 - show_indicator:
 
@@ -298,48 +348,46 @@ A named list with two elements:
 
   `cohort_stock_size`
 
-  :   Numeric. Average population size for the assessed cohort (#
-      heads).
+  :   Numeric. Average population size of the assessed cohort (# heads).
 
   `offtake_heads`
 
-  :   Numeric. Total number of animals removed from the cohort over the
-      full 365-day simulation horizon (# heads).
+  :   Numeric. Total number of animals removed from each cohort over the
+      full 365-day simulation horizon (# heads/year).
 
   `offtake_heads_assessment`
 
-  :   Numeric. Total number of animals removed from the cohort over
-      `simulation_duration` (# heads / simulated period).
+  :   Numeric. Total number of animals removed from each cohort over the
+      assessment period (# heads/assessment period).
 
   `cohort_stock_annual_nondemographic`
 
-  :   Numeric. For demographic rows only, annual number of animals
-      diverted from the demographic pathway into the non-demographic
-      pathway (# heads).
+  :   Numeric. Annual number of animals diverted from the demographic
+      pathway into the non-demographic pathway (# heads).
 
   `nondemo_productive_phase_id`
 
-  :   Numeric. For non-demographic rows only, productive phase
-      identifier within the non-demographic cycle. Allowed values are
-      `1` and optionally `2`.
+  :   Numeric. Productive phase identifier for non-demographic cohorts
+      (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2` for
+      phase 2. Demographic cohorts use `NA`.
 
   `partial_nondemo_phase_duration`
 
-  :   Numeric. For non-demographic rows only, duration of the terminal
-      partial productive phase falling within the fixed 365-day
-      non-demographic simulation horizon (days).
+  :   Numeric. Duration of the terminal partial productive phase falling
+      within the fixed 365-day non-demographic simulation horizon
+      (days).
 
   `number_full_nondemo_cycles`
 
-  :   Integer. For non-demographic rows only, number of complete
-      non-demographic cycles fully contained within the fixed 365-day
-      simulation horizon (# cycles).
+  :   Integer. Number of complete cycles fully contained within the
+      fixed 365-day time horizon for the assessed non-demographic cohort
+      (`FN` or `MN`) (# cycles).
 
   `total_nondemo_cycle_starts_to_distribute`
 
-  :   Integer. For non-demographic rows only, total number of cycle
-      starts within the fixed 365-day simulation horizon used to
-      distribute annual entrants (# cycle starts).
+  :   Integer. Total number of cycle starts within the fixed 365-day
+      time horizon for the assessed non-demographic cohort (`FN` or
+      `MN`) (# cycle starts).
 
 - `herd_level_results`:
 
@@ -357,21 +405,22 @@ A named list with two elements:
   `cohort_stock_fem_annual_nondemo`
 
   :   Numeric. Annual number of female animals entering the
-      non-demographic pathway (`FN`) over the simulated period (#
-      heads). When both modules are run, this is derived internally from
-      the demographic output.
+      non-demographic pathway (`FN`) over the 365-time horizon (#
+      heads). When both demographic and non-demographic modules are run,
+      this is derived internally from the demographic calculations.
 
   `cohort_stock_mal_annual_nondemo`
 
   :   Numeric. Annual number of male animals entering the
-      non-demographic pathway (`MN`) over the simulated period (#
-      heads). When both modules are run, this is derived internally from
-      the demographic output.
+      non-demographic pathway (`MN`) over the 365-time horizon (#
+      heads). When both demographic and non-demographic modules are run,
+      this is derived internally from the demographic calculations.
 
   `rest_between_nondemo_cycles_duration`
 
   :   Numeric. Duration of the resting or empty phase between
-      non-demographic cycles (days).
+      non-demographic cycles (days). Use `0` when there is no rest
+      between cycles.
 
   `total_nondemo_fem_duration_days`
 

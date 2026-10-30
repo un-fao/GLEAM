@@ -16,7 +16,8 @@ calc_transition_probabilities(cohort_duration_days, offtake_rate, death_rate)
 - cohort_duration_days:
 
   Numeric vector of length 6. Amount of time that each animal spends in
-  a specific cohort (days).
+  a specific cohort (days). For `CHK`, suggested value for `FJ` and `MJ`
+  cohorts: 3 days.
 
 - offtake_rate:
 
@@ -25,8 +26,8 @@ calc_transition_probabilities(cohort_duration_days, offtake_rate, death_rate)
 
 - death_rate:
 
-  Numeric vector of length 6. Fraction of deaths in a herd over a year
-  for each sex-age cohort (fraction)
+  Numeric vector of length 6. Fraction of animals dying in the assessed
+  cohort over one year for demographic cohorts (fraction).
 
 ## Value
 

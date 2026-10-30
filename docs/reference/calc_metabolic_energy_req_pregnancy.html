@@ -47,8 +47,8 @@ females, defined as the additional energy needed to support gestation.</p>
 <span>  <span class="va">species_short</span>,</span>
 <span>  <span class="va">cohort_short</span>,</span>
 <span>  metabolic_energy_req_maintenance <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
-<span>  parturition_rate <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
-<span>  litter_size <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>  reproductive_rate <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>  offspring_per_reproductive_event <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>  pregnancy_duration <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>  non_productive_duration <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>  lactation_duration <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
@@ -74,33 +74,36 @@ Supported values include:</p><ul><li><p><code>PGS</code>: pigs</p></li>
 
 
 <dt id="arg-cohort-short">cohort_short<a class="anchor" aria-label="anchor" href="#arg-cohort-short"></a></dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the
+<dd><p>Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
-<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
 <li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
 <li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MN</code>: non-demographic males</p></li>
 </ul></dd>
 
 
 <dt id="arg-metabolic-energy-req-maintenance">metabolic_energy_req_maintenance<a class="anchor" aria-label="anchor" href="#arg-metabolic-energy-req-maintenance"></a></dt>
-<dd><p>Numeric. Energy required for maintenance, defined as the amount of energy needed
-to keep the animal at equilibrium such that body energy is neither gained nor lost.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).</p></dd>
+<dd><p>Numeric. Energy required for maintenance,
+defined as the amount of energy needed to keep the animal at equilibrium such that
+body energy is neither gained nor lost (MJ/head/day). Expressed as net energy for
+CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.</p></dd>
 
 
-<dt id="arg-parturition-rate">parturition_rate<a class="anchor" aria-label="anchor" href="#arg-parturition-rate"></a></dt>
-<dd><p>Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year).
-A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during
-a year divided by the number of adult females potentially able to give birth during that year.</p></dd>
+<dt id="arg-reproductive-rate">reproductive_rate<a class="anchor" aria-label="anchor" href="#arg-reproductive-rate"></a></dt>
+<dd><p>Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens, annual
+number of eggs laid for reproduction per breeding hen (# eggs/hen/year).</p></dd>
 
 
-<dt id="arg-litter-size">litter_size<a class="anchor" aria-label="anchor" href="#arg-litter-size"></a></dt>
-<dd><p>Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be
-calculated as the total number of offspring born divided by the total number of parturitions during the year.</p></dd>
+<dt id="arg-offspring-per-reproductive-event">offspring_per_reproductive_event<a class="anchor" aria-label="anchor" href="#arg-offspring-per-reproductive-event"></a></dt>
+<dd><p>Numeric. Average number of offspring born per
+parturition (# offspring/parturition). For chickens, hatchability of eggs laid for
+reproduction, calculated as the number of chicks hatched divided by the number of
+eggs laid for reproduction (fraction).</p></dd>
 
 
 <dt id="arg-pregnancy-duration">pregnancy_duration<a class="anchor" aria-label="anchor" href="#arg-pregnancy-duration"></a></dt>
@@ -118,7 +121,9 @@ is lactating (days). Required only for PGS.</p></dd>
 
 
 <dt id="arg-cohort-duration-days">cohort_duration_days<a class="anchor" aria-label="anchor" href="#arg-cohort-duration-days"></a></dt>
-<dd><p>Numeric. Amount of time that each animal spends in a specific cohort (days).</p></dd>
+<dd><p>Numeric. Amount of time that each animal spends in a
+specific cohort (days). For <code>CHK</code>, suggested value for <code>FJ</code> and <code>MJ</code>
+cohorts: 3 days.</p></dd>
 
 
 <dt id="arg-offtake-rate">offtake_rate<a class="anchor" aria-label="anchor" href="#arg-offtake-rate"></a></dt>
@@ -138,7 +143,7 @@ only to <strong>female cohorts</strong> (<code>FA</code> and <code>FS</code>).</
 energy required to support gestation in mammals. Requirements are computed as a fraction
 of maintenance energy and are adjusted to reflect reproductive activity within
 the cohort:</p><ul><li><p>For <code>FA</code>, requirements are scaled by the annual parturition rate
-(<code>parturition_rate</code>) and (when applicable) by the fraction of the reproductive cycle
+(<code>reproductive_rate</code>) and (when applicable) by the fraction of the reproductive cycle
 spent in gestation
 (<code>pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)</code>).</p></li>
 <li><p>For <code>FS</code>, only a fraction of animals is assumed to reach reproductive
@@ -187,7 +192,7 @@ $$
   $$</p></li>
 </ul></li>
 <li><p><strong>SHP and GTS</strong> (IPCC 2006; 2019):
-Pregnancy energy is calculated as a litter-size-dependent fraction of
+Pregnancy energy is calculated as a offspring-per-reproductive-event-dependent fraction of
 maintenance energy (\(c_{preg}\)).</p><ul><li><p><code>FA</code>:
 $$
   \begin{aligned}
@@ -279,3 +284,4 @@ Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).</p>
 
 
   </body></html>
+

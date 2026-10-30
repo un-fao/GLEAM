@@ -44,7 +44,7 @@ run_ration_quality_module(rations_share, feed_params, show_indicator = TRUE)
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -67,8 +67,8 @@ run_ration_quality_module(rations_share, feed_params, show_indicator = TRUE)
   nondemo_productive_phase_id
 
   :   Numeric. Optional productive phase identifier for non-demographic
-      cohorts (`FN`, `MN`). When present, ration summaries are computed
-      separately by phase.
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   feed_id
 
@@ -149,7 +149,7 @@ run_ration_quality_module(rations_share, feed_params, show_indicator = TRUE)
 
   feed_ash
 
-  :   Numeric. Average ash content by feed component, calculated as a
+  :   Numeric. Average ash content by feed component, expressed as a
       fraction of the dry matter intake (g ash/100g DM).
 
   category
@@ -277,5 +277,7 @@ results <- run_ration_quality_module(
   rations_share = feed_rations_chrt_dt,
   feed_params = feed_params_dt
 )
+#> 🕒 Aggregating ration quality, please wait…
+#> ✔ Ration quality aggregation complete.
 # }
 ```

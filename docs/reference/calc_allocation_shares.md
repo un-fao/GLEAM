@@ -63,7 +63,7 @@ calc_allocation_shares(
 - egg_allocation_energy:
 
   Numeric vector. Energy required to produce all eggs during the
-  assessment period (MJ/cohort/assessment period).
+  assessment period by cohort (MJ/cohort/assessment period).
 
 ## Value
 

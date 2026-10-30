@@ -365,7 +365,7 @@ herd, non-demographic cohort and productive phase.
 | `herd_id` | Character | Unique herd identifier, repeated for each cohort |
 | `species_short` | Character | Livestock species code (see [species codes](#species-codes)) |
 | `cohort_short` | Character | Sex–age cohort code (see [cohort codes](#cohort-codes)) |
-| `cohort_duration_days` | Numeric | Time each animal spends in the cohort (days). For FN/MN, filled from herd-level phase durations when supplied |
+| `cohort_duration_days` | Numeric | Amount of time that each animal spends in a specific cohort and production phase (days). For `CHK`, suggested value for `FJ` and `MJ` cohorts: 3 days. Not required for `FN` and `MN` when phase durations are supplied in the herd table; the code fills it from the herd values, which override any cohort values. |
 | `offtake_rate` | Numeric | Annual proportion of animals removed from the herd per cohort (fraction) |
 | `death_rate` | Numeric | Death fraction: annual for demographic cohorts, per productive phase for FN/MN; required when `has_herd_structure = FALSE` |
 | `nondemo_productive_phase_id` | Numeric | Phase 1 or 2 for FN/MN; `NA` for demographic cohorts |

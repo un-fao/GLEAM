@@ -41,8 +41,8 @@ calc_metabolic_energy_req_work(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -50,13 +50,13 @@ calc_metabolic_energy_req_work(
 
   - `FJ`: juvenile females (from birth to weaning)
 
-  - `FN`: non-demographic females
-
   - `MA`: adult males (from age at first breeding)
 
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
 
   - `MN`: non-demographic males
 
@@ -64,8 +64,8 @@ calc_metabolic_energy_req_work(
 
   Numeric. Energy required for maintenance, defined as the amount of
   energy needed to keep the animal at equilibrium such that body energy
-  is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP,
-  GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+  is neither gained nor lost (MJ/head/day). Expressed as net energy for
+  CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 
 - draught_work_hours_female:
 

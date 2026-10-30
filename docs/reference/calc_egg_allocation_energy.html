@@ -61,7 +61,16 @@
 
 
 <dt id="arg-cohort-short">cohort_short<a class="anchor" aria-label="anchor" href="#arg-cohort-short"></a></dt>
-<dd><p>Character. Sex- and age-specific cohort code.</p></dd>
+<dd><p>Character. Sex-specific cohort code describing the age and/or the
+production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
+<li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
+<li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
+<li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
+<li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
+<li><p><code>MN</code>: non-demographic males</p></li>
+</ul></dd>
 
 
 <dt id="arg-egg-production-mass-cohort">egg_production_mass_cohort<a class="anchor" aria-label="anchor" href="#arg-egg-production-mass-cohort"></a></dt>
@@ -70,8 +79,9 @@ assessment period by cohort (kg/cohort/assessment period).</p></dd>
 
 
 <dt id="arg-nondemo-productive-phase-id">nondemo_productive_phase_id<a class="anchor" aria-label="anchor" href="#arg-nondemo-productive-phase-id"></a></dt>
-<dd><p>Numeric. Optional productive phase
-identifier for non-demographic cohorts.</p></dd>
+<dd><p>Numeric. Optional productive phase identifier for
+non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for phase 1
+and optionally <code>2</code> for phase 2.</p></dd>
 
 
 <dt id="arg-is-egg-producing">is_egg_producing<a class="anchor" aria-label="anchor" href="#arg-is-egg-producing"></a></dt>
@@ -124,3 +134,4 @@ laying hens and broilers. <em>Brazilian Journal of Poultry Science</em>, 6, 1-11
 
 
   </body></html>
+

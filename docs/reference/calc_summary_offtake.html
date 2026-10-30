@@ -77,7 +77,7 @@ sex–age cohort structure over time, with population size potentially growing o
 
 
 <dt id="arg-simulation-duration">simulation_duration<a class="anchor" aria-label="anchor" href="#arg-simulation-duration"></a></dt>
-<dd><p>Numeric. Length of the assessment period (days)</p></dd>
+<dd><p>Numeric. Length of the assessment period (days).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -86,10 +86,12 @@ sex–age cohort structure over time, with population size potentially growing o
 <dd><p>Numeric vector of length 6. Change in population size between the start and end of the year for each sex–age cohort (# heads) (cohorts= <code>FJ</code>, <code>FS</code>, <code>FA</code>, <code>MJ</code>, <code>MS</code>, <code>MA</code>).</p></dd>
 
 <dt>offtake_heads</dt>
-<dd><p>Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts= <code>FJ</code>, <code>FS</code>, <code>FA</code>, <code>MJ</code>, <code>MS</code>, <code>MA</code>)</p></dd>
+<dd><p>Numeric vector of length 6. Total number of animals removed
+from each cohort over the full 365-day simulation horizon (# heads/year).</p></dd>
 
 <dt>offtake_heads_assessment</dt>
-<dd><p>Numeric vector of length 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts= <code>FJ</code>, <code>FS</code>, <code>FA</code>, <code>MJ</code>, <code>MS</code>, <code>MA</code>)</p></dd>
+<dd><p>Numeric vector of length 6. Total number of animals
+removed from each cohort over the assessment period (# heads/assessment period).</p></dd>
 
 <dt>offtake_rate_to_stock_start</dt>
 <dd><p>Numeric vector of length 6. Offtake rate relative to the starting population size in each sex–age cohort (fraction) (cohorts= <code>FJ</code>, <code>FS</code>, <code>FA</code>, <code>MJ</code>, <code>MS</code>, <code>MA</code>)</p></dd>
@@ -133,3 +135,4 @@ sex–age cohort structure over time, with population size potentially growing o
 
 
   </body></html>
+

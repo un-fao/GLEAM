@@ -77,14 +77,14 @@ Supported values include:</p><ul><li><p><code>PGS</code>: pigs</p></li>
 </ul></dd>
 
 <dt>cohort_short</dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the production stage of the animals.
-Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<dd><p>Character. Sex-specific cohort code describing the age
+and/or the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
-<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
 <li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
 <li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MN</code>: non-demographic males</p></li>
 </ul></dd>
 
@@ -105,7 +105,7 @@ Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SH
 for CML.</p></dd>
 
 <dt>cohort_stock_size</dt>
-<dd><p>Numeric. Average population size for the assessed cohort (# heads).</p></dd>
+<dd><p>Numeric. Average population size of the assessed cohort (# heads).</p></dd>
 
 <dt>metabolic_energy_req_work</dt>
 <dd><p>Numeric. Energy required for work, used to estimate the energy required for draught
@@ -113,19 +113,18 @@ power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Exp
 SHP, GTS and as metabolizable energy for CML.</p></dd>
 
 <dt>nondemo_productive_phase_id</dt>
-<dd><p>Numeric. Productive phase identifier for non-demographic cohorts. Required in the
-input table and typically set to <code>NA</code> for demographic cohorts.</p></dd>
+<dd><p>Numeric. Productive phase identifier for
+non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for phase
+1 and optionally <code>2</code> for phase 2. Demographic cohorts use <code>NA</code>.</p></dd>
 
 <dt>egg_production_mass_cohort</dt>
-<dd><p>Numeric. Total egg mass output over the assessment
-period by cohort (kg/cohort/assessment period). Required in the input table and typically set to <code>0</code> for
-non-egg-producing cohorts.</p></dd>
+<dd><p>Numeric. Total egg mass produced over the assessment
+period by cohort (kg/cohort/assessment period).</p></dd>
 
 <dt>is_egg_producing</dt>
-<dd><p>Logical. Indicates whether the cohort is an egg-producing
-chicken cohort. Required in the input table. Used only for <code>CHK</code>;
-may be <code>TRUE</code> only for <code>FA</code> or for <code>FN</code> in laying phase 2,
-and should be <code>FALSE</code> otherwise.</p></dd>
+<dd><p>Logical. Cohort-level flag identifying egg-producing
+<code>CHK</code> cohorts. This can be <code>TRUE</code> only for <code>FA</code> and for
+<code>FN</code> with <code>nondemo_productive_phase_id = 2</code>.</p></dd>
 
 
 </dl></dd>
@@ -204,8 +203,8 @@ period).</p></dd>
 (MJ/cohort/assessment period).</p></dd>
 
 <dt>egg_allocation_energy</dt>
-<dd><p>Numeric. Energy required for egg production over the assessment period
-(MJ/cohort/assessment period). Returned as 0 for non-egg-producing cohorts and non-poultry species.</p></dd>
+<dd><p>Numeric. Energy required to produce all eggs during the assessment period by cohort
+(MJ/cohort/assessment period).</p></dd>
 
 
 </dl></dd>
@@ -242,7 +241,7 @@ allocation should be applied (e.g.,"ch4_enteric", "ch4_manure_pasture",
 
 <dt>commodity_name</dt>
 <dd><p>Character. List of commodity categories to which emissions may be allocated.
-List=c("None","Milk","Meat","Fibre","Work","Eggs")</p></dd>
+List = c("Other", "Milk", "Meat", "Fibre", "Work", "Eggs")</p></dd>
 
 <dt>commodity_type</dt>
 <dd><p>Character. Commodity (commodity_name) grouping, either
@@ -332,24 +331,27 @@ and Performance (LEAP) Partnership. FAO, Rome, Italy.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># \donttest{</span></span>
-<span><span class="co"># Load allocation inputs (cohort and herd-level)</span></span>
-<span><span class="va">allocation_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/allocation_input_chrt_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">allocation_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/allocation_input_hrd_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run allocation calculations</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_allocation_module</span><span class="op">(</span></span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">allocation_chrt_dt</span>,</span>
-<span>  herd_level_data <span class="op">=</span> <span class="va">allocation_hrd_dt</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co"># }</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Load allocation inputs (cohort and herd-level)</span></span></span>
+<span class="r-in"><span><span class="va">allocation_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/allocation_input_chrt_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">allocation_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/allocation_input_hrd_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run allocation calculations</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_allocation_module</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">allocation_chrt_dt</span>,</span></span>
+<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">allocation_hrd_dt</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 🕒 Computing allocation shares, please wait…</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Allocation calculation complete.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -370,3 +372,4 @@ and Performance (LEAP) Partnership. FAO, Rome, Italy.</p>
 
 
   </body></html>
+

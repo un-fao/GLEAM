@@ -22,9 +22,8 @@ calc_meat_production(
 
 - offtake_heads_assessment:
 
-  Numeric. Total number of animals removed via offtake over the
-  assessment period, aggregated to 6 sex–age cohorts (heads/assessment
-  period).
+  Numeric. Total number of animals removed from each cohort over the
+  assessment period (# heads/assessment period).
 
 - live_weight_cohort_at_slaughter:
 

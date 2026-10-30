@@ -52,8 +52,8 @@ calc_cohort_weights(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -97,9 +97,9 @@ calc_cohort_weights(
 
 - nondemo_productive_phase_id:
 
-  Numeric. Productive phase identifier for nondemographic cohorts. Takes
-  value `1` for phase 1 and optionally `2` for phase 2. Demographic
-  cohorts use `NA`.
+  Numeric. Productive phase identifier for non-demographic cohorts
+  (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2` for
+  phase 2. Demographic cohorts use `NA`.
 
 - live_weight_female_nondemographic_start:
 
@@ -123,12 +123,12 @@ calc_cohort_weights(
 
 - phase1_nondemo_fem_duration_days:
 
-  Numeric. Duration of productive phase 1 for the female nondemographic
+  Numeric. Duration of productive phase 1 for the female non-demographic
   cohort (`FN`) (days).
 
 - phase2_nondemo_fem_duration_days:
 
-  Numeric. Duration of productive phase 2 for the female nondemographic
+  Numeric. Duration of productive phase 2 for the female non-demographic
   cohort (`FN`) (days).
 
 - phase1_nondemo_mal_duration_days:
@@ -138,7 +138,7 @@ calc_cohort_weights(
 
 - phase2_nondemo_mal_duration_days:
 
-  Numeric. Duration of productive phase 2 for the male nondemographic
+  Numeric. Duration of productive phase 2 for the male non-demographic
   cohort (`MN`) (days).
 
 ## Value

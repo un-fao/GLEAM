@@ -91,9 +91,8 @@ calc_total_metabolic_energy_req(
 - metabolic_energy_req_fibre_production:
 
   Numeric. Energy required for the synthesis of fibre for SHP, GTS
-  and CML. Assumed to be 0 for other species (MJ/head/day). Expressed as
-  net energy for SHP, GTS and as metabolizable energy for CML
-  (MJ/head/day).
+  and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed
+  as net energy for SHP and GTS and as metabolizable energy for CML.
 
 - metabolic_energy_req_egg_deposition:
 
@@ -113,7 +112,7 @@ calc_total_metabolic_energy_req(
 
 Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP
 and GTS this is expressed as gross energy intake requirement (GE). For
-CML, PGS, and CHK the function returns the summed daily metabolizable
+CML, PGS and CHK the function returns the summed daily metabolizable
 energy requirement.
 
 ## Details

@@ -48,7 +48,7 @@ run_emissions_ration_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -71,8 +71,8 @@ run_emissions_ration_module(
   nondemo_productive_phase_id
 
   :   Numeric. Optional productive phase identifier for non-demographic
-      cohorts (`FN`, `MN`). When present, feed-emission summaries are
-      computed separately by phase.
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   feed_id
 
@@ -126,8 +126,8 @@ run_emissions_ration_module(
 
   :   Numeric. Carbon dioxide (CO2) emission factor of a feed component,
       representing CO2 emissions from on-field agricultural activities
-      in feed production, expressed per kilogram of dry matter intake
-      (kg CO2/kg DM).
+      in feed production, expressed per kilogram of dry matter intake (g
+      CO2/kg DM).
 
   co2_feed_luc_nopeat
 
@@ -320,5 +320,7 @@ results <- run_emissions_ration_module(
   rations_share = rations_share,
   feed_emissions = feed_emissions
 )
+#> 🕒 Aggregating feed emissions, please wait…
+#> ✔ Feed emissions aggregation complete.
 # }
 ```

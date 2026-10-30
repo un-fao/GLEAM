@@ -50,29 +50,29 @@ run_aggregation_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code. Supported values
-      include:
+  :   Character. Sex-specific cohort code describing the age and/or the
+      production stage of the animals. Supported values include:
 
-      - `FA`: adult females
+      - `FA`: adult females (from age at first parturition)
 
-      - `FS`: sub-adult females
+      - `FS`: sub-adult females (from weaning to age at first
+        parturition)
 
-      - `FJ`: juvenile females
+      - `FJ`: juvenile females (from birth to weaning)
+
+      - `MA`: adult males (from age at first breeding)
+
+      - `MS`: sub-adult males (from weaning to age at first breeding)
+
+      - `MJ`: juvenile males (from birth to weaning)
 
       - `FN`: non-demographic females
-
-      - `MA`: adult males
-
-      - `MS`: sub-adult males
-
-      - `MJ`: juvenile males
 
       - `MN`: non-demographic males
 
   cohort_stock_size
 
-  :   Numeric. Average population size for the assessed cohort (#
-      heads).
+  :   Numeric. Average population size of the assessed cohort (# heads).
 
   **Feed variables**
 
@@ -281,8 +281,7 @@ run_aggregation_module(
 
   species_short
 
-  :   Character. Code identifying the livestock species. Supported
-      values include PGS, CML, CTL, BFL, SHP, GTS
+  :   Character. Code identifying the livestock species.
 
   variable_name
 
@@ -301,7 +300,7 @@ run_aggregation_module(
   commodity_name
 
   :   Character. List of commodity categories to which emissions may be
-      allocated. List = c("None", "Milk", "Meat", "Fibre", "Work",
+      allocated. List = c("Other", "Milk", "Meat", "Fibre", "Work",
       "Eggs")
 
   commodity_type
@@ -439,5 +438,7 @@ results <- run_aggregation_module(
   simulation_duration = 365,
   global_warming_potential_set = "AR6"
 )
+#> 🕒 Aggregating results, please wait…
+#> ✔ Aggregation complete.
 # }
 ```

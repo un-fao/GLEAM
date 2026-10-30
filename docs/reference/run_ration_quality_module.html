@@ -74,8 +74,8 @@ Supported values include:</p><ul><li><p><code>PGS</code>: pigs</p></li>
 </ul></dd>
 
 <dt>cohort_short</dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the production stage
-of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<dd><p>Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
@@ -86,7 +86,9 @@ of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult f
 </ul></dd>
 
 <dt>nondemo_productive_phase_id</dt>
-<dd><p>Numeric. Optional productive phase identifier for non-demographic cohorts (<code>FN</code>, <code>MN</code>). When present, ration summaries are computed separately by phase.</p></dd>
+<dd><p>Numeric. Optional productive phase identifier
+for non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for
+phase 1 and optionally <code>2</code> for phase 2.</p></dd>
 
 <dt>feed_id</dt>
 <dd><p>Character. Unique identifier for the feed component, used
@@ -152,8 +154,8 @@ that is excreted in urine for ruminants (fraction).</p></dd>
 that is excreted in urine for pigs (fraction).</p></dd>
 
 <dt>feed_ash</dt>
-<dd><p>Numeric. Average ash content by feed component, calculated
-as a fraction of the dry matter intake (g ash/100g DM).</p></dd>
+<dd><p>Numeric. Average ash content by feed component, expressed as
+a fraction of the dry matter intake (g ash/100g DM).</p></dd>
 
 <dt>category</dt>
 <dd><p>Character. Feed category (optional). If provided, it should be
@@ -240,24 +242,27 @@ group, and within <code>nondemo_productive_phase_id</code> when that column is p
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># \donttest{</span></span>
-<span><span class="co"># Load feed ration inputs (cohort-level shares and feed parameters)</span></span>
-<span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/feed_rations_share_chrt.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/feed_quality.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run ration quality calculations</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_ration_quality_module</span><span class="op">(</span></span>
-<span>  rations_share <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span>
-<span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co"># }</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Load feed ration inputs (cohort-level shares and feed parameters)</span></span></span>
+<span class="r-in"><span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/feed_rations_share_chrt.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/feed_quality.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run ration quality calculations</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_ration_quality_module</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  rations_share <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span></span>
+<span class="r-in"><span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 🕒 Aggregating ration quality, please wait…</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Ration quality aggregation complete.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -278,3 +283,4 @@ group, and within <code>nondemo_productive_phase_id</code> when that column is p
 
 
   </body></html>
+

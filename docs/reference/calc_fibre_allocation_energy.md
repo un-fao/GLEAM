@@ -39,8 +39,7 @@ calc_fibre_allocation_energy(
 
 - cohort_stock_size:
 
-  Numeric. Average population size in each of the 6 sex–age cohorts (#
-  heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
+  Numeric. Average population size of the assessed cohort (# heads).
 
 - metabolic_energy_req_fibre_production:
 

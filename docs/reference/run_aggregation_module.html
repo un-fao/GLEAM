@@ -77,18 +77,19 @@ Warming Potential (GWP-100) factors.</p>
 </ul></dd>
 
 <dt>cohort_short</dt>
-<dd><p>Character. Sex- and age-specific cohort code. Supported values include:</p><ul><li><p><code>FA</code>: adult females</p></li>
-<li><p><code>FS</code>: sub-adult females</p></li>
-<li><p><code>FJ</code>: juvenile females</p></li>
+<dd><p>Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
+<li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
+<li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
+<li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
+<li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
 <li><p><code>FN</code>: non-demographic females</p></li>
-<li><p><code>MA</code>: adult males</p></li>
-<li><p><code>MS</code>: sub-adult males</p></li>
-<li><p><code>MJ</code>: juvenile males</p></li>
 <li><p><code>MN</code>: non-demographic males</p></li>
 </ul></dd>
 
 <dt>cohort_stock_size</dt>
-<dd><p>Numeric. Average population size for the assessed cohort (# heads).</p></dd>
+<dd><p>Numeric. Average population size of the assessed cohort (# heads).</p></dd>
 
 <dt><strong>Feed variables</strong></dt>
 <dd>
@@ -213,8 +214,7 @@ Warming Potential (GWP-100) factors.</p>
 to the same herd.</p></dd>
 
 <dt>species_short</dt>
-<dd><p>Character. Code identifying the livestock species.
-Supported values include PGS, CML, CTL, BFL, SHP, GTS</p></dd>
+<dd><p>Character. Code identifying the livestock species.</p></dd>
 
 <dt>variable_name</dt>
 <dd><p>Character. Names of emission variables to which
@@ -230,7 +230,7 @@ allocation should be applied (e.g., "ch4_enteric", "ch4_manure_pasture",
 
 <dt>commodity_name</dt>
 <dd><p>Character. List of commodity categories to which emissions may be allocated.
-List = c("None", "Milk", "Meat", "Fibre", "Work", "Eggs")</p></dd>
+List = c("Other", "Milk", "Meat", "Fibre", "Work", "Eggs")</p></dd>
 
 <dt>commodity_type</dt>
 <dd><p>Character. Commodity (commodity_name) grouping, either
@@ -316,26 +316,29 @@ feed, and nitrogen balance variables are scaled using cohort stock size and simu
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># \donttest{</span></span>
-<span><span class="co"># Load aggregation inputs (cohort-level data and herd-level allocation shares)</span></span>
-<span><span class="va">aggregation_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/aggregation_input_chrt_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">allocation_long</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/aggregation_allocation_input_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run aggregation</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_aggregation_module</span><span class="op">(</span></span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">aggregation_chrt_dt</span>,</span>
-<span>  allocation_herd_long <span class="op">=</span> <span class="va">allocation_long</span>,</span>
-<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
-<span>  global_warming_potential_set <span class="op">=</span> <span class="st">"AR6"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co"># }</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Load aggregation inputs (cohort-level data and herd-level allocation shares)</span></span></span>
+<span class="r-in"><span><span class="va">aggregation_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/aggregation_input_chrt_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">allocation_long</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/aggregation_allocation_input_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run aggregation</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_aggregation_module</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">aggregation_chrt_dt</span>,</span></span>
+<span class="r-in"><span>  allocation_herd_long <span class="op">=</span> <span class="va">allocation_long</span>,</span></span>
+<span class="r-in"><span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span></span>
+<span class="r-in"><span>  global_warming_potential_set <span class="op">=</span> <span class="st">"AR6"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 🕒 Aggregating results, please wait…</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Aggregation complete.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -356,3 +359,4 @@ feed, and nitrogen balance variables are scaled using cohort stock size and simu
 
 
   </body></html>
+

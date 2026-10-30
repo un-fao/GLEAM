@@ -60,9 +60,16 @@ potential final weight, slaughter weight, and the offtake rate.</p>
 
 
 <dl><dt id="arg-cohort-short">cohort_short<a class="anchor" aria-label="anchor" href="#arg-cohort-short"></a></dt>
-<dd><p>Character. Sex- and age-specific cohort code. Supported
-values include <code>FA</code>, <code>FS</code>, <code>FJ</code>, <code>MA</code>, <code>MS</code>,
-<code>MJ</code>, <code>FN</code>, and <code>MN</code>.</p></dd>
+<dd><p>Character. Sex-specific cohort code describing the age and/or the
+production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
+<li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
+<li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
+<li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
+<li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
+<li><p><code>MN</code>: non-demographic males</p></li>
+</ul></dd>
 
 
 <dt id="arg-live-weight-cohort-initial">live_weight_cohort_initial<a class="anchor" aria-label="anchor" href="#arg-live-weight-cohort-initial"></a></dt>
@@ -134,3 +141,4 @@ $$live\_weight\_cohort\_average =
 
 
   </body></html>
+

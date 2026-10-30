@@ -25,8 +25,8 @@ calc_nondemo_start_sizes(
 - total_nondemo_cycle_starts_to_distribute:
 
   Integer. Total number of cycle starts within the fixed 365-day time
-  horizon for the assessed nondemographic cohort (`FN` or `MN`) (cycle
-  starts / simulated period).
+  horizon for the assessed non-demographic cohort (`FN` or `MN`) (#
+  cycle starts).
 
 ## Value
 

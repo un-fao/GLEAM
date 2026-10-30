@@ -6,8 +6,7 @@ requirements, manure emissions, enteric fermentation, nitrogren balance,
 feed emissions, allocation, and aggregation.  
   
 **Common identifiers**: Several input tables share the following
-identifier columns. Their supported values are listed once here and
-referenced throughout.  
+identifier columns. Their supported values are listed below.  
   
 **`species_short`** — Character. Species code:
 
@@ -25,7 +24,9 @@ referenced throughout.
 
 - `CHK`: Chickens
 
-**`cohort_short`** — Character. Sex- and age-specific cohort code:
+**`cohort_short`** — Character. Sex-specific cohort code describing the
+age and/or the production stage of the animals. Supported values
+include:
 
 - `FA`: adult females (from age at first parturition)
 
@@ -94,8 +95,8 @@ run_gleam(
 
   herd_id
 
-  :   Character. Unique herd identifier, repeated for each cohort within
-      the same herd.
+  :   Character. Unique identifier for the herd, repeated for each
+      cohort belonging to the same herd.
 
   species_short
 
@@ -103,12 +104,33 @@ run_gleam(
 
   cohort_short
 
-  :   Character. Cohort code (see Common identifiers).
+  :   Character. Sex-specific cohort code describing the age and/or the
+      production stage of the animals. Supported values include:
+
+      - `FA`: adult females (from age at first parturition)
+
+      - `FS`: sub-adult females (from weaning to age at first
+        parturition)
+
+      - `FJ`: juvenile females (from birth to weaning)
+
+      - `MA`: adult males (from age at first breeding)
+
+      - `MS`: sub-adult males (from weaning to age at first breeding)
+
+      - `MJ`: juvenile males (from birth to weaning)
+
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
 
   cohort_duration_days
 
-  :   Numeric. Time each animal spends in the cohort (days). For `CHK`,
-      suggested value for `FJ` and `MJ` cohorts: 3 days.
+  :   Numeric. Amount of time that each animal spends in a specific
+      cohort and production phase (days). For `CHK`, suggested value for
+      `FJ` and `MJ` cohorts: 3 days. Not required for `FN` and `MN` when
+      phase durations are supplied in the herd table; the code fills it
+      from the herd values, which override any cohort values.
 
   offtake_rate
 
@@ -130,33 +152,34 @@ run_gleam(
 
   death_rate
 
-  :   Numeric. Annual fraction of deaths per cohort (fraction). Required
-      for the herd-simulation step.
+  :   Numeric. Fraction of animals dying in the assessed cohort, over
+      one year for demographic cohorts or over the productive phase for
+      non-demographic cohorts (fraction).
 
   nondemo_productive_phase_id
 
-  :   Numeric. For non-demographic rows only (`FN`, `MN`), productive
-      phase identifier within the non-demographic cycle. Allowed values
-      are `1` and optionally `2`.
+  :   Numeric. Productive phase identifier for non-demographic cohorts
+      (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2` for
+      phase 2. Demographic cohorts use `NA`.
 
   Additional columns when `has_herd_structure = TRUE`:
 
   cohort_stock_size
 
-  :   Numeric. Average population size in each cohort (heads).
+  :   Numeric. Average population size of the assessed cohort (# heads).
 
   offtake_heads_assessment
 
-  :   Numeric. Total animals removed via offtake over the assessment
-      period per cohort (heads/assessment period).
+  :   Numeric. Total number of animals removed from each cohort over the
+      assessment period (# heads/assessment period).
 
   Optional column (both cases):
 
   is_egg_producing
 
-  :   Logical. Indicates whether the cohort is a food-egg-producing
-      chicken cohort. Used only for `CHK`; may be `TRUE` only for `FA`
-      or for `FN` in laying phase 2.
+  :   Logical. Cohort-level flag identifying egg-producing `CHK`
+      cohorts. This can be `TRUE` only for `FA` and for `FN` with
+      `nondemo_productive_phase_id = 2`.
 
   ch4_mitigation_factor
 
@@ -172,7 +195,7 @@ run_gleam(
 
   herd_id
 
-  :   Character. Unique herd identifier.
+  :   Character. Unique identifier for the herd.
 
   species_short
 
@@ -204,7 +227,8 @@ run_gleam(
 
   age_first_parturition
 
-  :   Numeric. Age at first parturition (days).
+  :   Numeric. Age at first parturition for female breeding animals
+      (days).
 
   lactating_females_fraction
 
@@ -261,25 +285,26 @@ run_gleam(
 
   death_rate_juvenile
 
-  :   Numeric. Annual death fraction for juvenile cohorts (FJ, MJ)
-      (fraction).
+  :   Numeric. Fraction of deaths in a herd over a year for juvenile
+      cohorts (i.e. FJ and MJ), (fraction).
 
   lactation_duration
 
   :   Numeric. Lactation period length (days). Required for PGS.
 
-  parturition_rate
+  reproductive_rate
 
-  :   Numeric. Average annual number of parturitions per female animal
-      (# parturitions/adult female/year). For `CHK`, this corresponds to
-      eggs laid for reproduction by `FA` only, regardless of its
-      food-egg flag.
+  :   Numeric. Average annual number of parturitions per reproductive
+      female (# parturitions/reproductive female/year). For chickens,
+      annual number of eggs laid for reproduction per breeding hen (#
+      eggs/hen/year).
 
-  litter_size
+  offspring_per_reproductive_event
 
-  :   Numeric. Average number of offspring produced per parturition (#
-      offspring/parturition). For `CHK`, this can be interpreted as
-      offspring produced per reproductive event.
+  :   Numeric. Average number of offspring born per parturition (#
+      offspring/parturition). For chickens, hatchability of eggs laid
+      for reproduction, calculated as the number of chicks hatched
+      divided by the number of eggs laid for reproduction (fraction).
 
   average_annual_temperature
 
@@ -287,7 +312,7 @@ run_gleam(
 
   egg_average_weight
 
-  :   Numeric. Average egg weight (kg/egg). Used for `CHK`.
+  :   Numeric. Average egg weight (kg/egg).
 
   egg_human_consumption_yield
 
@@ -321,7 +346,8 @@ run_gleam(
 
   carcass_dressing_fraction
 
-  :   Numeric. Carcass weight to live weight ratio (fraction).
+  :   Numeric. Ratio of a slaughtered animal's carcass weight to its
+      live weight (fraction).
 
   bone_free_meat_fraction
 
@@ -345,7 +371,8 @@ run_gleam(
 
   herd_size_total
 
-  :   Numeric. Total population at start of year, all cohorts (heads).
+  :   Numeric. Total demographic population size at the start of the
+      year, including all cohorts (# heads)
 
   prop_nondemo_fem_juv
 
@@ -364,15 +391,13 @@ run_gleam(
   rest_between_nondemo_cycles_duration
 
   :   Numeric. Duration of the resting or empty phase between
-      non-demographic cycles (days). Required when the non-demographic
-      herd module is run.
+      non-demographic cycles (days). Use `0` when there is no rest
+      between cycles.
 
   phase1_nondemo_fem_duration_days
 
   :   Numeric. Duration of productive phase 1 for the female
-      non-demographic cohort (`FN`) (days). Required when the
-      non-demographic herd module is run with herd-level phase
-      durations.
+      non-demographic cohort (`FN`) (days).
 
   phase2_nondemo_fem_duration_days
 
@@ -382,9 +407,7 @@ run_gleam(
   phase1_nondemo_mal_duration_days
 
   :   Numeric. Duration of productive phase 1 for the male
-      non-demographic cohort (`MN`) (days). Required when the
-      non-demographic herd module is run with herd-level phase
-      durations.
+      nondemographic cohort (`MN`) (days).
 
   phase2_nondemo_mal_duration_days
 
@@ -401,7 +424,8 @@ run_gleam(
 
   herd_id
 
-  :   Character. Unique herd identifier.
+  :   Character. Unique identifier for the herd, repeated for each
+      cohort belonging to the same herd.
 
   species_short
 
@@ -409,12 +433,30 @@ run_gleam(
 
   cohort_short
 
-  :   Character. Cohort code (see Common identifiers).
+  :   Character. Sex-specific cohort code describing the age and/or the
+      production stage of the animals. Supported values include:
+
+      - `FA`: adult females (from age at first parturition)
+
+      - `FS`: sub-adult females (from weaning to age at first
+        parturition)
+
+      - `FJ`: juvenile females (from birth to weaning)
+
+      - `MA`: adult males (from age at first breeding)
+
+      - `MS`: sub-adult males (from weaning to age at first breeding)
+
+      - `MJ`: juvenile males (from birth to weaning)
+
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
 
   feed_id
 
-  :   Character. Unique feed component identifier, used as join key with
-      feed parameter tables.
+  :   Character. Unique identifier for the feed component, used to join
+      feed ration data with feed parameter tables.
 
   feed_name
 
@@ -433,35 +475,43 @@ run_gleam(
 
   feed_id
 
-  :   Character. Unique feed component identifier.
+  :   Character. Unique identifier for the feed component, used to join
+      feed ration data with feed parameter tables.
 
   feed_gross_energy
 
-  :   Numeric. Gross energy: total chemical energy upon complete
-      combustion (MJ/kg DM).
+  :   Numeric. Gross energy content of a feed component, representing
+      the total chemical energy released upon complete combustion of the
+      feed (MJ/kg DM).
 
   feed_digestible_energy_ruminant
 
-  :   Numeric. Digestible energy for ruminants: energy absorbed after
-      faecal losses (MJ/kg DM).
+  :   Numeric. Digestible energy content of a feed component for
+      ruminants, representing the energy absorbed by the animal after
+      fecal losses (MJ/kg DM).
 
   feed_digestible_energy_pigs
 
-  :   Numeric. Digestible energy for pigs (MJ/kg DM).
+  :   Numeric. Digestible energy content of a feed component for pigs,
+      representing the energy absorbed by the animal after fecal losses
+      (MJ/kg DM).
 
   feed_metabolizable_energy_ruminant
 
-  :   Numeric. Metabolizable energy for ruminants: digestible energy
-      minus urinary and gaseous losses (MJ/kg DM).
+  :   Numeric. Metabolizable energy content of a feed component for
+      ruminants, representing digestible energy minus energy losses in
+      urine and gaseous products of digestion (MJ/kg DM).
 
   feed_metabolizable_energy_pigs
 
-  :   Numeric. Metabolizable energy for pigs (MJ/kg DM).
+  :   Numeric. Metabolizable energy content of a feed component for
+      pigs, representing digestible energy minus energy losses in urine
+      and gaseous products of digestion (MJ/kg DM).
 
   feed_metabolizable_energy_chicken
 
-  :   Numeric. Metabolizable energy for chickens: digestible energy
-      minus uric acid and gaseous losses (MJ/kg DM).
+  :   Numeric. Metabolizable energy content of a feed component for
+      chickens (MJ/kg DM).
 
   feed_nitrogen_content
 
@@ -479,7 +529,8 @@ run_gleam(
 
   feed_ash
 
-  :   Numeric. Ash content as a fraction of dry matter (g ash/100 g DM).
+  :   Numeric. Average ash content by feed component, expressed as a
+      fraction of the dry matter intake (g ash/100g DM).
 
   category
 
@@ -493,12 +544,13 @@ run_gleam(
 
 - feed_emissions:
 
-  data.table. Emission factors per feed component. All emission factors
-  are expressed per kg of feed dry matter intake. Required columns:
+  data.table. Emission factors of individual feed components with the
+  following data requirement:
 
   feed_id
 
-  :   Character. Unique feed component identifier.
+  :   Character. Unique identifier for the feed component, used to join
+      feed ration data with feed parameter tables.
 
   feed_name
 
@@ -550,11 +602,30 @@ run_gleam(
 
   herd_id
 
-  :   Character. Unique herd identifier.
+  :   Character. Unique identifier for the herd, repeated for each
+      cohort belonging to the same herd.
 
   cohort_short
 
-  :   Character. Cohort code (see Common identifiers).
+  :   Character. Sex-specific cohort code describing the age and/or the
+      production stage of the animals. Supported values include:
+
+      - `FA`: adult females (from age at first parturition)
+
+      - `FS`: sub-adult females (from weaning to age at first
+        parturition)
+
+      - `FJ`: juvenile females (from birth to weaning)
+
+      - `MA`: adult males (from age at first breeding)
+
+      - `MS`: sub-adult males (from weaning to age at first breeding)
+
+      - `MJ`: juvenile males (from birth to weaning)
+
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
 
   manure_management_system
 
@@ -625,8 +696,8 @@ run_gleam(
 
 - simulation_duration:
 
-  Numeric. Assessment period length (days). Used by the herd-simulation
-  step (when `has_herd_structure = FALSE`) through
+  Numeric. Length of the assessment period (days). Used by the
+  herd-simulation step (when `has_herd_structure = FALSE`) through
   [`run_all_herd_module`](https://un-fao.github.io/GLEAM/reference/run_all_herd_module.md),
   and by the production and aggregation steps. Default: `365`.
 
@@ -666,20 +737,17 @@ A named list with four elements:
 
   cohort_stock_size
 
-  :   Numeric. Average population size for the assessed cohort (#
-      heads).
+  :   Numeric. Average population size of the assessed cohort (# heads).
 
   offtake_heads
 
-  :   Numeric. Total number of animals removed via offtake over the
-      fixed 365-day herd-simulation horizon for the assessed cohort (#
-      heads).
+  :   Numeric. Total number of animals removed from each cohort over the
+      full 365-day simulation horizon (# heads/year).
 
   offtake_heads_assessment
 
-  :   Numeric. Total number of animals removed via offtake over the
-      assessment period for the assessed cohort (# heads / assessment
-      period).
+  :   Numeric. Total number of animals removed from each cohort over the
+      assessment period (# heads/assessment period).
 
   ### Weight variables
 
@@ -765,21 +833,21 @@ A named list with four elements:
   :   Numeric. Energy required for maintenance, defined as the amount of
       energy needed to keep the animal at equilibrium such that body
       energy is neither gained nor lost (MJ/head/day). Expressed as net
-      energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML
-      and PGS.
+      energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML,
+      PGS, and CHK.
 
   metabolic_energy_req_activity
 
   :   Numeric. Energy required for activity, defined as the amount of
       energy needed to support animal movement and physical activity
       (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and
-      as metabolizable energy for CML and PGS.
+      as metabolizable energy for CML, PGS, and CHK.
 
   metabolic_energy_req_growth
 
   :   Numeric. Energy required for growth (i.e., weight gain)
       (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and
-      as metabolizable energy for CML and PGS.
+      as metabolizable energy for CML, PGS, and CHK.
 
   metabolic_energy_req_lactation
 
@@ -798,8 +866,8 @@ A named list with four elements:
 
   :   Numeric. Energy required for the synthesis of fibre for SHP, GTS
       and CML. Assumed to be 0 for other species. (MJ/head/day).
-      Expressed as net energy for CTL, BFL, SHP, GTS and as
-      metabolizable energy for CML and PGS (MJ/head/day).
+      Expressed as net energy for SHP and GTS and as metabolizable
+      energy for CML.
 
   metabolic_energy_req_pregnancy
 
@@ -821,8 +889,8 @@ A named list with four elements:
 
   :   Numeric. Total daily energy requirement (MJ/head/day). For CTL,
       BFL, SHP and GTS this is expressed as gross energy intake
-      requirement (GE). For CML and PGS the function returns the summed
-      daily metabolizable energy requirement.
+      requirement (GE). For CML, PGS and CHK the function returns the
+      summed daily metabolizable energy requirement.
 
   ration_intake
 
@@ -1106,20 +1174,17 @@ A named list with four elements:
   egg_production_number_cohort
 
   :   Numeric. Total egg output over the assessment period by cohort
-      (eggs/cohort/assessment period). Returned as 0 for
-      non-egg-producing cohorts.
+      (eggs/cohort/assessment period).
 
   egg_production_mass_cohort
 
-  :   Numeric. Total egg mass output over the assessment period by
-      cohort (kg/cohort/assessment period). Returned as 0 for
-      non-egg-producing cohorts.
+  :   Numeric. Total egg mass produced over the assessment period by
+      cohort (kg/cohort/assessment period).
 
   egg_production_protein_cohort
 
   :   Numeric. Total egg protein output over the assessment period by
-      cohort (kg protein/cohort/assessment period). Returned as 0 for
-      non-egg-producing cohorts.
+      cohort (kg protein/cohort/assessment period).
 
   ### Allocation variables
 
@@ -1150,9 +1215,8 @@ A named list with four elements:
 
   egg_allocation_energy
 
-  :   Numeric. Energy required for egg production over the assessment
-      period (MJ/cohort/assessment period). Returned as 0 for
-      non-egg-producing cohorts and non-poultry species.
+  :   Numeric. Energy required to produce all eggs during the assessment
+      period by cohort (MJ/cohort/assessment period).
 
 - herd_level_results:
 
@@ -1170,19 +1234,22 @@ A named list with four elements:
   cohort_stock_fem_annual_nondemo
 
   :   Numeric. Annual number of female animals entering the
-      non-demographic pathway (`FN`) over the simulated period (# heads
-      / simulated period).
+      non-demographic pathway (`FN`) over the 365-time horizon (#
+      heads). When both demographic and non-demographic modules are run,
+      this is derived internally from the demographic calculations.
 
   cohort_stock_mal_annual_nondemo
 
   :   Numeric. Annual number of male animals entering the
-      non-demographic pathway (`MN`) over the simulated period (# heads
-      / simulated period).
+      non-demographic pathway (`MN`) over the 365-time horizon (#
+      heads). When both demographic and non-demographic modules are run,
+      this is derived internally from the demographic calculations.
 
   rest_between_nondemo_cycles_duration
 
   :   Numeric. Duration of the resting or empty phase between
-      non-demographic cycles (days).
+      non-demographic cycles (days). Use `0` when there is no rest
+      between cycles.
 
   total_nondemo_fem_duration_days
 
@@ -1204,7 +1271,7 @@ A named list with four elements:
 
   herd_id
 
-  :   Character. Herd identifier.
+  :   Character. Unique identifier for the herd.
 
   species_short
 
@@ -1217,12 +1284,14 @@ A named list with four elements:
 
   commodity_name
 
-  :   Character. Commodity category: one of `"None"`, `"Milk"`,
-      `"Meat"`, `"Fibre"`, `"Work"`, `"Eggs"`.
+  :   Character. List of commodity categories to which emissions may be
+      allocated. List = c("Other", "Milk", "Meat", "Fibre", "Work",
+      "Eggs")
 
   commodity_type
 
-  :   Character. `"Edible"` or `"Non-Edible"`.
+  :   Character. Commodity (commodity_name) grouping, either `"Edible"`
+      or `"Non-Edible"`.
 
   allocation_share
 

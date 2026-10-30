@@ -40,19 +40,28 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_fecundity_rates</span><span class="op">(</span><span class="va">parturition_rate</span>, <span class="va">litter_size</span>, <span class="va">birth_fraction_female</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_fecundity_rates</span><span class="op">(</span></span>
+<span>  <span class="va">reproductive_rate</span>,</span>
+<span>  <span class="va">offspring_per_reproductive_event</span>,</span>
+<span>  <span class="va">birth_fraction_female</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-parturition-rate">parturition_rate<a class="anchor" aria-label="anchor" href="#arg-parturition-rate"></a></dt>
-<dd><p>Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.</p></dd>
+<dl><dt id="arg-reproductive-rate">reproductive_rate<a class="anchor" aria-label="anchor" href="#arg-reproductive-rate"></a></dt>
+<dd><p>Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens, annual
+number of eggs laid for reproduction per breeding hen (# eggs/hen/year).</p></dd>
 
 
-<dt id="arg-litter-size">litter_size<a class="anchor" aria-label="anchor" href="#arg-litter-size"></a></dt>
-<dd><p>Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.</p></dd>
+<dt id="arg-offspring-per-reproductive-event">offspring_per_reproductive_event<a class="anchor" aria-label="anchor" href="#arg-offspring-per-reproductive-event"></a></dt>
+<dd><p>Numeric. Average number of offspring born per
+parturition (# offspring/parturition). For chickens, hatchability of eggs laid for
+reproduction, calculated as the number of chicks hatched divided by the number of
+eggs laid for reproduction (fraction).</p></dd>
 
 
 <dt id="arg-birth-fraction-female">birth_fraction_female<a class="anchor" aria-label="anchor" href="#arg-birth-fraction-female"></a></dt>
@@ -77,8 +86,15 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calc_fecundity_rates</span><span class="op">(</span>parturition_rate <span class="op">=</span> <span class="fl">0.8</span>, litter_size <span class="op">=</span> <span class="fl">2</span>, birth_fraction_female <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">calc_fecundity_rates</span><span class="op">(</span>reproductive_rate <span class="op">=</span> <span class="fl">0.8</span>, offspring_per_reproductive_event <span class="op">=</span> <span class="fl">2</span>, birth_fraction_female <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $fecundity_female</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.002191781</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $fecundity_male</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.002191781</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -99,3 +115,4 @@
 
 
   </body></html>
+

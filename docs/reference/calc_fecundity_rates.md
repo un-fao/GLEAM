@@ -6,25 +6,27 @@ adult female.
 ## Usage
 
 ``` r
-calc_fecundity_rates(parturition_rate, litter_size, birth_fraction_female)
+calc_fecundity_rates(
+  reproductive_rate,
+  offspring_per_reproductive_event,
+  birth_fraction_female
+)
 ```
 
 ## Arguments
 
-- parturition_rate:
+- reproductive_rate:
 
-  Numeric. Average annual number of parturitions per female animal (#
-  parturitions/adult female/year). A herd-level reproductive performance
-  indicator calculated as the total number of parturitions (deliveries)
-  occurring during a year divided by the number of adult females
-  potentially able to give birth during that year.
+  Numeric. Average annual number of parturitions per reproductive female
+  (# parturitions/reproductive female/year). For chickens, annual number
+  of eggs laid for reproduction per breeding hen (# eggs/hen/year).
 
-- litter_size:
+- offspring_per_reproductive_event:
 
   Numeric. Average number of offspring born per parturition (#
-  offspring/parturition). This value can be calculated as the total
-  number of offspring born divided by the total number of parturitions
-  during the year.
+  offspring/parturition). For chickens, hatchability of eggs laid for
+  reproduction, calculated as the number of chicks hatched divided by
+  the number of eggs laid for reproduction (fraction).
 
 - birth_fraction_female:
 
@@ -57,5 +59,11 @@ This function is part of the
 ## Examples
 
 ``` r
-calc_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)
+calc_fecundity_rates(reproductive_rate = 0.8, offspring_per_reproductive_event = 2, birth_fraction_female = 0.5)
+#> $fecundity_female
+#> [1] 0.002191781
+#> 
+#> $fecundity_male
+#> [1] 0.002191781
+#> 
 ```

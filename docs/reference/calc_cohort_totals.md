@@ -30,8 +30,7 @@ calc_cohort_totals(
 
 - cohort_stock_size:
 
-  Numeric. Average population size in each of the 6 sex–age cohorts (#
-  heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
+  Numeric. Average population size of the assessed cohort (# heads).
 
 - ration_intake:
 

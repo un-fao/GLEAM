@@ -15,12 +15,12 @@ calc_metabolic_energy_req_lactation(
   milk_fat_fraction = NA_real_,
   non_productive_duration = NA_real_,
   pregnancy_duration = NA_real_,
-  litter_size = NA_real_,
+  offspring_per_reproductive_event = NA_real_,
   death_rate_juvenile = NA_real_,
   live_weight_at_birth = NA_real_,
   live_weight_at_weaning = NA_real_,
   lactation_duration = NA_real_,
-  parturition_rate = NA_real_
+  reproductive_rate = NA_real_
 )
 ```
 
@@ -47,8 +47,8 @@ calc_metabolic_energy_req_lactation(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -56,13 +56,13 @@ calc_metabolic_energy_req_lactation(
 
   - `FJ`: juvenile females (from birth to weaning)
 
-  - `FN`: non-demographic females
-
   - `MA`: adult males (from age at first breeding)
 
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
 
   - `MN`: non-demographic males
 
@@ -97,12 +97,12 @@ calc_metabolic_energy_req_lactation(
 
   Numeric. Duration of pregnancy period (days).
 
-- litter_size:
+- offspring_per_reproductive_event:
 
   Numeric. Average number of offspring born per parturition (#
-  offspring/parturition). This value can be calculated as the total
-  number of offspring born divided by the total number of parturitions
-  during the year.
+  offspring/parturition). For chickens, hatchability of eggs laid for
+  reproduction, calculated as the number of chicks hatched divided by
+  the number of eggs laid for reproduction (fraction).
 
 - death_rate_juvenile:
 
@@ -123,13 +123,11 @@ calc_metabolic_energy_req_lactation(
   days during which the animal is lactating (days). Required only for
   PGS.
 
-- parturition_rate:
+- reproductive_rate:
 
-  Numeric. Average annual number of parturitions per female animal (#
-  parturitions/adult female/year). A herd-level reproductive performance
-  indicator calculated as the total number of parturitions (deliveries)
-  occurring during a year divided by the number of adult females
-  potentially able to give birth during that year.
+  Numeric. Average annual number of parturitions per reproductive female
+  (# parturitions/reproductive female/year). For chickens, annual number
+  of eggs laid for reproduction per breeding hen (# eggs/hen/year).
 
 ## Value
 
@@ -147,7 +145,7 @@ cost per unit of milk.
 Requirements are calculated only for cohort = `FA` (adult females) and
 are scaled by the proportion of lactating animals
 (`lactating_females_fraction`) or reproducing females
-(`parturition_rate`) within the cohort.
+(`reproductive_rate`) within the cohort.
 
 **Species-specific approach:**
 
@@ -190,7 +188,8 @@ weaning**:
 (weaning\\weight - birth\\weight)}{365} \$\$
 
 For **SHP** and **GTS**, `milk_for_offspring` is multiplied by
-`litter_size` to account for multiple offspring per birth.
+`offspring_per_reproductive_event` to account for multiple offspring per
+birth.
 
 **PGS** (NRC, 1998):
 

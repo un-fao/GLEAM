@@ -59,25 +59,26 @@ by applying the IPCC Tier 2 energy partitioning functions.</p>
 <dd><p>Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.</p></dd>
 
 <dt>cohort_short</dt>
-<dd><p>Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<dd><p>Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
-<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
 <li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
 <li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
 <li><p><code>MN</code>: non-demographic males</p></li>
 </ul></dd>
 
 <dt>nondemo_productive_phase_id</dt>
 <dd><p>Numeric. Optional productive phase identifier
-for non-demographic cohorts (<code>FN</code>, <code>MN</code>). When present, energy
-requirements are computed and retained separately by phase.</p></dd>
+for non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for
+phase 1 and optionally <code>2</code> for phase 2.</p></dd>
 
 <dt>is_egg_producing</dt>
-<dd><p>Logical. Indicates whether the cohort is a food-egg-producing
-chicken cohort. Used only for <code>CHK</code>; may be <code>TRUE</code> only for
-<code>FA</code> or for <code>FN</code> in laying phase 2.</p></dd>
+<dd><p>Logical. Cohort-level flag identifying egg-producing
+<code>CHK</code> cohorts. This can be <code>TRUE</code> only for <code>FA</code> and for <code>FN</code>
+with <code>nondemo_productive_phase_id = 2</code>.</p></dd>
 
 <dt>live_weight_cohort_average</dt>
 <dd><p>Numeric. Average live weight over the cohort stage. Computed by accounting for the share of offtaken animals within the cohort, using their slaughter weight, and the potential final weight of animals that remain in the cohort (kg).</p></dd>
@@ -152,8 +153,11 @@ Supported values include:</p><ul><li><p><code>PGS</code>: pigs</p></li>
 <dt>pregnancy_duration</dt>
 <dd><p>Numeric. Duration of pregnancy period (days).</p></dd>
 
-<dt>litter_size</dt>
-<dd><p>Numeric. Average number of offspring born per parturition (# offspring/parturition). For <code>CHK</code>, this can be interpreted as offspring produced per reproductive event.</p></dd>
+<dt>offspring_per_reproductive_event</dt>
+<dd><p>Numeric. Average number of offspring born
+per parturition (# offspring/parturition). For chickens, hatchability of eggs
+laid for reproduction, calculated as the number of chicks hatched divided by the
+number of eggs laid for reproduction (fraction).</p></dd>
 
 <dt>death_rate_juvenile</dt>
 <dd><p>Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).</p></dd>
@@ -167,14 +171,16 @@ Supported values include:</p><ul><li><p><code>PGS</code>: pigs</p></li>
 <dt>lactation_duration</dt>
 <dd><p>Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.</p></dd>
 
-<dt>parturition_rate</dt>
-<dd><p>Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). For <code>CHK</code>, this corresponds to eggs laid for reproduction by <code>FA</code> only, regardless of its food-egg flag.</p></dd>
+<dt>reproductive_rate</dt>
+<dd><p>Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens,
+annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).</p></dd>
 
 <dt>average_annual_temperature</dt>
-<dd><p>Numeric. Average annual temperature (degrees C). Used for <code>CHK</code>.</p></dd>
+<dd><p>Numeric. Average annual ambient temperature (degrees C). Used for <code>CHK</code>.</p></dd>
 
 <dt>egg_average_weight</dt>
-<dd><p>Numeric. Average egg weight (kg/egg). Used for <code>CHK</code>.</p></dd>
+<dd><p>Numeric. Average egg weight (kg/egg).</p></dd>
 
 <dt>egg_human_consumption_yield</dt>
 <dd><p>Numeric. Number of eggs produced for human consumption in one year by hen (eggs/year/animal). Used for <code>CHK</code>.</p></dd>
@@ -208,15 +214,21 @@ Defaults to <code>TRUE</code>.</p></dd>
     <p>A <code>data.table</code> with the original cohort-level input columns plus the following
 new variables. If <code>nondemo_productive_phase_id</code> is present in the input,
 the returned table preserves phase-specific rows for <code>FN</code> and <code>MN</code>:</p><dl><dt>metabolic_energy_req_maintenance</dt>
-<dd><p>Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).</p></dd>
+<dd><p>Numeric. Energy required for maintenance,
+defined as the amount of energy needed to keep the animal at equilibrium such
+that body energy is neither gained nor lost (MJ/head/day). Expressed as net
+energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.</p></dd>
 
 <dt>metabolic_energy_req_activity</dt>
-<dd><p>Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.</p></dd>
+<dd><p>Numeric. Energy required for activity,
+defined as the amount of energy needed to support animal movement and physical
+activity (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as
+metabolizable energy for CML, PGS, and CHK.</p></dd>
 
 <dt>metabolic_energy_req_growth</dt>
-<dd><p>Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.</p></dd>
+<dd><p>Numeric. Energy required for growth (i.e.,
+weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as
+metabolizable energy for CML, PGS, and CHK.</p></dd>
 
 <dt>metabolic_energy_req_lactation</dt>
 <dd><p>Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.</p></dd>
@@ -226,8 +238,10 @@ Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for C
 Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.</p></dd>
 
 <dt>metabolic_energy_req_fibre_production</dt>
-<dd><p>Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
-Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).</p></dd>
+<dd><p>Numeric. Energy required for the
+synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species.
+(MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable
+energy for CML.</p></dd>
 
 <dt>metabolic_energy_req_pregnancy</dt>
 <dd><p>Numeric. Energy required for pregnancy for pregnant females (MJ/head/day).
@@ -240,8 +254,10 @@ Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for C
 <dd><p>Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).</p></dd>
 
 <dt>metabolic_energy_req_total</dt>
-<dd><p>Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
-For CML and PGS the function returns the summed daily metabolizable energy requirement.</p></dd>
+<dd><p>Numeric. Total daily energy requirement
+(MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake
+requirement (GE). For CML, PGS and CHK the function returns the summed daily
+metabolizable energy requirement.</p></dd>
 
 <dt>ration_intake</dt>
 <dd><p>Numeric. Average daily dry matter intake of feed (kg DM/head/day).</p></dd>
@@ -288,24 +304,27 @@ animals' metabolic energy requirements and dry matter intake and performs the fo
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># \donttest{</span></span>
-<span><span class="co"># Load metabolic energy requirements inputs (cohort and herd-level)</span></span>
-<span><span class="va">metabolic_energy_req_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/metabolic_energy_req_input_chrt_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">metabolic_energy_req_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_modules_examples/metabolic_energy_req_input_hrd_data.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run metabolic energy requirement and rations calculations</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_metabolic_energy_req_module</span><span class="op">(</span></span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">metabolic_energy_req_chrt_dt</span>,</span>
-<span>  herd_level_data <span class="op">=</span> <span class="va">metabolic_energy_req_hrd_dt</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co"># }</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># Load metabolic energy requirements inputs (cohort and herd-level)</span></span></span>
+<span class="r-in"><span><span class="va">metabolic_energy_req_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/metabolic_energy_req_input_chrt_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">metabolic_energy_req_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_modules_examples/metabolic_energy_req_input_hrd_data.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run metabolic energy requirement and rations calculations</span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_metabolic_energy_req_module</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">metabolic_energy_req_chrt_dt</span>,</span></span>
+<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">metabolic_energy_req_hrd_dt</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 🕒 Calculating metabolic energy requirements and ration, please wait…</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Metabolic energy requirements calculation complete.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -326,3 +345,4 @@ animals' metabolic energy requirements and dry matter intake and performs the fo
 
 
   </body></html>
+

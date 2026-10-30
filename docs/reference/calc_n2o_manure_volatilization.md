@@ -197,4 +197,16 @@ calc_n2o_manure_volatilization(
     nitrogen_fracgas = 0.45
   )
 )
+#> $n2o_manure_pasture_vol
+#> [1] 0.0128898
+#> 
+#> $n2o_manure_burned_vol
+#> [1] 0
+#> 
+#> $n2o_manure_other_vol
+#> [1] 0.0518562
+#> 
+#> $n2o_manure_all_noburn_vol
+#> [1] 0.064746
+#> 
 ```

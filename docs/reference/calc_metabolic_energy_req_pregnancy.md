@@ -11,8 +11,8 @@ calc_metabolic_energy_req_pregnancy(
   species_short,
   cohort_short,
   metabolic_energy_req_maintenance = NA_real_,
-  parturition_rate = NA_real_,
-  litter_size = NA_real_,
+  reproductive_rate = NA_real_,
+  offspring_per_reproductive_event = NA_real_,
   pregnancy_duration = NA_real_,
   non_productive_duration = NA_real_,
   lactation_duration = NA_real_,
@@ -44,8 +44,8 @@ calc_metabolic_energy_req_pregnancy(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -53,13 +53,13 @@ calc_metabolic_energy_req_pregnancy(
 
   - `FJ`: juvenile females (from birth to weaning)
 
-  - `FN`: non-demographic females
-
   - `MA`: adult males (from age at first breeding)
 
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
 
   - `MN`: non-demographic males
 
@@ -67,23 +67,21 @@ calc_metabolic_energy_req_pregnancy(
 
   Numeric. Energy required for maintenance, defined as the amount of
   energy needed to keep the animal at equilibrium such that body energy
-  is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP,
-  GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+  is neither gained nor lost (MJ/head/day). Expressed as net energy for
+  CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 
-- parturition_rate:
+- reproductive_rate:
 
-  Numeric. Average annual number of parturitions per female animal (#
-  parturitions/adult female/year). A herd-level reproductive performance
-  indicator calculated as the total number of parturitions (deliveries)
-  occurring during a year divided by the number of adult females
-  potentially able to give birth during that year.
+  Numeric. Average annual number of parturitions per reproductive female
+  (# parturitions/reproductive female/year). For chickens, annual number
+  of eggs laid for reproduction per breeding hen (# eggs/hen/year).
 
-- litter_size:
+- offspring_per_reproductive_event:
 
   Numeric. Average number of offspring born per parturition (#
-  offspring/parturition). This value can be calculated as the total
-  number of offspring born divided by the total number of parturitions
-  during the year.
+  offspring/parturition). For chickens, hatchability of eggs laid for
+  reproduction, calculated as the number of chicks hatched divided by
+  the number of eggs laid for reproduction (fraction).
 
 - pregnancy_duration:
 
@@ -104,7 +102,7 @@ calc_metabolic_energy_req_pregnancy(
 - cohort_duration_days:
 
   Numeric. Amount of time that each animal spends in a specific cohort
-  (days).
+  (days). For `CHK`, suggested value for `FJ` and `MJ` cohorts: 3 days.
 
 - offtake_rate:
 
@@ -128,7 +126,7 @@ are computed as a fraction of maintenance energy and are adjusted to
 reflect reproductive activity within the cohort:
 
 - For `FA`, requirements are scaled by the annual parturition rate
-  (`parturition_rate`) and (when applicable) by the fraction of the
+  (`reproductive_rate`) and (when applicable) by the fraction of the
   reproductive cycle spent in gestation
   (`pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)`).
 
@@ -176,7 +174,8 @@ where
     offtake\\rate) \$\$
 
 - **SHP and GTS** (IPCC 2006; 2019): Pregnancy energy is calculated as a
-  litter-size-dependent fraction of maintenance energy (\\c\_{preg}\\).
+  offspring-per-reproductive-event-dependent fraction of maintenance
+  energy (\\c\_{preg}\\).
 
   - `FA`: \$\$ \begin{aligned} metabolic\\energy\\req\\pregnancy &=
     metabolic\\energy\\req\\maintenance \times c\_{preg} \times

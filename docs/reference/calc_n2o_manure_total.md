@@ -156,4 +156,22 @@ calc_n2o_manure_total(
   n2o_manure_burned_direct = 0,
   n2o_manure_other_direct = 0.01033
 )
+#> $n2o_manure_pasture_indirect
+#> [1] 0.0141
+#> 
+#> $n2o_manure_burned_indirect
+#> [1] 0
+#> 
+#> $n2o_manure_other_indirect
+#> [1] 0.05227
+#> 
+#> $n2o_manure_pasture_total
+#> [1] 0.0231
+#> 
+#> $n2o_manure_burned_total
+#> [1] 0
+#> 
+#> $n2o_manure_other_total
+#> [1] 0.0626
+#> 
 ```

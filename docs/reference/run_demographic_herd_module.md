@@ -38,7 +38,7 @@ run_demographic_herd_module(
 
   `cohort_short`
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -57,7 +57,8 @@ run_demographic_herd_module(
   `cohort_duration_days`
 
   :   Numeric vector of length 6. Amount of time that each animal spends
-      in a specific cohort (days).
+      in a specific cohort (days). For `CHK`, suggested value for `FJ`
+      and `MJ` cohorts: 3 days.
 
   `offtake_rate`
 
@@ -66,8 +67,8 @@ run_demographic_herd_module(
 
   `death_rate`
 
-  :   Numeric vector of length 6. Fraction of deaths in a herd over a
-      year for each sex-age cohort (fraction).
+  :   Numeric vector of length 6. Fraction of animals dying in the
+      assessed cohort over one year for demographic cohorts (fraction).
 
 - herd_level_data:
 
@@ -78,21 +79,19 @@ run_demographic_herd_module(
 
   :   Character. Unique identifier for the herd.
 
-  `parturition_rate`
+  `reproductive_rate`
 
-  :   Numeric. Average annual number of parturitions per female animal
-      (# parturitions/adult female/year). A herd-level reproductive
-      performance indicator calculated as the total number of
-      parturitions (deliveries) occurring during a year divided by the
-      number of adult females potentially able to give birth during that
-      year.
+  :   Numeric. Average annual number of parturitions per reproductive
+      female (# parturitions/reproductive female/year). For chickens,
+      annual number of eggs laid for reproduction per breeding hen (#
+      eggs/hen/year).
 
-  `litter_size`
+  `offspring_per_reproductive_event`
 
   :   Numeric. Average number of offspring born per parturition (#
-      offspring/parturition). This value can be calculated as the total
-      number of offspring born divided by the total number of
-      parturitions during the year.
+      offspring/parturition). For chickens, hatchability of eggs laid
+      for reproduction, calculated as the number of chicks hatched
+      divided by the number of eggs laid for reproduction (fraction).
 
   `birth_fraction_female`
 
@@ -103,8 +102,8 @@ run_demographic_herd_module(
 
   `herd_size_total`
 
-  :   Numeric. Total population size at the start of the year, including
-      all cohorts (# heads).
+  :   Numeric. Total demographic population size at the start of the
+      year, including all cohorts (# heads)
 
   `prop_nondemo_mal_juv`
 
@@ -160,41 +159,38 @@ A named list with two elements:
 
   `cohort_stock_size_unscaled`
 
-  :   Numeric. Average population size for the assessed cohort, not
-      scaled to the total livestock population (herd_size_total), (#
-      heads). This corresponds to `cohort_stock_average` returned by
-      [`calc_projected_population_size`](https://un-fao.github.io/GLEAM/reference/calc_projected_population_size.md)
+  :   Numeric. Average population size of the assessed cohort, not
+      scaled to the total livestock population (herd_size_total) (#
+      heads).
 
   `cohort_stock_size_scaled`
 
-  :   Numeric. Average population size for the assessed cohort, scaled
-      to the total livestock population (herd_size_total), (# heads).
-      This corresponds to `cohort_stock_start` returned by
-      [`calc_projected_population_size`](https://un-fao.github.io/GLEAM/reference/calc_projected_population_size.md)
+  :   Numeric. Average population size of the assessed cohort, scaled to
+      the total livestock population (herd_size_total) (# heads).
 
   `offtake_heads_unscaled`
 
-  :   Numeric. Total number of animals removed from the cohort over the
+  :   Numeric. Total number of animals removed from each cohort over the
       full 365-day simulation horizon, not scaled to the cohort
-      population at the start of the assessment period (# heads).
+      population at the start of the assessment (# heads).
 
   `offtake_heads_assessment_unscaled`
 
-  :   Numeric. Total number of animals removed from the cohort over
-      'simulation_duration', not scaled to the cohort population at the
-      start of the assessment period (# heads/assessment period).
+  :   Numeric. Total number of animals removed from each cohort over the
+      assessment period, not scaled to the cohort population at the
+      start of the assessment (# heads/assessment period).
 
   `offtake_heads_scaled`
 
-  :   Numeric. Total number of animals removed from the cohort over the
+  :   Numeric. Total number of animals removed from each cohort over the
       full 365-day simulation horizon, scaled to the cohort population
-      at the start of the assessment period (# heads).
+      at the start of the assessment (# heads).
 
   `offtake_heads_assessment_scaled`
 
-  :   Numeric. Total number of animals removed from the cohort over
-      'simulation_duration', scaled to the cohort population at the
-      start of the assessment period (# heads/assessment period).
+  :   Numeric. Total number of animals removed from each cohort over the
+      assessment period, scaled to the cohort population at the start of
+      the assessment (# heads/assessment period).
 
   `cohort_stock_annual_nondemographic`
 
@@ -249,7 +245,8 @@ Daily fecundity rates are computed in
 
 Herd dynamics result from:
 
-- births (driven by `parturition_rate` and `litter_size`)
+- births (driven by `reproductive_rate` and
+  `offspring_per_reproductive_event`)
 
 - natural deaths (driven by `death_rate`)
 
@@ -381,5 +378,7 @@ results <- run_demographic_herd_module(
   simulation_duration = 365,
   show_indicator = TRUE
 )
+#> 🕒 Simulating the herd structure, please wait…
+#> ✔ Demographic herd simulation complete.
 # }
 ```

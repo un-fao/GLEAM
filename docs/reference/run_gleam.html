@@ -6,7 +6,7 @@ manure emissions, enteric fermentation, nitrogren balance, feed emissions, alloc
 
 Common identifiers:
 Several input tables share the following identifier columns. Their supported
-values are listed once here and referenced throughout.
+values are listed below.
 
 
 species_short — Character. Species code:
@@ -17,7 +17,8 @@ GTS: Goats
 PGS: Pigs
 CML: Camels
 CHK: Chickens
-cohort_short — Character. Sex- and age-specific cohort code:
+cohort_short — Character. Sex-specific cohort code describing the
+age and/or the production stage of the animals. Supported values include:
 FA: adult females (from age at first parturition)
 FS: sub-adult females (from weaning to age at first parturition)
 FJ: juvenile females (from birth to weaning)
@@ -34,7 +35,7 @@ manure emissions, enteric fermentation, nitrogren balance, feed emissions, alloc
 
 Common identifiers:
 Several input tables share the following identifier columns. Their supported
-values are listed once here and referenced throughout.
+values are listed below.
 
 
 species_short — Character. Species code:
@@ -45,7 +46,8 @@ GTS: Goats
 PGS: Pigs
 CML: Camels
 CHK: Chickens
-cohort_short — Character. Sex- and age-specific cohort code:
+cohort_short — Character. Sex-specific cohort code describing the
+age and/or the production stage of the animals. Supported values include:
 FA: adult females (from age at first parturition)
 FS: sub-adult females (from weaning to age at first parturition)
 FJ: juvenile females (from birth to weaning)
@@ -96,7 +98,7 @@ modules: herd (optional), weights, ration quality, energy requirements,
 manure emissions, enteric fermentation, nitrogren balance, feed emissions, allocation, and aggregation.
 <br><br><strong>Common identifiers</strong>:
 Several input tables share the following identifier columns. Their supported
-values are listed once here and referenced throughout.
+values are listed below.
 <br><br><strong><code>species_short</code></strong> — Character. Species code:</p><ul><li><p><code>CTL</code>: Cattle</p></li>
 <li><p><code>BFL</code>: Buffalo</p></li>
 <li><p><code>SHP</code>: Sheep</p></li>
@@ -104,7 +106,8 @@ values are listed once here and referenced throughout.
 <li><p><code>PGS</code>: Pigs</p></li>
 <li><p><code>CML</code>: Camels</p></li>
 <li><p><code>CHK</code>: Chickens</p></li>
-</ul><p><strong><code>cohort_short</code></strong> — Character. Sex- and age-specific cohort code:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+</ul><p><strong><code>cohort_short</code></strong> — Character. Sex-specific cohort code describing the
+age and/or the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
 <li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
 <li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
 <li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
@@ -162,19 +165,30 @@ in the herd-structure generation step via <code><a href="run_all_herd_module.htm
 <dt id="arg-cohort-level-data">cohort_level_data<a class="anchor" aria-label="anchor" href="#arg-cohort-level-data"></a></dt>
 <dd><p>data.table. Cohort-level master input table.
 Required columns:</p><dl><dt>herd_id</dt>
-<dd><p>Character. Unique herd identifier, repeated for each
-cohort within the same herd.</p></dd>
+<dd><p>Character. Unique identifier for the herd,
+repeated for each cohort belonging to the same herd.</p></dd>
 
 <dt>species_short</dt>
 <dd><p>Character. Species code (see Common identifiers).</p></dd>
 
 <dt>cohort_short</dt>
-<dd><p>Character. Cohort code (see Common identifiers).</p></dd>
+<dd><p>Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
+<li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
+<li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
+<li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
+<li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
+<li><p><code>MN</code>: non-demographic males</p></li>
+</ul></dd>
 
 <dt>cohort_duration_days</dt>
-<dd><p>Numeric. Time each animal spends in the
-cohort (days). For <code>CHK</code>, suggested value for <code>FJ</code> and
-<code>MJ</code> cohorts: 3 days.</p></dd>
+<dd><p>Numeric. Amount of time that each animal spends in a
+specific cohort and production phase (days). For <code>CHK</code>, suggested value
+for <code>FJ</code> and <code>MJ</code> cohorts: 3 days. Not required for <code>FN</code> and
+<code>MN</code> when phase durations are supplied in the herd table; the code fills
+it from the herd values, which override any cohort values.</p></dd>
 
 <dt>offtake_rate</dt>
 <dd><p>Numeric. Annual proportion of animals removed from
@@ -192,30 +206,28 @@ over uneven terrain (fraction).</p></dd>
 
 
 </dl><p>Additional columns when <code>has_herd_structure = FALSE</code>:</p><dl><dt>death_rate</dt>
-<dd><p>Numeric. Annual fraction of deaths per cohort
-(fraction). Required for the herd-simulation step.</p></dd>
+<dd><p>Numeric. Fraction of animals dying in the assessed cohort,
+over one year for demographic cohorts or over the productive phase for
+non-demographic cohorts (fraction).</p></dd>
 
 <dt>nondemo_productive_phase_id</dt>
-<dd><p>Numeric. For non-demographic rows
-only (<code>FN</code>, <code>MN</code>), productive phase identifier within the
-non-demographic cycle. Allowed values are <code>1</code> and optionally
-<code>2</code>.</p></dd>
+<dd><p>Numeric. Productive phase identifier for
+non-demographic cohorts (<code>FN</code>, <code>MN</code>). Takes value <code>1</code> for phase
+1 and optionally <code>2</code> for phase 2. Demographic cohorts use <code>NA</code>.</p></dd>
 
 
 </dl><p>Additional columns when <code>has_herd_structure = TRUE</code>:</p><dl><dt>cohort_stock_size</dt>
-<dd><p>Numeric. Average population size in each cohort
-(heads).</p></dd>
+<dd><p>Numeric. Average population size of the assessed cohort (# heads).</p></dd>
 
 <dt>offtake_heads_assessment</dt>
-<dd><p>Numeric. Total animals removed via
-offtake over the assessment period per cohort (heads/assessment
-period).</p></dd>
+<dd><p>Numeric. Total number of animals removed from
+each cohort over the assessment period (# heads/assessment period).</p></dd>
 
 
 </dl><p>Optional column (both cases):</p><dl><dt>is_egg_producing</dt>
-<dd><p>Logical. Indicates whether the cohort is a food-egg-producing
-chicken cohort. Used only for <code>CHK</code>; may be <code>TRUE</code> only for
-<code>FA</code> or for <code>FN</code> in laying phase 2.</p></dd>
+<dd><p>Logical. Cohort-level flag identifying egg-producing
+<code>CHK</code> cohorts. This can be <code>TRUE</code> only for <code>FA</code> and for
+<code>FN</code> with <code>nondemo_productive_phase_id = 2</code>.</p></dd>
 
 <dt>ch4_mitigation_factor</dt>
 <dd><p>Numeric. Multiplicative factor applied to
@@ -231,7 +243,7 @@ methane inhibitors.</p></dd>
 <dt id="arg-herd-level-data">herd_level_data<a class="anchor" aria-label="anchor" href="#arg-herd-level-data"></a></dt>
 <dd><p>data.table. Herd-level master input table (one row per
 <code>herd_id</code>). Required columns:</p><dl><dt>herd_id</dt>
-<dd><p>Character. Unique herd identifier.</p></dd>
+<dd><p>Character. Unique identifier for the herd.</p></dd>
 
 <dt>species_short</dt>
 <dd><p>Character. Species code (see Common identifiers).</p></dd>
@@ -257,7 +269,7 @@ slaughter weight (kg).</p></dd>
 weight (kg).</p></dd>
 
 <dt>age_first_parturition</dt>
-<dd><p>Numeric. Age at first parturition (days).</p></dd>
+<dd><p>Numeric. Age at first parturition for female breeding animals (days).</p></dd>
 
 <dt>lactating_females_fraction</dt>
 <dd><p>Numeric. Proportion of adult females
@@ -303,31 +315,30 @@ function (pregnancy/lactation) (days). Required for PGS.</p></dd>
 <dd><p>Numeric. Pregnancy duration (days).</p></dd>
 
 <dt>death_rate_juvenile</dt>
-<dd><p>Numeric. Annual death fraction for juvenile
-cohorts (FJ, MJ) (fraction).</p></dd>
+<dd><p>Numeric. Fraction of deaths in a herd over a year
+for juvenile cohorts (i.e. FJ and MJ), (fraction).</p></dd>
 
 <dt>lactation_duration</dt>
 <dd><p>Numeric. Lactation period length (days).
 Required for PGS.</p></dd>
 
-<dt>parturition_rate</dt>
-<dd><p>Numeric. Average annual number of parturitions
-per female animal (# parturitions/adult female/year). For <code>CHK</code>,
-this corresponds to eggs laid for reproduction by <code>FA</code> only,
-regardless of its food-egg flag.</p></dd>
+<dt>reproductive_rate</dt>
+<dd><p>Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens,
+annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).</p></dd>
 
-<dt>litter_size</dt>
-<dd><p>Numeric. Average number of offspring produced per
-parturition (# offspring/parturition). For <code>CHK</code>, this can be
-interpreted as offspring produced per reproductive event.</p></dd>
+<dt>offspring_per_reproductive_event</dt>
+<dd><p>Numeric. Average number of offspring born
+per parturition (# offspring/parturition). For chickens, hatchability of eggs
+laid for reproduction, calculated as the number of chicks hatched divided by
+the number of eggs laid for reproduction (fraction).</p></dd>
 
 <dt>average_annual_temperature</dt>
 <dd><p>Numeric. Average annual temperature
 (degrees C). Used for <code>CHK</code>.</p></dd>
 
 <dt>egg_average_weight</dt>
-<dd><p>Numeric. Average egg weight (kg/egg). Used for
-<code>CHK</code>.</p></dd>
+<dd><p>Numeric. Average egg weight (kg/egg).</p></dd>
 
 <dt>egg_human_consumption_yield</dt>
 <dd><p>Numeric. Number of eggs produced for
@@ -355,8 +366,8 @@ draught work (fraction). Required for CTL, BFL, CML.</p></dd>
 cashmere, mohair) (kg/head/year). Required for CML, SHP, GTS.</p></dd>
 
 <dt>carcass_dressing_fraction</dt>
-<dd><p>Numeric. Carcass weight to live weight
-ratio (fraction).</p></dd>
+<dd><p>Numeric. Ratio of a slaughtered animal's
+carcass weight to its live weight (fraction).</p></dd>
 
 <dt>bone_free_meat_fraction</dt>
 <dd><p>Numeric. Bone-free meat to carcass weight
@@ -376,8 +387,8 @@ ratio (fraction).</p></dd>
 female (fraction).</p></dd>
 
 <dt>herd_size_total</dt>
-<dd><p>Numeric. Total population at start of year, all
-cohorts (heads).</p></dd>
+<dd><p>Numeric. Total demographic population size at the start of
+the year, including all cohorts (# heads)</p></dd>
 
 <dt>prop_nondemo_fem_juv</dt>
 <dd><p>Numeric. Fraction of female juveniles
@@ -392,25 +403,21 @@ next age class (fraction). Required when the demographic herd module is
 run.</p></dd>
 
 <dt>rest_between_nondemo_cycles_duration</dt>
-<dd><p>Numeric. Duration of the
-resting or empty phase between non-demographic cycles (days). Required
-when the non-demographic herd module is run.</p></dd>
+<dd><p>Numeric. Duration of the resting or
+empty phase between non-demographic cycles (days). Use <code>0</code> when there is
+no rest between cycles.</p></dd>
 
 <dt>phase1_nondemo_fem_duration_days</dt>
-<dd><p>Numeric. Duration of productive
-phase 1 for the female non-demographic cohort (<code>FN</code>) (days). Required
-when the non-demographic herd module is run with herd-level phase
-durations.</p></dd>
+<dd><p>Numeric. Duration of productive phase 1
+for the female non-demographic cohort (<code>FN</code>) (days).</p></dd>
 
 <dt>phase2_nondemo_fem_duration_days</dt>
 <dd><p>Numeric. Duration of productive
 phase 2 for the female non-demographic cohort (<code>FN</code>) (days).</p></dd>
 
 <dt>phase1_nondemo_mal_duration_days</dt>
-<dd><p>Numeric. Duration of productive
-phase 1 for the male non-demographic cohort (<code>MN</code>) (days). Required
-when the non-demographic herd module is run with herd-level phase
-durations.</p></dd>
+<dd><p>Numeric. Duration of productive phase 1
+for the male nondemographic cohort (<code>MN</code>) (days).</p></dd>
 
 <dt>phase2_nondemo_mal_duration_days</dt>
 <dd><p>Numeric. Duration of productive
@@ -424,17 +431,27 @@ phase 2 for the male non-demographic cohort (<code>MN</code>) (days).</p></dd>
 <dd><p>data.table. Cohort-level feed ration shares, also used by
 <code><a href="run_ration_quality_module.html">run_ration_quality_module</a></code> and
 <code><a href="run_emissions_ration_module.html">run_emissions_ration_module</a></code>. Required columns:</p><dl><dt>herd_id</dt>
-<dd><p>Character. Unique herd identifier.</p></dd>
+<dd><p>Character. Unique identifier for the herd,
+repeated for each cohort belonging to the same herd.</p></dd>
 
 <dt>species_short</dt>
 <dd><p>Character. Species code (see Common identifiers).</p></dd>
 
 <dt>cohort_short</dt>
-<dd><p>Character. Cohort code (see Common identifiers).</p></dd>
+<dd><p>Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
+<li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
+<li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
+<li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
+<li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
+<li><p><code>MN</code>: non-demographic males</p></li>
+</ul></dd>
 
 <dt>feed_id</dt>
-<dd><p>Character. Unique feed component identifier, used as join
-key with feed parameter tables.</p></dd>
+<dd><p>Character. Unique identifier for the feed component, used
+to join feed ration data with feed parameter tables.</p></dd>
 
 <dt>feed_name</dt>
 <dd><p>Character. Optional. Human-readable feed name; should
@@ -451,33 +468,37 @@ Must sum to 1 within each herd_id \(\times\) cohort combination.</p></dd>
 
 <dt id="arg-feed-params">feed_params<a class="anchor" aria-label="anchor" href="#arg-feed-params"></a></dt>
 <dd><p>data.table. Feed nutritional parameters. Required columns:</p><dl><dt>feed_id</dt>
-<dd><p>Character. Unique feed component identifier.</p></dd>
+<dd><p>Character. Unique identifier for the feed component, used
+to join feed ration data with feed parameter tables.</p></dd>
 
 <dt>feed_gross_energy</dt>
-<dd><p>Numeric. Gross energy: total chemical energy
-upon complete combustion (MJ/kg DM).</p></dd>
+<dd><p>Numeric. Gross energy content of a feed component,
+representing the total chemical energy released upon complete combustion of
+the feed (MJ/kg DM).</p></dd>
 
 <dt>feed_digestible_energy_ruminant</dt>
-<dd><p>Numeric. Digestible energy for
-ruminants: energy absorbed after faecal losses (MJ/kg DM).</p></dd>
+<dd><p>Numeric. Digestible energy content of
+a feed component for ruminants, representing the energy absorbed by the animal
+after fecal losses (MJ/kg DM).</p></dd>
 
 <dt>feed_digestible_energy_pigs</dt>
-<dd><p>Numeric. Digestible energy for pigs
-(MJ/kg DM).</p></dd>
+<dd><p>Numeric. Digestible energy content of a
+feed component for pigs, representing the energy absorbed by the animal after
+fecal losses (MJ/kg DM).</p></dd>
 
 <dt>feed_metabolizable_energy_ruminant</dt>
 <dd><p>Numeric. Metabolizable energy
-for ruminants: digestible energy minus urinary and gaseous losses
-(MJ/kg DM).</p></dd>
+content of a feed component for ruminants, representing digestible energy minus
+energy losses in urine and gaseous products of digestion (MJ/kg DM).</p></dd>
 
 <dt>feed_metabolizable_energy_pigs</dt>
-<dd><p>Numeric. Metabolizable energy for
-pigs (MJ/kg DM).</p></dd>
+<dd><p>Numeric. Metabolizable energy content
+of a feed component for pigs, representing digestible energy minus energy losses
+in urine and gaseous products of digestion (MJ/kg DM).</p></dd>
 
 <dt>feed_metabolizable_energy_chicken</dt>
 <dd><p>Numeric. Metabolizable energy
-for chickens: digestible energy minus uric acid and gaseous losses
-(MJ/kg DM).</p></dd>
+content of a feed component for chickens (MJ/kg DM).</p></dd>
 
 <dt>feed_nitrogen_content</dt>
 <dd><p>Numeric. Nitrogen content (kg N/kg DM).</p></dd>
@@ -491,8 +512,8 @@ excreted in urine for ruminants (fraction).</p></dd>
 excreted in urine for pigs (fraction).</p></dd>
 
 <dt>feed_ash</dt>
-<dd><p>Numeric. Ash content as a fraction of dry matter
-(g ash/100 g DM).</p></dd>
+<dd><p>Numeric. Average ash content by feed component, expressed as
+a fraction of the dry matter intake (g ash/100g DM).</p></dd>
 
 <dt>category</dt>
 <dd><p>Character. Optional. Feed category; should be used
@@ -507,10 +528,10 @@ match <code>feed_id</code> uniquely if provided.</p></dd>
 
 
 <dt id="arg-feed-emissions">feed_emissions<a class="anchor" aria-label="anchor" href="#arg-feed-emissions"></a></dt>
-<dd><p>data.table. Emission factors per feed component.
-All emission factors are expressed per kg of feed dry matter intake.
-Required columns:</p><dl><dt>feed_id</dt>
-<dd><p>Character. Unique feed component identifier.</p></dd>
+<dd><p>data.table. Emission factors of individual feed components with the
+following data requirement:</p><dl><dt>feed_id</dt>
+<dd><p>Character. Unique identifier for the feed component, used
+to join feed ration data with feed parameter tables.</p></dd>
 
 <dt>feed_name</dt>
 <dd><p>Character. Optional. Human-readable feed name.</p></dd>
@@ -559,10 +580,20 @@ decomposition (g N2O/kg DM).</p></dd>
 <dd><p>data.table. Cohort-level manure
 management system fractions passed to
 <code><a href="run_emissions_manure_module.html">run_emissions_manure_module</a></code>. Required columns:</p><dl><dt>herd_id</dt>
-<dd><p>Character. Unique herd identifier.</p></dd>
+<dd><p>Character. Unique identifier for the herd,
+repeated for each cohort belonging to the same herd.</p></dd>
 
 <dt>cohort_short</dt>
-<dd><p>Character. Cohort code (see Common identifiers).</p></dd>
+<dd><p>Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:</p><ul><li><p><code>FA</code>: adult females (from age at first parturition)</p></li>
+<li><p><code>FS</code>: sub-adult females (from weaning to age at first parturition)</p></li>
+<li><p><code>FJ</code>: juvenile females (from birth to weaning)</p></li>
+<li><p><code>MA</code>: adult males (from age at first breeding)</p></li>
+<li><p><code>MS</code>: sub-adult males (from weaning to age at first breeding)</p></li>
+<li><p><code>MJ</code>: juvenile males (from birth to weaning)</p></li>
+<li><p><code>FN</code>: non-demographic females</p></li>
+<li><p><code>MN</code>: non-demographic males</p></li>
+</ul></dd>
 
 <dt>manure_management_system</dt>
 <dd><p>Character. Manure management system name.
@@ -630,7 +661,7 @@ leaching and runoff (0–1). See IPCC Table 10.22 (2006, 2019).</p></dd>
 
 
 <dt id="arg-simulation-duration">simulation_duration<a class="anchor" aria-label="anchor" href="#arg-simulation-duration"></a></dt>
-<dd><p>Numeric. Assessment period length (days). Used by
+<dd><p>Numeric. Length of the assessment period (days). Used by
 the herd-simulation step (when <code>has_herd_structure = FALSE</code>) through
 <code><a href="run_all_herd_module.html">run_all_herd_module</a></code>, and by the production and aggregation
 steps. Default: <code>365</code>.</p></dd>
@@ -662,13 +693,15 @@ original input columns plus all variables generated across the pipeline.
 Calculated variables are grouped below by module.</p><div class="section">
 <h3 id="demographic-herd-simulation">Demographic herd simulation<a class="anchor" aria-label="anchor" href="#demographic-herd-simulation"></a></h3>
 <p>Computed when <code>has_herd_structure = FALSE</code>:</p><dl><dt>cohort_stock_size</dt>
-<dd><p>Numeric. Average population size for the assessed cohort (# heads).</p></dd>
+<dd><p>Numeric. Average population size of the assessed cohort (# heads).</p></dd>
 
 <dt>offtake_heads</dt>
-<dd><p>Numeric. Total number of animals removed via offtake over the fixed 365-day herd-simulation horizon for the assessed cohort (# heads).</p></dd>
+<dd><p>Numeric. Total number of animals removed from each cohort
+over the full 365-day simulation horizon (# heads/year).</p></dd>
 
 <dt>offtake_heads_assessment</dt>
-<dd><p>Numeric. Total number of animals removed via offtake over the assessment period for the assessed cohort (# heads / assessment period).</p></dd>
+<dd><p>Numeric. Total number of animals removed from
+each cohort over the assessment period (# heads/assessment period).</p></dd>
 
 
 </dl></div>
@@ -724,13 +757,22 @@ Calculated variables are grouped below by module.</p><div class="section">
 <div class="section">
 <h3 id="energy-requirement-variables">Energy requirement variables<a class="anchor" aria-label="anchor" href="#energy-requirement-variables"></a></h3>
 <p>Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS unless stated otherwise.</p><dl><dt>metabolic_energy_req_maintenance</dt>
-<dd><p>Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.</p></dd>
+<dd><p>Numeric. Energy required for
+maintenance, defined as the amount of energy needed to keep the animal at
+equilibrium such that body energy is neither gained nor lost (MJ/head/day).
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
+CML, PGS, and CHK.</p></dd>
 
 <dt>metabolic_energy_req_activity</dt>
-<dd><p>Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.</p></dd>
+<dd><p>Numeric. Energy required for activity,
+defined as the amount of energy needed to support animal movement and physical
+activity (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as
+metabolizable energy for CML, PGS, and CHK.</p></dd>
 
 <dt>metabolic_energy_req_growth</dt>
-<dd><p>Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.</p></dd>
+<dd><p>Numeric. Energy required for growth (i.e.,
+weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and
+as metabolizable energy for CML, PGS, and CHK.</p></dd>
 
 <dt>metabolic_energy_req_lactation</dt>
 <dd><p>Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.</p></dd>
@@ -739,7 +781,10 @@ Calculated variables are grouped below by module.</p><div class="section">
 <dd><p>Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day). Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.</p></dd>
 
 <dt>metabolic_energy_req_fibre_production</dt>
-<dd><p>Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).</p></dd>
+<dd><p>Numeric. Energy required for the
+synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species.
+(MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable
+energy for CML.</p></dd>
 
 <dt>metabolic_energy_req_pregnancy</dt>
 <dd><p>Numeric. Energy required for pregnancy for pregnant females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.</p></dd>
@@ -751,7 +796,10 @@ Calculated variables are grouped below by module.</p><div class="section">
 <dd><p>Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).</p></dd>
 
 <dt>metabolic_energy_req_total</dt>
-<dd><p>Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). For CML and PGS the function returns the summed daily metabolizable energy requirement.</p></dd>
+<dd><p>Numeric. Total daily energy requirement
+(MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy
+intake requirement (GE). For CML, PGS and CHK the function returns the summed
+daily metabolizable energy requirement.</p></dd>
 
 <dt>ration_intake</dt>
 <dd><p>Numeric. Average daily dry matter intake of feed (kg DM/head/day).</p></dd>
@@ -920,13 +968,13 @@ Calculated variables are grouped below by module.</p><div class="section">
 <dd><p>Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/assessment period).</p></dd>
 
 <dt>egg_production_number_cohort</dt>
-<dd><p>Numeric. Total egg output over the assessment period by cohort (eggs/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.</p></dd>
+<dd><p>Numeric. Total egg output over the assessment period by cohort (eggs/cohort/assessment period).</p></dd>
 
 <dt>egg_production_mass_cohort</dt>
-<dd><p>Numeric. Total egg mass output over the assessment period by cohort (kg/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.</p></dd>
+<dd><p>Numeric. Total egg mass produced over the assessment period by cohort (kg/cohort/assessment period).</p></dd>
 
 <dt>egg_production_protein_cohort</dt>
-<dd><p>Numeric. Total egg protein output over the assessment period by cohort (kg protein/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.</p></dd>
+<dd><p>Numeric. Total egg protein output over the assessment period by cohort (kg protein/cohort/assessment period).</p></dd>
 
 
 </dl></div>
@@ -946,7 +994,7 @@ Calculated variables are grouped below by module.</p><div class="section">
 <dd><p>Numeric. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).</p></dd>
 
 <dt>egg_allocation_energy</dt>
-<dd><p>Numeric. Energy required for egg production over the assessment period (MJ/cohort/assessment period). Returned as 0 for non-egg-producing cohorts and non-poultry species.</p></dd>
+<dd><p>Numeric. Energy required to produce all eggs during the assessment period by cohort (MJ/cohort/assessment period).</p></dd>
 
 
 </dl></div>
@@ -959,13 +1007,15 @@ Calculated variables are grouped below by module.</p><div class="section">
 <dd><p>Numeric. Annualized growth rate at which the herd reaches steady state (fraction). Returned when the demographic herd module is run.</p></dd>
 
 <dt>cohort_stock_fem_annual_nondemo</dt>
-<dd><p>Numeric. Annual number of female animals entering the non-demographic pathway (<code>FN</code>) over the simulated period (# heads / simulated period).</p></dd>
+<dd><p>Numeric. Annual number of female animals entering the non-demographic pathway (<code>FN</code>) over the 365-time horizon (# heads). When both demographic and non-demographic modules are run, this is derived internally from the demographic calculations.</p></dd>
 
 <dt>cohort_stock_mal_annual_nondemo</dt>
-<dd><p>Numeric. Annual number of male animals entering the non-demographic pathway (<code>MN</code>) over the simulated period (# heads / simulated period).</p></dd>
+<dd><p>Numeric. Annual number of male animals entering the non-demographic pathway (<code>MN</code>) over the 365-time horizon (# heads). When both demographic and non-demographic modules are run, this is derived internally from the demographic calculations.</p></dd>
 
 <dt>rest_between_nondemo_cycles_duration</dt>
-<dd><p>Numeric. Duration of the resting or empty phase between non-demographic cycles (days).</p></dd>
+<dd><p>Numeric. Duration of the resting or
+empty phase between non-demographic cycles (days). Use <code>0</code> when there is
+no rest between cycles.</p></dd>
 
 <dt>total_nondemo_fem_duration_days</dt>
 <dd><p>Numeric. Total duration of the productive non-demographic phases assigned to the female non-demographic cohort block (<code>FN</code>) (days).</p></dd>
@@ -981,7 +1031,7 @@ Calculated variables are grouped below by module.</p><div class="section">
 <dd><p>A herd-level <code>data.table</code> in long format with
 one row per herd \(\times\) commodity \(\times\) emission
 source:</p><dl><dt>herd_id</dt>
-<dd><p>Character. Herd identifier.</p></dd>
+<dd><p>Character. Unique identifier for the herd.</p></dd>
 
 <dt>species_short</dt>
 <dd><p>Character. Species code.</p></dd>
@@ -991,13 +1041,12 @@ source:</p><dl><dt>herd_id</dt>
 <code>"ch4_enteric"</code>, <code>"n2o_manure_pasture_direct"</code>).</p></dd>
 
 <dt>commodity_name</dt>
-<dd><p>Character. Commodity category: one of
-<code>"None"</code>, <code>"Milk"</code>, <code>"Meat"</code>, <code>"Fibre"</code>,
-<code>"Work"</code>, <code>"Eggs"</code>.</p></dd>
+<dd><p>Character. List of commodity categories to which emissions may be allocated.
+List = c("Other", "Milk", "Meat", "Fibre", "Work", "Eggs")</p></dd>
 
 <dt>commodity_type</dt>
-<dd><p>Character. <code>"Edible"</code> or
-<code>"Non-Edible"</code>.</p></dd>
+<dd><p>Character. Commodity (commodity_name) grouping, either
+<code>"Edible"</code> or <code>"Non-Edible"</code>.</p></dd>
 
 <dt>allocation_share</dt>
 <dd><p>Numeric. Allocation share for this
@@ -1084,141 +1133,142 @@ Validation blocks variables that are expected to be produced internally.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># Example 1: You do NOT have herd structure — use combined demographic and</span></span>
-<span><span class="co"># non-demographic cohort input for herd simulation. Pipeline runs herd</span></span>
-<span><span class="co"># simulation first, then the rest of the pipeline.</span></span>
-<span><span class="co"># The demographic module estimates diverted FN/MN to the non-demographic block.</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span>
-<span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">master_chrt_lvl_no_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_no_structure_mixed_data.csv"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_mixed_data.csv"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt.csv"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_gleam_examples/feed_quality.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata/run_gleam_examples/feed_emission_factors.csv"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction.csv"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors.csv"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span>
-<span>  has_herd_structure <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  run_demographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_no_structure_dt</span>,</span>
-<span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span>
-<span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span>
-<span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span>
-<span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span>
-<span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span>
-<span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span>
-<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="co"># }</span></span>
-<span></span>
-<span><span class="co"># Example 2: Non-demographic-only simulation of CHK layers and broilers.</span></span>
-<span><span class="co"># The cohort file contains only FN/MN cohorts.</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span>
-<span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">master_chrt_lvl_no_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_no_structure_nondemo_data.csv"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_nondemo_data.csv"</span></span>
-<span>  <span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt_nondemo.csv"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_quality.csv"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_emission_factors.csv"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction_nondemo.csv"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors_nondemo.csv"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span>
-<span>  has_herd_structure <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  run_demographic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_no_structure_dt</span>,</span>
-<span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span>
-<span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span>
-<span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span>
-<span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span>
-<span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span>
-<span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span>
-<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
-<span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="co"># }</span></span>
-<span></span>
-<span><span class="co"># Example 3: You already HAVE herd structure — use cohort table and skip herd simulation.</span></span>
-<span><span class="co"># Pipeline skips herd simulation and uses this as the starting cohort table.</span></span>
-<span><span class="co"># The cohort file already supplies cohort_stock_size and offtake_heads_assessment.</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span>
-<span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">master_chrt_lvl_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_structure_data.csv"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_structure_data.csv"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt.csv"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_quality.csv"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
-<span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_emission_factors.csv"</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction.csv"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors.csv"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span>
-<span>  has_herd_structure <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  run_demographic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  run_nondemographic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_structure_dt</span>,</span>
-<span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span>
-<span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span>
-<span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span>
-<span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span>
-<span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span>
-<span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span>
-<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
-<span>  show_indicator <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="co"># }</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1: You do NOT have herd structure — use combined demographic and</span></span></span>
+<span class="r-in"><span><span class="co"># non-demographic cohort input for herd simulation. Pipeline runs herd</span></span></span>
+<span class="r-in"><span><span class="co"># simulation first, then the rest of the pipeline.</span></span></span>
+<span class="r-in"><span><span class="co"># The demographic module estimates diverted FN/MN to the non-demographic block.</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">master_chrt_lvl_no_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_no_structure_mixed_data.csv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_mixed_data.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_gleam_examples/feed_quality.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"extdata/run_gleam_examples/feed_emission_factors.csv"</span>,</span></span>
+<span class="r-in"><span>  package <span class="op">=</span> <span class="st">"gleam"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  has_herd_structure <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  run_demographic <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_no_structure_dt</span>,</span></span>
+<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span></span>
+<span class="r-in"><span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span></span>
+<span class="r-in"><span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span></span>
+<span class="r-in"><span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span></span>
+<span class="r-in"><span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span></span>
+<span class="r-in"><span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span></span>
+<span class="r-in"><span>  simulation_duration <span class="op">=</span> <span class="fl">365</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example 2: Non-demographic-only simulation of CHK layers and broilers.</span></span></span>
+<span class="r-in"><span><span class="co"># The cohort file contains only FN/MN cohorts.</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">master_chrt_lvl_no_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_no_structure_nondemo_data.csv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_nondemo_data.csv"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt_nondemo.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_quality.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"feed_emission_factors.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction_nondemo.csv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors_nondemo.csv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  has_herd_structure <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  run_demographic <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_no_structure_dt</span>,</span></span>
+<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span></span>
+<span class="r-in"><span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span></span>
+<span class="r-in"><span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span></span>
+<span class="r-in"><span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span></span>
+<span class="r-in"><span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span></span>
+<span class="r-in"><span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span></span>
+<span class="r-in"><span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span></span>
+<span class="r-in"><span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example 3: You already HAVE herd structure — use cohort table and skip herd simulation.</span></span></span>
+<span class="r-in"><span><span class="co"># Pipeline skips herd simulation and uses this as the starting cohort table.</span></span></span>
+<span class="r-in"><span><span class="co"># The cohort file already supplies cohort_stock_size and offtake_heads_assessment.</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">path_run_gleam_examples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">master_chrt_lvl_structure_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"master_chrt_lvl_structure_data.csv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">master_hrd_lvl_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"master_hrd_lvl_structure_data.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feed_rations_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_rations_share_chrt.csv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_quality.csv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feed_emissions_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">path_run_gleam_examples</span>, <span class="st">"feed_emission_factors.csv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">manure_management_system_fraction_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_fraction.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">manure_management_system_factors_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path_run_gleam_examples</span>, <span class="st">"manure_management_system_factors.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">run_gleam</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  has_herd_structure <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  run_demographic <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  run_nondemographic <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  cohort_level_data <span class="op">=</span> <span class="va">master_chrt_lvl_structure_dt</span>,</span></span>
+<span class="r-in"><span>  herd_level_data <span class="op">=</span> <span class="va">master_hrd_lvl_dt</span>,</span></span>
+<span class="r-in"><span>  feed_rations <span class="op">=</span> <span class="va">feed_rations_chrt_dt</span>,</span></span>
+<span class="r-in"><span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span></span>
+<span class="r-in"><span>  feed_emissions <span class="op">=</span> <span class="va">feed_emissions_dt</span>,</span></span>
+<span class="r-in"><span>  manure_management_system_fraction <span class="op">=</span> <span class="va">manure_management_system_fraction_dt</span>,</span></span>
+<span class="r-in"><span>  manure_management_system_factors <span class="op">=</span> <span class="va">manure_management_system_factors_dt</span>,</span></span>
+<span class="r-in"><span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span></span>
+<span class="r-in"><span>  show_indicator <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -1239,3 +1289,4 @@ Validation blocks variables that are expected to be produced internally.</p>
 
 
   </body></html>
+
