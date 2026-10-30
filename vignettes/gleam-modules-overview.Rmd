@@ -443,6 +443,17 @@ module computes the following energy partitions:
 - Fibre production (SHP, GTS, CML only) — [`calc_metabolic_energy_req_fibre()`](../reference/calc_metabolic_energy_req_fibre.html)
 - Egg deposition (CHK only) — [`calc_metabolic_energy_req_eggs()`](../reference/calc_metabolic_energy_req_eggs.html)
 
+For chickens (`CHK`), the model distinguishes between **reproductive eggs**
+(used for breeding) and **food eggs** (produced for human consumption).
+
+- **Reproductive eggs:** Egg production energy requirements are always
+  calculated for adult females (`FA`), based on `reproductive_rate`.
+- **Food eggs:** Energy requirements for food-egg production are calculated
+  only when `is_egg_producing = TRUE`. This option is available for adult
+  females (`FA`) and non-demographic females (`FN`) in productive phase 2.
+  Annual food-egg production per hen is specified by
+  `egg_human_consumption_yield` (eggs/hen/year).
+
 Total energy requirements are then aggregated using
 [`calc_total_metabolic_energy_req()`](../reference/calc_total_metabolic_energy_req.html),
 and dry matter intake is derived using
@@ -650,8 +661,12 @@ The following calculation sequence is applied:
 4. Food-egg outputs (number, mass, and protein) are computed using
    [`calc_egg_production()`](../reference/calc_egg_production.html).
 
-For `CHK`, food eggs are calculated only for `FA` or `FN` phase 2 cohorts
-with `is_egg_producing = TRUE`.
+For chickens (`CHK`), the model distinguishes between **food eggs** (produced
+for human consumption) and **reproductive eggs** (used for breeding).
+
+Food-egg production is calculated only when `is_egg_producing = TRUE`, which
+is supported for adult females (`FA`) and non-demographic females (`FN`) in
+productive phase 2.
 
 # Emission Allocation Module
 
