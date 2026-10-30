@@ -163,6 +163,7 @@ results <- run_production_module(
   simulation_duration = 365
 )
 }
+
 }
 \seealso{
 \code{\link{run_gleam}},

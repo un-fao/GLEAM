@@ -118,7 +118,7 @@ phase-specific potential final weight.
 }
 \examples{
 \donttest{
-# Load weights inputs (cohort- and herd-level)
+# Load weights inputs (cohort and herd-level)
 weights_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/weights_input_chrt_data.csv",
   package = "gleam"
@@ -133,10 +133,6 @@ results <- run_weights_module(
   cohort_level_data = weights_chrt_dt,
   herd_level_data = weights_hrd_dt
 )
-
-# Access results
-print(results$cohort_level_results)
-print(results$herd_level_results)
 }
 
 }

@@ -1,6 +1,6 @@
-herd_id	species_short	cohort_stock_fem_annual_nondemo	cohort_stock_mal_annual_nondemo	rest_between_nondemo_cycles_duration	phase1_nondemo_fem_duration_days	phase2_nondemo_fem_duration_days	phase1_nondemo_mal_duration_days	phase2_nondemo_mal_duration_days
-1	CTL	0	122282.545400456	20			60	120
-9	PGS	1683739.0779162	345303.817444779	20	60	110	60	100
-10	PGS	941.412282898391	34.7778051130104	20	90	180	90	180
-14	CHK	468457.200801655	0	14	60	365		
-15	CHK	1014956.25498206	1227598.78218597	7	21	21	21	21
+herd_id	cohort_stock_fem_annual_nondemo	cohort_stock_mal_annual_nondemo	rest_between_nondemo_cycles_duration	phase1_nondemo_fem_duration_days	phase2_nondemo_fem_duration_days	phase1_nondemo_mal_duration_days	phase2_nondemo_mal_duration_days
+1	0.	4363431.92720818	20	NA	NA	60	120
+9	61406668.3397344	68229631.4885939	20	60	110	60	100
+10	758674.742340831	979571.03416209	20	90	180	90	180
+14	79667.7489516705	0.	14	60	365	NA	NA
+15	454004.041277743	477898.990818677	7	21	21	21	21

@@ -1,0 +1,138 @@
+/* Make overall site text slightly smaller */
+body {
+  font-size: 0.95rem;
+}
+
+/* Article body text */
+.pkgdown-article {
+  font-size: 0.95rem;
+}
+
+/* Navbar text */
+.navbar-nav .nav-link {
+  font-size: 0.9rem;
+}
+
+/* Reference function list */
+.ref-index {
+  font-size: 0.92rem;
+}
+
+/* Sidebar table of contents */
+.tocify {
+  font-size: 0.9rem;
+  background-color: #E8F6F8;
+  border-left: 4px solid #A7D5DE;
+  padding: 1rem;
+}
+
+/* Match the header blue for hovered, focused and selected TOC entries. */
+#toc a.nav-link:hover,
+#toc a.nav-link:focus,
+#toc a.nav-link.active {
+  color: #ffffff !important;
+  background-color: #6BC4D0 !important;
+}
+
+/* RUN FUNCTIONS — bigger and bold */
+.ref-index a[href*="run_"] {
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+/* CALC FUNCTIONS — slightly smaller and italic */
+.ref-index a[href*="calc_"] {
+  font-style: italic;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-left: 0.5rem;
+}
+
+/* Narrow the right sidebar */
+.pkgdown-article .col-lg-4 {
+  max-width: 18%;
+  flex: 0 0 18%;
+}
+
+/* Widen the main text column */
+.pkgdown-article .col-lg-8 {
+  max-width: 82%;
+  flex: 0 0 82%;
+}
+
+/* =========================
+   NAVBAR (HEADER)
+   ========================= */
+
+.navbar {
+  background-color: #6BC4D0 !important;
+  border-bottom: none;
+}
+
+.navbar .nav-link,
+.navbar-brand {
+  color: white !important;
+}
+
+/* Add a bit more breathing room between top-level menu items */
+.navbar-nav .nav-item {
+  margin-right: 0.45rem;
+}
+
+.navbar-nav .nav-item:last-child {
+  margin-right: 0;
+}
+
+.navbar-nav .nav-link {
+  padding-left: 0.9rem;
+  padding-right: 0.9rem;
+}
+
+/* Hover */
+.navbar-nav .nav-link:hover,
+.navbar .nav-link:hover {
+  color: #ffffff !important;
+  background-color: rgba(255,255,255,0.25) !important;
+  border-radius: 6px;
+}
+
+/* Active navbar item */
+.navbar .nav-link.active,
+.navbar .nav-item.active .nav-link,
+.navbar .navbar-nav .active > .nav-link {
+  color: #ffffff !important;
+  background-color: #F5D281 !important;
+  border-radius: 6px;
+}
+
+
+/* Overview */
+.navbar-nav a[href*="gleam-overview"] {
+  background-color: #E59882;
+  color: white !important;
+  border-radius: 6px;
+}
+
+/* About modules */
+.navbar-nav a[href*="gleam-modules-overview"] {
+  background-color: #E59882;
+  color: white !important;
+  border-radius: 6px;
+}
+
+/* Functions library */
+.navbar-nav a[href*="reference"] {
+  background-color: #E59882;
+  color: white !important;
+  border-radius: 6px;
+}
+
+/* Homepage right sidebar */
+.page-home aside {
+  background-color: #E8F6F8 !important;
+  padding: 1.25rem;
+  border-left: 4px solid #6BC4D0;
+  border-radius: 8px;
+}

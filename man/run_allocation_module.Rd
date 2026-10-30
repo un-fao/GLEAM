@@ -210,11 +210,12 @@ allocation_hrd_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/allocation_input_hrd_data.csv",
   package = "gleam"
 ))
+
+# Run allocation calculations
 results <- run_allocation_module(
-cohort_level_data = allocation_chrt_dt,
-herd_level_data = allocation_hrd_dt
+  cohort_level_data = allocation_chrt_dt,
+  herd_level_data = allocation_hrd_dt
 )
-head(results$allocation_long)
 }
 
 }

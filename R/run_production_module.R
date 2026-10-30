@@ -155,6 +155,7 @@
 #'   simulation_duration = 365
 #' )
 #' }
+#'
 #' @export
 #'
 #' @importFrom data.table := .I

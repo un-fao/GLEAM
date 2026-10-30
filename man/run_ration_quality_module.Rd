@@ -141,7 +141,7 @@ group, and within \code{nondemo_productive_phase_id} when that column is provide
 }
 \examples{
 \donttest{
-# Load feed rations inputs (cohort-level shares and feed parameters)
+# Load feed ration inputs (cohort-level shares and feed parameters)
 feed_rations_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/feed_rations_share_chrt.csv",
   package = "gleam"
@@ -151,11 +151,13 @@ feed_params_dt <- data.table::fread(system.file(
   package = "gleam"
 ))
 
-result <- run_ration_quality_module(
+# Run ration quality calculations
+results <- run_ration_quality_module(
   rations_share = feed_rations_chrt_dt,
   feed_params = feed_params_dt
 )
 }
+
 }
 \seealso{
 \code{\link{run_gleam}},

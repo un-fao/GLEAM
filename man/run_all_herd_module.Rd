@@ -306,85 +306,79 @@ proportionally from the unscaled cohort stock to the scaled cohort stock
 Without a herd-size target in non-demographic-only mode,
 \code{cohort_stock_size_unscaled} is simply renamed to \code{cohort_stock_size}.
 }
-\examples{
-\dontrun{ 
-# Use case 1 - *Run the demographic only*:
+\section{Use cases}{
 
-cohort_path <- system.file(
-  "extdata/run_modules_examples/herd_simulation_input_chrt_data.csv",
-  package = "gleam"
-)
-herd_level_path <- system.file(
-  "extdata/run_modules_examples/herd_simulation_input_hrd_data.csv",
-  package = "gleam"
-)
-cohort_data_demographic <- data.table::fread(cohort_path)
-herd_level_data <- data.table::fread(herd_level_path)
+\subsection{Use case 1: Run both demographic and non-demographic modules}{
 
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{# Load herd simulation inputs (cohort and herd-level)
+herd_all_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/herd_all_input_chrt_data.csv",
+  package = "gleam"
+))
+herd_all_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/herd_all_input_hrd_data.csv",
+  package = "gleam"
+))
+
+# Run mixed demographic and non-demographic herd simulation
 results <- run_all_herd_module(
-  cohort_level_data = cohort_data_demographic,
-  herd_level_data = herd_level_data,
+  cohort_level_data = herd_all_chrt_dt,
+  herd_level_data = herd_all_hrd_dt,
   run_demographic = TRUE,
-  run_nondemographic = FALSE
-)
-
-
-# Access the results
-results
-
-=====
-
-# Use case 2 - *Run the non-demographic only*
-
-cohort_nondemo_path <- system.file(
-  "extdata/run_modules_examples/nondemographic_herd_input_chrt_data.csv",
-  package = "gleam"
-)
-herd_nondemo_path <- system.file(
-  "extdata/run_modules_examples/nondemographic_herd_input_hrd_data.csv",
-  package = "gleam"
-)
-cohort_nondemo_input <- data.table::fread(cohort_nondemo_path)
-herd_level_data_nondemo <- data.table::fread(herd_nondemo_path)
-
-results <- run_all_herd_module(
-  cohort_level_data = cohort_nondemo_input,
-  herd_level_data = herd_level_data_nondemo,
-  run_demographic = FALSE,
   run_nondemographic = TRUE,
+  simulation_duration = 365,
   show_indicator = TRUE
 )
-
-
-# Access the results
-results
-=====
-
-# Use case 3 - *Run both the demographic and non-demographic*:
-
-path_run_gleam_examples <- system.file("extdata/run_modules_examples", package = "gleam")
-
-cohort_level_data <- data.table::fread(file.path(
-  path_run_gleam_examples, "herd_all_input_chrt_data.csv"
-))
-
-herd_level_data <- data.table::fread(file.path(
-  path_run_gleam_examples, "herd_all_input_hrd_data.csv"
-))
-
-results <- run_all_herd_module(
-  cohort_level_data = cohort_level_data,
-  herd_level_data = herd_level_data,
-  run_demographic = TRUE,
-  run_nondemographic = TRUE
-)
-
-# Access the results
-results
-demo_herd <- results$herd_level_results
-demo_herd
+}\if{html}{\out{</div>}}
 }
 
+\subsection{Use case 2: Run the non-demographic module only}{
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{# Load non-demographic-only herd inputs (CHK layers and broilers)
+herd_all_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/herd_all_nondemo_input_chrt_data.csv",
+  package = "gleam"
+))
+herd_all_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/herd_all_nondemo_input_hrd_data.csv",
+  package = "gleam"
+))
+
+# Run non-demographic-only herd simulation
+results <- run_all_herd_module(
+  cohort_level_data = herd_all_chrt_dt,
+  herd_level_data = herd_all_hrd_dt,
+  run_demographic = FALSE,
+  run_nondemographic = TRUE,
+  simulation_duration = 365,
+  show_indicator = TRUE
+)
+}\if{html}{\out{</div>}}
+}
+
+\subsection{Use case 3: Run the demographic module only}{
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{# Load demographic-only herd inputs (cohort and herd-level)
+herd_all_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/herd_all_demo_input_chrt_data.csv",
+  package = "gleam"
+))
+herd_all_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/herd_all_demo_input_hrd_data.csv",
+  package = "gleam"
+))
+
+# Run demographic-only herd simulation
+results <- run_all_herd_module(
+  cohort_level_data = herd_all_chrt_dt,
+  herd_level_data = herd_all_hrd_dt,
+  run_demographic = TRUE,
+  run_nondemographic = FALSE,
+  simulation_duration = 365,
+  show_indicator = TRUE
+)
+}\if{html}{\out{</div>}}
+}
 }
 \seealso{
 \code{\link[=run_gleam]{run_gleam()}},

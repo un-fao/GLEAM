@@ -214,20 +214,21 @@ definitions, and associated emission factors can be accessed in the
 
 \examples{
 \donttest{
-# Load emissions manure inputs (cohort-level and system lookups)
+# Load manure emissions inputs (cohort-level, system fractions and factors)
 emissions_manure_input_chrt_data <- data.table::fread(system.file(
   "extdata/run_modules_examples/emissions_manure_input_chrt_data.csv",
-  package = "gleam"
-))
-manure_management_system_factors <- data.table::fread(system.file(
-  "extdata/run_modules_examples/manure_management_system_factors.csv",
   package = "gleam"
 ))
 manure_management_system_fraction <- data.table::fread(system.file(
   "extdata/run_modules_examples/manure_management_system_fraction.csv",
   package = "gleam"
 ))
+manure_management_system_factors <- data.table::fread(system.file(
+  "extdata/run_modules_examples/manure_management_system_factors.csv",
+  package = "gleam"
+))
 
+# Run manure emissions calculations
 results <- run_emissions_manure_module(
   cohort_level_data = emissions_manure_input_chrt_data,
   manure_management_system_fraction = manure_management_system_fraction,

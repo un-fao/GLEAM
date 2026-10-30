@@ -575,18 +575,19 @@ Validation blocks variables that are expected to be produced internally.
 # Example 1: You do NOT have herd structure — use combined demographic and
 # non-demographic cohort input for herd simulation. Pipeline runs herd
 # simulation first, then the rest of the pipeline.
+# The demographic module estimates diverted FN/MN to the non-demographic block.
 \dontrun{
 path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 
 master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
   path_run_gleam_examples, "master_chrt_lvl_no_structure_mixed_data.csv"
-))[!herd_id \%in\% c(14, 15)]
+))
 master_hrd_lvl_dt <- data.table::fread(
-file.path(path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv")
-)[!herd_id \%in\% c(14, 15)]
+  file.path(path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv")
+)
 feed_rations_chrt_dt <- data.table::fread(
-file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
-)[!herd_id \%in\% c(14, 15)]
+  file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
+)
 feed_params_dt <- data.table::fread(system.file(
   "extdata/run_gleam_examples/feed_quality.csv",
   package = "gleam"
@@ -595,13 +596,12 @@ feed_emissions_dt <- data.table::fread(system.file(
   "extdata/run_gleam_examples/feed_emission_factors.csv",
   package = "gleam"
 ))
-
 manure_management_system_fraction_dt <- data.table::fread(
   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
-)[!herd_id \%in\% c(14, 15)]
+)
 manure_management_system_factors_dt <- data.table::fread(
   file.path(path_run_gleam_examples, "manure_management_system_factors.csv")
-)[!herd_id \%in\% c(14, 15)]
+)
 
 results <- run_gleam(
   has_herd_structure = FALSE,
@@ -614,15 +614,13 @@ results <- run_gleam(
   feed_emissions = feed_emissions_dt,
   manure_management_system_fraction = manure_management_system_fraction_dt,
   manure_management_system_factors = manure_management_system_factors_dt,
-  simulation_duration = 365,
-  show_indicator = TRUE
+  simulation_duration = 365
 )
 names(results)
 }
 
-# Example 2: Industrial CHK layers and broilers as a non-demographic-only run.
-# Cohort input contains only FN/MN rows, so the pipeline runs the
-# non-demographic herd block and skips the demographic block.
+# Example 2: Non-demographic-only simulation of CHK layers and broilers.
+# The cohort file contains only FN/MN cohorts.
 \dontrun{
 path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 
@@ -631,25 +629,22 @@ master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
 ))
 master_hrd_lvl_dt <- data.table::fread(file.path(
   path_run_gleam_examples, "master_hrd_lvl_nondemo_data.csv"
-))
+  ))
 feed_rations_chrt_dt <- data.table::fread(
-  file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
-)[herd_id \%in\% c(14, 15)]
-feed_params_dt <- data.table::fread(system.file(
-  "extdata/run_gleam_examples/feed_quality.csv",
-  package = "gleam"
+  file.path(path_run_gleam_examples, "feed_rations_share_chrt_nondemo.csv")
+)
+feed_params_dt <- data.table::fread(
+  file.path(path_run_gleam_examples, "feed_quality.csv")
+)
+feed_emissions_dt <- data.table::fread(
+  file.path(path_run_gleam_examples, "feed_emission_factors.csv")
+)
+manure_management_system_fraction_dt <- data.table::fread(file.path(
+  path_run_gleam_examples, "manure_management_system_fraction_nondemo.csv"
 ))
-feed_emissions_dt <- data.table::fread(system.file(
-  "extdata/run_gleam_examples/feed_emission_factors.csv",
-  package = "gleam"
+manure_management_system_factors_dt <- data.table::fread(file.path(
+  path_run_gleam_examples, "manure_management_system_factors_nondemo.csv"
 ))
-
-manure_management_system_fraction_dt <- data.table::fread(
-  file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
-)[herd_id \%in\% c(14, 15)]
-manure_management_system_factors_dt <- data.table::fread(
-  file.path(path_run_gleam_examples, "manure_management_system_factors.csv")
-)[herd_id \%in\% c(14, 15)]
 
 results <- run_gleam(
   has_herd_structure = FALSE,
@@ -670,29 +665,25 @@ names(results)
 
 # Example 3: You already HAVE herd structure — use cohort table and skip herd simulation.
 # Pipeline skips herd simulation and uses this as the starting cohort table.
+# The cohort file already supplies cohort_stock_size and offtake_heads_assessment.
 \dontrun{
 path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 
 master_chrt_lvl_structure_dt <- data.table::fread(file.path(
   path_run_gleam_examples, "master_chrt_lvl_structure_data.csv"
 ))
-
 master_hrd_lvl_dt <- data.table::fread(
 file.path(path_run_gleam_examples, "master_hrd_lvl_structure_data.csv")
 )
-
-feed_rations_chrt_dt <- data.table::fread(
-file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
-)
-feed_params_dt <- data.table::fread(system.file(
-  "extdata/run_gleam_examples/feed_quality.csv",
-  package = "gleam"
+feed_rations_chrt_dt <- data.table::fread(file.path(
+  path_run_gleam_examples, "feed_rations_share_chrt.csv"
 ))
-feed_emissions_dt <- data.table::fread(system.file(
-  "extdata/run_gleam_examples/feed_emission_factors.csv",
-  package = "gleam"
+feed_params_dt <- data.table::fread(file.path(
+  path_run_gleam_examples, "feed_quality.csv"
 ))
-
+feed_emissions_dt <- data.table::fread(file.path(
+  path_run_gleam_examples, "feed_emission_factors.csv"
+))
 manure_management_system_fraction_dt <- data.table::fread(
   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
 )
@@ -712,8 +703,7 @@ results <- run_gleam(
   manure_management_system_fraction = manure_management_system_fraction_dt,
   manure_management_system_factors = manure_management_system_factors_dt,
   simulation_duration = 365,
-  global_warming_potential_set = "AR6",
-  show_indicator = TRUE
+  show_indicator = FALSE
 )
 names(results)
 }

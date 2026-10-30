@@ -122,7 +122,7 @@
 #'
 #' @examples
 #' \donttest{
-#' # Load non-demographic herd simulation inputs (cohort- and herd-level)
+#' # Load non-demographic herd simulation inputs (FN/MN cohorts and annual entrants)
 #' nondemo_chrt_dt <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/nondemographic_herd_input_chrt_data.csv",
 #'   package = "gleam"
@@ -139,9 +139,6 @@
 #'   simulation_duration = 365,
 #'   show_indicator = TRUE
 #' )
-#'
-#' # Access results
-#' names(results)
 #' }
 #'
 #' @export
