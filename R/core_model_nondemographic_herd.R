@@ -4,32 +4,28 @@
 #' cohort-phase rows and fills \code{cohort_duration_days} for \code{FN} and
 #' \code{MN}.
 #'
-#' @param cohort_short Character. Sex- and production-stage-specific cohort code describing the animal group. Supported values include:
-#'       \itemize{
-#'         \item \code{FA}: adult females (from age at first parturition)
-#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'         \item \code{FJ}: juvenile females (from birth to weaning)
-#'         \item \code{MA}: adult males (from age at first breeding)
-#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'         \item \code{MJ}: juvenile males (from birth to weaning)
-#'         \item \code{FN}: non-demographic females
-#'         \item \code{MN}: non-demographic males
-#'       }
-#' @param nondemo_productive_phase_id Numeric. Identifier of the productive
-#'   phase for nondemographic cohorts \code{FN} and \code{MN}. Takes value
-#'   \code{1} for phase 1 and optionally \code{2} for phase 2. Demographic
-#'   cohorts use \code{NA}.
-#' @param cohort_duration_days Numeric. Amount of time that each animal spends
-#'   in a specific cohort (days). Not required for \code{FN} and \code{MN}
-#'   when phase durations are supplied in the herd table.
-#' @param phase1_nondemo_fem_duration_days Numeric. Duration of productive
-#'   phase 1 for the female nondemographic cohort (\code{FN}) (days).
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
+#'   }
+#' @param nondemo_productive_phase_id Numeric. Identifier of the productive phase for
+#'   non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+#'   and optionally \code{2} for phase 2.
+#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a
+#'   specific cohort and production phase (days). For \code{CHK}, suggested value for
+#'   \code{FJ} and \code{MJ} cohorts: 3 days. Not required for \code{FN} and \code{MN}
+#'   when phase durations are supplied in the herd table; the code fills it from the
+#'   herd values, which override any cohort values.
+#' @param phase1_nondemo_fem_duration_days Numeric. Duration of productive phase 1 for
+#'   the female non-demographic cohort (\code{FN}) (days).
 #' @param phase2_nondemo_fem_duration_days Numeric. Duration of productive
-#'   phase 2 for the female nondemographic cohort (\code{FN}) (days).
+#'   phase 2 for the female non-demographic cohort (\code{FN}) (days).
 #' @param phase1_nondemo_mal_duration_days Numeric. Duration of productive
 #'   phase 1 for the male nondemographic cohort (\code{MN}) (days).
 #' @param phase2_nondemo_mal_duration_days Numeric. Duration of productive
-#'   phase 2 for the male nondemographic cohort (\code{MN}) (days).
+#'   phase 2 for the male non-demographic cohort (\code{MN}) (days).
 #'
 #' @return Numeric vector. Updated \code{cohort_duration_days}. For
 #'   non-demographic cohorts (\code{FN} and \code{MN}),
@@ -75,27 +71,24 @@ assign_nondemographic_phase_durations <- function(
 #' Aggregates total modeled nondemographic productive-phase durations by herd and
 #' sex from \code{FN} and \code{MN} cohort rows.
 #'
-#' @param cohort_short Character. Sex- and production-stage-specific cohort code describing the animal group. Supported values include:
-#'       \itemize{
-#'         \item \code{FA}: adult females (from age at first parturition)
-#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'         \item \code{FJ}: juvenile females (from birth to weaning)
-#'         \item \code{MA}: adult males (from age at first breeding)
-#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'         \item \code{MJ}: juvenile males (from birth to weaning)
-#'         \item \code{FN}: non-demographic females
-#'         \item \code{MN}: non-demographic males
-#'       }
-#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days).
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
+#'   }
+#' @param cohort_duration_days Numeric. Amount of time that each animal spends in a
+#'   specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ}
+#'   cohorts: 3 days.
 #'
 #' @return A named list with elements:
 #' \describe{
-#'   \item{total_nondemo_fem_duration_days}{Numeric. Total duration of the
-#'   productive nondemographic phases assigned to the female nondemographic
-#'   cohort block (\code{FN}) (days).}
-#'   \item{total_nondemo_mal_duration_days}{Numeric. Total duration of the
-#'   productive nondemographic phases assigned to the male nondemographic cohort
-#'   block (\code{MN}) (days).}
+#'   \item{total_nondemo_fem_duration_days}{Numeric. Total duration of the productive
+#'   non-demographic phases assigned to the female non-demographic cohort block
+#'   (\code{FN}) (days).}
+#'   \item{total_nondemo_mal_duration_days}{Numeric. Total duration of the productive
+#'   non-demographic phases assigned to the male non-demographic cohort block
+#'   (\code{MN}) (days).}
 #' }
 #'
 #' @seealso
@@ -133,9 +126,9 @@ calc_nondemographic_total_durations <- function(
 #' @param phase2_nondemo_duration Numeric. Duration of productive phase 2 for
 #'   the assessed nondemographic cohort (\code{FN} or \code{MN}) (days).
 #'   Use \code{0} when phase 2 is absent.
-#' @param rest_between_nondemo_cycles_duration Numeric. Duration of the
-#'   resting or empty phase between nondemographic cycles (days).
-#'   Use \code{0} when there is no rest between cycles.
+#' @param rest_between_nondemo_cycles_duration Numeric. Duration of the resting or empty
+#'   phase between non-demographic cycles (days). Use \code{0} when there is no rest
+#'   between cycles.
 #' @details
 #' A nondemographic production cycle can contain one or two productive phases,
 #' followed by an optional resting period before the next cycle starts. The
@@ -213,8 +206,9 @@ calc_nondemographic_total_durations <- function(
 #' 
 #' @return A named list with elements:
 #' \describe{
-#'   \item{number_full_nondemo_cycles}{Integer. Number of complete cycles fully 
-#'   contained within the fixed 365-day simulation horizon (# cycles).}
+#'   \item{number_full_nondemo_cycles}{Integer. Number of complete cycles fully
+#'   contained within the fixed 365-day time horizon for the assessed non-demographic
+#'   cohort (\code{FN} or \code{MN}) (# cycles).}
 #'   \item{partial_phase1_nondemo_duration}{Numeric. Duration of the terminal
 #'   partial productive phase 1 occurring at the end of the fixed 365-day simulation
 #'   horizon for the assessed nondemographic cohort (\code{FN} or \code{MN})
@@ -223,10 +217,9 @@ calc_nondemographic_total_durations <- function(
 #'   partial productive phase 2 occurring at the end of the fixed 365-day simulation
 #'   horizon for the assessed nondemographic cohort (\code{FN} or \code{MN})
 #'   (days).}
-#'   \item{total_nondemo_cycle_starts_to_distribute}{Integer. Total number of
-#'   cycle starts within the fixed 365-day time horizon for the assessed
-#'   nondemographic cohort (\code{FN} or \code{MN}) (cycle starts / simulated
-#'   period).}
+#'   \item{total_nondemo_cycle_starts_to_distribute}{Integer. Total number of cycle
+#'   starts within the fixed 365-day time horizon for the assessed non-demographic
+#'   cohort (\code{FN} or \code{MN}) (# cycle starts).}
 #'   \item{cycle_length}{Numeric. Total duration of one full nondemographic
 #'   cycle, including productive phases and the rest period between cycles
 #'   (days).}
@@ -322,10 +315,9 @@ calc_nondemo_cycle_geometry <- function(
 #'   for the assessed cohort block (\code{FN} or \code{MN})
 #'   (heads / simulated period).
 #'
-#' @param total_nondemo_cycle_starts_to_distribute Integer. Total number of
-#'   cycle starts within the fixed 365-day time horizon for the assessed
-#'   nondemographic cohort (\code{FN} or \code{MN}) (cycle starts / simulated
-#'   period).
+#' @param total_nondemo_cycle_starts_to_distribute Integer. Total number of cycle starts
+#'   within the fixed 365-day time horizon for the assessed non-demographic cohort
+#'   (\code{FN} or \code{MN}) (# cycle starts).
 #'
 #' @details
 #' The annual entrant stock is evenly distributed across all defined production
@@ -545,8 +537,9 @@ calc_nondemo_phase <- function(
 #'   }
 #'   This object cab be obtained by running \code{calc_nondemo_phase()}
 #'   for the complete duration of the productive phase.
-#' @param total_nondemo_cycle_starts_to_distribute Integer. Total number of
-#'   production-cycle starts within the fixed 365-day simulation horizon.
+#' @param total_nondemo_cycle_starts_to_distribute Integer. Total number of cycle starts
+#'   within the fixed 365-day time horizon for the assessed non-demographic cohort
+#'   (\code{FN} or \code{MN}) (# cycle starts).
 #'
 #' @details
 #' The number of cycle starts is calculated upstream by
@@ -593,7 +586,7 @@ calc_nondemo_phase <- function(
 #'
 #' @return A named list with:
 #' \describe{
-#'   \item{cohort_stock_size_unscaled}{Numeric. Average population size for the assessed cohort, not scaled to the total livestock population (\code{herd_size_total}), (# heads).}
+#'   \item{cohort_stock_size_unscaled}{Numeric. Average population size of the assessed cohort, not scaled to the total livestock population (herd_size_total) (# heads).}
 #' }
 #'
 #' @seealso 

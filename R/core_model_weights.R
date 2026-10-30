@@ -16,7 +16,7 @@
 #'         \item \code{GTS}: goats
 #'         \item \code{CHK}: chickens
 #'         } 
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -43,16 +43,16 @@
 #' @param live_weight_male_nondemographic_end Numeric. Live weight of male
 #'   animals at the end of the nondemographic cycle (kg).
 #' @param nondemo_productive_phase_id Numeric. Productive phase identifier for
-#'   nondemographic cohorts. Takes value \code{1} for phase 1 and optionally
-#'   \code{2} for phase 2. Demographic cohorts use \code{NA}.
-#' @param phase1_nondemo_fem_duration_days Numeric. Duration of productive phase
-#'   1 for the female nondemographic cohort (\code{FN}) (days).
+#'   non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+#'   and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.
+#' @param phase1_nondemo_fem_duration_days Numeric. Duration of productive phase 1 for
+#'   the female non-demographic cohort (\code{FN}) (days).
 #' @param phase2_nondemo_fem_duration_days Numeric. Duration of productive phase
-#'   2 for the female nondemographic cohort (\code{FN}) (days).
+#'   2 for the female non-demographic cohort (\code{FN}) (days).
 #' @param phase1_nondemo_mal_duration_days Numeric. Duration of productive phase
 #'   1 for the male nondemographic cohort (\code{MN}) (days).
 #' @param phase2_nondemo_mal_duration_days Numeric. Duration of productive phase
-#'   2 for the male nondemographic cohort (\code{MN}) (days).
+#'   2 for the male non-demographic cohort (\code{MN}) (days).
 #'
 #' @return A named list with:
 #' \describe{
@@ -250,9 +250,18 @@ calc_cohort_weights <- function(
 #' sex–age cohort based on initial weight, 
 #' potential final weight, slaughter weight, and the offtake rate.
 #'
-#' @param cohort_short Character. Sex- and age-specific cohort code. Supported
-#'   values include \code{FA}, \code{FS}, \code{FJ}, \code{MA}, \code{MS},
-#'   \code{MJ}, \code{FN}, and \code{MN}.
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
+#'   }
 #' @param live_weight_cohort_initial Numeric. Live weight at the beginning of the cohort stage (kg).
 #' @param live_weight_cohort_potential_final Numeric. Potential final live weight attainable at the end of the cohort stage in the absence of offtake (kg). (For juveniles: equals weaning weight; For subadults: equals adult live weight; For adults: equals adult live weight)
 #' @param live_weight_cohort_at_slaughter Numeric. Live weight at slaughter for animals removed from the cohort (kg).

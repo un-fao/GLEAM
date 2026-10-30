@@ -25,16 +25,16 @@ Supported values include:
 \item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
 
@@ -43,7 +43,7 @@ Required only for species = CML, SHP, and GTS.}
 
 \item{simulation_duration}{Numeric. Length of the assessment period (days).}
 
-\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads).}
+\item{cohort_stock_size}{Numeric. Average population size of the assessed cohort (# heads).}
 }
 \value{
 Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).

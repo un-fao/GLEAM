@@ -4,7 +4,11 @@
 \alias{calc_fecundity_rates}
 \title{Calculate daily fecundity rates}
 \usage{
-calc_fecundity_rates(reproductive_rate, offspring_per_reproductive_event, birth_fraction_female)
+calc_fecundity_rates(
+  reproductive_rate,
+  offspring_per_reproductive_event,
+  birth_fraction_female
+)
 }
 \arguments{
 \item{reproductive_rate}{Numeric. Average annual number of parturitions per

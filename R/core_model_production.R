@@ -15,18 +15,18 @@
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the production stage of the animals.
-#' Supported values include:
-#'       \itemize{
-#'         \item \code{FA}: adult females (from age at first parturition)
-#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'         \item \code{FJ}: juvenile females (from birth to weaning)
-#'         \item \code{FN}: non-demographic females
-#'         \item \code{MA}: adult males (from age at first breeding)
-#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'         \item \code{MJ}: juvenile males (from birth to weaning)
-#'         \item \code{MN}: non-demographic males
-#'       }
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
+#'   }
 #' @param milk_yield_day {Numeric. Average milk yield per milk-producing animal during the assessment duration
 #' (kg/head/day).
 #' This value is calculated as the total quantity of milk produced for human consumption by milk-producing animals
@@ -34,7 +34,7 @@
 #' divided by the number of milk-producing animals, and the length of the assessment period (days). Required only for
 #' species = CML, CTL, BFL, SHP, and GTS.}
 #' @param simulation_duration Numeric. Length of the assessment period (days).
-#' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads).
+#' @param cohort_stock_size Numeric. Average population size of the assessed cohort (# heads).
 #' @param lactating_females_fraction Numeric. Proportion of adult females that are lactating during the assessment
 #' period (fraction). Required only for species: CML, CTL, BFL, SHP, and GTS.
 #' @param milk_protein_fraction Numeric. Milk protein fraction (kg protein/kg milk). Required only for species = CML,
@@ -194,22 +194,22 @@ calc_milk_production <- function(
 #'         \item \code{GTS}: goats
 #'         \item \code{CHK}: chickens
 #'   }
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MN}: non-demographic males
 #'   }
 #' @param fibre_yield_year Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
 #' Required only for species = CML, SHP, and GTS.
 #' @param simulation_duration Numeric. Length of the assessment period (days).
-#' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads). 
+#' @param cohort_stock_size Numeric. Average population size of the assessed cohort (# heads).
 #'
 #' @return Numeric. Total fibre produced over the assessment period by cohort (kg /cohort/assessment period).
 #'   
@@ -267,29 +267,30 @@ calc_fibre_production <- function(
 #'   \itemize{
 #'     \item \code{CHK}: chickens
 #'   }
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the production stage of the animals.
-#'     Supported values include:
-#'       \itemize{
-#'         \item \code{FA}: adult females (from age at first parturition)
-#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'         \item \code{FJ}: juvenile females (from birth to weaning)
-#'         \item \code{FN}: non-demographic females
-#'         \item \code{MA}: adult males (from age at first breeding)
-#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'         \item \code{MJ}: juvenile males (from birth to weaning)
-#'         \item \code{MN}: non-demographic males
-#'       }
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
+#'   }
 #' @param egg_human_consumption_yield Numeric. Number of eggs produced for human
 #'   consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.
-#' @param cohort_stock_size Numeric. Average population size of the assessed cohort (heads).
+#' @param cohort_stock_size Numeric. Average population size of the assessed cohort (# heads).
 #' @param egg_average_weight Numeric. Average egg weight (kg/egg).
 #' @param simulation_duration Numeric. Length of the assessment period (days).
 #' @param egg_protein_fraction Numeric. Protein content of whole egg (kg protein/kg egg).
-#' @param nondemo_productive_phase_id Numeric. Optional productive phase
-#'   identifier for non-demographic cohorts.
-#' @param is_egg_producing Logical. Cohort-level flag identifying food-egg-producing
-#'   \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
-#'   \code{FN} with \code{nondemo_productive_phase_id = 2}.
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase identifier for
+#'   non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+#'   and optionally \code{2} for phase 2.
+#' @param is_egg_producing Logical. Cohort-level flag identifying egg-producing
+#'   \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for \code{FN}
+#'   with \code{nondemo_productive_phase_id = 2}.
 #'
 #' @return A named list with total egg number, mass, and protein over the assessment period.
 #'
@@ -376,8 +377,8 @@ calc_egg_production <- function(
 #' multiple production metrics expressed in live weight, carcass weight,
 #' bone-free meat, and meat protein (kg/cohort/assessment period).
 #'
-#' @param offtake_heads_assessment Numeric. Total number of animals removed via offtake over the assessment period,
-#' aggregated to 6 sex–age cohorts (heads/assessment period).
+#' @param offtake_heads_assessment Numeric. Total number of animals removed from each
+#' cohort over the assessment period (# heads/assessment period).
 #' @param live_weight_cohort_at_slaughter Numeric. Live weight at slaughter for animals removed from the cohort (kg).
 #' @param carcass_dressing_fraction Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
 #' (fraction).

@@ -26,23 +26,23 @@ Supported values include:
 \item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
 
-\item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to
-keep the animal at equilibrium such that body energy is neither gained nor lost.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
-CML and PGS (MJ/head/day).}
+\item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance,
+defined as the amount of energy needed to keep the animal at equilibrium such that
+body energy is neither gained nor lost (MJ/head/day). Expressed as net energy for
+CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.}
 
 \item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting
 for the share of offtaken animals within the cohort, using their slaughter weight, and the potential
@@ -55,8 +55,9 @@ low-intensity movement typical of stall-feeding or near-field grazing, character
 with herding or long-distance grazing, typically involving extended walking distances and/or uneven or hilly terrain (fraction).}
 }
 \value{
-Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+Numeric. Energy required for activity, defined as the amount of energy needed
+to support animal movement and physical activity (MJ/head/day). Expressed as net
+energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 }
 \description{
 Calculates the energy requirement for activity by cohort (MJ/head/day),

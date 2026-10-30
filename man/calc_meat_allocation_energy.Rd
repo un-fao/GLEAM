@@ -28,7 +28,7 @@ Supported values include:
 \item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -37,6 +37,8 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
 
 \item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by
@@ -49,8 +51,9 @@ cohort (kg/cohort/assessment period).}
 \item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
 species_short = CML.}
 
-\item{nondemo_productive_phase_id}{Numeric. Optional productive phase
-identifier for non-demographic cohorts.}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2.}
 
 \item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
 \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for

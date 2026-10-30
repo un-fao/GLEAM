@@ -37,7 +37,7 @@ Supported values include:
 \item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -63,8 +63,8 @@ production stage of the animals. Supported values include:
 \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg)}
 
 \item{nondemo_productive_phase_id}{Numeric. Productive phase identifier for
-nondemographic cohorts. Takes value \code{1} for phase 1 and optionally
-\code{2} for phase 2. Demographic cohorts use \code{NA}.}
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.}
 
 \item{live_weight_female_nondemographic_start}{Numeric. Live weight of
 female animals at the beginning of the nondemographic cycle (kg).}
@@ -78,17 +78,17 @@ animals at the beginning of the nondemographic cycle (kg).}
 \item{live_weight_male_nondemographic_end}{Numeric. Live weight of male
 animals at the end of the nondemographic cycle (kg).}
 
-\item{phase1_nondemo_fem_duration_days}{Numeric. Duration of productive phase
-1 for the female nondemographic cohort (\code{FN}) (days).}
+\item{phase1_nondemo_fem_duration_days}{Numeric. Duration of productive phase 1 for
+the female non-demographic cohort (\code{FN}) (days).}
 
 \item{phase2_nondemo_fem_duration_days}{Numeric. Duration of productive phase
-2 for the female nondemographic cohort (\code{FN}) (days).}
+2 for the female non-demographic cohort (\code{FN}) (days).}
 
 \item{phase1_nondemo_mal_duration_days}{Numeric. Duration of productive phase
 1 for the male nondemographic cohort (\code{MN}) (days).}
 
 \item{phase2_nondemo_mal_duration_days}{Numeric. Duration of productive phase
-2 for the male nondemographic cohort (\code{MN}) (days).}
+2 for the male non-demographic cohort (\code{MN}) (days).}
 }
 \value{
 A named list with:

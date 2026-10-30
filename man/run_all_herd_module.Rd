@@ -24,14 +24,27 @@ the columns required by \code{\link[=run_demographic_herd_module]{run_demographi
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd,
 repeated for each cohort belonging to the same herd.}
-\item{\code{cohort_short}}{Character. Demographic cohort code. Supported
-values are \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, and \code{MA}.}
-\item{\code{cohort_duration_days}}{Numeric. Amount of time that each animal
-spends in the demographic cohort (days).}
+\item{\code{cohort_short}}{Character. Sex-specific cohort code describing the age
+and/or the production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
+}}
+\item{\code{cohort_duration_days}}{Numeric. Amount of time that each animal spends
+in a specific cohort and production phase (days). For \code{CHK}, suggested
+value for \code{FJ} and \code{MJ} cohorts: 3 days. Not required for \code{FN}
+and \code{MN} when phase durations are supplied in the herd table; the code
+fills it from the herd values, which override any cohort values.}
 \item{\code{offtake_rate}}{Numeric. Annual proportion of animals removed
 from the herd for each demographic cohort (fraction).}
-\item{\code{death_rate}}{Numeric. Fraction of deaths in a herd over a year
-for each demographic cohort (fraction).}
+\item{\code{death_rate}}{Numeric. Fraction of animals dying in the assessed
+cohort over one year for demographic cohorts (fraction).}
 }
 \item \strong{Case 2 - when \code{run_demographic = FALSE} and \code{run_nondemographic = TRUE}:}
 \code{cohort_level_data} must contain rows for the non-demographic cohorts
@@ -39,15 +52,24 @@ only (\code{FN}, \code{MN}). In this case the table must contain the columns
 required by \code{\link[=run_nondemographic_herd_module]{run_nondemographic_herd_module()}}:
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd,
-repeated for each non-demographic cohort phase belonging to the same herd.}
-\item{\code{cohort_short}}{Character. Non-demographic cohort code.
-Supported values are \code{FN} for non-demographic female animals and \code{MN}
-for non-demographic male animals.}
-\item{\code{nondemo_productive_phase_id}}{Numeric. Productive phase
-identifier within a non-demographic cycle. \code{1} is required and \code{2} is
-optional.}
-\item{\code{death_rate}}{Numeric. Fraction of deaths occurring during the
-non-demographic productive phase (fraction).}
+repeated for each cohort belonging to the same herd.}
+\item{\code{cohort_short}}{Character. Sex-specific cohort code describing the age
+and/or the production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
+}}
+\item{\code{nondemo_productive_phase_id}}{Numeric. Productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase
+1 and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.}
+\item{\code{death_rate}}{Numeric. Fraction of animals dying in the assessed
+cohort over the productive phase for non-demographic cohorts (fraction).}
 }
 \item \strong{Case 3 - when \code{run_demographic = TRUE} and \code{run_nondemographic = TRUE}:}
 \code{cohort_level_data} must contain both demographic and non-demographic
@@ -75,8 +97,8 @@ by the number of eggs laid for reproduction (fraction).}
 \item{\code{birth_fraction_female}}{Numeric. Female birth fraction,
 defined as the probability that a newborn offspring is female
 (fraction).}
-\item{\code{herd_size_total}}{Numeric. Total population size at the start of
-the year, including all cohorts (# heads).}
+\item{\code{herd_size_total}}{Numeric. Total demographic population size at the
+start of the year, including all cohorts (# heads)}
 \item{\code{prop_nondemo_mal_juv}}{Numeric. Fraction of male juveniles
 diverted into the non-demographic stream at the moment they transition
 to the next age class (fraction).}
@@ -89,20 +111,25 @@ to the next age class (fraction).}
 \code{\link[=run_nondemographic_herd_module]{run_nondemographic_herd_module()}}:
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd.}
-\item{\code{cohort_stock_fem_annual_nondemo}}{Numeric. Total annual entrants
-into the \code{FN} cohort block over the simulated period (# heads /
-simulated period).}
-\item{\code{cohort_stock_mal_annual_nondemo}}{Numeric. Total annual entrants
-into the \code{MN} cohort block over the simulated period (# heads /
-simulated period).}
-\item{\code{rest_between_nondemo_cycles_duration}}{Numeric. Duration of the
-resting or empty phase between non-demographic cycles (days).}
+\item{\code{cohort_stock_fem_annual_nondemo}}{Numeric. Annual number of female animals entering the
+non-demographic pathway (\code{FN}) over the 365-time horizon (#
+heads). When both demographic and non-demographic modules are
+run, this is derived internally from the demographic
+calculations.}
+\item{\code{cohort_stock_mal_annual_nondemo}}{Numeric. Annual number of male animals entering the
+non-demographic pathway (\code{MN}) over the 365-time horizon (#
+heads). When both demographic and non-demographic modules are
+run, this is derived internally from the demographic
+calculations.}
+\item{\code{rest_between_nondemo_cycles_duration}}{Numeric. Duration of the resting
+or empty phase between non-demographic cycles (days). Use \code{0} when there
+is no rest between cycles.}
 \item{\code{phase1_nondemo_fem_duration_days}}{Numeric. Duration of
 productive phase 1 for the female non-demographic cohort (\code{FN}) (days).}
 \item{\code{phase2_nondemo_fem_duration_days}}{Numeric. Duration of
 productive phase 2 for the female non-demographic cohort (\code{FN}) (days).}
-\item{\code{phase1_nondemo_mal_duration_days}}{Numeric. Duration of
-productive phase 1 for the male non-demographic cohort (\code{MN}) (days).}
+\item{\code{phase1_nondemo_mal_duration_days}}{Numeric. Duration of productive phase
+1 for the male nondemographic cohort (\code{MN}) (days).}
 \item{\code{phase2_nondemo_mal_duration_days}}{Numeric. Duration of
 productive phase 2 for the male non-demographic cohort (\code{MN}) (days).}
 }
@@ -123,22 +150,23 @@ by the number of eggs laid for reproduction (fraction).}
 \item{\code{birth_fraction_female}}{Numeric. Female birth fraction,
 defined as the probability that a newborn offspring is female
 (fraction).}
-\item{\code{herd_size_total}}{Numeric. Total population size at the start of
-the year, including all cohorts (# heads).}
+\item{\code{herd_size_total}}{Numeric. Total demographic population size at the
+start of the year, including all cohorts (# heads)}
 \item{\code{prop_nondemo_mal_juv}}{Numeric. Fraction of male juveniles
 diverted into the non-demographic stream at the moment they transition
 to the next age class (fraction).}
 \item{\code{prop_nondemo_fem_juv}}{Numeric. Fraction of female juveniles
 diverted into the non-demographic stream at the moment they transition
 to the next age class (fraction).}
-\item{\code{rest_between_nondemo_cycles_duration}}{Numeric. Duration of the
-resting or empty phase between non-demographic cycles (days).}
+\item{\code{rest_between_nondemo_cycles_duration}}{Numeric. Duration of the resting
+or empty phase between non-demographic cycles (days). Use \code{0} when there
+is no rest between cycles.}
 \item{\code{phase1_nondemo_fem_duration_days}}{Numeric. Duration of
 productive phase 1 for the female non-demographic cohort (\code{FN}) (days).}
 \item{\code{phase2_nondemo_fem_duration_days}}{Numeric. Duration of
 productive phase 2 for the female non-demographic cohort (\code{FN}) (days).}
-\item{\code{phase1_nondemo_mal_duration_days}}{Numeric. Duration of
-productive phase 1 for the male non-demographic cohort (\code{MN}) (days).}
+\item{\code{phase1_nondemo_mal_duration_days}}{Numeric. Duration of productive phase
+1 for the male nondemographic cohort (\code{MN}) (days).}
 \item{\code{phase2_nondemo_mal_duration_days}}{Numeric. Duration of
 productive phase 2 for the male non-demographic cohort (\code{MN}) (days).}
 }
@@ -148,7 +176,7 @@ demographic output and therefore do not need to be supplied as primary
 herd-level inputs.
 }}
 
-\item{simulation_duration}{Numeric. Length of the reporting period (days).}
+\item{simulation_duration}{Numeric. Length of the assessment period (days).}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during calculations.
 Defaults to \code{TRUE}.}
@@ -169,27 +197,26 @@ schema. Intermediate scaling variables are removed before return. It includes
 the original cohort-level input columns plus the following result variables
 when available:
 \describe{
-\item{\code{cohort_stock_size}}{Numeric. Average population size for the assessed cohort (# heads).}
-\item{\code{offtake_heads}}{Numeric. Total number of animals removed from the
-cohort over the full 365-day simulation horizon (# heads).}
-\item{\code{offtake_heads_assessment}}{Numeric. Total number of animals removed
-from the cohort over \code{simulation_duration} (# heads / simulated period).}
-\item{\code{cohort_stock_annual_nondemographic}}{Numeric. For demographic
-rows only, annual number of animals diverted from the demographic pathway
-into the non-demographic pathway (# heads).}
-\item{\code{nondemo_productive_phase_id}}{Numeric. For non-demographic rows
-only, productive phase identifier within the non-demographic cycle.
-Allowed values are \code{1} and optionally \code{2}.}
-\item{\code{partial_nondemo_phase_duration}}{Numeric. For non-demographic rows
-only, duration of the terminal partial productive phase falling within the
-fixed 365-day non-demographic simulation horizon (days).}
-\item{\code{number_full_nondemo_cycles}}{Integer. For non-demographic rows
-only, number of complete non-demographic cycles fully contained within the
-fixed 365-day simulation horizon (# cycles).}
-\item{\code{total_nondemo_cycle_starts_to_distribute}}{Integer. For
-non-demographic rows only, total number of cycle starts within the fixed
-365-day simulation horizon used to distribute annual entrants (# cycle
-starts).}
+\item{\code{cohort_stock_size}}{Numeric. Average population size of the assessed cohort (# heads).}
+\item{\code{offtake_heads}}{Numeric. Total number of animals removed from each cohort
+over the full 365-day simulation horizon (# heads/year).}
+\item{\code{offtake_heads_assessment}}{Numeric. Total number of animals removed from
+each cohort over the assessment period (# heads/assessment period).}
+\item{\code{cohort_stock_annual_nondemographic}}{Numeric. Annual number of
+animals diverted from the demographic pathway into the non-demographic
+pathway (# heads).}
+\item{\code{nondemo_productive_phase_id}}{Numeric. Productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.}
+\item{\code{partial_nondemo_phase_duration}}{Numeric. Duration of the terminal partial
+productive phase falling within the fixed 365-day non-demographic simulation
+horizon (days).}
+\item{\code{number_full_nondemo_cycles}}{Integer. Number of complete cycles fully
+contained within the fixed 365-day time horizon for the assessed non-demographic
+cohort (\code{FN} or \code{MN}) (# cycles).}
+\item{\code{total_nondemo_cycle_starts_to_distribute}}{Integer. Total number of cycle
+starts within the fixed 365-day time horizon for the assessed non-demographic
+cohort (\code{FN} or \code{MN}) (# cycle starts).}
 }}
 \item{\code{herd_level_results}}{A \code{data.table} with one row per \code{herd_id}.
 Depending on the selected execution mode, this is the herd-level output of
@@ -199,16 +226,17 @@ plus the following result variables when available:
 \describe{
 \item{\code{growth_rate_herd}}{Numeric. Annualized growth rate at which the
 herd reaches steady state (fraction).}
-\item{\code{cohort_stock_fem_annual_nondemo}}{Numeric. Annual number of female
-animals entering the non-demographic pathway (\code{FN}) over the simulated
-period (# heads). When both modules are run, this is
-derived internally from the demographic output.}
-\item{\code{cohort_stock_mal_annual_nondemo}}{Numeric. Annual number of male
-animals entering the non-demographic pathway (\code{MN}) over the simulated
-period (# heads). When both modules are run, this is
-derived internally from the demographic output.}
-\item{\code{rest_between_nondemo_cycles_duration}}{Numeric. Duration of the
-resting or empty phase between non-demographic cycles (days).}
+\item{\code{cohort_stock_fem_annual_nondemo}}{Numeric. Annual number of female animals entering the
+non-demographic pathway (\code{FN}) over the 365-time horizon (# heads).
+When both demographic and non-demographic modules are run, this is
+derived internally from the demographic calculations.}
+\item{\code{cohort_stock_mal_annual_nondemo}}{Numeric. Annual number of male animals entering the non-demographic
+pathway (\code{MN}) over the 365-time horizon (# heads). When both
+demographic and non-demographic modules are run, this is derived
+internally from the demographic calculations.}
+\item{\code{rest_between_nondemo_cycles_duration}}{Numeric. Duration of the resting or
+empty phase between non-demographic cycles (days). Use \code{0} when there is no
+rest between cycles.}
 \item{\code{total_nondemo_fem_duration_days}}{Numeric. Total duration of the
 productive non-demographic phases assigned to the female non-demographic
 cohort block (\code{FN}) (days).}

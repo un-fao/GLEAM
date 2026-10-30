@@ -10,7 +10,8 @@
 #'   herd \eqn{\times} cohort. Must include:
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'     \item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+#'     \item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+#'       the production stage of the animals. Supported values include:
 #'       \itemize{
 #'         \item \code{FA}: adult females (from age at first parturition)
 #'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -26,7 +27,9 @@
 #'   }
 #'   Optional column:
 #'   \describe{
-#'     \item{nondemo_productive_phase_id}{Numeric. Productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). Allowed values are \code{1} and optionally \code{2}. Demographic cohorts use \code{NA}.}
+#'     \item{nondemo_productive_phase_id}{Numeric. Productive phase identifier for
+#'     non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+#'     and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.}
 #'   }
 #' @param herd_level_data A \code{data.table} with one row per herd. Must include:
 #'   \itemize{

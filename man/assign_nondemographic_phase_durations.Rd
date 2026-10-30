@@ -15,38 +15,34 @@ assign_nondemographic_phase_durations(
 )
 }
 \arguments{
-\item{cohort_short}{Character. Sex- and production-stage-specific cohort code describing the animal group. Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
+production stage of the animals. Supported values include:
 \itemize{
-\item \code{FA}: adult females (from age at first parturition)
-\item \code{FS}: sub-adult females (from weaning to age at first parturition)
-\item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{MA}: adult males (from age at first breeding)
-\item \code{MS}: sub-adult males (from weaning to age at first breeding)
-\item \code{MJ}: juvenile males (from birth to weaning)
 \item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
 
-\item{nondemo_productive_phase_id}{Numeric. Identifier of the productive
-phase for nondemographic cohorts \code{FN} and \code{MN}. Takes value
-\code{1} for phase 1 and optionally \code{2} for phase 2. Demographic
-cohorts use \code{NA}.}
+\item{nondemo_productive_phase_id}{Numeric. Identifier of the productive phase for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2.}
 
-\item{cohort_duration_days}{Numeric. Amount of time that each animal spends
-in a specific cohort (days). Not required for \code{FN} and \code{MN}
-when phase durations are supplied in the herd table.}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a
+specific cohort and production phase (days). For \code{CHK}, suggested value for
+\code{FJ} and \code{MJ} cohorts: 3 days. Not required for \code{FN} and \code{MN}
+when phase durations are supplied in the herd table; the code fills it from the
+herd values, which override any cohort values.}
 
-\item{phase1_nondemo_fem_duration_days}{Numeric. Duration of productive
-phase 1 for the female nondemographic cohort (\code{FN}) (days).}
+\item{phase1_nondemo_fem_duration_days}{Numeric. Duration of productive phase 1 for
+the female non-demographic cohort (\code{FN}) (days).}
 
 \item{phase2_nondemo_fem_duration_days}{Numeric. Duration of productive
-phase 2 for the female nondemographic cohort (\code{FN}) (days).}
+phase 2 for the female non-demographic cohort (\code{FN}) (days).}
 
 \item{phase1_nondemo_mal_duration_days}{Numeric. Duration of productive
 phase 1 for the male nondemographic cohort (\code{MN}) (days).}
 
 \item{phase2_nondemo_mal_duration_days}{Numeric. Duration of productive
-phase 2 for the male nondemographic cohort (\code{MN}) (days).}
+phase 2 for the male non-demographic cohort (\code{MN}) (days).}
 }
 \value{
 Numeric vector. Updated \code{cohort_duration_days}. For

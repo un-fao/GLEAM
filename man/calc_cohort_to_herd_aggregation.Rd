@@ -21,7 +21,7 @@ corresponds to a single sex–age cohort within a herd.}
 herd-level totals (e.g., meat_allocation_energy, milk_allocation_energy, fibre_allocation_energy,
 work_allocation_energy, egg_allocation_energy)}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -30,6 +30,8 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
 }
 \value{

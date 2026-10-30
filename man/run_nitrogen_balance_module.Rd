@@ -14,29 +14,28 @@ run_nitrogen_balance_module(
 \item{cohort_level_data}{data.table. Cohort-level input table with the following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals.
-Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
 \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
-for non-demographic cohorts (\code{FN}, \code{MN}). When present, nitrogen
-balance outputs are computed and retained separately by phase.}
-\item{is_egg_producing}{Logical. Indicates whether the cohort is a food-egg-producing
-chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
-\code{FA} or for \code{FN} in laying phase 2.}
+for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+phase 1 and optionally \code{2} for phase 2.}
+\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for \code{FN}
+with \code{nondemo_productive_phase_id = 2}.}
 \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
 \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ} cohorts: 3 days.}
-\item{cohort_stock_size}{Numeric. Optional average population size for the assessed cohort (# heads), preserved in the returned table when supplied.}
 }}
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with
@@ -75,7 +74,7 @@ annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
 \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
-\item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}.}
+\item{egg_average_weight}{Numeric. Average egg weight (kg/egg).}
 \item{egg_human_consumption_yield}{Numeric. Number of eggs produced for human consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.}
 }}
 

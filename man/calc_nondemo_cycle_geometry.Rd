@@ -19,29 +19,27 @@ Must be at least \code{1} day.}
 the assessed nondemographic cohort (\code{FN} or \code{MN}) (days).
 Use \code{0} when phase 2 is absent.}
 
-\item{rest_between_nondemo_cycles_duration}{Numeric. Duration of the
-resting or empty phase between nondemographic cycles (days).
-Use \code{0} when there is no rest between cycles.}
+\item{rest_between_nondemo_cycles_duration}{Numeric. Duration of the resting or empty
+phase between non-demographic cycles (days). Use \code{0} when there is no rest
+between cycles.}
 }
 \value{
 A named list with elements:
 \describe{
 \item{number_full_nondemo_cycles}{Integer. Number of complete cycles fully
-contained within the fixed 365-day time horizon for the assessed
-nondemographic cohort (\code{FN} or \code{MN}) (full cycles / simulated
-period).}
+contained within the fixed 365-day time horizon for the assessed non-demographic
+cohort (\code{FN} or \code{MN}) (# cycles).}
 \item{partial_phase1_nondemo_duration}{Numeric. Duration of the terminal
-partial productive phase 1 occurring at the end of the fixed 365-day time
+partial productive phase 1 occurring at the end of the fixed 365-day simulation
 horizon for the assessed nondemographic cohort (\code{FN} or \code{MN})
 (days).}
 \item{partial_phase2_nondemo_duration}{Numeric. Duration of the terminal
-partial productive phase 2 occurring at the end of the fixed 365-day time
+partial productive phase 2 occurring at the end of the fixed 365-day simulation
 horizon for the assessed nondemographic cohort (\code{FN} or \code{MN})
 (days).}
-\item{total_nondemo_cycle_starts_to_distribute}{Integer. Total number of
-cycle starts within the fixed 365-day time horizon for the assessed
-nondemographic cohort (\code{FN} or \code{MN}) (cycle starts / simulated
-period).}
+\item{total_nondemo_cycle_starts_to_distribute}{Integer. Total number of cycle
+starts within the fixed 365-day time horizon for the assessed non-demographic
+cohort (\code{FN} or \code{MN}) (# cycle starts).}
 \item{cycle_length}{Numeric. Total duration of one full nondemographic
 cycle, including productive phases and the rest period between cycles
 (days).}

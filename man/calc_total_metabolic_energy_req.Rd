@@ -55,8 +55,10 @@ the diet to digestible energy consumed (fraction).}
 \item{metabolic_energy_req_growth}{Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day).
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.}
 
-\item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species (MJ/head/day).
-Expressed as net energy for SHP, GTS and as metabolizable energy for CML (MJ/head/day).}
+\item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the
+synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species.
+(MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
+for CML.}
 
 \item{metabolic_energy_req_egg_deposition}{Numeric. Net energy for egg production (MJ/head/day).}
 
@@ -65,8 +67,9 @@ Expressed as net energy for SHP, GTS and as metabolizable energy for CML (MJ/hea
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 }
 \value{
-Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE).
-For CML, PGS, and CHK the function returns the summed daily metabolizable energy requirement.
+Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and
+GTS this is expressed as gross energy intake requirement (GE). For CML, PGS and CHK
+the function returns the summed daily metabolizable energy requirement.
 }
 \description{
 Calculates the total daily energy requirement (MJ/head/day) by summing

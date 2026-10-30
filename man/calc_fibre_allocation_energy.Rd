@@ -25,8 +25,7 @@ Supported values include:
 \item \code{CHK}: chickens
 }}
 
-\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
-FS, FA, MJ, MS, MA).}
+\item{cohort_stock_size}{Numeric. Average population size of the assessed cohort (# heads).}
 
 \item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy

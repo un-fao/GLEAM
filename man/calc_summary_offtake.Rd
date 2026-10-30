@@ -22,14 +22,16 @@ calc_summary_offtake(
 \item{cohort_offtake_heads}{Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year)
 (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 
-\item{simulation_duration}{Numeric. Length of the assessment period (days)}
+\item{simulation_duration}{Numeric. Length of the assessment period (days).}
 }
 \value{
 A named list with:
 \describe{
 \item{stock_variation_heads}{Numeric vector of length 6. Change in population size between the start and end of the year for each sex–age cohort (# heads) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
-\item{offtake_heads}{Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
-\item{offtake_heads_assessment}{Numeric vector of length 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
+\item{offtake_heads}{Numeric vector of length 6. Total number of animals removed
+from each cohort over the full 365-day simulation horizon (# heads/year).}
+\item{offtake_heads_assessment}{Numeric vector of length 6. Total number of animals
+removed from each cohort over the assessment period (# heads/assessment period).}
 \item{offtake_rate_to_stock_start}{Numeric vector of length 6. Offtake rate relative to the starting population size in each sex–age cohort (fraction) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}) }
 \item{offtake_rate_to_stock_average}{Numeric vector of length 6. Offtake rate relative to the average population size in each sex–age cohort (fraction) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
 \item{offtake_stock_variation_heads}{Numeric vector of length 6. Sum of offtake and stock variation for each sex–age cohort over the year (# heads) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}

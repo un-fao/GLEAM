@@ -18,18 +18,19 @@
 #'         \item \code{CML}: camels
 #'         \item \code{CHK}: chickens
 #'       }}
-#'     \item{cohort_short}{Character. Sex- and age-specific cohort code. Supported values include:
+#'     \item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+#'       the production stage of the animals. Supported values include:
 #'       \itemize{
-#'         \item \code{FA}: adult females
-#'         \item \code{FS}: sub-adult females
-#'         \item \code{FJ}: juvenile females
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
 #'         \item \code{FN}: non-demographic females
-#'         \item \code{MA}: adult males
-#'         \item \code{MS}: sub-adult males
-#'         \item \code{MJ}: juvenile males
 #'         \item \code{MN}: non-demographic males
 #'       }}
-#'     \item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads).}
+#'     \item{cohort_stock_size}{Numeric. Average population size of the assessed cohort (# heads).}
 #'     \item{\strong{Feed variables}}{
 #'       \describe{
 #'         \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
@@ -83,8 +84,7 @@
 #'   \describe{
 #'     \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 #'     to the same herd.}
-#'     \item{species_short}{Character. Code identifying the livestock species.
-#'     Supported values include PGS, CML, CTL, BFL, SHP, GTS}
+#'     \item{species_short}{Character. Code identifying the livestock species.}
 #'     \item{variable_name}{Character. Names of emission variables to which
 #'     allocation should be applied (e.g., "ch4_enteric", "ch4_manure_pasture",
 #'     "ch4_manure_burned", "ch4_manure_other", "n2o_manure_pasture_direct",
@@ -96,7 +96,7 @@
 #'     "n2o_ration_fertilizer", "n2o_ration_manure_applied",
 #'     "n2o_ration_crop_residues", "ch4_ration_rice")}
 #'     \item{commodity_name}{Character. List of commodity categories to which emissions may be allocated.
-#'     List = c("None", "Milk", "Meat", "Fibre", "Work", "Eggs")}
+#'     List = c("Other", "Milk", "Meat", "Fibre", "Work", "Eggs")}
 #'     \item{commodity_type}{Character. Commodity (commodity_name) grouping, either
 #'     \code{"Edible"} or \code{"Non-Edible"}.}
 #'     \item{allocation_share}{Numeric. Allocation share assigned to the commodity for the corresponding emission source (fraction).}

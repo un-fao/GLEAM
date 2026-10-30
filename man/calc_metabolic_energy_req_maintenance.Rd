@@ -30,16 +30,16 @@ Supported values include:
 \item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
 
@@ -53,7 +53,7 @@ Required only for species = CML, CTL, BFL, SHP, and GTS.}
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for
 each sex-age cohort (fraction).}
 
-\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days)}
+\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
 
 \item{average_annual_temperature}{Numeric. Average annual ambient temperature
 (degrees C). Required for \code{CHK}.}
@@ -63,18 +63,19 @@ each sex-age cohort (fraction).}
 run-level pipeline this is fixed internally at
 \eqn{24.54 - 5.65 = 18.89} degrees C.}
 
-\item{nondemo_productive_phase_id}{Numeric. Optional productive phase
-identifier for non-demographic cohorts.}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2.}
 
-\item{is_egg_producing}{Logical. Cohort-level flag identifying the laying
-cohort for \code{CHK}. This can be \code{TRUE} only for \code{FA} and for
-\code{FN} with \code{nondemo_productive_phase_id = 2}.}
+\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for \code{FN}
+with \code{nondemo_productive_phase_id = 2}.}
 }
 \value{
-Numeric. Energy required for maintenance, defined as the amount of energy needed to
-keep the animal at equilibrium such that body energy is neither gained nor lost.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
-CML and PGS (MJ/head/day).
+Numeric. Energy required for maintenance, defined as the amount of energy
+needed to keep the animal at equilibrium such that body energy is neither gained nor
+lost (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as
+metabolizable energy for CML, PGS, and CHK.
 }
 \description{
 Calculates the energy requirement for maintenance by cohort (MJ/head/day),

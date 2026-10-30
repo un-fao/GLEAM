@@ -135,7 +135,7 @@ calc_milk_allocation_energy <- function(
 #'     \item \code{GTS}: goats
 #'     \item \code{CHK}: chickens
 #'   }
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -144,6 +144,8 @@ calc_milk_allocation_energy <- function(
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param live_weight_cohort_at_slaughter Numeric. Live weight at slaughter for animals removed from the cohort (kg).
 #' @param live_weight_at_birth Numeric. Live weight of the animal at birth (kg).
@@ -151,8 +153,9 @@ calc_milk_allocation_energy <- function(
 #' cohort (kg/cohort/assessment period).
 #' @param ratio_me_to_ne Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
 #' species_short = CML.
-#' @param nondemo_productive_phase_id Numeric. Optional productive phase
-#'   identifier for non-demographic cohorts.
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase identifier for
+#'   non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+#'   and optionally \code{2} for phase 2.
 #' @param is_egg_producing Logical. Cohort-level flag identifying egg-producing
 #'   \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
 #'   \code{FN} with \code{nondemo_productive_phase_id = 2}.
@@ -351,8 +354,7 @@ calc_meat_allocation_energy <- function(
 #'     \item \code{GTS}: goats
 #'     \item \code{CHK}: chickens
 #'   }
-#' @param cohort_stock_size Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
-#' FS, FA, MJ, MS, MA).
+#' @param cohort_stock_size Numeric. Average population size of the assessed cohort (# heads).
 #' @param metabolic_energy_req_fibre_production Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 #' Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
 #' for CML.
@@ -480,7 +482,7 @@ calc_fibre_allocation_energy <- function(
 #'     \item \code{SHP}: sheep
 #'     \item \code{GTS}: goats
 #'   }
-#' @param cohort_stock_size Numeric. Population size in the cohort at the start of the assessment period (heads).
+#' @param cohort_stock_size Numeric. Average population size of the assessed cohort (# heads).
 #' @param metabolic_energy_req_work Numeric. Energy required for work, used to estimate the energy required for draught
 #' power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
 #' SHP, GTS and as metabolizable energy for CML and PGS.
@@ -595,11 +597,23 @@ calc_work_allocation_energy <- function(
 #' (MJ/cohort/assessment period) for chicken adult females.
 #'
 #' @param species_short Character. Code identifying the livestock species.
-#' @param cohort_short Character. Sex- and age-specific cohort code.
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
+#'   production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
+#'   }
 #' @param egg_production_mass_cohort Numeric. Total egg mass produced over the
 #'   assessment period by cohort (kg/cohort/assessment period).
-#' @param nondemo_productive_phase_id Numeric. Optional productive phase
-#'   identifier for non-demographic cohorts.
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase identifier for
+#'   non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+#'   and optionally \code{2} for phase 2.
 #' @param is_egg_producing Logical. Cohort-level flag identifying egg-producing
 #'   \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
 #'   \code{FN} with \code{nondemo_productive_phase_id = 2}.
@@ -662,7 +676,7 @@ calc_egg_allocation_energy <- function(
 #' @param vars_to_sum Character vector. Names of numeric cohort-level variables to be summed across cohorts to produce
 #' herd-level totals (e.g., meat_allocation_energy, milk_allocation_energy, fibre_allocation_energy,
 #' work_allocation_energy, egg_allocation_energy)
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -671,6 +685,8 @@ calc_egg_allocation_energy <- function(
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
 #'   }
 #'
 #' @return A `data.table` at herd scale, in which selected cohort-level variables have been summed across all cohorts
@@ -726,7 +742,7 @@ calc_cohort_to_herd_aggregation <- function(
 #' period).
 #' @param work_allocation_energy Numeric vector. Energy required to provide all draught power (traction/work) by cohort
 #' (MJ/cohort/assessment period).
-#' @param egg_allocation_energy Numeric vector. Energy required to produce all eggs during the assessment period
+#' @param egg_allocation_energy Numeric vector. Energy required to produce all eggs during the assessment period by cohort
 #' (MJ/cohort/assessment period).
 #'
 #' @return A named list of numeric vectors with same length as input, containing:

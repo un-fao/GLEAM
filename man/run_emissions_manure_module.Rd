@@ -16,8 +16,8 @@ run_emissions_manure_module(
 input table with the following minimum data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
-production stage of the animals. Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -28,7 +28,9 @@ production stage of the animals. Supported values include:
 \item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
-\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). Preserved in the output and used for matching when the manure fractions specify phases.}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+phase 1 and optionally \code{2} for phase 2.}
 \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 \item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
@@ -40,8 +42,8 @@ production stage of the animals. Supported values include:
 with:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
-production stage of the animals. Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -52,7 +54,11 @@ production stage of the animals. Supported values include:
 \item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
-\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). Omit this column or leave it entirely missing to use the same manure-management fractions for each phase of a cohort.}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+phase 1 and optionally \code{2} for phase 2. Omit this column or leave it
+entirely missing to use the same manure-management fractions for each phase of a
+cohort.}
 \item{manure_management_system}{Character. Name identifying the manure management system. The identifiers mms_pasture and mms_burned are reserved for manure deposited on pasture and manure burned for fuel, respectively. No specific naming convention is required for other manure management systems, which are grouped and handled as “other” systems.}
 \item{manure_management_system_fraction}{Numeric. Fraction of total manure excreted by animals in a given herd and cohort that is handled in a specific manure management system. Values range from 0 to 1. Fractions must sum to 1 within each herd and cohort, and within each productive phase when phases are specified.}
 }}

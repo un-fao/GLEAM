@@ -69,7 +69,7 @@ so that cumulative survival over the full phase duration
 Daily mortality is calculated as:
 \deqn{
 death\_rate\_daily\_nondemo =
-1 - (1 - death_rate_nondemo_phase)^{1 / productive_phase_nondemo_duration}
+1 - (1 - death\_rate\_nondemo\_phase)^{1 / productive\_phase\_nondemo\_duration}
 }
 
 and the corresponding daily survival probability is:
@@ -82,7 +82,7 @@ The number of simulated days is limited by both the total phase duration
 and the maximum number of days allowed for the current simulation step:
 \deqn{
 time\_simulated\_nondemographic =
-\min(max_simulation_days_nondemo_phase,\ productive_phase_nondemo_duration)
+\min(max\_simulation\_days\_nondemo\_phase,\ productive\_phase\_nondemo\_duration)
 }
 
 End-of-phase stock is then calculated by applying constant daily survival
@@ -105,7 +105,7 @@ case, mortality is set to zero, simulated time is set to zero, and both
 starting and ending stock are returned as zero.
 
 No rounding is applied to stock values. Therefore, fractional values may
-occur in \code{cohort_stock_nondemo$end}.
+occur in \code{cohort_stock_nondemo_{end}}.
 
 This function is part of the \code{\link[=run_nondemographic_herd_module]{run_nondemographic_herd_module()}}.
 }

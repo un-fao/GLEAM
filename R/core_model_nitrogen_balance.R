@@ -58,16 +58,16 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #'         \item \code{GTS}: goats
 #'         \item \code{CHK}: chickens
 #'         }
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
 #'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 #'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{FN}: non-demographic females
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
 #'     \item \code{MN}: non-demographic males
 #'   }
 #' @param milk_protein_fraction Numeric. Milk protein fraction (kg protein / kg milk). 
@@ -93,13 +93,13 @@ calc_nitrogen_intake <- function(ration_intake, ration_nitrogen) {
 #' @param cohort_duration_days Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ} cohorts: 3 days.
 #' @param egg_human_consumption_yield Numeric. Number of eggs produced for human
 #'   consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.
-#' @param egg_average_weight Numeric. Average egg weight (kg/egg). Used for
-#'   \code{CHK} egg-producing cohorts.
-#' @param nondemo_productive_phase_id Numeric. Optional productive phase
-#'   identifier for non-demographic cohorts.
-#' @param is_egg_producing Logical. Cohort-level flag identifying food-egg-producing
-#'   \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
-#'   \code{FN} with \code{nondemo_productive_phase_id = 2}.
+#' @param egg_average_weight Numeric. Average egg weight (kg/egg).
+#' @param nondemo_productive_phase_id Numeric. Optional productive phase identifier for
+#'   non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+#'   and optionally \code{2} for phase 2.
+#' @param is_egg_producing Logical. Cohort-level flag identifying egg-producing
+#'   \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for \code{FN}
+#'   with \code{nondemo_productive_phase_id = 2}.
 #'
 #' @return Numeric. Daily nitrogen retention in animal body tissues and products
 #' (e.g., growth, pregnancy, milk...) (kg N/head/day)

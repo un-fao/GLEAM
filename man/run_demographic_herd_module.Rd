@@ -18,7 +18,8 @@ run_demographic_herd_module(
 \item{cohort_level_data}{A \code{data.table} with the one row per herd and cohort, and the following mandatory columns:
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{\code{cohort_short}}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+\item{\code{cohort_short}}{Character. Sex-specific cohort code describing the age
+and/or the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -26,11 +27,13 @@ run_demographic_herd_module(
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
-}
-}
-\item{\code{cohort_duration_days}}{Numeric vector of length 6. Amount of time that each animal spends in a specific cohort (days).}
+}}
+\item{\code{cohort_duration_days}}{Numeric vector of length 6. Amount of time that
+each animal spends in a specific cohort (days). For \code{CHK}, suggested value
+for \code{FJ} and \code{MJ} cohorts: 3 days.}
 \item{\code{offtake_rate}}{Numeric vector of length 6. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
-\item{\code{death_rate}}{Numeric vector of length 6. Fraction of deaths in a herd over a year for each sex-age cohort (fraction).}
+\item{\code{death_rate}}{Numeric vector of length 6. Fraction of animals dying in
+the assessed cohort over one year for demographic cohorts (fraction).}
 }}
 
 \item{herd_level_data}{A \code{data.table} with one row per herd, and the following mandatory columns:
@@ -44,7 +47,8 @@ born per parturition (# offspring/parturition). For chickens, hatchability of
 eggs laid for reproduction, calculated as the number of chicks hatched divided by
 the number of eggs laid for reproduction (fraction).}
 \item{\code{birth_fraction_female}}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
-\item{\code{herd_size_total}}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
+\item{\code{herd_size_total}}{Numeric. Total demographic population size at the start
+of the year, including all cohorts (# heads)}
 \item{\code{prop_nondemo_mal_juv}}{Numeric. Fraction of male juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
 \item{\code{prop_nondemo_fem_juv}}{Numeric. Fraction of female juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
 }}
@@ -69,12 +73,20 @@ A named list with two elements:
 \item{\code{cohort_level_results}}{A \code{data.table} with one row per herd and cohort containing all original
 \code{cohort_level_data} columns plus the following simulation results:
 \describe{
-\item{\code{cohort_stock_size_unscaled}}{Numeric. Average population size for the assessed cohort, not scaled to the total livestock population (herd_size_total), (# heads). This corresponds to \code{cohort_stock_average} returned by \code{\link{calc_projected_population_size}}}
-\item{\code{cohort_stock_size_scaled}}{Numeric. Average population size for the assessed cohort, scaled to the total livestock population (herd_size_total), (# heads). This corresponds to \code{cohort_stock_start} returned by \code{\link{calc_projected_population_size}}}
-\item{\code{offtake_heads_unscaled}}{Numeric. Total number of animals removed from the cohort over the full 365-day simulation horizon, not scaled to the cohort population at the start of the assessment period  (# heads).}
-\item{\code{offtake_heads_assessment_unscaled}}{Numeric. Total number of animals removed from the cohort over 'simulation_duration', not scaled to the cohort population at the start of the assessment period (# heads/assessment period).}
-\item{\code{offtake_heads_scaled}}{Numeric. Total number of animals removed from the cohort over the full 365-day simulation horizon, scaled to the cohort population at the start of the assessment period (# heads).}
-\item{\code{offtake_heads_assessment_scaled}}{Numeric. Total number of animals removed from the cohort over 'simulation_duration', scaled to the cohort population at the start of the assessment period (# heads/assessment period).}
+\item{\code{cohort_stock_size_unscaled}}{Numeric. Average population size of the assessed cohort, not scaled to the total livestock population (herd_size_total) (# heads).}
+\item{\code{cohort_stock_size_scaled}}{Numeric. Average population size of the assessed cohort, scaled to the total livestock population (herd_size_total) (# heads).}
+\item{\code{offtake_heads_unscaled}}{Numeric. Total number of animals removed from
+each cohort over the full 365-day simulation horizon, not scaled to the
+cohort population at the start of the assessment (# heads).}
+\item{\code{offtake_heads_assessment_unscaled}}{Numeric. Total number of animals
+removed from each cohort over the assessment period, not scaled to the cohort
+population at the start of the assessment (# heads/assessment period).}
+\item{\code{offtake_heads_scaled}}{Numeric. Total number of animals removed from
+each cohort over the full 365-day simulation horizon, scaled to the cohort
+population at the start of the assessment (# heads).}
+\item{\code{offtake_heads_assessment_scaled}}{Numeric. Total number of animals
+removed from each cohort over the assessment period, scaled to the cohort
+population at the start of the assessment (# heads/assessment period).}
 \item{\code{cohort_stock_annual_nondemographic}}{Numeric. Annual number of animals diverted from the demographic pathway into the non-demographic pathway (# heads).}
 }
 }

@@ -85,7 +85,7 @@ calc_co2_ration_pesticides <- function(
 #' each herd_id and cohort, proportions should sum to 1.
 #' @param co2_feed_crop_activities Numeric. Carbon dioxide (CO2) emission factor of a
 #' feed component, representing CO2 emissions from on-field agricultural activities
-#' in feed production, expressed per kilogram of dry matter intake (kg CO2/kg DM).
+#' in feed production, expressed per kilogram of dry matter intake (g CO2/kg DM).
 #'
 #' @return Numeric. Contribution of an individual feed component to the diet-level
 #' average carbon dioxide (CO2) emission factor from on-field agricultural activities

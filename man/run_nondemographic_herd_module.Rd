@@ -16,14 +16,17 @@ run_nondemographic_herd_module(
 and productive phase, and the following mandatory columns:
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{\code{cohort_short}}{Character. Non-demographic cohort code describing the production block of the animals. Supported values include:
+\item{\code{cohort_short}}{Character. Sex-specific cohort code describing the age
+and/or the production stage of the animals. Supported values include:
 \itemize{
-\item \code{FN}: non-demographic female animals
-\item \code{MN}: non-demographic male animals
-}
-}
-\item{\code{nondemo_productive_phase_id}}{Numeric. Productive phase identifier within a cycle. \code{1} is required and \code{2} is optional.}
-\item{\code{death_rate}}{Numeric. Fraction of deaths occurring during the non-demographic productive phase (fraction).}
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
+}}
+\item{\code{nondemo_productive_phase_id}}{Numeric. Identifier of the productive phase
+for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+phase 1 and optionally \code{2} for phase 2.}
+\item{\code{death_rate}}{Numeric. Fraction of animals dying in the assessed cohort
+over the productive phase for non-demographic cohorts (fraction).}
 }
 \code{cohort_duration_days} is not required for \code{FN} and \code{MN}
 when phase durations are supplied in the herd table.}
@@ -31,17 +34,19 @@ when phase durations are supplied in the herd table.}
 \item{herd_level_data}{A \code{data.table} with one row per herd, and the following mandatory columns:
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd.}
-\item{\code{cohort_stock_fem_annual_nondemo}}{Numeric. Total annual entrants into the \code{FN} cohort block over the simulated period (# heads).}
-\item{\code{cohort_stock_mal_annual_nondemo}}{Numeric. Total annual entrants into the \code{MN} cohort block over the simulated period (# heads).}
-\item{\code{rest_between_nondemo_cycles_duration}}{Numeric. Duration of the resting or empty phase between non-demographic cycles (days).}
+\item{\code{cohort_stock_fem_annual_nondemo}}{Numeric. Annual number of female animals entering the non-demographic pathway (\code{FN}) over the 365-time horizon (# heads).}
+\item{\code{cohort_stock_mal_annual_nondemo}}{Numeric. Annual number of male animals entering the non-demographic pathway (\code{MN}) over the 365-time horizon (# heads).}
+\item{\code{rest_between_nondemo_cycles_duration}}{Numeric. Duration of the resting or
+empty phase between non-demographic cycles (days). Use \code{0} when there is no
+rest between cycles.}
 \item{\code{phase1_nondemo_fem_duration_days}}{Numeric. Duration of productive phase 1 for the female non-demographic cohort (\code{FN}) (days).}
 \item{\code{phase2_nondemo_fem_duration_days}}{Numeric. Duration of productive phase 2 for the female non-demographic cohort (\code{FN}) (days).}
-\item{\code{phase1_nondemo_mal_duration_days}}{Numeric. Duration of productive phase 1 for the male non-demographic cohort (\code{MN}) (days).}
+\item{\code{phase1_nondemo_mal_duration_days}}{Numeric. Duration of productive phase 1
+for the male nondemographic cohort (\code{MN}) (days).}
 \item{\code{phase2_nondemo_mal_duration_days}}{Numeric. Duration of productive phase 2 for the male non-demographic cohort (\code{MN}) (days).}
 }}
 
-\item{simulation_duration}{Numeric. Length of the reporting period used to scale non-demographic outputs (days).
-Defaults to \code{365}.}
+\item{simulation_duration}{Numeric. Length of the assessment period (days).}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during simulation.
 Defaults to \code{TRUE}.}
@@ -53,24 +58,38 @@ A named list with two elements:
 non-demographic cohort block, and productive phase,
 containing the original \code{cohort_level_data} columns plus:
 \describe{
-\item{\code{cohort_duration_days}}{Numeric. Amount of time that each animal
-spends in a specific cohort and production phase (days). For non-demographic
-cohorts (\code{FN}and \code{MN}), \code{cohort_duration_days} is not required when
-phase durations are supplied in the herd table. The code fills it
-from the herd values, which override any cohort values. If a herd
-value is missing, the cohort value is used instead.}
-\item{\code{cohort_stock_size_unscaled}}{Numeric. Average population size for the assessed cohort, not scaled to the total livestock population (herd_size_total), (# heads).}
-\item{\code{partial_nondemo_phase_duration}}{Numeric. Duration of the terminal partial productive phase occurring within the fixed 365-day simulation horizon (days).}
-\item{\code{offtake_heads_unscaled}}{Numeric. Total number of animals removed from the cohort over the full 365-day simulation horizon (# heads), not scaled to the cohort population at the start of the assessment period.}
-\item{\code{offtake_heads_assessment_unscaled}}{Numeric. Total number of animals removed from the cohort over 'simulation_duration' (# heads/assessment period), not scaled to the cohort population at the start of the assessment period.}
-\item{\code{number_full_nondemo_cycles}}{Integer. Number of complete cycles fully contained within the fixed 365-day simulation horizon (# cycles).}
-\item{\code{total_nondemo_cycle_starts_to_distribute}}{Integer. Total number of cycle starts within the fixed 365-day simulation horizon used to distribute annual entrants (# cycle starts).}
+\item{\code{cohort_duration_days}}{Numeric. Amount of time that each animal spends
+in a specific cohort and production phase (days). For \code{CHK}, suggested
+value for \code{FJ} and \code{MJ} cohorts: 3 days. Not required for
+\code{FN} and \code{MN} when phase durations are supplied in the herd
+table; the code fills it from the herd values, which override any cohort
+values.}
+\item{\code{cohort_stock_size_unscaled}}{Numeric. Average population size of the assessed cohort, not scaled to the total livestock population (herd_size_total) (# heads).}
+\item{\code{partial_nondemo_phase_duration}}{Numeric. Duration of the terminal
+partial productive phase falling within the fixed 365-day non-demographic
+simulation horizon (days).}
+\item{\code{offtake_heads_unscaled}}{Numeric. Total number of animals removed from
+each cohort over the full 365-day simulation horizon, not scaled to the
+cohort population at the start of the assessment (# heads).}
+\item{\code{offtake_heads_assessment_unscaled}}{Numeric. Total number of animals
+removed from each cohort over the assessment period, not scaled to the cohort
+population at the start of the assessment (# heads/assessment period).}
+\item{\code{number_full_nondemo_cycles}}{Integer. Number of complete cycles fully
+contained within the fixed 365-day time horizon for the assessed
+non-demographic cohort (\code{FN} or \code{MN}) (# cycles).}
+\item{\code{total_nondemo_cycle_starts_to_distribute}}{Integer. Total number of
+cycle starts within the fixed 365-day time horizon for the assessed
+non-demographic cohort (\code{FN} or \code{MN}) (# cycle starts).}
 }}
 \item{\code{herd_level_results}}{A \code{data.table} with one row per \code{herd_id}
 containing the original \code{herd_level_data} columns plus:
 \describe{
-\item{\code{total_nondemo_fem_duration_days}}{Numeric. Total duration of productive phases assigned to the female non-demographic cohort block (\code{FN}) (days).}
-\item{\code{total_nondemo_mal_duration_days}}{Numeric. Total duration of productive phases assigned to the male non-demographic cohort block (\code{MN}) (days).}
+\item{\code{total_nondemo_fem_duration_days}}{Numeric. Total duration of the
+productive non-demographic phases assigned to the female non-demographic
+cohort block (\code{FN}) (days).}
+\item{\code{total_nondemo_mal_duration_days}}{Numeric. Total duration of the
+productive non-demographic phases assigned to the male non-demographic cohort
+block (\code{MN}) (days).}
 }}
 }
 }

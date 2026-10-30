@@ -30,22 +30,23 @@ Supported values include:
 \item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
 
-\item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed
-to keep the animal at equilibrium such that body energy is neither gained nor lost.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+\item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance,
+defined as the amount of energy needed to keep the animal at equilibrium such that
+body energy is neither gained nor lost (MJ/head/day). Expressed as net energy for
+CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.}
 
 \item{reproductive_rate}{Numeric. Average annual number of parturitions per
 reproductive female (# parturitions/reproductive female/year). For chickens, annual
@@ -64,7 +65,9 @@ function such as pregnancy or lactation (days). Required only for PGS.}
 \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal
 is lactating (days). Required only for PGS.}
 
-\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a
+specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ}
+cohorts: 3 days.}
 
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 }

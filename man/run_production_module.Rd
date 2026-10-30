@@ -16,26 +16,27 @@ run_production_module(
 following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals.
-Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
+production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
 \item \code{FJ}: juvenile females (from birth to weaning)
-\item \code{FN}: non-demographic females
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
 }}
-\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
-for non-demographic cohorts (\code{FN}, \code{MN}). When present, production
-outputs are retained separately by phase.}
-\item{is_egg_producing}{Logical. Indicates whether the cohort is a food-egg-producing
-chicken cohort. Used only for \code{CHK}; may be \code{TRUE} only for
-\code{FA} or for \code{FN} in laying phase 2.}
-\item{cohort_stock_size}{Numeric. Average population size for the assessed cohort (# heads).}
-\item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period for the assessed cohort (# heads / assessment period).}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1 and
+optionally \code{2} for phase 2.}
+\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for \code{FN} with
+\code{nondemo_productive_phase_id = 2}.}
+\item{cohort_stock_size}{Numeric. Average population size of the assessed cohort (# heads).}
+\item{offtake_heads_assessment}{Numeric. Total number of animals removed from each
+cohort over the assessment period (# heads/assessment period).}
 \item{live_weight_cohort_at_slaughter}{Numeric. Live weight at slaughter for animals removed from the cohort (kg).}
 }}
 
@@ -76,7 +77,7 @@ Fat-protein-corrected milk (FPCM), (kg protein/kg milk). Suggested value = 0.033
 \item{milk_lactose_fraction_standard}{Numeric. Standard lactose content of milk, used to calculate
 Fat-protein-corrected milk (FPCM), (kg lactose/kg milk). Suggested value = 0.048.}
 \item{egg_human_consumption_yield}{Numeric. Number of eggs produced for human consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.}
-\item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}.}
+\item{egg_average_weight}{Numeric. Average egg weight (kg/egg).}
 \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
 Required only for species = CML, SHP, and GTS.}
 \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's carcass weight to its live weight
@@ -115,11 +116,11 @@ produced over the assessment period by cohort (kg/cohort/assessment period).}
 after dressing and bone removal) produced
 over the assessment period by cohort (kg protein/cohort/assessment period).}
 \item{egg_production_number_cohort}{Numeric. Total egg output over the assessment period
-by cohort (eggs/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
-\item{egg_production_mass_cohort}{Numeric. Total egg mass output over the assessment period
-by cohort (kg/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
+by cohort (eggs/cohort/assessment period).}
+\item{egg_production_mass_cohort}{Numeric. Total egg mass produced over the assessment period
+by cohort (kg/cohort/assessment period).}
 \item{egg_production_protein_cohort}{Numeric. Total egg protein output over the assessment period
-by cohort (kg protein/cohort/assessment period). Returned as 0 for non-egg-producing cohorts.}
+by cohort (kg protein/cohort/assessment period).}
 }
 }
 \description{

@@ -12,8 +12,7 @@
 #'   representing the total chemical energy released upon complete combustion of
 #'   the feed (MJ/kg DM).
 #' @param feed_metabolizable_energy_chicken Numeric. Metabolizable energy content
-#'   of a feed component for chickens (MJ/kg DM). Defaults to \code{NA_real_};
-#'   missing values produce a zero chicken digestibility fraction.
+#'   of a feed component for chickens (MJ/kg DM).
 #'
 #' @return List with elements:
 #'   \describe{

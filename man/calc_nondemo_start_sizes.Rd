@@ -15,10 +15,9 @@ entering the nondemographic production pathway over the simulated period
 for the assessed cohort block (\code{FN} or \code{MN})
 (heads / simulated period).}
 
-\item{total_nondemo_cycle_starts_to_distribute}{Integer. Total number of
-cycle starts within the fixed 365-day time horizon for the assessed
-nondemographic cohort (\code{FN} or \code{MN}) (cycle starts / simulated
-period).}
+\item{total_nondemo_cycle_starts_to_distribute}{Integer. Total number of cycle starts
+within the fixed 365-day time horizon for the assessed non-demographic cohort
+(\code{FN} or \code{MN}) (# cycle starts).}
 }
 \value{
 A named list with the following element:

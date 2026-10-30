@@ -51,9 +51,12 @@ calc_fecundity_rates <- function(
 #' across different sex-age cohorts. Converts annual inputs to daily hazards, then derives daily probabilities
 #' from those hazards.
 #'
-#' @param cohort_duration_days Numeric vector of length 6. Amount of time that each animal spends in a specific cohort (days).
+#' @param cohort_duration_days Numeric vector of length 6. Amount of time that each
+#'   animal spends in a specific cohort (days). For \code{CHK}, suggested value for
+#'   \code{FJ} and \code{MJ} cohorts: 3 days.
 #' @param offtake_rate Numeric vector of length 6. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).
-#' @param death_rate Numeric vector of length 6. Fraction of deaths in a herd over a year for each sex-age cohort (fraction)
+#' @param death_rate Numeric vector of length 6. Fraction of animals dying in the
+#'   assessed cohort over one year for demographic cohorts (fraction).
 #'
 #' @return A named list with:
 #' \describe{
@@ -501,7 +504,7 @@ calc_steady_state_structure <- function(
 #'   \item{cohort_stock_end_exact_simulated}{Numeric vector of length 10. Population size in each of 10 sex–age cohort at the end of the year, based on a demographic daily simulation over 365 days (# heads)
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 #'   \item{cohort_stock_average}{Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts over the year (# heads). Estimated from cohort_stock_start and cohort_stock_end_projected  (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
-#'   \item{cohort_stock_annual_nondemographic}{Numeric vector of length 6. Total number of animals entering the non-demographic component of the model over the simulated period, disaggregated by demographic sex–age cohorts (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})} (heads).
+#'   \item{cohort_stock_annual_nondemographic}{Numeric vector of length 6. Annual number of animals diverted from the demographic pathway into the non-demographic pathway (# heads), disaggregated by demographic sex–age cohorts (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
 #'   \item{cohort_offtake_heads}{Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year)
 #'   (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)}
 #' }
@@ -735,13 +738,15 @@ calc_projected_population_size <- function(
 #' @param cohort_stock_average Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts over the year (# heads). Estimated from cohort_stock_start and cohort_stock_end_projected  (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})
 #' @param cohort_offtake_heads Numeric vector of length 10. Total number of animals removed from the herd over the year, by 10 sex–age cohorts (heads/year)
 #' (cohorts= \code{FB}: Female Birth, \code{FJ}: Female Juvenile, \code{FS}: Female Sub-adult, \code{FA}: Female Adult, \code{FC}: Female Culling, \code{MB}: Male Birth, \code{MJ}: Male Juvenile, \code{MS}: Male Sub-adult, \code{MA}: Male Adult, \code{MC}: Male Culling)
-#' @param simulation_duration Numeric. Length of the assessment period (days)
+#' @param simulation_duration Numeric. Length of the assessment period (days).
 #'
 #' @return A named list with:
 #' \describe{
 #'   \item{stock_variation_heads}{Numeric vector of length 6. Change in population size between the start and end of the year for each sex–age cohort (# heads) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
-#'   \item{offtake_heads}{Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
-#'   \item{offtake_heads_assessment}{Numeric vector of length 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
+#'   \item{offtake_heads}{Numeric vector of length 6. Total number of animals removed
+#'   from each cohort over the full 365-day simulation horizon (# heads/year).}
+#'   \item{offtake_heads_assessment}{Numeric vector of length 6. Total number of animals
+#'   removed from each cohort over the assessment period (# heads/assessment period).}
 #'   \item{offtake_rate_to_stock_start}{Numeric vector of length 6. Offtake rate relative to the starting population size in each sex–age cohort (fraction) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}) }
 #'   \item{offtake_rate_to_stock_average}{Numeric vector of length 6. Offtake rate relative to the average population size in each sex–age cohort (fraction) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}
 #'   \item{offtake_stock_variation_heads}{Numeric vector of length 6. Sum of offtake and stock variation for each sex–age cohort over the year (# heads) (cohorts= \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})}

@@ -15,13 +15,25 @@ calc_egg_allocation_energy(
 \arguments{
 \item{species_short}{Character. Code identifying the livestock species.}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code.}
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
+production stage of the animals. Supported values include:
+\itemize{
+\item \code{FA}: adult females (from age at first parturition)
+\item \code{FS}: sub-adult females (from weaning to age at first parturition)
+\item \code{FJ}: juvenile females (from birth to weaning)
+\item \code{MA}: adult males (from age at first breeding)
+\item \code{MS}: sub-adult males (from weaning to age at first breeding)
+\item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
+}}
 
 \item{egg_production_mass_cohort}{Numeric. Total egg mass produced over the
 assessment period by cohort (kg/cohort/assessment period).}
 
-\item{nondemo_productive_phase_id}{Numeric. Optional productive phase
-identifier for non-demographic cohorts.}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2.}
 
 \item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
 \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for

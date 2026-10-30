@@ -23,9 +23,8 @@ Supported values include:
 \item \code{GTS}: goats
 \item \code{CHK}: chickens
 }}
-\item{cohort_short}{
-Character. Sex- and age-specific cohort code describing the production stage
-of the animals. Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -35,9 +34,10 @@ of the animals. Supported values include:
 \item \code{MJ}: juvenile males (from birth to weaning)
 \item \code{FN}: non-demographic females
 \item \code{MN}: non-demographic males
-}
-}
-\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for non-demographic cohorts (\code{FN}, \code{MN}). When present, ration summaries are computed separately by phase.}
+}}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+phase 1 and optionally \code{2} for phase 2.}
 \item{feed_id}{Character. Unique identifier for the feed component, used
 to join feed ration data with feed parameter tables.}
 \item{feed_name}{Character. Feed component name (optional, for readability and
@@ -74,8 +74,8 @@ content of a feed component for chickens (MJ/kg DM).}
 that is excreted in urine for ruminants (fraction).}
 \item{feed_urinary_energy_pigs}{Numeric. Fraction of feed's gross energy
 that is excreted in urine for pigs (fraction).}
-\item{feed_ash}{Numeric. Average ash content by feed component, calculated
-as a fraction of the dry matter intake (g ash/100g DM).}
+\item{feed_ash}{Numeric. Average ash content by feed component, expressed as
+a fraction of the dry matter intake (g ash/100g DM).}
 \item{category}{Character. Feed category (optional). If provided, it should be
 used consistently  with \code{feed_id}, for a coherent result.}
 \item{feed_name}{Character. Feed component name (optional, for readability and
