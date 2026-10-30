@@ -170,13 +170,11 @@ feed, and nitrogen balance variables are scaled using cohort stock size and simu
 }
 \examples{
 \donttest{
-# Load cohort-level aggregation input
+# Load aggregation inputs (cohort-level data and herd-level allocation shares)
 aggregation_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/aggregation_input_chrt_data.csv",
   package = "gleam"
 ))
-
-# Load allocation shares (herd-level, long format)
 allocation_long <- data.table::fread(system.file(
   "extdata/run_modules_examples/aggregation_allocation_input_data.csv",
   package = "gleam"

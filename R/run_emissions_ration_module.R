@@ -185,26 +185,23 @@
 #'
 #' @examples
 #' \donttest{
-#' # Load cleaned example input from the package and compute the calculation of feed emission factors
-#'
-#' # Load table with ration shares
+#' # Load ration shares and feed emission factors
 #' rations_share <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/feed_rations_share_chrt.csv",
 #'   package = "gleam"
 #' ))
-#'
-#' # Load table with feed emission factors
 #' feed_emissions <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/feed_emission_factors.csv",
 #'   package = "gleam"
 #' ))
 #'
-#' # Run the code
-#' result <- run_emissions_ration_module(
+#' # Run feed emissions calculations
+#' results <- run_emissions_ration_module(
 #'   rations_share = rations_share,
 #'   feed_emissions = feed_emissions
 #' )
 #' }
+#'
 #' @export
 
 run_emissions_ration_module <- function(

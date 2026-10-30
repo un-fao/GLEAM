@@ -578,8 +578,10 @@ test_that("run_allocation_module requires explicit egg/allocation columns", {
     "egg_production_mass_cohort"
   )
 
-  non_chk_cohort <- cohort_level_data[species_short != "CHK"][, !"is_egg_producing"]
   non_chk_herd <- herd_level_data[species_short != "CHK"]
+  non_chk_cohort <- cohort_level_data[herd_id %in% non_chk_herd$herd_id][
+    , !"is_egg_producing"
+  ]
 
   expect_no_error(
     run_allocation_module(

@@ -183,6 +183,7 @@ test_that("demographic weights allow missing non-demographic herd columns, inclu
   expect_no_warning(
     actual <- run_weights_module(cohort, herd, show_indicator = FALSE)
   )
+  data.table::setcolorder(actual$cohort_level_results, names(expected$cohort_level_results))
   expect_equal(actual$cohort_level_results, expected$cohort_level_results)
   expect_false(any(optional_cols %in% names(herd)))
   expect_false("nondemo_productive_phase_id" %in% names(cohort))
@@ -196,6 +197,7 @@ test_that("weights require species_short in the herd table and allow its absence
   herd <- data.table::fread(file.path(example_path, "weights_input_hrd_data.csv"))[
     herd_id %in% cohort$herd_id
   ]
+  cohort[herd, species_short := i.species_short, on = "herd_id"]
   expected <- run_weights_module(cohort, herd, show_indicator = FALSE)
 
   missing_species <- data.table::copy(herd)

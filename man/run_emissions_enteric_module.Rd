@@ -79,12 +79,13 @@ emissions and performs the following calculation sequence:
 }
 \examples{
 \donttest{
-# Load example input (13 herds, including non-demographic phases 1 and 2)
-input_path <- system.file(
+# Load enteric emissions inputs (cohort-level)
+emissions_enteric_input_chrt_data <- data.table::fread(system.file(
   "extdata/run_modules_examples/emissions_enteric_input_chrt_data.csv",
   package = "gleam"
-)
-emissions_enteric_input_chrt_data <- data.table::fread(input_path)
+))
+
+# Run enteric emissions calculations
 results <- run_emissions_enteric_module(
   cohort_level_data = emissions_enteric_input_chrt_data
 )

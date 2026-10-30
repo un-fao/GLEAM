@@ -196,7 +196,7 @@
 #' 
 #' @examples
 #' \donttest{
-#' # Load herd simulation inputs (cohort- and herd-level)
+#' # Load demographic herd simulation inputs (cohort and herd-level)
 #' herd_simulation_chrt_dt <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/herd_simulation_input_chrt_data.csv",
 #'   package = "gleam"
@@ -206,16 +206,13 @@
 #'   package = "gleam"
 #' ))
 #'
-#' # Run herd simulation
+#' # Run demographic herd simulation
 #' results <- run_demographic_herd_module(
 #'   cohort_level_data = herd_simulation_chrt_dt,
 #'   herd_level_data = herd_simulation_hrd_dt,
 #'   simulation_duration = 365,
 #'   show_indicator = FALSE
 #' )
-#'
-#' # Access results
-#' names(results)
 #' }
 #'
 #' @export
