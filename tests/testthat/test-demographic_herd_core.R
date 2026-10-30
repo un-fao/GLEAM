@@ -6,8 +6,8 @@ prop_nondemo_zero <- c(FJ = 0, FS = 0, FA = 0, MJ = 0, MS = 0, MA = 0)
 # ---- test calc_fecundity_rates ----
 test_that("calc_fecundity_rates returns expected output", {
   res <- calc_fecundity_rates(
-    parturition_rate = 0.8,
-    litter_size = 2,
+    reproductive_rate = 0.8,
+    offspring_per_reproductive_event = 2,
     birth_fraction_female = 0.5
   )
 

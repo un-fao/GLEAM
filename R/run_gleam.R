@@ -137,13 +137,13 @@
 #'       cohorts (FJ, MJ) (fraction).}
 #'     \item{lactation_duration}{Numeric. Lactation period length (days).
 #'       Required for PGS.}
-#'     \item{parturition_rate}{Numeric. Average annual number of parturitions
-#'       per female animal (# parturitions/adult female/year). For \code{CHK},
-#'       this corresponds to eggs laid for reproduction by \code{FA} only,
-#'       regardless of its food-egg flag.}
-#'     \item{litter_size}{Numeric. Average number of offspring produced per
-#'       parturition (# offspring/parturition). For \code{CHK}, this can be
-#'       interpreted as offspring produced per reproductive event.}
+#'     \item{reproductive_rate}{Numeric. Average annual number of parturitions per
+#'       reproductive female (# parturitions/reproductive female/year). For chickens,
+#'       annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
+#'     \item{offspring_per_reproductive_event}{Numeric. Average number of offspring born
+#'       per parturition (# offspring/parturition). For chickens, hatchability of eggs
+#'       laid for reproduction, calculated as the number of chicks hatched divided by
+#'       the number of eggs laid for reproduction (fraction).}
 #'     \item{average_annual_temperature}{Numeric. Average annual temperature
 #'       (degrees C). Used for \code{CHK}.}
 #'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for

@@ -57,12 +57,17 @@
 #'     \item{milk_fat_fraction}{Numeric. Milk fat fraction (kg fat / kg milk). Required only for species = CML, CTL, BFL, SHP, and GTS.}
 #'     \item{non_productive_duration}{Numeric. Period during which the animal is not performing any productive physiological function such as pregnancy or lactation (days). Required only for PGS.}
 #'     \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
-#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). For \code{CHK}, this can be interpreted as offspring produced per reproductive event.}
+#'     \item{offspring_per_reproductive_event}{Numeric. Average number of offspring born
+#'     per parturition (# offspring/parturition). For chickens, hatchability of eggs
+#'     laid for reproduction, calculated as the number of chicks hatched divided by the
+#'     number of eggs laid for reproduction (fraction).}
 #'     \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
 #'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). Required only for PGS.}
-#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction by \code{FA} only, regardless of its food-egg flag.}
+#'     \item{reproductive_rate}{Numeric. Average annual number of parturitions per
+#'     reproductive female (# parturitions/reproductive female/year). For chickens,
+#'     annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
 #'     \item{average_annual_temperature}{Numeric. Average annual temperature (degrees C). Used for \code{CHK}.}
 #'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg). Used for \code{CHK}.}
 #'     \item{egg_human_consumption_yield}{Numeric. Number of eggs produced for human consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.}
@@ -252,12 +257,12 @@ run_metabolic_energy_req_module <- function(
       milk_fat_fraction = herd_level_data[.SD, on = "herd_id", x.milk_fat_fraction],
       non_productive_duration = herd_level_data[.SD, on = "herd_id", x.non_productive_duration],
       pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
-      litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
+      offspring_per_reproductive_event = herd_level_data[.SD, on = "herd_id", x.offspring_per_reproductive_event],
       death_rate_juvenile = herd_level_data[.SD, on = "herd_id", x.death_rate_juvenile],
       live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
       live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning],
       lactation_duration = herd_level_data[.SD, on = "herd_id", x.lactation_duration],
-      parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate]
+      reproductive_rate = herd_level_data[.SD, on = "herd_id", x.reproductive_rate]
     ),
     by = .I
   ]
@@ -296,7 +301,7 @@ run_metabolic_energy_req_module <- function(
       cohort_short = cohort_short,
       egg_human_consumption_yield = herd_level_data[.SD, on = "herd_id", x.egg_human_consumption_yield],
       egg_average_weight = herd_level_data[.SD, on = "herd_id", x.egg_average_weight],
-      parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
+      reproductive_rate = herd_level_data[.SD, on = "herd_id", x.reproductive_rate],
       nondemo_productive_phase_id = nondemo_productive_phase_id,
       is_egg_producing = is_egg_producing
     ),
@@ -310,8 +315,8 @@ run_metabolic_energy_req_module <- function(
       species_short = herd_level_data[.SD, on = "herd_id", x.species_short],
       cohort_short = cohort_short,
       metabolic_energy_req_maintenance = metabolic_energy_req_maintenance,
-      parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
-      litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
+      reproductive_rate = herd_level_data[.SD, on = "herd_id", x.reproductive_rate],
+      offspring_per_reproductive_event = herd_level_data[.SD, on = "herd_id", x.offspring_per_reproductive_event],
       pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
       non_productive_duration = herd_level_data[.SD, on = "herd_id", x.non_productive_duration],
       lactation_duration = herd_level_data[.SD, on = "herd_id", x.lactation_duration],

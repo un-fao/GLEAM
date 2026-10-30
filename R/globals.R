@@ -27,7 +27,7 @@ utils::globalVariables(c(
   "duration.MA", "duration.MJ", "duration.MS",
   "fecundity_female", "fecundity_male", "fem_fec",
   "female_birth_fraction", "has_all_cohorts", "herd_size_total",
-  "litter_size", "mal_fec", "missing_cohorts",
+  "offspring_per_reproductive_event", "mal_fec", "missing_cohorts",
   "mort_rate.FA", "mort_rate.FJ", "mort_rate.FS",
   "mort_rate.MA", "mort_rate.MJ", "mort_rate.MS",
   "offtake.FA", "offtake.FB", "offtake.FC", "offtake.FJ", "offtake.FS",
@@ -35,7 +35,7 @@ utils::globalVariables(c(
   "offtake_rate",
   "offtake_rate.FA", "offtake_rate.FJ", "offtake_rate.FS",
   "offtake_rate.MA", "offtake_rate.MJ", "offtake_rate.MS",
-  "parturition_rate",
+  "reproductive_rate",
   "potential_final_weight",
   "prop_nondemo_fem_juv", "prop_nondemo_mal_juv",
   "prob_death", "prob_death.FA", "prob_death.FB", "prob_death.FC",
@@ -128,11 +128,11 @@ utils::globalVariables(c(
   "x.egg_average_weight", "x.egg_human_consumption_yield",
   "x.fibre_yield_year",
   "x.lactating_females_fraction", "x.lactation_duration",
-  "x.litter_size",
+  "x.offspring_per_reproductive_event",
   "x.live_weight_at_birth", "x.live_weight_at_weaning",
   "x.milk_fat_fraction", "x.milk_yield_day",
   "x.lower_critical_temperature",
-  "x.non_productive_duration", "x.parturition_rate",
+  "x.non_productive_duration", "x.reproductive_rate",
   "x.pregnancy_duration", "x.species_short"
 ))
 
@@ -147,10 +147,10 @@ utils::globalVariables(c(
   # x.* join prefixes from herd_level_data
   "x.age_first_parturition",
   "x.egg_average_weight", "x.egg_human_consumption_yield",
-  "x.fibre_yield_year", "x.litter_size",
+  "x.fibre_yield_year", "x.offspring_per_reproductive_event",
   "x.live_weight_at_birth", "x.live_weight_at_weaning",
   "x.milk_protein_fraction", "x.milk_yield_day",
-  "x.parturition_rate", "x.pregnancy_duration",
+  "x.reproductive_rate", "x.pregnancy_duration",
   "x.species_short"
 ))
 

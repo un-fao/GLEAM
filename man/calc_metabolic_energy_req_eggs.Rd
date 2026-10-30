@@ -9,7 +9,7 @@ calc_metabolic_energy_req_eggs(
   cohort_short,
   egg_human_consumption_yield = NA_real_,
   egg_average_weight = NA_real_,
-  parturition_rate = NA_real_,
+  reproductive_rate = NA_real_,
   nondemo_productive_phase_id = NA_real_,
   is_egg_producing = FALSE
 )
@@ -44,8 +44,9 @@ consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.}
 
 \item{egg_average_weight}{Numeric. Average egg weight (kg/egg).}
 
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year).
-For \code{CHK}, this corresponds to eggs laid for reproduction by \code{FA} only.}
+\item{reproductive_rate}{Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens, annual
+number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
 
 \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
 for non-demographic cohorts (\code{FN}, \code{MN}).}
@@ -78,7 +79,7 @@ egg\_mass\_production =
 Human-consumption eggs per head per day equal
 \code{egg_human_consumption_yield / 365} when the food-egg flag is true,
 and zero otherwise. Reproductive eggs per head per day equal
-\code{parturition_rate / 365} for \code{FA}, and zero for other cohorts.
+\code{reproductive_rate / 365} for \code{FA}, and zero for other cohorts.
 
 Daily egg energy is then:
 

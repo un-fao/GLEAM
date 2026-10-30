@@ -40,7 +40,7 @@
 #'
 #' Herd dynamics result from:
 #' \itemize{
-#'   \item births (driven by \code{parturition_rate} and \code{litter_size})
+#'   \item births (driven by \code{reproductive_rate} and \code{offspring_per_reproductive_event})
 #'   \item natural deaths (driven by \code{death_rate})
 #'   \item removals by offtake (driven by \code{offtake_rate})
 #'   \item cohort aging / growth transitions (driven by \code{cohort_duration_days})
@@ -148,8 +148,13 @@
 #' @param herd_level_data A `data.table` with one row per herd, and the following mandatory columns:
 #'   \describe{
 #'     \item{`herd_id`}{Character. Unique identifier for the herd.}
-#'     \item{`parturition_rate`}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
-#'     \item{`litter_size`}{Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+#'     \item{`reproductive_rate`}{Numeric. Average annual number of parturitions per
+#'     reproductive female (# parturitions/reproductive female/year). For chickens,
+#'     annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
+#'     \item{`offspring_per_reproductive_event`}{Numeric. Average number of offspring
+#'     born per parturition (# offspring/parturition). For chickens, hatchability of
+#'     eggs laid for reproduction, calculated as the number of chicks hatched divided by
+#'     the number of eggs laid for reproduction (fraction).}
 #'     \item{`birth_fraction_female`}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
 #'     \item{`herd_size_total`}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
 #'     \item{`prop_nondemo_mal_juv`}{Numeric. Fraction of male juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
@@ -275,8 +280,8 @@ run_demographic_herd_module <- function(
     # Calculate fecundity rates (herd-level)
     # Fecundity rates represent the daily number of births per adult female
     fecundity_result <- calc_fecundity_rates(
-      parturition_rate = herd_params$parturition_rate,
-      litter_size = herd_params$litter_size,
+      reproductive_rate = herd_params$reproductive_rate,
+      offspring_per_reproductive_event = herd_params$offspring_per_reproductive_event,
       birth_fraction_female = herd_params$birth_fraction_female
     )
 

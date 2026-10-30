@@ -34,9 +34,9 @@ validate_run_metabolic_energy_req_module_inputs <- function(
     required_herd_cols <- c(
       required_herd_cols,
       "age_first_parturition", "lactating_females_fraction", "milk_yield_day", "milk_fat_fraction",
-      "non_productive_duration", "pregnancy_duration", "litter_size", "death_rate_juvenile",
+      "non_productive_duration", "pregnancy_duration", "offspring_per_reproductive_event", "death_rate_juvenile",
       "live_weight_at_birth", "live_weight_at_weaning",
-      "lactation_duration", "parturition_rate",
+      "lactation_duration", "reproductive_rate",
       "draught_work_hours_female", "draught_work_hours_male",
       "draught_fraction_female", "draught_fraction_male",
       "fibre_yield_year"
@@ -49,7 +49,7 @@ validate_run_metabolic_energy_req_module_inputs <- function(
       herd_level_data$herd_id[herd_level_data$species_short == "CHK"]
     if (any(chicken_rows & cohort_level_data$cohort_short == "FA")) {
       required_herd_cols <- c(
-        required_herd_cols, "egg_average_weight", "parturition_rate"
+        required_herd_cols, "egg_average_weight", "reproductive_rate"
       )
     }
 

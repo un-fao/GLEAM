@@ -19,8 +19,8 @@ age_first_parturition,110,TRUE,3300,TRUE
 lactating_females_fraction,0,TRUE,1,TRUE
 birth_fraction_female,0,TRUE,1,TRUE
 proportion_nondemographic,0,TRUE,1,TRUE
-litter_size,0.01,TRUE,25,TRUE
-parturition_rate,0.01,TRUE,Inf,TRUE
+offspring_per_reproductive_event,0.01,TRUE,25,TRUE
+reproductive_rate,0.01,TRUE,Inf,TRUE
 herd_size_total,1,TRUE,Inf,TRUE
 live_weight_female_adult,0,TRUE,Inf,TRUE
 live_weight_male_adult,0,TRUE,Inf,TRUE

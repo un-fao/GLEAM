@@ -182,7 +182,7 @@ validate_egg_inputs <- function(
     cohort_short,
     egg_human_consumption_yield = NA_real_,
     egg_average_weight = NA_real_,
-    parturition_rate = NA_real_,
+    reproductive_rate = NA_real_,
     nondemo_productive_phase_id = NA_real_,
     is_egg_producing = FALSE
 ) {
@@ -206,7 +206,7 @@ validate_egg_inputs <- function(
     validate_nonnegative_numeric(egg_human_consumption_yield)
   }
   if (has_reproductive_eggs) {
-    validate_nonnegative_numeric(parturition_rate)
+    validate_nonnegative_numeric(reproductive_rate)
   }
 }
 
@@ -224,12 +224,12 @@ validate_lactation_inputs <- function(
     milk_fat_fraction,
     non_productive_duration,
     pregnancy_duration,
-    litter_size,
+    offspring_per_reproductive_event,
     death_rate_juvenile,
     live_weight_at_birth,
     live_weight_at_weaning,
     lactation_duration,
-    parturition_rate
+    reproductive_rate
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
@@ -242,7 +242,7 @@ validate_lactation_inputs <- function(
     validate_param_range(lactating_females_fraction)
     validate_param_range(milk_yield_day)
     validate_param_range(milk_fat_fraction)
-    validate_param_range(parturition_rate)
+    validate_param_range(reproductive_rate)
     validate_param_range(live_weight_at_birth)
     validate_param_range(live_weight_at_weaning)
     if (live_weight_at_birth >= live_weight_at_weaning) {
@@ -251,13 +251,13 @@ validate_lactation_inputs <- function(
     return()
   }
 
-  # --- Sheep and goats: same as above plus litter_size ---
+  # --- Sheep and goats: same as above plus offspring_per_reproductive_event ---
   if (species_short %in% c("SHP", "GTS")) {
     validate_param_range(lactating_females_fraction)
     validate_param_range(milk_yield_day)
     validate_param_range(milk_fat_fraction)
-    validate_param_range(parturition_rate)
-    validate_param_range(litter_size)
+    validate_param_range(reproductive_rate)
+    validate_param_range(offspring_per_reproductive_event)
     validate_param_range(live_weight_at_birth)
     validate_param_range(live_weight_at_weaning)
     if (live_weight_at_birth >= live_weight_at_weaning) {
@@ -268,7 +268,7 @@ validate_lactation_inputs <- function(
 
   # --- Pigs: litter size, death rate, birth/weaning weights, reproductive durations ---
   if (species_short == "PGS") {
-    validate_param_range(litter_size)
+    validate_param_range(offspring_per_reproductive_event)
     validate_fraction(death_rate_juvenile)
     validate_param_range(live_weight_at_birth)
     validate_param_range(live_weight_at_weaning)
@@ -362,8 +362,8 @@ validate_pregnancy_inputs <- function(
     species_short,
     cohort_short,
     metabolic_energy_req_maintenance,
-    parturition_rate,
-    litter_size,
+    reproductive_rate,
+    offspring_per_reproductive_event,
     pregnancy_duration,
     non_productive_duration,
     lactation_duration,
@@ -378,7 +378,7 @@ validate_pregnancy_inputs <- function(
   # --- Cattle and buffalo: FA uses parturition + pregnancy duration; FS uses duration + offtake ---
   if (species_short %in% c("CTL", "BFL")) {
     validate_positive_numeric(metabolic_energy_req_maintenance)
-    validate_param_range(parturition_rate)
+    validate_param_range(reproductive_rate)
     validate_positive_numeric(pregnancy_duration)
     if (cohort_short == "FA") return()
     validate_param_range(cohort_duration_days)
@@ -390,7 +390,7 @@ validate_pregnancy_inputs <- function(
   if (species_short == "CML") {
     validate_positive_numeric(metabolic_energy_req_maintenance)
     if (cohort_short == "FA") {
-      validate_param_range(parturition_rate)
+      validate_param_range(reproductive_rate)
       return()
     }
     validate_positive_numeric(pregnancy_duration)
@@ -403,8 +403,8 @@ validate_pregnancy_inputs <- function(
   if (species_short %in% c("SHP", "GTS")) {
     validate_positive_numeric(metabolic_energy_req_maintenance)
     if (cohort_short == "FA") {
-      validate_param_range(parturition_rate)
-      validate_param_range(litter_size)
+      validate_param_range(reproductive_rate)
+      validate_param_range(offspring_per_reproductive_event)
       validate_positive_numeric(pregnancy_duration)
       return()
     }
@@ -416,7 +416,7 @@ validate_pregnancy_inputs <- function(
 
   # --- Pigs: FA uses litter + gest/lact/idle durations; FS also uses cohort_duration and offtake ---
   if (species_short == "PGS") {
-    validate_param_range(litter_size)
+    validate_param_range(offspring_per_reproductive_event)
     validate_positive_numeric(pregnancy_duration)
     validate_positive_numeric(non_productive_duration)
     validate_positive_numeric(lactation_duration)

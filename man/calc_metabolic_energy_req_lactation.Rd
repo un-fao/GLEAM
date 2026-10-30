@@ -12,12 +12,12 @@ calc_metabolic_energy_req_lactation(
   milk_fat_fraction = NA_real_,
   non_productive_duration = NA_real_,
   pregnancy_duration = NA_real_,
-  litter_size = NA_real_,
+  offspring_per_reproductive_event = NA_real_,
   death_rate_juvenile = NA_real_,
   live_weight_at_birth = NA_real_,
   live_weight_at_weaning = NA_real_,
   lactation_duration = NA_real_,
-  parturition_rate = NA_real_
+  reproductive_rate = NA_real_
 )
 }
 \arguments{
@@ -61,8 +61,10 @@ any productive physiological function such as pregnancy or lactation (days). Req
 
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 
-\item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition).
-This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{offspring_per_reproductive_event}{Numeric. Average number of offspring born per
+parturition (# offspring/parturition). For chickens, hatchability of eggs laid for
+reproduction, calculated as the number of chicks hatched divided by the number of
+eggs laid for reproduction (fraction).}
 
 \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).}
 
@@ -73,8 +75,9 @@ This value can be calculated as the total number of offspring born divided by th
 \item{lactation_duration}{Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days).
 Required only for PGS.}
 
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year).
-A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+\item{reproductive_rate}{Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens, annual
+number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
 }
 \value{
 Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
@@ -90,7 +93,7 @@ quantity of milk produced and a species-specific energy cost per unit of milk.
 
 Requirements are calculated only for cohort = \code{FA} (adult females) and are scaled
 by the proportion of lactating animals (\code{lactating_females_fraction}) or reproducing
-females (\code{parturition_rate}) within the cohort.
+females (\code{reproductive_rate}) within the cohort.
 
 \strong{Species-specific approach:}
 
@@ -134,7 +137,7 @@ milk\_for\_offspring =
 }
 
 For \strong{SHP} and \strong{GTS}, \code{milk_for_offspring} is multiplied by
-\code{litter_size} to account for multiple offspring per birth.
+\code{offspring_per_reproductive_event} to account for multiple offspring per birth.
 
 \strong{PGS} (NRC, 1998):
 

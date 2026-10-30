@@ -2,17 +2,17 @@
 #'
 #' @noRd
 validate_fecundity_inputs <- function(
-    parturition_rate,
-    litter_size,
+    reproductive_rate,
+    offspring_per_reproductive_event,
     birth_fraction_female
 ) {
-  validate_scalar_numeric(parturition_rate)
-  validate_scalar_numeric(litter_size)
+  validate_scalar_numeric(reproductive_rate)
+  validate_scalar_numeric(offspring_per_reproductive_event)
   validate_scalar_numeric(birth_fraction_female)
 
   # Enforce configured bounds
-    validate_param_range(parturition_rate)
-  validate_param_range(litter_size)
+    validate_param_range(reproductive_rate)
+  validate_param_range(offspring_per_reproductive_event)
   validate_param_range(birth_fraction_female)
 }
 

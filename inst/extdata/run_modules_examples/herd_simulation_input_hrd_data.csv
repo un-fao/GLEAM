@@ -1,4 +1,4 @@
-herd_id	parturition_rate	litter_size	birth_fraction_female	herd_size_total	prop_nondemo_fem_juv	prop_nondemo_mal_juv
+herd_id	reproductive_rate	offspring_per_reproductive_event	birth_fraction_female	herd_size_total	prop_nondemo_fem_juv	prop_nondemo_mal_juv
 1	0.8	1.	0.5	2.03e+07	0.	0.95
 2	0.684	1.	0.5	1e+04	0.	0.
 3	0.93	1.	0.5	5560000.	0.	0.

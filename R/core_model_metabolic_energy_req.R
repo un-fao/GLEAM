@@ -736,15 +736,18 @@ calc_metabolic_energy_req_growth <- function(
 #' @param non_productive_duration Numeric. Period during which the animal is not performing 
 #' any productive physiological function such as pregnancy or lactation (days). Required only for PGS.
 #' @param pregnancy_duration Numeric. Duration of pregnancy period (days).
-#' @param litter_size Numeric. Average number of offspring born per parturition (# offspring/parturition). 
-#' This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
+#' @param offspring_per_reproductive_event Numeric. Average number of offspring born per
+#' parturition (# offspring/parturition). For chickens, hatchability of eggs laid for
+#' reproduction, calculated as the number of chicks hatched divided by the number of
+#' eggs laid for reproduction (fraction).
 #' @param death_rate_juvenile Numeric. Fraction of deaths in a herd over a year for juvenile cohorts (i.e. FJ and MJ), (fraction).
 #' @param live_weight_at_birth Numeric. Live weight of the animal at birth (kg).
 #' @param live_weight_at_weaning Numeric. Live weight of the animal at weaning (kg).
 #' @param lactation_duration Numeric. Duration of the lactation period, defined as the number of days during which the animal is lactating (days). 
 #' Required only for PGS.
-#' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
-#' A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.
+#' @param reproductive_rate Numeric. Average annual number of parturitions per
+#' reproductive female (# parturitions/reproductive female/year). For chickens, annual
+#' number of eggs laid for reproduction per breeding hen (# eggs/hen/year).
 #'
 #' @return Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
 #'
@@ -755,7 +758,7 @@ calc_metabolic_energy_req_growth <- function(
 #' 
 #' Requirements are calculated only for cohort = \code{FA} (adult females) and are scaled
 #' by the proportion of lactating animals (\code{lactating_females_fraction}) or reproducing
-#' females (\code{parturition_rate}) within the cohort.
+#' females (\code{reproductive_rate}) within the cohort.
 #'
 #' \strong{Species-specific approach:}
 #'
@@ -799,7 +802,7 @@ calc_metabolic_energy_req_growth <- function(
 #' }
 #'
 #' For \strong{SHP} and \strong{GTS}, \code{milk_for_offspring} is multiplied by
-#' \code{litter_size} to account for multiple offspring per birth.
+#' \code{offspring_per_reproductive_event} to account for multiple offspring per birth.
 #'
 #' \strong{PGS} (NRC, 1998):
 #'
@@ -871,24 +874,24 @@ calc_metabolic_energy_req_lactation <- function(
     milk_fat_fraction = NA_real_,
     non_productive_duration = NA_real_,
     pregnancy_duration = NA_real_,
-    litter_size = NA_real_,
+    offspring_per_reproductive_event = NA_real_,
     death_rate_juvenile = NA_real_,
     live_weight_at_birth = NA_real_,
     live_weight_at_weaning = NA_real_,
     lactation_duration = NA_real_,
-    parturition_rate = NA_real_
+    reproductive_rate = NA_real_
 ) {
   # Validate inputs
   validate_lactation_inputs(
     species_short, cohort_short, lactating_females_fraction, milk_yield_day, milk_fat_fraction,
-    non_productive_duration, pregnancy_duration, litter_size, death_rate_juvenile, live_weight_at_birth,
-    live_weight_at_weaning, lactation_duration, parturition_rate
+    non_productive_duration, pregnancy_duration, offspring_per_reproductive_event, death_rate_juvenile, live_weight_at_birth,
+    live_weight_at_weaning, lactation_duration, reproductive_rate
   )
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short == "FA") {
       metabolic_energy_req_lactation <- ((milk_yield_day * lactating_females_fraction) +
-                                         (parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)) *
+                                         (reproductive_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)) *
         (milk_fat_fraction * 100 * 0.40 + 1.47)
     } else {
       metabolic_energy_req_lactation <- 0
@@ -896,7 +899,7 @@ calc_metabolic_energy_req_lactation <- function(
   } else if (species_short %in% c("CML")) {
     if (cohort_short == "FA") {
       metabolic_energy_req_lactation <- ((milk_yield_day * lactating_females_fraction) +
-                                         (parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)) * 4.063
+                                         (reproductive_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)) * 4.063
     } else {
       metabolic_energy_req_lactation <- 0
     }
@@ -905,7 +908,7 @@ calc_metabolic_energy_req_lactation <- function(
       # Includes effect of litter size and lambing interval
       metabolic_energy_req_lactation <- (
         (milk_yield_day * lactating_females_fraction) +
-          (litter_size * parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)
+          (offspring_per_reproductive_event * reproductive_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)
       ) * 4.6
     } else {
       metabolic_energy_req_lactation <- 0
@@ -914,7 +917,7 @@ calc_metabolic_energy_req_lactation <- function(
     if (cohort_short == "FA") {
       metabolic_energy_req_lactation <- (
         (milk_yield_day * lactating_females_fraction) +
-          (litter_size * parturition_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)
+          (offspring_per_reproductive_event * reproductive_rate * 5 * (live_weight_at_weaning - live_weight_at_birth) / 365)
       ) * 3
     } else {
       metabolic_energy_req_lactation <- 0
@@ -925,7 +928,7 @@ calc_metabolic_energy_req_lactation <- function(
     } else {
       # Pigs: adjustment for lactation period
       cadj <- lactation_duration / (non_productive_duration + pregnancy_duration + lactation_duration)
-      metabolic_energy_req_lactation <- litter_size * (1 - 0.5 * death_rate_juvenile) *
+      metabolic_energy_req_lactation <- offspring_per_reproductive_event * (1 - 0.5 * death_rate_juvenile) *
         ((0.02059 * (live_weight_at_weaning - live_weight_at_birth) * 1000 / lactation_duration) - (0.3766 / 0.67)) *
         cadj
     }
@@ -964,8 +967,9 @@ calc_metabolic_energy_req_lactation <- function(
 #' @param egg_human_consumption_yield Numeric. Number of eggs produced for human
 #'   consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.
 #' @param egg_average_weight Numeric. Average egg weight (kg/egg).
-#' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
-#' For \code{CHK}, this corresponds to eggs laid for reproduction by \code{FA} only.
+#' @param reproductive_rate Numeric. Average annual number of parturitions per
+#' reproductive female (# parturitions/reproductive female/year). For chickens, annual
+#' number of eggs laid for reproduction per breeding hen (# eggs/hen/year).
 #' @param nondemo_productive_phase_id Numeric. Optional productive phase identifier
 #'     for non-demographic cohorts (\code{FN}, \code{MN}).
 #' @param is_egg_producing Logical. Indicates whether the cohort produces eggs
@@ -992,7 +996,7 @@ calc_metabolic_energy_req_lactation <- function(
 #' Human-consumption eggs per head per day equal
 #' \code{egg_human_consumption_yield / 365} when the food-egg flag is true,
 #' and zero otherwise. Reproductive eggs per head per day equal
-#' \code{parturition_rate / 365} for \code{FA}, and zero for other cohorts.
+#' \code{reproductive_rate / 365} for \code{FA}, and zero for other cohorts.
 #'
 #' Daily egg energy is then:
 #'
@@ -1011,14 +1015,14 @@ calc_metabolic_energy_req_eggs <- function(
     cohort_short,
     egg_human_consumption_yield = NA_real_,
     egg_average_weight = NA_real_,
-    parturition_rate = NA_real_,
+    reproductive_rate = NA_real_,
     nondemo_productive_phase_id = NA_real_,
     is_egg_producing = FALSE
 ) {
   validate_egg_inputs(
     species_short, cohort_short,
     egg_human_consumption_yield, egg_average_weight,
-    parturition_rate, nondemo_productive_phase_id,
+    reproductive_rate, nondemo_productive_phase_id,
     is_egg_producing
   )
 
@@ -1040,7 +1044,7 @@ calc_metabolic_energy_req_eggs <- function(
   }
 
   reproductive_eggs_head_day <- if (cohort_short == "FA") {
-    parturition_rate / 365
+    reproductive_rate / 365
   } else {
     0
   }
@@ -1381,11 +1385,13 @@ calc_metabolic_energy_req_fibre <- function(
 #' @param metabolic_energy_req_maintenance Numeric. Energy required for maintenance, defined as the amount of energy needed 
 #' to keep the animal at equilibrium such that body energy is neither gained nor lost. 
 #' Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
-#' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). 
-#' A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during 
-#' a year divided by the number of adult females potentially able to give birth during that year.
-#' @param litter_size Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be 
-#' calculated as the total number of offspring born divided by the total number of parturitions during the year.
+#' @param reproductive_rate Numeric. Average annual number of parturitions per
+#' reproductive female (# parturitions/reproductive female/year). For chickens, annual
+#' number of eggs laid for reproduction per breeding hen (# eggs/hen/year).
+#' @param offspring_per_reproductive_event Numeric. Average number of offspring born per
+#' parturition (# offspring/parturition). For chickens, hatchability of eggs laid for
+#' reproduction, calculated as the number of chicks hatched divided by the number of
+#' eggs laid for reproduction (fraction).
 #' @param pregnancy_duration Numeric. Duration of pregnancy period (days).
 #' @param non_productive_duration Numeric. Period during which the animal is not performing any productive physiological 
 #' function such as pregnancy or lactation (days). Required only for PGS.
@@ -1407,7 +1413,7 @@ calc_metabolic_energy_req_fibre <- function(
 #' the cohort:
 #' \itemize{
 #'   \item For \code{FA}, requirements are scaled by the annual parturition rate
-#'     (\code{parturition_rate}) and (when applicable) by the fraction of the reproductive cycle
+#'     (\code{reproductive_rate}) and (when applicable) by the fraction of the reproductive cycle
 #'     spent in gestation 
 #'     (\code{pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)}).
 #'   \item For \code{FS}, only a fraction of animals is assumed to reach reproductive
@@ -1471,7 +1477,7 @@ calc_metabolic_energy_req_fibre <- function(
 #' }
 #'
 #' \item \strong{SHP and GTS} (IPCC 2006; 2019):
-#' Pregnancy energy is calculated as a litter-size-dependent fraction of
+#' Pregnancy energy is calculated as a offspring-per-reproductive-event-dependent fraction of
 #' maintenance energy (\eqn{c_{preg}}).
 #' \itemize{
 #'   \item \code{FA}:
@@ -1558,8 +1564,8 @@ calc_metabolic_energy_req_pregnancy <- function(
     species_short,
     cohort_short,
     metabolic_energy_req_maintenance = NA_real_,
-    parturition_rate = NA_real_,
-    litter_size = NA_real_,
+    reproductive_rate = NA_real_,
+    offspring_per_reproductive_event = NA_real_,
     pregnancy_duration = NA_real_,
     non_productive_duration = NA_real_,
     lactation_duration = NA_real_,
@@ -1574,14 +1580,14 @@ calc_metabolic_energy_req_pregnancy <- function(
 
   # Validate inputs
   validate_pregnancy_inputs(
-    species_short, cohort_short, metabolic_energy_req_maintenance, parturition_rate,
-    litter_size, pregnancy_duration, non_productive_duration, lactation_duration,
+    species_short, cohort_short, metabolic_energy_req_maintenance, reproductive_rate,
+    offspring_per_reproductive_event, pregnancy_duration, non_productive_duration, lactation_duration,
     cohort_duration_days, offtake_rate
   )
 
   if (species_short %in% c("CTL", "BFL")) {
     if (cohort_short == "FA") {
-      metabolic_energy_req_pregnancy <- (metabolic_energy_req_maintenance * 0.1 * parturition_rate *
+      metabolic_energy_req_pregnancy <- (metabolic_energy_req_maintenance * 0.1 * reproductive_rate *
                                          pregnancy_duration / 365)
     } else if (cohort_short == "FS") {
       metabolic_energy_req_pregnancy <- (metabolic_energy_req_maintenance * 0.1) *
@@ -1591,7 +1597,7 @@ calc_metabolic_energy_req_pregnancy <- function(
     }
   } else if (species_short %in% c("CML")) {
     if (cohort_short == "FA") {
-      metabolic_energy_req_pregnancy <- metabolic_energy_req_maintenance * 0.12 * parturition_rate
+      metabolic_energy_req_pregnancy <- metabolic_energy_req_maintenance * 0.12 * reproductive_rate
     } else if (cohort_short == "FS") {
       metabolic_energy_req_pregnancy <- metabolic_energy_req_maintenance * 0.12 *
         (pregnancy_duration / cohort_duration_days) * (1 - offtake_rate)
@@ -1602,12 +1608,12 @@ calc_metabolic_energy_req_pregnancy <- function(
     if (cohort_short == "FA") {
       cpreg <- 0
       # Litter size effect
-      if (litter_size >= 1 && litter_size <= 2) {
-        cpreg <- (0.077 * (2 - litter_size) + 0.126 * (litter_size - 1))
-      } else if (litter_size > 2) {
+      if (offspring_per_reproductive_event >= 1 && offspring_per_reproductive_event <= 2) {
+        cpreg <- (0.077 * (2 - offspring_per_reproductive_event) + 0.126 * (offspring_per_reproductive_event - 1))
+      } else if (offspring_per_reproductive_event > 2) {
         cpreg <- 0.150
       }
-      metabolic_energy_req_pregnancy <- metabolic_energy_req_maintenance * cpreg * parturition_rate *
+      metabolic_energy_req_pregnancy <- metabolic_energy_req_maintenance * cpreg * reproductive_rate *
         pregnancy_duration / 365
     } else if (cohort_short == "FS") {
       metabolic_energy_req_pregnancy <- metabolic_energy_req_maintenance * 0.077 *
@@ -1619,12 +1625,12 @@ calc_metabolic_energy_req_pregnancy <- function(
     cgest <- 0.14985
 
     if (cohort_short == "FA") {
-      metabolic_energy_req_pregnancy <- cgest * litter_size * pregnancy_duration /
+      metabolic_energy_req_pregnancy <- cgest * offspring_per_reproductive_event * pregnancy_duration /
         (non_productive_duration + pregnancy_duration + lactation_duration)
 
     } else if (cohort_short == "FS") {
 
-      metabolic_energy_req_pregnancy <- cgest * litter_size * (pregnancy_duration / cohort_duration_days) *
+      metabolic_energy_req_pregnancy <- cgest * offspring_per_reproductive_event * (pregnancy_duration / cohort_duration_days) *
         (1 - offtake_rate)
 
     } else {

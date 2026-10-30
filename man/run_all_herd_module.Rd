@@ -65,12 +65,13 @@ execution mode:
 \code{\link[=run_demographic_herd_module]{run_demographic_herd_module()}}:
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd.}
-\item{\code{parturition_rate}}{Numeric. Average annual number of
-parturitions per female animal (# parturitions/adult female/year). For
-\code{CHK}, this corresponds to eggs laid for reproduction.}
-\item{\code{litter_size}}{Numeric. Average number of offspring produced per
-parturition (# offspring/parturition). For \code{CHK}, this can be
-interpreted as offspring produced per reproductive event.}
+\item{\code{reproductive_rate}}{Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens,
+annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
+\item{\code{offspring_per_reproductive_event}}{Numeric. Average number of offspring
+born per parturition (# offspring/parturition). For chickens, hatchability of
+eggs laid for reproduction, calculated as the number of chicks hatched divided
+by the number of eggs laid for reproduction (fraction).}
 \item{\code{birth_fraction_female}}{Numeric. Female birth fraction,
 defined as the probability that a newborn offspring is female
 (fraction).}
@@ -112,12 +113,13 @@ inputs required to run \code{\link[=run_nondemographic_herd_module]{run_nondemog
 non-demographic entrants are derived internally from the demographic output:
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd.}
-\item{\code{parturition_rate}}{Numeric. Average annual number of
-parturitions per female animal (# parturitions/adult female/year). For
-\code{CHK}, this corresponds to eggs laid for reproduction.}
-\item{\code{litter_size}}{Numeric. Average number of offspring produced per
-parturition (# offspring/parturition). For \code{CHK}, this can be
-interpreted as offspring produced per reproductive event.}
+\item{\code{reproductive_rate}}{Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens,
+annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
+\item{\code{offspring_per_reproductive_event}}{Numeric. Average number of offspring
+born per parturition (# offspring/parturition). For chickens, hatchability of
+eggs laid for reproduction, calculated as the number of chicks hatched divided
+by the number of eggs laid for reproduction (fraction).}
 \item{\code{birth_fraction_female}}{Numeric. Female birth fraction,
 defined as the probability that a newborn offspring is female
 (fraction).}

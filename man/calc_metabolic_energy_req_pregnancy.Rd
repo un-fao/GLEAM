@@ -8,8 +8,8 @@ calc_metabolic_energy_req_pregnancy(
   species_short,
   cohort_short,
   metabolic_energy_req_maintenance = NA_real_,
-  parturition_rate = NA_real_,
-  litter_size = NA_real_,
+  reproductive_rate = NA_real_,
+  offspring_per_reproductive_event = NA_real_,
   pregnancy_duration = NA_real_,
   non_productive_duration = NA_real_,
   lactation_duration = NA_real_,
@@ -47,12 +47,14 @@ production stage of the animals. Supported values include:
 to keep the animal at equilibrium such that body energy is neither gained nor lost.
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
 
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year).
-A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during
-a year divided by the number of adult females potentially able to give birth during that year.}
+\item{reproductive_rate}{Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens, annual
+number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
 
-\item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be
-calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{offspring_per_reproductive_event}{Numeric. Average number of offspring born per
+parturition (# offspring/parturition). For chickens, hatchability of eggs laid for
+reproduction, calculated as the number of chicks hatched divided by the number of
+eggs laid for reproduction (fraction).}
 
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
 
@@ -84,7 +86,7 @@ of maintenance energy and are adjusted to reflect reproductive activity within
 the cohort:
 \itemize{
 \item For \code{FA}, requirements are scaled by the annual parturition rate
-(\code{parturition_rate}) and (when applicable) by the fraction of the reproductive cycle
+(\code{reproductive_rate}) and (when applicable) by the fraction of the reproductive cycle
 spent in gestation
 (\code{pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)}).
 \item For \code{FS}, only a fraction of animals is assumed to reach reproductive
@@ -148,7 +150,7 @@ Pregnancy energy is estimated as \eqn{12\%} of maintenance energy.
 }
 
 \item \strong{SHP and GTS} (IPCC 2006; 2019):
-Pregnancy energy is calculated as a litter-size-dependent fraction of
+Pregnancy energy is calculated as a offspring-per-reproductive-event-dependent fraction of
 maintenance energy (\eqn{c_{preg}}).
 \itemize{
 \item \code{FA}:

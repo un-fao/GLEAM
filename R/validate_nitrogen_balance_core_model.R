@@ -16,8 +16,8 @@ validate_nitrogen_retention_inputs <- function(
     milk_yield_day = NA_real_,
     daily_weight_gain = NA_real_,
     fibre_yield_year = NA_real_,
-    litter_size = NA_real_,
-    parturition_rate = NA_real_,
+    offspring_per_reproductive_event = NA_real_,
+    reproductive_rate = NA_real_,
     live_weight_at_weaning = NA_real_,
     live_weight_at_birth = NA_real_,
     pregnancy_duration = NA_real_,
@@ -39,16 +39,16 @@ validate_nitrogen_retention_inputs <- function(
   # Range checks: only for args used by this species/cohort
   if (species_short == "PGS") {
     if (cohort_short == "FA") {
-      validate_param_range(litter_size)
-      validate_param_range(parturition_rate)
+      validate_param_range(offspring_per_reproductive_event)
+      validate_param_range(reproductive_rate)
       validate_param_range(live_weight_at_weaning)
       validate_param_range(live_weight_at_birth)
     } else if (cohort_short == "FS") {
       validate_param_range(daily_weight_gain)
       validate_positive_numeric(pregnancy_duration)
       validate_param_range(cohort_duration_days)
-      validate_param_range(litter_size)
-      validate_param_range(parturition_rate)
+      validate_param_range(offspring_per_reproductive_event)
+      validate_param_range(reproductive_rate)
       validate_param_range(live_weight_at_weaning)
       validate_param_range(live_weight_at_birth)
     } else {
@@ -77,7 +77,7 @@ validate_nitrogen_retention_inputs <- function(
       cohort_short = cohort_short,
       egg_human_consumption_yield = egg_human_consumption_yield,
       egg_average_weight = egg_average_weight,
-      parturition_rate = parturition_rate,
+      reproductive_rate = reproductive_rate,
       nondemo_productive_phase_id = nondemo_productive_phase_id,
       is_egg_producing = is_egg_producing
     )

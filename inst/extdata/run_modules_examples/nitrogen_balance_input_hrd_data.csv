@@ -1,4 +1,4 @@
-herd_id	species_short	milk_protein_fraction	milk_yield_day	fibre_yield_year	litter_size	parturition_rate	live_weight_at_weaning	live_weight_at_birth	pregnancy_duration	egg_human_consumption_yield	egg_average_weight
+herd_id	species_short	milk_protein_fraction	milk_yield_day	fibre_yield_year	offspring_per_reproductive_event	reproductive_rate	live_weight_at_weaning	live_weight_at_birth	pregnancy_duration	egg_human_consumption_yield	egg_average_weight
 1	"CTL"	0.031	27.9	0.	1.	0.8	250.	41.	283	NA	NA
 2	"CTL"	0.	0.	0.	1.	0.684	220.	14.	283	NA	NA
 3	"SHP"	0.058	0.212	1.5	1.	0.93	30.	4.19	152	NA	NA

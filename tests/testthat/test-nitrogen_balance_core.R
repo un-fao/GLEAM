@@ -14,13 +14,13 @@ test_that("retention for cattle: milk + growth add up correctly", {
     "CTL", "FA",
     milk_protein_fraction = 0.032, milk_yield_day = 20,
     daily_weight_gain = 0, fibre_yield_year = 0,
-    litter_size = 1, parturition_rate = 1
+    offspring_per_reproductive_event = 1, reproductive_rate = 1
   )
   with_growth <- calc_nitrogen_retention(
     "CTL", "FA",
     milk_protein_fraction = 0.032, milk_yield_day = 20,
     daily_weight_gain = 0.5, fibre_yield_year = 0,
-    litter_size = 1, parturition_rate = 1
+    offspring_per_reproductive_event = 1, reproductive_rate = 1
   )
   expect_equal(with_growth - base, 0.5 * 0.0326, tolerance = 1e-12)
 
@@ -28,7 +28,7 @@ test_that("retention for cattle: milk + growth add up correctly", {
     "CTL", "FA",
     milk_protein_fraction = 0.032, milk_yield_day = 0,
     daily_weight_gain = 0, fibre_yield_year = 0,
-    litter_size = 1, parturition_rate = 1
+    offspring_per_reproductive_event = 1, reproductive_rate = 1
   )
   expect_equal(base - none, 20 * (0.032 / 6.25), tolerance = 1e-12)
   expect_gt(base, 0)
@@ -40,13 +40,13 @@ test_that("retention for goats includes fibre component", {
     "GTS", "FA",
     milk_protein_fraction = NA_real_, milk_yield_day = NA_real_,
     daily_weight_gain = 0, fibre_yield_year = 0,
-    litter_size = 1, parturition_rate = 1
+    offspring_per_reproductive_event = 1, reproductive_rate = 1
   )
   with_fibre <- calc_nitrogen_retention(
     "GTS", "FA",
     milk_protein_fraction = NA_real_, milk_yield_day = NA_real_,
     daily_weight_gain = 0, fibre_yield_year = 10,
-    litter_size = 1, parturition_rate = 1
+    offspring_per_reproductive_event = 1, reproductive_rate = 1
   )
   expect_equal(with_fibre - base, (10 / 365) * 0.134, tolerance = 1e-12)
 })
@@ -57,7 +57,7 @@ test_that("retention for sheep with only fibre is positive", {
     "SHP", "FA",
     milk_protein_fraction = NA_real_, milk_yield_day = NA_real_,
     daily_weight_gain = NA_real_, fibre_yield_year = 20,
-    litter_size = 1, parturition_rate = 1
+    offspring_per_reproductive_event = 1, reproductive_rate = 1
   )
   expect_gt(val, 0)
 })
@@ -66,7 +66,7 @@ test_that("retention for sheep with only fibre is positive", {
 test_that("retention for pigs FA cohort matches reproductive formula", {
   val <- calc_nitrogen_retention(
     "PGS", "FA",
-    litter_size = 10, parturition_rate = 2,
+    offspring_per_reproductive_event = 10, reproductive_rate = 2,
     live_weight_at_weaning = 30, live_weight_at_birth = 1
   )
 
@@ -83,7 +83,7 @@ test_that("retention for pigs FS cohort matches reproductive formula", {
   val <- calc_nitrogen_retention(
     "PGS", "FS",
     daily_weight_gain = 0.5,
-    litter_size = 12, parturition_rate = 2.2,
+    offspring_per_reproductive_event = 12, reproductive_rate = 2.2,
     live_weight_at_weaning = 20, live_weight_at_birth = 1,
     pregnancy_duration = 115, cohort_duration_days = 200
   )
@@ -107,7 +107,7 @@ test_that("retention for chickens includes growth and egg deposition", {
   val <- calc_nitrogen_retention(
     "CHK", "FA",
     daily_weight_gain = 0.01,
-    parturition_rate = 120,
+    reproductive_rate = 120,
     egg_human_consumption_yield = 365,
     egg_average_weight = 0.06,
     is_egg_producing = TRUE
@@ -123,7 +123,7 @@ test_that("retention for egg-producing chicken FN includes food eggs only", {
     "CHK", "FN",
     nondemo_productive_phase_id = 2,
     daily_weight_gain = 0.01,
-    parturition_rate = 120,
+    reproductive_rate = 120,
     egg_human_consumption_yield = 365,
     egg_average_weight = 0.06,
     is_egg_producing = TRUE
@@ -137,7 +137,7 @@ test_that("retention for egg-producing chicken FN includes food eggs only", {
 test_that("chicken FA retains nitrogen in reproductive eggs without food eggs", {
   args <- list(
     species_short = "CHK", cohort_short = "FA", daily_weight_gain = 0,
-    egg_average_weight = 0.06, parturition_rate = 365,
+    egg_average_weight = 0.06, reproductive_rate = 365,
     is_egg_producing = FALSE
   )
   expect_equal(do.call(calc_nitrogen_retention, args), 0.0012)
@@ -145,8 +145,8 @@ test_that("chicken FA retains nitrogen in reproductive eggs without food eggs", 
     c(args, list(egg_human_consumption_yield = 365))
   ), 0.0012)
   expect_error(do.call(calc_nitrogen_retention,
-    modifyList(args, list(parturition_rate = NA_real_))
-  ), "parturition_rate")
+    modifyList(args, list(reproductive_rate = NA_real_))
+  ), "reproductive_rate")
   expect_error(do.call(calc_nitrogen_retention,
     modifyList(args, list(egg_average_weight = 0))
   ), "egg_average_weight")

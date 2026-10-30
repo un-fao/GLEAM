@@ -313,7 +313,7 @@ test_that("calc_metabolic_energy_req_eggs handles chickens", {
     cohort_short = "FA",
     egg_human_consumption_yield = 365,
     egg_average_weight = 0.06,
-    parturition_rate = 120,
+    reproductive_rate = 120,
     is_egg_producing = TRUE
   )
 
@@ -325,7 +325,7 @@ test_that("calc_metabolic_energy_req_eggs handles chickens", {
       cohort_short = "FS",
       egg_human_consumption_yield = 365,
       egg_average_weight = 0.06,
-      parturition_rate = 120
+      reproductive_rate = 120
     ),
     0
   )
@@ -338,7 +338,7 @@ test_that("FN egg energy includes food eggs only", {
     nondemo_productive_phase_id = 2,
     egg_human_consumption_yield = 365,
     egg_average_weight = 0.06,
-    parturition_rate = 120,
+    reproductive_rate = 120,
     is_egg_producing = TRUE
   )
 
@@ -351,7 +351,7 @@ test_that("FN egg energy includes food eggs only", {
       nondemo_productive_phase_id = 1,
       egg_human_consumption_yield = 365,
       egg_average_weight = 0.06,
-      parturition_rate = 120
+      reproductive_rate = 120
     ),
     0
   )
@@ -360,7 +360,7 @@ test_that("FN egg energy includes food eggs only", {
 test_that("FA egg energy includes reproduction when the food-egg flag is false", {
   args <- list(
     species_short = "CHK", cohort_short = "FA",
-    egg_average_weight = 0.06, parturition_rate = 365,
+    egg_average_weight = 0.06, reproductive_rate = 365,
     is_egg_producing = FALSE
   )
   expect_equal(do.call(calc_metabolic_energy_req_eggs, args), 0.6024)
@@ -368,11 +368,11 @@ test_that("FA egg energy includes reproduction when the food-egg flag is false",
     c(args, list(egg_human_consumption_yield = 365))
   ), 0.6024)
   expect_error(do.call(calc_metabolic_energy_req_eggs,
-    modifyList(args, list(parturition_rate = NA_real_))
-  ), "parturition_rate")
+    modifyList(args, list(reproductive_rate = NA_real_))
+  ), "reproductive_rate")
   expect_error(do.call(calc_metabolic_energy_req_eggs,
-    modifyList(args, list(parturition_rate = -1))
-  ), "parturition_rate")
+    modifyList(args, list(reproductive_rate = -1))
+  ), "reproductive_rate")
   expect_error(do.call(calc_metabolic_energy_req_eggs,
     modifyList(args, list(egg_average_weight = NA_real_))
   ), "egg_average_weight")
@@ -412,7 +412,7 @@ test_that("energy and nitrogen modules require only the egg inputs they use", {
     ))[herd_id == 13]
     cohort[, is_egg_producing := FALSE]
     cohort[cohort_short == "FA", daily_weight_gain := 0]
-    herd[, `:=`(parturition_rate = 120, egg_average_weight = 0.06)]
+    herd[, `:=`(reproductive_rate = 120, egg_average_weight = 0.06)]
     herd[, egg_human_consumption_yield := NULL]
     run_module <- get(paste0("run_", module, "_module"))
     value_col <- if (module == "metabolic_energy_req") {
@@ -432,7 +432,7 @@ test_that("energy and nitrogen modules require only the egg inputs they use", {
     fn <- data.table::copy(cohort[cohort_short == "FA"])
     fn[, `:=`(cohort_short = "FN", nondemo_productive_phase_id = 2,
       is_egg_producing = TRUE)]
-    food_herd <- data.table::copy(herd)[, parturition_rate := NULL]
+    food_herd <- data.table::copy(herd)[, reproductive_rate := NULL]
     food_herd[, egg_human_consumption_yield := 200]
     food_output <- suppressMessages(run_module(fn, food_herd, show_indicator = FALSE))
     expect_equal(food_output[[value_col]], 200 / 365 * 0.06 * coefficient)
@@ -446,7 +446,7 @@ test_that("calc_metabolic_energy_req_eggs validates egg-producing flag placement
       cohort_short = "FS",
       egg_human_consumption_yield = 365,
       egg_average_weight = 0.06,
-      parturition_rate = 120,
+      reproductive_rate = 120,
       is_egg_producing = TRUE
     ),
     "can be TRUE only for CHK cohorts.*FA.*FN"
@@ -459,7 +459,7 @@ test_that("calc_metabolic_energy_req_eggs validates egg-producing flag placement
       nondemo_productive_phase_id = 1,
       egg_human_consumption_yield = 365,
       egg_average_weight = 0.06,
-      parturition_rate = 120,
+      reproductive_rate = 120,
       is_egg_producing = TRUE
     ),
     "can be TRUE for.*FN.*only when.*2"
@@ -473,9 +473,9 @@ test_that("calc_metabolic_energy_req_lactation returns correct values for cattle
     lactating_females_fraction = 0.8, milk_yield_day = 20,
     milk_fat_fraction = 0.04,
     non_productive_duration = 0, pregnancy_duration = 0,
-    litter_size = 1, death_rate_juvenile = 0,
+    offspring_per_reproductive_event = 1, death_rate_juvenile = 0,
     live_weight_at_birth = 35, live_weight_at_weaning = 90,
-    lactation_duration = 0, parturition_rate = 0.8
+    lactation_duration = 0, reproductive_rate = 0.8
   )
   expected <- ((20 * 0.8) + (0.8 * 5 * (90 - 35) / 365)) * (0.04 * 100 * 0.40 + 1.47)
   expect_equal(result, expected)
@@ -487,9 +487,9 @@ test_that("calc_metabolic_energy_req_lactation handles sheep with litter size", 
     lactating_females_fraction = 0.9,
     milk_yield_day = 1.5, milk_fat_fraction = 0.06,
     non_productive_duration = 0,
-    pregnancy_duration = 0, litter_size = 1.5,
+    pregnancy_duration = 0, offspring_per_reproductive_event = 1.5,
     death_rate_juvenile = 0, live_weight_at_birth = 4, live_weight_at_weaning = 18,
-    lactation_duration = 0, parturition_rate = 1.2
+    lactation_duration = 0, reproductive_rate = 1.2
   )
   expected <- ((1.5 * 0.9) + (1.5 * 1.2 * 5 * (18 - 4) / 365)) * 4.6
   expect_equal(result, expected)
@@ -500,9 +500,9 @@ test_that("calc_metabolic_energy_req_lactation handles pigs", {
     species_short = "PGS", cohort_short = "FA",
     lactating_females_fraction = 0, milk_yield_day = 0, milk_fat_fraction = 0,
     non_productive_duration = 0.2, pregnancy_duration = 0.3,
-    litter_size = 10, death_rate_juvenile = 0.1,
+    offspring_per_reproductive_event = 10, death_rate_juvenile = 0.1,
     live_weight_at_birth = 1.5, live_weight_at_weaning = 8,
-    lactation_duration = 0.5, parturition_rate = 2.2
+    lactation_duration = 0.5, reproductive_rate = 2.2
   )
   cadj <- 0.5 / (0.2 + 0.3 + 0.5)
   expected <- 10 * (1 - 0.5 * 0.1) * ((0.02059 * (8 - 1.5) * 1000 / 0.5) - (0.3766 / 0.67)) * cadj
@@ -590,8 +590,8 @@ test_that("calc_metabolic_energy_req_fibre returns zero for non-fibre animals", 
 test_that("calc_metabolic_energy_req_pregnancy returns correct values for cattle", {
   result <- calc_metabolic_energy_req_pregnancy(
     species_short = "CTL", cohort_short = "FA",
-    metabolic_energy_req_maintenance = 15.0, parturition_rate = 0.8,
-    litter_size = 1, pregnancy_duration = 283,
+    metabolic_energy_req_maintenance = 15.0, reproductive_rate = 0.8,
+    offspring_per_reproductive_event = 1, pregnancy_duration = 283,
     non_productive_duration = 10, lactation_duration = 30,
     cohort_duration_days = 730, offtake_rate = 0.2
   )
@@ -600,8 +600,8 @@ test_that("calc_metabolic_energy_req_pregnancy returns correct values for cattle
 
   result <- calc_metabolic_energy_req_pregnancy(
     species_short = "CTL", cohort_short = "FS",
-    metabolic_energy_req_maintenance = 12.0, parturition_rate = 0.8,
-    litter_size = 1, pregnancy_duration = 283,
+    metabolic_energy_req_maintenance = 12.0, reproductive_rate = 0.8,
+    offspring_per_reproductive_event = 1, pregnancy_duration = 283,
     non_productive_duration = 10, lactation_duration = 30,
     cohort_duration_days = 730, offtake_rate = 0.2
   )
@@ -612,8 +612,8 @@ test_that("calc_metabolic_energy_req_pregnancy returns correct values for cattle
 test_that("calc_metabolic_energy_req_pregnancy handles sheep with litter size effects", {
   result <- calc_metabolic_energy_req_pregnancy(
     species_short = "SHP", cohort_short = "FA",
-    metabolic_energy_req_maintenance = 8.0, parturition_rate = 1.2,
-    litter_size = 1.5, pregnancy_duration = 152,
+    metabolic_energy_req_maintenance = 8.0, reproductive_rate = 1.2,
+    offspring_per_reproductive_event = 1.5, pregnancy_duration = 152,
     non_productive_duration = 10, lactation_duration = 30,
     cohort_duration_days = 700, offtake_rate = 0.1
   )
@@ -623,8 +623,8 @@ test_that("calc_metabolic_energy_req_pregnancy handles sheep with litter size ef
 
   result <- calc_metabolic_energy_req_pregnancy(
     species_short = "SHP", cohort_short = "FA",
-    metabolic_energy_req_maintenance = 8.0, parturition_rate = 1.2,
-    litter_size = 2.5, pregnancy_duration = 152,
+    metabolic_energy_req_maintenance = 8.0, reproductive_rate = 1.2,
+    offspring_per_reproductive_event = 2.5, pregnancy_duration = 152,
     non_productive_duration = 10, lactation_duration = 30,
     cohort_duration_days = 365, offtake_rate = 0.1
   )
@@ -635,8 +635,8 @@ test_that("calc_metabolic_energy_req_pregnancy handles sheep with litter size ef
 test_that("calc_metabolic_energy_req_pregnancy handles pigs", {
   result <- calc_metabolic_energy_req_pregnancy(
     species_short = "PGS", cohort_short = "FA",
-    metabolic_energy_req_maintenance = 12.0, parturition_rate = 2.2,
-    litter_size = 10, pregnancy_duration = 115,
+    metabolic_energy_req_maintenance = 12.0, reproductive_rate = 2.2,
+    offspring_per_reproductive_event = 10, pregnancy_duration = 115,
     non_productive_duration = 10, lactation_duration = 30,
     cohort_duration_days = 365, offtake_rate = 0.1
   )

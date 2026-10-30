@@ -351,13 +351,13 @@ test_that("per-hen egg yield gives consistent energy, nitrogen and population to
     expect_equal(calc_metabolic_energy_req_eggs(
       species_short = "CHK", cohort_short = cohort[i],
       egg_human_consumption_yield = 365, egg_average_weight = 0.06,
-      parturition_rate = 0, nondemo_productive_phase_id = phase[i],
+      reproductive_rate = 0, nondemo_productive_phase_id = phase[i],
       is_egg_producing = TRUE
     ), 0.6024)
     expect_equal(calc_nitrogen_retention(
       species_short = "CHK", cohort_short = cohort[i], daily_weight_gain = 0,
       egg_human_consumption_yield = 365, egg_average_weight = 0.06,
-      parturition_rate = 0, nondemo_productive_phase_id = phase[i],
+      reproductive_rate = 0, nondemo_productive_phase_id = phase[i],
       is_egg_producing = TRUE
     ), 0.0012)
     eggs[i] <- calc_egg_production(

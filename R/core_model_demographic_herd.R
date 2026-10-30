@@ -2,8 +2,13 @@
 #'
 #' Calculates the daily number of male and female offspring produced per adult female.
 #'
-#' @param parturition_rate Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.
-#' @param litter_size Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.
+#' @param reproductive_rate Numeric. Average annual number of parturitions per
+#' reproductive female (# parturitions/reproductive female/year). For chickens, annual
+#' number of eggs laid for reproduction per breeding hen (# eggs/hen/year).
+#' @param offspring_per_reproductive_event Numeric. Average number of offspring born per
+#' parturition (# offspring/parturition). For chickens, hatchability of eggs laid for
+#' reproduction, calculated as the number of chicks hatched divided by the number of
+#' eggs laid for reproduction (fraction).
 #' @param birth_fraction_female Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.
 #'
 #' @return A named list with two elements:
@@ -18,19 +23,19 @@
 #' [run_demographic_herd_module()] 
 #' 
 #' @examples
-#' calc_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)
+#' calc_fecundity_rates(reproductive_rate = 0.8, offspring_per_reproductive_event = 2, birth_fraction_female = 0.5)
 #'
 #' @export
 calc_fecundity_rates <- function(
-    parturition_rate,
-    litter_size,
+    reproductive_rate,
+    offspring_per_reproductive_event,
     birth_fraction_female
 ) {
-  validate_fecundity_inputs(parturition_rate, litter_size, birth_fraction_female)
+  validate_fecundity_inputs(reproductive_rate, offspring_per_reproductive_event, birth_fraction_female)
 
   # Calculate fecundity rates
-  fecundity_female <-  litter_size * birth_fraction_female * (parturition_rate / 365)
-  fecundity_male <- litter_size * (1 - birth_fraction_female) * (parturition_rate / 365)
+  fecundity_female <-  offspring_per_reproductive_event * birth_fraction_female * (reproductive_rate / 365)
+  fecundity_male <- offspring_per_reproductive_event * (1 - birth_fraction_female) * (reproductive_rate / 365)
 
   return(
     list(

@@ -46,7 +46,7 @@ local({
     "herd_id", "cohort_short", "cohort_duration_days", "offtake_rate", "death_rate"
   )
   demo_herd_cols <- c(
-    "herd_id", "parturition_rate", "litter_size", "birth_fraction_female",
+    "herd_id", "reproductive_rate", "offspring_per_reproductive_event", "birth_fraction_female",
     "herd_size_total", "prop_nondemo_fem_juv", "prop_nondemo_mal_juv"
   )
   milk_standard_cols <- c(
@@ -136,9 +136,9 @@ local({
   add_input("metabolic_energy_req_input_hrd_data", herd, c(
     herd_keys, "age_first_parturition", "lactating_females_fraction",
     "milk_yield_day", "milk_fat_fraction", "non_productive_duration",
-    "pregnancy_duration", "litter_size", "death_rate_juvenile",
+    "pregnancy_duration", "offspring_per_reproductive_event", "death_rate_juvenile",
     "live_weight_at_birth", "live_weight_at_weaning", "lactation_duration",
-    "parturition_rate", "draught_work_hours_female", "draught_work_hours_male",
+    "reproductive_rate", "draught_work_hours_female", "draught_work_hours_male",
     "draught_fraction_female", "draught_fraction_male", "fibre_yield_year",
     "average_annual_temperature", egg_cols
   ))
@@ -152,7 +152,7 @@ local({
   ))
   add_input("nitrogen_balance_input_hrd_data", herd, c(
     herd_keys, "milk_protein_fraction", "milk_yield_day", "fibre_yield_year",
-    "litter_size", "parturition_rate", "live_weight_at_weaning",
+    "offspring_per_reproductive_event", "reproductive_rate", "live_weight_at_weaning",
     "live_weight_at_birth", "pregnancy_duration", egg_cols
   ))
   add_input("emissions_manure_input_chrt_data", calculated_cohort, c(

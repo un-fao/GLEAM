@@ -11,8 +11,8 @@ calc_nitrogen_retention(
   milk_yield_day = NA_real_,
   daily_weight_gain = NA_real_,
   fibre_yield_year = NA_real_,
-  litter_size = NA_real_,
-  parturition_rate = NA_real_,
+  offspring_per_reproductive_event = NA_real_,
+  reproductive_rate = NA_real_,
   live_weight_at_weaning = NA_real_,
   live_weight_at_birth = NA_real_,
   pregnancy_duration = NA_real_,
@@ -63,17 +63,14 @@ Required only for species = CML, CTL, BFL, SHP, and GTS.}
 \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
 Required only for species = CML, SHP, and GTS.}
 
-\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition).
-This value can be calculated as the total number of offspring born divided
-by the total number of parturitions during the year.}
+\item{offspring_per_reproductive_event}{Numeric. Average number of offspring born per
+parturition (# offspring/parturition). For chickens, hatchability of eggs laid for
+reproduction, calculated as the number of chicks hatched divided by the number of
+eggs laid for reproduction (fraction).}
 
-\item{parturition_rate}{Numeric. Average annual number of parturitions per
-female animal (# parturitions/adult female/year).
-A herd-level reproductive performance indicator calculated as the total
-number of parturitions (deliveries) occurring during
-a year divided by the number of adult females potentially able to give birth during that year.
-For \code{CHK}, this represents reproductive eggs from \code{FA} only,
-regardless of its food-egg flag.}
+\item{reproductive_rate}{Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens, annual
+number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
 
 \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 
@@ -191,7 +188,7 @@ egg\_component =
 Human-consumption eggs per head per day equal
 \code{egg_human_consumption_yield / 365} when the food-egg flag is true,
 and zero otherwise. Reproductive eggs per head per day equal
-\code{parturition_rate / 365} for \code{FA}, and zero for other cohorts.
+\code{reproductive_rate / 365} for \code{FA}, and zero for other cohorts.
 
 The coefficient 0.032 represents nitrogen retained in live-weight gain
 (kg N/kg live weight), following Lessire (2004). The coefficient 0.02

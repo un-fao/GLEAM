@@ -29,7 +29,7 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
     required_herd_cols <- c(
       required_herd_cols,
       "milk_protein_fraction", "milk_yield_day", "fibre_yield_year",
-      "litter_size", "parturition_rate",
+      "offspring_per_reproductive_event", "reproductive_rate",
       "live_weight_at_weaning", "live_weight_at_birth", "pregnancy_duration"
     )
   }
@@ -38,7 +38,7 @@ validate_run_nitrogen_balance_module_inputs <- function(cohort_level_data, herd_
     herd_level_data$herd_id[herd_level_data$species_short == "CHK"]
   if (any(chicken_rows & cohort_level_data$cohort_short == "FA")) {
     required_herd_cols <- c(
-      required_herd_cols, "egg_average_weight", "parturition_rate"
+      required_herd_cols, "egg_average_weight", "reproductive_rate"
     )
   }
   if (any(chicken_rows & cohort_level_data$is_egg_producing %in% TRUE)) {

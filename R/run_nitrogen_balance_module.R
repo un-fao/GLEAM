@@ -57,8 +57,13 @@
 #'     \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as
 #'     wool, cashmere, mohair (kg/head/year).
 #'     Required only for species = CML, SHP, and GTS.}
-#'     \item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). For \code{CHK}, this can be interpreted as offspring produced per reproductive event.}
-#'     \item{parturition_rate}{Numeric. Average annual number of parturitions per adult female animal (# parturitions/adult female/year). For \code{CHK}, this corresponds to eggs laid for reproduction by \code{FA} only, regardless of its food-egg flag.}
+#'     \item{offspring_per_reproductive_event}{Numeric. Average number of offspring born
+#'     per parturition (# offspring/parturition). For chickens, hatchability of eggs
+#'     laid for reproduction, calculated as the number of chicks hatched divided by the
+#'     number of eggs laid for reproduction (fraction).}
+#'     \item{reproductive_rate}{Numeric. Average annual number of parturitions per
+#'     reproductive female (# parturitions/reproductive female/year). For chickens,
+#'     annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
 #'     \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 #'     \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 #'     \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
@@ -164,8 +169,8 @@ run_nitrogen_balance_module <- function(
       milk_yield_day = herd_level_data[.SD, on = "herd_id", x.milk_yield_day],
       daily_weight_gain = daily_weight_gain,
       fibre_yield_year = herd_level_data[.SD, on = "herd_id", x.fibre_yield_year],
-      litter_size = herd_level_data[.SD, on = "herd_id", x.litter_size],
-      parturition_rate = herd_level_data[.SD, on = "herd_id", x.parturition_rate],
+      offspring_per_reproductive_event = herd_level_data[.SD, on = "herd_id", x.offspring_per_reproductive_event],
+      reproductive_rate = herd_level_data[.SD, on = "herd_id", x.reproductive_rate],
       live_weight_at_weaning = herd_level_data[.SD, on = "herd_id", x.live_weight_at_weaning],
       live_weight_at_birth = herd_level_data[.SD, on = "herd_id", x.live_weight_at_birth],
       pregnancy_duration = herd_level_data[.SD, on = "herd_id", x.pregnancy_duration],
