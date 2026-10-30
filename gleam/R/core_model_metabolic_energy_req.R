@@ -33,7 +33,7 @@
 #' Required only for species = CML, CTL, BFL, SHP, and GTS.
 #' @param offtake_rate Numeric. Annual proportion of animals removed from the herd for
 #'  each sex-age cohort (fraction).
-#' @param age_first_parturition Numeric. Age at first parturition for female breeding animals (days)
+#' @param age_first_parturition Numeric. Age at first parturition for female breeding animals (days).
 #'
 #' @return Numeric. Energy required for maintenance, defined as the amount of energy needed to 
 #' keep the animal at equilibrium such that body energy is neither gained nor lost. 
@@ -169,7 +169,7 @@ calc_metabolic_energy_req_maintenance <- function(
     if (cohort_short == "FA") {
       cmain <- 0.217
     } else if (cohort_short == "FS") {
-      # Weighted by age at first calving (age_first_parturition)
+      # Weighted by age at first parturition (age_first_parturition)
       cmain <- (0.236 * (365 / age_first_parturition)) +
         (0.217 * ((age_first_parturition - 365) / age_first_parturition))
     } else if (cohort_short %in% c("FJ", "FN", "MN")) {

@@ -94,7 +94,7 @@ methane inhibitors.}
 slaughter weight (kg).}
 \item{live_weight_male_at_slaughter}{Numeric. Male sub-adult slaughter
 weight (kg).}
-\item{age_first_parturition}{Numeric. Age at first parturition (days).}
+\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
 \item{lactating_females_fraction}{Numeric. Proportion of adult females
 lactating during the assessment period (fraction). Required for CTL,
 BFL, CML, SHP, GTS.}
