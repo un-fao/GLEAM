@@ -106,6 +106,40 @@ validate_run_gleam_inputs <- function(
     )
   }
 
+  # --- Non-demographic cohort presence must match positive diversion props ----
+  if (all(c("prop_nondemo_fem_juv", "prop_nondemo_mal_juv") %in% names(herd_level_data))) {
+    cohort_lookup <- unique(
+      data.table::as.data.table(cohort_level_data)[, .(herd_id, cohort_short)]
+    )
+    herd_props <- data.table::as.data.table(herd_level_data)
+
+    fn_required_herds <- herd_props[
+      !is.na(prop_nondemo_fem_juv) & prop_nondemo_fem_juv != 0,
+      unique(herd_id)
+    ]
+    fn_present_herds <- cohort_lookup[cohort_short == "FN", unique(herd_id)]
+    missing_fn <- setdiff(fn_required_herds, fn_present_herds)
+    if (length(missing_fn) > 0L) {
+      cli::cli_abort(
+        "Missing {.val FN} rows in {.arg cohort_level_data} for {.var herd_id} {.val {missing_fn}}.
+        {.field prop_nondemo_fem_juv} is non-zero for these herds, so {.val FN} must be present."
+      )
+    }
+
+    mn_required_herds <- herd_props[
+      !is.na(prop_nondemo_mal_juv) & prop_nondemo_mal_juv != 0,
+      unique(herd_id)
+    ]
+    mn_present_herds <- cohort_lookup[cohort_short == "MN", unique(herd_id)]
+    missing_mn <- setdiff(mn_required_herds, mn_present_herds)
+    if (length(missing_mn) > 0L) {
+      cli::cli_abort(
+        "Missing {.val MN} rows in {.arg cohort_level_data} for {.var herd_id} {.val {missing_mn}}.
+        {.field prop_nondemo_mal_juv} is non-zero for these herds, so {.val MN} must be present."
+      )
+    }
+  }
+
   # --- Block calculated (intermediate) variables in input tables ---------------
   # Columns that GLEAM computes; users must not provide them as inputs.
   gleam_calculated_columns <- c(

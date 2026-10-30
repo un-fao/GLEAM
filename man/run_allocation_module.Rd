@@ -24,9 +24,10 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals.
-Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age
+and/or the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -34,6 +35,8 @@ Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
 \item{milk_production_fpcm_cohort}{Numeric. Total fat-protein-corrected milk (FPCM) produced over the assessment
 period (kg/cohort/assessment period). Suggested standard fat, protein and lactose contents are 0.04, 0.033, and 0.048 respectively.}
@@ -43,15 +46,23 @@ cohort (kg/cohort/assessment period).}
 \item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
 Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable energy
 for CML.}
-\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ,
-FS, FA, MJ, MS, MA).}
+\item{cohort_stock_size}{Numeric. Average population size of the assessed cohort (# heads).}
 \item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught
 power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,
 SHP, GTS and as metabolizable energy for CML.}
+\item{nondemo_productive_phase_id}{Numeric. Productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase
+1 and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.}
+\item{egg_production_mass_cohort}{Numeric. Total egg mass produced over the assessment
+period by cohort (kg/cohort/assessment period).}
+\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
+\code{FN} with \code{nondemo_productive_phase_id = 2}.}
 }}
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with the following data
-requirement:
+requirement. Standard milk-composition columns may be omitted when all
+\code{milk_production_fpcm_cohort} values are zero:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging
 to the same herd.}
@@ -64,6 +75,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 \item{milk_protein_fraction_standard}{Numeric. Standard protein content of milk, used to calculate
@@ -97,8 +109,8 @@ period). }
 period).}
 \item{work_allocation_energy}{Numeric. Energy required to provide all draught power (traction/work) by cohort
 (MJ/cohort/assessment period).}
-\item{egg_allocation_energy}{Numeric. Energy required for egg production over the assessment period
-(MJ/cohort/assessment period). Currently set to 0.}
+\item{egg_allocation_energy}{Numeric. Energy required to produce all eggs during the assessment period by cohort
+(MJ/cohort/assessment period).}
 }}
 \item{allocation_long}{A herd-level \code{data.table} in long format with one
 row per herd, commodity, and emission source combination, containing the
@@ -115,6 +127,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 \item{variable_name}{Character. Names of emission variables to which
 allocation should be applied (e.g.,"ch4_enteric", "ch4_manure_pasture",
@@ -127,7 +140,7 @@ allocation should be applied (e.g.,"ch4_enteric", "ch4_manure_pasture",
 "n2o_ration_fertilizer", "n2o_ration_manure_applied",
 "n2o_ration_crop_residues", "ch4_ration_rice")}
 \item{commodity_name}{Character. List of commodity categories to which emissions may be allocated.
-List=c("None","Milk","Meat","Fibre","Work","Eggs")}
+List = c("Other", "Milk", "Meat", "Fibre", "Work", "Eggs")}
 \item{commodity_type}{Character. Commodity (commodity_name) grouping, either
 \code{"Edible"} or \code{"Non-Edible"}.}
 \item{allocation_share}{Numeric. Allocation share assigned to the
@@ -162,7 +175,7 @@ fibre, work, and eggs using
 \code{\link{calc_milk_allocation_energy}},
 \code{\link{calc_fibre_allocation_energy}},
 \code{\link{calc_work_allocation_energy}}, and
-\code{calc_eggs_allocation_energy}.
+\code{\link{calc_egg_allocation_energy}}.
 
 \item Aggregation of cohort-level energy terms to herd level using
 \code{\link{calc_cohort_to_herd_aggregation}}.
@@ -196,11 +209,12 @@ allocation_hrd_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/allocation_input_hrd_data.csv",
   package = "gleam"
 ))
+
+# Run allocation calculations
 results <- run_allocation_module(
-cohort_level_data = allocation_chrt_dt,
-herd_level_data = allocation_hrd_dt
+  cohort_level_data = allocation_chrt_dt,
+  herd_level_data = allocation_hrd_dt
 )
-head(results$allocation_long)
 }
 
 }

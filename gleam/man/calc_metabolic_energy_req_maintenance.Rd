@@ -48,7 +48,7 @@ Required only for species = CML, CTL, BFL, SHP, and GTS.}
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for
 each sex-age cohort (fraction).}
 
-\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days)}
+\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
 }
 \value{
 Numeric. Energy required for maintenance, defined as the amount of energy needed to

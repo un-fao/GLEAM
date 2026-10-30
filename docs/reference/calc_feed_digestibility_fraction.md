@@ -9,7 +9,8 @@ component.
 calc_feed_digestibility_fraction(
   feed_digestible_energy_ruminant,
   feed_digestible_energy_pigs,
-  feed_gross_energy
+  feed_gross_energy,
+  feed_metabolizable_energy_chicken = NA_real_
 )
 ```
 
@@ -33,6 +34,11 @@ calc_feed_digestibility_fraction(
   total chemical energy released upon complete combustion of the feed
   (MJ/kg DM).
 
+- feed_metabolizable_energy_chicken:
+
+  Numeric. Metabolizable energy content of a feed component for chickens
+  (MJ/kg DM).
+
 ## Value
 
 List with elements:
@@ -47,6 +53,11 @@ List with elements:
   Numeric. Digestibility of a feed component for pigs, expressed as the
   ratio of digestible energy to gross energy content (fraction).
 
+- feed_digestibility_fraction_chicken:
+
+  Numeric. Digestibility of a feed component for chickens, expressed as
+  the ratio of metabolizable energy to gross energy content (fraction).
+
 ## Details
 
 Digestibility is computed as the ratio of usable energy to gross energy:
@@ -54,11 +65,13 @@ Digestibility is computed as the ratio of usable energy to gross energy:
 feed\\gross\\energy\$\$
 
 For ruminants and pigs, usable energy is represented by
-`digestible_energy` (DE), which accounts for fecal energy losses.
+`digestible_energy` (DE), which accounts for fecal energy losses. For
+chickens, `metabolizable_energy` (ME) is used because urinary and fecal
+losses are excreted together.
 
 This function is part of the
-[`run_ration_quality_module()`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md).
+[`run_ration_quality_module()`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md).
 
 ## See also
 
-[`run_ration_quality_module`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md)
+[`run_ration_quality_module`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md)

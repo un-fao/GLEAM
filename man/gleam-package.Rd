@@ -6,11 +6,12 @@
 \alias{gleam-package}
 \title{gleam: Global Livestock Environmental Assessment Model (GLEAM-X)}
 \description{
-GLEAM-X is the official R implementation of FAO’s Global Livestock Environmental Assessment Model (GLEAM). The package provides a modular, transparent framework for simulating livestock production systems and quantifying their environmental impacts. Methodological background: MacLeod et al. (2017) "Invited review: A position on the Global Livestock Environmental Assessment Model (GLEAM)" \doi{10.1017/S1751731117001847}. Further information: \url{https://www.fao.org/gleam/en/}.
+GLEAM-X is the official R implementation of FAO’s Global Livestock Environmental Assessment Model (GLEAM). The package provides a modular, transparent framework for simulating livestock production systems and quantifying their environmental impacts.
 }
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://un-fao.github.io/GLEAM/}
   \item \url{https://github.com/un-fao/GLEAM/}
   \item \url{https://www.fao.org/gleam/en/}
   \item Report bugs at \url{https://github.com/un-fao/GLEAM/issues}

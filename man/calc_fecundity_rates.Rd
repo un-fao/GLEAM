@@ -4,12 +4,21 @@
 \alias{calc_fecundity_rates}
 \title{Calculate daily fecundity rates}
 \usage{
-calc_fecundity_rates(parturition_rate, litter_size, birth_fraction_female)
+calc_fecundity_rates(
+  reproductive_rate,
+  offspring_per_reproductive_event,
+  birth_fraction_female
+)
 }
 \arguments{
-\item{parturition_rate}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
+\item{reproductive_rate}{Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens, annual
+number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
 
-\item{litter_size}{Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{offspring_per_reproductive_event}{Numeric. Average number of offspring born per
+parturition (# offspring/parturition). For chickens, hatchability of eggs laid for
+reproduction, calculated as the number of chicks hatched divided by the number of
+eggs laid for reproduction (fraction).}
 
 \item{birth_fraction_female}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
 }
@@ -26,7 +35,7 @@ This function is part of the \code{\link[=run_demographic_herd_module]{run_demog
 Calculates the daily number of male and female offspring produced per adult female.
 }
 \examples{
-calc_fecundity_rates(parturition_rate = 0.8, litter_size = 2, birth_fraction_female = 0.5)
+calc_fecundity_rates(reproductive_rate = 0.8, offspring_per_reproductive_event = 2, birth_fraction_female = 0.5)
 
 }
 \seealso{

@@ -36,10 +36,12 @@ calc_metabolic_energy_req_activity(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -53,12 +55,16 @@ calc_metabolic_energy_req_activity(
 
   - `MJ`: juvenile males (from birth to weaning)
 
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
+
 - metabolic_energy_req_maintenance:
 
   Numeric. Energy required for maintenance, defined as the amount of
   energy needed to keep the animal at equilibrium such that body energy
-  is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP,
-  GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+  is neither gained nor lost (MJ/head/day). Expressed as net energy for
+  CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 
 - live_weight_cohort_average:
 
@@ -86,7 +92,7 @@ calc_metabolic_energy_req_activity(
 Numeric. Energy required for activity, defined as the amount of energy
 needed to support animal movement and physical activity (MJ/head/day).
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable
-energy for CML and PGS.
+energy for CML, PGS, and CHK.
 
 ## Details
 
@@ -104,10 +110,10 @@ live\\weight\\cohort\\average\\
 where
 
 \\cact\\ is an activity coefficient (dimensionless for `CTL`, `BFL`,
-`PGS`; MJ/day/kg for `SHP`, `GTS`) that reflects the animal’s feeding
-and management conditions. `metabolic_energy_req_maintenance` can be
-calculated using
-[`calc_metabolic_energy_req_maintenance()`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_maintenance.md).
+`PGS`, `CHK`; MJ/day/kg for `SHP`, `GTS`) that reflects the animal’s
+feeding and management conditions. `metabolic_energy_req_maintenance`
+can be calculated using
+[`calc_metabolic_energy_req_maintenance()`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_maintenance.md).
 
 For `CTL, BFL, SHP` and `GTS`, \\cact\\ is computed as a *weighted
 average* of activity levels over the assessment period to account for
@@ -141,8 +147,12 @@ variation in management and grazing intensity.
 
 - `all activity levels`: \\cact = 0.125\\
 
+**CHK** (Sakomura, 2004):
+
+- `all activity levels`: \\cact = 0.25\\
+
 This function is part of the
-[`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md).
+[`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md).
 
 ## References
 
@@ -169,8 +179,12 @@ camel*. Journal of Camel Science, 1(1):37-45. The Camel Applied Research
 and Development Network (CARDN), Arab Center for the Studies of Arid
 Zones and Dry Lands (ACSAD).
 
+Sakomura, N. K. (2004). *Modeling energy utilization in broiler
+breeders, laying hens and broilers*. Brazilian Journal of Poultry
+Science, 6, 1-11.
+
 ## See also
 
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
-[`calc_metabolic_energy_req_maintenance`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_maintenance.md),
-[`calc_avg_weights`](https://github.com/un-fao/GLEAM/reference/calc_avg_weights.md)
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),
+[`calc_metabolic_energy_req_maintenance`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_maintenance.md),
+[`calc_avg_weights`](https://un-fao.github.io/GLEAM/reference/calc_avg_weights.md)

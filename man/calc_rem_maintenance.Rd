@@ -16,6 +16,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of

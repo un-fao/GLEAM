@@ -49,7 +49,7 @@ calc_summary_offtake(
 
 - simulation_duration:
 
-  Numeric. Length of the assessment period (days)
+  Numeric. Length of the assessment period (days).
 
 ## Value
 
@@ -63,16 +63,13 @@ A named list with:
 
 - offtake_heads:
 
-  Numeric vector of length 6. Total number of animals removed via
-  offtake over the year, aggregated to 6 sex–age cohorts (heads/year)
-  (cohorts= `FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`)
+  Numeric vector of length 6. Total number of animals removed from each
+  cohort over the full 365-day simulation horizon (# heads/year).
 
 - offtake_heads_assessment:
 
-  Numeric vector of length 6. Total number of animals removed via
-  offtake over the assessment period, aggregated to 6 sex–age cohorts
-  (heads/assessment period) (cohorts= `FJ`, `FS`, `FA`, `MJ`, `MS`,
-  `MA`)
+  Numeric vector of length 6. Total number of animals removed from each
+  cohort over the assessment period (# heads/assessment period).
 
 - offtake_rate_to_stock_start:
 
@@ -105,8 +102,8 @@ A named list with:
   `MJ`, `MS`, `MA`)
 
 This function is part of the
-[`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md).
+[`run_demographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_demographic_herd_module.md).
 
 ## See also
 
-[`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md)
+[`run_demographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_demographic_herd_module.md)

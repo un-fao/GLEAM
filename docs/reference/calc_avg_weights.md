@@ -8,6 +8,7 @@ the offtake rate.
 
 ``` r
 calc_avg_weights(
+  cohort_short,
   live_weight_cohort_initial,
   live_weight_cohort_potential_final,
   live_weight_cohort_at_slaughter,
@@ -16,6 +17,27 @@ calc_avg_weights(
 ```
 
 ## Arguments
+
+- cohort_short:
+
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
+
+  - `FA`: adult females (from age at first parturition)
+
+  - `FS`: sub-adult females (from weaning to age at first parturition)
+
+  - `FJ`: juvenile females (from birth to weaning)
+
+  - `MA`: adult males (from age at first breeding)
+
+  - `MS`: sub-adult males (from weaning to age at first breeding)
+
+  - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
 
 - live_weight_cohort_initial:
 
@@ -61,7 +83,10 @@ A named list with:
 The calculation of `live_weight_cohort_average` and
 `live_weight_cohort_final` is performed considering that a fraction of
 animals is removed (offtake) during the cohort stage, while the
-remaining animals reach the potential final live weight.
+remaining animals reach the potential final live weight. For
+nondemographic cohorts (`FN`, `MN`), `offtake_rate` is not used;
+`live_weight_cohort_final` is set equal to
+`live_weight_cohort_potential_final`.
 
 The final live weight is computed as: \$\$ live\\weight\\cohort_final =
 (1 - offtake\\rate) \times live\\weight\\cohort\\potential\\final +
@@ -72,8 +97,8 @@ The average live weight over the stage is approximated as:
 live\\weight\\cohort\\final)/2\$\$
 
 This function is part of the
-[`run_weights_module()`](https://github.com/un-fao/GLEAM/reference/run_weights_module.md).
+[`run_weights_module()`](https://un-fao.github.io/GLEAM/reference/run_weights_module.md).
 
 ## See also
 
-[`run_weights_module`](https://github.com/un-fao/GLEAM/reference/run_weights_module.md)
+[`run_weights_module`](https://un-fao.github.io/GLEAM/reference/run_weights_module.md)

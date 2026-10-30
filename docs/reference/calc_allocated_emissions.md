@@ -30,7 +30,7 @@ gas).
 
 Allocation shares represent the fraction of total emissions assigned to
 each commodity (e.g., meat, milk, fibre). See
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md)
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md)
 for additional details.
 
 Allocated emissions are calculated as:
@@ -38,9 +38,9 @@ Allocated emissions are calculated as:
 \$\$value\\allocated = value \times allocation\\share\$\$
 
 This function is part of the
-[`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md).
+[`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md).
 
 ## See also
 
-[`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md),
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md)
+[`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md),
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md)

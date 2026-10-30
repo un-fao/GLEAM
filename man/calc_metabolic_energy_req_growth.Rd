@@ -13,7 +13,9 @@ calc_metabolic_energy_req_growth(
   live_weight_mature_stage = NA_real_,
   daily_weight_gain = NA_real_,
   offtake_rate = NA_real_,
-  cohort_duration_days = NA_real_
+  cohort_duration_days = NA_real_,
+  nondemo_productive_phase_id = NA_real_,
+  is_egg_producing = FALSE
 )
 }
 \arguments{
@@ -26,9 +28,10 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -37,6 +40,8 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
 
 \item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting
@@ -56,10 +61,22 @@ biological and management conditions (kg).}
 
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 
-\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a
+specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ}
+cohorts: 3 days.}
+
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2.}
+
+\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for \code{FN}
+with \code{nondemo_productive_phase_id = 2}.}
 }
 \value{
-Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day).
+Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML,
+PGS, and CHK.
 }
 \description{
 Calculates the energy requirement for growth by cohort (MJ/head/day), defined
@@ -70,7 +87,7 @@ component of live weight gain.
 This function follows the IPCC Tier 2 energy partitioning
 approach and applies species-specific equations for growth energy requirements.
 
-In general, growth energy is computed only for growing cohorts (\code{FJ}, \code{FS}, \code{MJ}, \code{MS});
+In general, growth energy is computed only for growing cohorts (\code{FJ}, \code{FS}, \code{MJ}, \code{MS}, \code{FN}, \code{MN});
 in this implementation, growth is set to 0 for adult cohorts (\code{FA}, \code{MA}).
 
 \strong{Species-specific approach:}
@@ -120,6 +137,32 @@ where:
 \item \code{meat_fat_energy = 52.3} is the ME cost of fat deposition (MJ/kg fat).
 }
 
+\item \strong{CHK} (Sakomura, 2004)
+
+Chicken growth energy is calculated as:
+
+\deqn{metabolic\_energy\_req\_growth = daily\_weight\_gain \times cgro \times 1000}
+
+where \eqn{daily\_weight\_gain} is expressed in kg/head/day and \eqn{cgro}
+is expressed in MJ/g. The factor 1000 converts kilograms of live-weight gain
+to grams.
+
+The following values are used, based on Table 3 from Sakomura (2004):
+\itemize{
+\item \code{FA} and \code{MA}:
+\eqn{cgro = 0.0299} (average of values for "Laying hen" and "Broiler breeder hen")
+\item \code{FN} and \code{is_egg_producing = TRUE}:
+\eqn{cgro = 0.0279} (value for "Laying hen")
+\item \code{FN} and \code{is_egg_producing = FALSE}:
+\eqn{cgro = 0.0221} (average of all values, excluding "Male broiler", "Laying hen",
+and "Broiler breeder hen")
+\item \code{MN}:
+\eqn{cgro = 0.0173} (average of values for "Male broiler")
+\item \code{FS}, \code{FJ}, \code{MS}, \code{MJ}:
+\eqn{cgro = 0.0191} (average of all values, excluding "Laying hen"
+and "Broiler breeder hen")
+}
+
 }
 
 This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
@@ -147,6 +190,9 @@ Chapter 10: Emissions from Livestock and Manure Management, Equation 10.6 and 10
 
 IPCC. (2006). \emph{2006 IPCC Guidelines for National Greenhouse Gas Inventories}, Chapter 10: Emissions
 from Livestock and Manure Management, Equation 10.6 and 10.7; Table 10.6.
+
+Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
 }
 \seealso{
 \code{\link{run_metabolic_energy_req_module}},

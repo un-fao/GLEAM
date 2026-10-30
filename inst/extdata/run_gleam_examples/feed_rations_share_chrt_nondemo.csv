@@ -1,0 +1,50 @@
+herd_id	species_short	cohort_short	nondemo_productive_phase_id	feed_id	feed_name	feed_ration_fraction
+14	CHK	FN	1	F5	Maize (corn)	0.45
+14	CHK	FN	1	F210	Cake of Soya beans	0.2
+14	CHK	FN	1	F214	Cake of Sunflower seed	0.1
+14	CHK	FN	1	F118	Peas, dry	0.08
+14	CHK	FN	1	F3	Wheat	0.07
+14	CHK	FN	1	F11	Barley	0.05
+14	CHK	FN	1	F308	Bran of Wheat	0.05
+14	CHK	FN	2	F11	Barley	0.05
+14	CHK	FN	2	F118	Peas, dry	0.05
+14	CHK	FN	2	F210	Cake of Soya beans	0.2
+14	CHK	FN	2	F3	Wheat	0.19
+14	CHK	FN	2	F308	Bran of Wheat	0.06
+14	CHK	FN	2	F5	Maize (corn)	0.45
+15	CHK	FN	1	F5	Maize (corn)	0.34
+15	CHK	FN	1	F210	Cake of Soya beans	0.24
+15	CHK	FN	1	F7	Rice	0.1
+15	CHK	FN	1	F9	Sorghum	0.08
+15	CHK	FN	1	F17	Millet	0.05
+15	CHK	FN	1	F96	Cassava, fresh	0.08
+15	CHK	FN	1	F110	Beans, dry	0.04
+15	CHK	FN	1	F214	Cake of Sunflower seed	0.05
+15	CHK	FN	1	F311	Bran of Maize	0.02
+15	CHK	FN	2	F5	Maize (corn)	0.4
+15	CHK	FN	2	F210	Cake of Soya beans	0.18
+15	CHK	FN	2	F7	Rice	0.1
+15	CHK	FN	2	F9	Sorghum	0.08
+15	CHK	FN	2	F17	Millet	0.05
+15	CHK	FN	2	F96	Cassava, fresh	0.1
+15	CHK	FN	2	F110	Beans, dry	0.03
+15	CHK	FN	2	F214	Cake of Sunflower seed	0.04
+15	CHK	FN	2	F311	Bran of Maize	0.02
+15	CHK	MN	1	F5	Maize (corn)	0.34
+15	CHK	MN	1	F210	Cake of Soya beans	0.24
+15	CHK	MN	1	F7	Rice	0.1
+15	CHK	MN	1	F9	Sorghum	0.08
+15	CHK	MN	1	F17	Millet	0.05
+15	CHK	MN	1	F96	Cassava, fresh	0.08
+15	CHK	MN	1	F110	Beans, dry	0.04
+15	CHK	MN	1	F214	Cake of Sunflower seed	0.05
+15	CHK	MN	1	F311	Bran of Maize	0.02
+15	CHK	MN	2	F5	Maize (corn)	0.4
+15	CHK	MN	2	F210	Cake of Soya beans	0.18
+15	CHK	MN	2	F7	Rice	0.1
+15	CHK	MN	2	F9	Sorghum	0.08
+15	CHK	MN	2	F17	Millet	0.05
+15	CHK	MN	2	F96	Cassava, fresh	0.1
+15	CHK	MN	2	F110	Beans, dry	0.03
+15	CHK	MN	2	F214	Cake of Sunflower seed	0.04
+15	CHK	MN	2	F311	Bran of Maize	0.02

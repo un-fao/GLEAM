@@ -2,8 +2,8 @@
 
 Calculates cohort-level production outputs over the assessment period by
 combining cohort-level herd structure inputs with herd-level production
-parameters. The function returns milk, fibre, and meat outputs for each
-cohort.
+parameters. The function returns milk, fibre, meat, and egg outputs for
+each cohort.
 
 ## Usage
 
@@ -30,7 +30,7 @@ run_production_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -46,16 +46,30 @@ run_production_module(
 
       - `MJ`: juvenile males (from birth to weaning)
 
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
+
+  nondemo_productive_phase_id
+
+  :   Numeric. Optional productive phase identifier for non-demographic
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
+
+  is_egg_producing
+
+  :   Logical. Cohort-level flag identifying egg-producing `CHK`
+      cohorts. This can be `TRUE` only for `FA` and for `FN` with
+      `nondemo_productive_phase_id = 2`.
+
   cohort_stock_size
 
-  :   Numeric. Average population size in each of the 6 sex–age cohorts
-      (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
+  :   Numeric. Average population size of the assessed cohort (# heads).
 
   offtake_heads_assessment
 
-  :   Numeric. Total number of animals removed via offtake over the
-      assessment period, aggregated to 6 sex–age cohorts
-      (heads/assessment period) (cohorts = FJ, FS, FA, MJ, MS, MA).
+  :   Numeric. Total number of animals removed from each cohort over the
+      assessment period (# heads/assessment period).
 
   live_weight_cohort_at_slaughter
 
@@ -65,7 +79,9 @@ run_production_module(
 - herd_level_data:
 
   data.table. Herd-level input table (one row per `herd_id`) with the
-  following data requirement:
+  following data requirement. Milk-related columns and
+  `fibre_yield_year` may be omitted when the cohort table contains only
+  `FN` and `MN`:
 
   herd_id
 
@@ -88,6 +104,8 @@ run_production_module(
       - `SHP`: sheep
 
       - `GTS`: goats
+
+      - `CHK`: chickens
 
   milk_yield_day
 
@@ -138,6 +156,15 @@ run_production_module(
       Fat-protein-corrected milk (FPCM), (kg lactose/kg milk). Suggested
       value = 0.048.
 
+  egg_human_consumption_yield
+
+  :   Numeric. Number of eggs produced for human consumption in one year
+      by hen (eggs/year/animal). Used for `CHK`.
+
+  egg_average_weight
+
+  :   Numeric. Average egg weight (kg/egg).
+
   fibre_yield_year
 
   :   Numeric. Annual production yield of fibre, such as wool, cashmere,
@@ -170,7 +197,9 @@ run_production_module(
 ## Value
 
 A `data.table` with the original cohort-level input columns plus the
-following new variables:
+following new variables. If `nondemo_productive_phase_id` is present in
+the input, the returned table preserves phase-specific rows for `FN` and
+`MN`:
 
 - milk_production_mass_cohort:
 
@@ -215,32 +244,54 @@ following new variables:
   by-products after dressing and bone removal) produced over the
   assessment period by cohort (kg protein/cohort/assessment period).
 
+- egg_production_number_cohort:
+
+  Numeric. Total egg output over the assessment period by cohort
+  (eggs/cohort/assessment period).
+
+- egg_production_mass_cohort:
+
+  Numeric. Total egg mass produced over the assessment period by cohort
+  (kg/cohort/assessment period).
+
+- egg_production_protein_cohort:
+
+  Numeric. Total egg protein output over the assessment period by cohort
+  (kg protein/cohort/assessment period).
+
 ## Details
 
 This function represents the intermediate module of the Global Livestock
 Environmental Assessment Model (GLEAM) computational pipeline
-[`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
-to estimate meat, milk and fibre production outputs from livestock and
-performs the following calculation sequence:
+[`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
+to estimate meat, milk, fibre, and eggs production outputs from
+livestock and performs the following calculation sequence:
 
 1.  Milk outputs are computed using
-    [`calc_milk_production`](https://github.com/un-fao/GLEAM/reference/calc_milk_production.md)
+    [`calc_milk_production`](https://un-fao.github.io/GLEAM/reference/calc_milk_production.md)
 
 2.  Fibre outputs are computed using
-    [`calc_fibre_production`](https://github.com/un-fao/GLEAM/reference/calc_fibre_production.md)
+    [`calc_fibre_production`](https://un-fao.github.io/GLEAM/reference/calc_fibre_production.md)
 
 3.  Meat outputs are computed using
-    [`calc_meat_production`](https://github.com/un-fao/GLEAM/reference/calc_meat_production.md)
+    [`calc_meat_production`](https://un-fao.github.io/GLEAM/reference/calc_meat_production.md)
 
-For species/cohorts where milk or fibre production is not applicable,
-outputs are returned as zero.
+4.  Eggs outputs are computed using
+    [`calc_egg_production`](https://un-fao.github.io/GLEAM/reference/calc_egg_production.md)
+
+For species/cohorts where milk, fibre or egg production is not
+applicable, outputs are returned as zero. Food-egg output is calculated
+from `egg_human_consumption_yield` (eggs/year/animal), multiplied by the
+stock of each flagged cohort and scaled to the assessment period.
+Reproductive eggs from `FA` are excluded from food-egg production.
 
 ## See also
 
-[`run_gleam`](https://github.com/un-fao/GLEAM/reference/run_gleam.md),
-[`calc_milk_production`](https://github.com/un-fao/GLEAM/reference/calc_milk_production.md),
-[`calc_fibre_production`](https://github.com/un-fao/GLEAM/reference/calc_fibre_production.md),
-[`calc_meat_production`](https://github.com/un-fao/GLEAM/reference/calc_meat_production.md)
+[`run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md),
+[`calc_milk_production`](https://un-fao.github.io/GLEAM/reference/calc_milk_production.md),
+[`calc_fibre_production`](https://un-fao.github.io/GLEAM/reference/calc_fibre_production.md),
+[`calc_meat_production`](https://un-fao.github.io/GLEAM/reference/calc_meat_production.md),
+[`calc_egg_production`](https://un-fao.github.io/GLEAM/reference/calc_egg_production.md)
 
 ## Examples
 

@@ -35,10 +35,11 @@ calc_fibre_allocation_energy(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_stock_size:
 
-  Numeric. Average population size in each of the 6 sex–age cohorts (#
-  heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
+  Numeric. Average population size of the assessed cohort (# heads).
 
 - metabolic_energy_req_fibre_production:
 
@@ -100,12 +101,12 @@ for camels (`CML`), and:
 for sheep (`SHP`) and goats (`GTS`).
 
 where `metabolic_energy_req_fibre_production` can be computed using
-[`calc_metabolic_energy_req_fibre`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_fibre.md)
+[`calc_metabolic_energy_req_fibre`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_fibre.md)
 (see also
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md)).
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md)).
 
 This function is part of the
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md).
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md).
 
 ## References
 
@@ -139,6 +140,6 @@ Italy.
 
 ## See also
 
-[`run_allocation_module`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md),
-[`calc_metabolic_energy_req_fibre`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_fibre.md),
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md)
+[`run_allocation_module`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md),
+[`calc_metabolic_energy_req_fibre`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_fibre.md),
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md)

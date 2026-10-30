@@ -20,9 +20,10 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -31,6 +32,8 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
 
 \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as wool, cashmere, mohair (kg/head/year).
@@ -38,7 +41,8 @@ Required only for species = CML, SHP, and GTS.}
 }
 \value{
 Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML.
-Assumed to be 0 for other species. (MJ/head/day).  Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for SHP and
+GTS and as metabolizable energy for CML.
 }
 \description{
 Calculates the energy requirement for fibre production (MJ/head/day),
@@ -47,7 +51,8 @@ defined as the additional energy required for the synthesis of animal fibre
 }
 \details{
 This component follows the IPCC Tier 2 partitioning approach and is applied
-only to fibre-producing species and relevant cohorts, which are assumed to be \code{FA}, \code{FS}, \code{MA}, and \code{MS}.
+only to fibre-producing species and relevant cohorts, which are assumed to be
+\code{FA}, \code{FS}, \code{MA}, \code{MS}, \code{FN}, and \code{MN}.
 
 \strong{Species-specific approach:}
 

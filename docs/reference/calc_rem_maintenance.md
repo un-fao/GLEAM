@@ -28,6 +28,8 @@ calc_rem_maintenance(species_short, ration_digestibility_fraction = NA_real_)
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - ration_digestibility_fraction:
 
   Numeric. Average digestibility of the feed ration, expressed as ratio
@@ -53,7 +55,7 @@ For the Other species REM is not applicable and the function returns
 `NA_real_`.
 
 This function is part of the
-[`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md).
+[`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md).
 
 ## References
 
@@ -71,7 +73,7 @@ Management, Equation 10.14.
 
 ## See also
 
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
-[`calc_ration_digestibility`](https://github.com/un-fao/GLEAM/reference/calc_ration_digestibility.md)
-[`calc_total_metabolic_energy_req`](https://github.com/un-fao/GLEAM/reference/calc_total_metabolic_energy_req.md)
-[`calc_ration_intake`](https://github.com/un-fao/GLEAM/reference/calc_ration_intake.md)
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),
+[`calc_ration_digestibility`](https://un-fao.github.io/GLEAM/reference/calc_ration_digestibility.md)
+[`calc_total_metabolic_energy_req`](https://un-fao.github.io/GLEAM/reference/calc_total_metabolic_energy_req.md)
+[`calc_ration_intake`](https://un-fao.github.io/GLEAM/reference/calc_ration_intake.md)

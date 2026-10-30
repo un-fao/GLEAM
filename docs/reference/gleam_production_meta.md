@@ -10,7 +10,7 @@ gleam_production_meta
 
 ## Format
 
-An object of class `list` of length 8.
+An object of class `list` of length 11.
 
 ## Details
 

@@ -34,12 +34,14 @@ calc_ration_intake(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - metabolic_energy_req_total:
 
   Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL,
   SHP and GTS this is expressed as gross energy intake requirement (GE).
-  For CML and PGS the function returns the summed daily metabolizable
-  energy requirement.
+  For CML, PGS and CHK the function returns the summed daily
+  metabolizable energy requirement.
 
 - ration_gross_energy:
 
@@ -65,15 +67,15 @@ diet energy content (MJ/kg DM).
   \$\$ ration\\intake =
   \frac{metabolic\\energy\\req\\total}{ration\\gross\\energy} \$\$
 
-- **Energy expressed as metabolizable energy requirement - `CML`,
-  `PGS`**:
+- **Energy expressed as metabolizable energy requirement - `CML`, `PGS`,
+  `CHK`**:
 
   \$\$ ration\\intake =
   \frac{metabolic\\energy\\req\\total}{ration\\metabolizable\\energy}
   \$\$
 
 This function is part of the
-[`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md).
+[`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md).
 
 ## References
 
@@ -87,7 +89,7 @@ from Livestock and Manure Management*.
 
 ## See also
 
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
-[`calc_total_metabolic_energy_req`](https://github.com/un-fao/GLEAM/reference/calc_total_metabolic_energy_req.md)
-[`calc_ration_gross_energy`](https://github.com/un-fao/GLEAM/reference/calc_ration_gross_energy.md)
-[`calc_ration_metabolizable_energy`](https://github.com/un-fao/GLEAM/reference/calc_ration_metabolizable_energy.md)
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),
+[`calc_total_metabolic_energy_req`](https://un-fao.github.io/GLEAM/reference/calc_total_metabolic_energy_req.md)
+[`calc_ration_gross_energy`](https://un-fao.github.io/GLEAM/reference/calc_ration_gross_energy.md)
+[`calc_ration_metabolizable_energy`](https://un-fao.github.io/GLEAM/reference/calc_ration_metabolizable_energy.md)

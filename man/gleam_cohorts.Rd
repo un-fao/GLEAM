@@ -5,7 +5,7 @@
 \alias{gleam_cohorts}
 \title{Valid cohort short codes}
 \format{
-A character vector of length 6.
+A character vector of length 8.
 }
 \usage{
 gleam_cohorts

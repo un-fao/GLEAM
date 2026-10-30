@@ -6,17 +6,17 @@
 #'
 #'
 #' @param species_short Character. Code identifying the livestock species.
-#'   Supported values include:
-#'   \itemize{
-#'     \item \code{PGS}: pigs
-#'     \item \code{CML}: camels
-#'     \item \code{CTL}: cattle
-#'     \item \code{BFL}: buffalo
-#'     \item \code{SHP}: sheep
-#'     \item \code{GTS}: goats
-#'   }
-#'
-#' @param cohort_short Character. Sex- and age-specific cohort code describing the
+#'         Supported values include:
+#'         \itemize{
+#'         \item \code{PGS}: pigs
+#'         \item \code{CML}: camels
+#'         \item \code{CTL}: cattle
+#'         \item \code{BFL}: buffalo
+#'         \item \code{SHP}: sheep
+#'         \item \code{GTS}: goats
+#'         \item \code{CHK}: chickens
+#'         }
+#' @param cohort_short Character. Sex-specific cohort code describing the age and/or the
 #'   production stage of the animals. Supported values include:
 #'   \itemize{
 #'     \item \code{FA}: adult females (from age at first parturition)
@@ -25,6 +25,8 @@
 #'     \item \code{MA}: adult males (from age at first breeding)
 #'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 #'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
 #'   }
 #' @param ration_digestibility_fraction Numeric. Average digestibility of the feed ration, expressed as ratio of 
 #' digestible (or metabolizable, for poultry) to gross energy content (fraction).
@@ -46,7 +48,7 @@
 #'     \itemize{
 #'       \item \code{FA} and \code{MA} cohorts: 
 #'       \deqn{ym = 9.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
-#'       \item \code{FS} and \code{MS} cohorts: 
+#'       \item \code{FS}, \code{MS}, \code{FN}, and \code{MN} cohorts: 
 #'       \deqn{ym = 7.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
 #'     }
 #'
@@ -54,8 +56,10 @@
 #'     ym is assigned fixed values by cohort:
 #'     \itemize{
 #'       \item \code{FA} and \code{MA} cohorts: \deqn{ym = 1.01}
-#'        \item \code{FS} and \code{MS} cohorts: \deqn{ym = 0.39}
+#'        \item \code{FS}, \code{MS}, \code{FN}, and \code{MN} cohorts: \deqn{ym = 0.39}
 #'     }
+#'    \item \strong{For \code{CHK}}: ym is returned as 0
+#'    
 #' }
 #'
 #' ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming 
@@ -104,7 +108,7 @@ calc_conversion_factor_ym <- function(
   } else if (species_short %in% c("SHP", "GTS", "CML")) {
     if (cohort_short %in% c("FJ", "MJ")) {
       ch4_conversion_factor_ym <- 0
-    } else if (cohort_short %in% c("FS", "MS")) {
+    } else if (cohort_short %in% c("FS", "MS", "FN", "MN")) {
       ch4_conversion_factor_ym <- 7.75 - 0.05 * ration_digestibility_fraction * 100
     } else {
       ch4_conversion_factor_ym <- 9.75 - 0.05 * ration_digestibility_fraction * 100
@@ -112,11 +116,13 @@ calc_conversion_factor_ym <- function(
   } else if (species_short %in% c("PGS")) {
     if (cohort_short %in% c("FJ", "MJ")) {
       ch4_conversion_factor_ym <- 0
-    } else if (cohort_short %in% c("FS", "MS")) {
+    } else if (cohort_short %in% c("FS", "MS", "FN", "MN")) {
       ch4_conversion_factor_ym <- 0.39
     } else {
       ch4_conversion_factor_ym <- 1.01
     }
+  } else if (species_short == "CHK") {
+    ch4_conversion_factor_ym <- 0
   }
 
   return(ch4_conversion_factor_ym)

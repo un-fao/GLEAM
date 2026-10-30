@@ -25,10 +25,10 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
-\item{cohort_short}{
-Character. Sex- and age-specific cohort code describing the production stage
-of the animals. Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -36,8 +36,12 @@ of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
-}
-}
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
+}}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+phase 1 and optionally \code{2} for phase 2.}
 \item{feed_id}{Character. Unique identifier for the feed component, used
 to join feed ration data with feed parameter tables.}
 \item{feed_name}{Character. Feed component name (optional, for readability and
@@ -61,7 +65,7 @@ feed component, representing CO2 emissions from pesticide manufacture in feed
 production, expressed per kilogram of dry matter intake (g CO2/kg DM).}
 \item{co2_feed_crop_activities}{Numeric. Carbon dioxide (CO2) emission factor of a
 feed component, representing CO2 emissions from on-field agricultural activities in
-feed production, expressed per kilogram of dry matter intake (kg CO2/kg DM).}
+feed production, expressed per kilogram of dry matter intake (g CO2/kg DM).}
 \item{co2_feed_luc_nopeat}{Numeric. Carbon dioxide (CO2) emission factor of a
 feed component, representing CO2 emissions from land-use change in feed production
 (excluding peatland drainage), expressed per kilogram of dry matter intake (g CO2/kg DM).}
@@ -87,7 +91,8 @@ Defaults to \code{TRUE}.}
 }
 \value{
 data.table. Cohort-level emission factors summarized by \code{herd_id},
-\code{species_short}, and \code{cohort_short} with the following columns:
+\code{species_short}, \code{cohort_short}, and
+\code{nondemo_productive_phase_id} when present, with the following columns:
 \describe{
 \item{co2_ration_fertilizer}{
 Numeric. Diet-level average carbon dioxide (CO2) emission factor from
@@ -163,7 +168,8 @@ Each contribution is computed using the specific helper below (called with \code
 }
 
 \item \strong{Aggregate to cohort-level diet emission factors} by summing feed-component contributions
-across all feeds within each group \code{(herd_id, species_short, cohort_short)}.
+across all feeds within each group \code{(herd_id, species_short, cohort_short)}
+and within \code{nondemo_productive_phase_id} when that column is provided.
 }
 
 For each emission source, cohort-level dietary emission factors are computed as:
@@ -180,26 +186,23 @@ For each emission source, cohort-level dietary emission factors are computed as:
 }
 \examples{
 \donttest{
-# Load cleaned example input from the package and compute the calculation of feed emission factors
-
-# Load table with ration shares
+# Load ration shares and feed emission factors
 rations_share <- data.table::fread(system.file(
   "extdata/run_modules_examples/feed_rations_share_chrt.csv",
   package = "gleam"
 ))
-
-# Load table with feed emission factors
 feed_emissions <- data.table::fread(system.file(
   "extdata/run_modules_examples/feed_emission_factors.csv",
   package = "gleam"
 ))
 
-# Run the code
-result <- run_emissions_ration_module(
+# Run feed emissions calculations
+results <- run_emissions_ration_module(
   rations_share = rations_share,
   feed_emissions = feed_emissions
 )
 }
+
 }
 \seealso{
 \code{\link{run_gleam}},

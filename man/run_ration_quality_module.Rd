@@ -21,10 +21,10 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
-\item{cohort_short}{
-Character. Sex- and age-specific cohort code describing the production stage
-of the animals. Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -32,8 +32,12 @@ of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
-}
-}
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
+}}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+phase 1 and optionally \code{2} for phase 2.}
 \item{feed_id}{Character. Unique identifier for the feed component, used
 to join feed ration data with feed parameter tables.}
 \item{feed_name}{Character. Feed component name (optional, for readability and
@@ -62,14 +66,16 @@ energy losses in urine and gaseous products of digestion (MJ/kg DM).}
 \item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy content
 of a feed component for pigs, representing digestible energy minus energy losses
 in urine and gaseous products of digestion (MJ/kg DM).}
+\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy
+content of a feed component for chickens (MJ/kg DM).}
 \item{feed_nitrogen_content}{Numeric. Nitrogen content of a feed component
 (kg N/kg DM).}
 \item{feed_urinary_energy_ruminant}{Numeric. Fraction of feed's gross energy
 that is excreted in urine for ruminants (fraction).}
 \item{feed_urinary_energy_pigs}{Numeric. Fraction of feed's gross energy
 that is excreted in urine for pigs (fraction).}
-\item{feed_ash}{Numeric. Average ash content by feed component, calculated
-as a fraction of the dry matter intake (g ash/100g DM).}
+\item{feed_ash}{Numeric. Average ash content by feed component, expressed as
+a fraction of the dry matter intake (g ash/100g DM).}
 \item{category}{Character. Feed category (optional). If provided, it should be
 used consistently  with \code{feed_id}, for a coherent result.}
 \item{feed_name}{Character. Feed component name (optional, for readability and
@@ -81,7 +87,8 @@ Defaults to \code{TRUE}.}
 }
 \value{
 data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
-\code{species_short}, and \code{cohort_short} with the following columns:
+\code{species_short}, \code{cohort_short}, and
+\code{nondemo_productive_phase_id} when present, with the following columns:
 \describe{
 \item{ration_gross_energy}{Numeric. Average gross energy content of the diet
 (MJ/kg DM).}
@@ -89,7 +96,8 @@ data.table. Cohort-level nutritional metrics summarized by \code{herd_id},
 content of the diet (MJ/kg DM).}
 \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed
-ration, expressed as ratio of digestible to gross energy content (fraction).}
+ration, expressed as ratio of digestible (or metabolizable, for chickens) to
+gross energy content (fraction).}
 \item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that
 is excreted in urine (fraction).}
 \item{ration_ash}{Numeric. Average ash content of feed, calculated as a fraction
@@ -109,6 +117,9 @@ quality of the feed ration.
 This function joins \code{rations_share} with \code{feed_params} by \code{feed_id},
 uses \code{species_short} directly, and computes ration-weighted nutritional
 metrics by cohort.
+For chickens, digestibility is calculated using chicken metabolizable energy
+divided by gross energy. Urinary energy is set to zero because these losses are
+already included in metabolizable energy.
 
 The following calculation sequence is applied:
 \enumerate{
@@ -124,12 +135,13 @@ and \code{feed_gross_energy} using \code{\link{calc_feed_digestibility_fraction}
 \item ash using \code{\link{calc_ration_ash}}
 }
 \item Cohort-level nutritional metrics are obtained for the whole feed ration by summing contributions across
-feed components within each \code{herd_id}, \code{species_short}, and \code{cohort_short}.
+feed components within each \code{herd_id}, \code{species_short}, and \code{cohort_short}
+group, and within \code{nondemo_productive_phase_id} when that column is provided.
 }
 }
 \examples{
 \donttest{
-# Load feed rations inputs (cohort-level shares and feed parameters)
+# Load feed ration inputs (cohort-level shares and feed parameters)
 feed_rations_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/feed_rations_share_chrt.csv",
   package = "gleam"
@@ -139,11 +151,13 @@ feed_params_dt <- data.table::fread(system.file(
   package = "gleam"
 ))
 
-result <- run_ration_quality_module(
+# Run ration quality calculations
+results <- run_ration_quality_module(
   rations_share = feed_rations_chrt_dt,
   feed_params = feed_params_dt
 )
 }
+
 }
 \seealso{
 \code{\link{run_gleam}},

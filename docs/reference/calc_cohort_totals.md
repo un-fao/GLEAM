@@ -30,8 +30,7 @@ calc_cohort_totals(
 
 - cohort_stock_size:
 
-  Numeric. Average population size in each of the 6 sex–age cohorts (#
-  heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
+  Numeric. Average population size of the assessed cohort (# heads).
 
 - ration_intake:
 
@@ -108,8 +107,8 @@ ration\\intake \times cohort\\stock\\size \times simulation\\duration /
 1000\$\$
 
 This function is part of the
-[`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md).
+[`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md).
 
 ## See also
 
-[`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md)
+[`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md)

@@ -1,0 +1,178 @@
+<style>
+img.module-figure-zoom {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 360px);
+  max-height: 280px;
+  margin: 1rem auto 0.5rem;
+  cursor: zoom-in;
+  border-radius: 8px;
+}
+
+.module-figure-zoom:hover,
+.module-figure-zoom:focus-visible {
+  outline: 2px solid #6bc4d0;
+  outline-offset: 4px;
+}
+
+.module-figure-hint {
+  margin: 0.5rem 0 1rem;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #5b6b73;
+}
+
+.module-figure-hint::before {
+  content: "Click the image to enlarge, then click again to zoom.";
+}
+
+body.module-figure-lightbox-open {
+  overflow: hidden;
+}
+
+.module-figure-lightbox {
+  position: fixed;
+  inset: 0;
+  width: 94vw;
+  max-width: none;
+  height: 94vh;
+  max-height: none;
+  box-sizing: border-box;
+  margin: auto;
+  padding: 1rem;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #17382d;
+}
+
+.module-figure-lightbox[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.module-figure-lightbox::backdrop {
+  background: rgba(20, 24, 28, 0.88);
+}
+
+.module-figure-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.module-figure-toolbar button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #287d8a;
+  border-radius: 4px;
+  background: #287d8a;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.module-figure-viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.module-figure-viewport img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  cursor: zoom-in;
+}
+
+.module-figure-viewport.is-zoomed img {
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  cursor: zoom-out;
+}
+</style>
+
+<script>
+(function () {
+  function setupModuleFigures() {
+    const images = document.querySelectorAll("img.module-figure-zoom");
+    if (!images.length) return;
+
+    const dialog = document.createElement("dialog");
+    dialog.className = "module-figure-lightbox";
+    dialog.setAttribute("aria-label", "Enlarged module diagram");
+    dialog.innerHTML =
+      '<div class="module-figure-toolbar">' +
+      '<button type="button" class="module-figure-toggle" aria-pressed="false">Zoom in</button>' +
+      '<button type="button" class="module-figure-close" autofocus>Close</button>' +
+      '</div><div class="module-figure-viewport"><img alt=""></div>';
+    document.body.appendChild(dialog);
+
+    const viewport = dialog.querySelector(".module-figure-viewport");
+    const enlarged = viewport.querySelector("img");
+    const toggle = dialog.querySelector(".module-figure-toggle");
+    let trigger;
+
+    function setZoom(zoomed) {
+      viewport.classList.toggle("is-zoomed", zoomed);
+      toggle.textContent = zoomed ? "Fit to window" : "Zoom in";
+      toggle.setAttribute("aria-pressed", String(zoomed));
+      viewport.scrollTop = 0;
+      viewport.scrollLeft = 0;
+    }
+
+    function toggleZoom() {
+      setZoom(!viewport.classList.contains("is-zoomed"));
+    }
+
+    images.forEach(function (image) {
+      function openFigure() {
+        trigger = image;
+        enlarged.src = image.currentSrc || image.src;
+        enlarged.alt = image.alt;
+        setZoom(false);
+        dialog.showModal();
+        document.body.classList.add("module-figure-lightbox-open");
+      }
+
+      image.tabIndex = 0;
+      image.setAttribute("role", "button");
+      image.setAttribute("aria-haspopup", "dialog");
+      image.setAttribute("aria-label", "Enlarge: " + image.alt);
+      image.addEventListener("click", openFigure);
+      image.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openFigure();
+        }
+      });
+    });
+
+    enlarged.addEventListener("click", toggleZoom);
+    toggle.addEventListener("click", toggleZoom);
+    dialog.querySelector(".module-figure-close").addEventListener("click", function () {
+      dialog.close();
+    });
+    dialog.addEventListener("click", function (event) {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener("close", function () {
+      document.body.classList.remove("module-figure-lightbox-open");
+      if (trigger) trigger.focus();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupModuleFigures);
+  } else {
+    setupModuleFigures();
+  }
+})();
+</script>

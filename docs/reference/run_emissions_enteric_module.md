@@ -39,9 +39,11 @@ run_emissions_enteric_module(cohort_level_data, show_indicator = TRUE)
 
       - `GTS`: goats
 
+      - `CHK`: chickens
+
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -56,6 +58,16 @@ run_emissions_enteric_module(cohort_level_data, show_indicator = TRUE)
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
+
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
+
+  nondemo_productive_phase_id
+
+  :   Numeric. Optional productive phase identifier for non-demographic
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   ration_digestibility_fraction
 
@@ -89,7 +101,8 @@ run_emissions_enteric_module(cohort_level_data, show_indicator = TRUE)
 ## Value
 
 A `data.table` with the original input columns plus the following new
-variables:
+variables. If `nondemo_productive_phase_id` is present in the input, the
+returned table preserves phase-specific rows for `FN` and `MN`:
 
 - ch4_mitigation_factor:
 
@@ -110,7 +123,7 @@ variables:
 
 This function represents the intermediate module of the Global Livestock
 Environmental Assessment Model (GLEAM) computational pipeline
-[`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 to estimate enteric methane emissions and performs the following
 calculation sequence:
 
@@ -118,10 +131,10 @@ calculation sequence:
     set to `1` (no mitigation).
 
 2.  The methane conversion factor (ym) is computed using
-    [`calc_conversion_factor_ym`](https://github.com/un-fao/GLEAM/reference/calc_conversion_factor_ym.md).
+    [`calc_conversion_factor_ym`](https://un-fao.github.io/GLEAM/reference/calc_conversion_factor_ym.md).
 
 3.  Daily enteric methane emissions are computed using
-    [`calc_ch4_enteric`](https://github.com/un-fao/GLEAM/reference/calc_ch4_enteric.md).
+    [`calc_ch4_enteric`](https://un-fao.github.io/GLEAM/reference/calc_ch4_enteric.md).
 
 ## References
 
@@ -135,22 +148,23 @@ Management, Equation 10.21.
 
 ## See also
 
-[`run_gleam`](https://github.com/un-fao/GLEAM/reference/run_gleam.md),
-[`calc_conversion_factor_ym`](https://github.com/un-fao/GLEAM/reference/calc_conversion_factor_ym.md),
-[`calc_ch4_enteric`](https://github.com/un-fao/GLEAM/reference/calc_ch4_enteric.md)
+[`run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md),
+[`calc_conversion_factor_ym`](https://un-fao.github.io/GLEAM/reference/calc_conversion_factor_ym.md),
+[`calc_ch4_enteric`](https://un-fao.github.io/GLEAM/reference/calc_ch4_enteric.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-# Load example input (6 herd_ids, cohort-level; only required columns)
-input_path <- system.file(
+# Load enteric emissions inputs (cohort-level)
+emissions_enteric_input_chrt_data <- data.table::fread(system.file(
   "extdata/run_modules_examples/emissions_enteric_input_chrt_data.csv",
   package = "gleam"
-)
-emissions_enteric_input_chrt_data <- data.table::fread(input_path)
+))
+
+# Run enteric emissions calculations
 results <- run_emissions_enteric_module(
-cohort_level_data = emissions_enteric_input_chrt_data
+  cohort_level_data = emissions_enteric_input_chrt_data
 )
 #> 🕒 Calculating enteric methane emissions, please wait…
 #> ✔ Enteric methane emissions calculation complete.

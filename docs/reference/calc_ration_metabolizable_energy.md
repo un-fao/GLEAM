@@ -11,7 +11,8 @@ calc_ration_metabolizable_energy(
   species_short,
   feed_ration_fraction,
   feed_metabolizable_energy_ruminant = NA_real_,
-  feed_metabolizable_energy_pigs = NA_real_
+  feed_metabolizable_energy_pigs = NA_real_,
+  feed_metabolizable_energy_chicken = NA_real_
 )
 ```
 
@@ -34,6 +35,8 @@ calc_ration_metabolizable_energy(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - feed_ration_fraction:
 
   Numeric. Proportion of a specific feed component in the total ration,
@@ -52,6 +55,11 @@ calc_ration_metabolizable_energy(
   representing digestible energy minus energy losses in urine and
   gaseous products of digestion (MJ/kg DM).
 
+- feed_metabolizable_energy_chicken:
+
+  Numeric. Metabolizable energy content of a feed component for chickens
+  (MJ/kg DM).
+
 ## Value
 
 Numeric. Contribution of the feed component to total diet metabolizable
@@ -65,11 +73,14 @@ parameter:
 - Ruminants (`CTL`, `BFL`, `CML`, `SHP`, `GTS`):
   `feed_ration_fraction * feed_metabolizable_energy_ruminant`
 
+- Chickens (`CHK`):
+  `feed_ration_fraction * feed_metabolizable_energy_chicken`
+
 - Pigs (`PGS`): `feed_ration_fraction * feed_metabolizable_energy_pigs`
 
 This function is part of the
-[`run_ration_quality_module()`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md).
+[`run_ration_quality_module()`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md).
 
 ## See also
 
-[`run_ration_quality_module`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md)
+[`run_ration_quality_module`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md)

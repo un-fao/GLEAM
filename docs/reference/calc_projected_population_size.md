@@ -18,7 +18,8 @@ calc_projected_population_size(
   probability_growth,
   growth_rate_herd,
   herd_structure,
-  cohort_share
+  cohort_share,
+  proportion_nondemographic
 )
 ```
 
@@ -26,8 +27,8 @@ calc_projected_population_size(
 
 - herd_size_total:
 
-  Numeric. Total population size at the start of the year, including all
-  cohorts (# heads)
+  Numeric. Total demographic population size at the start of the year,
+  including all cohorts (# heads)
 
 - fecundity_female:
 
@@ -81,6 +82,13 @@ calc_projected_population_size(
   grouped sex-age cohorts (`FJ`, `FS`, `FA`, `MJ`, `MS`, `MA`, where
   `FJ = FB + FJ` and `MJ = MB + MJ`) (fraction). Shares should sum to 1.
 
+- proportion_nondemographic:
+
+  Named numeric vector of length 6. Fraction of animals diverted from
+  the demographic pathway into the non-demographic pathway for 6
+  demographic cohorts (fraction). (cohorts= `FJ`, `FS`, `FA`, `MJ`,
+  `MS`, `MA`).
+
 ## Value
 
 A named list with:
@@ -113,6 +121,13 @@ A named list with:
   cohort_stock_start and cohort_stock_end_projected (cohorts= `FJ`,
   `FS`, `FA`, `MJ`, `MS`, `MA`)
 
+- cohort_stock_annual_nondemographic:
+
+  Numeric vector of length 6. Annual number of animals diverted from the
+  demographic pathway into the non-demographic pathway (# heads),
+  disaggregated by demographic sex–age cohorts (cohorts= `FJ`, `FS`,
+  `FA`, `MJ`, `MS`, `MA`).
+
 - cohort_offtake_heads:
 
   Numeric vector of length 10. Total number of animals removed from the
@@ -122,8 +137,25 @@ A named list with:
   Juvenile, `MS`: Male Sub-adult, `MA`: Male Adult, `MC`: Male Culling)
 
 This function is part of the
-[`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md).
+[`run_demographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_demographic_herd_module.md).
+
+## Details
+
+This projection step applies the same diversion logic used in the
+steady-state solver, but over the explicit one-year simulated population
+trajectory. For each eligible transition, the outgoing flow is
+partitioned into:
+
+- animals that remain in the demographic pathway and enter the next
+  demographic cohort
+
+- animals diverted into the non-demographic pathway and accumulated in
+  `cohort_stock_annual_nondemographic`
+
+The non-demographic totals returned by this function therefore represent
+the annual entrant counts that can be passed downstream to the
+non-demographic herd module.
 
 ## See also
 
-[`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md)
+[`run_demographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_demographic_herd_module.md)

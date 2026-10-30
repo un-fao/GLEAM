@@ -23,7 +23,7 @@ interactive web applications, dashboards, data infrastructure, and
 capacity-building tools. This vignette provides an overview of the R
 package specifically; a brief description of the wider ecosystem is
 given in [The GLEAM
-Ecosystem](https://github.com/un-fao/GLEAM/articles/gleam-ecosystem.md).
+Ecosystem](https://un-fao.github.io/GLEAM/articles/gleam-ecosystem.md).
 
 ![Species currently covered in
 GLEAM](images/overview_AnimalSilhouette.png)
@@ -64,8 +64,23 @@ standardized short codes that appear as `species_short` in the data:
 
 ### Sex–age cohort codes
 
-Within each herd, animals are classified into six sex–age cohorts that
-define their production stage:
+Animals within each herd are classified into **demographic** or
+**non-demographic cohorts**, depending on how their life cycle and
+production process are represented.
+
+#### Demographic Cohorts
+
+**Demographic cohorts** classify animals according to their sex, age
+class, and reproductive development. Animals progress through successive
+life stages, from juvenile to sub-adult and adult, with transitions
+determined by biological milestones such as weaning, first parturition,
+or first breeding.
+
+This classification allows the model to represent herd population
+dynamics, including growth, maturation, reproduction, and changes in
+herd composition over time.
+
+Six demographic cohorts are defined:
 
 | Code | Sex    | Age class | Life stage definition             |
 |------|--------|-----------|-----------------------------------|
@@ -80,17 +95,42 @@ These cohort codes appear in the `cohort_short` column of all
 cohort-level data tables and are required by nearly every function in
 the package.
 
-### Cohort-level population data
+#### Non-Demographic Cohorts
 
-If the cohort distribution is not supplied by the user, the GLEAM
-demographic herd module generates population numbers for each cohort
-based on the herd-level parameters and total population size.
+Non-demographic cohorts represent animals managed through defined
+production cycles without explicitly tracking their age or reproductive
+development.
+
+Animals are classified by sex and production phase.
+
+Two non-demographic cohort codes are defined:
+
+| Code | Sex    | Age class       | Definition                                     |
+|------|--------|-----------------|------------------------------------------------|
+| FN   | Female | Non-demographic | Females assigned to a defined production cycle |
+| MN   | Male   | Non-demographic | Males assigned to a defined production cycle   |
+
+Each non-demographic cohort must include production phase `1` and may
+include an optional phase `2`, as specified by
+`nondemo_productive_phase_id`.
+
+[Explore the practical use
+here](https://un-fao.github.io/GLEAM/articles/gleam-modules-overview.html#practical-application).
+
+### Herd structure
+
+Herd structure describes the distribution of the total herd population
+across demographic and non-demographic cohorts.
+
+If the herd structure is not provided by the user, the GLEAM herd module
+estimates the population of each cohort based on herd-level parameters
+and the total herd population.
 
 ### Assessment period
 
-The assessment period (`cohort_short`) defines the time window over
-which emissions and production are computed. It is specified in days
-(typically 365 for a standard annual assessment). Per-head, per-day
+The assessment period (`simulation_duration`) defines the time window
+over which emissions and production are computed. It is specified in
+days (typically 365 for a standard annual assessment). Per-head, per-day
 intermediate values are scaled to cohort totals over the assessment
 period in the aggregation step. The assessment period can also be used
 to represent different seasons with distinct variations in input data
@@ -98,8 +138,18 @@ to represent different seasons with distinct variations in input data
 
 ## Quick Start
 
-The following example loads the sample data shipped with the package and
-runs the full pipeline:
+The following example runs the full pipeline using the shipped
+**mixed-herd** inputs. Both herd modules are enabled: the demographic
+module simulates the breeding population and calculates juvenile
+diversion into the FN/MN production phases. The non-demographic module
+then simulates those phases. The combined average stock and offtake are
+rescaled to the supplied `herd_size_total`.
+
+This example includes all 15 herds. Herd 14 has FN laying hens alongside
+a demographic component; herd 15 has FN/MN meat chickens alongside a
+demographic component. The non-demographic-only example below represents
+these same herd IDs as separate production operations without a breeding
+population.
 
 ``` r
 library(gleam)
@@ -108,8 +158,8 @@ library(data.table)
 # ---- Load sample data from inst/extdata ----
 path <- system.file("extdata/run_gleam_examples", package = "gleam")
 
-cohort_dt      <- fread(file.path(path, "master_chrt_lvl_no_structure_data.csv"))
-herd_dt        <- fread(file.path(path, "master_hrd_lvl_data.csv"))
+cohort_dt      <- fread(file.path(path, "master_chrt_lvl_no_structure_mixed_data.csv"))
+herd_dt        <- fread(file.path(path, "master_hrd_lvl_mixed_data.csv"))
 rations_dt     <- fread(file.path(path, "feed_rations_share_chrt.csv"))
 feed_params_dt <- fread(file.path(path, "feed_quality.csv"))
 feed_emis_dt   <- fread(file.path(path, "feed_emission_factors.csv"))
@@ -119,6 +169,8 @@ mms_fact_dt    <- fread(file.path(path, "manure_management_system_factors.csv"))
 # ---- Run the full GLEAM pipeline ----
 results <- run_gleam(
   has_herd_structure                = FALSE,
+  run_demographic                   = TRUE,
+  run_nondemographic                = TRUE,
   cohort_level_data                 = cohort_dt,
   herd_level_data                   = herd_dt,
   feed_rations                      = rations_dt,
@@ -132,37 +184,103 @@ results <- run_gleam(
 
 # ---- Inspect results ----
 print(results$cohort_level_results)
+print(results$herd_level_results)
 print(results$allocation_long)
 print(results$aggregation_results$results_emissions)
 ```
 
-If you already have a pre-computed herd structure (population sizes and
-offtake numbers), set `has_herd_structure = TRUE` and supply a
-cohort-level table that includes the `cohort_stock_size` and
-`offtake_heads_assessment` columns. The pipeline will skip the herd
-simulation step and proceed directly to the weight calculations.
+### Choosing a workflow
+
+Choose one matching cohort and herd file pair. These are alternative
+workflows; do not append the non-demographic-only files to the mixed
+files.
+
+| Workflow | Cohort file | Herd file |
+|----|----|----|
+| Mixed simulation | `master_chrt_lvl_no_structure_mixed_data.csv` | `master_hrd_lvl_mixed_data.csv` |
+| Non-demographic-only simulation | `master_chrt_lvl_no_structure_nondemo_data.csv` | `master_hrd_lvl_nondemo_data.csv` |
+| Supplied herd structure | `master_chrt_lvl_structure_data.csv` | `master_hrd_lvl_structure_data.csv` |
+
+Use `run_gleam_examples/` for the full pipeline. The separate
+`run_modules_examples/` folder contains subsets of the mixed example
+with only the inputs needed by each module. Downstream inputs include
+values calculated by the preceding pipeline stages. Use each module’s
+matching input files when running it separately.
+
+#### Non-demographic-only simulation
+
+This example contains only FN/MN phases for herds 14 and 15. Annual
+entrants are supplied directly in the herd file; the demographic module
+is disabled. The herd file omits demographic, reproductive, milk, fibre
+and draught-work inputs that are unused by these chicken production
+phases. The dedicated ration-share and manure-fraction files contain
+only the FN/MN phases in this example. The manure-system factors file
+contains only herds 14 and 15. Load these files directly; feed quality
+and feed emission factors are shared with the other workflows:
+
+``` r
+cohort_nd <- fread(file.path(
+  path, "master_chrt_lvl_no_structure_nondemo_data.csv"
+))
+herd_nd <- fread(file.path(path, "master_hrd_lvl_nondemo_data.csv"))
+rations_nd <- fread(file.path(path, "feed_rations_share_chrt_nondemo.csv"))
+mms_frac_nd <- fread(file.path(path, "manure_management_system_fraction_nondemo.csv"))
+mms_fact_nd <- fread(file.path(path, "manure_management_system_factors_nondemo.csv"))
+
+results_nd <- run_gleam(
+  has_herd_structure = FALSE,
+  run_demographic = FALSE,
+  run_nondemographic = TRUE,
+  cohort_level_data = cohort_nd,
+  herd_level_data = herd_nd,
+  feed_rations = rations_nd,
+  feed_params = feed_params_dt,
+  feed_emissions = feed_emis_dt,
+  manure_management_system_fraction = mms_frac_nd,
+  manure_management_system_factors = mms_fact_nd,
+  simulation_duration = 365,
+  global_warming_potential_set = "AR6"
+)
+```
+
+The supplied non-demographic-only herd file has no `herd_size_total`
+column, so average stock and offtake remain unscaled. Annual entrants
+are a flow in heads/year, not average animals present. Add
+`herd_size_total` to rescale both stock and offtake to a herd-size
+target.
+
+#### Supplied herd structure
+
+For this workflow, load the supplied-structure file pair and set
+`has_herd_structure = TRUE`. The cohort table already contains
+`cohort_stock_size` and `offtake_heads_assessment`. The pipeline skips
+both herd simulations and starts with weights. The `run_demographic` and
+`run_nondemographic` switches have no effect in this mode; set both to
+`FALSE` to make the example’s intent explicit. See
+[`?run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
+for the complete call.
 
 ## Pipeline Overview
 
 The
-[`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 function orchestrates the full modelling pipeline by calling individual
 modules in sequence. Each module can also be run independently for
 custom workflows. The pipeline consists of the following steps:
 
 | \# | Module | Function | Key outputs |
 |----|----|----|----|
-| 1 | Herd simulation (optional) | [`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md) | Cohort sizes, offtake numbers, herd growth rate |
-| 2 | Cohort weights | [`run_weights_module()`](https://github.com/un-fao/GLEAM/reference/run_weights_module.md) | Initial, average, and final live weights; daily weight gain |
-| 3 | Ration nutritional content | [`run_ration_quality_module()`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md) | Diet gross energy, digestibility, nitrogen, ash |
-| 4 | Metabolic energy requirements and ration intake | [`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md) | Energy partitions (maintenance, growth, lactation, etc.); dry matter intake |
-| 5 | Enteric emissions | [`run_emissions_enteric_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_enteric_module.md) | Enteric CH₄ emissions |
-| 6 | Nitrogen balance | [`run_nitrogen_balance_module()`](https://github.com/un-fao/GLEAM/reference/run_nitrogen_balance_module.md) | Nitrogen intake, retention, and excretion |
-| 7 | Manure emissions | [`run_emissions_manure_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md) | CH₄ and N₂O from manure management |
-| 8 | Feed production emissions | [`run_emissions_ration_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_ration_module.md) | GHG from feed production |
-| 9 | Production outputs | [`run_production_module()`](https://github.com/un-fao/GLEAM/reference/run_production_module.md) | Production of milk, meat, and fibre |
-| 10 | Emission allocation | [`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md) | Biophysical allocation shares and allocated emissions per commodity |
-| 11 | Aggregation and reporting | [`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md) | Herd-level aggregation of emissions and conversion to CO₂eq |
+| 1 | Herd simulation (optional) | [`run_all_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_all_herd_module.md) | Demographic/Non demographic cohort sizes, offtake numbers, herd growth rate |
+| 2 | Cohort weights | [`run_weights_module()`](https://un-fao.github.io/GLEAM/reference/run_weights_module.md) | Initial, average, and final live weights; daily weight gain |
+| 3 | Ration nutritional content | [`run_ration_quality_module()`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md) | Diet gross energy, digestibility, nitrogen, ash |
+| 4 | Metabolic energy requirements and ration intake | [`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md) | Energy partitions (maintenance, growth, lactation, etc.); dry matter intake |
+| 5 | Enteric emissions | [`run_emissions_enteric_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_enteric_module.md) | Enteric CH₄ emissions |
+| 6 | Nitrogen balance | [`run_nitrogen_balance_module()`](https://un-fao.github.io/GLEAM/reference/run_nitrogen_balance_module.md) | Nitrogen intake, retention, and excretion |
+| 7 | Manure emissions | [`run_emissions_manure_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md) | CH₄ and N₂O from manure management |
+| 8 | Feed production emissions | [`run_emissions_ration_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_ration_module.md) | GHG from feed production |
+| 9 | Production outputs | [`run_production_module()`](https://un-fao.github.io/GLEAM/reference/run_production_module.md) | Production of milk, meat, and fibre |
+| 10 | Emission allocation | [`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md) | Biophysical allocation shares and allocated emissions per commodity |
+| 11 | Aggregation and reporting | [`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md) | Herd-level aggregation of emissions and conversion to CO₂eq |
 
 Each module validates its inputs before execution, checking for required
 columns, valid value ranges, and consistency across data tables. This
@@ -183,23 +301,33 @@ modules](images/gleamx_package_module_pipeline.png)
 ### Running individual modules
 
 For custom workflows, research applications, or step-by-step debugging,
-each module can be called independently. For example, to compute only
-metabolic energy requirements:
+each module can be called independently.
+
+For example, to compute only metabolic energy requirements:
 
 ``` r
-# Assumes cohort_level_data and herd_level_data have been prepared with
-# weight and ration quality variables already merged in.
-energy_results <- run_metabolic_energy_req_module(
-  cohort_level_data = my_cohort_data,
-  herd_level_data   = my_herd_data
+# Load metabolic energy requirements inputs (cohort and herd-level)
+metabolic_energy_req_chrt_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/metabolic_energy_req_input_chrt_data.csv",
+  package = "gleam"
+))
+metabolic_energy_req_hrd_dt <- data.table::fread(system.file(
+  "extdata/run_modules_examples/metabolic_energy_req_input_hrd_data.csv",
+  package = "gleam"
+))
+
+# Run metabolic energy requirement and rations calculations
+results <- run_metabolic_energy_req_module(
+  cohort_level_data = metabolic_energy_req_chrt_dt,
+  herd_level_data = metabolic_energy_req_hrd_dt
 )
 ```
 
 An overview of all modules, their inputs and outputs is provided in the
 [Module Overview
-vignette](https://github.com/un-fao/GLEAM/articles/gleam-modules-overview.md).
+vignette](https://un-fao.github.io/GLEAM/articles/gleam-modules-overview.md).
 
-### Using individual scientific functions
+### Running individual scientific functions
 
 At the lowest level, all core computations are exposed as individual
 scientific functions. These can be called directly for research or
@@ -220,7 +348,7 @@ e_maint <- calc_metabolic_energy_req_maintenance(
 ## Input Data
 
 The
-[`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 pipeline requires several input data tables. Sample files for all tables
 are provided in `inst/extdata/run_gleam_examples/` and can be loaded
 with
@@ -229,22 +357,25 @@ as shown in the [Quick Start example](#quick-start).
 
 ### cohort_level_data
 
-A `data.table` with one row per herd × cohort (six rows per herd).
+A `data.table` with one row per herd and demographic cohort, or per
+herd, non-demographic cohort and productive phase.
 
 | Column | Type | Description |
 |----|----|----|
 | `herd_id` | Character | Unique herd identifier, repeated for each cohort |
 | `species_short` | Character | Livestock species code (see [species codes](#species-codes)) |
 | `cohort_short` | Character | Sex–age cohort code (see [cohort codes](#cohort-codes)) |
-| `cohort_duration_days` | Numeric | Time each animal spends in the cohort (days) |
+| `cohort_duration_days` | Numeric | Amount of time that each animal spends in a specific cohort and production phase (days). For `CHK`, suggested value for `FJ` and `MJ` cohorts: 3 days. Not required for `FN` and `MN` when phase durations are supplied in the herd table; the code fills it from the herd values, which override any cohort values. |
 | `offtake_rate` | Numeric | Annual proportion of animals removed from the herd per cohort (fraction) |
-| `death_rate` | Numeric | Annual death fraction per cohort (fraction); required when `has_herd_structure = FALSE` |
+| `death_rate` | Numeric | Death fraction: annual for demographic cohorts, per productive phase for FN/MN; required when `has_herd_structure = FALSE` |
+| `nondemo_productive_phase_id` | Numeric | Phase 1 or 2 for FN/MN; `NA` for demographic cohorts |
+| `is_egg_producing` | Logical | Food-egg production flag for CHK FA or FN phase 2 |
 | `low_activity_fraction` | Numeric | Proportion of the assessment period with low-intensity movement (fraction) |
 | `high_activity_fraction` | Numeric | Proportion of the assessment period with sustained locomotion (fraction) |
 
 Additional columns are required when `has_herd_structure = TRUE`
 (`cohort_stock_size`, `offtake_heads_assessment`). See
-[`?run_gleam`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`?run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 for the complete column specification.
 
 ### herd_level_data
@@ -256,7 +387,7 @@ slaughter), reproductive parameters (parturition rate, litter size,
 pregnancy duration), production parameters (milk yield, milk
 composition, fibre yield), draught work parameters, and
 slaughter/dressing parameters. See
-[`?run_gleam`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`?run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 for the full list.
 
 ### feed_rations
@@ -303,7 +434,7 @@ and nitrogen volatilisation and leaching fractions.
 
 ## Output Structure
 
-[`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 returns a named list with four elements:
 
 - **`cohort_level_results`**: A cohort-level `data.table` containing all
@@ -418,7 +549,7 @@ argument accepts:
 
 - **Function reference**: Full documentation for all exported functions
   is available via `?function_name` (e.g.,
-  [`?run_gleam`](https://github.com/un-fao/GLEAM/reference/run_gleam.md))
+  [`?run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md))
   or the online reference manual.
 - **Sample data**: Example datasets for all input tables are in
   `inst/extdata/run_gleam_examples/`.

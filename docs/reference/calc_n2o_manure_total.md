@@ -123,7 +123,7 @@ A named list with:
   volatilisation, leaching, and runoff (kg N2O/head/day).
 
 This function is part of the
-[`run_emissions_manure_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md).
+[`run_emissions_manure_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md).
 
 ## Details
 
@@ -140,7 +140,7 @@ n2o\\manure\\other\\indirect + n2o\\manure\\other\\direct \$\$
 
 ## See also
 
-[`run_emissions_manure_module`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md)
+[`run_emissions_manure_module`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md)
 
 ## Examples
 

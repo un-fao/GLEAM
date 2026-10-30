@@ -57,12 +57,12 @@ Source:
 
 Jou A, Elaouni Y, Wisser D, Lanzoni L, Tempio G (2026). *gleam: Global
 Livestock Environmental Assessment Model (GLEAM-X)*. R package version
-0.8.0, <https://github.com/un-fao/GLEAM/>.
+0.8.0, <https://un-fao.github.io/GLEAM/>.
 
     @Manual{,
       title = {gleam: Global Livestock Environmental Assessment Model (GLEAM-X)},
       author = {Ahmed Jou and Yassine Elaouni and Dominik Wisser and Lydia Lanzoni and Giuseppe Tempio},
       year = {2026},
       note = {R package version 0.8.0},
-      url = {https://github.com/un-fao/GLEAM/},
+      url = {https://un-fao.github.io/GLEAM/},
     }

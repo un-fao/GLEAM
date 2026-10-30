@@ -1,0 +1,7 @@
+herd_id	species_short	cohort_short	death_rate	low_activity_fraction	high_activity_fraction	nondemo_productive_phase_id	is_egg_producing
+14	CHK	FN	0.08	0.03	0.02	1	FALSE
+14	CHK	FN	0.1	0.03	0.02	2	TRUE
+15	CHK	FN	0.1	0.02	0.01	1	FALSE
+15	CHK	FN	0.1	0.02	0.01	2	FALSE
+15	CHK	MN	0.1	0.02	0.01	1	FALSE
+15	CHK	MN	0.1	0.02	0.01	2	FALSE

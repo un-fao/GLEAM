@@ -15,6 +15,7 @@ validate_run_production_module_inputs <- function(
   # Ensure inputs are data.tables with at least one row
   check_data_table(cohort_level_data, "cohort_level_data")
   check_data_table(herd_level_data, "herd_level_data")
+  normalize_optional_is_egg_producing_column(cohort_level_data, herd_level_data)
 
   # --- Required columns -------------------------------------------------------
   # Verify all module-specific columns are present
@@ -24,12 +25,23 @@ validate_run_production_module_inputs <- function(
   )
   required_herd_cols <- c(
     "herd_id", "species_short",
-    "milk_yield_day", "lactating_females_fraction",
-    "milk_protein_fraction", "milk_fat_fraction", "milk_lactose_fraction",
-    "milk_protein_fraction_standard", "milk_fat_fraction_standard", "milk_lactose_fraction_standard",
-    "fibre_yield_year",
     "carcass_dressing_fraction", "bone_free_meat_fraction", "meat_protein_fraction"
   )
+  if (any(cohort_level_data$cohort_short %in% gleam_cohorts_demographic)) {
+    required_herd_cols <- c(
+      required_herd_cols,
+      "milk_yield_day", "lactating_females_fraction",
+      "milk_protein_fraction", "milk_fat_fraction", "milk_lactose_fraction",
+      "milk_protein_fraction_standard", "milk_fat_fraction_standard", "milk_lactose_fraction_standard",
+      "fibre_yield_year"
+    )
+  }
+  if (any(herd_level_data$species_short == "CHK") &&
+      any(cohort_level_data$is_egg_producing %in% TRUE, na.rm = TRUE)) {
+    required_herd_cols <- c(
+      required_herd_cols, "egg_human_consumption_yield", "egg_average_weight"
+    )
+  }
   check_required_columns(cohort_level_data, required_cohort_cols, "cohort_level_data")
   check_required_columns(herd_level_data, required_herd_cols, "herd_level_data")
 

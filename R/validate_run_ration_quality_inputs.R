@@ -35,7 +35,7 @@ validate_run_ration_quality_module_inputs <- function(
     "feed_id", "feed_gross_energy",
     "feed_digestible_energy_ruminant", "feed_digestible_energy_pigs",
     "feed_metabolizable_energy_ruminant", "feed_metabolizable_energy_pigs",
-    "feed_nitrogen_content",
+    "feed_metabolizable_energy_chicken", "feed_nitrogen_content",
     "feed_urinary_energy_ruminant", "feed_urinary_energy_pigs",
     "feed_ash"
   )
@@ -55,15 +55,20 @@ validate_run_ration_quality_module_inputs <- function(
   }
 
   # --- Ration share consistency ------------------------------------------------
+  ration_group_cols <- c("herd_id", "species_short", "cohort_short")
+  if ("nondemo_productive_phase_id" %in% names(rations_share)) {
+    ration_group_cols <- c(ration_group_cols, "nondemo_productive_phase_id")
+  }
+
   ration_sums <- rations_share[
     ,
     .(feed_ration_sum = sum(feed_ration_fraction)),
-    by = .(herd_id, species_short, cohort_short)
+    by = ration_group_cols
   ]
   invalid_ration_sums <- ration_sums[abs(feed_ration_sum - 1) > 1e-6]
   if (nrow(invalid_ration_sums) > 0) {
     cli::cli_abort(
-      "Feed rations must sum to 1 within each herd_id, species_short, and cohort_short."
+      "Feed rations must sum to 1 within each herd_id, species_short, cohort_short, and nondemo_productive_phase_id when provided."
     )
   }
 
@@ -72,9 +77,10 @@ validate_run_ration_quality_module_inputs <- function(
     cli::cli_abort("{.arg feed_params$feed_id} must be unique.")
   }
   # nor for the rations_share table (by herd_id, species_short, cohort_short)
-  if (anyDuplicated(rations_share[, .(herd_id, species_short, cohort_short, feed_id)]) > 0) {
+  ration_unique_cols <- c(ration_group_cols, "feed_id")
+  if (anyDuplicated(rations_share[, ..ration_unique_cols]) > 0) {
     cli::cli_abort(
-      "{.arg rations_share$feed_id} must be unique within each herd_id, species_short, and cohort_short combination."
+      "{.arg rations_share$feed_id} must be unique within each herd_id, species_short, cohort_short, and nondemo_productive_phase_id combination when nondemo_productive_phase_id is provided."
     )
   }
 }

@@ -14,7 +14,11 @@ calc_metabolic_energy_req_maintenance(
   live_weight_cohort_average,
   lactating_females_fraction = NA_real_,
   offtake_rate = NA_real_,
-  age_first_parturition = NA_real_
+  age_first_parturition = NA_real_,
+  average_annual_temperature = NA_real_,
+  lower_critical_temperature = NA_real_,
+  nondemo_productive_phase_id = NA_real_,
+  is_egg_producing = FALSE
 )
 ```
 
@@ -37,10 +41,12 @@ calc_metabolic_energy_req_maintenance(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -53,6 +59,10 @@ calc_metabolic_energy_req_maintenance(
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
 
 - live_weight_cohort_average:
 
@@ -74,14 +84,37 @@ calc_metabolic_energy_req_maintenance(
 
 - age_first_parturition:
 
-  Numeric. Age at first parturition for female breeding animals (days)
+  Numeric. Age at first parturition for female breeding animals (days).
+
+- average_annual_temperature:
+
+  Numeric. Average annual ambient temperature (degrees C). Required for
+  `CHK`.
+
+- lower_critical_temperature:
+
+  Numeric. Lower critical temperature (degrees C). Used for `CHK`
+  juvenile and subadult cohorts. In the run-level pipeline this is fixed
+  internally at \\24.54 - 5.65 = 18.89\\ degrees C.
+
+- nondemo_productive_phase_id:
+
+  Numeric. Optional productive phase identifier for non-demographic
+  cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2`
+  for phase 2.
+
+- is_egg_producing:
+
+  Logical. Cohort-level flag identifying egg-producing `CHK` cohorts.
+  This can be `TRUE` only for `FA` and for `FN` with
+  `nondemo_productive_phase_id = 2`.
 
 ## Value
 
 Numeric. Energy required for maintenance, defined as the amount of
 energy needed to keep the animal at equilibrium such that body energy is
-neither gained nor lost. Expressed as net energy for CTL, BFL, SHP, GTS
-and as metabolizable energy for CML and PGS (MJ/head/day).
+neither gained nor lost (MJ/head/day). Expressed as net energy for CTL,
+BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 
 ## Details
 
@@ -111,7 +144,7 @@ account for:
 - `FA`: \\cmain = 0.386 \times lactating\\females\\fraction + 0.322
   \times (1 - lactating\\females\\fraction)\\
 
-- `FS`, `FJ`, `MJ`: \\cmain = 0.322\\
+- `FS`, `FJ`, `MJ`, `FN`, `MN`: \\cmain = 0.322\\
 
 - `MA`, `MS`: \\cmain = 0.322 \times offtake\\rate + 0.370 \times (1 -
   offtake\\rate)\\
@@ -149,8 +182,25 @@ account for:
 
 - All cohorts: \\cmain = 0.4435\\
 
+**CHK** (Sakomura, 2004; Neme et al. 2005):
+
+- Adult and laying cohorts (`MA` plus any `CHK` cohort with
+  `is_egg_producing = TRUE`): \$\$ metabolic\\energy\\req\\maintenance =
+  average\\weight^{0.75} \times \left(0.6935 - 0.0099 \times
+  average\\annual\\temperature \right) \$\$
+
+- Juvenile and subadult cohorts (`FJ`, `FS`, `MJ`, `MS`, `MN`, and
+  non-laying `FN` phase 1): \$\$ metabolic\\energy\\req\\maintenance =
+  average\\weight^{0.75} \times \left(0.3866 + 0.0282 \times
+  (lower\\critical\\temperature - average\\annual\\temperature) \right),
+  \quad average\\annual\\temperature \< lower\\critical\\temperature
+  \$\$ \$\$ metabolic\\energy\\req\\maintenance = average\\weight^{0.75}
+  \times \left(0.3866 + 0.0037 \times (average\\annual\\temperature -
+  lower\\critical\\temperature) \right), \quad
+  average\\annual\\temperature \ge lower\\critical\\temperature \$\$
+
 This function is part of the
-[`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md).
+[`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md).
 
 ## References
 
@@ -177,7 +227,15 @@ camel*. Journal of Camel Science, 1(1):37-45. The Camel Applied Research
 and Development Network (CARDN), Arab Center for the Studies of Arid
 Zones and Dry Lands (ACSAD).
 
+Sakomura, N. K. (2004). *Modeling energy utilization in broiler
+breeders, laying hens and broilers*. Brazilian Journal of Poultry
+Science, 6, 1-11.
+
+Neme, R., Sakomura, N.K., Fialho, F.B., Freitas, E.R. & Fukayama, E.H.
+(2005). *Modelling Energy Utilization for Laying Type Pullets*.
+Brazilian Journal of Poultry Science, 7(1), 39–46.
+
 ## See also
 
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
-[`calc_avg_weights`](https://github.com/un-fao/GLEAM/reference/calc_avg_weights.md)
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),
+[`calc_avg_weights`](https://un-fao.github.io/GLEAM/reference/calc_avg_weights.md)

@@ -107,7 +107,7 @@ methane (CH4) emission factors from manure management.
 In the IPCC formulation, emissions are determined by combining:
 
 - daily volatile solids excretion (`volatile_solids`) - see
-  [`calc_volatile_solids`](https://github.com/un-fao/GLEAM/reference/calc_volatile_solids.md),
+  [`calc_volatile_solids`](https://un-fao.github.io/GLEAM/reference/calc_volatile_solids.md),
 
 - the maximum methane-producing capacity (`b0`),
 
@@ -129,7 +129,7 @@ CH4/head/day), consistent with Equation 10.23 after adapting the
 original annual formulation to a daily basis.
 
 This function is part of the
-[`run_emissions_manure_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md).
+[`run_emissions_manure_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md).
 
 ## References
 
@@ -143,11 +143,11 @@ Management. Equation 10.23.
 
 ## See also
 
-[`run_emissions_manure_module`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md),
-[`calc_volatile_solids`](https://github.com/un-fao/GLEAM/reference/calc_volatile_solids.md)
+[`run_emissions_manure_module`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md),
+[`calc_volatile_solids`](https://un-fao.github.io/GLEAM/reference/calc_volatile_solids.md)
 
-[`run_emissions_manure_module`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md),
-[`calc_volatile_solids`](https://github.com/un-fao/GLEAM/reference/calc_volatile_solids.md)
+[`run_emissions_manure_module`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md),
+[`calc_volatile_solids`](https://un-fao.github.io/GLEAM/reference/calc_volatile_solids.md)
 
 ## Examples
 

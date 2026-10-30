@@ -15,7 +15,7 @@
 #' Maps each species short code to its full common name. Used for display and
 #' documentation. \code{gleam_species} is derived from this as the vector of codes.
 #'
-#' @format A named character vector of length 6.
+#' @format A named character vector of length 7.
 #' @keywords internal
 gleam_species_names <- c(
   CTL = "Cattle",
@@ -23,14 +23,15 @@ gleam_species_names <- c(
   SHP = "Sheep",
   GTS = "Goats",
   PGS = "Pigs",
-  CML = "Camels"
+  CML = "Camels",
+  CHK = "Chickens"
 )
 
 #' Valid species short codes
 #'
 #' All livestock species supported by GLEAM. Derived from \code{gleam_species_names}.
 #'
-#' @format A character vector of length 6.
+#' @format A character vector of length 7.
 #' @keywords internal
 gleam_species <- names(gleam_species_names)
 
@@ -44,7 +45,7 @@ gleam_species <- names(gleam_species_names)
 #' Maps each cohort short code to its descriptive name (sex and age class).
 #' \code{gleam_cohorts} is derived from this as the vector of codes.
 #'
-#' @format A named character vector of length 6.
+#' @format A named character vector of length 8.
 #' @keywords internal
 gleam_cohorts_names <- c(
   FJ = "Juvenile female",
@@ -52,7 +53,9 @@ gleam_cohorts_names <- c(
   FA = "Adult female",
   MJ = "Juvenile male",
   MS = "Sub-adult male",
-  MA = "Adult male"
+  MA = "Adult male",
+  FN = "Non-demographic female",
+  MN = "Non-demographic male"
 )
 
 #' Valid cohort short codes
@@ -60,9 +63,17 @@ gleam_cohorts_names <- c(
 #' All sex- and age-class cohort codes recognised by GLEAM. Derived from
 #' \code{gleam_cohorts_names}.
 #'
-#' @format A character vector of length 6.
+#' @format A character vector of length 8.
 #' @keywords internal
 gleam_cohorts <- names(gleam_cohorts_names)
+
+#' Demographic cohort short codes
+#'
+#' The 6 sex- and age-class cohort codes used by the demographic herd module.
+#'
+#' @format A character vector of length 6.
+#' @keywords internal
+gleam_cohorts_demographic <- c("FJ", "FS", "FA", "MJ", "MS", "MA")
 
 # --- Species sub-groups ------------------------------------------------------
 # Derived from gleam_species
@@ -75,7 +86,7 @@ gleam_cohorts <- names(gleam_cohorts_names)
 #'
 #' @format A character vector of length 4.
 #' @keywords internal
-gleam_species_ruminants <- setdiff(gleam_species, c("PGS", "CML"))
+gleam_species_ruminants <- setdiff(gleam_species, c("PGS", "CML", "CHK"))
 
 #' Milk-producing species
 #'
@@ -85,16 +96,33 @@ gleam_species_ruminants <- setdiff(gleam_species, c("PGS", "CML"))
 #'
 #' @format A character vector of length 5.
 #' @keywords internal
-gleam_species_milk_producers <- setdiff(gleam_species, "PGS")
+gleam_species_milk_producers <- setdiff(gleam_species, c("PGS", "CHK"))
 
-#' Species with non-zero enteric CH4 and N excretion
+#' Poultry species
 #'
-#' All supported species. Used for enteric methane emission calculations and
-#' nitrogen excretion models. (Legacy alias; equivalent to \code{gleam_species}.)
+#' Species using the poultry-specific demographic energy and nitrogen equations.
+#'
+#' @format A character vector of length 1.
+#' @keywords internal
+gleam_species_poultry <- "CHK"
+
+#' Species excluding poultry
+#'
+#' All supported species except poultry. Useful when a poultry-specific branch
+#' requires explicit exclusion.
 #'
 #' @format A character vector of length 6.
 #' @keywords internal
-gleam_species_non_poultry <- gleam_species
+gleam_species_non_poultry <- setdiff(gleam_species, gleam_species_poultry)
+
+#' Default lower critical temperature for chickens
+#'
+#' Poultry maintenance equations use a fixed lower critical temperature in the
+#' run-level pipeline.
+#'
+#' @format Numeric scalar.
+#' @keywords internal
+gleam_chk_lower_critical_temperature <- 18.89
 
 # --- Cohort sub-groups -------------------------------------------------------
 # Derived from gleam_cohorts via setdiff (F* = female, M* = male)
@@ -204,6 +232,27 @@ gleam_production_meta <- list(
     label = "Fibre",
     unit = "kg",
     commodity_name = "Fibre",
+    commodity_type = "Edible"
+  ),
+  list(
+    production_source = "egg_production_number_cohort",
+    label = "EggNumber",
+    unit = "eggs",
+    commodity_name = "Eggs",
+    commodity_type = "Edible"
+  ),
+  list(
+    production_source = "egg_production_mass_cohort",
+    label = "EggMass",
+    unit = "kg",
+    commodity_name = "Eggs",
+    commodity_type = "Edible"
+  ),
+  list(
+    production_source = "egg_production_protein_cohort",
+    label = "EggProtein",
+    unit = "kg protein",
+    commodity_name = "Eggs",
     commodity_type = "Edible"
   )
 )

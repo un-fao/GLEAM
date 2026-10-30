@@ -10,7 +10,11 @@ calc_metabolic_energy_req_maintenance(
   live_weight_cohort_average,
   lactating_females_fraction = NA_real_,
   offtake_rate = NA_real_,
-  age_first_parturition = NA_real_
+  age_first_parturition = NA_real_,
+  average_annual_temperature = NA_real_,
+  lower_critical_temperature = NA_real_,
+  nondemo_productive_phase_id = NA_real_,
+  is_egg_producing = FALSE
 )
 }
 \arguments{
@@ -23,9 +27,10 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -34,6 +39,8 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
 
 \item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting
@@ -46,13 +53,29 @@ Required only for species = CML, CTL, BFL, SHP, and GTS.}
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for
 each sex-age cohort (fraction).}
 
-\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days)}
+\item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
+
+\item{average_annual_temperature}{Numeric. Average annual ambient temperature
+(degrees C). Required for \code{CHK}.}
+
+\item{lower_critical_temperature}{Numeric. Lower critical temperature
+(degrees C). Used for \code{CHK} juvenile and subadult cohorts. In the
+run-level pipeline this is fixed internally at
+\eqn{24.54 - 5.65 = 18.89} degrees C.}
+
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2.}
+
+\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for \code{FN}
+with \code{nondemo_productive_phase_id = 2}.}
 }
 \value{
-Numeric. Energy required for maintenance, defined as the amount of energy needed to
-keep the animal at equilibrium such that body energy is neither gained nor lost.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
-CML and PGS (MJ/head/day).
+Numeric. Energy required for maintenance, defined as the amount of energy
+needed to keep the animal at equilibrium such that body energy is neither gained nor
+lost (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as
+metabolizable energy for CML, PGS, and CHK.
 }
 \description{
 Calculates the energy requirement for maintenance by cohort (MJ/head/day),
@@ -80,7 +103,7 @@ For selected cohorts, \eqn{cmain} is computed as a weighted average to account f
 \itemize{
 \item \code{FA}:
 \eqn{cmain = 0.386 \times lactating\_females\_fraction + 0.322 \times (1 - lactating\_females\_fraction)}
-\item \code{FS}, \code{FJ}, \code{MJ}:
+\item \code{FS}, \code{FJ}, \code{MJ}, \code{FN}, \code{MN}:
 \eqn{cmain = 0.322}
 \item \code{MA}, \code{MS}:
 \eqn{cmain = 0.322 \times offtake\_rate + 0.370 \times (1 - offtake\_rate)}
@@ -121,6 +144,32 @@ For selected cohorts, \eqn{cmain} is computed as a weighted average to account f
 \item All cohorts: \eqn{cmain = 0.4435}
 }
 
+\strong{CHK} (Sakomura, 2004; Neme et al. 2005):
+\itemize{
+\item Adult and laying cohorts (\code{MA} plus any \code{CHK} cohort with
+\code{is_egg_producing = TRUE}):
+\deqn{
+  metabolic\_energy\_req\_maintenance =
+  average\_weight^{0.75} \times
+  \left(0.6935 - 0.0099 \times average\_annual\_temperature \right)
+  }
+\item Juvenile and subadult cohorts (\code{FJ}, \code{FS}, \code{MJ},
+\code{MS}, \code{MN}, and non-laying \code{FN} phase 1):
+\deqn{
+  metabolic\_energy\_req\_maintenance =
+  average\_weight^{0.75} \times
+  \left(0.3866 + 0.0282 \times
+  (lower\_critical\_temperature - average\_annual\_temperature) \right),
+  \quad average\_annual\_temperature < lower\_critical\_temperature
+  }
+\deqn{
+  metabolic\_energy\_req\_maintenance =
+  average\_weight^{0.75} \times
+  \left(0.3866 + 0.0037 \times
+  (average\_annual\_temperature - lower\_critical\_temperature) \right),
+  \quad average\_annual\_temperature \ge lower\_critical\_temperature
+  }
+}
 This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
 \references{
@@ -143,6 +192,12 @@ Chapter 10: Emissions from Livestock and Manure Management, Equation 10.3; Table
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
 Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+
+Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
+
+Neme, R., Sakomura, N.K., Fialho, F.B., Freitas, E.R. & Fukayama, E.H. (2005).
+\emph{Modelling Energy Utilization for Laying Type Pullets}. Brazilian Journal of Poultry Science, 7(1), 39–46.
 }
 \seealso{
 \code{\link{run_metabolic_energy_req_module}},

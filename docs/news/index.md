@@ -7,23 +7,23 @@ CRAN release: 2026-04-16
 ### New Features
 
 - Full pipeline function
-  [`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+  [`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
   integrating all modules end-to-end, supporting both cohort-input and
   pre-computed herd-structure workflows.
 - Complete modular API:
-  [`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md),
-  [`run_weights_module()`](https://github.com/un-fao/GLEAM/reference/run_weights_module.md),
-  [`run_ration_quality_module()`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md),
-  [`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
-  [`run_nitrogen_balance_module()`](https://github.com/un-fao/GLEAM/reference/run_nitrogen_balance_module.md),
-  [`run_emissions_enteric_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_enteric_module.md),
-  [`run_emissions_manure_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md),
-  [`run_emissions_ration_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_ration_module.md),
-  [`run_production_module()`](https://github.com/un-fao/GLEAM/reference/run_production_module.md),
-  [`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md),
-  [`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md).
+  [`run_demographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_demographic_herd_module.md),
+  [`run_weights_module()`](https://un-fao.github.io/GLEAM/reference/run_weights_module.md),
+  [`run_ration_quality_module()`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md),
+  [`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),
+  [`run_nitrogen_balance_module()`](https://un-fao.github.io/GLEAM/reference/run_nitrogen_balance_module.md),
+  [`run_emissions_enteric_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_enteric_module.md),
+  [`run_emissions_manure_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md),
+  [`run_emissions_ration_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_ration_module.md),
+  [`run_production_module()`](https://un-fao.github.io/GLEAM/reference/run_production_module.md),
+  [`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md),
+  [`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md).
 - Support for AR5 and AR6 global warming potential sets in
-  [`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md).
+  [`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md).
 - Bundled example datasets in `inst/extdata/` for all modules and the
   full pipeline.
 - Four vignettes covering package overview, module descriptions,

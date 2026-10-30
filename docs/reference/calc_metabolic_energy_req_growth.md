@@ -16,7 +16,9 @@ calc_metabolic_energy_req_growth(
   live_weight_mature_stage = NA_real_,
   daily_weight_gain = NA_real_,
   offtake_rate = NA_real_,
-  cohort_duration_days = NA_real_
+  cohort_duration_days = NA_real_,
+  nondemo_productive_phase_id = NA_real_,
+  is_egg_producing = FALSE
 )
 ```
 
@@ -39,10 +41,12 @@ calc_metabolic_energy_req_growth(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -55,6 +59,10 @@ calc_metabolic_energy_req_growth(
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
 
 - live_weight_cohort_average:
 
@@ -92,13 +100,25 @@ calc_metabolic_energy_req_growth(
 - cohort_duration_days:
 
   Numeric. Amount of time that each animal spends in a specific cohort
-  (days).
+  (days). For `CHK`, suggested value for `FJ` and `MJ` cohorts: 3 days.
+
+- nondemo_productive_phase_id:
+
+  Numeric. Optional productive phase identifier for non-demographic
+  cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2`
+  for phase 2.
+
+- is_egg_producing:
+
+  Logical. Cohort-level flag identifying egg-producing `CHK` cohorts.
+  This can be `TRUE` only for `FA` and for `FN` with
+  `nondemo_productive_phase_id = 2`.
 
 ## Value
 
 Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day).
 Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable
-energy for CML and PGS.
+energy for CML, PGS, and CHK.
 
 ## Details
 
@@ -106,8 +126,8 @@ This function follows the IPCC Tier 2 energy partitioning approach and
 applies species-specific equations for growth energy requirements.
 
 In general, growth energy is computed only for growing cohorts (`FJ`,
-`FS`, `MJ`, `MS`); in this implementation, growth is set to 0 for adult
-cohorts (`FA`, `MA`).
+`FS`, `MJ`, `MS`, `FN`, `MN`); in this implementation, growth is set to
+0 for adult cohorts (`FA`, `MA`).
 
 **Species-specific approach:**
 
@@ -168,8 +188,36 @@ cohorts (`FA`, `MA`).
   - `meat_fat_energy = 52.3` is the ME cost of fat deposition (MJ/kg
     fat).
 
+- **CHK** (Sakomura, 2004)
+
+  Chicken growth energy is calculated as:
+
+  \$\$metabolic\\energy\\req\\growth = daily\\weight\\gain \times cgro
+  \times 1000\$\$
+
+  where \\daily\\weight\\gain\\ is expressed in kg/head/day and \\cgro\\
+  is expressed in MJ/g. The factor 1000 converts kilograms of
+  live-weight gain to grams.
+
+  The following values are used, based on Table 3 from Sakomura (2004):
+
+  - `FA` and `MA`: \\cgro = 0.0299\\ (average of values for "Laying hen"
+    and "Broiler breeder hen")
+
+  - `FN` and `is_egg_producing = TRUE`: \\cgro = 0.0279\\ (value for
+    "Laying hen")
+
+  - `FN` and `is_egg_producing = FALSE`: \\cgro = 0.0221\\ (average of
+    all values, excluding "Male broiler", "Laying hen", and "Broiler
+    breeder hen")
+
+  - `MN`: \\cgro = 0.0173\\ (average of values for "Male broiler")
+
+  - `FS`, `FJ`, `MS`, `MJ`: \\cgro = 0.0191\\ (average of all values,
+    excluding "Laying hen" and "Broiler breeder hen")
+
 This function is part of the
-[`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md).
+[`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md).
 
 ## References
 
@@ -202,9 +250,13 @@ IPCC. (2006). *2006 IPCC Guidelines for National Greenhouse Gas
 Inventories*, Chapter 10: Emissions from Livestock and Manure
 Management, Equation 10.6 and 10.7; Table 10.6.
 
+Sakomura, N. K. (2004). *Modeling energy utilization in broiler
+breeders, laying hens and broilers*. Brazilian Journal of Poultry
+Science, 6, 1-11.
+
 ## See also
 
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
-[`calc_cohort_weights`](https://github.com/un-fao/GLEAM/reference/calc_cohort_weights.md),
-[`calc_avg_weights`](https://github.com/un-fao/GLEAM/reference/calc_avg_weights.md),
-[`calc_daily_weight_gain`](https://github.com/un-fao/GLEAM/reference/calc_daily_weight_gain.md)
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),
+[`calc_cohort_weights`](https://un-fao.github.io/GLEAM/reference/calc_cohort_weights.md),
+[`calc_avg_weights`](https://un-fao.github.io/GLEAM/reference/calc_avg_weights.md),
+[`calc_daily_weight_gain`](https://un-fao.github.io/GLEAM/reference/calc_daily_weight_gain.md)

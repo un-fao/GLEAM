@@ -5,17 +5,39 @@
 \title{Calculate live weights by cohort and life stage}
 \usage{
 calc_cohort_weights(
+  species_short = NA_character_,
   cohort_short,
   live_weight_female_adult = NA_real_,
   live_weight_male_adult = NA_real_,
   live_weight_at_birth = NA_real_,
   live_weight_female_at_slaughter = NA_real_,
   live_weight_male_at_slaughter = NA_real_,
-  live_weight_at_weaning = NA_real_
+  live_weight_at_weaning = NA_real_,
+  nondemo_productive_phase_id = NA_real_,
+  live_weight_female_nondemographic_start = NA_real_,
+  live_weight_female_nondemographic_end = NA_real_,
+  live_weight_male_nondemographic_start = NA_real_,
+  live_weight_male_nondemographic_end = NA_real_,
+  phase1_nondemo_fem_duration_days = NA_real_,
+  phase2_nondemo_fem_duration_days = NA_real_,
+  phase1_nondemo_mal_duration_days = NA_real_,
+  phase2_nondemo_mal_duration_days = NA_real_
 )
 }
 \arguments{
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{species_short}{Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+\item \code{CHK}: chickens
+}}
+
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -24,6 +46,8 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
 
 \item{live_weight_female_adult}{Numeric. Live weight of adult females (kg)}
@@ -37,6 +61,34 @@ production stage of the animals. Supported values include:
 \item{live_weight_male_at_slaughter}{Numeric. Slaughter weight of male sub-adult animals (kg).}
 
 \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg)}
+
+\item{nondemo_productive_phase_id}{Numeric. Productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.}
+
+\item{live_weight_female_nondemographic_start}{Numeric. Live weight of
+female animals at the beginning of the nondemographic cycle (kg).}
+
+\item{live_weight_female_nondemographic_end}{Numeric. Live weight of female
+animals at the end of the nondemographic cycle (kg).}
+
+\item{live_weight_male_nondemographic_start}{Numeric. Live weight of male
+animals at the beginning of the nondemographic cycle (kg).}
+
+\item{live_weight_male_nondemographic_end}{Numeric. Live weight of male
+animals at the end of the nondemographic cycle (kg).}
+
+\item{phase1_nondemo_fem_duration_days}{Numeric. Duration of productive phase 1 for
+the female non-demographic cohort (\code{FN}) (days).}
+
+\item{phase2_nondemo_fem_duration_days}{Numeric. Duration of productive phase
+2 for the female non-demographic cohort (\code{FN}) (days).}
+
+\item{phase1_nondemo_mal_duration_days}{Numeric. Duration of productive phase
+1 for the male nondemographic cohort (\code{MN}) (days).}
+
+\item{phase2_nondemo_mal_duration_days}{Numeric. Duration of productive phase
+2 for the male non-demographic cohort (\code{MN}) (days).}
 }
 \value{
 A named list with:
@@ -48,10 +100,10 @@ A named list with:
 }
 }
 \description{
-Determines the initial, potential final, and slaughter live weights for a given
-sex–age cohort based on species‑specific biological parameters. The function
-assigns weights according to the animal's life stage (juvenile, subadult, adult)
-and the sex of the cohort.
+Determines the initial, potential final, and slaughter live weights for a
+given cohort based on species-specific biological parameters. The function
+handles demographic cohorts (\code{FJ}, \code{FS}, \code{FA}, \code{MJ},
+\code{MS}, \code{MA}) and nondemographic cohorts (\code{FN}, \code{MN}).
 }
 \details{
 The function attributes weights according to cohort and animal type:
@@ -80,7 +132,26 @@ and \code{live_weight_cohort_initial = live_weight_male_adult} for \code{"MA"}
 \item \code{live_weight_cohort_potential_final} = adult weight for the cohort sex
 \item \code{live_weight_cohort_at_slaughter} = adult weight for the cohort sex
 }
+
+\item \strong{Nondemographic cohorts} (\code{"FN"}, \code{"MN"}):
+\itemize{
+\item a linear live-weight gain is computed from the nondemographic start
+and end weights over the total nondemographic duration
+\item for \code{nondemo_productive_phase_id = 1}, the initial weight is the
+nondemographic start weight and the potential final weight is the end
+of phase 1
+\item for \code{nondemo_productive_phase_id = 2}, the initial weight is the
+end of phase 1 and the potential final weight is the end of phase 2
+\item \code{live_weight_cohort_at_slaughter} is set equal to the
+phase-specific potential final weight
 }
+}
+
+For chickens, the juvenile stage is represented as a very short hatch-to-day-3
+period. Accordingly, this implementation sets \code{live_weight_at_weaning =
+live_weight_at_birth} whenever \code{species_short = "CHK"}, so that
+demographic juvenile cohorts do not introduce artificial early growth before
+the subsequent subadult phase.
 
 This function is part of the \code{\link[=run_weights_module]{run_weights_module()}}.
 }

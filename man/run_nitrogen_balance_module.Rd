@@ -14,8 +14,8 @@ run_nitrogen_balance_module(
 \item{cohort_level_data}{data.table. Cohort-level input table with the following data requirement:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals.
-Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -23,11 +23,19 @@ Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+phase 1 and optionally \code{2} for phase 2.}
+\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for \code{FN}
+with \code{nondemo_productive_phase_id = 2}.}
 \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 \item{ration_nitrogen}{Numeric. Average nitrogen content of diet (kg N/kg DM).}
 \item{daily_weight_gain}{Numeric. Average live weight gain of the cohort over the cohort stage (kg/head/day).}
-\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ} cohorts: 3 days.}
 }}
 
 \item{herd_level_data}{data.table. Herd-level input table (one row per \code{herd_id}) with
@@ -44,6 +52,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 \item{milk_protein_fraction}{Numeric. Milk protein fraction (kg protein / kg milk).
 Required only for species = CML, CTL, BFL, SHP, and GTS.}
@@ -55,24 +64,28 @@ Required only for species = CML, CTL, BFL, SHP, and GTS.}
 \item{fibre_yield_year}{Numeric. Annual production yield of fibre, such as
 wool, cashmere, mohair (kg/head/year).
 Required only for species = CML, SHP, and GTS.}
-\item{litter_size}{Numeric. Average number of offspring born per parturition (# offsprings/parturition).
-This value can be calculated as the total number of offspring born divided
-by the total number of parturitions during the year.}
-\item{parturition_rate}{Numeric. Average annual number of parturitions per
-female animal (# parturitions/adult female/year).
-A herd-level reproductive performance indicator calculated as the total
-number of parturitions (deliveries) occurring during
-a year divided by the number of adult females potentially able to give birth during that year.}
+\item{offspring_per_reproductive_event}{Numeric. Average number of offspring born
+per parturition (# offspring/parturition). For chickens, hatchability of eggs
+laid for reproduction, calculated as the number of chicks hatched divided by the
+number of eggs laid for reproduction (fraction).}
+\item{reproductive_rate}{Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens,
+annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
 \item{live_weight_at_weaning}{Numeric. Live weight of the animal at weaning (kg).}
 \item{live_weight_at_birth}{Numeric. Live weight of the animal at birth (kg).}
 \item{pregnancy_duration}{Numeric. Duration of pregnancy period (days).}
+\item{egg_average_weight}{Numeric. Average egg weight (kg/egg).}
+\item{egg_human_consumption_yield}{Numeric. Number of eggs produced for human consumption in one year by hen (eggs/year/animal). Used for \code{CHK}.}
 }}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during simulation.
 Defaults to \code{TRUE}.}
 }
 \value{
-A \code{data.table}  with the original cohort-level input columns plus the following new variables:
+A \code{data.table} with the original cohort-level input columns plus the
+following new variables. If \code{nondemo_productive_phase_id} is present in
+the input, the returned table preserves phase-specific rows for \code{FN} and
+\code{MN}:
 \describe{
 \item{nitrogen_intake}{Numeric. Daily nitrogen intake (kg N/head/day).}
 \item{nitrogen_retention}{Numeric. Daily nitrogen retention in animal body

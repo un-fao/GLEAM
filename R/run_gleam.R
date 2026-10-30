@@ -7,7 +7,7 @@
 #' <br>
 #' \strong{Common identifiers}:
 #' Several input tables share the following identifier columns. Their supported
-#' values are listed once here and referenced throughout.
+#' values are listed below.
 #' <br>
 #' <br>
 #' \strong{\code{species_short}} --- Character. Species code:
@@ -18,32 +18,60 @@
 #'   \item \code{GTS}: Goats
 #'   \item \code{PGS}: Pigs
 #'   \item \code{CML}: Camels
+#'   \item \code{CHK}: Chickens
 #' }
-#' \strong{\code{cohort_short}} --- Character. Sex- and age-specific cohort code:
-#' \itemize{
-#'   \item \code{FA}: adult females (from age at first parturition)
-#'   \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'   \item \code{FJ}: juvenile females (from birth to weaning)
-#'   \item \code{MA}: adult males (from age at first breeding)
-#'   \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'   \item \code{MJ}: juvenile males (from birth to weaning)
-#' }
+#' \strong{\code{cohort_short}} --- Character. Sex-specific cohort code describing the
+#'   age and/or the production stage of the animals. Supported values include:
+#'   \itemize{
+#'     \item \code{FA}: adult females (from age at first parturition)
+#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'     \item \code{FJ}: juvenile females (from birth to weaning)
+#'     \item \code{MA}: adult males (from age at first breeding)
+#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'     \item \code{MJ}: juvenile males (from birth to weaning)
+#'     \item \code{FN}: non-demographic females
+#'     \item \code{MN}: non-demographic males
+#'   }
 #'
 #' @param has_herd_structure Logical. If \code{TRUE}, \code{cohort_level_data}
 #'   is treated as an existing herd structure and the demographic herd
 #'   simulation step is skipped. If \code{FALSE}, herd structure is first
 #'   generated from \code{cohort_level_data} and \code{herd_level_data} using
-#'   \code{\link{run_demographic_herd_module}}.
+#'   \code{\link{run_all_herd_module}}, which can run the demographic herd
+#'   module, the non-demographic herd module, or both depending on
+#'   \code{run_demographic} and \code{run_nondemographic}.
+#'
+#' @param run_demographic Logical. If \code{TRUE} and
+#'   \code{has_herd_structure = FALSE}, include the demographic herd module in
+#'   the herd-structure generation step via \code{\link{run_all_herd_module}}.
+#'
+#' @param run_nondemographic Logical. If \code{TRUE} and
+#'   \code{has_herd_structure = FALSE}, include the non-demographic herd module
+#'   in the herd-structure generation step via \code{\link{run_all_herd_module}}.
 #'
 #' @param cohort_level_data data.table. Cohort-level master input table.
 #'   Required columns:
 #'   \describe{
-#'     \item{herd_id}{Character. Unique herd identifier, repeated for each
-#'       cohort within the same herd.}
+#'     \item{herd_id}{Character. Unique identifier for the herd,
+#'       repeated for each cohort belonging to the same herd.}
 #'     \item{species_short}{Character. Species code (see Common identifiers).}
-#'     \item{cohort_short}{Character. Cohort code (see Common identifiers).}
-#'     \item{cohort_duration_days}{Numeric. Time each animal spends in the
-#'       cohort (days).}
+#'     \item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+#'       the production stage of the animals. Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'         \item \code{FN}: non-demographic females
+#'         \item \code{MN}: non-demographic males
+#'       }}
+#'     \item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a
+#'       specific cohort and production phase (days). For \code{CHK}, suggested value
+#'       for \code{FJ} and \code{MJ} cohorts: 3 days. Not required for \code{FN} and
+#'       \code{MN} when phase durations are supplied in the herd table; the code fills
+#'       it from the herd values, which override any cohort values.}
 #'     \item{offtake_rate}{Numeric. Annual proportion of animals removed from
 #'       the herd per cohort (fraction).}
 #'     \item{low_activity_fraction}{Numeric. Proportion of the assessment period
@@ -55,19 +83,24 @@
 #'   }
 #'   Additional columns when \code{has_herd_structure = FALSE}:
 #'   \describe{
-#'     \item{death_rate}{Numeric. Annual fraction of deaths per cohort
-#'       (fraction).}
+#'     \item{death_rate}{Numeric. Fraction of animals dying in the assessed cohort,
+#'       over one year for demographic cohorts or over the productive phase for
+#'       non-demographic cohorts (fraction).}
+#'     \item{nondemo_productive_phase_id}{Numeric. Productive phase identifier for
+#'       non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase
+#'       1 and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.}
 #'   }
 #'   Additional columns when \code{has_herd_structure = TRUE}:
 #'   \describe{
-#'     \item{cohort_stock_size}{Numeric. Average population size in each cohort
-#'       (heads).}
-#'     \item{offtake_heads_assessment}{Numeric. Total animals removed via
-#'       offtake over the assessment period per cohort (heads/assessment
-#'       period).}
+#'     \item{cohort_stock_size}{Numeric. Average population size of the assessed cohort (# heads).}
+#'     \item{offtake_heads_assessment}{Numeric. Total number of animals removed from
+#'     each cohort over the assessment period (# heads/assessment period).}
 #'   }
 #'   Optional column (both cases):
 #'   \describe{
+#'     \item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+#'       \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
+#'       \code{FN} with \code{nondemo_productive_phase_id = 2}.}
 #'     \item{ch4_mitigation_factor}{Numeric. Multiplicative factor applied to
 #'       baseline enteric CH4 emissions (dimensionless). Defaults to \code{1}
 #'       (no mitigation). Values < 1 represent proportional reductions (e.g.
@@ -78,7 +111,7 @@
 #' @param herd_level_data data.table. Herd-level master input table (one row per
 #'   \code{herd_id}). Required columns:
 #'   \describe{
-#'     \item{herd_id}{Character. Unique herd identifier.}
+#'     \item{herd_id}{Character. Unique identifier for the herd.}
 #'     \item{species_short}{Character. Species code (see Common identifiers).}
 #'     \item{live_weight_female_adult}{Numeric. Adult female live weight (kg).}
 #'     \item{live_weight_male_adult}{Numeric. Adult male live weight (kg).}
@@ -88,7 +121,7 @@
 #'       slaughter weight (kg).}
 #'     \item{live_weight_male_at_slaughter}{Numeric. Male sub-adult slaughter
 #'       weight (kg).}
-#'     \item{age_first_parturition}{Numeric. Age at first parturition (days).}
+#'     \item{age_first_parturition}{Numeric. Age at first parturition for female breeding animals (days).}
 #'     \item{lactating_females_fraction}{Numeric. Proportion of adult females
 #'       lactating during the assessment period (fraction). Required for CTL,
 #'       BFL, CML, SHP, GTS.}
@@ -112,14 +145,23 @@
 #'     \item{non_productive_duration}{Numeric. Period without productive
 #'       function (pregnancy/lactation) (days). Required for PGS.}
 #'     \item{pregnancy_duration}{Numeric. Pregnancy duration (days).}
-#'     \item{death_rate_juvenile}{Numeric. Annual death fraction for juvenile
-#'       cohorts (FJ, MJ) (fraction).}
+#'     \item{death_rate_juvenile}{Numeric. Fraction of deaths in a herd over a year
+#'       for juvenile cohorts (i.e. FJ and MJ), (fraction).}
 #'     \item{lactation_duration}{Numeric. Lactation period length (days).
 #'       Required for PGS.}
-#'     \item{parturition_rate}{Numeric. Average annual parturitions per adult
-#'       female (parturitions/adult female/year).}
-#'     \item{litter_size}{Numeric. Average offspring born per parturition
-#'       (offspring/parturition).}
+#'     \item{reproductive_rate}{Numeric. Average annual number of parturitions per
+#'       reproductive female (# parturitions/reproductive female/year). For chickens,
+#'       annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
+#'     \item{offspring_per_reproductive_event}{Numeric. Average number of offspring born
+#'       per parturition (# offspring/parturition). For chickens, hatchability of eggs
+#'       laid for reproduction, calculated as the number of chicks hatched divided by
+#'       the number of eggs laid for reproduction (fraction).}
+#'     \item{average_annual_temperature}{Numeric. Average annual temperature
+#'       (degrees C). Used for \code{CHK}.}
+#'     \item{egg_average_weight}{Numeric. Average egg weight (kg/egg).}
+#'     \item{egg_human_consumption_yield}{Numeric. Number of eggs produced for
+#'       human consumption in one year by hen (eggs/year/animal). Used for
+#'       \code{CHK}.}
 #'     \item{draught_work_hours_female}{Numeric. Average daily working time per
 #'       adult female (hours/head/day). Required for CTL, BFL, CML.}
 #'     \item{draught_work_hours_male}{Numeric. Average daily working time per
@@ -130,8 +172,8 @@
 #'       draught work (fraction). Required for CTL, BFL, CML.}
 #'     \item{fibre_yield_year}{Numeric. Annual fibre production (wool,
 #'       cashmere, mohair) (kg/head/year). Required for CML, SHP, GTS.}
-#'     \item{carcass_dressing_fraction}{Numeric. Carcass weight to live weight
-#'       ratio (fraction).}
+#'     \item{carcass_dressing_fraction}{Numeric. Ratio of a slaughtered animal's
+#'     carcass weight to its live weight (fraction).}
 #'     \item{bone_free_meat_fraction}{Numeric. Bone-free meat to carcass weight
 #'       ratio (fraction).}
 #'     \item{meat_protein_fraction}{Numeric. Protein content of bone-free meat
@@ -143,19 +185,50 @@
 #'   \describe{
 #'     \item{birth_fraction_female}{Numeric. Probability that a newborn is
 #'       female (fraction).}
-#'     \item{herd_size_total}{Numeric. Total population at start of year, all
-#'       cohorts (heads).}
+#'     \item{herd_size_total}{Numeric. Total demographic population size at the start of
+#'       the year, including all cohorts (# heads)}
+#'     \item{prop_nondemo_fem_juv}{Numeric. Fraction of female juveniles
+#'       diverted into the non-demographic stream at the moment they transition
+#'       to the next age class (fraction). Required when the demographic herd
+#'       module is run.}
+#'     \item{prop_nondemo_mal_juv}{Numeric. Fraction of male juveniles diverted
+#'       into the non-demographic stream at the moment they transition to the
+#'       next age class (fraction). Required when the demographic herd module is
+#'       run.}
+#'     \item{rest_between_nondemo_cycles_duration}{Numeric. Duration of the resting or
+#'       empty phase between non-demographic cycles (days). Use \code{0} when there is
+#'       no rest between cycles.}
+#'     \item{phase1_nondemo_fem_duration_days}{Numeric. Duration of productive phase 1
+#'       for the female non-demographic cohort (\code{FN}) (days).}
+#'     \item{phase2_nondemo_fem_duration_days}{Numeric. Duration of productive
+#'       phase 2 for the female non-demographic cohort (`FN`) (days).}
+#'     \item{phase1_nondemo_mal_duration_days}{Numeric. Duration of productive phase 1
+#'       for the male nondemographic cohort (\code{MN}) (days).}
+#'     \item{phase2_nondemo_mal_duration_days}{Numeric. Duration of productive
+#'       phase 2 for the male non-demographic cohort (`MN`) (days).}
 #'   }
 #'
 #' @param feed_rations data.table. Cohort-level feed ration shares, also used by
 #'   \code{\link{run_ration_quality_module}} and
 #'   \code{\link{run_emissions_ration_module}}. Required columns:
 #'   \describe{
-#'     \item{herd_id}{Character. Unique herd identifier.}
+#'     \item{herd_id}{Character. Unique identifier for the herd,
+#'       repeated for each cohort belonging to the same herd.}
 #'     \item{species_short}{Character. Species code (see Common identifiers).}
-#'     \item{cohort_short}{Character. Cohort code (see Common identifiers).}
-#'     \item{feed_id}{Character. Unique feed component identifier, used as join
-#'       key with feed parameter tables.}
+#'     \item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+#'       the production stage of the animals. Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'         \item \code{FN}: non-demographic females
+#'         \item \code{MN}: non-demographic males
+#'       }}
+#'     \item{feed_id}{Character. Unique identifier for the feed component, used
+#'       to join feed ration data with feed parameter tables.}
 #'     \item{feed_name}{Character. Optional. Human-readable feed name; should
 #'       match \code{feed_id} uniquely if provided.}
 #'     \item{feed_ration_fraction}{Numeric. Proportion of this feed component in
@@ -165,39 +238,43 @@
 #'
 #' @param feed_params data.table. Feed nutritional parameters. Required columns:
 #'   \describe{
-#'     \item{feed_id}{Character. Unique feed component identifier.}
-#'     \item{feed_gross_energy}{Numeric. Gross energy: total chemical energy
-#'       upon complete combustion (MJ/kg DM).}
-#'     \item{feed_digestible_energy_ruminant}{Numeric. Digestible energy for
-#'       ruminants: energy absorbed after faecal losses (MJ/kg DM).}
-#'     \item{feed_digestible_energy_pigs}{Numeric. Digestible energy for pigs
-#'       (MJ/kg DM).}
+#'     \item{feed_id}{Character. Unique identifier for the feed component, used
+#'       to join feed ration data with feed parameter tables.}
+#'     \item{feed_gross_energy}{Numeric. Gross energy content of a feed component,
+#'       representing the total chemical energy released upon complete combustion of
+#'       the feed (MJ/kg DM).}
+#'     \item{feed_digestible_energy_ruminant}{Numeric. Digestible energy content of
+#'       a feed component for ruminants, representing the energy absorbed by the animal
+#'       after fecal losses (MJ/kg DM).}
+#'     \item{feed_digestible_energy_pigs}{Numeric. Digestible energy content of a
+#'       feed component for pigs, representing the energy absorbed by the animal after
+#'       fecal losses (MJ/kg DM).}
 #'     \item{feed_metabolizable_energy_ruminant}{Numeric. Metabolizable energy
-#'       for ruminants: digestible energy minus urinary and gaseous losses
-#'       (MJ/kg DM).}
-#'     \item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy for
-#'       pigs (MJ/kg DM).}
+#'       content of a feed component for ruminants, representing digestible energy minus
+#'       energy losses in urine and gaseous products of digestion (MJ/kg DM).}
+#'     \item{feed_metabolizable_energy_pigs}{Numeric. Metabolizable energy content
+#'       of a feed component for pigs, representing digestible energy minus energy losses
+#'       in urine and gaseous products of digestion (MJ/kg DM).}
 #'     \item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy
-#'       for chickens: digestible energy minus uric acid and gaseous losses
-#'       (MJ/kg DM).}
+#'       content of a feed component for chickens (MJ/kg DM).}
 #'     \item{feed_nitrogen_content}{Numeric. Nitrogen content (kg N/kg DM).}
 #'     \item{feed_urinary_energy_ruminant}{Numeric. Fraction of gross energy
 #'       excreted in urine for ruminants (fraction).}
 #'     \item{feed_urinary_energy_pigs}{Numeric. Fraction of gross energy
 #'       excreted in urine for pigs (fraction).}
-#'     \item{feed_ash}{Numeric. Ash content as a fraction of dry matter
-#'       (g ash/100 g DM).}
+#'     \item{feed_ash}{Numeric. Average ash content by feed component, expressed as
+#'       a fraction of the dry matter intake (g ash/100g DM).}
 #'     \item{category}{Character. Optional. Feed category; should be used
 #'       consistently with \code{feed_id}.}
 #'     \item{feed_name}{Character. Optional. Human-readable feed name; should
 #'       match \code{feed_id} uniquely if provided.}
 #'   }
 #'
-#' @param feed_emissions data.table. Emission factors per feed component.
-#'   All emission factors are expressed per kg of feed dry matter intake.
-#'   Required columns:
+#' @param feed_emissions data.table. Emission factors of individual feed components with the
+#'   following data requirement:
 #'   \describe{
-#'     \item{feed_id}{Character. Unique feed component identifier.}
+#'     \item{feed_id}{Character. Unique identifier for the feed component, used
+#'       to join feed ration data with feed parameter tables.}
 #'     \item{feed_name}{Character. Optional. Human-readable feed name.}
 #'     \item{co2_feed_fertilizer}{Numeric. CO2 from fertilizer manufacture
 #'       (g CO2/kg DM).}
@@ -223,8 +300,20 @@
 #'   management system fractions passed to
 #'   \code{\link{run_emissions_manure_module}}. Required columns:
 #'   \describe{
-#'     \item{herd_id}{Character. Unique herd identifier.}
-#'     \item{cohort_short}{Character. Cohort code (see Common identifiers).}
+#'     \item{herd_id}{Character. Unique identifier for the herd,
+#'       repeated for each cohort belonging to the same herd.}
+#'     \item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+#'       the production stage of the animals. Supported values include:
+#'       \itemize{
+#'         \item \code{FA}: adult females (from age at first parturition)
+#'         \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'         \item \code{FJ}: juvenile females (from birth to weaning)
+#'         \item \code{MA}: adult males (from age at first breeding)
+#'         \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'         \item \code{MJ}: juvenile males (from birth to weaning)
+#'         \item \code{FN}: non-demographic females
+#'         \item \code{MN}: non-demographic males
+#'       }}
 #'     \item{manure_management_system}{Character. Manure management system name.
 #'       \code{mms_pasture} and \code{mms_burned} are reserved for manure
 #'       deposited on pasture and burned for fuel, respectively. All other
@@ -265,9 +354,10 @@
 #'       leaching and runoff (0--1). See IPCC Table 10.22 (2006, 2019).}
 #'   }
 #'
-#' @param simulation_duration Numeric. Assessment period length (days). Used by
-#'   the demographic herd simulation (when \code{has_herd_structure = FALSE})
-#'   and by the production and aggregation steps. Default: \code{365}.
+#' @param simulation_duration Numeric. Length of the assessment period (days). Used by
+#'   the herd-simulation step (when \code{has_herd_structure = FALSE}) through
+#'   \code{\link{run_all_herd_module}}, and by the production and aggregation
+#'   steps. Default: \code{365}.
 #'
 #' @param global_warming_potential_set Character. GWP-100 conversion factors for
 #'   expressing CH4 and N2O as CO2-eq. One of:
@@ -293,9 +383,11 @@
 #'     \subsection{Demographic herd simulation}{
 #'     Computed when \code{has_herd_structure = FALSE}:
 #'     \describe{
-#'       \item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex-age cohorts (# heads). (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
-#'       \item{offtake_heads}{Numeric. Total number of animals removed via offtake over the year, aggregated to 6 sex-age cohorts (heads/year) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
-#'       \item{offtake_heads_assessment}{Numeric. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex-age cohorts (heads/assessment period) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).}
+#'       \item{cohort_stock_size}{Numeric. Average population size of the assessed cohort (# heads).}
+#'       \item{offtake_heads}{Numeric. Total number of animals removed from each cohort
+#'       over the full 365-day simulation horizon (# heads/year).}
+#'       \item{offtake_heads_assessment}{Numeric. Total number of animals removed from
+#'       each cohort over the assessment period (# heads/assessment period).}
 #'     }}
 #'     \subsection{Weight variables}{
 #'     \describe{
@@ -319,16 +411,31 @@
 #'     \subsection{Energy requirement variables}{
 #'     Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS unless stated otherwise.
 #'     \describe{
-#'       \item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to keep the animal at equilibrium such that body energy is neither gained nor lost (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-#'       \item{metabolic_energy_req_activity}{Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-#'       \item{metabolic_energy_req_growth}{Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
+#'       \item{metabolic_energy_req_maintenance}{Numeric. Energy required for
+#'       maintenance, defined as the amount of energy needed to keep the animal at
+#'       equilibrium such that body energy is neither gained nor lost (MJ/head/day).
+#'       Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
+#'       CML, PGS, and CHK.}
+#'       \item{metabolic_energy_req_activity}{Numeric. Energy required for activity,
+#'       defined as the amount of energy needed to support animal movement and physical
+#'       activity (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as
+#'       metabolizable energy for CML, PGS, and CHK.}
+#'       \item{metabolic_energy_req_growth}{Numeric. Energy required for growth (i.e.,
+#'       weight gain) (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and
+#'       as metabolizable energy for CML, PGS, and CHK.}
 #'       \item{metabolic_energy_req_lactation}{Numeric. Energy required for lactation (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 #'       \item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught power for CTL, BFL and CML (MJ/head/day). Assumed to be 0 for other species. Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
-#'       \item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS (MJ/head/day).}
+#'       \item{metabolic_energy_req_fibre_production}{Numeric. Energy required for the
+#'       synthesis of fibre for SHP, GTS and CML. Assumed to be 0 for other species.
+#'       (MJ/head/day). Expressed as net energy for SHP and GTS and as metabolizable
+#'       energy for CML.}
 #'       \item{metabolic_energy_req_pregnancy}{Numeric. Energy required for pregnancy for pregnant females (MJ/head/day). Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.}
 #'       \item{net_energy_maintenance_digestible_energy_ratio}{Numeric. Ratio of net energy available for maintenance in the diet to digestible energy consumed (fraction).}
 #'       \item{net_energy_growth_digestible_energy_ratio}{Numeric. Ratio of net energy available for growth in the diet to digestible energy consumed (fraction).}
-#'       \item{metabolic_energy_req_total}{Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy intake requirement (GE). For CML and PGS the function returns the summed daily metabolizable energy requirement.}
+#'       \item{metabolic_energy_req_total}{Numeric. Total daily energy requirement
+#'       (MJ/head/day). For CTL, BFL, SHP and GTS this is expressed as gross energy
+#'       intake requirement (GE). For CML, PGS and CHK the function returns the summed
+#'       daily metabolizable energy requirement.}
 #'       \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'     }}
 #'     \subsection{Enteric emission variables}{
@@ -391,6 +498,9 @@
 #'       \item{meat_production_carcass_weight_cohort}{Numeric. Total meat as carcass weight (excluding organs, and other by-products after dressing) produced over the assessment period by cohort (kg/cohort/assessment period).}
 #'       \item{meat_production_bone_free_meat_cohort}{Numeric. Total bone-free-meat (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg/cohort/assessment period).}
 #'       \item{meat_production_protein_cohort}{Numeric. Total meat protein (excluding bones, organs, and other by-products after dressing and bone removal) produced over the assessment period by cohort (kg protein/cohort/assessment period).}
+#'       \item{egg_production_number_cohort}{Numeric. Total egg output over the assessment period by cohort (eggs/cohort/assessment period).}
+#'       \item{egg_production_mass_cohort}{Numeric. Total egg mass produced over the assessment period by cohort (kg/cohort/assessment period).}
+#'       \item{egg_production_protein_cohort}{Numeric. Total egg protein output over the assessment period by cohort (kg protein/cohort/assessment period).}
 #'     }}
 #'     \subsection{Allocation variables}{
 #'     \describe{
@@ -398,14 +508,21 @@
 #'       \item{meat_allocation_energy}{Numeric. Energy required by a given sex-age cohort for total meat output by cohort during the assessment period, equal to the energy needed to produce all live-weight gain to reach the target slaughter weight (MJ/cohort/assessment period).}
 #'       \item{fibre_allocation_energy}{Numeric. Energy required to produce all fibre output by cohort (MJ/cohort/assessment period).}
 #'       \item{work_allocation_energy}{Numeric. Energy required to provide all draught power (traction/work) by cohort (MJ/cohort/assessment period).}
-#'       \item{egg_allocation_energy}{Numeric. Energy required for egg production over the assessment period (MJ/cohort/assessment period). Currently set to 0.}
+#'       \item{egg_allocation_energy}{Numeric. Energy required to produce all eggs during the assessment period by cohort (MJ/cohort/assessment period).}
 #'     }}
 #'   }
 #'   \item{herd_level_results}{A herd-level \code{data.table}. When
-#'     \code{has_herd_structure = FALSE}, the output from
-#'     \code{\link{run_demographic_herd_module}}, including:
+#'     \code{has_herd_structure = FALSE}, this is the output from
+#'     \code{\link{run_all_herd_module}} and may therefore contain:
 #'     \describe{
-#'       \item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction).}
+#'       \item{growth_rate_herd}{Numeric. Annualized growth rate at which the herd reaches steady state (fraction). Returned when the demographic herd module is run.}
+#'       \item{cohort_stock_fem_annual_nondemo}{Numeric. Annual number of female animals entering the non-demographic pathway (`FN`) over the 365-time horizon (# heads). When both demographic and non-demographic modules are run, this is derived internally from the demographic calculations.}
+#'       \item{cohort_stock_mal_annual_nondemo}{Numeric. Annual number of male animals entering the non-demographic pathway (`MN`) over the 365-time horizon (# heads). When both demographic and non-demographic modules are run, this is derived internally from the demographic calculations.}
+#'       \item{rest_between_nondemo_cycles_duration}{Numeric. Duration of the resting or
+#'       empty phase between non-demographic cycles (days). Use \code{0} when there is
+#'       no rest between cycles.}
+#'       \item{total_nondemo_fem_duration_days}{Numeric. Total duration of the productive non-demographic phases assigned to the female non-demographic cohort block (`FN`) (days).}
+#'       \item{total_nondemo_mal_duration_days}{Numeric. Total duration of the productive non-demographic phases assigned to the male non-demographic cohort block (`MN`) (days).}
 #'     }
 #'     When \code{has_herd_structure = TRUE}, the supplied
 #'     \code{herd_level_data} is returned unchanged.}
@@ -413,15 +530,14 @@
 #'     one row per herd \eqn{\times}{x} commodity \eqn{\times}{x} emission
 #'     source:
 #'     \describe{
-#'       \item{herd_id}{Character. Herd identifier.}
+#'       \item{herd_id}{Character. Unique identifier for the herd.}
 #'       \item{species_short}{Character. Species code.}
 #'       \item{variable_name}{Character. Emission variable name (e.g.
 #'         \code{"ch4_enteric"}, \code{"n2o_manure_pasture_direct"}).}
-#'       \item{commodity_name}{Character. Commodity category: one of
-#'         \code{"None"}, \code{"Milk"}, \code{"Meat"}, \code{"Fibre"},
-#'         \code{"Work"}, \code{"Eggs"}.}
-#'       \item{commodity_type}{Character. \code{"Edible"} or
-#'         \code{"Non-Edible"}.}
+#'       \item{commodity_name}{Character. List of commodity categories to which emissions may be allocated.
+#'         List = c("Other", "Milk", "Meat", "Fibre", "Work", "Eggs")}
+#'       \item{commodity_type}{Character. Commodity (commodity_name) grouping, either
+#'         \code{"Edible"} or \code{"Non-Edible"}.}
 #'       \item{allocation_share}{Numeric. Allocation share for this
 #'         commodity-emission combination (fraction).}
 #'     }}
@@ -440,20 +556,27 @@
 #' workflow for quantifying greenhouse gas emissions from livestock systems using
 #' a Life Cycle Assessment (LCA) approach based on the IPCC Tier 2 methodology.
 #'
-#' The pipeline covers seven species (CTL, BFL, CML, SHP, GTS, PGS).
-#' Within each herd, animals are organised into six sex-age cohorts (FJ, FS, FA,
-#' MJ, MS, MA). These identifiers are used consistently across all modules.
+#' The pipeline covers seven species (CTL, BFL, CML, SHP, GTS, PGS, CHK).
+#' Within each herd, animals are organised into the six demographic sex-age
+#' cohorts (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}),
+#' with optional non-demographic cohorts (\code{FN}, \code{MN}) when the
+#' non-demographic herd module is used. These identifiers are
+#' used consistently across all modules.
 #'
 #' The assessment period is specified in days via \code{simulation_duration}
 #' (typically 365). Intermediate per-head-per-day variables are carried through
 #' the cohort workflow and scaled to cohort and herd totals in the final
 #' aggregation step.
 #'
+#' Every cohort and productive phase must have a matching feed ration. The
+#' pipeline stops and lists any missing combinations before merging rations.
+#'
 #' \subsection{Pipeline sequence}{
 #' \enumerate{
 #'   \item If \code{has_herd_structure = FALSE}, generate herd structure with
-#'     \code{\link{run_demographic_herd_module}}; otherwise use supplied tables
-#'     directly.
+#'     \code{\link{run_all_herd_module}} using the selected
+#'     \code{run_demographic} and \code{run_nondemographic} switches; otherwise
+#'     use supplied tables directly.
 #'   \item Compute cohort weights (\code{\link{run_weights_module}}).
 #'   \item Summarise ration quality (\code{\link{run_ration_quality_module}})
 #'     and merge into the cohort table.
@@ -479,6 +602,7 @@
 #' Validation blocks variables that are expected to be produced internally.
 #'
 #' @seealso
+#' \code{\link{run_all_herd_module}},
 #' \code{\link{run_demographic_herd_module}},
 #' \code{\link{run_weights_module}},
 #' \code{\link{run_ration_quality_module}},
@@ -492,19 +616,21 @@
 #' \code{\link{run_aggregation_module}}
 #'
 #' @examples
-#' # Example 1: You do NOT have herd structure — use cohort input for herd simulation.
-#' # Pipeline runs herd simulation first, then the rest of the pipeline.
-#' \donttest{
+#' # Example 1: You do NOT have herd structure — use combined demographic and
+#' # non-demographic cohort input for herd simulation. Pipeline runs herd
+#' # simulation first, then the rest of the pipeline.
+#' # The demographic module estimates diverted FN/MN to the non-demographic block.
+#' \dontrun{
 #' path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 #'
 #' master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
-#'   path_run_gleam_examples, "master_chrt_lvl_no_structure_data.csv"
+#'   path_run_gleam_examples, "master_chrt_lvl_no_structure_mixed_data.csv"
 #' ))
 #' master_hrd_lvl_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
+#'   file.path(path_run_gleam_examples, "master_hrd_lvl_mixed_data.csv")
 #' )
 #' feed_rations_chrt_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
+#'   file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
 #' )
 #' feed_params_dt <- data.table::fread(system.file(
 #'   "extdata/run_gleam_examples/feed_quality.csv",
@@ -514,7 +640,6 @@
 #'   "extdata/run_gleam_examples/feed_emission_factors.csv",
 #'   package = "gleam"
 #' ))
-#'
 #' manure_management_system_fraction_dt <- data.table::fread(
 #'   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
 #' )
@@ -524,6 +649,8 @@
 #'
 #' results <- run_gleam(
 #'   has_herd_structure = FALSE,
+#'   run_demographic = TRUE,
+#'   run_nondemographic = TRUE,
 #'   cohort_level_data = master_chrt_lvl_no_structure_dt,
 #'   herd_level_data = master_hrd_lvl_dt,
 #'   feed_rations = feed_rations_chrt_dt,
@@ -533,33 +660,74 @@
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365
 #' )
-#' print(results$cohort_level_results)
-#' print(results$allocation_long)
+#' names(results)
 #' }
 #'
-#' # Example 2: You already HAVE herd structure — use cohort table and skip herd simulation.
+#' # Example 2: Non-demographic-only simulation of CHK layers and broilers.
+#' # The cohort file contains only FN/MN cohorts.
+#' \dontrun{
+#' path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
+#'
+#' master_chrt_lvl_no_structure_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "master_chrt_lvl_no_structure_nondemo_data.csv"
+#' ))
+#' master_hrd_lvl_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "master_hrd_lvl_nondemo_data.csv"
+#'   ))
+#' feed_rations_chrt_dt <- data.table::fread(
+#'   file.path(path_run_gleam_examples, "feed_rations_share_chrt_nondemo.csv")
+#' )
+#' feed_params_dt <- data.table::fread(
+#'   file.path(path_run_gleam_examples, "feed_quality.csv")
+#' )
+#' feed_emissions_dt <- data.table::fread(
+#'   file.path(path_run_gleam_examples, "feed_emission_factors.csv")
+#' )
+#' manure_management_system_fraction_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "manure_management_system_fraction_nondemo.csv"
+#' ))
+#' manure_management_system_factors_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "manure_management_system_factors_nondemo.csv"
+#' ))
+#'
+#' results <- run_gleam(
+#'   has_herd_structure = FALSE,
+#'   run_demographic = FALSE,
+#'   run_nondemographic = TRUE,
+#'   cohort_level_data = master_chrt_lvl_no_structure_dt,
+#'   herd_level_data = master_hrd_lvl_dt,
+#'   feed_rations = feed_rations_chrt_dt,
+#'   feed_params = feed_params_dt,
+#'   feed_emissions = feed_emissions_dt,
+#'   manure_management_system_fraction = manure_management_system_fraction_dt,
+#'   manure_management_system_factors = manure_management_system_factors_dt,
+#'   simulation_duration = 365,
+#'   show_indicator = TRUE
+#' )
+#' names(results)
+#' }
+#'
+#' # Example 3: You already HAVE herd structure — use cohort table and skip herd simulation.
 #' # Pipeline skips herd simulation and uses this as the starting cohort table.
-#' \donttest{
+#' # The cohort file already supplies cohort_stock_size and offtake_heads_assessment.
+#' \dontrun{
 #' path_run_gleam_examples <- system.file("extdata/run_gleam_examples", package = "gleam")
 #'
 #' master_chrt_lvl_structure_dt <- data.table::fread(file.path(
 #'   path_run_gleam_examples, "master_chrt_lvl_structure_data.csv"
 #' ))
 #' master_hrd_lvl_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "master_hrd_lvl_data.csv")
+#' file.path(path_run_gleam_examples, "master_hrd_lvl_structure_data.csv")
 #' )
-#' feed_rations_chrt_dt <- data.table::fread(
-#' file.path(path_run_gleam_examples, "feed_rations_share_chrt.csv")
-#' )
-#' feed_params_dt <- data.table::fread(system.file(
-#'   "extdata/run_gleam_examples/feed_quality.csv",
-#'   package = "gleam"
+#' feed_rations_chrt_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "feed_rations_share_chrt.csv"
 #' ))
-#' feed_emissions_dt <- data.table::fread(system.file(
-#'   "extdata/run_gleam_examples/feed_emission_factors.csv",
-#'   package = "gleam"
+#' feed_params_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "feed_quality.csv"
 #' ))
-#'
+#' feed_emissions_dt <- data.table::fread(file.path(
+#'   path_run_gleam_examples, "feed_emission_factors.csv"
+#' ))
 #' manure_management_system_fraction_dt <- data.table::fread(
 #'   file.path(path_run_gleam_examples, "manure_management_system_fraction.csv")
 #' )
@@ -569,6 +737,8 @@
 #'
 #' results <- run_gleam(
 #'   has_herd_structure = TRUE,
+#'   run_demographic = FALSE,
+#'   run_nondemographic = FALSE,
 #'   cohort_level_data = master_chrt_lvl_structure_dt,
 #'   herd_level_data = master_hrd_lvl_dt,
 #'   feed_rations = feed_rations_chrt_dt,
@@ -577,14 +747,15 @@
 #'   manure_management_system_fraction = manure_management_system_fraction_dt,
 #'   manure_management_system_factors = manure_management_system_factors_dt,
 #'   simulation_duration = 365,
-#'   global_warming_potential_set = "AR6"
+#'   show_indicator = TRUE
 #' )
-#' print(results$cohort_level_results)
-#' print(results$allocation_long)
+#' names(results)
 #' }
 #' @export
 run_gleam <- function(
     has_herd_structure = FALSE,
+    run_demographic = TRUE,
+    run_nondemographic = TRUE,
     cohort_level_data,
     herd_level_data,
     feed_rations,
@@ -596,6 +767,7 @@ run_gleam <- function(
     global_warming_potential_set = "AR6",
     show_indicator = TRUE
 ) {
+  nondemographic_cohorts <- setdiff(gleam_cohorts, gleam_cohorts_demographic)
 
   # --- Step 1: Validate inputs ------------------------------------------------
   validate_run_gleam_inputs(
@@ -621,14 +793,56 @@ run_gleam <- function(
     gleam_chrt_data <- data.table::as.data.table(cohort_level_data)
     gleam_hrd_data <- data.table::as.data.table(herd_level_data)
   } else {
-    herd_results <- run_demographic_herd_module(
+    herd_results <- run_all_herd_module(
       cohort_level_data = cohort_level_data,
       herd_level_data = herd_level_data,
       simulation_duration = simulation_duration,
-      show_indicator = show_indicator
+      show_indicator = show_indicator,
+      run_demographic = run_demographic,
+      run_nondemographic = run_nondemographic
     )
     gleam_chrt_data <- herd_results$cohort_level_results
     gleam_hrd_data <- herd_results$herd_level_results
+  }
+
+  # Optional nondemographic herd inputs are only needed for FN/MN cohorts, but
+  # downstream joins expect the columns to exist when present in the schema.
+  optional_nondemo_hrd_cols <- c(
+    "prop_nondemo_fem_juv",
+    "prop_nondemo_mal_juv",
+    "rest_between_nondemo_cycles_duration",
+    "phase1_nondemo_fem_duration_days",
+    "phase2_nondemo_fem_duration_days",
+    "phase1_nondemo_mal_duration_days",
+    "phase2_nondemo_mal_duration_days",
+    "live_weight_female_nondemographic_start",
+    "live_weight_male_nondemographic_start",
+    "live_weight_female_nondemographic_end",
+    "live_weight_male_nondemographic_end"
+  )
+  missing_optional_nondemo_cols <- setdiff(optional_nondemo_hrd_cols, names(gleam_hrd_data))
+  if (length(missing_optional_nondemo_cols) > 0) {
+    gleam_hrd_data[, (missing_optional_nondemo_cols) := NA_real_]
+  }
+
+  if (!has_herd_structure && isTRUE(run_demographic) && isTRUE(run_nondemographic)) {
+    gleam_hrd_data[
+      !is.na(prop_nondemo_mal_juv) & prop_nondemo_mal_juv > 0,
+      live_weight_male_nondemographic_start := live_weight_at_weaning
+    ]
+    gleam_hrd_data[
+      is.na(prop_nondemo_mal_juv) | prop_nondemo_mal_juv <= 0,
+      live_weight_male_nondemographic_start := NA_real_
+    ]
+
+    gleam_hrd_data[
+      !is.na(prop_nondemo_fem_juv) & prop_nondemo_fem_juv > 0,
+      live_weight_female_nondemographic_start := live_weight_at_weaning
+    ]
+    gleam_hrd_data[
+      is.na(prop_nondemo_fem_juv) | prop_nondemo_fem_juv <= 0,
+      live_weight_female_nondemographic_start := NA_real_
+    ]
   }
 
   # --- Step 3: Run weights at cohort level ------------------------------------
@@ -647,10 +861,24 @@ run_gleam <- function(
     show_indicator = show_indicator
   )
 
+  ration_join_cols <- c("herd_id", "species_short", "cohort_short", "nondemo_productive_phase_id")
+  missing_rations <- gleam_chrt_data[
+    !feed_rations_summary, on = ration_join_cols, ration_join_cols, with = FALSE
+  ]
+  if (nrow(missing_rations) > 0L) {
+    missing_keys <- do.call(paste, c(missing_rations, sep = " / "))
+    cli::cli_abort(
+      "Missing feed rations for cohort rows
+      (herd_id / species_short / cohort_short / nondemo_productive_phase_id):
+      {.val {missing_keys}}. Supply rations for every cohort before running GLEAM."
+    )
+  }
+
   gleam_chrt_data <- merge(
     gleam_chrt_data,
     feed_rations_summary,
-    by = c("herd_id", "species_short", "cohort_short")
+    by = ration_join_cols,
+    all.x = TRUE
   )
 
   # --- Step 5: Run energy requirements and DMI --------------------------------
@@ -691,7 +919,7 @@ run_gleam <- function(
   gleam_chrt_data <- merge(
     gleam_chrt_data,
     feed_emissions_summary,
-    by = c("herd_id", "species_short", "cohort_short")
+    by = c("herd_id", "species_short", "cohort_short", "nondemo_productive_phase_id")
   )
 
   # --- Step 10: Run production (milk, fibre, meat) at cohort level ------------

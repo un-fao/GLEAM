@@ -83,12 +83,12 @@ where:
 - `milk_production_fpcm_cohort` is the total fat- and protein-corrected
   milk (FPCM) produced over the assessment period (kg/assessment
   period). It can be computed using
-  [`calc_milk_production`](https://github.com/un-fao/GLEAM/reference/calc_milk_production.md)
+  [`calc_milk_production`](https://un-fao.github.io/GLEAM/reference/calc_milk_production.md)
   (see also
-  [`run_production_module`](https://github.com/un-fao/GLEAM/reference/run_production_module.md)).
+  [`run_production_module`](https://un-fao.github.io/GLEAM/reference/run_production_module.md)).
 
 This function is part of the
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md).
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md).
 
 ## References
 
@@ -122,6 +122,6 @@ Italy.
 
 ## See also
 
-[`run_allocation_module`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md),
-[`calc_milk_production`](https://github.com/un-fao/GLEAM/reference/calc_milk_production.md),
-[`run_production_module`](https://github.com/un-fao/GLEAM/reference/run_production_module.md)
+[`run_allocation_module`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md),
+[`calc_milk_production`](https://un-fao.github.io/GLEAM/reference/calc_milk_production.md),
+[`run_production_module`](https://un-fao.github.io/GLEAM/reference/run_production_module.md)

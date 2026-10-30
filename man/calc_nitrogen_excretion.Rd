@@ -16,6 +16,7 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
 \item{nitrogen_intake}{Numeric. Daily nitrogen intake (kg N/head/day).}

@@ -74,7 +74,7 @@ simplified formulation from Equation 10.24 of IPCC.
 
 In this implementation, the function takes `ration_intake` directly as
 an input. It can be calculated upstream with
-[`calc_ration_intake`](https://github.com/un-fao/GLEAM/reference/calc_ration_intake.md)
+[`calc_ration_intake`](https://un-fao.github.io/GLEAM/reference/calc_ration_intake.md)
 as a function of energy requirements and the energy content of the diet.
 
 \$\$ dry\\matter\\intake =
@@ -94,7 +94,7 @@ The resulting calculations are algebraically equivalent to the IPCC
 approach and fully consistent with Equation 10.24.
 
 This function is part of the
-[`run_emissions_manure_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md).
+[`run_emissions_manure_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md).
 
 ## References
 
@@ -108,7 +108,7 @@ Management. Equation 10.24.
 
 ## See also
 
-[`run_emissions_manure_module`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md)
+[`run_emissions_manure_module`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md)
 
 ## Examples
 

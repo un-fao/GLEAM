@@ -8,11 +8,11 @@
 <title>About gleam modules • gleam</title>
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<script src="../extra.js"></script><meta property="og:title" content="About gleam modules">
+<meta property="og:title" content="About gleam modules">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -38,7 +38,7 @@
 <li class="nav-item"><a class="nav-link" href="../articles/gleam-history.html"><span class="fa fa-timeline"></span> GLEAM History</a></li>
       </ul>
 <ul class="navbar-nav">
-<li class="nav-item"><a class="nav-link" href="https://github.com/un-fao/GLEAM"><span class="fa fab fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/un-fao/GLEAM" aria-label="GitHub repository"><span class="fa fab fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -55,13 +55,189 @@
       <h1>About gleam modules</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/un-fao/GLEAM/blob/HEAD/vignettes/gleam-modules-overview.Rmd"><code>vignettes/gleam-modules-overview.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/un-fao/GLEAM/blob/HEAD/vignettes/gleam-modules-overview.Rmd" class="external-link"><code>vignettes/gleam-modules-overview.Rmd</code></a></small>
       <div class="d-none name"><code>gleam-modules-overview.Rmd</code></div>
     </div>
 
     
     
-<div class="section level2">
+<style>
+img.module-figure-zoom {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 360px);
+  max-height: 280px;
+  margin: 1rem auto 0.5rem;
+  cursor: zoom-in;
+  border-radius: 8px;
+}
+
+.module-figure-zoom:hover,
+.module-figure-zoom:focus-visible {
+  outline: 2px solid #6bc4d0;
+  outline-offset: 4px;
+}
+
+.module-figure-hint {
+  margin: 0.5rem 0 1rem;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #5b6b73;
+}
+
+.module-figure-hint::before {
+  content: "Click the image to enlarge, then click again to zoom.";
+}
+
+body.module-figure-lightbox-open {
+  overflow: hidden;
+}
+
+.module-figure-lightbox {
+  position: fixed;
+  inset: 0;
+  width: 94vw;
+  max-width: none;
+  height: 94vh;
+  max-height: none;
+  box-sizing: border-box;
+  margin: auto;
+  padding: 1rem;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #17382d;
+}
+
+.module-figure-lightbox[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.module-figure-lightbox::backdrop {
+  background: rgba(20, 24, 28, 0.88);
+}
+
+.module-figure-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.module-figure-toolbar button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #287d8a;
+  border-radius: 4px;
+  background: #287d8a;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.module-figure-viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.module-figure-viewport img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  cursor: zoom-in;
+}
+
+.module-figure-viewport.is-zoomed img {
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  cursor: zoom-out;
+}
+</style>
+<script>
+(function () {
+  function setupModuleFigures() {
+    const images = document.querySelectorAll("img.module-figure-zoom");
+    if (!images.length) return;
+
+    const dialog = document.createElement("dialog");
+    dialog.className = "module-figure-lightbox";
+    dialog.setAttribute("aria-label", "Enlarged module diagram");
+    dialog.innerHTML =
+      '<div class="module-figure-toolbar">' +
+      '<button type="button" class="module-figure-toggle" aria-pressed="false">Zoom in</button>' +
+      '<button type="button" class="module-figure-close" autofocus>Close</button>' +
+      '</div><div class="module-figure-viewport"><img alt=""></div>';
+    document.body.appendChild(dialog);
+
+    const viewport = dialog.querySelector(".module-figure-viewport");
+    const enlarged = viewport.querySelector("img");
+    const toggle = dialog.querySelector(".module-figure-toggle");
+    let trigger;
+
+    function setZoom(zoomed) {
+      viewport.classList.toggle("is-zoomed", zoomed);
+      toggle.textContent = zoomed ? "Fit to window" : "Zoom in";
+      toggle.setAttribute("aria-pressed", String(zoomed));
+      viewport.scrollTop = 0;
+      viewport.scrollLeft = 0;
+    }
+
+    function toggleZoom() {
+      setZoom(!viewport.classList.contains("is-zoomed"));
+    }
+
+    images.forEach(function (image) {
+      function openFigure() {
+        trigger = image;
+        enlarged.src = image.currentSrc || image.src;
+        enlarged.alt = image.alt;
+        setZoom(false);
+        dialog.showModal();
+        document.body.classList.add("module-figure-lightbox-open");
+      }
+
+      image.tabIndex = 0;
+      image.setAttribute("role", "button");
+      image.setAttribute("aria-haspopup", "dialog");
+      image.setAttribute("aria-label", "Enlarge: " + image.alt);
+      image.addEventListener("click", openFigure);
+      image.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openFigure();
+        }
+      });
+    });
+
+    enlarged.addEventListener("click", toggleZoom);
+    toggle.addEventListener("click", toggleZoom);
+    dialog.querySelector(".module-figure-close").addEventListener("click", function () {
+      dialog.close();
+    });
+    dialog.addEventListener("click", function (event) {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener("close", function () {
+      document.body.classList.remove("module-figure-lightbox-open");
+      if (trigger) trigger.focus();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupModuleFigures);
+  } else {
+    setupModuleFigures();
+  }
+})();
+</script><div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>This vignette provides a high-level overview of all GLEAM modules,
@@ -71,41 +247,469 @@ each module is available via the module reference pages linked in each
 section below.</p>
 </div>
 <div class="section level2">
-<h2 id="herd-simulation-module">Herd Simulation Module<a class="anchor" aria-label="anchor" href="#herd-simulation-module"></a>
+<h2 id="herd-simulation-module">Demographic Herd Simulation Module<a class="anchor" aria-label="anchor" href="#herd-simulation-module"></a>
 </h2>
 <p><em>See <a href="../reference/run_demographic_herd_module.html"><code>run_demographic_herd_module()</code></a>
 for full documentation.</em></p>
-<p>This module takes herd- and cohort-level demographic inputs and
-estimates a steady-state sex–age herd structure compatible with
-downstream calculations in GLEAM. In addition to cohort population
-sizes, it derives population growth rates and offtake numbers. The
-steady state is defined as a constant sex–age cohort structure over
-time, with population size potentially growing or declining at a
-constant rate.</p>
-<p>The module operates under a <strong>steady-state assumption</strong>:
-demographic parameters are constant over time, so the population
-converges to a stable cohort composition and a constant annual growth
-rate. Once this regime is reached, the model computes cohort population
-sizes (start/end/average), cohort shares, and offtake totals.</p>
-<p>A key feature of this implementation is that it applies demography at
-a <strong>daily</strong> resolution. Annual mortality and offtake inputs
-are converted into daily hazards and daily transition probabilities
-under competing risks (death vs. offtake vs. survival). Conceptually,
-this corresponds to the steady-state demographic approach implemented in
-Dynmod <em>STEADY1</em> (Lesnoff, 2013), adapted here to a daily
-time-step formulation.</p>
-<p>The population is divided by sex (female/male) and age class
-(juvenile/subadult/adult), represented by six cohorts: <code>FJ</code>,
-<code>FS</code>, <code>FA</code> (female juvenile, subadult, adult) and
-<code>MJ</code>, <code>MS</code>, <code>MA</code> (male juvenile,
-subadult, adult).</p>
-<details open><summary><strong>Overview of the GLEAM demographic herd module with functions,
-input and output:</strong>
-</summary><p><img src="images/gleamx_package_module_herd.png" alt="Overview of the GLEAM demographic herd module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"></p>
+<p>The demographic herd module simulates herd population dynamics based
+on reproduction, mortality, and offtake (animals removed from the herd).
+It estimates the <strong>sex–age structure of a herd at demographic
+steady state</strong>, together with population growth and annual
+offtake. These results provide the herd structure needed for subsequent
+calculations in GLEAM.</p>
+<p>The module assumes that demographic parameters remain constant over
+time. Under this assumption, the herd eventually reaches a
+<strong>stable sex–age structure</strong>, meaning that the proportion
+of animals in each cohort remains constant, even if the total herd
+population grows or declines at a constant rate.</p>
+<p>The herd is divided into six cohorts according to sex and age:</p>
+<table class="table">
+<thead><tr class="header">
+<th>Sex</th>
+<th>Juvenile</th>
+<th>Subadult</th>
+<th>Adult</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Female</td>
+<td><code>FJ</code></td>
+<td><code>FS</code></td>
+<td><code>FA</code></td>
+</tr>
+<tr class="even">
+<td>Male</td>
+<td><code>MJ</code></td>
+<td><code>MS</code></td>
+<td><code>MA</code></td>
+</tr>
+</tbody>
+</table>
+<p>Animals move between age cohorts as they grow older, while
+reproduction adds new juveniles to the population. Mortality and offtake
+reduce the number of animals in each cohort.</p>
+<p>Although demographic inputs such as mortality and offtake are
+specified annually, the module performs calculations at a <strong>daily
+time step</strong>. Annual rates are converted into daily hazards and
+transition probabilities, accounting for the competing risks of death,
+offtake, and survival.</p>
+<p>This approach is conceptually based on the steady-state demographic
+model implemented in Dynmod <em>STEADY1</em> (Lesnoff, 2013), adapted to
+daily calculations.</p>
+<div class="section level3">
+<h3 id="linking-to-the-non-demographic-module">Linking to the non-demographic module<a class="anchor" aria-label="anchor" href="#linking-to-the-non-demographic-module"></a>
+</h3>
+<p>The module also allows a proportion of juvenile animals to leave the
+demographic pathway and enter the non-demographic pathway.</p>
+<p>Two parameters control these transfers:</p>
+<ul>
+<li>
+<code>prop_nondemo_fem_juv</code>: proportion of female juvenile
+flows diverted to the non-demographic pathway.</li>
+<li>
+<code>prop_nondemo_mal_juv</code>: proportion of male juvenile flows
+diverted to the non-demographic pathway.</li>
+</ul>
+<p>These transfers are recorded in
+<code>cohort_stock_annual_nondemographic</code> for the <code>FJ</code>
+and <code>MJ</code> cohorts, separately from mortality and offtake.</p>
+<p>When both modules are run together using
+<code><a href="../reference/run_all_herd_module.html">run_all_herd_module()</a></code>, the transferred animals become
+inputs to the non-demographic module.</p>
+<p>For herds without a non-demographic component, set both parameters to
+<code>0</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="main-outputs">Main outputs<a class="anchor" aria-label="anchor" href="#main-outputs"></a>
+</h3>
+<p>The module returns two datasets:</p>
+<p><strong><code>cohort_level_results</code></strong> contains the
+demographic results for each sex–age cohort, including:</p>
+<ul>
+<li>
+<code>cohort_stock_size_unscaled</code>: average cohort population
+over the annual projection.</li>
+<li>
+<code>cohort_stock_size_scaled</code>: cohort population at the
+start of the assessment period, consistent with
+<code>herd_size_total</code>.</li>
+<li>
+<code>offtake_heads_unscaled</code> and
+<code>offtake_heads_scaled</code>: annual offtake before and after
+adjustment to the starting-stock basis.</li>
+<li>
+<code>offtake_heads_assessment_unscaled</code> and
+<code>offtake_heads_assessment_scaled</code>: offtake over
+<code>simulation_duration</code> before and after that adjustment.</li>
+<li>
+<code>cohort_stock_annual_nondemographic</code>: annual transfers to
+the non-demographic pathway, where applicable.</li>
+</ul>
+<p><strong><code>herd_level_results</code></strong> contains the
+original herd-level inputs and the estimated annual herd growth rate
+(<code>growth_rate_herd</code>).</p>
+<p>Cohort stock and offtake outputs are provided with both
+<code>_unscaled</code> and <code>_scaled</code> suffixes to support
+integration with the combined herd module.</p>
+<details open><summary><strong>Overview of the demographic herd module: functions, inputs, and
+outputs</strong>
+</summary><p><img src="images/gleamx_package_module_herd.png" alt="Overview of the GLEAM demographic herd module" class="module-figure-zoom"></p>
 <div class="module-figure-hint">
 
 </div>
+</details><hr>
+</div>
+</div>
+<div class="section level2">
+<h2 id="non-demographic-herd-simulation-module">Non-Demographic Herd Simulation Module<a class="anchor" aria-label="anchor" href="#non-demographic-herd-simulation-module"></a>
+</h2>
+<p><em>See <a href="../reference/run_nondemographic_herd_module.html"><code>run_nondemographic_herd_module()</code></a>
+for full documentation.</em></p>
+<p>The non-demographic herd module calculates <strong>average animal
+stock and offtake for animals managed through defined productive
+cycles</strong>, rather than through the reproduction and age
+transitions of a breeding herd.</p>
+<p>Unlike the demographic module, which tracks population dynamics
+across sex–age cohorts, this module follows animals entering a defined
+productive cycle. It accounts for how long animals remain in each
+productive phase, their mortality, and their eventual offtake.</p>
+<p>The module considers two cohorts:</p>
+<ul>
+<li>
+<code>FN</code>: non-demographic female animals.</li>
+<li>
+<code>MN</code>: non-demographic male animals.</li>
+</ul>
+<p>The simulation starts with the <strong>annual number of animals
+entering each non-demographic cohort</strong>, specified through:</p>
+<ul>
+<li><code>cohort_stock_fem_annual_nondemo</code></li>
+<li><code>cohort_stock_mal_annual_nondemo</code></li>
+</ul>
+<p>These inputs can either be provided directly in
+<code>herd_level_data</code> when running the non-demographic module
+independently, or calculated from juvenile transfers by
+<code><a href="../reference/run_all_herd_module.html">run_all_herd_module()</a></code> when both modules are used
+together.</p>
+<p>Each non-demographic cohort follows a productive cycle consisting
+of:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Phase 1 (required):</strong> Animals enter the first
+productive phase and remain there for the specified duration.</li>
+<li>
+<strong>Phase 2 (optional):</strong> Animals surviving phase 1 move
+into a second productive phase, if one is defined.</li>
+</ol>
+<p>The phases are identified using
+<code>nondemo_productive_phase_id</code>. Offtake is assigned to the
+final productive phase, and <code>death_rate</code> represents the
+mortality fraction over the full duration of a productive phase.</p>
+<p>The module can also account for a rest period between productive
+cycles, specified through
+<code>rest_between_nondemo_cycles_duration</code>.</p>
+<div class="section level3">
+<h3 id="productive-phase-durations">Productive phase durations<a class="anchor" aria-label="anchor" href="#productive-phase-durations"></a>
+</h3>
+<p>When phase durations are supplied in <code>herd_level_data</code>,
+<code>cohort_duration_days</code> is not required for <code>FN</code>
+and <code>MN</code>. The module fills it from the herd values, which
+overwrite any supplied cohort values with a warning. Missing herd values
+fall back to the cohort values. Phase 1 must last at least 1 day; phase
+2 and the rest period may be <code>0</code>.</p>
+<p>Annual stock and offtake include animals that entered before the
+assessment year. Full productive phases are used even when they extend
+beyond 365 days. <code>simulation_duration</code> scales annual offtake
+to the reporting period.</p>
+</div>
+<div class="section level3">
+<h3 id="main-outputs-1">Main outputs<a class="anchor" aria-label="anchor" href="#main-outputs-1"></a>
+</h3>
+<p>The module returns two datasets:</p>
+<p><strong><code>cohort_level_results</code></strong> includes:</p>
+<ul>
+<li>
+<code>cohort_stock_size_unscaled</code>: average animal stock before
+final herd-size scaling.</li>
+<li>
+<code>offtake_heads_unscaled</code>: annual offtake before
+scaling.</li>
+<li>
+<code>offtake_heads_assessment_unscaled</code>: offtake over the
+assessment period before scaling.</li>
+<li>Productive phase identifiers, effective durations, and cycle-related
+information.</li>
+</ul>
+<p><strong><code>herd_level_results</code></strong> includes the
+calculated total productive duration for each non-demographic
+cohort:</p>
+<ul>
+<li><code>total_nondemo_fem_duration_days</code></li>
+<li><code>total_nondemo_mal_duration_days</code></li>
+</ul>
+<p>These durations exclude rest periods between productive cycles.</p>
+<p>Final scaling to a supplied <code>herd_size_total</code> is handled
+by <code><a href="../reference/run_all_herd_module.html">run_all_herd_module()</a></code>. In a mixed run, the
+non-demographic results are combined with the demographic results before
+scaling. In a non-demographic-only run, the herd-size target is
+optional; without it, stock and offtake remain unscaled.</p>
+<details open><summary><strong>Overview of the non-demographic herd module: functions, inputs,
+and outputs</strong>
+</summary><p><img src="images/gleamx_package_module_nondemo_herd.png" alt="Overview of the GLEAM non-demographic herd module" class="module-figure-zoom"></p>
+<div class="module-figure-hint">
+
+</div>
+</details><hr>
+<p><span id="combined-herd-simulation-module"></span></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="all-herd-simulation-module">Combined Herd Simulation Module<a class="anchor" aria-label="anchor" href="#all-herd-simulation-module"></a>
+</h2>
+<p><em>See <a href="../reference/run_all_herd_module.html"><code>run_all_herd_module()</code></a>
+for full documentation.</em></p>
+<p>The combined herd module integrates the demographic and
+non-demographic simulations to estimate <strong>cohort population sizes
+and offtake across different livestock production systems</strong>.</p>
+<p>Depending on the characteristics of the production system, the herd
+may be represented using demographic cohorts, non-demographic cohorts,
+or a combination of both.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Mode</th>
+<th><code>run_demographic</code></th>
+<th><code>run_nondemographic</code></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Demographic only</td>
+<td><code>TRUE</code></td>
+<td><code>FALSE</code></td>
+</tr>
+<tr class="even">
+<td>Non-demographic only</td>
+<td><code>FALSE</code></td>
+<td><code>TRUE</code></td>
+</tr>
+<tr class="odd">
+<td>Mixed demographic and non-demographic</td>
+<td><code>TRUE</code></td>
+<td><code>TRUE</code></td>
+</tr>
+</tbody>
+</table>
+<p>At least one switch must be <code>TRUE</code>.</p>
+<p>The module coordinates the two simulation pathways:</p>
+<ul>
+<li>
+<strong>Demographic pathway:</strong> Estimates a stable sex–age
+herd structure, population growth, and offtake based on reproduction,
+mortality, and age transitions.</li>
+<li>
+<strong>Non-demographic pathway:</strong> Estimates average stock
+and offtake for animals managed through defined productive phases, based
+on annual entrants, phase durations, and mortality.</li>
+</ul>
+<p>When both pathways are included, juvenile transfers calculated by the
+demographic module are passed to the non-demographic module as annual
+entrants. The resulting cohort populations and offtake are then combined
+and, when a total herd size is supplied, scaled to that herd size.</p>
+<p>This provides a consistent representation of the animal population
+across both pathways for subsequent GLEAM calculations.</p>
+<div class="section level3">
+<h3 id="practical-application">Practical application<a class="anchor" aria-label="anchor" href="#practical-application"></a>
+</h3>
+<blockquote>
+<p>💡 <strong>Practical use cases: Herd simulation across livestock
+production systems</strong></p>
+<p><em>The combination of demographic and non-demographic pathways
+depends on how animals are managed within the livestock production
+system, rather than on the livestock species alone. For
+example:</em></p>
+<ul>
+<li><p><strong><em>Demographic only – Beef cow–calf
+system:</em></strong> <em>A breeding herd may be represented using the
+six demographic cohorts (<code>FJ</code>, <code>FS</code>,
+<code>FA</code>, <code>MJ</code>, <code>MS</code>, <code>MA</code>),
+covering calves, replacement heifers, breeding cows, and bulls.
+Reproduction, mortality, age transitions, and offtake determine the
+stable herd structure.</em></p></li>
+<li><p><strong><em>Non-demographic only – Broiler
+production:</em></strong> <em>Female (<code>FN</code>) and male
+(<code>MN</code>) chickens may be represented through defined productive
+phases, from chick placement to slaughter, without explicitly modelling
+reproduction or demographic age transitions. Annual animal entries,
+productive phase durations, and mortality determine average stock and
+offtake.</em></p></li>
+<li><p><strong><em>Non-demographic only – Commercial laying
+hens:</em></strong> <em>Laying hens may be represented using the female
+non-demographic cohort (<code>FN</code>), with phase 1 corresponding to
+pullet rearing and phase 2 to the egg-laying period. Annual entries,
+phase durations, and mortality determine average stock, while offtake
+represents hens removed at the end of their productive
+cycle.</em></p></li>
+<li><p><strong><em>Both pathways – Specialized dairy system with calf
+fattening:</em></strong> <em>The dairy breeding herd and replacement
+animals may be represented by demographic cohorts, while selected calves
+transferred to specialized fattening facilities may be represented by
+non-demographic cohorts. The demographic module estimates the juvenile
+flows entering the fattening pathway, and the non-demographic module
+calculates stock and offtake during the productive cycle.</em></p></li>
+</ul>
+<p><em>These examples illustrate possible configurations rather than
+fixed classifications. The same livestock species may be represented
+using either pathway or both, depending on the production system and
+available data.</em></p>
+</blockquote>
+<p>The following examples use dedicated cohort- and herd-level CSV files
+for each execution mode. Load <code>gleam</code> before running them; no
+filtering or column selection is needed.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://un-fao.github.io/GLEAM/">gleam</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="use-case-1-run-both-demographic-and-non-demographic-modules">Use case 1: Run both demographic and non-demographic modules<a class="anchor" aria-label="anchor" href="#use-case-1-run-both-demographic-and-non-demographic-modules"></a>
+</h4>
+<p>This example runs both modules for all 15 herds. Juvenile transfers
+from the demographic simulation supply the annual entrants to the
+non-demographic phases; the combined results are rescaled to
+<code>herd_size_total</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load herd simulation inputs (cohort and herd-level)</span></span>
+<span><span class="va">herd_all_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_modules_examples/herd_all_input_chrt_data.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">herd_all_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_modules_examples/herd_all_input_hrd_data.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run mixed demographic and non-demographic herd simulation</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_all_herd_module.html">run_all_herd_module</a></span><span class="op">(</span></span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">herd_all_chrt_dt</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">herd_all_hrd_dt</span>,</span>
+<span>  run_demographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
+<span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="use-case-2-run-the-non-demographic-module-only">Use case 2: Run the non-demographic module only<a class="anchor" aria-label="anchor" href="#use-case-2-run-the-non-demographic-module-only"></a>
+</h4>
+<p>This example contains only <code>FN</code> and <code>MN</code>
+cohorts for CHK herds 14 and 15 (layers and broilers). Annual entrants
+are supplied directly. The herd file has no
+<code>herd_size_total</code>, so stock and offtake remain unscaled.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load non-demographic-only herd inputs (CHK layers and broilers)</span></span>
+<span><span class="va">herd_all_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_modules_examples/herd_all_nondemo_input_chrt_data.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">herd_all_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_modules_examples/herd_all_nondemo_input_hrd_data.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run non-demographic-only herd simulation</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_all_herd_module.html">run_all_herd_module</a></span><span class="op">(</span></span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">herd_all_chrt_dt</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">herd_all_hrd_dt</span>,</span>
+<span>  run_demographic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
+<span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="use-case-3-run-the-demographic-module-only">Use case 3: Run the demographic module only<a class="anchor" aria-label="anchor" href="#use-case-3-run-the-demographic-module-only"></a>
+</h4>
+<p>This example runs only the six demographic cohorts for all 15 herds.
+The dedicated herd file sets both juvenile-diversion proportions to
+<code>0</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load demographic-only herd inputs (cohort and herd-level)</span></span>
+<span><span class="va">herd_all_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_modules_examples/herd_all_demo_input_chrt_data.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">herd_all_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_modules_examples/herd_all_demo_input_hrd_data.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run demographic-only herd simulation</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_all_herd_module.html">run_all_herd_module</a></span><span class="op">(</span></span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">herd_all_chrt_dt</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">herd_all_hrd_dt</span>,</span>
+<span>  run_demographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  run_nondemographic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
+<span>  show_indicator <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="combining-and-scaling-herd-populations">Combining and scaling herd populations<a class="anchor" aria-label="anchor" href="#combining-and-scaling-herd-populations"></a>
+</h3>
+<p>For mixed runs, the combined module rescales the average demographic
+and non-demographic stock within each <code>herd_id</code> to
+<code>herd_size_total</code>. The same scaling factor is applied to
+annual offtake and offtake over the assessment period.</p>
+<p>Demographic-only runs use the demographic module’s scaled results on
+a starting-stock basis. <code>herd_size_total</code> is required
+whenever the demographic module is enabled.</p>
+<p>For non-demographic-only simulations, annual entrants can be provided
+directly. These represent the number of animals entering the production
+system each year and should not be confused with the average number of
+animals present in the herd.</p>
+<p>If <code>herd_size_total</code> is not supplied for a
+non-demographic-only run, stock and offtake remain unscaled.</p>
+</div>
+<div class="section level3">
+<h3 id="main-outputs-2">Main outputs<a class="anchor" aria-label="anchor" href="#main-outputs-2"></a>
+</h3>
+<p>The combined module returns cohort- and herd-level results
+integrating the two simulation pathways.</p>
+<p><strong><code>cohort_level_results</code></strong> contains:</p>
+<ul>
+<li>
+<code>cohort_stock_size</code>: final cohort population sizes,
+including demographic and non-demographic cohorts where applicable.</li>
+<li>
+<code>offtake_heads</code>: final annual offtake.</li>
+<li>
+<code>offtake_heads_assessment</code>: final offtake over
+<code>simulation_duration</code>.</li>
+<li>Juvenile transfers to the non-demographic pathway, where
+applicable.</li>
+<li>Cohort and productive phase information required by subsequent
+modules.</li>
+</ul>
+<p>The wrapper removes the intermediate <code>_unscaled</code> and
+<code>_scaled</code> columns and returns stock and offtake under these
+common names.</p>
+<p><strong><code>herd_level_results</code></strong> contains the
+herd-level inputs and calculated indicators, including
+<code>growth_rate_herd</code> when demographic simulation is run, and
+annual non-demographic entrants and total productive-phase durations
+where applicable.</p>
+<p>These outputs provide the animal population structure and offtake
+information required for subsequent calculations of live weights, energy
+requirements, feed intake, emissions, and livestock production in
+GLEAM.</p>
+<p><code><a href="../reference/run_gleam.html">run_gleam()</a></code> uses this wrapper when
+<code>has_herd_structure = FALSE</code>. With a supplied herd structure,
+both herd simulations are skipped and the pipeline proceeds directly to
+weights.</p>
+<details open><summary><strong>Overview of the GLEAM combined herd module with execution modes,
+input and output:</strong>
+</summary><img src="images/gleamx_package_module_all_herd.png" alt="Overview of the GLEAM combined herd module and its three execution modes" class="module-figure-zoom"><div class="module-figure-hint">
+
+</div>
 </details>
+</div>
 </div>
 <div class="section level2">
 <h2 id="weights-module">Weights Module<a class="anchor" aria-label="anchor" href="#weights-module"></a>
@@ -119,7 +723,7 @@ final live weights accounting for offtake, and finally computes average
 daily live weight gain over each cohort stage.</p>
 <details open><summary><strong>Overview of the GLEAM weights module with functions, input and
 output:</strong>
-</summary><img src="images/gleamx_package_module_weights.png" alt="Overview of the GLEAM weights module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"><div class="module-figure-hint">
+</summary><img src="images/gleamx_package_module_weights.png" alt="Overview of the GLEAM weights module" class="module-figure-zoom"><div class="module-figure-hint">
 
 </div>
 </details><p>The calculation pipeline consists of the following steps:</p>
@@ -144,9 +748,9 @@ for full documentation.</em></p>
 metabolizable energy content, digestibility, nitrogen content, urinary
 energy losses, and ash content — from cohort-level feed ration
 composition shares and feed component nutrient parameters.</p>
-<details open><summary><strong>Overview of the GLEAM herd module with functions, input and
-output:</strong>
-</summary><img src="images/gleamx_package_module_feedrations.png" alt="Overview of the GLEAM feed rations module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"><div class="module-figure-hint">
+<details open><summary><strong>Overview of the GLEAM ration nutritional content module with
+functions, input and output:</strong>
+</summary><img src="images/gleamx_package_module_feedrations.png" alt="Overview of the GLEAM feed rations module" class="module-figure-zoom"><div class="module-figure-hint">
 
 </div>
 </details><p>The module joins ration shares with feed parameters by
@@ -174,8 +778,19 @@ values for:
 </ul>
 </li>
 <li>Component contributions are summed to produce cohort-level diet
-metrics, including <a href="../reference/calc_ration_intake.html"><code>calc_ration_intake()</code></a>.</li>
+metrics, grouped by <code>herd_id</code>, <code>species_short</code>,
+and <code>cohort_short</code>, and by
+<code>nondemo_productive_phase_id</code> when supplied in
+<code>rations_share</code>.</li>
 </ol>
+<p>The returned <code>data.table</code> contains
+<code>ration_gross_energy</code> and
+<code>ration_metabolizable_energy</code> (MJ/kg DM),
+<code>ration_nitrogen</code> (kg N/kg DM),
+<code>ration_digestibility_fraction</code>,
+<code>ration_urinary_energy_fraction</code>, and <code>ration_ash</code>
+(kg ash/kg DM). Ration intake is calculated in the energy requirements
+module using these diet characteristics.</p>
 </div>
 <div class="section level2">
 <h2 id="metabolic-energy-requirements-and-ration-intake-module">Metabolic Energy Requirements and Ration Intake Module<a class="anchor" aria-label="anchor" href="#metabolic-energy-requirements-and-ration-intake-module"></a>
@@ -204,24 +819,46 @@ energy partitions:</p>
 </li>
 <li>Fibre production (SHP, GTS, CML only) — <a href="../reference/calc_metabolic_energy_req_fibre.html"><code>calc_metabolic_energy_req_fibre()</code></a>
 </li>
+<li>Egg deposition (CHK only) — <a href="../reference/calc_metabolic_energy_req_eggs.html"><code>calc_metabolic_energy_req_eggs()</code></a>
+</li>
+</ul>
+<p>For chickens (<code>CHK</code>), the model distinguishes between
+<strong>reproductive eggs</strong> (used for breeding) and <strong>food
+eggs</strong> (produced for human consumption).</p>
+<ul>
+<li>
+<strong>Reproductive eggs:</strong> Egg production energy
+requirements are always calculated for adult females (<code>FA</code>),
+based on <code>reproductive_rate</code>.</li>
+<li>
+<strong>Food eggs:</strong> Energy requirements for food-egg
+production are calculated only when
+<code>is_egg_producing = TRUE</code>. This option is available for adult
+females (<code>FA</code>) and non-demographic females (<code>FN</code>)
+in productive phase 2. Annual food-egg production per hen is specified
+by <code>egg_human_consumption_yield</code> (eggs/hen/year).</li>
 </ul>
 <p>Total energy requirements are then aggregated using <a href="../reference/calc_total_metabolic_energy_req.html"><code>calc_total_metabolic_energy_req()</code></a>,
 and dry matter intake is derived using <a href="../reference/calc_ration_intake.html"><code>calc_ration_intake()</code></a>
 by dividing the total energy requirement by the diet energy density.</p>
 <details open><summary><strong>Overview of the GLEAM metabolic energy requirements module with
 functions, input and output:</strong>
-</summary><img src="images/gleamx_package_module_energyrequirements.png" alt="Overview of the GLEAM metabolic energy requirements module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"><div class="module-figure-hint">
+</summary><img src="images/gleamx_package_module_energyrequirements.png" alt="Overview of the GLEAM metabolic energy requirements module" class="module-figure-zoom"><div class="module-figure-hint">
 
 </div>
-</details><p><em>See <a href="../reference/run_emissions_enteric_module.html"><code>run_emissions_enteric_module()</code></a>
+</details>
+</div>
+<div class="section level2">
+<h2 id="enteric-emissions-module">Enteric Emissions Module<a class="anchor" aria-label="anchor" href="#enteric-emissions-module"></a>
+</h2>
+<p><em>See <a href="../reference/run_emissions_enteric_module.html"><code>run_emissions_enteric_module()</code></a>
 for full documentation.</em></p>
 Computes daily enteric methane emissions by cohort (kg CH₄/head/day)
 using the IPCC Tier 2 approach, by applying species-, cohort-, and
 diet-specific methane conversion factors (ym).
 <details open><summary><strong>Overview of the GLEAM enteric emissions module with functions,
 input and output:</strong>
-</summary><p><img src="images/gleamx_package_module_enteric.png" alt="Overview of the GLEAM enteric emissions module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"></p>
-<div class="module-figure-hint">
+</summary><img src="images/gleamx_package_module_enteric.png" alt="Overview of the GLEAM enteric emissions module" class="module-figure-zoom"><div class="module-figure-hint">
 
 </div>
 </details><p>The calculation pipeline consists of the following steps:</p>
@@ -241,7 +878,7 @@ for full documentation.</em></p>
 (kg N/head/day) following the IPCC Tier 2 approach.</p>
 <details open><summary><strong>Overview of the GLEAM nitrogen balance module with functions,
 input and output:</strong>
-</summary><img src="images/gleamx_package_module_nitrogen.png" alt="Overview of the GLEAM nitrogen balance module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"><div class="module-figure-hint">
+</summary><img src="images/gleamx_package_module_nitrogen.png" alt="Overview of the GLEAM nitrogen balance module" class="module-figure-zoom"><div class="module-figure-hint">
 
 </div>
 </details><p>The following calculation sequence is applied:</p>
@@ -249,10 +886,14 @@ input and output:</strong>
 <li>Daily nitrogen intake is computed from <code>ration_intake</code>
 and <code>ration_nitrogen</code> using <a href="../reference/calc_nitrogen_intake.html"><code>calc_nitrogen_intake()</code></a>.</li>
 <li>Daily nitrogen retention (in body tissues and products such as
-growth, pregnancy, and milk) is computed using <a href="../reference/calc_nitrogen_retention.html"><code>calc_nitrogen_retention()</code></a>.</li>
+growth, pregnancy, milk, and eggs) is computed using <a href="../reference/calc_nitrogen_retention.html"><code>calc_nitrogen_retention()</code></a>.</li>
 <li>Daily nitrogen excretion is computed as intake minus retention using
 <a href="../reference/calc_nitrogen_excretion.html"><code>calc_nitrogen_excretion()</code></a>.</li>
 </ol>
+<p>The module appends <code>nitrogen_intake</code>,
+<code>nitrogen_retention</code>, and <code>nitrogen_excretion</code> to
+the cohort table (kg N/head/day), preserving supplied phase identifiers
+for downstream manure calculations.</p>
 </div>
 <div class="section level2">
 <h2 id="manure-emissions-module">Manure Emissions Module<a class="anchor" aria-label="anchor" href="#manure-emissions-module"></a>
@@ -263,27 +904,28 @@ for full documentation.</em></p>
 systems (MMS) following the IPCC Tier 2 methodology, using volatile
 solids (VS), MMS allocation fractions, and MMS-specific emission
 factors.</p>
-<p>For each <code>herd_id</code>, the set of MMS identifiers must be
+<details open><summary><strong>Overview of the GLEAM manure emissions module with functions,
+input and output:</strong>
+</summary><img src="images/gleamx_package_module_manure.png" alt="Overview of the GLEAM manure emissions module" class="module-figure-zoom"><div class="module-figure-hint">
+
+</div>
+</details><p>For each <code>herd_id</code>, the set of MMS identifiers must be
 consistent between the <code>manure_management_system_fraction</code>
-and <code>manure_management_system_factors</code> tables. The following
-calculation sequence is applied:</p>
+and <code>manure_management_system_factors</code> tables.</p>
+<p><code>nondemo_productive_phase_id</code> is optional in the manure
+fraction table. If omitted or entirely <code>NA</code>, fractions are
+matched by <code>herd_id</code> and <code>cohort_short</code> and reused
+for each phase of that cohort. If the fractions specify phases, the
+cohort table must also contain the phase identifier, and matching
+includes <code>nondemo_productive_phase_id</code>. Input cohort rows and
+phase identifiers are preserved in the results.</p>
+<p>The following calculation sequence is applied:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Volatile solids (VS)</strong> excretion is computed from
 feed ration nutritional parameters (digestibility, urinary energy, ash)
-using
-<details open><summary><strong>Overview of the GLEAM manure emissions module with functions,
-input and output:</strong>
-</summary></details>
-</li>
-</ol>
-<img src="images/gleamx_package_module_manure.png" alt="Overview of the GLEAM manure emissions module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"><div class="module-figure-hint">
-
-</div>
-
-<pre><code>[`calc_volatile_solids()`](../reference/calc_volatile_solids.html)
-(IPCC 2006/2019, Eq. 10.24).</code></pre>
-<ol start="2" style="list-style-type: decimal">
+using <a href="../reference/calc_volatile_solids.html"><code>calc_volatile_solids()</code></a>
+(IPCC 2006/2019, Eq. 10.24).</li>
 <li>
 <strong>Methane (CH₄)</strong> emissions from manure management are
 computed from VS and MMS-specific factors (MCF and B₀), reported by MMS
@@ -294,8 +936,7 @@ group (pasture, burned, other) using <a href="../reference/calc_ch4_manure.html"
 excretion and MMS-specific EF3 values, reported by MMS group using <a href="../reference/calc_n2o_manure_direct.html"><code>calc_n2o_manure_direct()</code></a>
 (IPCC 2006/2019, Eq. 10.25).</li>
 <li>
-<strong>Indirect N₂O</strong> emissions are the sum of:</li>
-</ol>
+<strong>Indirect N₂O</strong> emissions are the sum of:
 <ul>
 <li>Volatilisation-driven N₂O from MMS-specific nitrogen losses
 (FracGas) and EF4 using <a href="../reference/calc_n2o_manure_volatilization.html"><code>calc_n2o_manure_volatilization()</code></a>
@@ -304,11 +945,16 @@ excretion and MMS-specific EF3 values, reported by MMS group using <a href="../r
 (FracLeach) and EF5 using <a href="../reference/calc_n2o_manure_leaching.html"><code>calc_n2o_manure_leaching()</code></a>
 (IPCC 2006/2019, Eq. 10.27–10.29).</li>
 </ul>
-<ol start="5" style="list-style-type: decimal">
+</li>
 <li>
 <strong>Total N₂O</strong> (direct + indirect) is summed by MMS
 group using <a href="../reference/calc_n2o_manure_total.html"><code>calc_n2o_manure_total()</code></a>.</li>
 </ol>
+<p>The returned cohort table contains <code>volatile_solids</code> and
+the methane and nitrous oxide emission columns for pasture, burned, and
+other MMS groups. Emission values are expressed in kg gas/head/day; herd
+totals over the assessment period are calculated by the aggregation
+module.</p>
 </div>
 <div class="section level2">
 <h2 id="feed-production-emissions-module">Feed Production Emissions Module<a class="anchor" aria-label="anchor" href="#feed-production-emissions-module"></a>
@@ -357,7 +1003,7 @@ obtain diet-level average emission factors (g gas/kg DM).</li>
 </ol>
 <details open><summary><strong>Overview of the GLEAM feed production emissions module with
 functions, input and output:</strong>
-</summary><img src="images/gleamx_package_module_feedemissions.png" alt="Overview of the GLEAM feed production emissions module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"><div class="module-figure-hint">
+</summary><img src="images/gleamx_package_module_feedemissions.png" alt="Overview of the GLEAM feed production emissions module" class="module-figure-zoom"><div class="module-figure-hint">
 
 </div>
 </details>
@@ -369,11 +1015,11 @@ functions, input and output:</strong>
 for full documentation.</em></p>
 <p>Computes cohort-level production outputs over the assessment period
 by combining cohort-level herd structure inputs with herd-level
-production parameters. The module returns milk, fibre, and meat outputs
-for each cohort.</p>
+production parameters. The module returns milk, fibre, meat, and
+food-egg outputs for each cohort.</p>
 <details open><summary><strong>Overview of the GLEAM production module with functions, input
 and output:</strong>
-</summary><img src="images/gleamx_package_module_production.png" alt="Overview of the GLEAM production module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"><div class="module-figure-hint">
+</summary><img src="images/gleamx_package_module_production.png" alt="Overview of the GLEAM production module" class="module-figure-zoom"><div class="module-figure-hint">
 
 </div>
 </details><p>The following calculation sequence is applied:</p>
@@ -382,8 +1028,17 @@ and output:</strong>
 FPCM) are computed using <a href="../reference/calc_milk_production.html"><code>calc_milk_production()</code></a>.</li>
 <li>Fibre outputs (wool, cashmere, mohair) are computed using <a href="../reference/calc_fibre_production.html"><code>calc_fibre_production()</code></a>.</li>
 <li>Meat outputs (live weight, carcass weight, bone-free meat, and
-protein) are computed using <a href="../reference/calc_meat_production.html"><code>calc_meat_production()</code></a>.</li>
+protein) are computed from <code>offtake_heads_assessment</code> and
+slaughter weight using <a href="../reference/calc_meat_production.html"><code>calc_meat_production()</code></a>.</li>
+<li>Food-egg outputs (number, mass, and protein) are computed using <a href="../reference/calc_egg_production.html"><code>calc_egg_production()</code></a>.</li>
 </ol>
+<p>For chickens (<code>CHK</code>), the model distinguishes between
+<strong>food eggs</strong> (produced for human consumption) and
+<strong>reproductive eggs</strong> (used for breeding).</p>
+<p>Food-egg production is calculated only when
+<code>is_egg_producing = TRUE</code>, which is supported for adult
+females (<code>FA</code>) and non-demographic females (<code>FN</code>)
+in productive phase 2.</p>
 </div>
 <div class="section level2">
 <h2 id="emission-allocation-module">Emission Allocation Module<a class="anchor" aria-label="anchor" href="#emission-allocation-module"></a>
@@ -400,7 +1055,7 @@ products according to their physiological energy requirements. This is
 consistent with ISO 14044:2006 (Section 4.3.4.2, Step 2).
 <details open><summary><strong>Overview of the GLEAM emissions allocation module with
 functions, input and output:</strong>
-</summary><img src="images/gleamx_package_module_allocation.png" alt="Overview of the GLEAM emissions allocation module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"><div class="module-figure-hint">
+</summary><img src="images/gleamx_package_module_allocation.png" alt="Overview of the GLEAM emissions allocation module" class="module-figure-zoom"><div class="module-figure-hint">
 
 </div>
 </details><p>The pipeline consists of the following steps:</p>
@@ -417,14 +1072,17 @@ for each commodity:
 </li>
 <li>Work (draught power) — <a href="../reference/calc_work_allocation_energy.html"><code>calc_work_allocation_energy()</code></a>
 </li>
-<li>Eggs — set to 0 (not yet implemented)</li>
+<li>Eggs — <a href="../reference/calc_egg_allocation_energy.html"><code>calc_egg_allocation_energy()</code></a>
+</li>
 </ul>
 </li>
 <li>
-<strong>Cohort-level energy terms are aggregated to herd
+<strong>All five cohort-level energy terms, including
+<code>egg_allocation_energy</code>, are aggregated to herd
 level</strong> using <a href="../reference/calc_cohort_to_herd_aggregation.html"><code>calc_cohort_to_herd_aggregation()</code></a>.</li>
 <li>
-<strong>Herd-level allocation shares</strong> are computed using <a href="../reference/calc_allocation_shares.html"><code>calc_allocation_shares()</code></a>.</li>
+<strong>Herd-level allocation shares</strong> are computed using <a href="../reference/calc_allocation_shares.html"><code>calc_allocation_shares()</code></a>,
+including <code>eggs_share_allocation</code>.</li>
 <li>
 <strong>Allocation shares are reshaped to long format</strong> and
 assigned to emission sources using <a href="../reference/assign_allocation_shares.html"><code>assign_allocation_shares()</code></a>.</li>
@@ -443,7 +1101,7 @@ commodities, and converting CH₄ and N₂O emissions to CO₂-equivalents
 factors.</p>
 <details open><summary><strong>Overview of the GLEAM aggregation module with functions, input
 and output:</strong>
-</summary><img src="images/gleamx_package_module_aggregation.png" alt="Overview of the GLEAM aggregation module" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"><div class="module-figure-hint">
+</summary><img src="images/gleamx_package_module_aggregation.png" alt="Overview of the GLEAM aggregation module" class="module-figure-zoom"><div class="module-figure-hint">
 
 </div>
 </details><p>The following calculation sequence is applied:</p>
@@ -453,9 +1111,13 @@ and output:</strong>
 <code>"NitrogenBalance"</code>, <code>"Production"</code>, and
 <code>"Emissions"</code>.</li>
 <li>Cohort totals are calculated using <a href="../reference/calc_cohort_totals.html"><code>calc_cohort_totals()</code></a>.
-Production variables are retained as provided; emissions, feed, and
-nitrogen balance variables are scaled using cohort stock size and
-simulation duration.</li>
+Production variables are retained as provided because they already cover
+the cohort and assessment period. Daily per-head emissions, feed intake,
+and nitrogen balance variables are multiplied by
+<code>cohort_stock_size</code> and <code>simulation_duration</code>.
+Feed emission factors are additionally multiplied by
+<code>ration_intake</code> and divided by 1000 to convert grams to
+kilograms of gas.</li>
 <li>Cohort totals are aggregated to herd level using <a href="../reference/calc_cohort_to_herd_aggregation.html"><code>calc_cohort_to_herd_aggregation()</code></a>.</li>
 <li>Herd-level emissions are merged with commodity allocation
 shares.</li>

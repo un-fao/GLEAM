@@ -1,8 +1,8 @@
 # Calculate fibre production
 
 Calculates fibre production for producing cohorts (`FA`, `FS`, `MA`,
-`MS`) of fibre-producing species (`CML`, `SHP`, `GTS`) over the
-assessment period (kg/cohort/assessment period).
+`MS`, `FN`, `MN`) of fibre-producing species (`CML`, `SHP`, `GTS`) over
+the assessment period (kg/cohort/assessment period).
 
 ## Usage
 
@@ -35,10 +35,12 @@ calc_fibre_production(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -52,6 +54,10 @@ calc_fibre_production(
 
   - `MJ`: juvenile males (from birth to weaning)
 
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
+
 - fibre_yield_year:
 
   Numeric. Annual production yield of fibre, such as wool, cashmere,
@@ -63,8 +69,7 @@ calc_fibre_production(
 
 - cohort_stock_size:
 
-  Numeric. Average population size in each of the 6 sex–age cohorts (#
-  heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
+  Numeric. Average population size of the assessed cohort (# heads).
 
 ## Value
 
@@ -79,11 +84,12 @@ Fibre production outputs are computed as follows:
 simulation\\duration \times cohort\\stock\\size\\
 
 Non-zero fibre outputs are only expected for producing cohorts (`FA`,
-`FS`, `MA`, `MS`) of fibre-producing species (`CML`, `SHP`, `GTS`).
+`FS`, `MA`, `MS`, `FN`, `MN`) of fibre-producing species (`CML`, `SHP`,
+`GTS`).
 
 This function is part of the
-[`run_production_module()`](https://github.com/un-fao/GLEAM/reference/run_production_module.md).
+[`run_production_module()`](https://un-fao.github.io/GLEAM/reference/run_production_module.md).
 
 ## See also
 
-[`run_production_module`](https://github.com/un-fao/GLEAM/reference/run_production_module.md)
+[`run_production_module`](https://un-fao.github.io/GLEAM/reference/run_production_module.md)

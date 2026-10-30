@@ -28,6 +28,8 @@ calc_nitrogen_excretion(species_short, nitrogen_intake, nitrogen_retention)
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - nitrogen_intake:
 
   Numeric. Daily nitrogen intake (kg N/head/day).
@@ -64,9 +66,9 @@ Greenhouse Gas Inventories*, Chapter 10: Emissions from Livestock and
 Manure Management. Equation 10.31A.
 
 This function is part of the
-[`run_nitrogen_balance_module()`](https://github.com/un-fao/GLEAM/reference/run_nitrogen_balance_module.md).
+[`run_nitrogen_balance_module()`](https://un-fao.github.io/GLEAM/reference/run_nitrogen_balance_module.md).
 
 ## See also
 
-[`run_nitrogen_balance_module`](https://github.com/un-fao/GLEAM/reference/run_nitrogen_balance_module.md),
-[`calc_nitrogen_retention`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_retention.md)
+[`run_nitrogen_balance_module`](https://un-fao.github.io/GLEAM/reference/run_nitrogen_balance_module.md),
+[`calc_nitrogen_retention`](https://un-fao.github.io/GLEAM/reference/calc_nitrogen_retention.md)

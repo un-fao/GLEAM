@@ -27,7 +27,7 @@ run_nitrogen_balance_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -42,6 +42,22 @@ run_nitrogen_balance_module(
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
+
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
+
+  nondemo_productive_phase_id
+
+  :   Numeric. Optional productive phase identifier for non-demographic
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
+
+  is_egg_producing
+
+  :   Logical. Cohort-level flag identifying egg-producing `CHK`
+      cohorts. This can be `TRUE` only for `FA` and for `FN` with
+      `nondemo_productive_phase_id = 2`.
 
   ration_intake
 
@@ -59,7 +75,8 @@ run_nitrogen_balance_module(
   cohort_duration_days
 
   :   Numeric. Amount of time that each animal spends in a specific
-      cohort (days).
+      cohort (days). For `CHK`, suggested value for `FJ` and `MJ`
+      cohorts: 3 days.
 
 - herd_level_data:
 
@@ -88,6 +105,8 @@ run_nitrogen_balance_module(
 
       - `GTS`: goats
 
+      - `CHK`: chickens
+
   milk_protein_fraction
 
   :   Numeric. Milk protein fraction (kg protein / kg milk). Required
@@ -109,21 +128,19 @@ run_nitrogen_balance_module(
       mohair (kg/head/year). Required only for species = CML, SHP, and
       GTS.
 
-  litter_size
+  offspring_per_reproductive_event
 
   :   Numeric. Average number of offspring born per parturition (#
-      offsprings/parturition). This value can be calculated as the total
-      number of offspring born divided by the total number of
-      parturitions during the year.
+      offspring/parturition). For chickens, hatchability of eggs laid
+      for reproduction, calculated as the number of chicks hatched
+      divided by the number of eggs laid for reproduction (fraction).
 
-  parturition_rate
+  reproductive_rate
 
-  :   Numeric. Average annual number of parturitions per female animal
-      (# parturitions/adult female/year). A herd-level reproductive
-      performance indicator calculated as the total number of
-      parturitions (deliveries) occurring during a year divided by the
-      number of adult females potentially able to give birth during that
-      year.
+  :   Numeric. Average annual number of parturitions per reproductive
+      female (# parturitions/reproductive female/year). For chickens,
+      annual number of eggs laid for reproduction per breeding hen (#
+      eggs/hen/year).
 
   live_weight_at_weaning
 
@@ -137,6 +154,15 @@ run_nitrogen_balance_module(
 
   :   Numeric. Duration of pregnancy period (days).
 
+  egg_average_weight
+
+  :   Numeric. Average egg weight (kg/egg).
+
+  egg_human_consumption_yield
+
+  :   Numeric. Number of eggs produced for human consumption in one year
+      by hen (eggs/year/animal). Used for `CHK`.
+
 - show_indicator:
 
   Logical. Whether to display progress indicators during simulation.
@@ -145,7 +171,9 @@ run_nitrogen_balance_module(
 ## Value
 
 A `data.table` with the original cohort-level input columns plus the
-following new variables:
+following new variables. If `nondemo_productive_phase_id` is present in
+the input, the returned table preserves phase-specific rows for `FN` and
+`MN`:
 
 - nitrogen_intake:
 
@@ -164,7 +192,7 @@ following new variables:
 
 This function represents the intermediate module of the Global Livestock
 Environmental Assessment Model (GLEAM) computational pipeline
-[`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 to compute the nitrogen balance. The function joins `cohort_level_data`
 with `herd_level_data` by `herd_id`, uses `species_short` directly for
 all species-specific nitrogen balance calculations, and computes
@@ -174,23 +202,23 @@ structure.
 The following calculation sequence is applied:
 
 1.  Daily nitrogen intake is computed using
-    [`calc_nitrogen_intake`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_intake.md)
+    [`calc_nitrogen_intake`](https://un-fao.github.io/GLEAM/reference/calc_nitrogen_intake.md)
     from `ration_intake` and `ration_nitrogen`.
 
 2.  Daily nitrogen retention is computed using
-    [`calc_nitrogen_retention`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_retention.md)
+    [`calc_nitrogen_retention`](https://un-fao.github.io/GLEAM/reference/calc_nitrogen_retention.md)
     from cohort-level and herd-level species parameters.
 
 3.  Daily nitrogen excretion is computed using
-    [`calc_nitrogen_excretion`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_excretion.md)
+    [`calc_nitrogen_excretion`](https://un-fao.github.io/GLEAM/reference/calc_nitrogen_excretion.md)
     as intake minus retention (species-specific validation applied).
 
 ## See also
 
-[`run_gleam`](https://github.com/un-fao/GLEAM/reference/run_gleam.md),
-[`calc_nitrogen_intake`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_intake.md),
-[`calc_nitrogen_retention`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_retention.md),
-[`calc_nitrogen_excretion`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_excretion.md)
+[`run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md),
+[`calc_nitrogen_intake`](https://un-fao.github.io/GLEAM/reference/calc_nitrogen_intake.md),
+[`calc_nitrogen_retention`](https://un-fao.github.io/GLEAM/reference/calc_nitrogen_retention.md),
+[`calc_nitrogen_excretion`](https://un-fao.github.io/GLEAM/reference/calc_nitrogen_excretion.md)
 
 ## Examples
 

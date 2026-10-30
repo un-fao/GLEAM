@@ -13,3 +13,4 @@
 ^pkgdown$
 ^\.cursor$
 ^\.claude$
+^docs$

@@ -11,7 +11,8 @@ run_weights_module(cohort_level_data, herd_level_data, show_indicator = TRUE)
 herd \eqn{\times} cohort. Must include:
 \describe{
 \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -19,19 +20,47 @@ herd \eqn{\times} cohort. Must include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
-\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric. Amount of time that each animal spends in a specific cohort (days). For \code{CHK}, suggested value for \code{FJ} and \code{MJ} cohorts: 3 days.}
 \item{offtake_rate}{Numeric. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
+}
+Optional column:
+\describe{
+\item{nondemo_productive_phase_id}{Numeric. Productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.}
 }}
 
 \item{herd_level_data}{A \code{data.table} with one row per herd. Must include:
 \itemize{
-\item \code{live_weight_female_adult} Numeric. Live weight of adult females (kg)
-\item \code{live_weight_male_adult} Numeric. Live weight of adult males (kg)
-\item \code{live_weight_at_birth} Numeric. Live weight of the animal at birth (kg).
-\item \code{live_weight_at_weaning} Numeric. Live weight of the animal at weaning (kg)
-\item \code{live_weight_female_at_slaughter} Numeric. Slaughter weight of female sub-adult animals (kg)
-\item \code{live_weight_male_at_slaughter} Numeric. Slaughter weight of male sub-adult animals (kg)
+\item \code{herd_id} Character. Unique identifier for the herd.
+\item \code{species_short} Character. Code identifying the livestock species.
+Supported values include:
+\itemize{
+\item \code{PGS}: pigs
+\item \code{CML}: camels
+\item \code{CTL}: cattle
+\item \code{BFL}: buffalo
+\item \code{SHP}: sheep
+\item \code{GTS}: goats
+\item \code{CHK}: chickens
+}
+\item \code{live_weight_female_adult} Numeric. Live weight of adult females (kg), required when female demographic cohorts (\code{FJ}, \code{FS}, \code{FA}) are present.
+\item \code{live_weight_male_adult} Numeric. Live weight of adult males (kg), required when male demographic cohorts (\code{MJ}, \code{MS}, \code{MA}) are present.
+\item \code{live_weight_at_birth} Numeric. Live weight of the animal at birth (kg), required when juvenile demographic cohorts (\code{FJ}, \code{MJ}) are present.
+\item \code{live_weight_at_weaning} Numeric. Live weight of the animal at weaning (kg), required when juvenile demographic cohorts (\code{FJ}, \code{MJ}) are present.
+\item \code{live_weight_female_at_slaughter} Numeric. Slaughter weight of female sub-adult animals (kg), required when \code{FS} is present.
+\item \code{live_weight_male_at_slaughter} Numeric. Slaughter weight of male sub-adult animals (kg), required when \code{MS} is present.
+\item \code{live_weight_female_nondemographic_start} Numeric. Live weight at the beginning of the female non-demographic cycle (kg), when \code{FN} is present.
+\item \code{live_weight_female_nondemographic_end} Numeric. Live weight at the end of the female non-demographic cycle (kg), when \code{FN} is present.
+\item \code{live_weight_male_nondemographic_start} Numeric. Live weight at the beginning of the male non-demographic cycle (kg), when \code{MN} is present.
+\item \code{live_weight_male_nondemographic_end} Numeric. Live weight at the end of the male non-demographic cycle (kg), when \code{MN} is present.
+\item \code{phase1_nondemo_fem_duration_days} Numeric. Productive phase 1 duration for \code{FN} (days), when \code{FN} is present.
+\item \code{phase2_nondemo_fem_duration_days} Numeric. Productive phase 2 duration for \code{FN} (days), optional.
+\item \code{phase1_nondemo_mal_duration_days} Numeric. Productive phase 1 duration for \code{MN} (days), when \code{MN} is present.
+\item \code{phase2_nondemo_mal_duration_days} Numeric. Productive phase 2 duration for \code{MN} (days), optional.
 }}
 
 \item{show_indicator}{Logical. Whether to display progress indicators during calculations.
@@ -62,6 +91,12 @@ weights accounting for offtake, and finally computes average daily live weight
 gain over each cohort stage.
 }
 \details{
+Species is read from \code{herd_level_data$species_short}, matched to cohort
+rows by \code{herd_id}.
+Demographic weight columns may be omitted when the cohort table contains
+only \code{FN} and \code{MN}; their weights come from the non-demographic
+start/end weights and phase durations.
+
 This function represents the intermediate module of the Global Livestock Environmental
 Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}} to estimate animals' live
 weight and is composed of the following steps:
@@ -69,10 +104,16 @@ weight and is composed of the following steps:
 \enumerate{
 \item \strong{Cohort-stage weight assignment} using \code{\link{calc_cohort_weights}}.
 Herd-level biological parameters are matched to each cohort row by
-\code{herd_id} via \code{data.table} joins.
+\code{herd_id} via \code{data.table} joins. For non-demographic cohorts
+(\code{FN}, \code{MN}), the function uses
+\code{nondemo_productive_phase_id} together with herd-level start/end
+live weights and phase durations to assign phase-specific initial and
+final weights.
 
 \item \strong{Calculation of average and final live weights (accounting for offtake)} using
-\code{\link{calc_avg_weights}}.
+\code{\link{calc_avg_weights}}. For non-demographic cohorts,
+\code{offtake_rate} is ignored and the final weight equals the
+phase-specific potential final weight.
 
 \item \strong{Calculation of average daily live weight gain} using
 \code{\link{calc_daily_weight_gain}}.
@@ -80,7 +121,7 @@ Herd-level biological parameters are matched to each cohort row by
 }
 \examples{
 \donttest{
-# Load weights inputs (cohort- and herd-level)
+# Load weights inputs (cohort and herd-level)
 weights_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/weights_input_chrt_data.csv",
   package = "gleam"
@@ -95,10 +136,6 @@ results <- run_weights_module(
   cohort_level_data = weights_chrt_dt,
   herd_level_data = weights_hrd_dt
 )
-
-# Access results
-print(results$cohort_level_results)
-print(results$herd_level_results)
 }
 
 }

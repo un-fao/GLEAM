@@ -16,7 +16,8 @@ calc_transition_probabilities(cohort_duration_days, offtake_rate, death_rate)
 - cohort_duration_days:
 
   Numeric vector of length 6. Amount of time that each animal spends in
-  a specific cohort (days).
+  a specific cohort (days). For `CHK`, suggested value for `FJ` and `MJ`
+  cohorts: 3 days.
 
 - offtake_rate:
 
@@ -25,8 +26,8 @@ calc_transition_probabilities(cohort_duration_days, offtake_rate, death_rate)
 
 - death_rate:
 
-  Numeric vector of length 6. Fraction of deaths in a herd over a year
-  for each sex-age cohort (fraction)
+  Numeric vector of length 6. Fraction of animals dying in the assessed
+  cohort over one year for demographic cohorts (fraction).
 
 ## Value
 
@@ -80,8 +81,8 @@ A named list with:
   Male Sub-adult, `MA`: Male Adult, `MC`: Male Culling)
 
 This function is part of the
-[`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md).
+[`run_demographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_demographic_herd_module.md).
 
 ## See also
 
-[`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md)
+[`run_demographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_demographic_herd_module.md)

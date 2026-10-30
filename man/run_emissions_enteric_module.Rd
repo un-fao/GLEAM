@@ -19,9 +19,10 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the production stage
-of the animals. Supported values include:
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -29,7 +30,12 @@ of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+phase 1 and optionally \code{2} for phase 2.}
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as
 ratio of digestible (or metabolizable, for poultry) to gross energy content (fraction).}
 \item{ration_gross_energy}{Numeric. Average gross energy content of the diet (MJ/kg DM).}
@@ -46,7 +52,9 @@ additives or methane inhibitors.}
 Defaults to \code{TRUE}.}
 }
 \value{
-A \code{data.table} with the original input columns plus the following new variables:
+A \code{data.table} with the original input columns plus the following
+new variables. If \code{nondemo_productive_phase_id} is present in the input,
+the returned table preserves phase-specific rows for \code{FN} and \code{MN}:
 \describe{
 \item{ch4_mitigation_factor}{Added by the function if not provided as input.}
 \item{ch4_conversion_factor_ym}{Numeric. Methane (CH4) conversion factor (ym),
@@ -71,14 +79,15 @@ emissions and performs the following calculation sequence:
 }
 \examples{
 \donttest{
-# Load example input (6 herd_ids, cohort-level; only required columns)
-input_path <- system.file(
+# Load enteric emissions inputs (cohort-level)
+emissions_enteric_input_chrt_data <- data.table::fread(system.file(
   "extdata/run_modules_examples/emissions_enteric_input_chrt_data.csv",
   package = "gleam"
-)
-emissions_enteric_input_chrt_data <- data.table::fread(input_path)
+))
+
+# Run enteric emissions calculations
 results <- run_emissions_enteric_module(
-cohort_level_data = emissions_enteric_input_chrt_data
+  cohort_level_data = emissions_enteric_input_chrt_data
 )
 }
 
