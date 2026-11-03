@@ -263,6 +263,11 @@ utils::globalVariables(c(
   "Item", "GWP", "Unit", "COUNTRY"
 ))
 
+# --- run_gleam --------------------------------------------------------------
+utils::globalVariables(c(
+  "phase2_nondemo_fem_duration_days", "phase2_nondemo_mal_duration_days"
+))
+
 # --- column-selection helpers (.. prefix) -----------------------------------
 utils::globalVariables(c(
   "..cols_to_drop", "..final_cols"

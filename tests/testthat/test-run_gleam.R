@@ -732,3 +732,72 @@ test_that("long non-demographic phases retain stock, offtake and downstream prod
   expect_true(all(is.finite(as.matrix(phase2[, ..fields]))))
   expect_true(all(phase2$ration_intake > 0))
 })
+
+# ---- run_gleam: non-demographic input fixes ----------------------------------
+subset_gleam_herds <- function(data, herds) {
+  lapply(data, function(table) {
+    if ("herd_id" %in% names(table)) table[herd_id %in% herds] else data.table::copy(table)
+  })
+}
+
+test_that("sheep herds can carry MN cohorts", {
+  data <- subset_gleam_herds(d_gleam_mixed, 3)
+  add_mn <- function(table) {
+    mn <- data.table::rbindlist(lapply(1:2, function(phase) {
+      data.table::copy(table[cohort_short == "MS"])[, `:=`(
+        cohort_short = "MN", nondemo_productive_phase_id = phase
+      )]
+    }))
+    rbind(table, mn, fill = TRUE)
+  }
+  data$cohort_no_structure <- add_mn(data$cohort_no_structure)
+  data$cohort_no_structure[cohort_short == "MN", `:=`(
+    cohort_duration_days = NA, offtake_rate = NA, death_rate = 0.03
+  )]
+  data$feed_rations <- add_mn(data$feed_rations)
+  data$mms_fraction <- add_mn(data$mms_fraction)
+  data$herd[, `:=`(
+    prop_nondemo_mal_juv = 0.6,
+    phase1_nondemo_mal_duration_days = 90,
+    phase2_nondemo_mal_duration_days = 60,
+    rest_between_nondemo_cycles_duration = 14
+  )]
+  result <- suppressMessages(run_gleam_no_structure(data,
+    run_demographic = TRUE, run_nondemographic = TRUE
+  ))
+  mn <- result$cohort_level_results[cohort_short == "MN"]
+  expect_equal(nrow(mn), 2L)
+  expect_true(all(mn$offtake_rate == 1))
+  expect_true(all(is.finite(mn$metabolic_energy_req_maintenance)))
+})
+
+test_that("names is_egg_producing when it is missing for CHK herds", {
+  cohort <- d_gleam_mixed_chickens$cohort_no_structure[, !"is_egg_producing"]
+  expect_error(
+    suppressMessages(run_gleam_no_structure(d_gleam_mixed_chickens,
+      cohort_level_data = cohort
+    )),
+    "Missing required columns.*is_egg_producing"
+  )
+})
+
+test_that("accepts a blank phase 2 duration for a block with phase 1 only", {
+  data <- subset_gleam_herds(d_gleam_mixed, 1)
+  drop_phase2 <- function(table) {
+    table[!(cohort_short == "MN" & nondemo_productive_phase_id %in% 2)]
+  }
+  data$cohort_no_structure <- drop_phase2(data$cohort_no_structure)
+  data$feed_rations <- drop_phase2(data$feed_rations)
+  data$mms_fraction <- drop_phase2(data$mms_fraction)
+  data$herd[, `:=`(
+    phase1_nondemo_mal_duration_days = 180,
+    phase2_nondemo_mal_duration_days = NA_real_
+  )]
+  result <- suppressMessages(run_gleam_no_structure(data,
+    run_demographic = TRUE, run_nondemographic = TRUE
+  ))
+  mn <- result$cohort_level_results[cohort_short == "MN"]
+  expect_equal(nrow(mn), 1L)
+  expect_equal(mn$nondemo_productive_phase_id, 1)
+  expect_equal(mn$cohort_duration_days, 180)
+})

@@ -214,8 +214,10 @@ normalize_optional_is_egg_producing_column <- function(
     cohort_level_data,
     herd_level_data
 ) {
-  if (!"is_egg_producing" %in% names(cohort_level_data) &&
-      !"CHK" %in% herd_level_data$species_short) {
+  if (!"is_egg_producing" %in% names(cohort_level_data)) {
+    if ("CHK" %in% herd_level_data$species_short) {
+      check_required_columns(cohort_level_data, "is_egg_producing", "cohort_level_data")
+    }
     cohort_level_data[, is_egg_producing := as.logical(NA)]
   }
 

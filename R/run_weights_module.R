@@ -56,9 +56,9 @@
 #'     \item \code{live_weight_male_nondemographic_start} Numeric. Live weight at the beginning of the male non-demographic cycle (kg), when \code{MN} is present.
 #'     \item \code{live_weight_male_nondemographic_end} Numeric. Live weight at the end of the male non-demographic cycle (kg), when \code{MN} is present.
 #'     \item \code{phase1_nondemo_fem_duration_days} Numeric. Productive phase 1 duration for \code{FN} (days), when \code{FN} is present.
-#'     \item \code{phase2_nondemo_fem_duration_days} Numeric. Productive phase 2 duration for \code{FN} (days), optional.
+#'     \item \code{phase2_nondemo_fem_duration_days} Numeric. Productive phase 2 duration for \code{FN} (days), use \code{0} when there is no phase 2.
 #'     \item \code{phase1_nondemo_mal_duration_days} Numeric. Productive phase 1 duration for \code{MN} (days), when \code{MN} is present.
-#'     \item \code{phase2_nondemo_mal_duration_days} Numeric. Productive phase 2 duration for \code{MN} (days), optional.
+#'     \item \code{phase2_nondemo_mal_duration_days} Numeric. Productive phase 2 duration for \code{MN} (days), use \code{0} when there is no phase 2.
 #'   }
 #' @param show_indicator Logical. Whether to display progress indicators during calculations.
 #'   Defaults to \code{TRUE}.

@@ -99,7 +99,7 @@
 #'   Optional column (both cases):
 #'   \describe{
 #'     \item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
-#'       \code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
+#'       \code{CHK} cohorts. Required when \code{CHK} herds are present, optional otherwise. This can be \code{TRUE} only for \code{FA} and for
 #'       \code{FN} with \code{nondemo_productive_phase_id = 2}.}
 #'     \item{ch4_mitigation_factor}{Numeric. Multiplicative factor applied to
 #'       baseline enteric CH4 emissions (dimensionless). Defaults to \code{1}
@@ -823,6 +823,24 @@ run_gleam <- function(
   missing_optional_nondemo_cols <- setdiff(optional_nondemo_hrd_cols, names(gleam_hrd_data))
   if (length(missing_optional_nondemo_cols) > 0) {
     gleam_hrd_data[, (missing_optional_nondemo_cols) := NA_real_]
+  }
+
+  # A blank phase 2 duration means no phase 2 for a block that has phase 1 rows only
+  if (!has_herd_structure && isTRUE(run_nondemographic)) {
+    phase1_only <- function(cohort) {
+      setdiff(
+        gleam_chrt_data[cohort_short == cohort & nondemo_productive_phase_id %in% 1, herd_id],
+        gleam_chrt_data[cohort_short == cohort & nondemo_productive_phase_id %in% 2, herd_id]
+      )
+    }
+    gleam_hrd_data[
+      herd_id %in% phase1_only("FN") & is.na(phase2_nondemo_fem_duration_days),
+      phase2_nondemo_fem_duration_days := 0
+    ]
+    gleam_hrd_data[
+      herd_id %in% phase1_only("MN") & is.na(phase2_nondemo_mal_duration_days),
+      phase2_nondemo_mal_duration_days := 0
+    ]
   }
 
   if (!has_herd_structure && isTRUE(run_demographic) && isTRUE(run_nondemographic)) {

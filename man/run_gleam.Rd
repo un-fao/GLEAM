@@ -87,7 +87,7 @@ each cohort over the assessment period (# heads/assessment period).}
 Optional column (both cases):
 \describe{
 \item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
-\code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
+\code{CHK} cohorts. Required when \code{CHK} herds are present, optional otherwise. This can be \code{TRUE} only for \code{FA} and for
 \code{FN} with \code{nondemo_productive_phase_id = 2}.}
 \item{ch4_mitigation_factor}{Numeric. Multiplicative factor applied to
 baseline enteric CH4 emissions (dimensionless). Defaults to \code{1}
