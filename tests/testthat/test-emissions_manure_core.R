@@ -1,3 +1,62 @@
+test_that("manure fractions allow omitted or empty phase IDs and preserve input phases", {
+  factors <- data.table::data.table(
+    herd_id = 1L,
+    manure_management_system = "mms_solid",
+    methane_conversion_factor_mcf = 2,
+    ch4_max_producing_capacity_bo = 0.13,
+    n2o_ef3 = 0.01,
+    n2o_ef4 = 0.01,
+    n2o_ef5 = 0.01,
+    nitrogen_fracgas = 0.1,
+    nitrogen_fracleach = 0.1
+  )
+
+  for (phase_ids in list(NA_real_, c(1, 2))) {
+    cohort_code <- if (length(phase_ids) == 1L) "FA" else "FN"
+    cohort <- data.table::data.table(
+      herd_id = 1L,
+      cohort_short = cohort_code,
+      nondemo_productive_phase_id = phase_ids,
+      ration_intake = 5 * seq_along(phase_ids),
+      ration_digestibility_fraction = 0.6,
+      nitrogen_excretion = 0.1,
+      ration_urinary_energy_fraction = 0.04,
+      ration_ash = 0.08
+    )
+    fractions <- data.table::data.table(
+      herd_id = 1L,
+      cohort_short = cohort_code,
+      nondemo_productive_phase_id = phase_ids,
+      manure_management_system = "mms_solid",
+      manure_management_system_fraction = 1
+    )
+    expected <- run_emissions_manure_module(
+      cohort, fractions, factors, show_indicator = FALSE
+    )
+
+    for (empty_phase in list(NULL, NA, NA_real_)) {
+      shared <- data.table::copy(fractions[1])
+      shared[, nondemo_productive_phase_id := NULL]
+      if (!is.null(empty_phase)) {
+        shared[, nondemo_productive_phase_id := empty_phase]
+      }
+      expect_no_warning(
+        actual <- run_emissions_manure_module(
+          cohort, shared, factors, show_indicator = FALSE
+        )
+      )
+      expect_equal(actual, expected)
+      expect_equal(actual$nondemo_productive_phase_id, phase_ids)
+    }
+  }
+
+  cohort[, nondemo_productive_phase_id := NULL]
+  expect_error(
+    run_emissions_manure_module(cohort, fractions, factors, show_indicator = FALSE),
+    "cohort_level_data.*nondemo_productive_phase_id"
+  )
+})
+
 # ---- test calc_volatile_solids ----
 test_that("calc_volatile_solids produces expected results", {
   result <- calc_volatile_solids(

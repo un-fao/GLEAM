@@ -11,8 +11,8 @@ calc_metabolic_energy_req_pregnancy(
   species_short,
   cohort_short,
   metabolic_energy_req_maintenance = NA_real_,
-  parturition_rate = NA_real_,
-  litter_size = NA_real_,
+  reproductive_rate = NA_real_,
+  offspring_per_reproductive_event = NA_real_,
   pregnancy_duration = NA_real_,
   non_productive_duration = NA_real_,
   lactation_duration = NA_real_,
@@ -40,10 +40,12 @@ calc_metabolic_energy_req_pregnancy(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -57,27 +59,29 @@ calc_metabolic_energy_req_pregnancy(
 
   - `MJ`: juvenile males (from birth to weaning)
 
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
+
 - metabolic_energy_req_maintenance:
 
   Numeric. Energy required for maintenance, defined as the amount of
   energy needed to keep the animal at equilibrium such that body energy
-  is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP,
-  GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+  is neither gained nor lost (MJ/head/day). Expressed as net energy for
+  CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 
-- parturition_rate:
+- reproductive_rate:
 
-  Numeric. Average annual number of parturitions per female animal (#
-  parturitions/adult female/year). A herd-level reproductive performance
-  indicator calculated as the total number of parturitions (deliveries)
-  occurring during a year divided by the number of adult females
-  potentially able to give birth during that year.
+  Numeric. Average annual number of parturitions per reproductive female
+  (# parturitions/reproductive female/year). For chickens, annual number
+  of eggs laid for reproduction per breeding hen (# eggs/hen/year).
 
-- litter_size:
+- offspring_per_reproductive_event:
 
   Numeric. Average number of offspring born per parturition (#
-  offspring/parturition). This value can be calculated as the total
-  number of offspring born divided by the total number of parturitions
-  during the year.
+  offspring/parturition). For chickens, hatchability of eggs laid for
+  reproduction, calculated as the number of chicks hatched divided by
+  the number of eggs laid for reproduction (fraction).
 
 - pregnancy_duration:
 
@@ -98,7 +102,7 @@ calc_metabolic_energy_req_pregnancy(
 - cohort_duration_days:
 
   Numeric. Amount of time that each animal spends in a specific cohort
-  (days).
+  (days). For `CHK`, suggested value for `FJ` and `MJ` cohorts: 3 days.
 
 - offtake_rate:
 
@@ -117,12 +121,12 @@ This component follows the IPCC Tier 2 partitioning framework and is
 applied only to **female cohorts** (`FA` and `FS`).
 
 Pregnancy energy (`metabolic_energy_req_pregnancy`) represents the
-additional energy required to support gestation. Requirements are
-computed as a fraction of maintenance energy and are adjusted to reflect
-reproductive activity within the cohort:
+additional energy required to support gestation in mammals. Requirements
+are computed as a fraction of maintenance energy and are adjusted to
+reflect reproductive activity within the cohort:
 
 - For `FA`, requirements are scaled by the annual parturition rate
-  (`parturition_rate`) and (when applicable) by the fraction of the
+  (`reproductive_rate`) and (when applicable) by the fraction of the
   reproductive cycle spent in gestation
   (`pregnancy_duration/(pregnancy_duration+lactation_duration+non_productive_duration)`).
 
@@ -142,7 +146,7 @@ where
 - \\S\\ is a scaling term that depends on cohort (`FA` vs `FS`).
 
 - \\metabolic\\energy\\req\\maintenance\\ can be calculated using
-  [`calc_metabolic_energy_req_maintenance()`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_maintenance.md)
+  [`calc_metabolic_energy_req_maintenance()`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_maintenance.md)
 
 **Specific coefficients by species and cohort:**
 
@@ -170,7 +174,8 @@ where
     offtake\\rate) \$\$
 
 - **SHP and GTS** (IPCC 2006; 2019): Pregnancy energy is calculated as a
-  litter-size-dependent fraction of maintenance energy (\\c\_{preg}\\).
+  offspring-per-reproductive-event-dependent fraction of maintenance
+  energy (\\c\_{preg}\\).
 
   - `FA`: \$\$ \begin{aligned} metabolic\\energy\\req\\pregnancy &=
     metabolic\\energy\\req\\maintenance \times c\_{preg} \times
@@ -202,7 +207,7 @@ where
     offtake\\rate) \end{aligned} \$\$
 
 This function is part of the
-[`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md).
+[`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md).
 
 ## References
 
@@ -224,5 +229,5 @@ Zones and Dry Lands (ACSAD).
 
 ## See also
 
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
-[`calc_metabolic_energy_req_maintenance`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_maintenance.md)
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),
+[`calc_metabolic_energy_req_maintenance`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_maintenance.md)

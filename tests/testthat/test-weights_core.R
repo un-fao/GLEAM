@@ -48,9 +48,177 @@ test_that("calc_cohort_weights handles pig juvenile with weaning weight", {
   expect_equal(result$live_weight_cohort_at_slaughter, 10)
 })
 
+test_that("calc_cohort_weights uses hatch weight as weaning weight for chickens", {
+  result <- calc_cohort_weights(
+    species_short = "CHK",
+    cohort_short = "FJ",
+    live_weight_female_adult = 2.2, live_weight_male_adult = 2.8,
+    live_weight_at_birth = 0.04, live_weight_female_at_slaughter = 1.8,
+    live_weight_male_at_slaughter = 2.1, live_weight_at_weaning = 0.2
+  )
+
+  expect_equal(result$live_weight_cohort_initial, 0.04)
+  expect_equal(result$live_weight_cohort_potential_final, 0.04)
+  expect_equal(result$live_weight_cohort_at_slaughter, 0.04)
+})
+
+test_that("calc_cohort_weights interpolates non-demo female weights across two phases", {
+  phase1 <- calc_cohort_weights(
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 1,
+    live_weight_female_nondemographic_start = 20,
+    live_weight_female_nondemographic_end = 100,
+    phase1_nondemo_fem_duration_days = 30,
+    phase2_nondemo_fem_duration_days = 50
+  )
+  phase2 <- calc_cohort_weights(
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 2,
+    live_weight_female_nondemographic_start = 20,
+    live_weight_female_nondemographic_end = 100,
+    phase1_nondemo_fem_duration_days = 30,
+    phase2_nondemo_fem_duration_days = 50
+  )
+
+  expect_equal(phase1$live_weight_cohort_initial, 20)
+  expect_equal(phase1$live_weight_cohort_potential_final, 50)
+  expect_equal(phase2$live_weight_cohort_initial, 50)
+  expect_equal(phase2$live_weight_cohort_potential_final, 100)
+})
+
+test_that("calc_cohort_weights uses full non-demo range when only phase 1 is present", {
+  phase1 <- calc_cohort_weights(
+    cohort_short = "MN",
+    nondemo_productive_phase_id = 1,
+    live_weight_male_nondemographic_start = 30,
+    live_weight_male_nondemographic_end = 90,
+    phase1_nondemo_mal_duration_days = 20,
+    phase2_nondemo_mal_duration_days = 0
+  )
+
+  expect_equal(phase1$live_weight_cohort_initial, 30)
+  expect_equal(phase1$live_weight_cohort_potential_final, 90)
+  expect_equal(phase1$live_weight_cohort_at_slaughter, 90)
+})
+
+test_that("calc_cohort_weights allows NA inputs for the unused non-demo sex", {
+  mn <- calc_cohort_weights(
+    cohort_short = "MN",
+    nondemo_productive_phase_id = 1,
+    live_weight_female_nondemographic_start = NA_real_,
+    live_weight_female_nondemographic_end = NA_real_,
+    live_weight_male_nondemographic_start = 30,
+    live_weight_male_nondemographic_end = 90,
+    phase1_nondemo_fem_duration_days = NA_real_,
+    phase2_nondemo_fem_duration_days = NA_real_,
+    phase1_nondemo_mal_duration_days = 20,
+    phase2_nondemo_mal_duration_days = 0
+  )
+  fn <- calc_cohort_weights(
+    cohort_short = "FN",
+    nondemo_productive_phase_id = 1,
+    live_weight_female_nondemographic_start = 20,
+    live_weight_female_nondemographic_end = 100,
+    live_weight_male_nondemographic_start = NA_real_,
+    live_weight_male_nondemographic_end = NA_real_,
+    phase1_nondemo_fem_duration_days = 30,
+    phase2_nondemo_fem_duration_days = 50,
+    phase1_nondemo_mal_duration_days = NA_real_,
+    phase2_nondemo_mal_duration_days = NA_real_
+  )
+
+  expect_equal(mn$live_weight_cohort_initial, 30)
+  expect_equal(fn$live_weight_cohort_initial, 20)
+})
+
+test_that("non-demographic weights allow missing demographic weight columns", {
+  path <- system.file("extdata/run_modules_examples", package = "gleam")
+  all_cohorts <- data.table::fread(file.path(path, "weights_input_chrt_data.csv"))
+  cohort <- all_cohorts[cohort_short %in% c("FN", "MN")]
+  herd <- data.table::fread(file.path(path, "weights_input_hrd_data.csv"))[
+    herd_id %in% cohort$herd_id
+  ]
+  weight_cols <- grep("^live_weight_.*_nondemographic_", names(herd), value = TRUE)
+  herd[, (weight_cols) := lapply(.SD, as.numeric), .SDcols = weight_cols]
+  expected <- run_weights_module(cohort, herd, show_indicator = FALSE)
+  demographic_cols <- c(
+    "live_weight_female_adult", "live_weight_male_adult",
+    "live_weight_at_birth", "live_weight_at_weaning",
+    "live_weight_female_at_slaughter", "live_weight_male_at_slaughter"
+  )
+  herd[, (demographic_cols) := NULL]
+
+  expect_no_warning(actual <- run_weights_module(cohort, herd, show_indicator = FALSE))
+  expect_equal(actual$cohort_level_results, expected$cohort_level_results)
+  expect_false(any(demographic_cols %in% names(herd)))
+  expect_error(
+    run_weights_module(all_cohorts[herd_id %in% herd$herd_id], herd, show_indicator = FALSE),
+    "live_weight_female_adult"
+  )
+})
+
+test_that("demographic weights allow missing non-demographic herd columns, including CHK", {
+  example_path <- system.file("extdata/run_modules_examples", package = "gleam")
+  cohort <- data.table::fread(file.path(example_path, "weights_input_chrt_data.csv"))[
+    herd_id %in% c(2L, 13L)
+  ]
+  herd <- data.table::fread(file.path(example_path, "weights_input_hrd_data.csv"))[
+    herd_id %in% cohort$herd_id
+  ]
+  expect_setequal(herd$species_short, c("CTL", "CHK"))
+  expected <- run_weights_module(cohort, herd, show_indicator = FALSE)
+
+  optional_cols <- c(
+    "live_weight_female_nondemographic_start",
+    "live_weight_male_nondemographic_start",
+    "live_weight_female_nondemographic_end",
+    "live_weight_male_nondemographic_end",
+    "phase1_nondemo_fem_duration_days",
+    "phase2_nondemo_fem_duration_days",
+    "phase1_nondemo_mal_duration_days",
+    "phase2_nondemo_mal_duration_days"
+  )
+  herd[, (optional_cols) := NULL]
+  cohort[, nondemo_productive_phase_id := NULL]
+  expect_no_warning(
+    actual <- run_weights_module(cohort, herd, show_indicator = FALSE)
+  )
+  data.table::setcolorder(actual$cohort_level_results, names(expected$cohort_level_results))
+  expect_equal(actual$cohort_level_results, expected$cohort_level_results)
+  expect_false(any(optional_cols %in% names(herd)))
+  expect_false("nondemo_productive_phase_id" %in% names(cohort))
+})
+
+test_that("weights require species_short in the herd table and allow its absence in cohorts", {
+  example_path <- system.file("extdata/run_modules_examples", package = "gleam")
+  cohort <- data.table::fread(file.path(example_path, "weights_input_chrt_data.csv"))[
+    herd_id %in% c(2L, 13L)
+  ]
+  herd <- data.table::fread(file.path(example_path, "weights_input_hrd_data.csv"))[
+    herd_id %in% cohort$herd_id
+  ]
+  cohort[herd, species_short := i.species_short, on = "herd_id"]
+  expected <- run_weights_module(cohort, herd, show_indicator = FALSE)
+
+  missing_species <- data.table::copy(herd)
+  missing_species[, species_short := NULL]
+  error <- expect_error(
+    run_weights_module(cohort, missing_species, show_indicator = FALSE),
+    "Missing required columns"
+  )
+  expect_match(conditionMessage(error), "herd_level_data", fixed = TRUE)
+  expect_match(conditionMessage(error), "species_short", fixed = TRUE)
+
+  cohort[, species_short := NULL]
+  actual <- run_weights_module(cohort, herd, show_indicator = FALSE)
+  expected$cohort_level_results[, species_short := NULL]
+  expect_equal(actual, expected)
+})
+
 # ---- test calc_avg_weights ----
 test_that("calc_avg_weights returns correct average and final weights", {
   result <- calc_avg_weights(
+    cohort_short = "FS",
     live_weight_cohort_initial = 100,
     live_weight_cohort_potential_final = 300,
     live_weight_cohort_at_slaughter = 200,
@@ -62,9 +230,24 @@ test_that("calc_avg_weights returns correct average and final weights", {
 })
 
 test_that("calc_avg_weights handles zero offtake", {
-  result <- calc_avg_weights(100, 300, 200, 0)
+  result <- calc_avg_weights("FS", 100, 300, 200, 0)
   expect_equal(result$live_weight_cohort_final, 300)
   expect_equal(result$live_weight_cohort_average, 200)
+})
+
+test_that("calc_avg_weights ignores offtake for FN and MN", {
+  result_fn <- calc_avg_weights("FN", 30, 80, 60, 0.9)
+  result_mn <- calc_avg_weights("MN", 35, 90, 55, 0.8)
+
+  expect_equal(result_fn$live_weight_cohort_final, 80)
+  expect_equal(result_fn$live_weight_cohort_average, 55)
+  expect_equal(result_mn$live_weight_cohort_final, 90)
+  expect_equal(result_mn$live_weight_cohort_average, 62.5)
+})
+
+test_that("calc_avg_weights allows offtake_rate equal to 1 for FN and MN", {
+  expect_no_error(calc_avg_weights("FN", 30, 80, 60, 1))
+  expect_no_error(calc_avg_weights("MN", 35, 90, 55, 1))
 })
 
 # ---- test calc_daily_weight_gain ----

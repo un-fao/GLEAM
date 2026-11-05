@@ -5,7 +5,8 @@ validate_diet_digestibility_inputs <- function(
     species_short,
     feed_ration_fraction,
     feed_digestibility_fraction_ruminant,
-    feed_digestibility_fraction_pigs
+    feed_digestibility_fraction_pigs,
+    feed_digestibility_fraction_chicken
 ) {
   validate_scalar_character(species_short)
   validate_scalar_numeric(feed_ration_fraction)
@@ -14,7 +15,8 @@ validate_diet_digestibility_inputs <- function(
   # Ensure all digestibility inputs are scalar numerics (NA allowed)
   args <- list(
     feed_digestibility_fraction_ruminant = feed_digestibility_fraction_ruminant,
-    feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs
+    feed_digestibility_fraction_pigs = feed_digestibility_fraction_pigs,
+    feed_digestibility_fraction_chicken = feed_digestibility_fraction_chicken
   )
   for (arg_name in names(args)) {
     val <- args[[arg_name]]
@@ -32,6 +34,8 @@ validate_diet_digestibility_inputs <- function(
   # Require the species-specific digestibility input to be present (non-NA)
   required_by_animal <- if (species_short %in% gleam_species_milk_producers) {
     c("feed_digestibility_fraction_ruminant")
+  } else if (species_short == "CHK") {
+    c("feed_digestibility_fraction_chicken")
   } else {
     c("feed_digestibility_fraction_pigs")
   }
@@ -56,7 +60,8 @@ validate_ration_metabolizable_energy_inputs <- function(
     species_short,
     feed_ration_fraction,
     feed_metabolizable_energy_ruminant,
-    feed_metabolizable_energy_pigs
+    feed_metabolizable_energy_pigs,
+    feed_metabolizable_energy_chicken
 ) {
   validate_animal_species(species_short)
   validate_scalar_numeric(feed_ration_fraction)
@@ -64,7 +69,8 @@ validate_ration_metabolizable_energy_inputs <- function(
   # Ensure all metabolizable energy inputs are scalar numerics (NA allowed)
   args <- list(
     feed_metabolizable_energy_ruminant = feed_metabolizable_energy_ruminant,
-    feed_metabolizable_energy_pigs = feed_metabolizable_energy_pigs
+    feed_metabolizable_energy_pigs = feed_metabolizable_energy_pigs,
+    feed_metabolizable_energy_chicken = feed_metabolizable_energy_chicken
   )
   for (arg_name in names(args)) {
     val <- args[[arg_name]]
@@ -80,6 +86,8 @@ validate_ration_metabolizable_energy_inputs <- function(
   # Require the species-specific ME input to be present (non-NA)
   required_by_animal <- if (species_short %in% gleam_species_milk_producers) {
     c("feed_metabolizable_energy_ruminant")
+  } else if (species_short == "CHK") {
+    c("feed_metabolizable_energy_chicken")
   } else {
     c("feed_metabolizable_energy_pigs")
   }
@@ -103,12 +111,14 @@ validate_ration_metabolizable_energy_inputs <- function(
 validate_feed_digestibility_inputs <- function(
     feed_digestible_energy_ruminant,
     feed_digestible_energy_pigs,
-    feed_gross_energy
+    feed_gross_energy,
+    feed_metabolizable_energy_chicken
 ) {
   args <- list(
     feed_digestible_energy_ruminant = feed_digestible_energy_ruminant,
     feed_digestible_energy_pigs = feed_digestible_energy_pigs,
-    feed_gross_energy = feed_gross_energy
+    feed_gross_energy = feed_gross_energy,
+    feed_metabolizable_energy_chicken = feed_metabolizable_energy_chicken
   )
   for (arg_name in names(args)) {
     val <- args[[arg_name]]
@@ -157,7 +167,8 @@ validate_urinary_energy_inputs <- function(
     species_short,
     feed_ration_fraction,
     feed_urinary_energy_ruminant,
-    feed_urinary_energy_pigs
+    feed_urinary_energy_pigs,
+    feed_urinary_energy_chicken
 ) {
   validate_scalar_character(species_short)
   validate_scalar_numeric(feed_ration_fraction)
@@ -165,7 +176,8 @@ validate_urinary_energy_inputs <- function(
 
   args <- list(
     feed_urinary_energy_ruminant = feed_urinary_energy_ruminant,
-    feed_urinary_energy_pigs = feed_urinary_energy_pigs
+    feed_urinary_energy_pigs = feed_urinary_energy_pigs,
+    feed_urinary_energy_chicken = feed_urinary_energy_chicken
   )
   for (arg_name in names(args)) {
     val <- args[[arg_name]]
@@ -181,6 +193,8 @@ validate_urinary_energy_inputs <- function(
 
   required_by_animal <- if (species_short %in% gleam_species_milk_producers) {
     c("feed_urinary_energy_ruminant")
+  } else if (species_short == "CHK") {
+    c("feed_urinary_energy_chicken")
   } else {
     c("feed_urinary_energy_pigs")
   }

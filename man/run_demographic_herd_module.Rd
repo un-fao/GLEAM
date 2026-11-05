@@ -18,7 +18,8 @@ run_demographic_herd_module(
 \item{cohort_level_data}{A \code{data.table} with the one row per herd and cohort, and the following mandatory columns:
 \describe{
 \item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{\code{cohort_short}}{Character. Sex- and age-specific cohort code describing the production stage of the animals. Supported values include:
+\item{\code{cohort_short}}{Character. Sex-specific cohort code describing the age
+and/or the production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
 \item \code{FS}: sub-adult females (from weaning to age at first parturition)
@@ -26,20 +27,30 @@ run_demographic_herd_module(
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
-}
-}
-\item{\code{cohort_duration_days}}{Numeric vector of length 6. Amount of time that each animal spends in a specific cohort (days).}
+}}
+\item{\code{cohort_duration_days}}{Numeric vector of length 6. Amount of time that
+each animal spends in a specific cohort (days). For \code{CHK}, suggested value
+for \code{FJ} and \code{MJ} cohorts: 3 days.}
 \item{\code{offtake_rate}}{Numeric vector of length 6. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
-\item{\code{death_rate}}{Numeric vector of length 6. Fraction of deaths in a herd over a year for each sex-age cohort (fraction).}
+\item{\code{death_rate}}{Numeric vector of length 6. Fraction of animals dying in
+the assessed cohort over one year for demographic cohorts (fraction).}
 }}
 
 \item{herd_level_data}{A \code{data.table} with one row per herd, and the following mandatory columns:
 \describe{
-\item{\code{herd_id}}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-\item{\code{parturition_rate}}{Numeric. Average annual number of parturitions per female animal (# parturitions/adult female/year). A herd-level reproductive performance indicator calculated as the total number of parturitions (deliveries) occurring during a year divided by the number of adult females potentially able to give birth during that year.}
-\item{\code{litter_size}}{Numeric. Average number of offspring born per parturition (# offspring/parturition). This value can be calculated as the total number of offspring born divided by the total number of parturitions during the year.}
+\item{\code{herd_id}}{Character. Unique identifier for the herd.}
+\item{\code{reproductive_rate}}{Numeric. Average annual number of parturitions per
+reproductive female (# parturitions/reproductive female/year). For chickens,
+annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
+\item{\code{offspring_per_reproductive_event}}{Numeric. Average number of offspring
+born per parturition (# offspring/parturition). For chickens, hatchability of
+eggs laid for reproduction, calculated as the number of chicks hatched divided by
+the number of eggs laid for reproduction (fraction).}
 \item{\code{birth_fraction_female}}{Numeric. Female birth fraction, defined as the probability that a newborn offspring is female (fraction). Can be calculated  as the number of female offspring born divided by the total number of offspring born.}
-\item{\code{herd_size_total}}{Numeric. Total population size at the start of the year, including all cohorts (# heads).}
+\item{\code{herd_size_total}}{Numeric. Total demographic population size at the start
+of the year, including all cohorts (# heads)}
+\item{\code{prop_nondemo_mal_juv}}{Numeric. Fraction of male juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
+\item{\code{prop_nondemo_fem_juv}}{Numeric. Fraction of female juveniles diverted into the non-demographic stream at the moment they transition to the next age class (fraction).}
 }}
 
 \item{initial_herd_structure}{Named numeric vector of length 6. Initial number of individuals in each of the 6 sex-age cohorts used
@@ -61,17 +72,28 @@ A named list with two elements:
 \describe{
 \item{\code{cohort_level_results}}{A \code{data.table} with one row per herd and cohort containing all original
 \code{cohort_level_data} columns plus the following simulation results:
-\itemize{
-\item \code{cohort_stock_size} - Numeric vector of length 6. Average population size in each of the 6 sex–age cohorts (# heads) (cohorts = (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA})).
-This corresponds to \code{cohort_stock_start} returned by \code{\link{calc_projected_population_size}}, as it reflects the size of the population by cohort while preserving the total population size (\code{herd_size_total}) provided in the inputs.
-\item \code{offtake_heads} - Numeric vector of length 6. Total number of animals removed via offtake over the year, aggregated to 6 sex–age cohorts (heads/year) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
-\item \code{offtake_heads_assessment} - Numeric vector of length 6. Total number of animals removed via offtake over the assessment period, aggregated to 6 sex–age cohorts (heads/assessment period) (cohorts = \code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
+\describe{
+\item{\code{cohort_stock_size_unscaled}}{Numeric. Average population size of the assessed cohort, not scaled to the total livestock population (herd_size_total) (# heads).}
+\item{\code{cohort_stock_size_scaled}}{Numeric. Average population size of the assessed cohort, scaled to the total livestock population (herd_size_total) (# heads).}
+\item{\code{offtake_heads_unscaled}}{Numeric. Total number of animals removed from
+each cohort over the full 365-day simulation horizon, not scaled to the
+cohort population at the start of the assessment (# heads).}
+\item{\code{offtake_heads_assessment_unscaled}}{Numeric. Total number of animals
+removed from each cohort over the assessment period, not scaled to the cohort
+population at the start of the assessment (# heads/assessment period).}
+\item{\code{offtake_heads_scaled}}{Numeric. Total number of animals removed from
+each cohort over the full 365-day simulation horizon, scaled to the cohort
+population at the start of the assessment (# heads).}
+\item{\code{offtake_heads_assessment_scaled}}{Numeric. Total number of animals
+removed from each cohort over the assessment period, scaled to the cohort
+population at the start of the assessment (# heads/assessment period).}
+\item{\code{cohort_stock_annual_nondemographic}}{Numeric. Annual number of animals diverted from the demographic pathway into the non-demographic pathway (# heads).}
 }
 }
 \item{\code{herd_level_results}}{A \code{data.table} with one row per herd containing all original
 \code{herd_level_data} columns plus the following herd-level simulation results:
-\itemize{
-\item \code{growth_rate_herd} - Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).
+\describe{
+\item{\code{growth_rate_herd}}{Numeric. Annualized growth rate at which the herd size reaches steady state (fraction).}
 }
 }
 }
@@ -79,7 +101,8 @@ This corresponds to \code{cohort_stock_start} returned by \code{\link{calc_proje
 \description{
 This function takes herd- and cohort-level demographic inputs and estimates a steady-state
 sex–age herd structure compatible with downstream calculations in the Global Livestock
-Environmental Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}}. In addition to cohort population sizes, it derives
+Environmental Assessment Model (GLEAM) computational pipeline \code{\link[=run_gleam]{run_gleam()}}.
+In addition to cohort population sizes, it derives
 population growth rates, and offtake numbers.
 The steady state is defined as a constant sex–age cohort structure over time,
 with population size potentially growing or declining at a constant rate.
@@ -116,15 +139,51 @@ distributed over time (no birth pulse). Daily fecundity rates are computed in
 
 Herd dynamics result from:
 \itemize{
-\item births (driven by \code{parturition_rate} and \code{litter_size})
+\item births (driven by \code{reproductive_rate} and \code{offspring_per_reproductive_event})
 \item natural deaths (driven by \code{death_rate})
 \item removals by offtake (driven by \code{offtake_rate})
 \item cohort aging / growth transitions (driven by \code{cohort_duration_days})
+\item optional diversion of animals from the demographic pathway into the non-demographic
+pathway at cohort transitions
 }
 
 As in Dynmod, \code{offtake_rate} is interpreted as a \emph{net removal rate} for the cohort
 (e.g. slaughter), while \code{death_rate} represents
 natural mortality excluding offtake.
+}
+
+\subsection{Diversion into the non-demographic block}{
+
+This implementation can divert part of the demographic flow into the
+non-demographic block. Diversion is controlled at herd level through:
+\itemize{
+\item \code{prop_nondemo_fem_juv}: fraction of female juveniles diverted when transitioning
+from \code{FJ -> FS}
+\item \code{prop_nondemo_mal_juv}: fraction of male juveniles diverted when transitioning
+from \code{MJ -> MS}
+}
+
+Internally, these herd-level inputs are expanded into the named vector
+\code{proportion_nondemographic}, which is aligned with the six demographic
+cohorts (\code{FJ}, \code{FS}, \code{FA}, \code{MJ}, \code{MS}, \code{MA}).
+In the current demographic herd module, only the juvenile entries are populated
+from user inputs and the remaining cohort entries are set to zero.
+
+Diversion is applied after the model computes the number of animals leaving a
+cohort through aging or progression, and before those animals are added to the
+next demographic cohort. For example:
+\itemize{
+\item a share of \code{FJ -> FS} transitions is removed from the demographic female flow
+and counted as entrants to the female non-demographic block
+\item a share of \code{MJ -> MS} transitions is removed from the demographic male flow
+and counted as entrants to the male non-demographic block
+}
+
+The diverted animals are reported in
+\code{cohort_stock_annual_nondemographic}, which represents the annual number
+of animals leaving the demographic model and entering the non-demographic
+component. When diversion fractions are set to zero, demographic transitions
+reduce to the original no-diversion case.
 }
 
 \subsection{Competing risks and conversion to daily probabilities}{
@@ -163,11 +222,14 @@ The steady-state solution obtained here provides:
 These outputs are subsequently used to project one year of population dynamics
 (\code{\link{calc_projected_population_size}}) and to summarise annual offtake and stock variation
 (\code{\link{calc_summary_offtake}}).
+In both the steady-state and projected-population calculations, diversion to the
+non-demographic block is treated as a competing outflow on the relevant cohort
+transition, separate from death and offtake.
 }
 }
 \examples{
 \donttest{
-# Load herd simulation inputs (cohort- and herd-level)
+# Load demographic herd simulation inputs (cohort and herd-level)
 herd_simulation_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/herd_simulation_input_chrt_data.csv",
   package = "gleam"
@@ -177,16 +239,13 @@ herd_simulation_hrd_dt <- data.table::fread(system.file(
   package = "gleam"
 ))
 
-# Run herd simulation
+# Run demographic herd simulation
 results <- run_demographic_herd_module(
   cohort_level_data = herd_simulation_chrt_dt,
   herd_level_data = herd_simulation_hrd_dt,
-  simulation_duration = 200
+  simulation_duration = 365,
+  show_indicator = TRUE
 )
-
-# Access results
-print(results$cohort_level_results)
-print(results$herd_level_results)
 }
 
 }

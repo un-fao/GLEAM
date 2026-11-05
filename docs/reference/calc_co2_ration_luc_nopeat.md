@@ -40,8 +40,8 @@ The contribution is computed as:
 co2\\feed\\luc\\nopeat\$\$
 
 This function is part of the
-[`run_emissions_ration_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_ration_module.md).
+[`run_emissions_ration_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_ration_module.md).
 
 ## See also
 
-[`run_emissions_ration_module`](https://github.com/un-fao/GLEAM/reference/run_emissions_ration_module.md)
+[`run_emissions_ration_module`](https://un-fao.github.io/GLEAM/reference/run_emissions_ration_module.md)

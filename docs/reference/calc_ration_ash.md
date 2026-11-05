@@ -36,8 +36,8 @@ Ash content is expressed as a percentage (g/100g DM); the result is a
 fraction.
 
 This function is part of the
-[`run_ration_quality_module()`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md).
+[`run_ration_quality_module()`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md).
 
 ## See also
 
-[`run_ration_quality_module`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md)
+[`run_ration_quality_module`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md)

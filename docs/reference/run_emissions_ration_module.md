@@ -44,9 +44,11 @@ run_emissions_ration_module(
 
       - `GTS`: goats
 
+      - `CHK`: chickens
+
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -61,6 +63,16 @@ run_emissions_ration_module(
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
+
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
+
+  nondemo_productive_phase_id
+
+  :   Numeric. Optional productive phase identifier for non-demographic
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   feed_id
 
@@ -114,8 +126,8 @@ run_emissions_ration_module(
 
   :   Numeric. Carbon dioxide (CO2) emission factor of a feed component,
       representing CO2 emissions from on-field agricultural activities
-      in feed production, expressed per kilogram of dry matter intake
-      (kg CO2/kg DM).
+      in feed production, expressed per kilogram of dry matter intake (g
+      CO2/kg DM).
 
   co2_feed_luc_nopeat
 
@@ -165,7 +177,8 @@ run_emissions_ration_module(
 ## Value
 
 data.table. Cohort-level emission factors summarized by `herd_id`,
-`species_short`, and `cohort_short` with the following columns:
+`species_short`, `cohort_short`, and `nondemo_productive_phase_id` when
+present, with the following columns:
 
 - co2_ration_fertilizer:
 
@@ -218,7 +231,7 @@ data.table. Cohort-level emission factors summarized by `herd_id`,
 
 This function represents the intermediate module of the Global Livestock
 Environmental Assessment Model (GLEAM) computational pipeline
-[`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 to estimate emissions from feed production used in the animal's ration.
 The function joins `rations_share` with `feed_emissions` by `feed_id`,
 uses `species_short` directly, and computes ration-weighted emission
@@ -237,35 +250,36 @@ The following calculation sequence is applied:
     helper below (called with `by = .I`):
 
     - CO2 fertilizer:
-      [`calc_co2_ration_fertilizer`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_fertilizer.md)
+      [`calc_co2_ration_fertilizer`](https://un-fao.github.io/GLEAM/reference/calc_co2_ration_fertilizer.md)
 
     - CO2 pesticides:
-      [`calc_co2_ration_pesticides`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_pesticides.md)
+      [`calc_co2_ration_pesticides`](https://un-fao.github.io/GLEAM/reference/calc_co2_ration_pesticides.md)
 
     - CO2 crop operations:
-      [`calc_co2_ration_crop_activities`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_crop_activities.md)
+      [`calc_co2_ration_crop_activities`](https://un-fao.github.io/GLEAM/reference/calc_co2_ration_crop_activities.md)
 
     - CO2 land-use change (no peat):
-      [`calc_co2_ration_luc_nopeat`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_luc_nopeat.md)
+      [`calc_co2_ration_luc_nopeat`](https://un-fao.github.io/GLEAM/reference/calc_co2_ration_luc_nopeat.md)
 
     - CO2 land-use change (peat):
-      [`calc_co2_ration_luc_peat`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_luc_peat.md)
+      [`calc_co2_ration_luc_peat`](https://un-fao.github.io/GLEAM/reference/calc_co2_ration_luc_peat.md)
 
     - N2O fertilizer:
-      [`calc_n2o_ration_fertilizer`](https://github.com/un-fao/GLEAM/reference/calc_n2o_ration_fertilizer.md)
+      [`calc_n2o_ration_fertilizer`](https://un-fao.github.io/GLEAM/reference/calc_n2o_ration_fertilizer.md)
 
     - N2O manure applied:
-      [`calc_n2o_ration_manure`](https://github.com/un-fao/GLEAM/reference/calc_n2o_ration_manure.md)
+      [`calc_n2o_ration_manure`](https://un-fao.github.io/GLEAM/reference/calc_n2o_ration_manure.md)
 
     - N2O crop residues:
-      [`calc_n2o_ration_crop_residues`](https://github.com/un-fao/GLEAM/reference/calc_n2o_ration_crop_residues.md)
+      [`calc_n2o_ration_crop_residues`](https://un-fao.github.io/GLEAM/reference/calc_n2o_ration_crop_residues.md)
 
     - CH4 rice cultivation:
-      [`calc_ch4_ration_rice`](https://github.com/un-fao/GLEAM/reference/calc_ch4_ration_rice.md)
+      [`calc_ch4_ration_rice`](https://un-fao.github.io/GLEAM/reference/calc_ch4_ration_rice.md)
 
 3.  **Aggregate to cohort-level diet emission factors** by summing
     feed-component contributions across all feeds within each group
-    `(herd_id, species_short, cohort_short)`.
+    `(herd_id, species_short, cohort_short)` and within
+    `nondemo_productive_phase_id` when that column is provided.
 
 For each emission source, cohort-level dietary emission factors are
 computed as:
@@ -276,37 +290,33 @@ computed as:
 
 ## See also
 
-[`run_gleam`](https://github.com/un-fao/GLEAM/reference/run_gleam.md),
-[`calc_co2_ration_fertilizer`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_fertilizer.md),
-[`calc_co2_ration_pesticides`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_pesticides.md),
-[`calc_co2_ration_crop_activities`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_crop_activities.md),
-[`calc_co2_ration_luc_nopeat`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_luc_nopeat.md),
-[`calc_co2_ration_luc_peat`](https://github.com/un-fao/GLEAM/reference/calc_co2_ration_luc_peat.md),
-[`calc_n2o_ration_fertilizer`](https://github.com/un-fao/GLEAM/reference/calc_n2o_ration_fertilizer.md),
-[`calc_n2o_ration_manure`](https://github.com/un-fao/GLEAM/reference/calc_n2o_ration_manure.md),
-[`calc_n2o_ration_crop_residues`](https://github.com/un-fao/GLEAM/reference/calc_n2o_ration_crop_residues.md),
-[`calc_ch4_ration_rice`](https://github.com/un-fao/GLEAM/reference/calc_ch4_ration_rice.md)
+[`run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md),
+[`calc_co2_ration_fertilizer`](https://un-fao.github.io/GLEAM/reference/calc_co2_ration_fertilizer.md),
+[`calc_co2_ration_pesticides`](https://un-fao.github.io/GLEAM/reference/calc_co2_ration_pesticides.md),
+[`calc_co2_ration_crop_activities`](https://un-fao.github.io/GLEAM/reference/calc_co2_ration_crop_activities.md),
+[`calc_co2_ration_luc_nopeat`](https://un-fao.github.io/GLEAM/reference/calc_co2_ration_luc_nopeat.md),
+[`calc_co2_ration_luc_peat`](https://un-fao.github.io/GLEAM/reference/calc_co2_ration_luc_peat.md),
+[`calc_n2o_ration_fertilizer`](https://un-fao.github.io/GLEAM/reference/calc_n2o_ration_fertilizer.md),
+[`calc_n2o_ration_manure`](https://un-fao.github.io/GLEAM/reference/calc_n2o_ration_manure.md),
+[`calc_n2o_ration_crop_residues`](https://un-fao.github.io/GLEAM/reference/calc_n2o_ration_crop_residues.md),
+[`calc_ch4_ration_rice`](https://un-fao.github.io/GLEAM/reference/calc_ch4_ration_rice.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-# Load cleaned example input from the package and compute the calculation of feed emission factors
-
-# Load table with ration shares
+# Load ration shares and feed emission factors
 rations_share <- data.table::fread(system.file(
   "extdata/run_modules_examples/feed_rations_share_chrt.csv",
   package = "gleam"
 ))
-
-# Load table with feed emission factors
 feed_emissions <- data.table::fread(system.file(
   "extdata/run_modules_examples/feed_emission_factors.csv",
   package = "gleam"
 ))
 
-# Run the code
-result <- run_emissions_ration_module(
+# Run feed emissions calculations
+results <- run_emissions_ration_module(
   rations_share = rations_share,
   feed_emissions = feed_emissions
 )

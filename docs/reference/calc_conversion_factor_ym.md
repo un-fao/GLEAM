@@ -34,10 +34,12 @@ calc_conversion_factor_ym(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -50,6 +52,10 @@ calc_conversion_factor_ym(
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
 
 - ration_digestibility_fraction:
 
@@ -69,9 +75,9 @@ ym is computed using species- and cohort-specific default relationships
 with diet digestibility (Opio et al., 2013).
 
 `ration_digestibility_fraction` can be calculated with
-[`calc_ration_digestibility`](https://github.com/un-fao/GLEAM/reference/calc_ration_digestibility.md) -
+[`calc_ration_digestibility`](https://un-fao.github.io/GLEAM/reference/calc_ration_digestibility.md) -
 see also
-[`run_ration_quality_module`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md).
+[`run_ration_quality_module`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md).
 
 - **For `CTL` and `BFL`:** \$\$ym = 9.75 - 0.05 \times
   (ration\\digestibility\\fraction \times 100)\$\$
@@ -81,20 +87,22 @@ see also
   - `FA` and `MA` cohorts: \$\$ym = 9.75 - 0.05 \times
     (ration\\digestibility\\fraction \times 100)\$\$
 
-  - `FS` and `MS` cohorts: \$\$ym = 7.75 - 0.05 \times
+  - `FS`, `MS`, `FN`, and `MN` cohorts: \$\$ym = 7.75 - 0.05 \times
     (ration\\digestibility\\fraction \times 100)\$\$
 
 - **For `PGS`:** ym is assigned fixed values by cohort:
 
   - `FA` and `MA` cohorts: \$\$ym = 1.01\$\$
 
-  - `FS` and `MS` cohorts: \$\$ym = 0.39\$\$
+  - `FS`, `MS`, `FN`, and `MN` cohorts: \$\$ym = 0.39\$\$
+
+- **For `CHK`**: ym is returned as 0
 
 ym is returned as 0 for juvenile cohorts (`FJ`, `MJ`), assuming
 negligible enteric methane production before weaning/rumen development.
 
 This function is part of the
-[`run_emissions_enteric_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_enteric_module.md).
+[`run_emissions_enteric_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_enteric_module.md).
 
 ## References
 
@@ -117,6 +125,6 @@ Management, Equation 10.21.
 
 ## See also
 
-[`run_emissions_enteric_module`](https://github.com/un-fao/GLEAM/reference/run_emissions_enteric_module.md),
-[`calc_ration_digestibility`](https://github.com/un-fao/GLEAM/reference/calc_ration_digestibility.md),
-[`run_ration_quality_module`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md)
+[`run_emissions_enteric_module`](https://un-fao.github.io/GLEAM/reference/run_emissions_enteric_module.md),
+[`calc_ration_digestibility`](https://un-fao.github.io/GLEAM/reference/calc_ration_digestibility.md),
+[`run_ration_quality_module`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md)

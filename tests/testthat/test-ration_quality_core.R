@@ -103,14 +103,16 @@ test_that("calc_feed_digestibility_fraction computes ratios", {
   results <- calc_feed_digestibility_fraction(
     feed_digestible_energy_ruminant = 8,
     feed_digestible_energy_pigs = 7,
-    feed_gross_energy = 16
+    feed_gross_energy = 16,
+    feed_metabolizable_energy_chicken = 6
   )
 
   expect_equal(
     results,
     list(
       feed_digestibility_fraction_ruminant = 0.5,
-      feed_digestibility_fraction_pigs = 0.4375
+      feed_digestibility_fraction_pigs = 0.4375,
+      feed_digestibility_fraction_chicken = 0.375
     )
   )
 })
@@ -126,7 +128,8 @@ test_that("calc_feed_digestibility_fraction treats NA numerator as zero", {
     results,
     list(
       feed_digestibility_fraction_ruminant = 0,
-      feed_digestibility_fraction_pigs = 0.4375
+      feed_digestibility_fraction_pigs = 0.4375,
+      feed_digestibility_fraction_chicken = 0
     )
   )
 })

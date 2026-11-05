@@ -70,7 +70,7 @@ where `gwp` is the gas-specific 100-year Global Warming Potential factor
 from the selected IPCC assessment report.
 
 This function is part of the
-[`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md).
+[`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md).
 
 ## References
 
@@ -88,4 +88,4 @@ Intergovernmental Panel on Climate Change.
 
 ## See also
 
-[`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md),
+[`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md),

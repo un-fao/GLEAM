@@ -27,8 +27,12 @@ validate_allocation_milk_inputs <- function(
     milk_fat_fraction_standard,
     milk_lactose_fraction_standard
 ) {
-  # Range checks via parameter_ranges
   validate_param_range(milk_production_fpcm_cohort)
+
+  if (identical(milk_production_fpcm_cohort, 0)) {
+    return(invisible(NULL))
+  }
+
   validate_param_range(milk_protein_fraction_standard)
   validate_param_range(milk_fat_fraction_standard)
   validate_param_range(milk_lactose_fraction_standard)
@@ -75,10 +79,18 @@ validate_allocation_meat_inputs <- function(
     meat_production_live_weight_cohort,
     live_weight_cohort_at_slaughter = NA_real_,
     live_weight_at_birth = NA_real_,
-    ratio_me_to_ne = NA_real_
+    ratio_me_to_ne = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
+  validate_is_egg_producing_flag(
+    species_short = species_short,
+    cohort_short = cohort_short,
+    is_egg_producing = is_egg_producing,
+    nondemo_productive_phase_id = nondemo_productive_phase_id
+  )
   validate_scalar_numeric(meat_production_live_weight_cohort)
 
   validate_param_range(meat_production_live_weight_cohort)
@@ -212,5 +224,30 @@ validate_allocation_work_inputs <- function(
         is.na(ratio_me_to_ne) || ratio_me_to_ne <= 0) {
       cli::cli_abort("{.arg ratio_me_to_ne} must be a positive numeric value (ME/NE).")
     }
+  }
+}
+
+#' Validate inputs for calc_egg_allocation_energy
+#'
+#' @noRd
+validate_allocation_egg_inputs <- function(
+    species_short,
+    cohort_short,
+    egg_production_mass_cohort,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
+) {
+  validate_animal_species(species_short)
+  validate_cohort_code(cohort_short)
+  validate_is_egg_producing_flag(
+    species_short = species_short,
+    cohort_short = cohort_short,
+    is_egg_producing = is_egg_producing,
+    nondemo_productive_phase_id = nondemo_productive_phase_id
+  )
+  validate_scalar_numeric(egg_production_mass_cohort)
+
+  if (egg_production_mass_cohort < 0) {
+    cli::cli_abort("{.arg egg_production_mass_cohort} must be greater than or equal to 0.")
   }
 }

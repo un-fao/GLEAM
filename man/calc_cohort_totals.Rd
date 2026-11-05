@@ -18,7 +18,7 @@ calc_cohort_totals(
 \item{value}{Numeric. Variable value expressed as (unit)/head/day for non-production variables and (unit)/cohort/assessment duration for production variables.
 Production variables can be explored from the list 'gleam_production_meta'.}
 
-\item{cohort_stock_size}{Numeric. Average population size in each of the 6 sex–age cohorts (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).}
+\item{cohort_stock_size}{Numeric. Average population size of the assessed cohort (# heads).}
 
 \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 

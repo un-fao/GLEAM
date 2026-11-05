@@ -42,19 +42,21 @@ calc_total_metabolic_energy_req(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - metabolic_energy_req_maintenance:
 
   Numeric. Energy required for maintenance, defined as the amount of
   energy needed to keep the animal at equilibrium such that body energy
   is neither gained nor lost (MJ/head/day). Expressed as net energy for
-  CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+  CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 
 - metabolic_energy_req_activity:
 
   Numeric. Energy required for activity, defined as the amount of energy
   needed to support animal movement and physical activity (MJ/head/day).
   Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable
-  energy for CML and PGS.
+  energy for CML, PGS, and CHK.
 
 - metabolic_energy_req_lactation:
 
@@ -66,8 +68,8 @@ calc_total_metabolic_energy_req(
 
   Numeric. Energy required for work, used to estimate the energy
   required for draught power for CTL, BFL and CML (MJ/head/day). Assumed
-  to be 0 for other species. Expressed as net energy for CTL, BFL, SHP,
-  GTS and as metabolizable energy for CML and PGS.
+  to be 0 for other species. Expressed as net energy for CTL, BFL, and
+  as metabolizable energy for CML.
 
 - metabolic_energy_req_pregnancy:
 
@@ -84,14 +86,13 @@ calc_total_metabolic_energy_req(
 
   Numeric. Energy required for growth (i.e., weight gain) (MJ/head/day).
   Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable
-  energy for CML and PGS.
+  energy for CML, PGS, and CHK.
 
 - metabolic_energy_req_fibre_production:
 
   Numeric. Energy required for the synthesis of fibre for SHP, GTS
-  and CML. Assumed to be 0 for other species (MJ/head/day). Expressed as
-  net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML
-  and PGS (MJ/head/day).
+  and CML. Assumed to be 0 for other species. (MJ/head/day). Expressed
+  as net energy for SHP and GTS and as metabolizable energy for CML.
 
 - metabolic_energy_req_egg_deposition:
 
@@ -111,8 +112,8 @@ calc_total_metabolic_energy_req(
 
 Numeric. Total daily energy requirement (MJ/head/day). For CTL, BFL, SHP
 and GTS this is expressed as gross energy intake requirement (GE). For
-CML and PGS the function returns the summed daily metabolizable energy
-requirement.
+CML, PGS and CHK the function returns the summed daily metabolizable
+energy requirement.
 
 ## Details
 
@@ -131,7 +132,7 @@ requirements are expressed as net or metabolizable energy.
     metabolic\\energy\\req\\lactation + metabolic\\energy\\req\\work +
     metabolic\\energy\\req\\pregnancy }{REM} \right) + \left(
     \frac{metabolic\\energy\\req\\growth}{REG} \right)
-    }{diet\\digestibility\\fraction} \$\$
+    }{ration\\digestibility\\fraction} \$\$
 
   - **`SHP` and `GTS`**: \$\$ metabolic\\energy\\req\\total = \frac{
     \left( \frac{ metabolic\\energy\\req\\maintenance +
@@ -139,10 +140,10 @@ requirements are expressed as net or metabolizable energy.
     metabolic\\energy\\req\\lactation +
     metabolic\\energy\\req\\pregnancy }{REM} \right) + \left( \frac{
     metabolic\\energy\\req\\growth + metabolic\\energy\\req\\fibre
-    }{REG} \right) }{diet_digestibility_fraction} \$\$
+    }{REG} \right) }{ration\\digestibility\\fraction} \$\$
 
-- **Energy requirements expressed as metabolizable energy (`CML`,
-  `PGS`)**
+- **Energy requirements expressed as metabolizable energy (`CML`, `PGS`,
+  `CHK`)**
 
   For these species, the total daily requirement is computed as the
   **direct sum** of relevant energy components (MJ/head/day).
@@ -162,8 +163,13 @@ requirements are expressed as net or metabolizable energy.
     metabolic\\energy\\req\\pregnancy + metabolic\\energy\\req\\growth
     \$\$
 
+  - **`CHK`**: \$\$ metabolic\\energy\\req\\total =
+    metabolic\\energy\\req\\maintenance +
+    metabolic\\energy\\req\\activity + metabolic\\energy\\req\\growth +
+    metabolic\\energy\\req\\egg\\deposition \$\$
+
 This function is part of the
-[`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md).
+[`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md).
 
 ## References
 
@@ -177,14 +183,15 @@ Management, Equation 10.16.
 
 ## See also
 
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
-[`calc_metabolic_energy_req_maintenance`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_maintenance.md)
-[`calc_metabolic_energy_req_activity`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_activity.md)
-[`calc_metabolic_energy_req_growth`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_growth.md)
-[`calc_metabolic_energy_req_lactation`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_lactation.md)
-[`calc_metabolic_energy_req_work`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_work.md)
-[`calc_metabolic_energy_req_fibre`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_fibre.md)
-[`calc_metabolic_energy_req_pregnancy`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_pregnancy.md)
-[`calc_rem_maintenance`](https://github.com/un-fao/GLEAM/reference/calc_rem_maintenance.md)
-[`calc_reg_growth`](https://github.com/un-fao/GLEAM/reference/calc_reg_growth.md)
-[`calc_ration_intake`](https://github.com/un-fao/GLEAM/reference/calc_ration_intake.md)
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),
+[`calc_metabolic_energy_req_maintenance`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_maintenance.md)
+[`calc_metabolic_energy_req_activity`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_activity.md)
+[`calc_metabolic_energy_req_growth`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_growth.md)
+[`calc_metabolic_energy_req_lactation`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_lactation.md)
+[`calc_metabolic_energy_req_work`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_work.md)
+[`calc_metabolic_energy_req_fibre`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_fibre.md)
+[`calc_metabolic_energy_req_pregnancy`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_pregnancy.md)
+[`calc_metabolic_energy_req_eggs`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_eggs.md)
+[`calc_rem_maintenance`](https://un-fao.github.io/GLEAM/reference/calc_rem_maintenance.md)
+[`calc_reg_growth`](https://un-fao.github.io/GLEAM/reference/calc_reg_growth.md)
+[`calc_ration_intake`](https://un-fao.github.io/GLEAM/reference/calc_ration_intake.md)

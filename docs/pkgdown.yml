@@ -6,7 +6,7 @@ articles:
   gleam-history: gleam-history.html
   gleam-modules-overview: gleam-modules-overview.html
   gleam-overview: gleam-overview.html
-last_built: 2026-05-14T15:32Z
+last_built: 2026-10-30T18:36Z
 urls:
-  reference: https://github.com/un-fao/GLEAM/reference
-  article: https://github.com/un-fao/GLEAM/articles
+  reference: https://un-fao.github.io/GLEAM/reference
+  article: https://un-fao.github.io/GLEAM/articles

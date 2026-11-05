@@ -8,11 +8,11 @@
 <title>Overview of 'gleam' R Package • gleam</title>
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<script src="../extra.js"></script><meta property="og:title" content="Overview of 'gleam' R Package">
+<meta property="og:title" content="Overview of 'gleam' R Package">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -38,7 +38,7 @@
 <li class="nav-item"><a class="nav-link" href="../articles/gleam-history.html"><span class="fa fa-timeline"></span> GLEAM History</a></li>
       </ul>
 <ul class="navbar-nav">
-<li class="nav-item"><a class="nav-link" href="https://github.com/un-fao/GLEAM"><span class="fa fab fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/un-fao/GLEAM" aria-label="GitHub repository"><span class="fa fab fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -55,13 +55,189 @@
       <h1>Overview of 'gleam' R Package</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/un-fao/GLEAM/blob/HEAD/vignettes/gleam-overview.Rmd"><code>vignettes/gleam-overview.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/un-fao/GLEAM/blob/HEAD/vignettes/gleam-overview.Rmd" class="external-link"><code>vignettes/gleam-overview.Rmd</code></a></small>
       <div class="d-none name"><code>gleam-overview.Rmd</code></div>
     </div>
 
     
     
-<div class="section level2">
+<style>
+img.module-figure-zoom {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 360px);
+  max-height: 280px;
+  margin: 1rem auto 0.5rem;
+  cursor: zoom-in;
+  border-radius: 8px;
+}
+
+.module-figure-zoom:hover,
+.module-figure-zoom:focus-visible {
+  outline: 2px solid #6bc4d0;
+  outline-offset: 4px;
+}
+
+.module-figure-hint {
+  margin: 0.5rem 0 1rem;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #5b6b73;
+}
+
+.module-figure-hint::before {
+  content: "Click the image to enlarge, then click again to zoom.";
+}
+
+body.module-figure-lightbox-open {
+  overflow: hidden;
+}
+
+.module-figure-lightbox {
+  position: fixed;
+  inset: 0;
+  width: 94vw;
+  max-width: none;
+  height: 94vh;
+  max-height: none;
+  box-sizing: border-box;
+  margin: auto;
+  padding: 1rem;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #17382d;
+}
+
+.module-figure-lightbox[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.module-figure-lightbox::backdrop {
+  background: rgba(20, 24, 28, 0.88);
+}
+
+.module-figure-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.module-figure-toolbar button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #287d8a;
+  border-radius: 4px;
+  background: #287d8a;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.module-figure-viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.module-figure-viewport img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  cursor: zoom-in;
+}
+
+.module-figure-viewport.is-zoomed img {
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  cursor: zoom-out;
+}
+</style>
+<script>
+(function () {
+  function setupModuleFigures() {
+    const images = document.querySelectorAll("img.module-figure-zoom");
+    if (!images.length) return;
+
+    const dialog = document.createElement("dialog");
+    dialog.className = "module-figure-lightbox";
+    dialog.setAttribute("aria-label", "Enlarged module diagram");
+    dialog.innerHTML =
+      '<div class="module-figure-toolbar">' +
+      '<button type="button" class="module-figure-toggle" aria-pressed="false">Zoom in</button>' +
+      '<button type="button" class="module-figure-close" autofocus>Close</button>' +
+      '</div><div class="module-figure-viewport"><img alt=""></div>';
+    document.body.appendChild(dialog);
+
+    const viewport = dialog.querySelector(".module-figure-viewport");
+    const enlarged = viewport.querySelector("img");
+    const toggle = dialog.querySelector(".module-figure-toggle");
+    let trigger;
+
+    function setZoom(zoomed) {
+      viewport.classList.toggle("is-zoomed", zoomed);
+      toggle.textContent = zoomed ? "Fit to window" : "Zoom in";
+      toggle.setAttribute("aria-pressed", String(zoomed));
+      viewport.scrollTop = 0;
+      viewport.scrollLeft = 0;
+    }
+
+    function toggleZoom() {
+      setZoom(!viewport.classList.contains("is-zoomed"));
+    }
+
+    images.forEach(function (image) {
+      function openFigure() {
+        trigger = image;
+        enlarged.src = image.currentSrc || image.src;
+        enlarged.alt = image.alt;
+        setZoom(false);
+        dialog.showModal();
+        document.body.classList.add("module-figure-lightbox-open");
+      }
+
+      image.tabIndex = 0;
+      image.setAttribute("role", "button");
+      image.setAttribute("aria-haspopup", "dialog");
+      image.setAttribute("aria-label", "Enlarge: " + image.alt);
+      image.addEventListener("click", openFigure);
+      image.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openFigure();
+        }
+      });
+    });
+
+    enlarged.addEventListener("click", toggleZoom);
+    toggle.addEventListener("click", toggleZoom);
+    dialog.querySelector(".module-figure-close").addEventListener("click", function () {
+      dialog.close();
+    });
+    dialog.addEventListener("click", function (event) {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener("close", function () {
+      document.body.classList.remove("module-figure-lightbox-open");
+      if (trigger) trigger.focus();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupModuleFigures);
+  } else {
+    setupModuleFigures();
+  }
+})();
+</script><div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>The <code>gleam</code> R package implements the core computational
@@ -152,8 +328,22 @@ the data:</p>
 <div class="section level3">
 <h3 id="cohort-codes">Sex–age cohort codes<a class="anchor" aria-label="anchor" href="#cohort-codes"></a>
 </h3>
-<p>Within each herd, animals are classified into six sex–age cohorts
-that define their production stage:</p>
+<p>Animals within each herd are classified into
+<strong>demographic</strong> or <strong>non-demographic
+cohorts</strong>, depending on how their life cycle and production
+process are represented.</p>
+<div class="section level4">
+<h4 id="demographic-cohorts">Demographic Cohorts<a class="anchor" aria-label="anchor" href="#demographic-cohorts"></a>
+</h4>
+<p><strong>Demographic cohorts</strong> classify animals according to
+their sex, age class, and reproductive development. Animals progress
+through successive life stages, from juvenile to sub-adult and adult,
+with transitions determined by biological milestones such as weaning,
+first parturition, or first breeding.</p>
+<p>This classification allows the model to represent herd population
+dynamics, including growth, maturation, reproduction, and changes in
+herd composition over time.</p>
+<p>Six demographic cohorts are defined:</p>
 <table class="table">
 <colgroup>
 <col width="8%">
@@ -210,21 +400,66 @@ that define their production stage:</p>
 all cohort-level data tables and are required by nearly every function
 in the package.</p>
 </div>
+<div class="section level4">
+<h4 id="non-demographic-cohorts">Non-Demographic Cohorts<a class="anchor" aria-label="anchor" href="#non-demographic-cohorts"></a>
+</h4>
+<p>Non-demographic cohorts represent animals managed through defined
+production cycles without explicitly tracking their age or reproductive
+development.</p>
+<p>Animals are classified by sex and production phase.</p>
+<p>Two non-demographic cohort codes are defined:</p>
+<table class="table">
+<colgroup>
+<col width="8%">
+<col width="10%">
+<col width="22%">
+<col width="58%">
+</colgroup>
+<thead><tr class="header">
+<th>Code</th>
+<th>Sex</th>
+<th>Age class</th>
+<th>Definition</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>FN</td>
+<td>Female</td>
+<td>Non-demographic</td>
+<td>Females assigned to a defined production cycle</td>
+</tr>
+<tr class="even">
+<td>MN</td>
+<td>Male</td>
+<td>Non-demographic</td>
+<td>Males assigned to a defined production cycle</td>
+</tr>
+</tbody>
+</table>
+<p>Each non-demographic cohort must include production phase
+<code>1</code> and may include an optional phase <code>2</code>, as
+specified by <code>nondemo_productive_phase_id</code>.</p>
+<p><a href="gleam-modules-overview.html#practical-application">Explore
+the practical use here</a>.</p>
+</div>
+</div>
 <div class="section level3">
-<h3 id="cohort-level-population-data">Cohort-level population data<a class="anchor" aria-label="anchor" href="#cohort-level-population-data"></a>
+<h3 id="herd-structure">Herd structure<a class="anchor" aria-label="anchor" href="#herd-structure"></a>
 </h3>
-<p>If the cohort distribution is not supplied by the user, the GLEAM
-demographic herd module generates population numbers for each cohort
-based on the herd-level parameters and total population size.</p>
+<p>Herd structure describes the distribution of the total herd
+population across demographic and non-demographic cohorts.</p>
+<p>If the herd structure is not provided by the user, the GLEAM herd
+module estimates the population of each cohort based on herd-level
+parameters and the total herd population.</p>
 </div>
 <div class="section level3">
 <h3 id="assessment-period">Assessment period<a class="anchor" aria-label="anchor" href="#assessment-period"></a>
 </h3>
-<p>The assessment period (<code>cohort_short</code>) defines the time
-window over which emissions and production are computed. It is specified
-in days (typically 365 for a standard annual assessment). Per-head,
-per-day intermediate values are scaled to cohort totals over the
-assessment period in the aggregation step. The assessment period can
+<p>The assessment period (<code>simulation_duration</code>) defines the
+time window over which emissions and production are computed. It is
+specified in days (typically 365 for a standard annual assessment).
+Per-head, per-day intermediate values are scaled to cohort totals over
+the assessment period in the aggregation step. The assessment period can
 also be used to represent different seasons with distinct variations in
 input data (e.g., feed basket composition or nutritional quality).</p>
 </div>
@@ -232,17 +467,26 @@ input data (e.g., feed basket composition or nutritional quality).</p>
 <div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<p>The following example loads the sample data shipped with the package
-and runs the full pipeline:</p>
+<p>The following example runs the full pipeline using the shipped
+<strong>mixed-herd</strong> inputs. Both herd modules are enabled: the
+demographic module simulates the breeding population and calculates
+juvenile diversion into the FN/MN production phases. The non-demographic
+module then simulates those phases. The combined average stock and
+offtake are rescaled to the supplied <code>herd_size_total</code>.</p>
+<p>This example includes all 15 herds. Herd 14 has FN laying hens
+alongside a demographic component; herd 15 has FN/MN meat chickens
+alongside a demographic component. The non-demographic-only example
+below represents these same herd IDs as separate production operations
+without a breeding population.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/un-fao/GLEAM/">gleam</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://un-fao.github.io/GLEAM/">gleam</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ---- Load sample data from inst/extdata ----</span></span>
 <span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/run_gleam_examples"</span>, package <span class="op">=</span> <span class="st">"gleam"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">cohort_dt</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"master_chrt_lvl_no_structure_data.csv"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">herd_dt</span>        <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"master_hrd_lvl_data.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">cohort_dt</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"master_chrt_lvl_no_structure_mixed_data.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">herd_dt</span>        <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"master_hrd_lvl_mixed_data.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">rations_dt</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"feed_rations_share_chrt.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">feed_params_dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"feed_quality.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">feed_emis_dt</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"feed_emission_factors.csv"</span><span class="op">)</span><span class="op">)</span></span>
@@ -252,6 +496,8 @@ and runs the full pipeline:</p>
 <span><span class="co"># ---- Run the full GLEAM pipeline ----</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_gleam.html">run_gleam</a></span><span class="op">(</span></span>
 <span>  has_herd_structure                <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  run_demographic                   <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  run_nondemographic                <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  cohort_level_data                 <span class="op">=</span> <span class="va">cohort_dt</span>,</span>
 <span>  herd_level_data                   <span class="op">=</span> <span class="va">herd_dt</span>,</span>
 <span>  feed_rations                      <span class="op">=</span> <span class="va">rations_dt</span>,</span>
@@ -265,14 +511,102 @@ and runs the full pipeline:</p>
 <span></span>
 <span><span class="co"># ---- Inspect results ----</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">cohort_level_results</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">herd_level_results</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">allocation_long</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">aggregation_results</span><span class="op">$</span><span class="va">results_emissions</span><span class="op">)</span></span></code></pre></div>
-<p>If you already have a pre-computed herd structure (population sizes
-and offtake numbers), set <code>has_herd_structure = TRUE</code> and
-supply a cohort-level table that includes the
-<code>cohort_stock_size</code> and <code>offtake_heads_assessment</code>
-columns. The pipeline will skip the herd simulation step and proceed
-directly to the weight calculations.</p>
+<div class="section level3">
+<h3 id="choosing-a-workflow">Choosing a workflow<a class="anchor" aria-label="anchor" href="#choosing-a-workflow"></a>
+</h3>
+<p>Choose one matching cohort and herd file pair. These are alternative
+workflows; do not append the non-demographic-only files to the mixed
+files.</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th>Workflow</th>
+<th>Cohort file</th>
+<th>Herd file</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Mixed simulation</td>
+<td><code>master_chrt_lvl_no_structure_mixed_data.csv</code></td>
+<td><code>master_hrd_lvl_mixed_data.csv</code></td>
+</tr>
+<tr class="even">
+<td>Non-demographic-only simulation</td>
+<td><code>master_chrt_lvl_no_structure_nondemo_data.csv</code></td>
+<td><code>master_hrd_lvl_nondemo_data.csv</code></td>
+</tr>
+<tr class="odd">
+<td>Supplied herd structure</td>
+<td><code>master_chrt_lvl_structure_data.csv</code></td>
+<td><code>master_hrd_lvl_structure_data.csv</code></td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>run_gleam_examples/</code> for the full pipeline. The
+separate <code>run_modules_examples/</code> folder contains subsets of
+the mixed example with only the inputs needed by each module. Downstream
+inputs include values calculated by the preceding pipeline stages. Use
+each module’s matching input files when running it separately.</p>
+<div class="section level4">
+<h4 id="non-demographic-only-simulation">Non-demographic-only simulation<a class="anchor" aria-label="anchor" href="#non-demographic-only-simulation"></a>
+</h4>
+<p>This example contains only FN/MN phases for herds 14 and 15. Annual
+entrants are supplied directly in the herd file; the demographic module
+is disabled. The herd file omits demographic, reproductive, milk, fibre
+and draught-work inputs that are unused by these chicken production
+phases. The dedicated ration-share and manure-fraction files contain
+only the FN/MN phases in this example. The manure-system factors file
+contains only herds 14 and 15. Load these files directly; feed quality
+and feed emission factors are shared with the other workflows:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cohort_nd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
+<span>  <span class="va">path</span>, <span class="st">"master_chrt_lvl_no_structure_nondemo_data.csv"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">herd_nd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"master_hrd_lvl_nondemo_data.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">rations_nd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"feed_rations_share_chrt_nondemo.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">mms_frac_nd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"manure_management_system_fraction_nondemo.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">mms_fact_nd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"manure_management_system_factors_nondemo.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">results_nd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_gleam.html">run_gleam</a></span><span class="op">(</span></span>
+<span>  has_herd_structure <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  run_demographic <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  run_nondemographic <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">cohort_nd</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">herd_nd</span>,</span>
+<span>  feed_rations <span class="op">=</span> <span class="va">rations_nd</span>,</span>
+<span>  feed_params <span class="op">=</span> <span class="va">feed_params_dt</span>,</span>
+<span>  feed_emissions <span class="op">=</span> <span class="va">feed_emis_dt</span>,</span>
+<span>  manure_management_system_fraction <span class="op">=</span> <span class="va">mms_frac_nd</span>,</span>
+<span>  manure_management_system_factors <span class="op">=</span> <span class="va">mms_fact_nd</span>,</span>
+<span>  simulation_duration <span class="op">=</span> <span class="fl">365</span>,</span>
+<span>  global_warming_potential_set <span class="op">=</span> <span class="st">"AR6"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The supplied non-demographic-only herd file has no
+<code>herd_size_total</code> column, so average stock and offtake remain
+unscaled. Annual entrants are a flow in heads/year, not average animals
+present. Add <code>herd_size_total</code> to rescale both stock and
+offtake to a herd-size target.</p>
+</div>
+<div class="section level4">
+<h4 id="supplied-herd-structure">Supplied herd structure<a class="anchor" aria-label="anchor" href="#supplied-herd-structure"></a>
+</h4>
+<p>For this workflow, load the supplied-structure file pair and set
+<code>has_herd_structure = TRUE</code>. The cohort table already
+contains <code>cohort_stock_size</code> and
+<code>offtake_heads_assessment</code>. The pipeline skips both herd
+simulations and starts with weights. The <code>run_demographic</code>
+and <code>run_nondemographic</code> switches have no effect in this
+mode; set both to <code>FALSE</code> to make the example’s intent
+explicit. See <code><a href="../reference/run_gleam.html">?run_gleam</a></code> for the complete call.</p>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="pipeline-overview">Pipeline Overview<a class="anchor" aria-label="anchor" href="#pipeline-overview"></a>
@@ -298,8 +632,9 @@ following steps:</p>
 <tr class="odd">
 <td>1</td>
 <td>Herd simulation (optional)</td>
-<td><a href="../reference/run_demographic_herd_module.html"><code>run_demographic_herd_module()</code></a></td>
-<td>Cohort sizes, offtake numbers, herd growth rate</td>
+<td><a href="../reference/run_all_herd_module.html"><code>run_all_herd_module()</code></a></td>
+<td>Demographic/Non demographic cohort sizes, offtake numbers, herd
+growth rate</td>
 </tr>
 <tr class="even">
 <td>2</td>
@@ -378,7 +713,7 @@ before any computation. Constants are centralized in
 <details open><summary><strong>Overview of the GLEAM pipeline wih the different
 modules:</strong>
 </summary><div style="position:relative; overflow:visible; margin:1em 0;">
-<img src="images/gleamx_package_module_pipeline.png" alt="Overview of the GLEAM pipeline with the different modules" class="module-figure-zoom" style="max-width: 500px; width: 100%; height: auto;"><div class="module-figure-hint">
+<img src="images/gleamx_package_module_pipeline.png" alt="Overview of the GLEAM pipeline with the different modules" class="module-figure-zoom"><div class="module-figure-hint">
 
 </div>
 </div>
@@ -386,27 +721,36 @@ modules:</strong>
 <h3 id="running-individual-modules">Running individual modules<a class="anchor" aria-label="anchor" href="#running-individual-modules"></a>
 </h3>
 <p>For custom workflows, research applications, or step-by-step
-debugging, each module can be called independently. For example, to
-compute only metabolic energy requirements:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Assumes cohort_level_data and herd_level_data have been prepared with</span></span>
-<span><span class="co"># weight and ration quality variables already merged in.</span></span>
-<span><span class="va">energy_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_metabolic_energy_req_module.html">run_metabolic_energy_req_module</a></span><span class="op">(</span></span>
-<span>  cohort_level_data <span class="op">=</span> <span class="va">my_cohort_data</span>,</span>
-<span>  herd_level_data   <span class="op">=</span> <span class="va">my_herd_data</span></span>
+debugging, each module can be called independently.</p>
+<p>For example, to compute only metabolic energy requirements:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load metabolic energy requirements inputs (cohort and herd-level)</span></span>
+<span><span class="va">metabolic_energy_req_chrt_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_modules_examples/metabolic_energy_req_input_chrt_data.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">metabolic_energy_req_hrd_dt</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata/run_modules_examples/metabolic_energy_req_input_hrd_data.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"gleam"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run metabolic energy requirement and rations calculations</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_metabolic_energy_req_module.html">run_metabolic_energy_req_module</a></span><span class="op">(</span></span>
+<span>  cohort_level_data <span class="op">=</span> <span class="va">metabolic_energy_req_chrt_dt</span>,</span>
+<span>  herd_level_data <span class="op">=</span> <span class="va">metabolic_energy_req_hrd_dt</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>An overview of all modules, their inputs and outputs is provided in
 the <a href="gleam-modules-overview.html">Module Overview
 vignette</a>.</p>
 </div>
 <div class="section level3">
-<h3 id="using-individual-scientific-functions">Using individual scientific functions<a class="anchor" aria-label="anchor" href="#using-individual-scientific-functions"></a>
+<h3 id="running-individual-scientific-functions">Running individual scientific functions<a class="anchor" aria-label="anchor" href="#running-individual-scientific-functions"></a>
 </h3>
 <p>At the lowest level, all core computations are exposed as individual
 scientific functions. These can be called directly for research or
 testing purposes. For example, to compute maintenance energy
 requirements for a single cohort:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">e_maint</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_metabolic_energy_req_maintenance.html">calc_metabolic_energy_req_maintenance</a></span><span class="op">(</span></span>
 <span>  species_short              <span class="op">=</span> <span class="st">"CTL"</span>,</span>
 <span>  cohort_short               <span class="op">=</span> <span class="st">"FA"</span>,</span>
@@ -427,8 +771,8 @@ tables. Sample files for all tables are provided in
 <div class="section level3">
 <h3 id="cohort_level_data">cohort_level_data<a class="anchor" aria-label="anchor" href="#cohort_level_data"></a>
 </h3>
-<p>A <code>data.table</code> with one row per herd × cohort (six rows
-per herd).</p>
+<p>A <code>data.table</code> with one row per herd and demographic
+cohort, or per herd, non-demographic cohort and productive phase.</p>
 <table class="table">
 <colgroup>
 <col width="29%">
@@ -461,7 +805,12 @@ codes</a>)</td>
 <tr class="even">
 <td><code>cohort_duration_days</code></td>
 <td>Numeric</td>
-<td>Time each animal spends in the cohort (days)</td>
+<td>Amount of time that each animal spends in a specific cohort and
+production phase (days). For <code>CHK</code>, suggested value for
+<code>FJ</code> and <code>MJ</code> cohorts: 3 days. Not required for
+<code>FN</code> and <code>MN</code> when phase durations are supplied in
+the herd table; the code fills it from the herd values, which override
+any cohort values.</td>
 </tr>
 <tr class="odd">
 <td><code>offtake_rate</code></td>
@@ -472,9 +821,19 @@ codes</a>)</td>
 <tr class="even">
 <td><code>death_rate</code></td>
 <td>Numeric</td>
-<td>Annual death fraction per cohort (fraction); required when
-<code>has_herd_structure = FALSE</code>
+<td>Death fraction: annual for demographic cohorts, per productive phase
+for FN/MN; required when <code>has_herd_structure = FALSE</code>
 </td>
+</tr>
+<tr class="odd">
+<td><code>nondemo_productive_phase_id</code></td>
+<td>Numeric</td>
+<td>Phase 1 or 2 for FN/MN; <code>NA</code> for demographic cohorts</td>
+</tr>
+<tr class="even">
+<td><code>is_egg_producing</code></td>
+<td>Logical</td>
+<td>Food-egg production flag for CHK FA or FN phase 2</td>
 </tr>
 <tr class="odd">
 <td><code>low_activity_fraction</code></td>

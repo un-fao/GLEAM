@@ -6,16 +6,21 @@
 #'   input table with the following minimum data requirement:
 #'   \describe{
 #'   \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'   \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
-#'   production stage of the animals. Supported values include:
-#'   \itemize{
-#'     \item \code{FA}: adult females (from age at first parturition)
-#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{MA}: adult males (from age at first breeding)
-#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'     \item \code{MJ}: juvenile males (from birth to weaning)
-#'   }}
+#'   \item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+#'     the production stage of the animals. Supported values include:
+#'     \itemize{
+#'       \item \code{FA}: adult females (from age at first parturition)
+#'       \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'       \item \code{FJ}: juvenile females (from birth to weaning)
+#'       \item \code{MA}: adult males (from age at first breeding)
+#'       \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'       \item \code{MJ}: juvenile males (from birth to weaning)
+#'       \item \code{FN}: non-demographic females
+#'       \item \code{MN}: non-demographic males
+#'     }}
+#'     \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+#'     for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+#'     phase 1 and optionally \code{2} for phase 2.}
 #'     \item{ration_intake}{Numeric. Average daily dry matter intake of feed (kg DM/head/day).}
 #'     \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of digestible to gross energy content (fraction).}
 #'     \item{ration_urinary_energy_fraction}{Numeric. Fraction of feed's gross energy that is excreted in urine (fraction).}
@@ -27,18 +32,25 @@
 #'   with:
 #'   \describe{
 #'   \item{herd_id}{Character. Unique identifier for the herd, repeated for each cohort belonging to the same herd.}
-#'   \item{cohort_short}{Character. Sex- and age-specific cohort code describing the
-#'   production stage of the animals. Supported values include:
-#'   \itemize{
-#'     \item \code{FA}: adult females (from age at first parturition)
-#'     \item \code{FS}: sub-adult females (from weaning to age at first parturition)
-#'     \item \code{FJ}: juvenile females (from birth to weaning)
-#'     \item \code{MA}: adult males (from age at first breeding)
-#'     \item \code{MS}: sub-adult males (from weaning to age at first breeding)
-#'     \item \code{MJ}: juvenile males (from birth to weaning)
-#'   }}
+#'   \item{cohort_short}{Character. Sex-specific cohort code describing the age and/or
+#'     the production stage of the animals. Supported values include:
+#'     \itemize{
+#'       \item \code{FA}: adult females (from age at first parturition)
+#'       \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'       \item \code{FJ}: juvenile females (from birth to weaning)
+#'       \item \code{MA}: adult males (from age at first breeding)
+#'       \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'       \item \code{MJ}: juvenile males (from birth to weaning)
+#'       \item \code{FN}: non-demographic females
+#'       \item \code{MN}: non-demographic males
+#'     }}
+#'     \item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier
+#'     for non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for
+#'     phase 1 and optionally \code{2} for phase 2. Omit this column or leave it
+#'     entirely missing to use the same manure-management fractions for each phase of a
+#'     cohort.}
 #'     \item{manure_management_system}{Character. Name identifying the manure management system. The identifiers mms_pasture and mms_burned are reserved for manure deposited on pasture and manure burned for fuel, respectively. No specific naming convention is required for other manure management systems, which are grouped and handled as “other” systems.}
-#'     \item{manure_management_system_fraction}{Numeric. Fraction of total manure excreted by animals in a given herd and cohort that is handled in a specific manure management system. Values ranges from 0 to 1. The sum of all fractions for each herd_id must equal 1.}
+#'     \item{manure_management_system_fraction}{Numeric. Fraction of total manure excreted by animals in a given herd and cohort that is handled in a specific manure management system. Values range from 0 to 1. Fractions must sum to 1 within each herd and cohort, and within each productive phase when phases are specified.}
 #'   }
 #'
 #' @param manure_management_system_factors data.table. Herd-level MMS factors
@@ -174,6 +186,14 @@
 #'   (pasture, burned, other) - \code{\link{calc_n2o_manure_total}}
 #' }
 #'
+#' When \code{manure_management_system_fraction} omits
+#' \code{nondemo_productive_phase_id}, or the column contains only missing values,
+#' fractions are matched by \code{herd_id + cohort_short} and reused for each
+#' input phase. If the fractions specify phase identifiers,
+#' \code{cohort_level_data} must also contain the phase column, and matching uses
+#' \code{herd_id + cohort_short + nondemo_productive_phase_id}.
+#' Input rows and any supplied phase identifiers are preserved in the output.
+#'
 #' The approach corresponds to a Tier 2 implementation as:
 #' \itemize{
 #'   \item VS is derived from ration-level inputs rather than using fixed daily
@@ -192,20 +212,21 @@
 #'
 #' @examples
 #' \donttest{
-#' # Load emissions manure inputs (cohort-level and system lookups)
+#' # Load manure emissions inputs (cohort-level, system fractions and factors)
 #' emissions_manure_input_chrt_data <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/emissions_manure_input_chrt_data.csv",
-#'   package = "gleam"
-#' ))
-#' manure_management_system_factors <- data.table::fread(system.file(
-#'   "extdata/run_modules_examples/manure_management_system_factors.csv",
 #'   package = "gleam"
 #' ))
 #' manure_management_system_fraction <- data.table::fread(system.file(
 #'   "extdata/run_modules_examples/manure_management_system_fraction.csv",
 #'   package = "gleam"
 #' ))
+#' manure_management_system_factors <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/manure_management_system_factors.csv",
+#'   package = "gleam"
+#' ))
 #'
+#' # Run manure emissions calculations
 #' results <- run_emissions_manure_module(
 #'   cohort_level_data = emissions_manure_input_chrt_data,
 #'   manure_management_system_fraction = manure_management_system_fraction,
@@ -247,6 +268,9 @@ run_emissions_manure_module <- function(
   cohort_level_data <- data.table::copy(cohort_level_data)
   mms_fraction <- data.table::copy(manure_management_system_fraction)
   mms_factors <- data.table::copy(manure_management_system_factors)
+  use_phase_id <- "nondemo_productive_phase_id" %in% names(cohort_level_data) &&
+    "nondemo_productive_phase_id" %in% names(mms_fraction) &&
+    any(!is.na(mms_fraction$nondemo_productive_phase_id))
 
   # Join cohort fractions with herd-level MMS factors
   mms_data <- merge(
@@ -298,7 +322,24 @@ run_emissions_manure_module <- function(
       # Select MMS records for this herd/cohort (fractions + factors).
       current_herd_id <- herd_id
       current_cohort <- cohort_short
-      mms_rows <- mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
+      current_phase_id <- if (use_phase_id) nondemo_productive_phase_id else NULL
+      mms_rows <- if (use_phase_id) {
+        if (is.na(current_phase_id)) {
+          mms_data[
+            herd_id == current_herd_id &
+              cohort_short == current_cohort &
+              is.na(nondemo_productive_phase_id)
+          ]
+        } else {
+          mms_data[
+            herd_id == current_herd_id &
+              cohort_short == current_cohort &
+              nondemo_productive_phase_id == current_phase_id
+          ]
+        }
+      } else {
+        mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
+      }
 
       # Build the list expected by calc_ch4_manure(...)
       mms_list <- build_mms_list(
@@ -334,7 +375,24 @@ run_emissions_manure_module <- function(
       # Select MMS records for this herd/cohort (fractions + factors).
       current_herd_id <- herd_id
       current_cohort <- cohort_short
-      mms_rows <- mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
+      current_phase_id <- if (use_phase_id) nondemo_productive_phase_id else NULL
+      mms_rows <- if (use_phase_id) {
+        if (is.na(current_phase_id)) {
+          mms_data[
+            herd_id == current_herd_id &
+              cohort_short == current_cohort &
+              is.na(nondemo_productive_phase_id)
+          ]
+        } else {
+          mms_data[
+            herd_id == current_herd_id &
+              cohort_short == current_cohort &
+              nondemo_productive_phase_id == current_phase_id
+          ]
+        }
+      } else {
+        mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
+      }
 
       # Build the list expected by calc_n2o_manure_direct(...)
       mms_list <- build_mms_list(mms_rows, c("manure_management_system_fraction", "n2o_ef3"))
@@ -366,7 +424,24 @@ run_emissions_manure_module <- function(
       # Select MMS records for this herd/cohort (fractions + factors).
       current_herd_id <- herd_id
       current_cohort <- cohort_short
-      mms_rows <- mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
+      current_phase_id <- if (use_phase_id) nondemo_productive_phase_id else NULL
+      mms_rows <- if (use_phase_id) {
+        if (is.na(current_phase_id)) {
+          mms_data[
+            herd_id == current_herd_id &
+              cohort_short == current_cohort &
+              is.na(nondemo_productive_phase_id)
+          ]
+        } else {
+          mms_data[
+            herd_id == current_herd_id &
+              cohort_short == current_cohort &
+              nondemo_productive_phase_id == current_phase_id
+          ]
+        }
+      } else {
+        mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
+      }
 
       # Build the list expected by calc_n2o_manure_volatilization(...)
       mms_list <- build_mms_list(
@@ -400,7 +475,24 @@ run_emissions_manure_module <- function(
       # Select MMS records for this herd/cohort (fractions + factors).
       current_herd_id <- herd_id
       current_cohort <- cohort_short
-      mms_rows <- mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
+      current_phase_id <- if (use_phase_id) nondemo_productive_phase_id else NULL
+      mms_rows <- if (use_phase_id) {
+        if (is.na(current_phase_id)) {
+          mms_data[
+            herd_id == current_herd_id &
+              cohort_short == current_cohort &
+              is.na(nondemo_productive_phase_id)
+          ]
+        } else {
+          mms_data[
+            herd_id == current_herd_id &
+              cohort_short == current_cohort &
+              nondemo_productive_phase_id == current_phase_id
+          ]
+        }
+      } else {
+        mms_data[herd_id == current_herd_id & cohort_short == current_cohort]
+      }
 
       # Build the list expected by calc_n2o_manure_leaching(...)
       mms_list <- build_mms_list(

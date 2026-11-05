@@ -119,7 +119,7 @@ where:
 
 In this implementation, calculations are performed at daily, per-head
 resolution using `nitrogen_excretion` (kg N/head/day) - see also
-[`calc_nitrogen_excretion`](https://github.com/un-fao/GLEAM/reference/calc_nitrogen_excretion.md).
+[`calc_nitrogen_excretion`](https://un-fao.github.io/GLEAM/reference/calc_nitrogen_excretion.md).
 
 Daily emissions are computed as:
 
@@ -129,7 +129,7 @@ manure\\management\\system\\fraction \times n2o\\ef3 \right)
 \end{aligned} \$\$
 
 This function is part of the
-[`run_emissions_manure_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md).
+[`run_emissions_manure_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md).
 
 ## References
 
@@ -143,7 +143,7 @@ Management. Equation 10.25.
 
 ## See also
 
-[`run_emissions_manure_module`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md)
+[`run_emissions_manure_module`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md)
 
 ## Examples
 

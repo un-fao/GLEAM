@@ -11,7 +11,8 @@ calc_ration_digestibility(
   species_short,
   feed_ration_fraction,
   feed_digestibility_fraction_ruminant = NA_real_,
-  feed_digestibility_fraction_pigs = NA_real_
+  feed_digestibility_fraction_pigs = NA_real_,
+  feed_digestibility_fraction_chicken = NA_real_
 )
 ```
 
@@ -34,6 +35,8 @@ calc_ration_digestibility(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - feed_ration_fraction:
 
   Numeric. Proportion of a specific feed component in the total ration,
@@ -50,6 +53,11 @@ calc_ration_digestibility(
   Numeric. Digestibility of a feed component for pigs, expressed as the
   ratio of digestible energy to gross energy content (fraction).
 
+- feed_digestibility_fraction_chicken:
+
+  Numeric. Digestibility of a feed component for chickens, expressed as
+  the ratio of metabolizable energy to gross energy content (fraction).
+
 ## Value
 
 Numeric. Contribution of the feed component to total diet digestibility
@@ -63,12 +71,15 @@ ratio:
 - Ruminants (`CTL`, `BFL`, `CML`, `SHP`, `GTS`):
   `feed_ration_fraction * feed_digestibility_fraction_ruminant`
 
+- Chickens (`CHK`):
+  `feed_ration_fraction * feed_digestibility_fraction_chicken`
+
 - Pigs (`PGS`):
   `feed_ration_fraction * feed_digestibility_fraction_pigs`
 
 This function is part of the
-[`run_ration_quality_module()`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md).
+[`run_ration_quality_module()`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md).
 
 ## See also
 
-[`run_ration_quality_module`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md)
+[`run_ration_quality_module`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md)

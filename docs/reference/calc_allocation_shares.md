@@ -63,7 +63,7 @@ calc_allocation_shares(
 - egg_allocation_energy:
 
   Numeric vector. Energy required to produce all eggs during the
-  assessment period (MJ/cohort/assessment period).
+  assessment period by cohort (MJ/cohort/assessment period).
 
 ## Value
 
@@ -96,7 +96,7 @@ These fractions represent the proportions of total environmental burdens
 subsequent steps of the assessment.
 
 This function is part of the
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md)
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md)
 of the Global Livestock Environmental Assessment Model (GLEAM), which
 incorporates a biophysical allocation approach, aligned with the IDF
 Global Carbon Footprint Standard for the Dairy Sector (IDF, 2022), and
@@ -119,10 +119,10 @@ This function calculates biophysical allocation fractions for
 commodities (meat, milk, fibre, work, eggs) for all species. The
 allocation is based on commodity-specific energy requirements calculated
 using
-[`calc_meat_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_meat_allocation_energy.md),
-[`calc_milk_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_milk_allocation_energy.md),
-[`calc_fibre_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_fibre_allocation_energy.md),
-[`calc_work_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_work_allocation_energy.md),
+[`calc_meat_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_meat_allocation_energy.md),
+[`calc_milk_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_milk_allocation_energy.md),
+[`calc_fibre_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_fibre_allocation_energy.md),
+[`calc_work_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_work_allocation_energy.md),
 and `calc_eggs_allocation_energy`.
 
 **Pig species (`PGS`):** allocation is not based on energy partitioning
@@ -132,7 +132,7 @@ commodity (meat share = 1; all other commodity shares = 0), independent
 of the energy inputs.
 
 This function is part of the
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md).
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md).
 
 ## References
 
@@ -166,9 +166,9 @@ Italy.
 
 ## See also
 
-[`run_allocation_module`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md),
-[`calc_meat_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_meat_allocation_energy.md),
-[`calc_milk_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_milk_allocation_energy.md),
-[`calc_fibre_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_fibre_allocation_energy.md),
-[`calc_work_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_work_allocation_energy.md),
+[`run_allocation_module`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md),
+[`calc_meat_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_meat_allocation_energy.md),
+[`calc_milk_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_milk_allocation_energy.md),
+[`calc_fibre_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_fibre_allocation_energy.md),
+[`calc_work_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_work_allocation_energy.md),
 `calc_eggs_allocation_energy`

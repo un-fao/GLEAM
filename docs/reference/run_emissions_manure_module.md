@@ -28,7 +28,7 @@ run_emissions_manure_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -43,6 +43,16 @@ run_emissions_manure_module(
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
+
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
+
+  nondemo_productive_phase_id
+
+  :   Numeric. Optional productive phase identifier for non-demographic
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   ration_intake
 
@@ -78,7 +88,7 @@ run_emissions_manure_module(
 
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -94,6 +104,18 @@ run_emissions_manure_module(
 
       - `MJ`: juvenile males (from birth to weaning)
 
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
+
+  nondemo_productive_phase_id
+
+  :   Numeric. Optional productive phase identifier for non-demographic
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2. Omit this column or leave it entirely missing to
+      use the same manure-management fractions for each phase of a
+      cohort.
+
   manure_management_system
 
   :   Character. Name identifying the manure management system. The
@@ -106,8 +128,9 @@ run_emissions_manure_module(
 
   :   Numeric. Fraction of total manure excreted by animals in a given
       herd and cohort that is handled in a specific manure management
-      system. Values ranges from 0 to 1. The sum of all fractions for
-      each herd_id must equal 1.
+      system. Values range from 0 to 1. Fractions must sum to 1 within
+      each herd and cohort, and within each productive phase when phases
+      are specified.
 
 - manure_management_system_factors:
 
@@ -351,7 +374,7 @@ emissions columns:
 
 This function represents the intermediate module of the Global Livestock
 Environmental Assessment Model (GLEAM) computational pipeline
-[`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 to estimate emissions from manure management systems (MMS) and
 orchestrates a cohort-level implementation of the IPCC manure management
 methodology.
@@ -361,35 +384,43 @@ The following calculation sequence is applied:
 1.  VS excretion is computed from nutritional parameters of the feed
     ration (digestibility, urinary energy, and ash) using a simplified
     formulation of Equation 10.24 (IPCC 2006, 2019) -
-    [`calc_volatile_solids`](https://github.com/un-fao/GLEAM/reference/calc_volatile_solids.md)
+    [`calc_volatile_solids`](https://un-fao.github.io/GLEAM/reference/calc_volatile_solids.md)
 
 2.  Methane (CH4) emissions from manure management are computed from VS
     and MMS-specific factors (MCF and B0) and reported by MMS group
     (pasture, burned, and other), consistently with Equation 10.23
     (IPCC, 2006, 2019) -
-    [`calc_ch4_manure`](https://github.com/un-fao/GLEAM/reference/calc_ch4_manure.md)
+    [`calc_ch4_manure`](https://un-fao.github.io/GLEAM/reference/calc_ch4_manure.md)
 
 3.  Direct nitrous oxide (N2O) emissions from manure management are
     computed from nitrogen excretion and MMS-specific EF3 values, and
     reported by MMS group, consistently with Equation 10.25 (IPCC,
     2006, 2019) -
-    [`calc_n2o_manure_direct`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_direct.md)
+    [`calc_n2o_manure_direct`](https://un-fao.github.io/GLEAM/reference/calc_n2o_manure_direct.md)
 
 4.  Indirect N2O emissions are computed as the sum of:
 
     - volatilisation-driven N2O using MMS-specific nitrogen losses
       (FracGas) and EF4, consistently with Equations 10.26 (IPCC, 2006,
       2019), 10.27 (IPCC, 2006), and 10.28 (IPCC, 2019) -
-      [`calc_n2o_manure_volatilization`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_volatilization.md)
+      [`calc_n2o_manure_volatilization`](https://un-fao.github.io/GLEAM/reference/calc_n2o_manure_volatilization.md)
 
     - leaching/runoff-driven N2O using MMS-specific nitrogen losses
       (FracLeach) and EF5, consistently with Equations 10.28 (IPCC,
       2006), 10.27 (IPCC, 2019), and 10.29 (IPCC, 2006, 2019) -
-      [`calc_n2o_manure_leaching`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_leaching.md)
+      [`calc_n2o_manure_leaching`](https://un-fao.github.io/GLEAM/reference/calc_n2o_manure_leaching.md)
 
 5.  Total N2O emissions are aggregated by MMS group (pasture, burned,
     other) -
-    [`calc_n2o_manure_total`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_total.md)
+    [`calc_n2o_manure_total`](https://un-fao.github.io/GLEAM/reference/calc_n2o_manure_total.md)
+
+When `manure_management_system_fraction` omits
+`nondemo_productive_phase_id`, or the column contains only missing
+values, fractions are matched by `herd_id + cohort_short` and reused for
+each input phase. If the fractions specify phase identifiers,
+`cohort_level_data` must also contain the phase column, and matching
+uses `herd_id + cohort_short + nondemo_productive_phase_id`. Input rows
+and any supplied phase identifiers are preserved in the output.
 
 The approach corresponds to a Tier 2 implementation as:
 
@@ -419,32 +450,33 @@ Management. Equations 10.23, 10.24, 10.25, 10.26, 10.27, 10.28, and
 
 ## See also
 
-[`run_gleam`](https://github.com/un-fao/GLEAM/reference/run_gleam.md),
-[`calc_volatile_solids`](https://github.com/un-fao/GLEAM/reference/calc_volatile_solids.md),
-[`calc_ch4_manure`](https://github.com/un-fao/GLEAM/reference/calc_ch4_manure.md),
-[`calc_n2o_manure_direct`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_direct.md),
-[`calc_n2o_manure_volatilization`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_volatilization.md),
-[`calc_n2o_manure_leaching`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_leaching.md),
-[`calc_n2o_manure_total`](https://github.com/un-fao/GLEAM/reference/calc_n2o_manure_total.md)
+[`run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md),
+[`calc_volatile_solids`](https://un-fao.github.io/GLEAM/reference/calc_volatile_solids.md),
+[`calc_ch4_manure`](https://un-fao.github.io/GLEAM/reference/calc_ch4_manure.md),
+[`calc_n2o_manure_direct`](https://un-fao.github.io/GLEAM/reference/calc_n2o_manure_direct.md),
+[`calc_n2o_manure_volatilization`](https://un-fao.github.io/GLEAM/reference/calc_n2o_manure_volatilization.md),
+[`calc_n2o_manure_leaching`](https://un-fao.github.io/GLEAM/reference/calc_n2o_manure_leaching.md),
+[`calc_n2o_manure_total`](https://un-fao.github.io/GLEAM/reference/calc_n2o_manure_total.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-# Load emissions manure inputs (cohort-level and system lookups)
+# Load manure emissions inputs (cohort-level, system fractions and factors)
 emissions_manure_input_chrt_data <- data.table::fread(system.file(
   "extdata/run_modules_examples/emissions_manure_input_chrt_data.csv",
-  package = "gleam"
-))
-manure_management_system_factors <- data.table::fread(system.file(
-  "extdata/run_modules_examples/manure_management_system_factors.csv",
   package = "gleam"
 ))
 manure_management_system_fraction <- data.table::fread(system.file(
   "extdata/run_modules_examples/manure_management_system_fraction.csv",
   package = "gleam"
 ))
+manure_management_system_factors <- data.table::fread(system.file(
+  "extdata/run_modules_examples/manure_management_system_factors.csv",
+  package = "gleam"
+))
 
+# Run manure emissions calculations
 results <- run_emissions_manure_module(
   cohort_level_data = emissions_manure_input_chrt_data,
   manure_management_system_fraction = manure_management_system_fraction,

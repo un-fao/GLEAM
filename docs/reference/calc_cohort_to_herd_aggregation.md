@@ -37,8 +37,8 @@ calc_cohort_to_herd_aggregation(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -52,6 +52,10 @@ calc_cohort_to_herd_aggregation(
 
   - `MJ`: juvenile males (from birth to weaning)
 
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
+
 ## Value
 
 A `data.table` at herd scale, in which selected cohort-level variables
@@ -59,11 +63,11 @@ have been summed across all cohorts belonging to the same herd, as
 defined by id_herd.
 
 This function is part of the
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md)
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md)
 and
-[`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md).
+[`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md).
 
 ## See also
 
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md),
-[`run_aggregation_module()`](https://github.com/un-fao/GLEAM/reference/run_aggregation_module.md)
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md),
+[`run_aggregation_module()`](https://un-fao.github.io/GLEAM/reference/run_aggregation_module.md)

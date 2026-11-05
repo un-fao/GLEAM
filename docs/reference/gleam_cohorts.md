@@ -11,4 +11,4 @@ gleam_cohorts
 
 ## Format
 
-A character vector of length 6.
+A character vector of length 8.

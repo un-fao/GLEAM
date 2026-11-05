@@ -7,7 +7,8 @@
 calc_feed_digestibility_fraction(
   feed_digestible_energy_ruminant,
   feed_digestible_energy_pigs,
-  feed_gross_energy
+  feed_gross_energy,
+  feed_metabolizable_energy_chicken = NA_real_
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ losses (MJ/kg DM).}
 \item{feed_gross_energy}{Numeric. Gross energy content of a feed component,
 representing the total chemical energy released upon complete combustion of
 the feed (MJ/kg DM).}
+
+\item{feed_metabolizable_energy_chicken}{Numeric. Metabolizable energy content
+of a feed component for chickens (MJ/kg DM).}
 }
 \value{
 List with elements:
@@ -34,6 +38,10 @@ of digestible energy to gross energy content (fraction).
 Numeric. Digestibility of a feed component for pigs, expressed as the ratio of
 digestible energy to gross energy content (fraction).
 }
+\item{feed_digestibility_fraction_chicken}{
+Numeric. Digestibility of a feed component for chickens, expressed as the ratio
+of metabolizable energy to gross energy content (fraction).
+}
 }
 }
 \description{
@@ -44,7 +52,8 @@ Digestibility is computed as the ratio of usable energy to gross energy:
 \deqn{feed\_digestibility\_fraction = usable\_energy / feed\_gross\_energy}
 
 For ruminants and pigs, usable energy is represented by \code{digestible_energy} (DE),
-which accounts for fecal energy losses.
+which accounts for fecal energy losses. For chickens, \code{metabolizable_energy}
+(ME) is used because urinary and fecal losses are excreted together.
 
 This function is part of the \code{\link[=run_ration_quality_module]{run_ration_quality_module()}}.
 }

@@ -19,7 +19,7 @@ An object of class `list` of length 19.
 
 The `emissions_source` values from this list are the canonical set
 passed to
-[`assign_allocation_shares()`](https://github.com/un-fao/GLEAM/reference/assign_allocation_shares.md)
+[`assign_allocation_shares()`](https://un-fao.github.io/GLEAM/reference/assign_allocation_shares.md)
 in the allocation module and used to pivot the aggregation output.
 Adding or renaming an emission source here automatically updates both
 modules.

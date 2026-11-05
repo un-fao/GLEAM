@@ -24,8 +24,8 @@ calc_co2_ration_crop_activities(feed_ration_fraction, co2_feed_crop_activities)
 
   Numeric. Carbon dioxide (CO2) emission factor of a feed component,
   representing CO2 emissions from on-field agricultural activities in
-  feed production, expressed per kilogram of dry matter intake (kg
-  CO2/kg DM).
+  feed production, expressed per kilogram of dry matter intake (g CO2/kg
+  DM).
 
 ## Value
 
@@ -41,8 +41,8 @@ The contribution is computed as:
 co2\\feed\\crop\\operations\$\$
 
 This function is part of the
-[`run_emissions_ration_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_ration_module.md).
+[`run_emissions_ration_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_ration_module.md).
 
 ## See also
 
-[`run_emissions_ration_module`](https://github.com/un-fao/GLEAM/reference/run_emissions_ration_module.md)
+[`run_emissions_ration_module`](https://un-fao.github.io/GLEAM/reference/run_emissions_ration_module.md)

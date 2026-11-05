@@ -39,7 +39,7 @@ period).}
 \item{work_allocation_energy}{Numeric vector. Energy required to provide all draught power (traction/work) by cohort
 (MJ/cohort/assessment period).}
 
-\item{egg_allocation_energy}{Numeric vector. Energy required to produce all eggs during the assessment period
+\item{egg_allocation_energy}{Numeric vector. Energy required to produce all eggs during the assessment period by cohort
 (MJ/cohort/assessment period).}
 }
 \value{

@@ -22,9 +22,8 @@ calc_meat_production(
 
 - offtake_heads_assessment:
 
-  Numeric. Total number of animals removed via offtake over the
-  assessment period, aggregated to 6 sex–age cohorts (heads/assessment
-  period) (cohorts = FJ, FS, FA, MJ, MS, MA).
+  Numeric. Total number of animals removed from each cohort over the
+  assessment period (# heads/assessment period).
 
 - live_weight_cohort_at_slaughter:
 
@@ -100,10 +99,10 @@ Meat production outputs are computed as follows:
   meat\\protein\\fraction\\
 
 This function is part of the
-[`run_production_module()`](https://github.com/un-fao/GLEAM/reference/run_production_module.md).
+[`run_production_module()`](https://un-fao.github.io/GLEAM/reference/run_production_module.md).
 
 ## See also
 
-[`run_production_module`](https://github.com/un-fao/GLEAM/reference/run_production_module.md),
-[`run_demographic_herd_module`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md),
-[`run_weights_module`](https://github.com/un-fao/GLEAM/reference/run_weights_module.md)
+[`run_production_module`](https://un-fao.github.io/GLEAM/reference/run_production_module.md),
+[`run_demographic_herd_module`](https://un-fao.github.io/GLEAM/reference/run_demographic_herd_module.md),
+[`run_weights_module`](https://un-fao.github.io/GLEAM/reference/run_weights_module.md)

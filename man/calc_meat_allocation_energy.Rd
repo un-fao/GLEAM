@@ -10,7 +10,9 @@ calc_meat_allocation_energy(
   meat_production_live_weight_cohort,
   live_weight_cohort_at_slaughter = NA_real_,
   live_weight_at_birth = NA_real_,
-  ratio_me_to_ne = NA_real_
+  ratio_me_to_ne = NA_real_,
+  nondemo_productive_phase_id = NA_real_,
+  is_egg_producing = FALSE
 )
 }
 \arguments{
@@ -23,9 +25,10 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -34,6 +37,8 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
 
 \item{meat_production_live_weight_cohort}{Numeric. Total meat produced as live weight over the assessment period by
@@ -45,6 +50,14 @@ cohort (kg/cohort/assessment period).}
 
 \item{ratio_me_to_ne}{Numeric. Ratio of metabolizable energy converted to net energy (fraction). Used for
 species_short = CML.}
+
+\item{nondemo_productive_phase_id}{Numeric. Optional productive phase identifier for
+non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+and optionally \code{2} for phase 2.}
+
+\item{is_egg_producing}{Logical. Cohort-level flag identifying egg-producing
+\code{CHK} cohorts. This can be \code{TRUE} only for \code{FA} and for
+\code{FN} with \code{nondemo_productive_phase_id = 2}.}
 }
 \value{
 Numeric. Energy required by a given sex–age cohort for total meat output by cohort during the assessment
@@ -107,6 +120,20 @@ Growth energy is not calculated in this
 function and \code{0} is returned. In downstream processing,
 \code{\link{calc_allocation_shares}} assigns 100\% of the allocation to the
 edible meat commodity for pig systems.
+
+\item \strong{For \code{CHK}}:
+
+Poultry meat allocation uses:
+
+\deqn{
+  specific\_energy\_meat =
+  \frac{cgro \times 1000 \times (live\_weight\_cohort\_at\_slaughter - live\_weight\_at\_birth)}
+  {live\_weight\_cohort\_at\_slaughter}
+  }
+
+where \eqn{cgro = (0.0279 + 0.0202) / 2 = 0.02405} MJ/g. This uses the
+average of the adult and juvenile/sub-adult poultry growth coefficients and
+converts from g to kg via the factor 1000 in the equation above.
 }
 
 This function is part of the \code{\link[=run_allocation_module]{run_allocation_module()}}.
@@ -136,6 +163,9 @@ Assessment and Performance (LEAP) Partnership. FAO, Rome, Italy.
 FAO. (2016c). \emph{Greenhouse gas emissions and fossil energy use from poultry
 supply chains: Guidelines for assessment}. Livestock Environmental Assessment
 and Performance (LEAP) Partnership. FAO, Rome, Italy.
+
+Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
+laying hens and broilers. \emph{Brazilian Journal of Poultry Science}, 6, 1-11.
 }
 \seealso{
 \code{\link{run_allocation_module}},

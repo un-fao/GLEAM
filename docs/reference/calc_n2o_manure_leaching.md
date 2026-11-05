@@ -146,7 +146,7 @@ manure\\management\\system\\fraction \times nitrogen\\fracleach \times
 n2o\\ef5 \right) \end{aligned} \$\$
 
 This function is part of the
-[`run_emissions_manure_module()`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md).
+[`run_emissions_manure_module()`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md).
 
 ## References
 
@@ -160,7 +160,7 @@ Management. Equations 10.28; 10.29.
 
 ## See also
 
-[`run_emissions_manure_module`](https://github.com/un-fao/GLEAM/reference/run_emissions_manure_module.md)
+[`run_emissions_manure_module`](https://un-fao.github.io/GLEAM/reference/run_emissions_manure_module.md)
 
 ## Examples
 

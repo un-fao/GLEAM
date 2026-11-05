@@ -11,7 +11,8 @@ calc_ration_urinary_energy_fraction(
   species_short,
   feed_ration_fraction,
   feed_urinary_energy_ruminant = NA_real_,
-  feed_urinary_energy_pigs = NA_real_
+  feed_urinary_energy_pigs = NA_real_,
+  feed_urinary_energy_chicken = 0
 )
 ```
 
@@ -34,6 +35,8 @@ calc_ration_urinary_energy_fraction(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - feed_ration_fraction:
 
   Numeric. Proportion of a specific feed component in the total ration,
@@ -50,6 +53,11 @@ calc_ration_urinary_energy_fraction(
   Numeric. Fraction of feed's gross energy that is excreted in urine for
   pigs (fraction).
 
+- feed_urinary_energy_chicken:
+
+  Numeric. Fraction of feed's gross energy that is excreted in uric acid
+  for chickens (fraction). Defaults to 0.
+
 ## Value
 
 Numeric. Contribution of the feed component to the fraction of total
@@ -63,11 +71,16 @@ parameter:
 - Ruminants (`CTL`, `BFL`, `CML`, `SHP`, `GTS`):
   `feed_ration_fraction * feed_urinary_energy_ruminant`
 
+- Chickens (`CHK`): `feed_ration_fraction * feed_urinary_energy_chicken`
+
 - Pigs (`PGS`): `feed_ration_fraction * feed_urinary_energy_pigs`
 
+For chickens, urinary energy defaults to 0 because urinary losses are
+already included in metabolizable energy and are not modeled separately.
+
 This function is part of the
-[`run_ration_quality_module()`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md).
+[`run_ration_quality_module()`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md).
 
 ## See also
 
-[`run_ration_quality_module`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md)
+[`run_ration_quality_module`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md)

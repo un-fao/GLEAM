@@ -4,7 +4,8 @@ Calculates population dynamics over time until a steady state is
 reached. The steady state is defined as a constant sex–age cohort
 structure over time, with population size potentially growing or
 declining at a constant rate. Tracks sex–age cohort structure and
-population growth based on survival, offtake, and fecundity parameters.
+population growth based on survival, offtake, fecundity parameters and
+diversion to non-demographic blocks such as fattening operations.
 
 ## Usage
 
@@ -17,7 +18,8 @@ calc_steady_state_structure(
   fecundity_male,
   probability_death,
   probability_offtake,
-  probability_growth
+  probability_growth,
+  proportion_nondemographic
 )
 ```
 
@@ -78,6 +80,13 @@ calc_steady_state_structure(
   `FC`: Female Culling, `MB`: Male Birth, `MJ`: Male Juvenile, `MS`:
   Male Sub-adult, `MA`: Male Adult, `MC`: Male Culling).
 
+- proportion_nondemographic:
+
+  Named numeric vector of length 6. Fraction of animals diverted from
+  the demographic pathway into the non-demographic pathway for 6
+  demographic cohorts (fraction). (cohorts= `FJ`, `FS`, `FA`, `MJ`,
+  `MS`, `MA`).
+
 ## Value
 
 A named list with:
@@ -105,9 +114,36 @@ A named list with:
   Numeric. Annualized growth rate at which the herd reaches steady state
   (fraction)
 
+- size_unscaled:
+
+  Named numeric vector of length 6. Final steady-state population size
+  by grouped demographic sex-age cohort before rescaling to the observed
+  herd total (heads).
+
 This function is part of the
-[`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md).
+[`run_demographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_demographic_herd_module.md).
+
+## Details
+
+Diversion into the non-demographic block is applied on cohort
+transitions. For each transition eligible for diversion, the model first
+computes the total number of animals progressing out of the current
+demographic cohort. It then splits that transition flow into:
+
+- a retained demographic component, which continues into the next
+  demographic cohort
+
+- a diverted non-demographic component, recorded separately through
+  `proportion_nondemographic`
+
+In formula terms, if \\T\\ is the total transition flow and \\p\\ is the
+relevant entry of `proportion_nondemographic`, then: \$\$ T\_{non-demo}
+= p \times T \$\$ \$\$ T\_{demo} = (1 - p) \times T \$\$
+
+This allows the demographic steady-state structure to remain internally
+consistent while tracking how many animals are redirected to the
+non-demographic component.
 
 ## See also
 
-[`run_demographic_herd_module()`](https://github.com/un-fao/GLEAM/reference/run_demographic_herd_module.md)
+[`run_demographic_herd_module()`](https://un-fao.github.io/GLEAM/reference/run_demographic_herd_module.md)

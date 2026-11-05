@@ -37,10 +37,12 @@ calc_metabolic_energy_req_work(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -54,12 +56,16 @@ calc_metabolic_energy_req_work(
 
   - `MJ`: juvenile males (from birth to weaning)
 
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
+
 - metabolic_energy_req_maintenance:
 
   Numeric. Energy required for maintenance, defined as the amount of
   energy needed to keep the animal at equilibrium such that body energy
-  is neither gained nor lost. Expressed as net energy for CTL, BFL, SHP,
-  GTS and as metabolizable energy for CML and PGS (MJ/head/day).
+  is neither gained nor lost (MJ/head/day). Expressed as net energy for
+  CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 
 - draught_work_hours_female:
 
@@ -114,7 +120,7 @@ where:
 
 - \\metabolic\\energy\\req\\maintenance\\ is net energy required for
   maintenance (MJ/head/day) and can be calculated using
-  [`calc_metabolic_energy_req_maintenance()`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_maintenance.md),
+  [`calc_metabolic_energy_req_maintenance()`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_maintenance.md),
 
 - \\0.1\\ represents a 10% increase in maintenance energy per hour of
   work,
@@ -147,7 +153,7 @@ where:
   `draught_fraction_male` (for `MA`)
 
 This function is part of the
-[`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md).
+[`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md).
 
 ## References
 
@@ -172,5 +178,5 @@ Méditerranéennes : Série A. Séminaires Méditerranéens; n. 2)
 
 ## See also
 
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
-[`calc_metabolic_energy_req_maintenance`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_maintenance.md)
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),
+[`calc_metabolic_energy_req_maintenance`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_maintenance.md)

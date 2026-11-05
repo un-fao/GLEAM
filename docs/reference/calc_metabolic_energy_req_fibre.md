@@ -33,10 +33,12 @@ calc_metabolic_energy_req_fibre(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -50,6 +52,10 @@ calc_metabolic_energy_req_fibre(
 
   - `MJ`: juvenile males (from birth to weaning)
 
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
+
 - fibre_yield_year:
 
   Numeric. Annual production yield of fibre, such as wool, cashmere,
@@ -59,14 +65,13 @@ calc_metabolic_energy_req_fibre(
 
 Numeric. Energy required for the synthesis of fibre for SHP, GTS and
 CML. Assumed to be 0 for other species. (MJ/head/day). Expressed as net
-energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and
-PGS (MJ/head/day).
+energy for SHP and GTS and as metabolizable energy for CML.
 
 ## Details
 
 This component follows the IPCC Tier 2 partitioning approach and is
 applied only to fibre-producing species and relevant cohorts, which are
-assumed to be `FA`, `FS`, `MA`, and `MS`.
+assumed to be `FA`, `FS`, `MA`, `MS`, `FN`, and `MN`.
 
 **Species-specific approach:**
 
@@ -117,7 +122,7 @@ assumed to be `FA`, `FS`, `MA`, and `MS`.
 - **Other species**: Fibre production energy is assumed to be zero.
 
 This function is part of the
-[`run_metabolic_energy_req_module()`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md).
+[`run_metabolic_energy_req_module()`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md).
 
 ## References
 
@@ -142,4 +147,4 @@ Management, Equation 10.12.
 
 ## See also
 
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),

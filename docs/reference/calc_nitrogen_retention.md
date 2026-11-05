@@ -14,12 +14,16 @@ calc_nitrogen_retention(
   milk_yield_day = NA_real_,
   daily_weight_gain = NA_real_,
   fibre_yield_year = NA_real_,
-  litter_size = NA_real_,
-  parturition_rate = NA_real_,
+  offspring_per_reproductive_event = NA_real_,
+  reproductive_rate = NA_real_,
   live_weight_at_weaning = NA_real_,
   live_weight_at_birth = NA_real_,
   pregnancy_duration = NA_real_,
-  cohort_duration_days = NA_real_
+  cohort_duration_days = NA_real_,
+  egg_human_consumption_yield = NA_real_,
+  egg_average_weight = NA_real_,
+  nondemo_productive_phase_id = NA_real_,
+  is_egg_producing = FALSE
 )
 ```
 
@@ -42,10 +46,12 @@ calc_nitrogen_retention(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -58,6 +64,10 @@ calc_nitrogen_retention(
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
 
 - milk_protein_fraction:
 
@@ -84,20 +94,18 @@ calc_nitrogen_retention(
   Numeric. Annual production yield of fibre, such as wool, cashmere,
   mohair (kg/head/year). Required only for species = CML, SHP, and GTS.
 
-- litter_size:
+- offspring_per_reproductive_event:
 
   Numeric. Average number of offspring born per parturition (#
-  offsprings/parturition). This value can be calculated as the total
-  number of offspring born divided by the total number of parturitions
-  during the year.
+  offspring/parturition). For chickens, hatchability of eggs laid for
+  reproduction, calculated as the number of chicks hatched divided by
+  the number of eggs laid for reproduction (fraction).
 
-- parturition_rate:
+- reproductive_rate:
 
-  Numeric. Average annual number of parturitions per female animal (#
-  parturitions/adult female/year). A herd-level reproductive performance
-  indicator calculated as the total number of parturitions (deliveries)
-  occurring during a year divided by the number of adult females
-  potentially able to give birth during that year.
+  Numeric. Average annual number of parturitions per reproductive female
+  (# parturitions/reproductive female/year). For chickens, annual number
+  of eggs laid for reproduction per breeding hen (# eggs/hen/year).
 
 - live_weight_at_weaning:
 
@@ -114,7 +122,28 @@ calc_nitrogen_retention(
 - cohort_duration_days:
 
   Numeric. Amount of time that each animal spends in a specific cohort
-  (days).
+  (days). For `CHK`, suggested value for `FJ` and `MJ` cohorts: 3 days.
+
+- egg_human_consumption_yield:
+
+  Numeric. Number of eggs produced for human consumption in one year by
+  hen (eggs/year/animal). Used for `CHK`.
+
+- egg_average_weight:
+
+  Numeric. Average egg weight (kg/egg).
+
+- nondemo_productive_phase_id:
+
+  Numeric. Optional productive phase identifier for non-demographic
+  cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2`
+  for phase 2.
+
+- is_egg_producing:
+
+  Logical. Cohort-level flag identifying egg-producing `CHK` cohorts.
+  This can be `TRUE` only for `FA` and for `FN` with
+  `nondemo_productive_phase_id = 2`.
 
 ## Value
 
@@ -188,8 +217,38 @@ In this implementation:
   piglets' live weight gain to correct for their higher nitrogen content
   per unit of live weight gain, following IPCC (2019).
 
+**For CHK**:
+
+Nitrogen retention includes growth and egg deposition. Reproductive eggs
+are included for `FA` regardless of the food-egg flag. Eggs for human
+consumption are included only when `is_egg_producing = TRUE`:
+
+\$\$nitrogen\\retention = growth\\component + egg\\component\$\$
+
+with:
+
+\$\$growth\\component = daily\\weight\\gain \times 0.032\$\$
+
+and:
+
+\$\$ egg\\component = (human\\consumption\\eggs\\head\\day +
+reproductive\\eggs\\head\\day) \times egg\\average\\weight \times 0.02
+\$\$ Human-consumption eggs per head per day equal
+`egg_human_consumption_yield / 365` when the food-egg flag is true, and
+zero otherwise. Reproductive eggs per head per day equal
+`reproductive_rate / 365` for `FA`, and zero for other cohorts.
+
+The coefficient 0.032 represents nitrogen retained in live-weight gain
+(kg N/kg live weight), following Lessire (2004). The coefficient 0.02
+represents nitrogen content of egg mass (kg N/kg egg mass), based on the
+egg protein composition summarized by Caffa et al. (2025). As
+implemented in the poultry pathway, the food-egg component is activated
+by the cohort-level `is_egg_producing` flag. Validation restricts this
+flag to demographic laying hens (`FA`) and to non-demographic `FN` phase
+2 when intensive layers are modeled outside the demographic structure.
+
 This function is part of the
-[`run_nitrogen_balance_module()`](https://github.com/un-fao/GLEAM/reference/run_nitrogen_balance_module.md).
+[`run_nitrogen_balance_module()`](https://un-fao.github.io/GLEAM/reference/run_nitrogen_balance_module.md).
 
 ## References
 
@@ -206,6 +265,15 @@ IPCC. (2006). *2006 IPCC Guidelines for National Greenhouse Gas
 Inventories*, Chapter 10: Emissions from Livestock and Manure
 Management. Equation 10.33.
 
+Caffa, I., Proietti, E., Turrini, F., Borgarelli, C., Ferrando, M. R.,
+Formisano, E., ... & Pisciotta, L. (2025). Nutritional Aspects of Eggs
+for a Healthy and Sustainable Consumption: A Narrative Review. *Food
+Science & Nutrition*, 13(9), e70285.
+
+Lessire, M. (2004). Nutritional values for poultry. In *Tables of
+composition and nutritional value of feed materials* (pp. 37-42).
+Wageningen Academic.
+
 ## See also
 
-[`run_nitrogen_balance_module`](https://github.com/un-fao/GLEAM/reference/run_nitrogen_balance_module.md)
+[`run_nitrogen_balance_module`](https://un-fao.github.io/GLEAM/reference/run_nitrogen_balance_module.md)

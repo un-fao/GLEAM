@@ -29,7 +29,7 @@ calc_daily_weight_gain(
 - cohort_duration_days:
 
   Numeric. Amount of time that each animal spends in a specific cohort
-  (days).
+  (days). For `CHK`, suggested value for `FJ` and `MJ` cohorts: 3 days.
 
 ## Value
 
@@ -46,8 +46,8 @@ duration of the cohort stage:
 live\\weight\\cohort\\initial) / cohort\\duration\\days\$\$
 
 This function is part of the
-[`run_weights_module()`](https://github.com/un-fao/GLEAM/reference/run_weights_module.md).
+[`run_weights_module()`](https://un-fao.github.io/GLEAM/reference/run_weights_module.md).
 
 ## See also
 
-[`run_weights_module`](https://github.com/un-fao/GLEAM/reference/run_weights_module.md)
+[`run_weights_module`](https://un-fao.github.io/GLEAM/reference/run_weights_module.md)

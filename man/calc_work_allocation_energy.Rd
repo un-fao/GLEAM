@@ -24,7 +24,7 @@ Supported values include:
 \item \code{GTS}: goats
 }}
 
-\item{cohort_stock_size}{Numeric. Population size in the cohort at the start of the assessment period (heads).}
+\item{cohort_stock_size}{Numeric. Average population size of the assessed cohort (# heads).}
 
 \item{metabolic_energy_req_work}{Numeric. Energy required for work, used to estimate the energy required for draught
 power for CTL, BFL and CML. (MJ/head/day) Assumed to be 0 for other species. Expressed as net energy for CTL, BFL,

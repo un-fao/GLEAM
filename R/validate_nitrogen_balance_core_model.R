@@ -16,29 +16,39 @@ validate_nitrogen_retention_inputs <- function(
     milk_yield_day = NA_real_,
     daily_weight_gain = NA_real_,
     fibre_yield_year = NA_real_,
-    litter_size = NA_real_,
-    parturition_rate = NA_real_,
+    offspring_per_reproductive_event = NA_real_,
+    reproductive_rate = NA_real_,
     live_weight_at_weaning = NA_real_,
     live_weight_at_birth = NA_real_,
     pregnancy_duration = NA_real_,
-    cohort_duration_days = NA_real_
+    cohort_duration_days = NA_real_,
+    egg_human_consumption_yield = NA_real_,
+    egg_average_weight = NA_real_,
+    nondemo_productive_phase_id = NA_real_,
+    is_egg_producing = FALSE
 ) {
   validate_animal_species(species_short)
   validate_cohort_code(cohort_short)
+  validate_is_egg_producing_flag(
+    species_short = species_short,
+    cohort_short = cohort_short,
+    is_egg_producing = is_egg_producing,
+    nondemo_productive_phase_id = nondemo_productive_phase_id
+  )
 
   # Range checks: only for args used by this species/cohort
   if (species_short == "PGS") {
     if (cohort_short == "FA") {
-      validate_param_range(litter_size)
-      validate_param_range(parturition_rate)
+      validate_param_range(offspring_per_reproductive_event)
+      validate_param_range(reproductive_rate)
       validate_param_range(live_weight_at_weaning)
       validate_param_range(live_weight_at_birth)
     } else if (cohort_short == "FS") {
       validate_param_range(daily_weight_gain)
       validate_positive_numeric(pregnancy_duration)
       validate_param_range(cohort_duration_days)
-      validate_param_range(litter_size)
-      validate_param_range(parturition_rate)
+      validate_param_range(offspring_per_reproductive_event)
+      validate_param_range(reproductive_rate)
       validate_param_range(live_weight_at_weaning)
       validate_param_range(live_weight_at_birth)
     } else {
@@ -60,10 +70,26 @@ validate_nitrogen_retention_inputs <- function(
     } else {
       if (!is.na(daily_weight_gain)) validate_param_range(daily_weight_gain)
     }
+  } else if (species_short == "CHK") {
+    validate_scalar_numeric(daily_weight_gain)
+    validate_egg_inputs(
+      species_short = species_short,
+      cohort_short = cohort_short,
+      egg_human_consumption_yield = egg_human_consumption_yield,
+      egg_average_weight = egg_average_weight,
+      reproductive_rate = reproductive_rate,
+      nondemo_productive_phase_id = nondemo_productive_phase_id,
+      is_egg_producing = is_egg_producing
+    )
   }
 
   # Birth weight must be strictly below weaning weight when both are provided
-  if (!is.na(live_weight_at_birth) && !is.na(live_weight_at_weaning) && live_weight_at_birth >= live_weight_at_weaning) {
+  if (
+    species_short != "CHK" &&
+      !is.na(live_weight_at_birth) &&
+      !is.na(live_weight_at_weaning) &&
+      live_weight_at_birth >= live_weight_at_weaning
+  ) {
     cli::cli_abort(
       "{.arg live_weight_at_birth} must be strictly less than {.arg live_weight_at_weaning}."
     )

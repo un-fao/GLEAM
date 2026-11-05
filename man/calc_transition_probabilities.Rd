@@ -7,11 +7,14 @@
 calc_transition_probabilities(cohort_duration_days, offtake_rate, death_rate)
 }
 \arguments{
-\item{cohort_duration_days}{Numeric vector of length 6. Amount of time that each animal spends in a specific cohort (days).}
+\item{cohort_duration_days}{Numeric vector of length 6. Amount of time that each
+animal spends in a specific cohort (days). For \code{CHK}, suggested value for
+\code{FJ} and \code{MJ} cohorts: 3 days.}
 
 \item{offtake_rate}{Numeric vector of length 6. Annual proportion of animals removed from the herd for each sex-age cohort (fraction).}
 
-\item{death_rate}{Numeric vector of length 6. Fraction of deaths in a herd over a year for each sex-age cohort (fraction)}
+\item{death_rate}{Numeric vector of length 6. Fraction of animals dying in the
+assessed cohort over one year for demographic cohorts (fraction).}
 }
 \value{
 A named list with:

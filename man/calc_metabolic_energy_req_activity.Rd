@@ -23,9 +23,10 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -34,12 +35,14 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
 
-\item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance, defined as the amount of energy needed to
-keep the animal at equilibrium such that body energy is neither gained nor lost.
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for
-CML and PGS (MJ/head/day).}
+\item{metabolic_energy_req_maintenance}{Numeric. Energy required for maintenance,
+defined as the amount of energy needed to keep the animal at equilibrium such that
+body energy is neither gained nor lost (MJ/head/day). Expressed as net energy for
+CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.}
 
 \item{live_weight_cohort_average}{Numeric. Average live weight over the cohort stage. Computed by accounting
 for the share of offtaken animals within the cohort, using their slaughter weight, and the potential
@@ -52,8 +55,9 @@ low-intensity movement typical of stall-feeding or near-field grazing, character
 with herding or long-distance grazing, typically involving extended walking distances and/or uneven or hilly terrain (fraction).}
 }
 \value{
-Numeric. Energy required for activity, defined as the amount of energy needed to support animal movement and physical activity (MJ/head/day).
-Expressed as net energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML and PGS.
+Numeric. Energy required for activity, defined as the amount of energy needed
+to support animal movement and physical activity (MJ/head/day). Expressed as net
+energy for CTL, BFL, SHP, GTS and as metabolizable energy for CML, PGS, and CHK.
 }
 \description{
 Calculates the energy requirement for activity by cohort (MJ/head/day),
@@ -70,7 +74,7 @@ For \code{SHP} and \code{GTS}, activity energy is calculated as:
 
 where
 
-\eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS};
+\eqn{cact} is an activity coefficient (dimensionless for \code{CTL}, \code{BFL}, \code{PGS}, \code{CHK};
 MJ/day/kg for \code{SHP},  \code{GTS}) that reflects the animal’s feeding and management conditions.
 \code{metabolic_energy_req_maintenance} can be calculated using
 \code{\link{calc_metabolic_energy_req_maintenance}()}.
@@ -103,6 +107,10 @@ over the assessment period to account for variation in management and grazing in
 \itemize{
 \item \code{all activity levels}: \eqn{cact = 0.125}
 }
+\strong{CHK} (Sakomura, 2004):
+\itemize{
+\item \code{all activity levels}: \eqn{cact = 0.25}
+}
 
 This function is part of the \code{\link[=run_metabolic_energy_req_module]{run_metabolic_energy_req_module()}}.
 }
@@ -125,6 +133,9 @@ from Livestock and Manure Management, Equation 10.4; Table 10.5.
 Wardeh, M. F. (2004). \emph{The nutrient requirements of the dromedary camel}.
 Journal of Camel Science, 1(1):37-45. The Camel Applied Research and Development Network (CARDN),
 Arab Center for the Studies of Arid Zones and Dry Lands (ACSAD).
+
+Sakomura, N. K. (2004). \emph{Modeling energy utilization in broiler breeders,
+laying hens and broilers}. Brazilian Journal of Poultry Science, 6, 1-11.
 }
 \seealso{
 \code{\link{run_metabolic_energy_req_module}},

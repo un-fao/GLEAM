@@ -46,8 +46,8 @@ calc_milk_production(
 
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -60,6 +60,10 @@ calc_milk_production(
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
 
 - milk_yield_day:
 
@@ -77,8 +81,7 @@ calc_milk_production(
 
 - cohort_stock_size:
 
-  Numeric. Average population size in each of the 6 sex–age cohorts (#
-  heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
+  Numeric. Average population size of the assessed cohort (# heads).
 
 - lactating_females_fraction:
 
@@ -170,7 +173,7 @@ Non-zero milk outputs are only expected for adult female cohorts of
 milk-producing species.
 
 This function is part of the
-[`run_production_module()`](https://github.com/un-fao/GLEAM/reference/run_production_module.md).
+[`run_production_module()`](https://un-fao.github.io/GLEAM/reference/run_production_module.md).
 
 ## References
 
@@ -181,4 +184,4 @@ Equation 10.
 
 ## See also
 
-[`run_production_module`](https://github.com/un-fao/GLEAM/reference/run_production_module.md)
+[`run_production_module`](https://un-fao.github.io/GLEAM/reference/run_production_module.md)

@@ -35,8 +35,8 @@ The gross energy contribution is defined as: \$\$diet\\gross\\energy =
 feed\\ration\\fraction \times feed\\gross\\energy\$\$
 
 This function is part of the
-[`run_ration_quality_module()`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md).
+[`run_ration_quality_module()`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md).
 
 ## See also
 
-[`run_ration_quality_module`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md)
+[`run_ration_quality_module`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md)

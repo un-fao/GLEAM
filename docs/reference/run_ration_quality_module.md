@@ -40,9 +40,11 @@ run_ration_quality_module(rations_share, feed_params, show_indicator = TRUE)
 
       - `GTS`: goats
 
+      - `CHK`: chickens
+
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -57,6 +59,16 @@ run_ration_quality_module(rations_share, feed_params, show_indicator = TRUE)
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
+
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
+
+  nondemo_productive_phase_id
+
+  :   Numeric. Optional productive phase identifier for non-demographic
+      cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally
+      `2` for phase 2.
 
   feed_id
 
@@ -116,6 +128,11 @@ run_ration_quality_module(rations_share, feed_params, show_indicator = TRUE)
       pigs, representing digestible energy minus energy losses in urine
       and gaseous products of digestion (MJ/kg DM).
 
+  feed_metabolizable_energy_chicken
+
+  :   Numeric. Metabolizable energy content of a feed component for
+      chickens (MJ/kg DM).
+
   feed_nitrogen_content
 
   :   Numeric. Nitrogen content of a feed component (kg N/kg DM).
@@ -132,7 +149,7 @@ run_ration_quality_module(rations_share, feed_params, show_indicator = TRUE)
 
   feed_ash
 
-  :   Numeric. Average ash content by feed component, calculated as a
+  :   Numeric. Average ash content by feed component, expressed as a
       fraction of the dry matter intake (g ash/100g DM).
 
   category
@@ -154,7 +171,8 @@ run_ration_quality_module(rations_share, feed_params, show_indicator = TRUE)
 ## Value
 
 data.table. Cohort-level nutritional metrics summarized by `herd_id`,
-`species_short`, and `cohort_short` with the following columns:
+`species_short`, `cohort_short`, and `nondemo_productive_phase_id` when
+present, with the following columns:
 
 - ration_gross_energy:
 
@@ -171,7 +189,8 @@ data.table. Cohort-level nutritional metrics summarized by `herd_id`,
 - ration_digestibility_fraction:
 
   Numeric. Average digestibility of the feed ration, expressed as ratio
-  of digestible to gross energy content (fraction).
+  of digestible (or metabolizable, for chickens) to gross energy content
+  (fraction).
 
 - ration_urinary_energy_fraction:
 
@@ -187,59 +206,63 @@ data.table. Cohort-level nutritional metrics summarized by `herd_id`,
 
 This function represents the intermediate module of the Global Livestock
 Environmental Assessment Model (GLEAM) computational pipeline
-[`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 to estimate the nutritional quality of the feed ration. This function
 joins `rations_share` with `feed_params` by `feed_id`, uses
 `species_short` directly, and computes ration-weighted nutritional
-metrics by cohort.
+metrics by cohort. For chickens, digestibility is calculated using
+chicken metabolizable energy divided by gross energy. Urinary energy is
+set to zero because these losses are already included in metabolizable
+energy.
 
 The following calculation sequence is applied:
 
 1.  Species-specific digestibility ratios are computed from energy
     parameters and `feed_gross_energy` using
-    [`calc_feed_digestibility_fraction`](https://github.com/un-fao/GLEAM/reference/calc_feed_digestibility_fraction.md).
+    [`calc_feed_digestibility_fraction`](https://un-fao.github.io/GLEAM/reference/calc_feed_digestibility_fraction.md).
 
 2.  Contributions of each feed component are computed as ration-weighted
     values:
 
     - gross energy using
-      [`calc_ration_gross_energy`](https://github.com/un-fao/GLEAM/reference/calc_ration_gross_energy.md)
+      [`calc_ration_gross_energy`](https://un-fao.github.io/GLEAM/reference/calc_ration_gross_energy.md)
 
     - nitrogen using
-      [`calc_ration_nitrogen_content`](https://github.com/un-fao/GLEAM/reference/calc_ration_nitrogen_content.md)
+      [`calc_ration_nitrogen_content`](https://un-fao.github.io/GLEAM/reference/calc_ration_nitrogen_content.md)
 
     - digestibility using
-      [`calc_ration_digestibility`](https://github.com/un-fao/GLEAM/reference/calc_ration_digestibility.md)
+      [`calc_ration_digestibility`](https://un-fao.github.io/GLEAM/reference/calc_ration_digestibility.md)
 
     - metabolizable energy using
-      [`calc_ration_metabolizable_energy`](https://github.com/un-fao/GLEAM/reference/calc_ration_metabolizable_energy.md)
+      [`calc_ration_metabolizable_energy`](https://un-fao.github.io/GLEAM/reference/calc_ration_metabolizable_energy.md)
 
     - urinary energy fraction using
-      [`calc_ration_urinary_energy_fraction`](https://github.com/un-fao/GLEAM/reference/calc_ration_urinary_energy_fraction.md)
+      [`calc_ration_urinary_energy_fraction`](https://un-fao.github.io/GLEAM/reference/calc_ration_urinary_energy_fraction.md)
 
     - ash using
-      [`calc_ration_ash`](https://github.com/un-fao/GLEAM/reference/calc_ration_ash.md)
+      [`calc_ration_ash`](https://un-fao.github.io/GLEAM/reference/calc_ration_ash.md)
 
 3.  Cohort-level nutritional metrics are obtained for the whole feed
     ration by summing contributions across feed components within each
-    `herd_id`, `species_short`, and `cohort_short`.
+    `herd_id`, `species_short`, and `cohort_short` group, and within
+    `nondemo_productive_phase_id` when that column is provided.
 
 ## See also
 
-[`run_gleam`](https://github.com/un-fao/GLEAM/reference/run_gleam.md),
-[`calc_feed_digestibility_fraction`](https://github.com/un-fao/GLEAM/reference/calc_feed_digestibility_fraction.md),
-[`calc_ration_gross_energy`](https://github.com/un-fao/GLEAM/reference/calc_ration_gross_energy.md),
-[`calc_ration_nitrogen_content`](https://github.com/un-fao/GLEAM/reference/calc_ration_nitrogen_content.md),
-[`calc_ration_digestibility`](https://github.com/un-fao/GLEAM/reference/calc_ration_digestibility.md),
-[`calc_ration_metabolizable_energy`](https://github.com/un-fao/GLEAM/reference/calc_ration_metabolizable_energy.md),
-[`calc_ration_urinary_energy_fraction`](https://github.com/un-fao/GLEAM/reference/calc_ration_urinary_energy_fraction.md),
-[`calc_ration_ash`](https://github.com/un-fao/GLEAM/reference/calc_ration_ash.md)
+[`run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md),
+[`calc_feed_digestibility_fraction`](https://un-fao.github.io/GLEAM/reference/calc_feed_digestibility_fraction.md),
+[`calc_ration_gross_energy`](https://un-fao.github.io/GLEAM/reference/calc_ration_gross_energy.md),
+[`calc_ration_nitrogen_content`](https://un-fao.github.io/GLEAM/reference/calc_ration_nitrogen_content.md),
+[`calc_ration_digestibility`](https://un-fao.github.io/GLEAM/reference/calc_ration_digestibility.md),
+[`calc_ration_metabolizable_energy`](https://un-fao.github.io/GLEAM/reference/calc_ration_metabolizable_energy.md),
+[`calc_ration_urinary_energy_fraction`](https://un-fao.github.io/GLEAM/reference/calc_ration_urinary_energy_fraction.md),
+[`calc_ration_ash`](https://un-fao.github.io/GLEAM/reference/calc_ration_ash.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-# Load feed rations inputs (cohort-level shares and feed parameters)
+# Load feed ration inputs (cohort-level shares and feed parameters)
 feed_rations_chrt_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/feed_rations_share_chrt.csv",
   package = "gleam"
@@ -249,7 +272,8 @@ feed_params_dt <- data.table::fread(system.file(
   package = "gleam"
 ))
 
-result <- run_ration_quality_module(
+# Run ration quality calculations
+results <- run_ration_quality_module(
   rations_share = feed_rations_chrt_dt,
   feed_params = feed_params_dt
 )

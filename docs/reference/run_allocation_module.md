@@ -44,9 +44,11 @@ run_allocation_module(
 
       - `GTS`: goats
 
+      - `CHK`: chickens
+
   cohort_short
 
-  :   Character. Sex- and age-specific cohort code describing the
+  :   Character. Sex-specific cohort code describing the age and/or the
       production stage of the animals. Supported values include:
 
       - `FA`: adult females (from age at first parturition)
@@ -61,6 +63,10 @@ run_allocation_module(
       - `MS`: sub-adult males (from weaning to age at first breeding)
 
       - `MJ`: juvenile males (from birth to weaning)
+
+      - `FN`: non-demographic females
+
+      - `MN`: non-demographic males
 
   milk_production_fpcm_cohort
 
@@ -88,8 +94,7 @@ run_allocation_module(
 
   cohort_stock_size
 
-  :   Numeric. Average population size in each of the 6 sex–age cohorts
-      (# heads). (cohorts=FJ, FS, FA, MJ, MS, MA).
+  :   Numeric. Average population size of the assessed cohort (# heads).
 
   metabolic_energy_req_work
 
@@ -98,10 +103,28 @@ run_allocation_module(
       Assumed to be 0 for other species. Expressed as net energy for
       CTL, BFL, SHP, GTS and as metabolizable energy for CML.
 
+  nondemo_productive_phase_id
+
+  :   Numeric. Productive phase identifier for non-demographic cohorts
+      (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2` for
+      phase 2. Demographic cohorts use `NA`.
+
+  egg_production_mass_cohort
+
+  :   Numeric. Total egg mass produced over the assessment period by
+      cohort (kg/cohort/assessment period).
+
+  is_egg_producing
+
+  :   Logical. Cohort-level flag identifying egg-producing `CHK`
+      cohorts. This can be `TRUE` only for `FA` and for `FN` with
+      `nondemo_productive_phase_id = 2`.
+
 - herd_level_data:
 
   data.table. Herd-level input table (one row per `herd_id`) with the
-  following data requirement:
+  following data requirement. Standard milk-composition columns may be
+  omitted when all `milk_production_fpcm_cohort` values are zero:
 
   herd_id
 
@@ -124,6 +147,8 @@ run_allocation_module(
       - `SHP`: sheep
 
       - `GTS`: goats
+
+      - `CHK`: chickens
 
   live_weight_at_birth
 
@@ -194,8 +219,8 @@ A named list of two `data.table` objects:
 
   egg_allocation_energy
 
-  :   Numeric. Energy required for egg production over the assessment
-      period (MJ/cohort/assessment period). Currently set to 0.
+  :   Numeric. Energy required to produce all eggs during the assessment
+      period by cohort (MJ/cohort/assessment period).
 
 - allocation_long:
 
@@ -225,6 +250,8 @@ A named list of two `data.table` objects:
 
       - `GTS`: goats
 
+      - `CHK`: chickens
+
   variable_name
 
   :   Character. Names of emission variables to which allocation should
@@ -242,7 +269,8 @@ A named list of two `data.table` objects:
   commodity_name
 
   :   Character. List of commodity categories to which emissions may be
-      allocated. List=c("None","Milk","Meat","Fibre","Work","Eggs")
+      allocated. List = c("Other", "Milk", "Meat", "Fibre", "Work",
+      "Eggs")
 
   commodity_type
 
@@ -270,26 +298,27 @@ individual products or sub-units.
 This function represents the intermediate allocation module of the
 Global Livestock Environmental Assessment Model (GLEAM) computational
 pipeline
-[`run_gleam()`](https://github.com/un-fao/GLEAM/reference/run_gleam.md)
+[`run_gleam()`](https://un-fao.github.io/GLEAM/reference/run_gleam.md)
 and performs the following calculation sequence:
 
 1.  Calculation of cohort-level energy allocation terms for meat, milk,
     fibre, work, and eggs using
-    [`calc_meat_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_meat_allocation_energy.md),
-    [`calc_milk_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_milk_allocation_energy.md),
-    [`calc_fibre_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_fibre_allocation_energy.md),
-    [`calc_work_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_work_allocation_energy.md),
-    and `calc_eggs_allocation_energy`.
+    [`calc_meat_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_meat_allocation_energy.md),
+    [`calc_milk_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_milk_allocation_energy.md),
+    [`calc_fibre_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_fibre_allocation_energy.md),
+    [`calc_work_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_work_allocation_energy.md),
+    and
+    [`calc_egg_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_egg_allocation_energy.md).
 
 2.  Aggregation of cohort-level energy terms to herd level using
-    [`calc_cohort_to_herd_aggregation`](https://github.com/un-fao/GLEAM/reference/calc_cohort_to_herd_aggregation.md).
+    [`calc_cohort_to_herd_aggregation`](https://un-fao.github.io/GLEAM/reference/calc_cohort_to_herd_aggregation.md).
 
 3.  Calculation of herd-level allocation shares for commodities using
-    [`calc_allocation_shares`](https://github.com/un-fao/GLEAM/reference/calc_allocation_shares.md).
+    [`calc_allocation_shares`](https://un-fao.github.io/GLEAM/reference/calc_allocation_shares.md).
 
 4.  Reshaping of allocation shares to long format and assignment of
     shares to emission sources using
-    [`assign_allocation_shares`](https://github.com/un-fao/GLEAM/reference/assign_allocation_shares.md).
+    [`assign_allocation_shares`](https://un-fao.github.io/GLEAM/reference/assign_allocation_shares.md).
 
 Commodity-specific allocation shares represent the fraction of total
 herd-level energy requirements attributable to each commodity. These
@@ -299,7 +328,7 @@ eggs, or the residual category `"None"`.
 Emissions from manure burned for fuel and manure deposited on pasture
 are not allocated to livestock commodities. These flows are assigned
 fully to `"None"` in accordance with the rules implemented in
-[`assign_allocation_shares`](https://github.com/un-fao/GLEAM/reference/assign_allocation_shares.md).
+[`assign_allocation_shares`](https://un-fao.github.io/GLEAM/reference/assign_allocation_shares.md).
 
 ## References
 
@@ -333,18 +362,18 @@ Italy.
 
 ## See also
 
-[`run_gleam`](https://github.com/un-fao/GLEAM/reference/run_gleam.md),
-[`calc_milk_production`](https://github.com/un-fao/GLEAM/reference/calc_milk_production.md),
-[`calc_meat_production`](https://github.com/un-fao/GLEAM/reference/calc_meat_production.md),
-[`run_production_module`](https://github.com/un-fao/GLEAM/reference/run_production_module.md),
-[`calc_meat_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_meat_allocation_energy.md),
-[`calc_milk_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_milk_allocation_energy.md),
-[`calc_fibre_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_fibre_allocation_energy.md),
-[`calc_work_allocation_energy`](https://github.com/un-fao/GLEAM/reference/calc_work_allocation_energy.md),
+[`run_gleam`](https://un-fao.github.io/GLEAM/reference/run_gleam.md),
+[`calc_milk_production`](https://un-fao.github.io/GLEAM/reference/calc_milk_production.md),
+[`calc_meat_production`](https://un-fao.github.io/GLEAM/reference/calc_meat_production.md),
+[`run_production_module`](https://un-fao.github.io/GLEAM/reference/run_production_module.md),
+[`calc_meat_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_meat_allocation_energy.md),
+[`calc_milk_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_milk_allocation_energy.md),
+[`calc_fibre_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_fibre_allocation_energy.md),
+[`calc_work_allocation_energy`](https://un-fao.github.io/GLEAM/reference/calc_work_allocation_energy.md),
 `calc_eggs_allocation_energy`,
-[`calc_cohort_to_herd_aggregation`](https://github.com/un-fao/GLEAM/reference/calc_cohort_to_herd_aggregation.md),
-[`calc_allocation_shares`](https://github.com/un-fao/GLEAM/reference/calc_allocation_shares.md),
-[`assign_allocation_shares`](https://github.com/un-fao/GLEAM/reference/assign_allocation_shares.md)
+[`calc_cohort_to_herd_aggregation`](https://un-fao.github.io/GLEAM/reference/calc_cohort_to_herd_aggregation.md),
+[`calc_allocation_shares`](https://un-fao.github.io/GLEAM/reference/calc_allocation_shares.md),
+[`assign_allocation_shares`](https://un-fao.github.io/GLEAM/reference/assign_allocation_shares.md)
 
 ## Examples
 
@@ -359,29 +388,13 @@ allocation_hrd_dt <- data.table::fread(system.file(
   "extdata/run_modules_examples/allocation_input_hrd_data.csv",
   package = "gleam"
 ))
+
+# Run allocation calculations
 results <- run_allocation_module(
-cohort_level_data = allocation_chrt_dt,
-herd_level_data = allocation_hrd_dt
+  cohort_level_data = allocation_chrt_dt,
+  herd_level_data = allocation_hrd_dt
 )
 #> 🕒 Computing allocation shares, please wait…
 #> ✔ Allocation calculation complete.
-head(results$allocation_long)
-#> Key: <commodity_name>
-#>    herd_id species_short              variable_name commodity_name
-#>      <int>        <char>                     <char>         <char>
-#> 1:       3           SHP                ch4_enteric          Fibre
-#> 2:       3           SHP           ch4_manure_other          Fibre
-#> 3:       3           SHP            ch4_ration_rice          Fibre
-#> 4:       3           SHP co2_ration_crop_activities          Fibre
-#> 5:       3           SHP      co2_ration_fertilizer          Fibre
-#> 6:       3           SHP      co2_ration_luc_nopeat          Fibre
-#>    commodity_type allocation_share
-#>            <char>            <num>
-#> 1:     Non-Edible        0.1122442
-#> 2:     Non-Edible        0.1122442
-#> 3:     Non-Edible        0.1122442
-#> 4:     Non-Edible        0.1122442
-#> 5:     Non-Edible        0.1122442
-#> 6:     Non-Edible        0.1122442
 # }
 ```

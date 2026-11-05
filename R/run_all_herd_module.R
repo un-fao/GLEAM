@@ -1,0 +1,670 @@
+#' Run Combined Herd Module Pipeline
+#'
+#' This function orchestrates the demographic herd module
+#' [run_demographic_herd_module()] and the non-demographic herd module
+#' [run_nondemographic_herd_module()] within a single wrapper. Depending on the
+#' selected logical switches, it runs the demographic module, the
+#' non-demographic module, or both, and returns a harmonized herd-module output
+#' structure for downstream use in [run_gleam()].
+#'
+#' @param cohort_level_data A `data.table` with one row per `herd_id` and cohort.
+#'   Required rows and columns depend on the selected execution mode:
+#'   \itemize{
+#'     \item \strong{Case 1 - when `run_demographic = TRUE` and `run_nondemographic = FALSE`:}
+#'     `cohort_level_data` must contain rows for the demographic cohorts only
+#'     (`FA`, `FJ`, `FS`, `MA`, `MJ`, `MS`). In this case the table must contain
+#'     the columns required by [run_demographic_herd_module()]:
+#'     \describe{
+#'       \item{`herd_id`}{Character. Unique identifier for the herd,
+#'       repeated for each cohort belonging to the same herd.}
+#'       \item{`cohort_short`}{Character. Sex-specific cohort code describing the age
+#'         and/or the production stage of the animals. Supported values include:
+#'         \itemize{
+#'           \item \code{FA}: adult females (from age at first parturition)
+#'           \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'           \item \code{FJ}: juvenile females (from birth to weaning)
+#'           \item \code{MA}: adult males (from age at first breeding)
+#'           \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'           \item \code{MJ}: juvenile males (from birth to weaning)
+#'           \item \code{FN}: non-demographic females
+#'           \item \code{MN}: non-demographic males
+#'         }}
+#'       \item{`cohort_duration_days`}{Numeric. Amount of time that each animal spends
+#'         in a specific cohort and production phase (days). For \code{CHK}, suggested
+#'         value for \code{FJ} and \code{MJ} cohorts: 3 days. Not required for \code{FN}
+#'         and \code{MN} when phase durations are supplied in the herd table; the code
+#'         fills it from the herd values, which override any cohort values.}
+#'       \item{`offtake_rate`}{Numeric. Annual proportion of animals removed
+#'       from the herd for each demographic cohort (fraction).}
+#'       \item{`death_rate`}{Numeric. Fraction of animals dying in the assessed
+#'       cohort over one year for demographic cohorts (fraction).}
+#'     }
+#'     \item \strong{Case 2 - when `run_demographic = FALSE` and `run_nondemographic = TRUE`:}
+#'     `cohort_level_data` must contain rows for the non-demographic cohorts
+#'     only (`FN`, `MN`). In this case the table must contain the columns
+#'     required by [run_nondemographic_herd_module()]:
+#'     \describe{
+#'       \item{`herd_id`}{Character. Unique identifier for the herd,
+#'       repeated for each cohort belonging to the same herd.}
+#'       \item{`cohort_short`}{Character. Sex-specific cohort code describing the age
+#'         and/or the production stage of the animals. Supported values include:
+#'         \itemize{
+#'           \item \code{FA}: adult females (from age at first parturition)
+#'           \item \code{FS}: sub-adult females (from weaning to age at first parturition)
+#'           \item \code{FJ}: juvenile females (from birth to weaning)
+#'           \item \code{MA}: adult males (from age at first breeding)
+#'           \item \code{MS}: sub-adult males (from weaning to age at first breeding)
+#'           \item \code{MJ}: juvenile males (from birth to weaning)
+#'           \item \code{FN}: non-demographic females
+#'           \item \code{MN}: non-demographic males
+#'         }}
+#'       \item{`nondemo_productive_phase_id`}{Numeric. Productive phase identifier for
+#'       non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase
+#'       1 and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.}
+#'       \item{`death_rate`}{Numeric. Fraction of animals dying in the assessed
+#'       cohort over the productive phase for non-demographic cohorts (fraction).}
+#'     }
+#'     \item \strong{Case 3 - when `run_demographic = TRUE` and `run_nondemographic = TRUE`:}
+#'     `cohort_level_data` must contain both demographic and non-demographic
+#'     rows. In this case the table must satisfy both sets of requirements
+#'     described above. Internally, `run_all_herd_module()` splits the combined
+#'     input into demographic and non-demographic subsets using `cohort_short`.
+#'   }
+#'
+#' @param herd_level_data A `data.table` with one row per `herd_id`. This table
+#'   is required in all execution modes. Required columns depend on the selected
+#'   execution mode:
+#'   \itemize{
+#'     \item \strong{Case 1 - when `run_demographic = TRUE` and `run_nondemographic = FALSE`:}
+#'     `herd_level_data` must contain the herd-level inputs required by
+#'     [run_demographic_herd_module()]:
+#'     \describe{
+#'       \item{`herd_id`}{Character. Unique identifier for the herd.}
+#'       \item{`reproductive_rate`}{Numeric. Average annual number of parturitions per
+#'       reproductive female (# parturitions/reproductive female/year). For chickens,
+#'       annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
+#'       \item{`offspring_per_reproductive_event`}{Numeric. Average number of offspring
+#'       born per parturition (# offspring/parturition). For chickens, hatchability of
+#'       eggs laid for reproduction, calculated as the number of chicks hatched divided
+#'       by the number of eggs laid for reproduction (fraction).}
+#'       \item{`birth_fraction_female`}{Numeric. Female birth fraction,
+#'       defined as the probability that a newborn offspring is female
+#'       (fraction).}
+#'       \item{`herd_size_total`}{Numeric. Total demographic population size at the
+#'       start of the year, including all cohorts (# heads)}
+#'       \item{`prop_nondemo_mal_juv`}{Numeric. Fraction of male juveniles
+#'       diverted into the non-demographic stream at the moment they transition
+#'       to the next age class (fraction).}
+#'       \item{`prop_nondemo_fem_juv`}{Numeric. Fraction of female juveniles
+#'       diverted into the non-demographic stream at the moment they transition
+#'       to the next age class (fraction).}
+#'     }
+#'     \item \strong{Case 2 - when `run_demographic = FALSE` and `run_nondemographic = TRUE`:}
+#'     `herd_level_data` must contain the herd-level inputs required by
+#'     [run_nondemographic_herd_module()]:
+#'     \describe{
+#'       \item{`herd_id`}{Character. Unique identifier for the herd.}
+#'       \item{`cohort_stock_fem_annual_nondemo`}{Numeric. Annual number of female animals entering the
+#'       non-demographic pathway (`FN`) over the 365-time horizon (#
+#'       heads). When both demographic and non-demographic modules are
+#'       run, this is derived internally from the demographic
+#'       calculations.}
+#'       \item{`cohort_stock_mal_annual_nondemo`}{Numeric. Annual number of male animals entering the
+#'       non-demographic pathway (`MN`) over the 365-time horizon (#
+#'       heads). When both demographic and non-demographic modules are
+#'       run, this is derived internally from the demographic
+#'       calculations.}
+#'       \item{`rest_between_nondemo_cycles_duration`}{Numeric. Duration of the resting
+#'       or empty phase between non-demographic cycles (days). Use \code{0} when there
+#'       is no rest between cycles.}
+#'       \item{`phase1_nondemo_fem_duration_days`}{Numeric. Duration of
+#'       productive phase 1 for the female non-demographic cohort (`FN`) (days).}
+#'       \item{`phase2_nondemo_fem_duration_days`}{Numeric. Duration of
+#'       productive phase 2 for the female non-demographic cohort (`FN`) (days).}
+#'       \item{`phase1_nondemo_mal_duration_days`}{Numeric. Duration of productive phase
+#'       1 for the male nondemographic cohort (\code{MN}) (days).}
+#'       \item{`phase2_nondemo_mal_duration_days`}{Numeric. Duration of
+#'       productive phase 2 for the male non-demographic cohort (`MN`) (days).}
+#'     }
+#'     \item \strong{Case 3 - when `run_demographic = TRUE` and `run_nondemographic = TRUE`:}
+#'     `herd_level_data` must contain the demographic herd inputs required by
+#'     [run_demographic_herd_module()], plus the non-demographic cycle-duration
+#'     inputs required to run [run_nondemographic_herd_module()] after annual
+#'     non-demographic entrants are derived internally from the demographic output:
+#'     \describe{
+#'       \item{`herd_id`}{Character. Unique identifier for the herd.}
+#'       \item{`reproductive_rate`}{Numeric. Average annual number of parturitions per
+#'       reproductive female (# parturitions/reproductive female/year). For chickens,
+#'       annual number of eggs laid for reproduction per breeding hen (# eggs/hen/year).}
+#'       \item{`offspring_per_reproductive_event`}{Numeric. Average number of offspring
+#'       born per parturition (# offspring/parturition). For chickens, hatchability of
+#'       eggs laid for reproduction, calculated as the number of chicks hatched divided
+#'       by the number of eggs laid for reproduction (fraction).}
+#'       \item{`birth_fraction_female`}{Numeric. Female birth fraction,
+#'       defined as the probability that a newborn offspring is female
+#'       (fraction).}
+#'       \item{`herd_size_total`}{Numeric. Total demographic population size at the
+#'       start of the year, including all cohorts (# heads)}
+#'       \item{`prop_nondemo_mal_juv`}{Numeric. Fraction of male juveniles
+#'       diverted into the non-demographic stream at the moment they transition
+#'       to the next age class (fraction).}
+#'       \item{`prop_nondemo_fem_juv`}{Numeric. Fraction of female juveniles
+#'       diverted into the non-demographic stream at the moment they transition
+#'       to the next age class (fraction).}
+#'       \item{`rest_between_nondemo_cycles_duration`}{Numeric. Duration of the resting
+#'       or empty phase between non-demographic cycles (days). Use \code{0} when there
+#'       is no rest between cycles.}
+#'       \item{`phase1_nondemo_fem_duration_days`}{Numeric. Duration of
+#'       productive phase 1 for the female non-demographic cohort (`FN`) (days).}
+#'       \item{`phase2_nondemo_fem_duration_days`}{Numeric. Duration of
+#'       productive phase 2 for the female non-demographic cohort (`FN`) (days).}
+#'       \item{`phase1_nondemo_mal_duration_days`}{Numeric. Duration of productive phase
+#'       1 for the male nondemographic cohort (\code{MN}) (days).}
+#'       \item{`phase2_nondemo_mal_duration_days`}{Numeric. Duration of
+#'       productive phase 2 for the male non-demographic cohort (`MN`) (days).}
+#'     }
+#'     In this combined mode, `cohort_stock_fem_annual_nondemo` and
+#'     `cohort_stock_mal_annual_nondemo` are omitted because derived internally from the
+#'     demographic output and therefore do not need to be supplied as primary
+#'     herd-level inputs.
+#'     }
+#'
+#' @param simulation_duration Numeric. Length of the assessment period (days).
+#' @param show_indicator Logical. Whether to display progress indicators during calculations.
+#'   Defaults to `TRUE`.
+#'
+#' @param run_demographic Logical. If `TRUE`, run
+#'   [run_demographic_herd_module()].
+#'
+#' @param run_nondemographic Logical. If `TRUE`, run
+#'   [run_nondemographic_herd_module()].
+#'
+#' @details
+#' The function supports three execution modes:
+#'
+#' 1. Demographic only: see [run_demographic_herd_module()] for additional details.
+#'
+#' 2. Non-demographic only: see [run_nondemographic_herd_module()] for additional details.
+#'
+#' 3. Demographic and non-demographic together:
+#' When `run_demographic = TRUE` and `run_nondemographic = TRUE`, the function:
+#' \enumerate{
+#'   \item runs [run_demographic_herd_module()] on the demographic subset
+#'   \item derives annual non-demographic entrants from the demographic output
+#'   \item runs [run_nondemographic_herd_module()] on the non-demographic subset
+#'   \item row-binds the two cohort-level result tables
+#'   \item harmonizes shared output columns
+#'   \item rescales average stock and offtake to the herd total
+#' }
+#'
+#' When both modules are run, annual entrants into the non-demographic blocks
+#' are derived from the demographic output:
+#' \itemize{
+#'   \item female entrants to `FN` are taken from demographic cohort `FJ` as
+#'     `cohort_stock_fem_annual_nondemo = cohort_stock_annual_nondemographic`
+#'   \item male entrants to `MN` are taken from demographic cohort `MJ` as
+#'     `cohort_stock_mal_annual_nondemo = cohort_stock_annual_nondemographic`
+#' }
+#'
+#' These entrant counts are merged with herd-level non-demographic timing inputs
+#' such as:
+#' \itemize{
+#'   \item `rest_between_nondemo_cycles_duration`
+#'   \item `phase1_nondemo_fem_duration_days`
+#'   \item `phase2_nondemo_fem_duration_days`
+#'   \item `phase1_nondemo_mal_duration_days`
+#'   \item `phase2_nondemo_mal_duration_days`
+#' }
+#'
+#' After the selected modules run, the function combines their cohort-level
+#' outputs using `data.table::rbindlist(..., use.names = TRUE, fill = TRUE)`.
+#' This allows demographic and non-demographic rows to share a common schema.
+#'
+#' The combined cohort output harmonizes, when needed:
+#' \itemize{
+#'   \item `offtake_heads`
+#'   \item `offtake_heads_assessment`
+#'   \item `cohort_duration_days`
+#'   \item `death_rate`
+#'   \item `cohort_stock_size`
+#' }
+#'
+#' When both modules are run, intermediate unscaled cohort stock and offtake
+#' outputs are combined and rescaled so that the summed cohort average stock
+#' matches `herd_size_total` from `herd_level_data`. The same rescaling applies
+#' to non-demographic-only runs when `herd_size_total` is supplied.
+#'
+#' The rescaling is performed in two steps:
+#' \enumerate{
+#'   \item `cohort_stock_size_unscaled` is rescaled internally to
+#'   `cohort_stock_size` within each `herd_id`
+#'   \item `offtake_heads_unscaled` and
+#'   `offtake_heads_assessment_unscaled` are rescaled proportionally to the
+#'   final `cohort_stock_size`
+#' }
+#'
+#' When only the demographic module is run, its scaled outputs are renamed to
+#' the harmonized final output names. Non-demographic-only runs without
+#' `herd_size_total` return unscaled stock and offtake under those names.
+#' 
+#' 
+#' 
+#'
+#' The function then rescales the combined cohort 
+#' stock and offtake outputs so that the summed cohort average stock matches
+#' `herd_size_total` from `herd_level_data`.
+#'
+#' The rescaling is performed in two steps:
+#' \enumerate{
+#'   \item `cohort_stock_size_unscaled` is rescaled to `cohort_stock_size`
+#'   within each `herd_id`
+#'   \item `offtake_heads` and `offtake_heads_assessment` are rescaled
+#'   proportionally from the unscaled cohort stock to the scaled cohort stock
+#' }
+#'
+#' Without a herd-size target in non-demographic-only mode,
+#' `cohort_stock_size_unscaled` is simply renamed to `cohort_stock_size`.
+#'  
+#' @return A named list with two elements:
+#' \describe{
+#'   \item{`cohort_level_results`}{A `data.table` with one row per retained
+#'   cohort. Depending on the selected execution mode, this table contains
+#'   demographic rows only, non-demographic rows only, or both in a harmonized
+#'   schema. Intermediate scaling variables are removed before return. It includes
+#'   the original cohort-level input columns plus the following result variables
+#'   when available:
+#'   \describe{
+#'     \item{`cohort_stock_size`}{Numeric. Average population size of the assessed cohort (# heads).}
+#'     \item{`offtake_heads`}{Numeric. Total number of animals removed from each cohort
+#'     over the full 365-day simulation horizon (# heads/year).}
+#'     \item{`offtake_heads_assessment`}{Numeric. Total number of animals removed from
+#'     each cohort over the assessment period (# heads/assessment period).}
+#'     \item{`cohort_stock_annual_nondemographic`}{Numeric. Annual number of
+#'     animals diverted from the demographic pathway into the non-demographic
+#'     pathway (# heads).}
+#'     \item{`nondemo_productive_phase_id`}{Numeric. Productive phase identifier for
+#'     non-demographic cohorts (\code{FN}, \code{MN}). Takes value \code{1} for phase 1
+#'     and optionally \code{2} for phase 2. Demographic cohorts use \code{NA}.}
+#'     \item{`partial_nondemo_phase_duration`}{Numeric. Duration of the terminal partial
+#'     productive phase falling within the fixed 365-day non-demographic simulation
+#'     horizon (days).}
+#'     \item{`number_full_nondemo_cycles`}{Integer. Number of complete cycles fully
+#'     contained within the fixed 365-day time horizon for the assessed non-demographic
+#'     cohort (\code{FN} or \code{MN}) (# cycles).}
+#'     \item{`total_nondemo_cycle_starts_to_distribute`}{Integer. Total number of cycle
+#'     starts within the fixed 365-day time horizon for the assessed non-demographic
+#'     cohort (\code{FN} or \code{MN}) (# cycle starts).}
+#'   }}
+#'   \item{`herd_level_results`}{A `data.table` with one row per `herd_id`.
+#'   Depending on the selected execution mode, this is the herd-level output of
+#'   the demographic module, the non-demographic module, or the merged herd-level
+#'   output of both modules. It includes the original herd-level input columns
+#'   plus the following result variables when available:
+#'   \describe{
+#'     \item{`growth_rate_herd`}{Numeric. Annualized growth rate at which the 
+#'     herd reaches steady state (fraction).}
+#'     \item{`cohort_stock_fem_annual_nondemo`}{Numeric. Annual number of female animals entering the
+#'     non-demographic pathway (`FN`) over the 365-time horizon (# heads).
+#'     When both demographic and non-demographic modules are run, this is
+#'     derived internally from the demographic calculations.}
+#'     \item{`cohort_stock_mal_annual_nondemo`}{Numeric. Annual number of male animals entering the non-demographic
+#'     pathway (`MN`) over the 365-time horizon (# heads). When both
+#'     demographic and non-demographic modules are run, this is derived
+#'     internally from the demographic calculations.}
+#'     \item{`rest_between_nondemo_cycles_duration`}{Numeric. Duration of the resting or
+#'     empty phase between non-demographic cycles (days). Use \code{0} when there is no
+#'     rest between cycles.}
+#'     \item{`total_nondemo_fem_duration_days`}{Numeric. Total duration of the
+#'     productive non-demographic phases assigned to the female non-demographic
+#'     cohort block (`FN`) (days).}
+#'     \item{`total_nondemo_mal_duration_days`}{Numeric. Total duration of the
+#'     productive non-demographic phases assigned to the male non-demographic
+#'     cohort block (`MN`) (days).}
+#'   }}
+#' }
+#'
+#' @seealso
+#' [run_gleam()],
+#' [run_demographic_herd_module()],
+#' [run_nondemographic_herd_module()],
+#' [rescale_x_to_y()]
+#'
+#' @section Use cases:
+#'
+#' ## Use case 1: Run both demographic and non-demographic modules
+#'
+#' ```r
+#' # Load herd simulation inputs (cohort and herd-level)
+#' herd_all_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/herd_all_input_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#' herd_all_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/herd_all_input_hrd_data.csv",
+#'   package = "gleam"
+#' ))
+#'
+#' # Run mixed demographic and non-demographic herd simulation
+#' results <- run_all_herd_module(
+#'   cohort_level_data = herd_all_chrt_dt,
+#'   herd_level_data = herd_all_hrd_dt,
+#'   run_demographic = TRUE,
+#'   run_nondemographic = TRUE,
+#'   simulation_duration = 365,
+#'   show_indicator = TRUE
+#' )
+#' ```
+#'
+#' ## Use case 2: Run the non-demographic module only
+#'
+#' ```r
+#' # Load non-demographic-only herd inputs (CHK layers and broilers)
+#' herd_all_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/herd_all_nondemo_input_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#' herd_all_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/herd_all_nondemo_input_hrd_data.csv",
+#'   package = "gleam"
+#' ))
+#'
+#' # Run non-demographic-only herd simulation
+#' results <- run_all_herd_module(
+#'   cohort_level_data = herd_all_chrt_dt,
+#'   herd_level_data = herd_all_hrd_dt,
+#'   run_demographic = FALSE,
+#'   run_nondemographic = TRUE,
+#'   simulation_duration = 365,
+#'   show_indicator = TRUE
+#' )
+#' ```
+#'
+#' ## Use case 3: Run the demographic module only
+#'
+#' ```r
+#' # Load demographic-only herd inputs (cohort and herd-level)
+#' herd_all_chrt_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/herd_all_demo_input_chrt_data.csv",
+#'   package = "gleam"
+#' ))
+#' herd_all_hrd_dt <- data.table::fread(system.file(
+#'   "extdata/run_modules_examples/herd_all_demo_input_hrd_data.csv",
+#'   package = "gleam"
+#' ))
+#'
+#' # Run demographic-only herd simulation
+#' results <- run_all_herd_module(
+#'   cohort_level_data = herd_all_chrt_dt,
+#'   herd_level_data = herd_all_hrd_dt,
+#'   run_demographic = TRUE,
+#'   run_nondemographic = FALSE,
+#'   simulation_duration = 365,
+#'   show_indicator = TRUE
+#' )
+#' ```
+#'
+#' @export
+
+
+
+run_all_herd_module <- function(
+    cohort_level_data = NULL,
+    herd_level_data = NULL,
+    simulation_duration = 365,
+    show_indicator = TRUE,
+    run_demographic = TRUE,
+    run_nondemographic = TRUE
+) {
+  
+  # --- Step 1: Standardize Input Tables ---------------------------------------
+  # Convert supplied inputs to data.table objects
+  if (!is.null(cohort_level_data) && !data.table::is.data.table(cohort_level_data)) {
+    cohort_level_data <- data.table::as.data.table(cohort_level_data)
+  }
+  if (!is.null(herd_level_data) && !data.table::is.data.table(herd_level_data)) {
+    herd_level_data <- data.table::as.data.table(herd_level_data)
+  }
+
+  # --- Step 2: Validate Inputs ------------------------------------------------
+  validate_run_all_herd_module_inputs(
+    cohort_level_data = cohort_level_data,
+    herd_level_data = herd_level_data,
+    run_demographic = run_demographic,
+    run_nondemographic = run_nondemographic
+  )
+  
+  # --- Step 3: Split Cohort-Level Inputs by Module ----------------------------
+  # Select demographic cohort rows
+  cohort_level_data_demographic <- cohort_level_data[
+    !is.na(cohort_short) & cohort_short %in% gleam_cohorts_demographic
+  ]
+  
+  # Select non-demographic cohort rows
+  cohort_level_data_nondemographic <- cohort_level_data[
+    !is.na(cohort_short) & cohort_short %in% c("FN", "MN")
+  ]
+  
+  # Initialize optional module results
+  demo_results <- NULL
+  nondemo_results <- NULL
+  
+  # --- Step 4: Run the Demographic Module ------------------------------------
+  # Run the demographic simulation when requested
+  if (isTRUE(run_demographic)) {
+    demo_results <- run_demographic_herd_module(
+      cohort_level_data = cohort_level_data_demographic,
+      herd_level_data = herd_level_data,
+      simulation_duration = simulation_duration,
+      show_indicator = show_indicator
+    )
+    
+    # Extract available non-demographic cycle-duration inputs
+    herd_duration_cols <- intersect(
+      c(
+        "rest_between_nondemo_cycles_duration",
+        "phase1_nondemo_fem_duration_days",
+        "phase2_nondemo_fem_duration_days",
+        "phase1_nondemo_mal_duration_days",
+        "phase2_nondemo_mal_duration_days"
+      ),
+      names(herd_level_data)
+    )
+    herd_duration_rest <- herd_level_data[, c("herd_id", herd_duration_cols), with = FALSE]
+    
+    # Derive female and male non-demographic entrants from juvenile transitions
+    fem_entrants <- demo_results$cohort_level_results[
+      cohort_short == "FJ",
+      .(herd_id,
+        cohort_stock_fem_annual_nondemo = cohort_stock_annual_nondemographic)
+    ]
+    
+    mal_entrants <- demo_results$cohort_level_results[
+      cohort_short == "MJ",
+      .(herd_id,
+        cohort_stock_mal_annual_nondemo = cohort_stock_annual_nondemographic)
+    ]
+    
+    # Assemble herd-level inputs for the non-demographic module
+    herd_level_data_nondemo <- merge(fem_entrants, mal_entrants, by = "herd_id", all = TRUE)
+    herd_level_data_nondemo <- merge(herd_level_data_nondemo, herd_duration_rest, by = "herd_id", all = TRUE)
+    
+    # Retain only herds represented in the non-demographic cohort input
+    if (!is.null(cohort_level_data_nondemographic) && nrow(cohort_level_data_nondemographic) > 0) {
+      herd_level_data_nondemo <- herd_level_data_nondemo[
+        herd_id %in% unique(cohort_level_data_nondemographic$herd_id)
+      ]
+    }
+    
+  }
+  
+  # --- Step 5: Run the Non-Demographic Module --------------------------------
+  # Run the non-demographic simulation when requested and input rows are available
+  if (isTRUE(run_nondemographic)) {
+    if (nrow(cohort_level_data_nondemographic) > 0) {
+      
+      # Use caller-supplied entrant and timing inputs in non-demographic-only mode
+      if (!isTRUE(run_demographic)) {
+        herd_level_data_nondemo <- herd_level_data[
+          herd_id %in% unique(cohort_level_data_nondemographic$herd_id)
+        ]
+      }
+      
+      # Run the non-demographic simulation
+      nondemo_results <- run_nondemographic_herd_module(
+        cohort_level_data = cohort_level_data_nondemographic,
+        herd_level_data = herd_level_data_nondemo,
+        simulation_duration = simulation_duration,
+        show_indicator = show_indicator
+      )
+      
+    }
+  }
+  
+  # --- Step 6: Combine Cohort-Level Results ----------------------------------
+  # Row-bind available module outputs into a common cohort-level schema
+  cohort_level_results <- data.table::rbindlist(
+    list(
+      if (!is.null(demo_results)) demo_results$cohort_level_results,
+      if (!is.null(nondemo_results)) nondemo_results$cohort_level_results
+    ),
+    use.names = TRUE,
+    fill = TRUE
+  )
+  
+  # --- Step 7: Harmonize and Rescale Cohort-Level Results --------------------
+  # Rescale combined or non-demographic-only outputs when a herd-size target is 
+  # available
+  if (isTRUE(run_nondemographic) &&
+      (isTRUE(run_demographic) || "herd_size_total" %in% names(herd_level_data))) {
+    
+    # Calculate total unscaled average stock by herd
+    tmp <- cohort_level_results[
+      , .(size_for_rescaling = sum(cohort_stock_size_unscaled, na.rm = TRUE)),
+      by = herd_id
+    ]
+    
+    # Attach the unscaled herd total and target herd size to each cohort row
+    cohort_level_results[tmp, size_for_rescaling := i.size_for_rescaling, on = "herd_id"]
+    cohort_level_results[herd_level_data, herd_size_total := i.herd_size_total, on = "herd_id"]
+    
+    # Rescale cohort average stock to the target herd size
+    cohort_level_results[, cohort_stock_size := rescale_x_to_y(
+      x_scaled_variable  = cohort_stock_size_unscaled,
+      x_reference_from   = size_for_rescaling,
+      y_scaling_variable = herd_size_total
+    )]
+    
+    # Rescale full-horizon and assessment-period offtake proportionally
+    cohort_level_results[, offtake_heads := rescale_x_to_y(
+      x_scaled_variable  = offtake_heads_unscaled,
+      x_reference_from   = cohort_stock_size_unscaled,
+      y_scaling_variable = cohort_stock_size
+    )]
+    
+    cohort_level_results[, offtake_heads_assessment := rescale_x_to_y(
+      x_scaled_variable  = offtake_heads_assessment_unscaled,
+      x_reference_from   = cohort_stock_size_unscaled,
+      y_scaling_variable = cohort_stock_size
+    )]
+    
+    # Remove temporary herd-level scaling references
+    cols_to_drop <- intersect(
+      c(
+        "size_for_rescaling",
+        "herd_size_total"
+      ),
+      names(cohort_level_results)
+    )
+    if (length(cols_to_drop) > 0) {
+      cohort_level_results[, (cols_to_drop) := NULL]
+    }
+    
+  # In demographic-only mode, use the demographic module's scaled outputs
+  # as the final harmonized results
+  } else if (isTRUE(run_demographic) && !isTRUE(run_nondemographic)) {
+    data.table::setnames(
+      cohort_level_results,
+      old = c(
+        "cohort_stock_size_scaled",
+        "offtake_heads_scaled",
+        "offtake_heads_assessment_scaled"
+      ),
+      new = c(
+        "cohort_stock_size",
+        "offtake_heads",
+        "offtake_heads_assessment"
+      ),
+      skip_absent = TRUE
+    )
+    
+  # In non-demographic-only mode without a herd-size target, use the
+  # unscaled non-demographic outputs as the final harmonized results
+  } else if (!isTRUE(run_demographic) && isTRUE(run_nondemographic)) {  
+    data.table::setnames(
+      cohort_level_results,
+      old = c(
+        "cohort_stock_size_unscaled",
+        "offtake_heads_unscaled",
+        "offtake_heads_assessment_unscaled"
+      ),
+      new = c(
+        "cohort_stock_size",
+        "offtake_heads",
+        "offtake_heads_assessment"
+      ),
+      skip_absent = TRUE
+    )
+  }
+  
+  # --- Step 8: Assemble Herd-Level Results -----------------------------------
+  # Initialize the harmonized herd-level output
+  herd_level_results <- NULL
+
+  # Merge non-demographic results into the demographic herd-level output
+  if (!is.null(demo_results) && !is.null(nondemo_results)) {
+    herd_level_results <- data.table::copy(demo_results$herd_level_results)
+    herd_level_results[
+      nondemo_results$herd_level_results,
+      `:=`(
+        cohort_stock_fem_annual_nondemo = i.cohort_stock_fem_annual_nondemo,
+        cohort_stock_mal_annual_nondemo = i.cohort_stock_mal_annual_nondemo,
+        rest_between_nondemo_cycles_duration = i.rest_between_nondemo_cycles_duration,
+        total_nondemo_fem_duration_days = i.total_nondemo_fem_duration_days,
+        total_nondemo_mal_duration_days = i.total_nondemo_mal_duration_days
+      ),
+      on = "herd_id"
+    ]
+    
+  # Use the demographic herd-level output when only that module returned results
+  } else if (!is.null(demo_results)) {
+    herd_level_results <- demo_results$herd_level_results
+  # Use the non-demographic herd-level output when only that module returned results
+  } else if (!is.null(nondemo_results)) {
+    herd_level_results <- nondemo_results$herd_level_results
+  }
+  
+  
+  # --- Step 9: Remove Intermediate Cohort-Level Columns ----------------------
+  cols_to_drop <- intersect(
+    c(
+      "size_for_rescaling",
+      "herd_size_total",
+      "cohort_stock_size_unscaled",
+      "offtake_heads_unscaled",
+      "offtake_heads_assessment_unscaled",
+      "cohort_stock_size_scaled",
+      "offtake_heads_scaled",
+      "offtake_heads_assessment_scaled"
+    ),
+    names(cohort_level_results)
+  )
+  if (length(cols_to_drop) > 0) {
+    cohort_level_results[, (cols_to_drop) := NULL]
+  }
+  
+  # --- Step 10: Return Results ------------------------------------------------
+  return(list(
+    cohort_level_results = cohort_level_results,
+    herd_level_results   = herd_level_results
+  ))
+}

@@ -37,8 +37,7 @@ calc_work_allocation_energy(
 
 - cohort_stock_size:
 
-  Numeric. Population size in the cohort at the start of the assessment
-  period (heads).
+  Numeric. Average population size of the assessed cohort (# heads).
 
 - metabolic_energy_req_work:
 
@@ -99,12 +98,12 @@ simulation\\duration \times cohort\\stock\\size} {ratio\\me\\to\\ne}\\
 for camels (`CML`).
 
 where `metabolic_energy_req_work` can be computed using
-[`calc_metabolic_energy_req_work`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_work.md)
+[`calc_metabolic_energy_req_work`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_work.md)
 (see also
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md)).
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md)).
 
 This function is part of the
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md).
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md).
 
 ## References
 
@@ -138,6 +137,6 @@ Italy.
 
 ## See also
 
-[`run_allocation_module`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md),
-[`calc_metabolic_energy_req_work`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_work.md),
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md)
+[`run_allocation_module`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md),
+[`calc_metabolic_energy_req_work`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_work.md),
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md)

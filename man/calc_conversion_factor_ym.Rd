@@ -20,9 +20,10 @@ Supported values include:
 \item \code{BFL}: buffalo
 \item \code{SHP}: sheep
 \item \code{GTS}: goats
+\item \code{CHK}: chickens
 }}
 
-\item{cohort_short}{Character. Sex- and age-specific cohort code describing the
+\item{cohort_short}{Character. Sex-specific cohort code describing the age and/or the
 production stage of the animals. Supported values include:
 \itemize{
 \item \code{FA}: adult females (from age at first parturition)
@@ -31,6 +32,8 @@ production stage of the animals. Supported values include:
 \item \code{MA}: adult males (from age at first breeding)
 \item \code{MS}: sub-adult males (from weaning to age at first breeding)
 \item \code{MJ}: juvenile males (from birth to weaning)
+\item \code{FN}: non-demographic females
+\item \code{MN}: non-demographic males
 }}
 
 \item{ration_digestibility_fraction}{Numeric. Average digestibility of the feed ration, expressed as ratio of
@@ -59,7 +62,7 @@ ym is computed using species- and cohort-specific default relationships with die
 \itemize{
 \item \code{FA} and \code{MA} cohorts:
 \deqn{ym = 9.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
-\item \code{FS} and \code{MS} cohorts:
+\item \code{FS}, \code{MS}, \code{FN}, and \code{MN} cohorts:
 \deqn{ym = 7.75 - 0.05 \times (ration\_digestibility\_fraction \times 100)}
 }
 
@@ -67,8 +70,10 @@ ym is computed using species- and cohort-specific default relationships with die
 ym is assigned fixed values by cohort:
 \itemize{
 \item \code{FA} and \code{MA} cohorts: \deqn{ym = 1.01}
-\item \code{FS} and \code{MS} cohorts: \deqn{ym = 0.39}
+\item \code{FS}, \code{MS}, \code{FN}, and \code{MN} cohorts: \deqn{ym = 0.39}
 }
+\item \strong{For \code{CHK}}: ym is returned as 0
+
 }
 
 ym is returned as 0 for juvenile cohorts (\code{FJ}, \code{MJ}), assuming

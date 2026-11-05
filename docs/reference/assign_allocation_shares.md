@@ -99,7 +99,7 @@ The following methodological rules apply to emission sources listed in
   items already account for this source.
 
 This function is part of the
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md).
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md).
 
 ## References
 
@@ -123,4 +123,4 @@ Italy.
 
 ## See also
 
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md)
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md)

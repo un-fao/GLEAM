@@ -31,7 +31,7 @@ This approach follows the IPCC Tier 2 approach and estimates
 \\nitrogen\\intake = dry\\matter\\intake \times diet\\nitrogen\\
 
 This function is part of the
-[`run_nitrogen_balance_module()`](https://github.com/un-fao/GLEAM/reference/run_nitrogen_balance_module.md).
+[`run_nitrogen_balance_module()`](https://un-fao.github.io/GLEAM/reference/run_nitrogen_balance_module.md).
 
 ## References
 
@@ -45,8 +45,8 @@ Management. Equation 10.32.
 
 ## See also
 
-[`run_nitrogen_balance_module`](https://github.com/un-fao/GLEAM/reference/run_nitrogen_balance_module.md),
-[`calc_ration_intake`](https://github.com/un-fao/GLEAM/reference/calc_ration_intake.md),
-[`run_metabolic_energy_req_module`](https://github.com/un-fao/GLEAM/reference/run_metabolic_energy_req_module.md),
-[`calc_ration_nitrogen_content`](https://github.com/un-fao/GLEAM/reference/calc_ration_nitrogen_content.md),
-[`run_ration_quality_module`](https://github.com/un-fao/GLEAM/reference/run_ration_quality_module.md)
+[`run_nitrogen_balance_module`](https://un-fao.github.io/GLEAM/reference/run_nitrogen_balance_module.md),
+[`calc_ration_intake`](https://un-fao.github.io/GLEAM/reference/calc_ration_intake.md),
+[`run_metabolic_energy_req_module`](https://un-fao.github.io/GLEAM/reference/run_metabolic_energy_req_module.md),
+[`calc_ration_nitrogen_content`](https://un-fao.github.io/GLEAM/reference/calc_ration_nitrogen_content.md),
+[`run_ration_quality_module`](https://un-fao.github.io/GLEAM/reference/run_ration_quality_module.md)

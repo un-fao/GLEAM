@@ -13,7 +13,9 @@ calc_meat_allocation_energy(
   meat_production_live_weight_cohort,
   live_weight_cohort_at_slaughter = NA_real_,
   live_weight_at_birth = NA_real_,
-  ratio_me_to_ne = NA_real_
+  ratio_me_to_ne = NA_real_,
+  nondemo_productive_phase_id = NA_real_,
+  is_egg_producing = FALSE
 )
 ```
 
@@ -36,10 +38,12 @@ calc_meat_allocation_energy(
 
   - `GTS`: goats
 
+  - `CHK`: chickens
+
 - cohort_short:
 
-  Character. Sex- and age-specific cohort code describing the production
-  stage of the animals. Supported values include:
+  Character. Sex-specific cohort code describing the age and/or the
+  production stage of the animals. Supported values include:
 
   - `FA`: adult females (from age at first parturition)
 
@@ -52,6 +56,10 @@ calc_meat_allocation_energy(
   - `MS`: sub-adult males (from weaning to age at first breeding)
 
   - `MJ`: juvenile males (from birth to weaning)
+
+  - `FN`: non-demographic females
+
+  - `MN`: non-demographic males
 
 - meat_production_live_weight_cohort:
 
@@ -71,6 +79,18 @@ calc_meat_allocation_energy(
 
   Numeric. Ratio of metabolizable energy converted to net energy
   (fraction). Used for species_short = CML.
+
+- nondemo_productive_phase_id:
+
+  Numeric. Optional productive phase identifier for non-demographic
+  cohorts (`FN`, `MN`). Takes value `1` for phase 1 and optionally `2`
+  for phase 2.
+
+- is_egg_producing:
+
+  Logical. Cohort-level flag identifying egg-producing `CHK` cohorts.
+  This can be `TRUE` only for `FA` and for `FN` with
+  `nondemo_productive_phase_id = 2`.
 
 ## Value
 
@@ -113,9 +133,9 @@ where
 - `meat_production_live_weight_cohort` is the total live weight of
   animals sold for meat over the assessment period. It can be computed
   using
-  [`calc_meat_production`](https://github.com/un-fao/GLEAM/reference/calc_meat_production.md)
+  [`calc_meat_production`](https://un-fao.github.io/GLEAM/reference/calc_meat_production.md)
   (see also
-  [`run_production_module`](https://github.com/un-fao/GLEAM/reference/run_production_module.md)).
+  [`run_production_module`](https://un-fao.github.io/GLEAM/reference/run_production_module.md)).
 
 **Specific approaches by species:**
 
@@ -124,18 +144,31 @@ where
   Growth energy is calculated using species- and cohort-specific
   biophysical relationships adapted from established growth energy
   formulations (further details in
-  [`calc_metabolic_energy_req_growth`](https://github.com/un-fao/GLEAM/reference/calc_metabolic_energy_req_growth.md)).
+  [`calc_metabolic_energy_req_growth`](https://un-fao.github.io/GLEAM/reference/calc_metabolic_energy_req_growth.md)).
 
 - **For `PGS`**:
 
   Growth energy is not calculated in this function and `0` is returned.
   In downstream processing,
-  [`calc_allocation_shares`](https://github.com/un-fao/GLEAM/reference/calc_allocation_shares.md)
+  [`calc_allocation_shares`](https://un-fao.github.io/GLEAM/reference/calc_allocation_shares.md)
   assigns 100% of the allocation to the edible meat commodity for pig
   systems.
 
+- **For `CHK`**:
+
+  Poultry meat allocation uses:
+
+  \$\$ specific\\energy\\meat = \frac{cgro \times 1000 \times
+  (live\\weight\\cohort\\at\\slaughter - live\\weight\\at\\birth)}
+  {live\\weight\\cohort\\at\\slaughter} \$\$
+
+  where \\cgro = (0.0279 + 0.0202) / 2 = 0.02405\\ MJ/g. This uses the
+  average of the adult and juvenile/sub-adult poultry growth
+  coefficients and converts from g to kg via the factor 1000 in the
+  equation above.
+
 This function is part of the
-[`run_allocation_module()`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md).
+[`run_allocation_module()`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md).
 
 ## References
 
@@ -167,9 +200,13 @@ poultry supply chains: Guidelines for assessment*. Livestock
 Environmental Assessment and Performance (LEAP) Partnership. FAO, Rome,
 Italy.
 
+Sakomura, N. K. (2004). Modeling energy utilization in broiler breeders,
+laying hens and broilers. *Brazilian Journal of Poultry Science*, 6,
+1-11.
+
 ## See also
 
-[`run_allocation_module`](https://github.com/un-fao/GLEAM/reference/run_allocation_module.md),
-[`calc_meat_production`](https://github.com/un-fao/GLEAM/reference/calc_meat_production.md),
-[`run_production_module`](https://github.com/un-fao/GLEAM/reference/run_production_module.md),
-[`calc_allocation_shares`](https://github.com/un-fao/GLEAM/reference/calc_allocation_shares.md)
+[`run_allocation_module`](https://un-fao.github.io/GLEAM/reference/run_allocation_module.md),
+[`calc_meat_production`](https://un-fao.github.io/GLEAM/reference/calc_meat_production.md),
+[`run_production_module`](https://un-fao.github.io/GLEAM/reference/run_production_module.md),
+[`calc_allocation_shares`](https://un-fao.github.io/GLEAM/reference/calc_allocation_shares.md)
